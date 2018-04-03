@@ -1,8 +1,14 @@
-import './index.css'
+import React from 'react';
+import {render} from 'react-dom';
+import {Provider} from 'react-redux';
+import {reducer} from './reducers';
+import {middleware} from './middleware';
+import {createStore, applyMiddleware} from 'redux';
+import Immutable from 'immutable';
+import App from './App';
 
-import React from 'react'
-import {render} from 'react-dom'
+const initialState = Immutable.Map();
 
-import App from './App'
+const store = createStore(reducer, initialState, applyMiddleware(...middleware));
 
-render(<App/>, document.querySelector('#app'))
+render(<Provider store={store}><App/></Provider>, document.querySelector('#app'));
