@@ -1,7 +1,8 @@
 import {combineReducers} from 'redux';
+import {editorReducer} from './editorReducer';
 
 const reducers = {
-  //config: configReducer
+  form: editorReducer
 };
 
 export const reducer = combineReducers(reducers);
