@@ -21,7 +21,7 @@ class App extends Component {
                   <Editor />
                 </Grid.Column>
                 <Grid.Column computer={5}>
-                  <Sticky offset={50}>
+                  <Sticky offset={50} active>
                     <Properties />
                   </Sticky>
                 </Grid.Column>

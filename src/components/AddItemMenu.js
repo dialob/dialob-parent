@@ -17,6 +17,13 @@ class AddItemMenu extends Component {
               <Dropdown.Item>Integer</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+          <Dropdown item text='Output'>
+            <Dropdown.Menu>
+              <Dropdown.Item>Note</Dropdown.Item>
+              <Dropdown.Item>Image</Dropdown.Item>
+              <Dropdown.Item>Report</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           <Dropdown item text='Structure'>
             <Dropdown.Menu>
               <Dropdown.Item>Group</Dropdown.Item>
