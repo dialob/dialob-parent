@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {List} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import {treeItemFactory} from '.';
+import md_strip_tags from 'remove-markdown';
 
 const MAX_LENGTH = 55;
 
@@ -25,6 +26,14 @@ class TreeItem extends Item {
     return null;
   }
 
+  preprocessLabel(label) {
+    if (this.props.item.get('type') === 'note') {
+      return label && md_strip_tags(label);
+    } else {
+      return label;
+    }
+  }
+
   formatLabel(label) {
     if (!label || !label.trim()) {
       return '-';
@@ -40,7 +49,7 @@ class TreeItem extends Item {
       <List.Item>
         <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
         <List.Content>
-          <List.Header>{this.formatLabel(this.props.item.getIn(['label', 'en']))}</List.Header>
+          <List.Header>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])))}</List.Header>
           {this.getSubList()}
         </List.Content>
       </List.Item>);
