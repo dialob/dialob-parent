@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {Container, Menu, Grid, Segment, List, Sticky, Table, Input, Tab, Header, Button, Label, Icon, Dropdown, Popup} from 'semantic-ui-react';
+import {Grid} from 'semantic-ui-react';
 import MainMenu from './components/MainMenu';
 import TreeView from './components/TreeView';
-import Properties from './components/Properties';
 import Editor from './components/Editor';
 
 require('./style.css');
@@ -22,10 +21,7 @@ class App extends Component {
                 <Grid.Column>
                   <Editor />
                 </Grid.Column>
-                <Grid.Column computer={5}>
-                  <Sticky offset={50} active>
-                    <Properties />
-                  </Sticky>
+                <Grid.Column computer={4}>
                 </Grid.Column>
               </Grid.Row>
             </Grid>

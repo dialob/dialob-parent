@@ -15,13 +15,13 @@
     "classnames": "^2.2.5",
     "immutable": "^3.8.2",
     "prop-types": "^15.6.1",
-    "react": "^16.3.0",
-    "react-dom": "^16.3.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
     "react-markdown": "^3.3.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "remove-markdown": "^0.2.2",
-    "semantic-ui-react": "^0.79.0"
+    "semantic-ui-react": "^0.79.1"
   },
   "devDependencies": {
     "nwb": "0.21.x"

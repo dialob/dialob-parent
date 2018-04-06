@@ -50,7 +50,7 @@ class TreeItem extends Item {
       <List.Item >
         <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
         <List.Content>
-          <List.Header className={{'composer-active': this.props.active}}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])))}</List.Header>
+          <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])))}</List.Header>
           {this.getSubList()}
         </List.Content>
       </List.Item>);
