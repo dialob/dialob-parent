@@ -5,6 +5,8 @@ import TreeView from './components/TreeView';
 import Properties from './components/Properties';
 import Editor from './components/Editor';
 
+require('./style.css');
+
 class App extends Component {
   render() {
     const marginTop = '42px';

@@ -10,6 +10,6 @@ import App from './App';
 const initialState = Immutable.Map();
 
 //const store = createStore(reducer, initialState, applyMiddleware(...middleware));
-const store = createStore(reducer);
+const store = createStore(reducer, initialState);
 
 render(<Provider store={store}><App/></Provider>, document.querySelector('#app'));

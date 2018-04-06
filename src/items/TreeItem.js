@@ -3,6 +3,7 @@ import {List} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import {treeItemFactory} from '.';
 import md_strip_tags from 'remove-markdown';
+import classnames from 'classnames';
 
 const MAX_LENGTH = 55;
 
@@ -46,10 +47,10 @@ class TreeItem extends Item {
 
   render() {
     return (
-      <List.Item>
+      <List.Item >
         <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
         <List.Content>
-          <List.Header>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])))}</List.Header>
+          <List.Header className={{'composer-active': this.props.active}}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])))}</List.Header>
           {this.getSubList()}
         </List.Content>
       </List.Item>);

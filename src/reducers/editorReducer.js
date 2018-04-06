@@ -1,8 +1,14 @@
-import DEBUG_FORM from './debug_form';
 import Immutable from 'immutable';
+import * as Actions from '../actions/constants';
 
-const INITIAL_STATE = Immutable.fromJS(DEBUG_FORM);
+const INITIAL_STATE = Immutable.Map();
 
 export function editorReducer(state = INITIAL_STATE, action) {
+  switch (action.type) {
+    case Actions.SET_ACTIVE_ITEM:
+      return state.set('activeItemId', action.itemId);
+    default:
+      // NOP
+  }
   return state;
 }

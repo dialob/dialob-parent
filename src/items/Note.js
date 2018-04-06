@@ -8,7 +8,6 @@ class Note extends Item {
     return (
       <Message>
         <Markdown source={this.props.item.getIn(['label', 'en'])} />
-        <Button size='small' icon='edit' />
       </Message>
     );
   }
