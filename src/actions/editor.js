@@ -6,3 +6,10 @@ export function setActiveItem(itemId) {
     itemId
   };
 }
+
+export function setActivePage(itemId) {
+  return {
+    type: Actions.SET_ACTIVE_PAGE,
+    itemId
+  };
+}

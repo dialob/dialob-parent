@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Segment, Menu, Icon, Input, Button} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
-//import AddItemMenu from '../components/AddItemMenu';
+import {setActivePage} from '../actions';
 import {itemFactory} from '../items';
 
 class Editor extends Component {
@@ -15,11 +15,11 @@ class Editor extends Component {
 
   render() {
     const rootItem = this.props.findRootItem();
-    const activePageIndex = 0;
-    const activePage = this.props.items.get(rootItem.getIn(['items', activePageIndex]));
+    const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
+    const activePage = this.props.items.get(activePageId);
     const pages = rootItem ? rootItem.get('items')
                         .map(itemId => this.props.items.get(itemId))
-                        .map((item, index) =><Menu.Item key={index} active={activePageIndex === index}>{item.getIn(['label', 'en'])}</Menu.Item>) : null;
+                        .map((item, index) =><Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en'])}</Menu.Item>) : null;
     return (
       <Segment basic>
         <Menu tabular>
@@ -39,9 +39,12 @@ class Editor extends Component {
 const EditorConnected = connect(
   state => ({
     items: state.form && state.form.get('data'),
+    activePageId: state.editor && state.editor.get('activeItemId'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
-  {}
+  {
+    setActivePage
+  }
 )(Editor);
 
 export {
