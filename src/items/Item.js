@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {itemFactory} from '.';
 import {PropTypes} from 'prop-types';
 import {connect} from 'react-redux';
-import {setActiveItem} from '../actions';
+import {setActiveItem, addItem, changeItemType} from '../actions';
 
 class Item extends Component {
 
@@ -21,7 +21,9 @@ function connectItem(component) {
       get findRootItem() { return () => findRoot(this.items); },
     }),
     (dispatch, props) => ({
-      setActive: () => dispatch(setActiveItem(props.item.get('id')))
+      setActive: () => dispatch(setActiveItem(props.item.get('id'))),
+      newItem: (config, parentItemId, afterItemId) => dispatch(addItem(config, parentItemId, afterItemId)),
+      changeType: (config, itemId) => dispatch(changeItemType(config, itemId))
     })
   )(component);
 }

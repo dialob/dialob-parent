@@ -13,3 +13,20 @@ export function setActivePage(itemId) {
     itemId
   };
 }
+
+export function addItem(config, parentItemId, afterItemId = null) {
+  return {
+    type: Actions.ADD_ITEM,
+    config,
+    parentItemId,
+    afterItemId
+  };
+}
+
+export function changeItemType(config, itemId) {
+  return {
+    type: Actions.CHANGE_ITEM_TYPE,
+    config,
+    itemId
+  };
+}

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Input, Segment, Table, Dropdown, Icon} from 'semantic-ui-react';
+import {Input, Segment, Table, Dropdown, Icon, Popup, Button, Menu} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
-import AddItemMenu from '../components/AddItemMenu';
+import ItemTypeMenu from '../components/ItemTypeMenu';
+import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
 
 class Group extends Item {
@@ -28,7 +29,7 @@ class Group extends Item {
                 </Dropdown>
               </Table.Cell>
               <Table.Cell collapsing>
-                <Icon name='content' />
+                <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
@@ -43,8 +44,15 @@ class Group extends Item {
           </Table.Body>
         </Table>
         <Segment className={classnames({'composer-active': this.props.active})} attached='bottom'>
-          {this.createChildren()}
-          <AddItemMenu />
+          {this.createChildren({parentItemId: this.props.item.get('id')})}
+          <Popup trigger={<Button circular icon='add' />} on='click'>
+            <Menu secondary vertical>
+              <Menu.Item>
+               <Menu.Header>Add new</Menu.Header>
+              </Menu.Item>
+              <ItemTypeMenu onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
+            </Menu>
+          </Popup>
         </Segment>
       </React.Fragment>);
   }

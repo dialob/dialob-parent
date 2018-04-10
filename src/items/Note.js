@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Message, Table, Icon, Input} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import Markdown from 'react-markdown';
+import ItemMenu from '../components/ItemMenu';
 
 class Note extends Item {
   render() {
@@ -14,7 +15,7 @@ class Note extends Item {
                 {this.props.item.get('id')}
               </Table.Cell>
               <Table.Cell collapsing>
-                <Icon name='content' />
+                <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>

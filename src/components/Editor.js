@@ -30,7 +30,7 @@ class Editor extends Component {
             </Menu.Item>
           </Menu.Menu>
         </Menu>
-        {this.createChildren(activePage)}
+        {this.createChildren(activePage, {parentItemId: activePageId})}
       </Segment>
     );
   }
@@ -39,7 +39,7 @@ class Editor extends Component {
 const EditorConnected = connect(
   state => ({
     items: state.form && state.form.get('data'),
-    activePageId: state.editor && state.editor.get('activeItemId'),
+    activePageId: state.editor && state.editor.get('activePageId'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {
