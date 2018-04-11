@@ -10,7 +10,7 @@ const MAX_LENGTH = 55;
 class TreeItem extends Item {
 
   createChildren(props, config) {
-    return this.props.item.get('items')
+    return this.props.item.get('items') && this.props.item.get('items')
       .map(itemId => this.props.items.get(itemId))
       .map(item => treeItemFactory(item, props, config));
   }
@@ -35,9 +35,9 @@ class TreeItem extends Item {
     }
   }
 
-  formatLabel(label) {
+  formatLabel(label, id) {
     if (!label || !label.trim()) {
-      return '-';
+      return <em>{id}</em>;
     } else if (label.length > MAX_LENGTH) {
       return label.substring(0, MAX_LENGTH) + '\u2026';
     } else {
@@ -50,7 +50,7 @@ class TreeItem extends Item {
       <List.Item >
         <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
         <List.Content>
-          <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])))}</List.Header>
+          <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>
           {this.getSubList()}
         </List.Content>
       </List.Item>);

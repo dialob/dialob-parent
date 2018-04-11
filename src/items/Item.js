@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {itemFactory} from '.';
 import {PropTypes} from 'prop-types';
 import {connect} from 'react-redux';
-import {setActiveItem, addItem, changeItemType} from '../actions';
+import {setActiveItem, addItem, changeItemType, updateItem} from '../actions';
 
 class Item extends Component {
 
   createChildren(props, config) {
-    return this.props.item.get('items')
+    return this.props.item.get('items') && this.props.item.get('items')
       .map(itemId => this.props.items.get(itemId))
       .map(item => itemFactory(item, props, config));
   }
@@ -23,7 +23,8 @@ function connectItem(component) {
     (dispatch, props) => ({
       setActive: () => dispatch(setActiveItem(props.item.get('id'))),
       newItem: (config, parentItemId, afterItemId) => dispatch(addItem(config, parentItemId, afterItemId)),
-      changeType: (config, itemId) => dispatch(changeItemType(config, itemId))
+      setType: (config) => dispatch(changeItemType(config, props.item.get('id'))),
+      setAttribute: (attribute, value) => dispatch(updateItem(props.item.get('id'), attribute, value))
     })
   )(component);
 }

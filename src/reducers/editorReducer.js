@@ -9,12 +9,7 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('activeItemId', action.itemId);
     case Actions.SET_ACTIVE_PAGE:
       return state.set('activeItemId', action.itemId).set('activePageId', action.itemId);
-    case Actions.ADD_ITEM:
-      console.log('ADD_ITEM', action);
-      return state;
-    case Actions.CHANGE_ITEM_TYPE:
-      console.log('CHANGE_ITEM_TYPE', action);
-      return state;
+    
     default:
       // NOP
   }

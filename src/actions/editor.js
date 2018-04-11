@@ -30,3 +30,12 @@ export function changeItemType(config, itemId) {
     itemId
   };
 }
+
+export function updateItem(itemId, attribute, value) {
+  return {
+    type: Actions.UPDATE_ITEM,
+    itemId,
+    attribute,
+    value
+  };
+}

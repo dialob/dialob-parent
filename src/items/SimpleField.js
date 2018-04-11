@@ -21,7 +21,7 @@ class SimpleField extends Item {
                 <Dropdown text={this.props.item.get('type')}>
                   <Dropdown.Menu>
                     <Dropdown.Header content='Change type'/>
-                    <ItemTypeMenu categoryFilter={item => item.type === 'input'} onSelect={(config) => this.props.changeType(config, this.props.item.get('id'))}/>
+                    <ItemTypeMenu categoryFilter={item => item.type === 'input'} onSelect={(config) => this.props.setType(config)}/>
                   </Dropdown.Menu>
                 </Dropdown>
               </Table.Cell>
@@ -35,12 +35,12 @@ class SimpleField extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell>
-               <Input transparent fluid placeholder='Visibility' defaultValue={this.props.item.get('activeWhen')}/>
+               <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell>
-               <Input transparent fluid placeholder='Required' defaultValue={this.props.item.get('required')}/>
+               <Input transparent fluid placeholder='Required' value={this.props.item.get('required') || ''} onChange={(e) => this.props.setAttribute('required', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
