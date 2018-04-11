@@ -34,6 +34,9 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.CHANGE_ITEM_TYPE:
       console.log('CHANGE_ITEM_TYPE', action);
       return state;
+    case Actions.DELETE_ITEM:
+      console.log('DELETE_ITEM', action);
+      return state;
     default:
       //NOP:
   }

@@ -10,7 +10,8 @@ class ItemMenu extends Component {
   static get propTypes() {
     return {
       item: PropTypes.object.isRequired,
-      parentItemId: PropTypes.string.isRequired
+      parentItemId: PropTypes.string.isRequired,
+      onDelete: PropTypes.func.isRequired
     };
   }
 
@@ -19,7 +20,7 @@ class ItemMenu extends Component {
       <Dropdown icon='content'>
         <Dropdown.Menu>
           <Dropdown.Item icon='options' text='Options...'/>
-          <Dropdown.Item  icon='remove' text='Delete' />
+          <Dropdown.Item  icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
           <Dropdown.Divider />
           <Dropdown.Item icon='copy' text='Duplicate' />
           <Dropdown.Item icon='move' text='Move to' />

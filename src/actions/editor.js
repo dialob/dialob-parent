@@ -47,3 +47,24 @@ export function setActiveLanguage(language) {
     language
   };
 }
+
+export function cancelConfirmation() {
+  return {
+    type: Actions.CANCEL_CONFIRMATION
+  };
+}
+
+export function askConfirmation(action) {
+  return {
+    type: Actions.ASK_CONFIRMATION,
+    action
+  };
+}
+
+export function deleteItem(itemId) {
+  return {
+    type: Actions.DELETE_ITEM,
+    itemId,
+    confirm: true
+  };
+}

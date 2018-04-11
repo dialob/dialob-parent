@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {itemFactory} from '.';
 import {PropTypes} from 'prop-types';
 import {connect} from 'react-redux';
-import {setActiveItem, addItem, changeItemType, updateItem} from '../actions';
+import {setActiveItem, addItem, changeItemType, updateItem, deleteItem} from '../actions';
 import * as Defaults from '../defaults';
 
 class Item extends Component {
@@ -26,7 +26,8 @@ function connectItem(component) {
       setActive: () => dispatch(setActiveItem(props.item.get('id'))),
       newItem: (config, parentItemId, afterItemId) => dispatch(addItem(config, parentItemId, afterItemId)),
       setType: (config) => dispatch(changeItemType(config, props.item.get('id'))),
-      setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language))
+      setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language)),
+      delete: () => dispatch(deleteItem(props.item.get('id')))
     })
   )(component);
 }

@@ -11,6 +11,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('activeItemId', action.itemId).set('activePageId', action.itemId);
     case Actions.SET_ACTIVE_LANGUAGE:
       return state.set('activeLanguage', action.language);
+    case Actions.ASK_CONFIRMATION:
+      return state.set('confirmableAction', action.action);
+    case Actions.CANCEL_CONFIRMATION:
+      return state.delete('confirmableAction');
     default:
       // NOP
   }

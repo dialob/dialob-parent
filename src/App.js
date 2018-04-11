@@ -4,6 +4,7 @@ import MainMenu from './components/MainMenu';
 import TreeView from './components/TreeView';
 import Editor from './components/Editor';
 import * as Defaults from './defaults';
+import ConfirmationDialog from './components/ConfirmationDialog';
 
 require('./style.css');
 
@@ -28,6 +29,7 @@ class App extends Component {
             </Grid>
           </div>
         </div>
+        <ConfirmationDialog />
       </React.Fragment>);
   }
 }

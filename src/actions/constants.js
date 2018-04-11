@@ -4,3 +4,6 @@ export const ADD_ITEM = 'composer/ADD_ITEM';
 export const CHANGE_ITEM_TYPE = 'composer/CHANGE_ITEM_TYPE';
 export const UPDATE_ITEM = 'composer/UPDATE_ITEM';
 export const SET_ACTIVE_LANGUAGE = 'composer/SET_ACTIVE_LANGUAGE';
+export const ASK_CONFIRMATION = 'composer/ASK_CONFIRMATION';
+export const CANCEL_CONFIRMATION = 'composer/CANCEL_CONFIRMATION';
+export const DELETE_ITEM = 'composer/DELETE_ITEM';

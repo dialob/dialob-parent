@@ -15,7 +15,7 @@ class Note extends Item {
                 {this.props.item.get('id')}
               </Table.Cell>
               <Table.Cell collapsing>
-                <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId}/>
+                <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.props.delete}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
