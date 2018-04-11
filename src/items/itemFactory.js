@@ -1,5 +1,5 @@
 import React from 'react';
-import {DEFAULT_ITEM_CONFIG} from './defaultConfig';
+import {DEFAULT_ITEM_CONFIG} from '../defaults';
 import TreeItem from './TreeItem';
 
 function itemFactory(item, props = {}, config = DEFAULT_ITEM_CONFIG) {

@@ -1,4 +1,4 @@
-import {Group, SimpleField, Note} from '.';
+import {Group, SimpleField, Note} from '../items';
 
 export const DEFAULT_ITEM_CONFIG = {
   items: [

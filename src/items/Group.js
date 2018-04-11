@@ -17,7 +17,7 @@ class Group extends Item {
                 {this.props.item.get('id')}
               </Table.Cell>
               <Table.Cell>
-                <Input transparent fluid placeholder={this.props.placeholder} defaultValue={this.props.item.getIn(['label', 'en'])}/>
+                <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
               <Table.Cell collapsing>
                 <Dropdown text={this.props.item.get('type')}>
@@ -38,7 +38,7 @@ class Group extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell>
-               <Input transparent fluid placeholder='Visibility' defaultValue={this.props.item.get('activeWhen')}/>
+               <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>

@@ -9,7 +9,8 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('activeItemId', action.itemId);
     case Actions.SET_ACTIVE_PAGE:
       return state.set('activeItemId', action.itemId).set('activePageId', action.itemId);
-    
+    case Actions.SET_ACTIVE_LANGUAGE:
+      return state.set('activeLanguage', action.language);
     default:
       // NOP
   }

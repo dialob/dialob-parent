@@ -15,7 +15,7 @@ class SimpleField extends Item {
                 {this.props.item.get('id')}
               </Table.Cell>
               <Table.Cell>
-                <Input transparent fluid placeholder={this.props.placeholder} defaultValue={this.props.item.getIn(['label', 'en'])}/>
+                <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
               <Table.Cell collapsing>
                 <Dropdown text={this.props.item.get('type')}>

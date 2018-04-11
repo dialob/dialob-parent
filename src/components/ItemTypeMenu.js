@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Menu, Dropdown, Popup, Button} from 'semantic-ui-react';
-import {DEFAULT_ITEMTYPE_CONFIG} from './itemTypeConfig';
+import {DEFAULT_ITEMTYPE_CONFIG} from '../defaults';
 import PropTypes from 'prop-types';
 
 class ItemTypeMenu extends Component {

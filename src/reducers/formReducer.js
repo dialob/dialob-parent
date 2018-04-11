@@ -29,7 +29,8 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.ADD_ITEM:
       return state.update('data', data => addItem(data, action));
     case Actions.UPDATE_ITEM:
-      return state.setIn(['data', action.itemId, action.attribute], action.value);
+      return action.language ? state.setIn(['data', action.itemId, action.attribute, action.language], action.value)
+                             : state.setIn(['data', action.itemId, action.attribute], action.value);
     case Actions.CHANGE_ITEM_TYPE:
       console.log('CHANGE_ITEM_TYPE', action);
       return state;

@@ -31,11 +31,19 @@ export function changeItemType(config, itemId) {
   };
 }
 
-export function updateItem(itemId, attribute, value) {
+export function updateItem(itemId, attribute, value, language = null) {
   return {
     type: Actions.UPDATE_ITEM,
     itemId,
     attribute,
-    value
+    value,
+    language
+  };
+}
+
+export function setActiveLanguage(language) {
+  return {
+    type: Actions.SET_ACTIVE_LANGUAGE,
+    language
   };
 }

@@ -3,13 +3,14 @@ import {Grid} from 'semantic-ui-react';
 import MainMenu from './components/MainMenu';
 import TreeView from './components/TreeView';
 import Editor from './components/Editor';
+import * as Defaults from './defaults';
 
 require('./style.css');
 
 class App extends Component {
   render() {
     const marginTop = '42px';
-    const menuWidth = '250px';
+    const menuWidth = Defaults.TREE_WIDTH;
     return (
       <React.Fragment>
         <MainMenu />
