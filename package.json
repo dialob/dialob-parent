@@ -24,7 +24,14 @@
     "semantic-ui-react": "^0.79.1"
   },
   "devDependencies": {
-    "nwb": "0.21.x"
+    "chai": "^4.1.2",
+    "chai-immutable": "^1.6.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "karma-chai-immutable": "^1.0.3",
+    "karma-chai-plugins": "^0.9.0",
+    "nwb": "0.21.x",
+    "sinon": "^4.4.3"
   },
   "author": "",
   "license": "MIT",
