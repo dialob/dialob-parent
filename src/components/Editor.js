@@ -1,16 +1,32 @@
 import React, {Component} from 'react';
-import {Segment, Menu, Icon, Input, Button} from 'semantic-ui-react';
+import {Segment, Menu, Icon, Input, Button, Popup, Dropdown} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
-import {setActivePage} from '../actions';
+import {setActivePage, addItem, deleteItem} from '../actions';
 import {itemFactory} from '../items';
+import * as Defaults from '../defaults';
+import ItemTypeMenu from './ItemTypeMenu';
+import { ItemMenu } from './ItemMenu';
+
+const PageMenu = ({onDelete}) => (
+  <Dropdown icon='content' style={{marginLeft: '0.5em'}}>
+    <Dropdown.Menu>
+      <Dropdown.Item icon='options' text='Options...'/>
+      <Dropdown.Item  icon='remove' text='Delete' onClick={onDelete} />
+    </Dropdown.Menu>
+  </Dropdown>
+);
 
 class Editor extends Component {
 
   createChildren(activePage, props, config) {
-    return activePage.get('items')
+    return activePage.get('items') && activePage.get('items')
       .map(itemId => this.props.items.get(itemId))
       .map(item => itemFactory(item, props, config));
+  }
+
+  newItem(config, activePageId) {
+    this.props.addItem(config, activePageId);
   }
 
   render() {
@@ -19,18 +35,26 @@ class Editor extends Component {
     const activePage = this.props.items.get(activePageId);
     const pages = rootItem ? rootItem.get('items')
                         .map(itemId => this.props.items.get(itemId))
-                        .map((item, index) =><Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en'])}</Menu.Item>) : null;
+                        .map((item, index) =>
+                            <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en']) || <em>{item.get('id')}</em>}
+                               <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))} />
+                            </Menu.Item>) : null;
     return (
       <Segment basic>
         <Menu tabular>
           {pages}
           <Menu.Menu position='right'>
             <Menu.Item>
-              <Button icon='add'/>
+              <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} />
             </Menu.Item>
           </Menu.Menu>
         </Menu>
         {this.createChildren(activePage, {parentItemId: activePageId})}
+        <Dropdown button text='Add item'>
+          <Dropdown.Menu>
+            <ItemTypeMenu categoryFilter={(category => category.type === 'structure')} onSelect={(config) => this.newItem(config, activePageId)}/>
+          </Dropdown.Menu>
+        </Dropdown>
       </Segment>
     );
   }
@@ -43,7 +67,9 @@ const EditorConnected = connect(
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {
-    setActivePage
+    setActivePage,
+    addItem,
+    deleteItem
   }
 )(Editor);
 

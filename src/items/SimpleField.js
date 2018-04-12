@@ -8,7 +8,7 @@ class SimpleField extends Item {
   render() {
     return (
       <React.Fragment>
-        <Table onClick={() => this.props.setActive()} attached='top' color={this.props.active ? 'blue' : null}>
+        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  attached='top' color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
               <Table.Cell collapsing width={2}>
@@ -31,7 +31,7 @@ class SimpleField extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={() => this.props.setActive()}  celled attached='bottom' >
+        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}}   celled attached='bottom' >
           <Table.Body>
             <Table.Row>
               <Table.Cell>

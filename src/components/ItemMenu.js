@@ -25,7 +25,7 @@ class ItemMenu extends Component {
           <Dropdown.Item icon='copy' text='Duplicate' />
           <Dropdown.Item icon='move' text='Move to' />
           <Dropdown.Divider />
-          <Dropdown item text='Add new'>
+          <Dropdown item text='Insert new'>
               <Dropdown.Menu>
                 <ItemTypeMenu onSelect={(config) => this.props.addItem(config, this.props.parentItemId, this.props.item.get('id'))} />
               </Dropdown.Menu>

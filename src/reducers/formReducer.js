@@ -13,7 +13,7 @@ function generateItemId(state, prefix) {
 }
 
 function addItem(state, action) {
-  const itemId = generateItemId(state, action.config.type);
+  const itemId = generateItemId(state, action.config.idPrefix || action.config.type);
   return state.set(itemId, Immutable.fromJS(Object.assign({id: itemId}, action.config)))
               .update(action.parentItemId, parent => {
                 if (action.afterItemId) {

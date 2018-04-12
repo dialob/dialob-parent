@@ -10,7 +10,7 @@ class Group extends Item {
   render() {
     return (
       <React.Fragment>
-        <Table attached='top' onClick={() => this.props.setActive()} color={this.props.active ? 'blue' : null}>
+        <Table attached='top' onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
             <Table.Cell collapsing width={2}>
@@ -34,7 +34,7 @@ class Group extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={() => this.props.setActive()}  celled attached >
+        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  celled attached >
           <Table.Body>
             <Table.Row>
               <Table.Cell>
@@ -43,16 +43,14 @@ class Group extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Segment className={classnames({'composer-active': this.props.active})} attached='bottom'>
+        <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
           {this.createChildren({parentItemId: this.props.item.get('id')})}
-          <Popup trigger={<Button circular icon='add' />} on='click'>
-            <Menu secondary vertical>
-              <Menu.Item>
-               <Menu.Header>Add new</Menu.Header>
-              </Menu.Item>
+
+          <Dropdown button text='Add item'>
+            <Dropdown.Menu>
               <ItemTypeMenu onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
-            </Menu>
-          </Popup>
+            </Dropdown.Menu>
+          </Dropdown>
         </Segment>
       </React.Fragment>);
   }
