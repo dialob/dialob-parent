@@ -1,6 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
 import * as Actions from "../../src/actions/constants";
-import { addItem } from '../../src/actions';
+import { addItem, updateItem } from '../../src/actions';
 import Immutable from "immutable";
 import sinon from "sinon";
 
@@ -18,7 +18,7 @@ const INITAL_STATE = Immutable.fromJS({
       id: "page1",
       type: "group",
       label: { en: "New Page" },
-      items: ["group1", "group2"]
+      items: ["group1", "group2", "group4"]
     },
     group1: {
       id: "group1",
@@ -37,6 +37,11 @@ const INITAL_STATE = Immutable.fromJS({
       type: "group",
       label: { en: "New Group" },
       items: ["text5"]
+    },
+    group4: {
+      id: "group4",
+      type: "group",
+      label: { en: "New Group" }
     },
     text1: { id: "text1", type: "text", label: { en: "Text" } },
     text2: { id: "text2", type: "text", label: { en: "Text" } },
@@ -62,5 +67,27 @@ describe("formReducer", () => {
     expect(state).to.be.an.instanceof(Immutable.Map);
     expect(state.toJS().data.text6).to.deep.equal({id: 'text6', type: 'text'});
     expect(state.toJS().data.group3.items).to.deep.equal(['text5', 'text6']);
+  });
+  it ('Adds new item into group that doesn\'t have any items', () => {
+    const state = formReducer(INITAL_STATE, addItem({type: 'text'}, 'group4'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.toJS().data.text6).to.deep.equal({id: 'text6', type: 'text'});
+    expect(state.toJS().data.group4.items).to.deep.equal(['text6']);
+  });
+  it ('Adds new item into the group after given item', () => {
+    const state = formReducer(INITAL_STATE, addItem({type: 'text'}, 'group2', 'text4'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.toJS().data.text6).to.deep.equal({id: 'text6', type: 'text'});
+    expect(state.toJS().data.group2.items).to.deep.equal(['text3', 'text4', 'text6', 'group3']);
+  });
+  it ('Updates normal attribute of an item', () => {
+    const state = formReducer(INITAL_STATE, updateItem('text5', 'activeWhen', 'true'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.toJS().data.text5.activeWhen).to.equal('true');
+  });
+  it ('Updates translated attribute of an item', () => {
+    const state = formReducer(INITAL_STATE, updateItem('text5', 'label', 'meh', 'fi'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.toJS().data.text5.label).to.deep.equal({'en': 'Text', 'fi': 'meh'});
   });
 });
