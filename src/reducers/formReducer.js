@@ -24,6 +24,24 @@ function addItem(state, action) {
               });
 }
 
+function deleteItem(state, itemId) {
+  let x, y, z;
+  console.log('xxx', x, y, z);
+  const collect = target => {
+    let subItems = state.getIn([target, 'items']);
+    if (subItems) {
+      return [target].concat(subItems.toJS().reduce((l, i) => l.concat(collect(i)), []));
+    } else {
+      return [target];
+    }
+  };
+
+  let toDelete = collect(itemId);
+
+  return state.update(s => toDelete.reduce((i, k) => i.delete(k), s));
+  // return state.deleteAll(toDelete); // Immutable 4.0
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.ADD_ITEM:
@@ -35,8 +53,7 @@ export function formReducer(state = INITIAL_STATE, action) {
       console.log('CHANGE_ITEM_TYPE', action);
       return state;
     case Actions.DELETE_ITEM:
-      console.log('DELETE_ITEM', action);
-      return state;
+      return state.update('data', data => deleteItem(data, action.itemId));
     default:
       //NOP:
   }

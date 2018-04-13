@@ -1,6 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
 import * as Actions from "../../src/actions/constants";
-import { addItem, updateItem } from '../../src/actions';
+import { addItem, updateItem, deleteItem } from '../../src/actions';
 import Immutable from "immutable";
 import sinon from "sinon";
 
@@ -89,5 +89,21 @@ describe("formReducer", () => {
     const state = formReducer(INITAL_STATE, updateItem('text5', 'label', 'meh', 'fi'));
     expect(state).to.be.an.instanceof(Immutable.Map);
     expect(state.toJS().data.text5.label).to.deep.equal({'en': 'Text', 'fi': 'meh'});
+  });
+  it ('Removes item and all descendants', () => {
+    const state = formReducer(INITAL_STATE, deleteItem('group2'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.toJS().data).to.not.have.property('group2');
+    expect(state.toJS().data).to.not.have.property('group3');
+    expect(state.toJS().data).to.not.have.property('text3');
+    expect(state.toJS().data).to.not.have.property('text4');
+    expect(state.toJS().data).to.not.have.property('text5');
+
+    expect(state.toJS().data).to.have.property('questionnaire');
+    expect(state.toJS().data).to.have.property('page1');
+    expect(state.toJS().data).to.have.property('group1');
+    expect(state.toJS().data).to.have.property('group4');
+    expect(state.toJS().data).to.have.property('text1');
+    expect(state.toJS().data).to.have.property('text2');
   });
 });
