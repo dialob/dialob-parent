@@ -20,7 +20,7 @@ const PageMenu = ({onDelete}) => (
 class Editor extends Component {
 
   createChildren(activePage, props, config) {
-    return activePage.get('items') && activePage.get('items')
+    return activePage && activePage.get('items') && activePage.get('items')
       .map(itemId => this.props.items.get(itemId))
       .map(item => itemFactory(item, props, config));
   }
@@ -50,11 +50,14 @@ class Editor extends Component {
           </Menu.Menu>
         </Menu>
         {this.createChildren(activePage, {parentItemId: activePageId})}
-        <Dropdown button text='Add item'>
-          <Dropdown.Menu>
-            <ItemTypeMenu categoryFilter={(category => category.type === 'structure')} onSelect={(config) => this.newItem(config, activePageId)}/>
-          </Dropdown.Menu>
-        </Dropdown>
+        {
+          activePage &&
+            <Dropdown button text='Add item'>
+              <Dropdown.Menu>
+                <ItemTypeMenu categoryFilter={(category => category.type === 'structure')} onSelect={(config) => this.newItem(config, activePageId)}/>
+              </Dropdown.Menu>
+            </Dropdown>
+        }
       </Segment>
     );
   }

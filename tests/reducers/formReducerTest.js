@@ -93,12 +93,17 @@ describe("formReducer", () => {
   it ('Removes item and all descendants', () => {
     const state = formReducer(INITAL_STATE, deleteItem('group2'));
     expect(state).to.be.an.instanceof(Immutable.Map);
+    // Descendants
     expect(state.toJS().data).to.not.have.property('group2');
     expect(state.toJS().data).to.not.have.property('group3');
     expect(state.toJS().data).to.not.have.property('text3');
     expect(state.toJS().data).to.not.have.property('text4');
     expect(state.toJS().data).to.not.have.property('text5');
 
+    // Reference
+    expect(state.toJS().data.page1.items).to.deep.equal(['group1', 'group4']);
+
+    // Survivors
     expect(state.toJS().data).to.have.property('questionnaire');
     expect(state.toJS().data).to.have.property('page1');
     expect(state.toJS().data).to.have.property('group1');

@@ -25,8 +25,7 @@ function addItem(state, action) {
 }
 
 function deleteItem(state, itemId) {
-  let x, y, z;
-  console.log('xxx', x, y, z);
+  // Find children and eliminate them
   const collect = target => {
     let subItems = state.getIn([target, 'items']);
     if (subItems) {
@@ -38,8 +37,13 @@ function deleteItem(state, itemId) {
 
   let toDelete = collect(itemId);
 
-  return state.update(s => toDelete.reduce((i, k) => i.delete(k), s));
+  let newState = state.update(s => toDelete.reduce((i, k) => i.delete(k), s));
   // return state.deleteAll(toDelete); // Immutable 4.0
+
+  // Remove parent ref also
+  const parent = newState.find(v => v.get('items') && v.get('items').contains(itemId));
+  return parent ? newState.updateIn([parent.get('id'), 'items'], items => items.delete(items.indexOf(itemId)))
+     : newState;
 }
 
 export function formReducer(state = INITIAL_STATE, action) {
