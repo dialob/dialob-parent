@@ -35,5 +35,8 @@
   },
   "author": "",
   "license": "MIT",
-  "repository": ""
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@git.resys.io:22222/dialob/dialob-composer-v2.git"
+  }
 }

@@ -5,6 +5,7 @@ import TreeView from './components/TreeView';
 import Editor from './components/Editor';
 import * as Defaults from './defaults';
 import ConfirmationDialog from './components/ConfirmationDialog';
+import ItemOptionsDialog from './components/ItemOptionsDialog';
 
 require('./style.css');
 
@@ -30,6 +31,7 @@ class App extends Component {
           </div>
         </div>
         <ConfirmationDialog />
+        <ItemOptionsDialog />
       </React.Fragment>);
   }
 }

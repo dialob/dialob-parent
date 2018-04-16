@@ -68,3 +68,16 @@ export function deleteItem(itemId) {
     confirm: true
   };
 }
+
+export function showItemOptions(itemId) {
+  return {
+    type: Actions.SHOW_ITEM_OPTIONS,
+    itemId
+  };
+}
+
+export function hideItemOptions() {
+  return {
+    type: Actions.HIDE_ITEM_OPTIONS
+  };
+}

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Dropdown} from 'semantic-ui-react';
 import ItemTypeMenu from './ItemTypeMenu';
 import {connect} from 'react-redux';
-import {addItem} from '../actions';
+import {addItem, showItemOptions} from '../actions';
 import PropTypes from 'prop-types';
 
 class ItemMenu extends Component {
@@ -19,7 +19,7 @@ class ItemMenu extends Component {
     return (
       <Dropdown icon='content'>
         <Dropdown.Menu>
-          <Dropdown.Item icon='options' text='Options...'/>
+          <Dropdown.Item icon='options' text='Options...' onClick={() => this.props.showItemOptions(this.props.item.get('id'))}/>
           <Dropdown.Item  icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
           <Dropdown.Divider />
           <Dropdown.Item icon='copy' text='Duplicate' />
@@ -41,7 +41,8 @@ const ItemMenuConnected = connect(
     items: state.form && state.form.get('data')
   }),
   {
-    addItem
+    addItem,
+    showItemOptions
   }
 )(ItemMenu);
 

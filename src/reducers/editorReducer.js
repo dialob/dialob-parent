@@ -15,6 +15,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('confirmableAction', action.action);
     case Actions.CANCEL_CONFIRMATION:
       return state.delete('confirmableAction');
+    case Actions.SHOW_ITEM_OPTIONS:
+      return state.set('itemOptions', action.itemId);
+    case Actions.HIDE_ITEM_OPTIONS:
+      return state.delete('itemOptions');
     default:
       // NOP
   }
