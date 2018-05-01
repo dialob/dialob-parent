@@ -81,3 +81,10 @@ export function hideItemOptions() {
     type: Actions.HIDE_ITEM_OPTIONS
   };
 }
+
+export function createValueset(forItem = null) {
+  return {
+    type: Actions.CREATE_VALUESET,
+    forItem
+  };
+}

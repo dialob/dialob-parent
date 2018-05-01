@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import {Modal, Button, Tab} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideItemOptions} from '../actions';
+import ItemProps from './options/ItemProps';
+import Styleclasses from './options/Styleclasses';
+import Description from './options/Description';
+import Choices from './options/Choices';
 
 class ItemOptionsDialog extends Component {
 
@@ -9,11 +13,10 @@ class ItemOptionsDialog extends Component {
     if (this.props.itemOptions) {
 
       const tabs = [
-        {menuItem: 'Properties', render: () => <Tab.Pane>Properties</Tab.Pane>},
-        {menuItem: 'Style classes', render: () => <Tab.Pane>Style classes</Tab.Pane>},
-        {menuItem: 'Description', render: () => <Tab.Pane>Description</Tab.Pane>},
-        {menuItem: 'Choices', render: () => <Tab.Pane>Choices</Tab.Pane>},
-        {menuItem: 'Translation', render: () => <Tab.Pane>Translation</Tab.Pane>}
+        {menuItem: 'Properties', render: () => <Tab.Pane><ItemProps item={this.props.getItem()} /></Tab.Pane>},
+        {menuItem: 'Style classes', render: () => <Tab.Pane><Styleclasses item={this.props.getItem()} /></Tab.Pane>},
+        {menuItem: 'Description', render: () => <Tab.Pane><Description item={this.props.getItem()} /></Tab.Pane>},
+        {menuItem: 'Choices', render: () => <Tab.Pane><Choices item={this.props.getItem()} /></Tab.Pane>}
       ];
 
       return (

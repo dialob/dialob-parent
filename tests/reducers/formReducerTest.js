@@ -1,6 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
 import * as Actions from "../../src/actions/constants";
-import { addItem, updateItem, deleteItem } from '../../src/actions';
+import { addItem, updateItem, deleteItem, createValueset } from '../../src/actions';
 import Immutable from "immutable";
 import sinon from "sinon";
 
@@ -91,7 +91,8 @@ describe("formReducer", () => {
     expect(state.toJS().data.text5.label).to.deep.equal({'en': 'Text', 'fi': 'meh'});
   });
   it ('Removes item and all descendants', () => {
-    const state = formReducer(INITAL_STATE, deleteItem('group2'));
+    let state = formReducer(INITAL_STATE, createValueset('text3'));
+    state = formReducer(state, deleteItem('group2'));
     expect(state).to.be.an.instanceof(Immutable.Map);
     // Descendants
     expect(state.toJS().data).to.not.have.property('group2');
@@ -103,6 +104,9 @@ describe("formReducer", () => {
     // Reference
     expect(state.toJS().data.page1.items).to.deep.equal(['group1', 'group4']);
 
+    // Valueset
+    expect(state.toJS().valueSets).not.to.deep.contain({id: 'vs1', entries: []});
+
     // Survivors
     expect(state.toJS().data).to.have.property('questionnaire');
     expect(state.toJS().data).to.have.property('page1');
@@ -110,5 +114,26 @@ describe("formReducer", () => {
     expect(state.toJS().data).to.have.property('group4');
     expect(state.toJS().data).to.have.property('text1');
     expect(state.toJS().data).to.have.property('text2');
+  });
+  it ('Creates valueset structure', () => {
+    const state = formReducer(INITAL_STATE, createValueset());
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: []});
+  });
+  it ('Create valueset to existing structure', () => {
+    let state = formReducer(INITAL_STATE, createValueset());
+    state = formReducer(state, createValueset());
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: []});
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs2', entries: []});
+  });
+  it ('Creates valueset for an item', () => {
+    const state = formReducer(INITAL_STATE, createValueset('text1'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: []});
+    expect(state.toJS().data.text1.valueSetId).to.equal('vs1');
   });
 });

@@ -14,7 +14,15 @@ const DEBUG_FORM = {
       label: { en: "New Page" },
       items: ["group1"]
     },
-    group1: { id: "group1", type: "group", label: { en: "New Group" } }
+    group1: {
+      id: "group1",
+      type: "group",
+      label: { en: "New Group" },
+      props: {
+        columns: 1,
+        something: 'something'
+      }
+    }
   },
   metadata: {
     label: "Simple",

@@ -9,3 +9,4 @@ export const CANCEL_CONFIRMATION = 'composer/CANCEL_CONFIRMATION';
 export const DELETE_ITEM = 'composer/DELETE_ITEM';
 export const SHOW_ITEM_OPTIONS = 'composer/SHOW_ITEM_OPTIONS';
 export const HIDE_ITEM_OPTIONS = 'composer/HIDE_ITEM_OPTIONS';
+export const CREATE_VALUESET = 'composer/CREATE_VALUESET';

@@ -7,7 +7,10 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         {
           title: 'Group',
           config: {
-            type: 'group'
+            type: 'group',
+            props: {
+              columns: 1
+            }
           }
         },
         {
