@@ -10,3 +10,6 @@ export const DELETE_ITEM = 'composer/DELETE_ITEM';
 export const SHOW_ITEM_OPTIONS = 'composer/SHOW_ITEM_OPTIONS';
 export const HIDE_ITEM_OPTIONS = 'composer/HIDE_ITEM_OPTIONS';
 export const CREATE_VALUESET = 'composer/CREATE_VALUESET';
+export const CREATE_VALUESET_ENTRY = 'composer/CREATE_VALUESET_ENTRY';
+export const UPDATE_VALUESET_ENTRY = 'composer/UPDATE_VALUESET_ENTRY';
+export const DELETE_VALUESET_ENTRY = 'composer/DELETE_VALUESET_ENTRY';

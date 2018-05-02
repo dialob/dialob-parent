@@ -88,3 +88,30 @@ export function createValueset(forItem = null) {
     forItem
   };
 }
+
+export function createValuesetEntry(valueSetId) {
+  return {
+    type: Actions.CREATE_VALUESET_ENTRY,
+    valueSetId
+  };
+}
+
+export function updateValuesetEntry(valueSetId, index, id, label, language) {
+  return {
+    type: Actions.UPDATE_VALUESET_ENTRY,
+    valueSetId,
+    index,
+    id,
+    label,
+    language
+  };
+}
+
+export function deleteValuesetEntry(valueSetId, index) {
+  return {
+    type: Actions.DELETE_VALUESET_ENTRY,
+    valueSetId,
+    index,
+    confirm: true
+  };
+}

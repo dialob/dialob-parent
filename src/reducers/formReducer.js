@@ -82,6 +82,51 @@ function newValueSet(state, itemId = null) {
   return newState;
 }
 
+function findValuesetIndex(state, valueSetId) {
+  const valueSets = state.get('valueSets');
+  return valueSets ? valueSets.findIndex(s => s.get('id') === valueSetId) : -1;
+}
+
+function newValueSetEntry(state, valueSetId) {
+  const index = findValuesetIndex(state, valueSetId);
+  if (index === -1) {
+    return state;
+  } else {
+    return state.updateIn(['valueSets', index, 'entries'], entries => {
+      let entry = Immutable.fromJS({
+        id: '',
+        label: {}
+      });
+      if (!entries) {
+        return new Immutable.List([entry])
+      } else {
+        return entries.push(entry)
+      }
+    })
+  }
+}
+
+function updateValuesetEntry(state, valueSetId, index, id, label, language) {
+  const vsIndex = findValuesetIndex(state, valueSetId);
+  if (vsIndex === -1) {
+    return state;
+  }
+  if (id) {
+    return state.setIn(['valueSets', vsIndex, 'entries', index, 'id'], id);
+  } else if (label) {
+    return state.setIn(['valueSets', vsIndex, 'entries', index, 'label', language], label);
+  }
+  return state;
+}
+
+function deleteValuesetEntry(state, valueSetId, index) {
+  const vsIndex = findValuesetIndex(state, valueSetId);
+  if (vsIndex === -1) {
+    return state;
+  }
+  return state.deleteIn(['valueSets', vsIndex, 'entries', index]);
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.ADD_ITEM:
@@ -97,6 +142,12 @@ export function formReducer(state = INITIAL_STATE, action) {
       return deleteItem(state, action.itemId);
     case Actions.CREATE_VALUESET:
       return newValueSet(state, action.forItem);
+    case Actions.CREATE_VALUESET_ENTRY:
+      return newValueSetEntry(state, action.valueSetId);
+    case Actions.UPDATE_VALUESET_ENTRY:
+      return updateValuesetEntry(state, action.valueSetId, action.index, action.id, action.label, action.language);
+    case Actions.DELETE_VALUESET_ENTRY:
+      return deleteValuesetEntry(state, action.valueSetId, action.index);
     default:
       //NOP:
   }

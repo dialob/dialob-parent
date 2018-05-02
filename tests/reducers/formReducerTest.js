@@ -1,6 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
 import * as Actions from "../../src/actions/constants";
-import { addItem, updateItem, deleteItem, createValueset } from '../../src/actions';
+import { addItem, updateItem, deleteItem, createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry } from '../../src/actions';
 import Immutable from "immutable";
 import sinon from "sinon";
 
@@ -135,5 +135,36 @@ describe("formReducer", () => {
     expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
     expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: []});
     expect(state.toJS().data.text1.valueSetId).to.equal('vs1');
+  });
+  it ('Adds entry to valueset', () => {
+    let state = formReducer(INITAL_STATE, createValueset('text1'));
+    state = formReducer(state, createValuesetEntry('vs1'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: [{id: '', label: {}}]});
+  });
+  it ('Set valueset entry ID', () => {
+    let state = formReducer(INITAL_STATE, createValueset('text1'));
+    state = formReducer(state, createValuesetEntry('vs1'));
+    state = formReducer(state, updateValuesetEntry('vs1', 0, 'abc', null, null));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: [{id: 'abc', label: {}}]});
+  });
+  it ('Set valueset entry label', () => {
+    let state = formReducer(INITAL_STATE, createValueset('text1'));
+    state = formReducer(state, createValuesetEntry('vs1'));
+    state = formReducer(state, updateValuesetEntry('vs1', 0, null, 'abc', 'en'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: [{id: '', label: {en: 'abc'}}]});
+  });
+  it ('Delete valueset entry', () => {
+    let state = formReducer(INITAL_STATE, createValueset('text1'));
+    state = formReducer(state, createValuesetEntry('vs1'));
+    state = formReducer(state, deleteValuesetEntry('vs1', 0));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: []});
   });
 });
