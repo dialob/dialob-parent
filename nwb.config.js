@@ -2,6 +2,9 @@ module.exports = {
   type: 'react-app',
 
   webpack: {
+    extractText: {
+      filename: '[name].css'
+    },
     extra: {
       output: {
         filename: '[name].js',

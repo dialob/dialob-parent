@@ -3,7 +3,8 @@ import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
 import { createValueset } from '../actions';
 
-const INITIAL_STATE = Immutable.fromJS(DEBUG_FORM);
+//const INITIAL_STATE = Immutable.fromJS(DEBUG_FORM);
+const INITIAL_STATE = Immutable.Map();
 
 function generateItemId(state, prefix) {
   let idx = 1;
@@ -129,6 +130,8 @@ function deleteValuesetEntry(state, valueSetId, index) {
 
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case Actions.SET_FORM:
+      return Immutable.fromJS(action.formData);
     case Actions.ADD_ITEM:
       return state.update('data', data => addItem(data, action));
     case Actions.UPDATE_ITEM:

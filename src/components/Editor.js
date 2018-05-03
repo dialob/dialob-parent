@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Segment, Menu, Icon, Input, Button, Popup, Dropdown} from 'semantic-ui-react';
+import {Segment, Menu, Icon, Input, Button, Popup, Dropdown, Loader} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
-import {setActivePage, addItem, deleteItem} from '../actions';
+import {setActivePage, addItem, deleteItem, loadForm} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
@@ -29,11 +29,21 @@ class Editor extends Component {
     this.props.addItem(config, activePageId);
   }
 
+  componentDidMount() {
+    const rootItem = this.props.findRootItem();
+    if (!rootItem) {
+      this.props.loadForm(this.props.config.get('formId'));
+    }
+  }
+
   render() {
     const rootItem = this.props.findRootItem();
+    if (!rootItem) {
+      return <Segment basic padded><Loader active /></Segment>;
+    }
     const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
     const activePage = this.props.items.get(activePageId);
-    const pages = rootItem ? rootItem.get('items')
+    const pages = rootItem && rootItem.get('items') ? rootItem.get('items')
                         .map(itemId => this.props.items.get(itemId))
                         .map((item, index) =>
                             <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en']) || <em>{item.get('id')}</em>}
@@ -65,6 +75,7 @@ class Editor extends Component {
 
 const EditorConnected = connect(
   state => ({
+    config: state.config,
     items: state.form && state.form.get('data'),
     activePageId: state.editor && state.editor.get('activePageId'),
     get findRootItem() { return () => findRoot(this.items); }
@@ -72,7 +83,8 @@ const EditorConnected = connect(
   {
     setActivePage,
     addItem,
-    deleteItem
+    deleteItem,
+    loadForm
   }
 )(Editor);
 

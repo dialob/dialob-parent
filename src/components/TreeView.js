@@ -7,7 +7,7 @@ import {treeItemFactory, TreeItem} from '../items';
 class TreeView extends Component {
   render() {
     const rootItem = this.props.findRootItem();
-    const treeItems = rootItem && rootItem.get('items')
+    const treeItems = rootItem && rootItem.get('items') && rootItem.get('items')
             .map(itemId => this.props.items.get(itemId))
             .map(page => <TreeItem key={page.get('id')} item={page} icon='folder' />);
     return (

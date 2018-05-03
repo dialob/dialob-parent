@@ -115,3 +115,17 @@ export function deleteValuesetEntry(valueSetId, index) {
     confirm: true
   };
 }
+
+export function loadForm(formId) {
+  return {
+    type: Actions.LOAD_FORM,
+    formId
+  };
+}
+
+export function setForm(formData) {
+  return {
+    type: Actions.SET_FORM,
+    formData
+  };
+}
