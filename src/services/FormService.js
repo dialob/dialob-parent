@@ -37,7 +37,7 @@ export default class FormService {
   }
 
   saveForm(formData) {
-    return this.doFetch(this.baseUrl + '/forms/' + formData._id, 'post', formData);
+    return this.doFetch(this.baseUrl + '/forms/' + formData._id, 'put', formData);
   }
 
   duplicateItem(formData, itemId) {
@@ -45,7 +45,7 @@ export default class FormService {
   }
 
   changeItemId(formData, oldId, newId) {
-    return this.doFetch(`${this.baseUrl}/forms/${formData._id}?oldId=${oldId}&newId=${newId}`, 'post', formData);
+    return this.doFetch(`${this.baseUrl}/forms/${formData._id}?oldId=${oldId}&newId=${newId}`, 'put', formData);
   }
 
 }

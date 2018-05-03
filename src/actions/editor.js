@@ -19,7 +19,8 @@ export function addItem(config, parentItemId, afterItemId = null) {
     type: Actions.ADD_ITEM,
     config,
     parentItemId,
-    afterItemId
+    afterItemId,
+    saveNeeded: true
   };
 }
 
@@ -27,7 +28,8 @@ export function changeItemType(config, itemId) {
   return {
     type: Actions.CHANGE_ITEM_TYPE,
     config,
-    itemId
+    itemId,
+    saveNeeded: true
   };
 }
 
@@ -37,7 +39,8 @@ export function updateItem(itemId, attribute, value, language = null) {
     itemId,
     attribute,
     value,
-    language
+    language,
+    saveNeeded: true
   };
 }
 
@@ -65,7 +68,8 @@ export function deleteItem(itemId) {
   return {
     type: Actions.DELETE_ITEM,
     itemId,
-    confirm: true
+    confirm: true,
+    saveNeeded: true
   };
 }
 
@@ -85,14 +89,16 @@ export function hideItemOptions() {
 export function createValueset(forItem = null) {
   return {
     type: Actions.CREATE_VALUESET,
-    forItem
+    forItem,
+    saveNeeded: true
   };
 }
 
 export function createValuesetEntry(valueSetId) {
   return {
     type: Actions.CREATE_VALUESET_ENTRY,
-    valueSetId
+    valueSetId,
+    saveNeeded: true
   };
 }
 
@@ -103,7 +109,8 @@ export function updateValuesetEntry(valueSetId, index, id, label, language) {
     index,
     id,
     label,
-    language
+    language,
+    saveNeeded: true
   };
 }
 
@@ -112,7 +119,8 @@ export function deleteValuesetEntry(valueSetId, index) {
     type: Actions.DELETE_VALUESET_ENTRY,
     valueSetId,
     index,
-    confirm: true
+    confirm: true,
+    saveNeeded: true
   };
 }
 
@@ -127,5 +135,18 @@ export function setForm(formData) {
   return {
     type: Actions.SET_FORM,
     formData
+  };
+}
+
+export function saveForm() {
+  return {
+    type: Actions.SAVE_FORM
+  };
+}
+
+export function setFormRevision(revision) {
+  return {
+    type: Actions.SET_FORM_REVISION,
+    revision
   };
 }

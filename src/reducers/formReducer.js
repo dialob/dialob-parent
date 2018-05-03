@@ -132,6 +132,8 @@ export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
       return Immutable.fromJS(action.formData);
+    case Actions.SET_FORM_REVISION:
+      return state.set('_rev', action.revision);
     case Actions.ADD_ITEM:
       return state.update('data', data => addItem(data, action));
     case Actions.UPDATE_ITEM:
