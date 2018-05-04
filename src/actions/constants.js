@@ -17,4 +17,5 @@ export const LOAD_FORM = 'composer/LOAD_FORM';
 export const SET_FORM = 'composer/SET_FORM';
 export const SAVE_FORM = 'composer/SAVE_FORM';
 export const SET_FORM_REVISION = 'composer/SET_FORM_REVISION';
-
+export const SET_STATUS = 'composer/SET_STATUS';
+export const SET_ERRORS = 'composer/SET_ERRORS';

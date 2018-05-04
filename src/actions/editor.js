@@ -150,3 +150,17 @@ export function setFormRevision(revision) {
     revision
   };
 }
+
+export function setStatus(status) {
+  return {
+    type: Actions.SET_STATUS,
+    status
+  };
+}
+
+export function setErrors(errors) {
+  return {
+    type: Actions.SET_ERRORS,
+    errors
+  };
+}

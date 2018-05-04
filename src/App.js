@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Grid} from 'semantic-ui-react';
+import {Grid, Sticky} from 'semantic-ui-react';
 import MainMenu from './components/MainMenu';
 import TreeView from './components/TreeView';
 import Editor from './components/Editor';
+import ErrorList from './components/ErrorList';
 import * as Defaults from './defaults';
 import ConfirmationDialog from './components/ConfirmationDialog';
 import ItemOptionsDialog from './components/ItemOptionsDialog';
@@ -25,6 +26,9 @@ class App extends Component {
                   <Editor />
                 </Grid.Column>
                 <Grid.Column computer={4}>
+                  <Sticky offset={50}>
+                    <ErrorList />
+                  </Sticky>
                 </Grid.Column>
               </Grid.Row>
             </Grid>

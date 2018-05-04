@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import {Container, Menu, Icon, Dropdown} from 'semantic-ui-react';
+import {Container, Menu, Icon, Dropdown, Loader} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
 import {setActiveLanguage} from '../actions';
+import StatusIndicator from './StatusIndicator';
+import * as Status from '../helpers/constants';
 
 class MainMenu extends Component {
 
@@ -38,12 +40,15 @@ class MainMenu extends Component {
             Options
           </Menu.Item>
           <Menu.Menu position='right'>
+              <Menu.Item>
+                <StatusIndicator />
+              </Menu.Item>
               <Dropdown item text={this.getLanguageName(this.props.language)}>
                 <Dropdown.Menu>
                   {this.getLanguages()}
                 </Dropdown.Menu>
               </Dropdown>
-              <Menu.Item><Icon name='eye' /> Preview</Menu.Item>
+              <Menu.Item disabled={this.props.status !== Status.STATUS_OK}><Icon name='eye' /> Preview</Menu.Item>
           </Menu.Menu>
         </Menu>
       </Container>
@@ -53,6 +58,7 @@ class MainMenu extends Component {
 
 const MainMenuConnected = connect(
   state => ({
+    status: state.editor && state.editor.get('status'),
     language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE
   }),
   {
