@@ -153,6 +153,12 @@ export function formReducer(state = INITIAL_STATE, action) {
       return updateValuesetEntry(state, action.valueSetId, action.index, action.id, action.label, action.language);
     case Actions.DELETE_VALUESET_ENTRY:
       return deleteValuesetEntry(state, action.valueSetId, action.index);
+    case Actions.SET_METADATA_VALUE:
+      if (action.value) {
+        return state.setIn(['metadata', action.attribute], Immutable.fromJS(action.value));
+      } else {
+        return state.deleteIn(['metadata', action.attribute]);
+      }
     default:
       //NOP:
   }

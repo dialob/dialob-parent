@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Container, Menu, Icon, Dropdown, Loader} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
-import {setActiveLanguage} from '../actions';
+import {setActiveLanguage, showFormOptions, showVariables} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
 
@@ -30,13 +30,13 @@ class MainMenu extends Component {
           <Menu.Item>
             Translations
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item onClick={() => this.props.showVariables()}>
             Variables
           </Menu.Item>
           <Menu.Item>
             Lists
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item onClick={() => this.props.showFormOptions()}>
             Options
           </Menu.Item>
           <Menu.Menu position='right'>
@@ -62,7 +62,9 @@ const MainMenuConnected = connect(
     language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE
   }),
   {
-    setActiveLanguage
+    setActiveLanguage,
+    showFormOptions,
+    showVariables
   }
 )(MainMenu);
 

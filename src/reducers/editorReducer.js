@@ -38,6 +38,14 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('status', action.status);
     case Actions.SET_ERRORS:
       return setErrors(state, action.errors);
+    case Actions.SHOW_FORM_OPTIONS:
+      return state.set('formOptions', true);
+    case Actions.HIDE_FORM_OPTIONS:
+      return state.delete('formOptions');
+    case Actions.SHOW_VARIABLES:
+      return state.set('variablesDialog', true)
+    case Actions.HIDE_VARIABLES:
+      return state.delete('variablesDialog');
     default:
       // NOP
   }

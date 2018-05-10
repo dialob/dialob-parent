@@ -7,6 +7,8 @@ import ErrorList from './components/ErrorList';
 import * as Defaults from './defaults';
 import ConfirmationDialog from './components/ConfirmationDialog';
 import ItemOptionsDialog from './components/ItemOptionsDialog';
+import FormOptionsDialog from './components/FormOptionsDialog';
+import VariablesDialog from './components/VariablesDialog';
 
 require('./style.css');
 
@@ -36,6 +38,8 @@ class App extends Component {
         </div>
         <ConfirmationDialog />
         <ItemOptionsDialog />
+        <FormOptionsDialog />
+        <VariablesDialog />
       </React.Fragment>);
   }
 }

@@ -164,3 +164,36 @@ export function setErrors(errors) {
     errors
   };
 }
+
+export function showFormOptions() {
+  return {
+    type: Actions.SHOW_FORM_OPTIONS
+  };
+}
+
+export function hideFormOptions() {
+  return {
+    type: Actions.HIDE_FORM_OPTIONS
+  };
+}
+
+export function showVariables() {
+  return {
+    type: Actions.SHOW_VARIABLES
+  };
+}
+
+export function hideVariables() {
+  return {
+    type: Actions.HIDE_VARIABLES
+  };
+}
+
+export function setMetadataValue(attribute, value) {
+  return {
+    type: Actions.SET_METADATA_VALUE,
+    attribute,
+    value,
+    saveNeeded: true
+  };
+}
