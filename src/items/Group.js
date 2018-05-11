@@ -13,8 +13,8 @@ class Group extends Item {
         <Table attached='top' onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
-            <Table.Cell collapsing width={2}>
-                {this.props.item.get('id')}
+              <Table.Cell selectable collapsing width={2}>
+                <a onClick={() => this.props.changeId()}>{this.props.item.get('id')}</a>
               </Table.Cell>
               <Table.Cell>
                 <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>

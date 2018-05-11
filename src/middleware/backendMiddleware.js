@@ -25,6 +25,13 @@ export const backendMiddleware = store => {
           store.dispatch(setErrors(json.errors));
         })
         .catch(error => console.error('Err', error)); // TODO: Error handling
+    } else if (action.type === Actions.PERFORM_CHANGE_ID) {
+      formService.changeItemId(store.getState().form.toJS(), action.oldId, action.newId)
+        .then(json => {
+          store.dispatch(setForm(json.form));
+          store.dispatch(setErrors(json.errors));
+        })
+        .catch(error => console.error('Err', error)); // TODO: Error handling
     }
     let result = next(action);
     if (action.saveNeeded === true) {

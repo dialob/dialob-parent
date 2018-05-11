@@ -24,3 +24,6 @@ export const HIDE_FORM_OPTIONS = 'composer/HIDE_FORM_OPTIONS';
 export const SHOW_VARIABLES = 'composer/SHOW_VARIABLES';
 export const HIDE_VARIABLES = 'composer/HIDE_VARIABLES';
 export const SET_METADATA_VALUE = 'composer/SET_METADATA_VALUE';
+export const SHOW_CHANGE_ID = 'composer/SHOW_CHANGE_ID';
+export const HIDE_CHANGE_ID = 'composer/HIDE_CHANGE_ID';
+export const PERFORM_CHANGE_ID = 'composer/PERFORM_CHANGE_ID';

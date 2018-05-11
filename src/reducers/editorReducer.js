@@ -20,6 +20,8 @@ function setErrors(state, errors) {
 
 export function editorReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case Actions.SET_FORM:
+      return state.delete('changeId');
     case Actions.SET_ACTIVE_ITEM:
       return state.set('activeItemId', action.itemId);
     case Actions.SET_ACTIVE_PAGE:
@@ -46,6 +48,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('variablesDialog', true)
     case Actions.HIDE_VARIABLES:
       return state.delete('variablesDialog');
+    case Actions.SHOW_CHANGE_ID:
+      return state.set('changeId', action.changeId);
+    case Actions.HIDE_CHANGE_ID:
+      return state.delete('changeId');
     default:
       // NOP
   }

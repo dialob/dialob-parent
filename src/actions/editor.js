@@ -197,3 +197,24 @@ export function setMetadataValue(attribute, value) {
     saveNeeded: true
   };
 }
+
+export function showChangeId(changeId) {
+  return {
+    type: Actions.SHOW_CHANGE_ID,
+    changeId
+  };
+}
+
+export function hideChangeId() {
+  return {
+    type: Actions.HIDE_CHANGE_ID,
+  };
+}
+
+export function performChangeId(oldId, newId) {
+  return {
+    type: Actions.PERFORM_CHANGE_ID,
+    oldId,
+    newId
+  };
+}

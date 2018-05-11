@@ -11,8 +11,8 @@ class Note extends Item {
          <Table attached='top' onClick={() => this.props.setActive()} color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
-              <Table.Cell>
-                {this.props.item.get('id')}
+              <Table.Cell selectable>
+                <a onClick={() => this.props.changeId()}>{this.props.item.get('id')}</a>
               </Table.Cell>
               <Table.Cell collapsing>
                 <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.props.delete}/>
