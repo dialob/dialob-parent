@@ -198,6 +198,8 @@ export function formReducer(state = INITIAL_STATE, action) {
       return updateVariable(state, action.id, action.attribute, action.value);
     case Actions.DELETE_VARIABLE:
       return state; // TODO
+    case Actions.SET_CONTEXT_VALUE:
+      return state.setIn(['metadata', 'composer', 'contextValues', action.id], action.value);
     default:
       //NOP:
   }

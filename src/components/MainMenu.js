@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Container, Menu, Icon, Dropdown, Loader} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
-import {setActiveLanguage, showFormOptions, showVariables} from '../actions';
+import {setActiveLanguage, showFormOptions, showVariables, requestPreview} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
 
@@ -48,7 +48,7 @@ class MainMenu extends Component {
                   {this.getLanguages()}
                 </Dropdown.Menu>
               </Dropdown>
-              <Menu.Item disabled={this.props.status !== Status.STATUS_OK}><Icon name='eye' /> Preview</Menu.Item>
+              <Menu.Item disabled={this.props.status !== Status.STATUS_OK} onClick={() => this.props.requestPreview()}><Icon name='eye' /> Preview</Menu.Item>
           </Menu.Menu>
         </Menu>
       </Container>
@@ -64,7 +64,8 @@ const MainMenuConnected = connect(
   {
     setActiveLanguage,
     showFormOptions,
-    showVariables
+    showVariables,
+    requestPreview
   }
 )(MainMenu);
 

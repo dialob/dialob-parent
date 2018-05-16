@@ -48,4 +48,18 @@ export default class FormService {
     return this.doFetch(`${this.baseUrl}/forms/${formData._id}?oldId=${oldId}&newId=${newId}`, 'put', formData);
   }
 
+  createSession(formId, language, context) {
+    let session = {
+      metadata: {
+        formId,
+        formRev: 'LATEST',
+        language
+      }
+    };
+    if (context) {
+      session.context = context;
+    }
+    return this.doFetch(`${this.baseUrl}/questionnaires`, 'post', session);
+  }
+
 }

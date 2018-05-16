@@ -10,6 +10,7 @@ import ItemOptionsDialog from './components/ItemOptionsDialog';
 import FormOptionsDialog from './components/FormOptionsDialog';
 import VariablesDialog from './components/VariablesDialog';
 import IdChangeDialog from './components/IdChangeDialog';
+import PreviewContextDialog from './components/PreviewContextDialog';
 
 require('./style.css');
 
@@ -42,6 +43,7 @@ class App extends Component {
         <FormOptionsDialog />
         <VariablesDialog />
         <IdChangeDialog />
+        <PreviewContextDialog />
       </React.Fragment>);
   }
 }

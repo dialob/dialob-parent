@@ -52,6 +52,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('changeId', action.changeId);
     case Actions.HIDE_CHANGE_ID:
       return state.delete('changeId');
+    case Actions.SHOW_PREVIEW_CONTEXT:
+      return state.set('previewContextDialog', true);
+    case Actions.HIDE_PREVIEW_CONTEXT:
+      return state.delete('previewContextDialog');
     default:
       // NOP
   }

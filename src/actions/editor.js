@@ -251,3 +251,45 @@ export function updateVariable(id, attribute, value) {
     saveNeeded: true
   };
 }
+
+export function requestPreview() {
+  return {
+    type: Actions.REQUEST_FORM_PREVIEW
+  };
+}
+
+export function showPreviewContext() {
+  return {
+    type: Actions.SHOW_PREVIEW_CONTEXT
+  };
+}
+
+export function hidePreviewContext() {
+  return {
+    type: Actions.HIDE_PREVIEW_CONTEXT
+  };
+}
+
+export function createPreviewSession(language, context = false) {
+  return {
+    type: Actions.CREATE_PREVIEW_SESSION,
+    language,
+    context
+  };
+}
+
+export function redirectPreview(sessionId) {
+  return {
+    type: Actions.REDIRECT_PREVIEW,
+    sessionId
+  };
+}
+
+export function setContextValue(id, value) {
+  return {
+    type: Actions.SET_CONTEXT_VALUE,
+    id,
+    value,
+    saveNeeded: true
+  };
+}

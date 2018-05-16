@@ -1,7 +1,7 @@
 import * as Actions from '../actions/constants';
 import * as Status from '../helpers/constants';
 import FormService from '../services/FormService';
-import {setForm, saveForm, setFormRevision, setStatus, setErrors} from '../actions';
+import {setForm, saveForm, setFormRevision, setStatus, setErrors, redirectPreview} from '../actions';
 
 const SAVE_DELAY = 500;
 var saveTimer;
@@ -30,6 +30,16 @@ export const backendMiddleware = store => {
         .then(json => {
           store.dispatch(setForm(json.form));
           store.dispatch(setErrors(json.errors));
+        })
+        .catch(error => console.error('Err', error)); // TODO: Error handling
+    } else if (action.type === Actions.CREATE_PREVIEW_SESSION) {
+      let context = null;
+      if (action.context) {
+        context = store.getState().form.getIn(['metadata', 'composer', 'contextValues']).entrySeq().map(e => ({id: e[0], value: e[1]})).toJS();
+      }
+      formService.createSession(store.getState().form.get('_id'), action.language, context)
+        .then(json => {
+          store.dispatch(redirectPreview(json._id));
         })
         .catch(error => console.error('Err', error)); // TODO: Error handling
     }

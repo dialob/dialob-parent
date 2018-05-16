@@ -1,0 +1,67 @@
+import React, {Component} from 'react';
+import {Modal, Button, Table, Input} from 'semantic-ui-react';
+import {connect} from 'react-redux';
+import {hidePreviewContext, setContextValue, createPreviewSession} from '../actions';
+import Immutable from 'immutable';
+import * as Defaults from '../defaults';
+
+class PreviewContextDialog extends Component {
+
+  render() {
+    if (this.props.previewContextOpen) {
+      const contextVariables = this.props.variables ? this.props.variables.filter(v => v.get('context') === true) : Immutable.List();
+      const rows = contextVariables.map((v, key) => <Table.Row key={key}>
+          <Table.Cell>{v.get('name')}</Table.Cell>
+          <Table.Cell>
+            <Input transparent fluid
+              placeholder={v.get('defaultValue')}
+              value={(this.props.contextValues && this.props.contextValues.get(v.get('name'))) || ''}
+              onChange={(evt) => this.props.setContextValue(v.get('name'), evt.target.value)}/>
+          </Table.Cell>
+        </Table.Row>);
+      return (
+        <Modal open>
+          <Modal.Header>Preview</Modal.Header>
+          <Modal.Content scrolling>
+            <label>Values for context variables</label>
+            <Table celled>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell collapsing>ID</Table.HeaderCell>
+                  <Table.HeaderCell>Value</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {rows}
+              </Table.Body>
+            </Table>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button primary onClick={() => this.props.createPreviewSession(this.props.language, true)}>Preview</Button>
+            <Button onClick={() => this.props.hidePreviewContext()}>Cancel</Button>
+          </Modal.Actions>
+        </Modal>
+      );
+    } else {
+      return null;
+    }
+  }
+}
+
+const PreviewContextDialogConnected = connect(
+  state => ({
+    previewContextOpen: state.editor && state.editor.get('previewContextDialog'),
+    variables: state.form && state.form.get('variables'),
+    contextValues: state.form && state.form.getIn(['metadata', 'composer', 'contextValues']),
+    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE
+  }), {
+    hidePreviewContext,
+    setContextValue,
+    createPreviewSession
+  }
+)(PreviewContextDialog);
+
+export {
+  PreviewContextDialogConnected as default,
+  PreviewContextDialog
+};
