@@ -7,6 +7,28 @@
   <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <scm>
+    <connection>scm:git:ssh://git@git.resys.io:22222/dialob/dialob-composer-v2.git</connection>
+    <url>https://git.resys.io/dialob/dialob-composer-v2</url>
+    <tag>HEAD</tag>
+  </scm>
+  <distributionManagement>
+    <site>
+      <id>sites</id>
+      <url>https://repo.resys.io/repository/sites/</url>
+    </site>
+    <repository>
+      <id>resys-releases</id>
+      <name>ReSys Releases</name>
+      <url>https://repo.resys.io/repository/dialob-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>resys-snapshots</id>
+      <name>ReSys Snapshots</name>
+      <url>https://repo.resys.io/repository/dialob-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
