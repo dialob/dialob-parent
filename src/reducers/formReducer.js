@@ -159,6 +159,14 @@ function updateVariable(state, id, attribute, value) {
   return state.setIn(['variables', variableIndex, attribute], value);
 }
 
+function deleteVariable(state, id) {
+  const variableIndex = state.get('variables').findIndex(v => v.get('name') === id);
+  if (variableIndex === -1) {
+    return state;
+  }
+  return state.deleteIn(['variables', variableIndex]);
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
@@ -197,7 +205,7 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.UPDATE_VARIABLE:
       return updateVariable(state, action.id, action.attribute, action.value);
     case Actions.DELETE_VARIABLE:
-      return state; // TODO
+      return deleteVariable(state, action.id);
     case Actions.SET_CONTEXT_VALUE:
       return state.setIn(['metadata', 'composer', 'contextValues', action.id], action.value);
     default:
