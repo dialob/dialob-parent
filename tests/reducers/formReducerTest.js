@@ -1,6 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
 import * as Actions from "../../src/actions/constants";
-import { addItem, updateItem, deleteItem, createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry } from '../../src/actions';
+import { addItem, updateItem, deleteItem, createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, createContextVariable, createExpressionVariable } from '../../src/actions';
 import Immutable from "immutable";
 import sinon from "sinon";
 
@@ -49,6 +49,14 @@ const INITAL_STATE = Immutable.fromJS({
     text4: { id: "text4", type: "text", label: { en: "Text" } },
     text5: { id: "text5", type: "text", label: { en: "Text" } }
   },
+  variables: [
+    {
+      "name": "text6",
+      "defaultValue": "x",
+      "context": true,
+      "contextType": "text"
+    }
+  ],
   metadata: {
     label: "Simple",
     created: "2018-04-10T08:58:40.585+0000",
@@ -65,20 +73,20 @@ describe("formReducer", () => {
   it ('Adds new item into the end of the group', () => {
     const state = formReducer(INITAL_STATE, addItem({type: 'text'}, 'group3'));
     expect(state).to.be.an.instanceof(Immutable.Map);
-    expect(state.toJS().data.text6).to.deep.equal({id: 'text6', type: 'text'});
-    expect(state.toJS().data.group3.items).to.deep.equal(['text5', 'text6']);
+    expect(state.toJS().data.text7).to.deep.equal({id: 'text7', type: 'text'});
+    expect(state.toJS().data.group3.items).to.deep.equal(['text5', 'text7']);
   });
   it ('Adds new item into group that doesn\'t have any items', () => {
     const state = formReducer(INITAL_STATE, addItem({type: 'text'}, 'group4'));
     expect(state).to.be.an.instanceof(Immutable.Map);
-    expect(state.toJS().data.text6).to.deep.equal({id: 'text6', type: 'text'});
-    expect(state.toJS().data.group4.items).to.deep.equal(['text6']);
+    expect(state.toJS().data.text7).to.deep.equal({id: 'text7', type: 'text'});
+    expect(state.toJS().data.group4.items).to.deep.equal(['text7']);
   });
   it ('Adds new item into the group after given item', () => {
     const state = formReducer(INITAL_STATE, addItem({type: 'text'}, 'group2', 'text4'));
     expect(state).to.be.an.instanceof(Immutable.Map);
-    expect(state.toJS().data.text6).to.deep.equal({id: 'text6', type: 'text'});
-    expect(state.toJS().data.group2.items).to.deep.equal(['text3', 'text4', 'text6', 'group3']);
+    expect(state.toJS().data.text7).to.deep.equal({id: 'text7', type: 'text'});
+    expect(state.toJS().data.group2.items).to.deep.equal(['text3', 'text4', 'text7', 'group3']);
   });
   it ('Updates normal attribute of an item', () => {
     const state = formReducer(INITAL_STATE, updateItem('text5', 'activeWhen', 'true'));
@@ -167,4 +175,17 @@ describe("formReducer", () => {
     expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
     expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: []});
   });
+  it ('Creates new context variable', () => {
+    let state = formReducer(INITAL_STATE, createContextVariable());
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('variables')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().variables).to.deep.include({name: 'context1', context: true, contextType: 'text'});
+  });
+  it ('Creates new expression variable', () => {
+    let state = formReducer(INITAL_STATE, createExpressionVariable());
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('variables')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().variables).to.deep.include({name: 'var1', expression: ''});
+  })
 });
+

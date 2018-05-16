@@ -1,20 +1,93 @@
 import React, {Component} from 'react';
-import {Modal, Button, Tab} from 'semantic-ui-react';
+import {Modal, Button, Tab, Table, Dropdown, Input} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {hideVariables} from '../actions';
+import {hideVariables, createContextVariable, createExpressionVariable, deleteVariable, showChangeId, updateVariable} from '../actions';
+import Immutable from 'immutable';
+
+const CONTEXT_TYPES = [
+  {key: 'text', text: 'Text', value: 'text'},
+  {key: 'number', text: 'Number', value: 'number'},
+  {key: 'decimal', text: 'Decimal', value: 'decimal'},
+  {key: 'boolean', text: 'Boolean', value: 'boolean'},
+  {key: 'date', text: 'Date', value: 'date'},
+  {key: 'time', text: 'Time', value: 'time'}
+];
+
+const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAttr}) => {
+  const rows = variables.map((v, k) => <Table.Row key={k}>
+    <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
+    <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
+    <Table.Cell><Dropdown options={CONTEXT_TYPES} value={v.get('contextType')} onChange={(evt, data) => onChangeAttr(v.get('name'), 'contextType', data.value)} /></Table.Cell>
+    <Table.Cell><Input transparent fluid value={v.get('defaultValue') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'defaultValue', e.target.value)}/></Table.Cell>
+  </Table.Row>);
+  return (
+    <Tab.Pane>
+      <Table celled>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => onCreate()} /></Table.HeaderCell>
+            <Table.HeaderCell>ID</Table.HeaderCell>
+            <Table.HeaderCell>Type</Table.HeaderCell>
+            <Table.HeaderCell>Default value</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {rows}
+        </Table.Body>
+      </Table>
+    </Tab.Pane>
+  );
+};
+
+const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr}) => {
+  const rows = variables.map((v, k) => <Table.Row key={k}>
+    <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
+    <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
+    <Table.Cell><Input transparent fluid value={v.get('expression') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'expression', e.target.value)}/></Table.Cell>
+  </Table.Row>);
+  return (
+    <Tab.Pane>
+      <Table celled>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => onCreate()} /></Table.HeaderCell>
+            <Table.HeaderCell>ID</Table.HeaderCell>
+            <Table.HeaderCell>Expression</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {rows}
+        </Table.Body>
+      </Table>
+    </Tab.Pane>
+  );
+};
 
 class VariablesDialog extends Component {
 
   render() {
     if (this.props.variablesOpen) {
-
+      const contextVariables = this.props.variables ? this.props.variables.filter(v => v.get('context') === true) : Immutable.List();
+      const expressionVariables = this.props.variables ? this.props.variables.filter(v => !v.get('context')) : Immutable.List();
       const tabs = [
-        {menuItem: 'Context variables', render: () => <Tab.Pane></Tab.Pane>},
-        {menuItem: 'Runtime variables', render: () => <Tab.Pane></Tab.Pane>}
+        {menuItem: 'Context variables', render: () => <ContextVariables
+                                                          variables={contextVariables}
+                                                          onCreate={this.props.createContextVariable}
+                                                          onRemove={this.props.deleteVariable}
+                                                          onIdChange={this.props.showChangeId}
+                                                          onChangeAttr={this.props.updateVariable}
+                                                      />},
+        {menuItem: 'Expression variables', render: () => <Expressions
+                                                          variables={expressionVariables}
+                                                          onCreate={this.props.createExpressionVariable}
+                                                          onRemove={this.props.deleteVariable}
+                                                          onIdChange={this.props.showChangeId}
+                                                          onChangeAttr={this.props.updateVariable}
+                                                       />}
       ];
 
       return (
-        <Modal open>
+        <Modal open size='large'>
           <Modal.Header>Variables</Modal.Header>
           <Modal.Content scrolling>
             <Tab panes={tabs} />
@@ -32,9 +105,15 @@ class VariablesDialog extends Component {
 
 const VariablesDialogConnected = connect(
   state => ({
-    variablesOpen: state.editor && state.editor.get('variablesDialog')
+    variablesOpen: state.editor && state.editor.get('variablesDialog'),
+    variables: state.form && state.form.get('variables')
   }), {
-    hideVariables
+    hideVariables,
+    createContextVariable,
+    createExpressionVariable,
+    deleteVariable,
+    showChangeId,
+    updateVariable
   }
 )(VariablesDialog);
 

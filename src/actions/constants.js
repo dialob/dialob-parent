@@ -27,3 +27,8 @@ export const SET_METADATA_VALUE = 'composer/SET_METADATA_VALUE';
 export const SHOW_CHANGE_ID = 'composer/SHOW_CHANGE_ID';
 export const HIDE_CHANGE_ID = 'composer/HIDE_CHANGE_ID';
 export const PERFORM_CHANGE_ID = 'composer/PERFORM_CHANGE_ID';
+export const CREATE_CONTEXT_VARIABLE = 'composer/CREATE_CONTEXT_VARIABLE';
+export const CREATE_EXPRESSION_VARIABLE = 'composer/CREATE_EXPRESSION_VARIABLE';
+export const DELETE_VARIABLE = 'composer/DELETE_VARIABLE';
+export const UPDATE_VARIABLE = 'composer/UPDATE_VARIABLE';
+

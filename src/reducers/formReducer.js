@@ -1,14 +1,15 @@
 import DEBUG_FORM from './debug_form_simple';
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
-import { createValueset } from '../actions';
 
 //const INITIAL_STATE = Immutable.fromJS(DEBUG_FORM);
 const INITIAL_STATE = Immutable.Map();
 
 function generateItemId(state, prefix) {
   let idx = 1;
-  while (state && state.has(`${prefix}${idx}`)) {
+  let data = state.get('data') || Immutable.Map();
+  let variables = state.get('variables') || Immutable.List();
+  while (state && (state.get('data').has(`${prefix}${idx}`) || variables.findIndex(v => v.get('name') === `${prefix}${idx}`) > -1)) {
     idx++;
   }
   return `${prefix}${idx}`;
@@ -24,14 +25,14 @@ function generateValueSetId(state, prefix) {
 
 function addItem(state, action) {
   const itemId = generateItemId(state, action.config.idPrefix || action.config.type);
-  return state.set(itemId, Immutable.fromJS(Object.assign({id: itemId}, action.config)))
+  return state.update('data', data => data.set(itemId, Immutable.fromJS(Object.assign({id: itemId}, action.config)))
               .update(action.parentItemId, parent => {
                 if (action.afterItemId) {
                   return parent.update('items', items => items ? items.insert(items.findIndex(i => i === action.afterItemId) + 1, itemId) : Immutable.List([itemId]));
                 } else {
                   return parent.update('items', items => items ? items.push(itemId) : Immutable.List([itemId]));
                 }
-              });
+              }));
 }
 
 function deleteItem(state, itemId) {
@@ -128,6 +129,36 @@ function deleteValuesetEntry(state, valueSetId, index) {
   return state.deleteIn(['valueSets', vsIndex, 'entries', index]);
 }
 
+function newVariable(state, context = false) {
+  const variableId = generateItemId(state, context ? 'context' : 'var');
+  const variable = Immutable.fromJS(context ?
+    {
+      name: variableId,
+      context: true,
+      contextType: 'text'
+    } :
+    {
+      name: variableId,
+      expression: ''
+    }
+  );
+  return state.update('variables', variables => {
+    if (!variables) {
+      return new Immutable.List([variable]);
+    } else {
+      return variables.push(variable);
+    }
+  });
+}
+
+function updateVariable(state, id, attribute, value) {
+  const variableIndex = state.get('variables').findIndex(v => v.get('name') === id);
+  if (variableIndex === -1) {
+    return state;
+  }
+  return state.setIn(['variables', variableIndex, attribute], value);
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
@@ -135,7 +166,7 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.SET_FORM_REVISION:
       return state.set('_rev', action.revision);
     case Actions.ADD_ITEM:
-      return state.update('data', data => addItem(data, action));
+      return addItem(state, action);
     case Actions.UPDATE_ITEM:
       return action.language ? state.setIn(['data', action.itemId, action.attribute, action.language], action.value)
                              : state.setIn(['data', action.itemId, action.attribute], action.value);
@@ -159,6 +190,14 @@ export function formReducer(state = INITIAL_STATE, action) {
       } else {
         return state.deleteIn(['metadata', action.attribute]);
       }
+    case Actions.CREATE_CONTEXT_VARIABLE:
+      return newVariable(state, true);
+    case Actions.CREATE_EXPRESSION_VARIABLE:
+      return newVariable(state);
+    case Actions.UPDATE_VARIABLE:
+      return updateVariable(state, action.id, action.attribute, action.value);
+    case Actions.DELETE_VARIABLE:
+      return state; // TODO
     default:
       //NOP:
   }

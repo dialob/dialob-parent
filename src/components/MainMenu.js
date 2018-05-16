@@ -24,16 +24,16 @@ class MainMenu extends Component {
           <Menu.Item header>
             Dialob Composer
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item disabled>
             Versioning
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item disabled>
             Translations
           </Menu.Item>
           <Menu.Item onClick={() => this.props.showVariables()}>
             Variables
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item disabled>
             Lists
           </Menu.Item>
           <Menu.Item onClick={() => this.props.showFormOptions()}>

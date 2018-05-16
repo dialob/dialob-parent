@@ -218,3 +218,36 @@ export function performChangeId(oldId, newId) {
     newId
   };
 }
+
+export function createContextVariable() {
+  return {
+    type: Actions.CREATE_CONTEXT_VARIABLE,
+    saveNeeded: true
+  };
+}
+
+export function createExpressionVariable() {
+  return {
+    type: Actions.CREATE_EXPRESSION_VARIABLE,
+    saveNeeded: true
+  };
+}
+
+export function deleteVariable(id) {
+  return {
+    type: Actions.DELETE_VARIABLE,
+    id,
+    saveNeeded: true,
+    confirm: true
+  };
+}
+
+export function updateVariable(id, attribute, value) {
+  return {
+    type: Actions.UPDATE_VARIABLE,
+    id,
+    attribute,
+    value,
+    saveNeeded: true
+  };
+}
