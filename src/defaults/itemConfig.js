@@ -2,22 +2,20 @@ import {Group, SimpleField, Note} from '../items';
 
 export const DEFAULT_ITEM_CONFIG = {
   items: [
-    /*
-    {
-      matcher: item => item.get('type') === 'questionnaire',
-      component: Questionnaire
-    },
-    {
-      matcher: item => item.get('type') === 'page',
-      component: Page
-    },
-    */
     {
       matcher: item => item.get('type') === 'group',
       component: Group,
       props: {
         icon: 'square outline',
         placeholder: 'Group label'
+      }
+    },
+    {
+      matcher: item => item.get('type') === 'surveygroup',
+      component: Group,
+      props: {
+        icon: 'braille',
+        placeholder: 'Survey group label'
       }
     },
     {
@@ -75,26 +73,7 @@ export const DEFAULT_ITEM_CONFIG = {
         icon: 'caret down',
         placeholder: 'List field label'
       }
-    },
-    /*
-    {
-      matcher: item => item.get('type') === 'note',
-      component: Note
-    },
-    {
-      matcher: item => item.get('type') === 'boolean',
-      component: Boolean
-    },
-    {
-      matcher: item => item.get('type') === 'list',
-      component: Choice
-    },
-    {
-      matcher: item => item.get('type') === 'multichoice',
-      component: Choice,
-      props: { multi: true }
     }
-    */
   ]
 };
 

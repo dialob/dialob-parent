@@ -14,7 +14,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           }
         },
         {
-          title: 'Survey',
+          title: 'Survey group',
           config: {
             type: 'surveygroup'
           }
@@ -31,6 +31,12 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
       title: 'Inputs',
       type: 'input',
       items: [
+        {
+          title: 'Survey item',
+          config: {
+            type: 'survey'
+          }
+        },
         {
           title: 'Text',
           config: {
@@ -54,6 +60,24 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           title: 'Integer',
           config: {
             type: 'number'
+          }
+        },
+        {
+          title: 'Boolean',
+          config: {
+            type: 'boolean'
+          }
+        },
+        {
+          title: 'Choice',
+          config: {
+            type: 'list'
+          }
+        },
+        {
+          title: 'Multi-choice',
+          config: {
+            type: 'multichoice'
           }
         }
       ]

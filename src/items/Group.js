@@ -8,6 +8,8 @@ import classnames from 'classnames';
 class Group extends Item {
 
   render() {
+    const itemTypeFilter = i => this.props.item.get('type') !== 'surveygroup' ? i.config.type !== 'survey' : true;
+
     return (
       <React.Fragment>
         <Table attached='top' onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  color={this.props.active ? 'blue' : null}>
@@ -48,7 +50,7 @@ class Group extends Item {
 
           <Dropdown button text='Add item'>
             <Dropdown.Menu>
-              <ItemTypeMenu onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
+              <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
             </Dropdown.Menu>
           </Dropdown>
         </Segment>

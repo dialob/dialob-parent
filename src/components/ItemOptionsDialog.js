@@ -6,18 +6,23 @@ import ItemProps from './options/ItemProps';
 import Styleclasses from './options/Styleclasses';
 import Description from './options/Description';
 import Choices from './options/Choices';
+import {CHOICE_ITEM_TYPES} from '../defaults';
 
 class ItemOptionsDialog extends Component {
 
   render() {
     if (this.props.itemOptions) {
 
-      const tabs = [
+      let tabs = [
         {menuItem: 'Properties', render: () => <Tab.Pane><ItemProps item={this.props.getItem()} /></Tab.Pane>},
         {menuItem: 'Style classes', render: () => <Tab.Pane><Styleclasses item={this.props.getItem()} /></Tab.Pane>},
         {menuItem: 'Description', render: () => <Tab.Pane><Description item={this.props.getItem()} /></Tab.Pane>},
-        {menuItem: 'Choices', render: () => <Tab.Pane><Choices item={this.props.getItem()} /></Tab.Pane>}
+
       ];
+
+      if (CHOICE_ITEM_TYPES.findIndex(t => t === this.props.getItem().get('type')) > -1) {
+        tabs.push({menuItem: 'Choices', render: () => <Tab.Pane><Choices item={this.props.getItem()} /></Tab.Pane>});
+      }
 
       return (
         <Modal open>

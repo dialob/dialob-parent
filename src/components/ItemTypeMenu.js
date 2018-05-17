@@ -8,16 +8,17 @@ class ItemTypeMenu extends Component {
   static get propTypes() {
     return {
       categoryFilter: PropTypes.func,
+      itemTypeFilter: PropTypes.func,
       onSelect: PropTypes.func.isRequired
     };
   }
 
   render() {
-    return  DEFAULT_ITEMTYPE_CONFIG.categories.filter(this.props.categoryFilter || (i=> i)).map((category, ckey) =>
+    return  DEFAULT_ITEMTYPE_CONFIG.categories.filter(this.props.categoryFilter || (i => i)).map((category, ckey) =>
       <Dropdown key={ckey} item text={category.title} closeOnChange>
         <Dropdown.Menu>
         {
-          category.items.map((item, ikey) => <Dropdown.Item key={ikey} onClick={() => this.props.onSelect(item.config)}>{item.title}</Dropdown.Item>)
+          category.items.filter(this.props.itemTypeFilter || (i => i)).map((item, ikey) => <Dropdown.Item key={ikey} onClick={() => this.props.onSelect(item.config)}>{item.title}</Dropdown.Item>)
         }
         </Dropdown.Menu>
       </Dropdown>
