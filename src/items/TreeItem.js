@@ -16,7 +16,7 @@ class TreeItem extends Item {
   }
 
   getSubList() {
-    const children = this.createChildren();
+    const children = this.createChildren({pageId: this.props.pageId});
     if (children && children.size > 0) {
       return (
         <List.List>
@@ -47,7 +47,7 @@ class TreeItem extends Item {
 
   render() {
     return (
-      <List.Item >
+      <List.Item onClick={(e) => {e.stopPropagation(); this.props.setActivePage(this.props.pageId); this.props.setActive();}}>
         <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
         <List.Content>
           <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>

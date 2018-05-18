@@ -9,7 +9,7 @@ class TreeView extends Component {
     const rootItem = this.props.findRootItem();
     const treeItems = rootItem && rootItem.get('items') && rootItem.get('items')
             .map(itemId => this.props.items.get(itemId))
-            .map(page => <TreeItem key={page.get('id')} item={page} icon='folder' />);
+            .map(page => <TreeItem key={page.get('id')} item={page} icon='folder' pageId={page.get('id')}/>);
     return (
       <Menu vertical fixed='left' style={{marginTop: this.props.marginTop, width: this.props.menuWidth, overflowY: 'scroll'}}>
         <Menu.Item>
