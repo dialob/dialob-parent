@@ -19,6 +19,14 @@ export const DEFAULT_ITEM_CONFIG = {
       }
     },
     {
+      matcher: item => item.get('type') === 'survey',
+      component: SimpleField,
+      props: {
+        icon: 'ellipsis horizontal',
+        placeholder: 'Survey field label'
+      }
+    },
+    {
       matcher: item => item.get('type') === 'text',
       component: SimpleField,
       props: {
