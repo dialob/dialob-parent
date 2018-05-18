@@ -9,7 +9,7 @@ export const previewMiddleware = store => next => action => {
     } else {
       let language = store.getState().editor.get('activeLanguage');
       let formId = store.getState().form.get('_id');
-      return store.dispatch(createPreviewSession(formId, language));
+      return store.dispatch(createPreviewSession(language));
     }
   } else if (action.type === Actions.REDIRECT_PREVIEW) {
     let previewUrl = store.getState().config.get('previewUrl');
