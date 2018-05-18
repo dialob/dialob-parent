@@ -293,3 +293,9 @@ export function setContextValue(id, value) {
     saveNeeded: true
   };
 }
+
+export function downloadForm() {
+  return {
+    type: Actions.DOWNLOAD_FORM
+  };
+}

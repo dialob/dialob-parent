@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Container, Menu, Icon, Dropdown, Loader} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
-import {setActiveLanguage, showFormOptions, showVariables, requestPreview} from '../actions';
+import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
 
@@ -40,6 +40,7 @@ class MainMenu extends Component {
             Options
           </Menu.Item>
           <Menu.Menu position='right'>
+              <Menu.Item onClick={() => this.props.downloadForm()}><Icon name='download' /></Menu.Item>
               <Menu.Item>
                 <StatusIndicator />
               </Menu.Item>
@@ -65,7 +66,8 @@ const MainMenuConnected = connect(
     setActiveLanguage,
     showFormOptions,
     showVariables,
-    requestPreview
+    requestPreview,
+    downloadForm
   }
 )(MainMenu);
 

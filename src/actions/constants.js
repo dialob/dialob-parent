@@ -37,3 +37,4 @@ export const HIDE_PREVIEW_CONTEXT = 'composer/HIDE_PREVIEW_CONTEXT';
 export const CREATE_PREVIEW_SESSION = 'composer/CREATE_PREVIEW_SESSION';
 export const REDIRECT_PREVIEW = 'composer/REDIRECT_PREVIEW';
 export const SET_CONTEXT_VALUE = 'composer/SET_CONTEXT_VALUE';
+export const DOWNLOAD_FORM = 'composer/DOWNLOAD_FORM';
