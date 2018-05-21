@@ -24,7 +24,7 @@ function generateValueSetId(state, prefix) {
 }
 
 function addItem(state, action) {
-  const itemId = generateItemId(state, action.config.idPrefix || action.config.type);
+  const itemId = generateItemId(state, action.config.type);
   return state.update('data', data => data.set(itemId, Immutable.fromJS(Object.assign({id: itemId}, action.config)))
               .update(action.parentItemId, parent => {
                 if (action.afterItemId) {

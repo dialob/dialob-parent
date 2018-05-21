@@ -16,8 +16,7 @@ class ItemOptionsDialog extends Component {
       let tabs = [
         {menuItem: 'Properties', render: () => <Tab.Pane><ItemProps item={this.props.getItem()} /></Tab.Pane>},
         {menuItem: 'Style classes', render: () => <Tab.Pane><Styleclasses item={this.props.getItem()} /></Tab.Pane>},
-        {menuItem: 'Description', render: () => <Tab.Pane><Description item={this.props.getItem()} /></Tab.Pane>},
-
+        {menuItem: 'Description', render: () => <Tab.Pane><Description item={this.props.getItem()} /></Tab.Pane>}
       ];
 
       if (CHOICE_ITEM_TYPES.findIndex(t => t === this.props.getItem().get('type')) > -1) {

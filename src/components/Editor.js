@@ -2,16 +2,16 @@ import React, {Component} from 'react';
 import {Segment, Menu, Icon, Input, Button, Popup, Dropdown, Loader} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
-import {setActivePage, addItem, deleteItem, loadForm} from '../actions';
+import {setActivePage, addItem, deleteItem, loadForm, showItemOptions} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
 import { ItemMenu } from './ItemMenu';
 
-const PageMenu = ({onDelete}) => (
+const PageMenu = ({onDelete, onOptions}) => (
   <Dropdown icon='content' style={{marginLeft: '0.5em'}}>
     <Dropdown.Menu>
-      <Dropdown.Item icon='options' text='Options...'/>
+      <Dropdown.Item icon='options' text='Options...' onClick={onOptions}/>
       <Dropdown.Item  icon='remove' text='Delete' onClick={onDelete} />
     </Dropdown.Menu>
   </Dropdown>
@@ -47,7 +47,7 @@ class Editor extends Component {
                         .map(itemId => this.props.items.get(itemId))
                         .map((item, index) =>
                             <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en']) || <em>{item.get('id')}</em>}
-                               <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))} />
+                               <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))} onOptions={() => this.props.showItemOptions(item.get('id'))} />
                             </Menu.Item>) : null;
     return (
       <Segment basic>
@@ -84,7 +84,8 @@ const EditorConnected = connect(
     setActivePage,
     addItem,
     deleteItem,
-    loadForm
+    loadForm,
+    showItemOptions
   }
 )(Editor);
 

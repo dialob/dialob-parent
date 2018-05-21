@@ -9,7 +9,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           config: {
             type: 'group',
             props: {
-              columns: 1
+              columns: '1'
             }
           }
         },
