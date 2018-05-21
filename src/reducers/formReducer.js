@@ -2,7 +2,6 @@ import DEBUG_FORM from './debug_form_simple';
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
 
-//const INITIAL_STATE = Immutable.fromJS(DEBUG_FORM);
 const INITIAL_STATE = Immutable.Map();
 
 function generateItemId(state, prefix) {
