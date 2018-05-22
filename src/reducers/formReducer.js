@@ -1,4 +1,3 @@
-import DEBUG_FORM from './debug_form_simple';
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
 

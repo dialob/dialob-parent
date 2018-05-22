@@ -7,12 +7,12 @@ import Styleclasses from './options/Styleclasses';
 import Description from './options/Description';
 import Choices from './options/Choices';
 import {CHOICE_ITEM_TYPES} from '../defaults';
+import Page from './options/Page';
 
 class ItemOptionsDialog extends Component {
 
   render() {
     if (this.props.itemOptions) {
-
       let tabs = [
         {menuItem: 'Properties', render: () => <Tab.Pane><ItemProps item={this.props.getItem()} /></Tab.Pane>},
         {menuItem: 'Style classes', render: () => <Tab.Pane><Styleclasses item={this.props.getItem()} /></Tab.Pane>},
@@ -21,6 +21,10 @@ class ItemOptionsDialog extends Component {
 
       if (CHOICE_ITEM_TYPES.findIndex(t => t === this.props.getItem().get('type')) > -1) {
         tabs.push({menuItem: 'Choices', render: () => <Tab.Pane><Choices item={this.props.getItem()} /></Tab.Pane>});
+      }
+
+      if (this.props.itemOptions.get('isPage')) {
+        tabs.unshift({menuItem: 'Page', render: () => <Tab.Pane><Page item={this.props.getItem()} /></Tab.Pane>});
       }
 
       return (
@@ -43,7 +47,7 @@ class ItemOptionsDialog extends Component {
 const ItemOptionsDialogConnected = connect(
   state => ({
     itemOptions: state.editor && state.editor.get('itemOptions'),
-    get getItem() { return () => state.form && state.form.getIn(['data', this.itemOptions]); }
+    get getItem() { return () => state.form && state.form.getIn(['data', this.itemOptions.get('itemId')]); }
   }), {
     hideItemOptions
   }

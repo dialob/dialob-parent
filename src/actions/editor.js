@@ -73,10 +73,11 @@ export function deleteItem(itemId) {
   };
 }
 
-export function showItemOptions(itemId) {
+export function showItemOptions(itemId, isPage = false) {
   return {
     type: Actions.SHOW_ITEM_OPTIONS,
-    itemId
+    itemId,
+    isPage
   };
 }
 
