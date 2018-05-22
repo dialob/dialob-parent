@@ -31,18 +31,26 @@ class SimpleField extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}}   celled attached='bottom' >
+        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}} celled attached='bottom' >
           <Table.Body>
             <Table.Row>
               <Table.Cell>
-               <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
+               <Input icon='eye' transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell>
-               <Input transparent fluid placeholder='Required' value={this.props.item.get('required') || ''} onChange={(e) => this.props.setAttribute('required', e.target.value)}/>
+               <Input icon='asterisk' transparent fluid placeholder='Required' value={this.props.item.get('required') || ''} onChange={(e) => this.props.setAttribute('required', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
+            {
+              this.props.active &&
+              <Table.Row>
+                <Table.Cell>
+                < Input icon='pencil' transparent fluid placeholder='Default value' value={this.props.item.get('defaultValue') || ''} onChange={(e) => this.props.setAttribute('defaultValue', e.target.value)}/>
+                </Table.Cell>
+              </Table.Row>
+            }
           </Table.Body>
         </Table>
       </React.Fragment>
