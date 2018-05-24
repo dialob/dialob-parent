@@ -300,3 +300,34 @@ export function downloadForm() {
     type: Actions.DOWNLOAD_FORM
   };
 }
+
+export function createValidation(itemId, language) {
+  return {
+    type: Actions.CREATE_VALIDATION,
+    itemId,
+    language,
+    saveNeeded: true
+  };
+}
+
+export function deleteValidation(itemId, index) {
+  return {
+    type: Actions.DELETE_VALIDATION,
+    itemId,
+    index,
+    saveNeeded: true,
+    confirm: true
+  };
+}
+
+export function updateValidation(itemId, index, attribute, value, language = null) {
+  return {
+    type: Actions.UPDATE_VALIDATION,
+    itemId,
+    index,
+    attribute,
+    value,
+    language,
+    saveNeeded: true
+  };
+}

@@ -165,6 +165,15 @@ function deleteVariable(state, id) {
   return state.deleteIn(['variables', variableIndex]);
 }
 
+function createValidation(language) {
+  let validation = {
+    message: {},
+    rule: ''
+  };
+  validation.message[language] = '';
+  return Immutable.fromJS(validation);
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
@@ -206,6 +215,22 @@ export function formReducer(state = INITIAL_STATE, action) {
       return deleteVariable(state, action.id);
     case Actions.SET_CONTEXT_VALUE:
       return state.setIn(['metadata', 'composer', 'contextValues', action.id], action.value);
+    case Actions.CREATE_VALIDATION:
+      return state.updateIn(['data', action.itemId],
+        item => item.update('validations',
+          validations => validations ?  validations.push(createValidation(action.languae)) : Immutable.List([createValidation(action.language)])));
+    case Actions.DELETE_VALIDATION:
+      return state.updateIn(['data', action.itemId],
+        item => item.update('validations',
+          validations => validations.delete(action.index)));
+    case Actions.UPDATE_VALIDATION:
+      return state.updateIn(['data', action.itemId],
+        item => item.update('validations',
+          validations => action.language ?
+                          validations.setIn([action.index, action.attribute, action.language], action.value)
+                          : validations.setIn([action.index, action.attribute], action.value)
+                        ));
+      return state;
     default:
       //NOP:
   }

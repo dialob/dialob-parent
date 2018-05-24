@@ -38,3 +38,6 @@ export const CREATE_PREVIEW_SESSION = 'composer/CREATE_PREVIEW_SESSION';
 export const REDIRECT_PREVIEW = 'composer/REDIRECT_PREVIEW';
 export const SET_CONTEXT_VALUE = 'composer/SET_CONTEXT_VALUE';
 export const DOWNLOAD_FORM = 'composer/DOWNLOAD_FORM';
+export const CREATE_VALIDATION = 'composer/CREATE_VALIDATION';
+export const DELETE_VALIDATION = 'composer/DELETE_VALIDATION';
+export const UPDATE_VALIDATION = 'composer/UPDATE_VALIDATION';

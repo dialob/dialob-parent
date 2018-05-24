@@ -3,6 +3,7 @@ import {Table, Input, Icon, Dropdown} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemTypeMenu from '../components/ItemTypeMenu';
 import ItemMenu from '../components/ItemMenu';
+import Validations from '../components/Validations';
 
 class SimpleField extends Item {
   render() {
@@ -31,7 +32,7 @@ class SimpleField extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}} celled attached='bottom' >
+        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}} celled attached={this.props.active ? true : 'bottom'} >
           <Table.Body>
             <Table.Row>
               <Table.Cell>
@@ -47,12 +48,15 @@ class SimpleField extends Item {
               this.props.active &&
               <Table.Row>
                 <Table.Cell>
-                < Input icon='pencil' transparent fluid placeholder='Default value' value={this.props.item.get('defaultValue') || ''} onChange={(e) => this.props.setAttribute('defaultValue', e.target.value)}/>
+                  <Input icon='pencil' transparent fluid placeholder='Default value' value={this.props.item.get('defaultValue') || ''} onChange={(e) => this.props.setAttribute('defaultValue', e.target.value)}/>
                 </Table.Cell>
               </Table.Row>
             }
           </Table.Body>
         </Table>
+        {
+          this.props.active && <Validations item={this.props.item} />
+        }
       </React.Fragment>
     );
   }
