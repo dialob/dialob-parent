@@ -8,17 +8,7 @@ export function findValueset(data, id) {
   return data.get('valueSets').find(v => v.get('id') === id);
 }
 
-/*
-
-  "valueSets": [
-      {
-          "id": "question5_valueset1",
-          "entries": [
-              {
-                  "id": "educationA",
-                  "label": {
-                      "en": "Peruskoulu"
-                  }
-              },
-
-*/
+export function isGlobalValueSet(globalValueSets, id) {
+  const gvsIndex = globalValueSets ? globalValueSets.findIndex(vs => vs.get('valueSetId') === id) : -1;
+  return gvsIndex > -1;
+}

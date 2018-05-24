@@ -331,3 +331,24 @@ export function updateValidation(itemId, index, attribute, value, language = nul
     saveNeeded: true
   };
 }
+
+export function showValueSets() {
+  return {
+    type: Actions.SHOW_VALUESETS
+  };
+}
+
+export function hideValueSets() {
+  return {
+    type: Actions.HIDE_VALUESETS
+  };
+}
+
+export function setGlobalValuesetName(valueSetId, name) {
+  return {
+    type: Actions.SET_GLOBAL_VALUESET_NAME,
+    valueSetId,
+    name,
+    saveNeeded: true
+  };
+}

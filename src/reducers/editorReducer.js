@@ -56,6 +56,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('previewContextDialog', true);
     case Actions.HIDE_PREVIEW_CONTEXT:
       return state.delete('previewContextDialog');
+    case Actions.SHOW_VALUESETS:
+      return state.set('valueSetsOpen', true);
+    case Actions.HIDE_VALUESETS:
+      return state.delete('valueSetsOpen');
     default:
       // NOP
   }

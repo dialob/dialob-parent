@@ -41,3 +41,6 @@ export const DOWNLOAD_FORM = 'composer/DOWNLOAD_FORM';
 export const CREATE_VALIDATION = 'composer/CREATE_VALIDATION';
 export const DELETE_VALIDATION = 'composer/DELETE_VALIDATION';
 export const UPDATE_VALIDATION = 'composer/UPDATE_VALIDATION';
+export const SHOW_VALUESETS = 'composer/SHOW_VALUESETS';
+export const HIDE_VALUESETS = 'composer/HIDE_VALUESETS';
+export const SET_GLOBAL_VALUESET_NAME = 'composer/SET_GLOBAL_VALUESET_NAME';

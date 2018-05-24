@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
+import {isGlobalValueSet} from '../helpers/utils';
 
 const INITIAL_STATE = Immutable.Map();
 
@@ -46,9 +47,11 @@ function deleteItem(state, itemId) {
 
   let toDelete = collect(itemId);
 
-  // Collect && delete valueSets
-  // TODO: Check for global vsets
-  let valueSets = toDelete.map(itemId => state.getIn(['data', itemId, 'valueSetId'])).filter(vsId => vsId);
+  // Collect && delete valueSets; skip global value sets
+  const globalValueSets = state.getIn(['metadata', 'composer', 'globalValueSets']);
+  let valueSets = toDelete.map(itemId => state.getIn(['data', itemId, 'valueSetId']))
+    .filter(vsId => vsId)
+    .filter(vsId => !isGlobalValueSet(globalValueSets, vsId));
   let newState = state;
   valueSets.forEach(vsId => newState = newState.update('valueSets', v => v.delete(v.findIndex(i => i.get('id') === vsId))));
 
@@ -77,9 +80,30 @@ function newValueSet(state, itemId = null) {
 
   if (itemId) {
     newState = newState.setIn(['data', itemId, 'valueSetId'], valueSetId);
+  } else {
+    newState = newState.updateIn(['metadata', 'composer', 'globalValueSets'], gvs => {
+      const gvsInfo = Immutable.fromJS({
+        valueSetId,
+        label: ''
+      });
+      if (!gvs) {
+        return new Immutable.List([gvsInfo]);
+      } else {
+        return gvs.push(gvsInfo);
+      }
+    });
   }
 
   return newState;
+}
+
+function setValueSetName(state, valueSetId, name) {
+  const gvsIndex = state.getIn(['metadata', 'composer', 'globalValueSets']).findIndex(vs => vs.get('valueSetId') === valueSetId);
+  if (gvsIndex > -1) {
+    return state.setIn(['metadata', 'composer', 'globalValueSets', gvsIndex, 'label'], name);
+  } else {
+    return state;
+  }
 }
 
 function findValuesetIndex(state, valueSetId) {
@@ -231,6 +255,8 @@ export function formReducer(state = INITIAL_STATE, action) {
                           : validations.setIn([action.index, action.attribute], action.value)
                         ));
       return state;
+    case Actions.SET_GLOBAL_VALUESET_NAME:
+      return setValueSetName(state, action.valueSetId, action.name);
     default:
       //NOP:
   }
