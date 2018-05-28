@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Menu, Icon, Dropdown, Loader} from 'semantic-ui-react';
+import {Container, Menu, Icon, Dropdown, Loader, Popup} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
 import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets} from '../actions';
@@ -40,7 +40,12 @@ class MainMenu extends Component {
             Options
           </Menu.Item>
           <Menu.Menu position='right'>
-              <Menu.Item onClick={() => this.props.downloadForm()}><Icon name='download' /></Menu.Item>
+              <Menu.Item onClick={() => this.props.downloadForm()}>
+                <Popup
+                  trigger={<Icon name='download' />}
+                  content='Download dialog as JSON'
+                  on='hover' />
+              </Menu.Item>
               <Menu.Item>
                 <StatusIndicator />
               </Menu.Item>
