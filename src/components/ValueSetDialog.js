@@ -31,10 +31,15 @@ class ValueSetDialog extends Component {
 
       return (
         <Modal open size='large'>
-          <Modal.Header>Global Lists</Modal.Header>
+          <Modal.Header>
+            Global Lists
+            <Button floated='right' onClick={() => this.props.createValueset()}>Add new list</Button>
+          </Modal.Header>
           <Modal.Content scrolling>
-            <Tab menu={{fluid: true, vertical: true, pointing: true}} menuPosition='left' panes={panes} />
-            <Button onClick={() => this.props.createValueset()}>Add new list</Button>
+            {
+              panes.length > 0 &&
+              <Tab menu={{fluid: true, vertical: true, pointing: true}} menuPosition='left' panes={panes} />
+            }
           </Modal.Content>
           <Modal.Actions>
             <Button primary onClick={() => this.props.hideValueSets()}>OK</Button>
