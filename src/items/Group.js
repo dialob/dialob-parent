@@ -9,7 +9,6 @@ class Group extends Item {
 
   render() {
     const itemTypeFilter = i => this.props.item.get('type') !== 'surveygroup' ? i.config.type !== 'survey' : true;
-
     return (
       <React.Fragment>
         <Table attached='top' onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  color={this.props.active ? 'blue' : null}>
@@ -39,7 +38,7 @@ class Group extends Item {
         <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  celled attached >
           <Table.Body>
             <Table.Row>
-              <Table.Cell>
+              <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
                <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
               </Table.Cell>
             </Table.Row>

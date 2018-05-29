@@ -35,19 +35,19 @@ class SimpleField extends Item {
         <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}} celled attached={this.props.active ? true : 'bottom'} >
           <Table.Body>
             <Table.Row>
-              <Table.Cell>
-               <Input icon='eye' transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
+              <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
+                <Input icon='eye' transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
-              <Table.Cell>
+              <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT').size > 0}>
                <Input icon='asterisk' transparent fluid placeholder='Required' value={this.props.item.get('required') || ''} onChange={(e) => this.props.setAttribute('required', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
             {
               this.props.active &&
               <Table.Row>
-                <Table.Cell>
+                <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'GENERAL' && e.get('message') === 'INVALID_DEFAULT_VALUE').size > 0}>
                   <Input icon='pencil' transparent fluid placeholder='Default value' value={this.props.item.get('defaultValue') || ''} onChange={(e) => this.props.setAttribute('defaultValue', e.target.value)}/>
                 </Table.Cell>
               </Table.Row>

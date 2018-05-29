@@ -12,6 +12,12 @@ class Item extends Component {
       .map(itemId => this.props.items.get(itemId))
       .map(item => itemFactory(item, props, config));
   }
+
+  getErrors() {
+    return this.props.errors
+      ? this.props.errors.filter(e => e.get('itemId') === this.props.item.get('id'))
+      : [];
+  }
 }
 
 function connectItem(component) {
@@ -20,7 +26,8 @@ function connectItem(component) {
       items: state.form && state.form.get('data'),
       active: props.item && state.editor && props.item.get('id') === state.editor.get('activeItemId'),
       language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-      get findRootItem() { return () => findRoot(this.items); },
+      errors: state.editor && state.editor.get('errors'),
+      get findRootItem() { return () => findRoot(this.items); }
     }),
     (dispatch, props) => ({
       setActive: () => dispatch(setActiveItem(props.item.get('id'))),
