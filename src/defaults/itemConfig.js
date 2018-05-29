@@ -35,6 +35,22 @@ export const DEFAULT_ITEM_CONFIG = {
       }
     },
     {
+      matcher: item => item.get('type') === 'time',
+      component: SimpleField,
+      props: {
+        icon: 'time',
+        placeholder: 'Time field label'
+      }
+    },
+    {
+      matcher: item => item.get('type') === 'date',
+      component: SimpleField,
+      props: {
+        icon: 'calendar',
+        placeholder: 'Date field label'
+      }
+    },
+    {
       matcher: item => item.get('type') === 'number',
       component: SimpleField,
       props: {
@@ -78,7 +94,7 @@ export const DEFAULT_ITEM_CONFIG = {
       matcher: item => item.get('type') === 'note',
       component: Note,
       props: {
-        icon: 'caret down',
+        icon: 'file text outline',
         placeholder: 'List field label'
       }
     }

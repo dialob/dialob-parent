@@ -69,6 +69,18 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           }
         },
         {
+          title: 'Date',
+          config: {
+            type: 'date'
+          }
+        },
+        {
+          title: 'Time',
+          config: {
+            type: 'time'
+          }
+        },
+        {
           title: 'Choice',
           config: {
             type: 'list'
