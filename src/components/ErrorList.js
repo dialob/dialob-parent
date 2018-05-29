@@ -3,44 +3,13 @@ import {Message} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Status from '../helpers/constants';
 import {setActiveItem, showVariables} from '../actions';
+import { translateErrorType, translateErrorMessage } from '../helpers/utils';
 
 class ErrorList extends Component {
 
   translateError(error) {
-    let type, text = '';
-    switch (error.get('type')) {
-      case 'VARIABLE':
-        type = 'Variable';
-        break;
-      case 'VISIBILITY':
-        type = 'Visibility';
-        break;
-      case 'GENERAL':
-        type = error.get('message') === 'INVALID_DEFAULT_VALUE' ? 'Default' : 'General';
-        break;
-      case 'REQUIREMENT':
-        type = 'Requirement';
-        break;
-      case 'VALIDATION':
-        type = 'Validation';
-        break;
-      default:
-        type = error.get('type');
-    };
-    switch (error.get('message')) {
-      case 'RB_VARIABLE_NEEDS_EXPRESSION':
-        text = 'Missing expression';
-        break;
-      case 'INVALID_DEFAULT_VALUE':
-        text = 'Invalid value';
-        break;
-      case 'UNKNOWN_VARIABLE':
-        text = 'Unknown variable';
-        break;
-      case 'SYNTAX_ERROR':
-        text = 'Syntax error';
-        break;
-    };
+    const type = translateErrorType(error);
+    const text = translateErrorMessage(error);
     return (
       <React.Fragment>
         <strong>{type}:</strong> {text}

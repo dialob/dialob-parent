@@ -13,8 +13,8 @@ const CONTEXT_TYPES = [
   {key: 'time', text: 'Time', value: 'time'}
 ];
 
-const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAttr}) => {
-  const rows = variables.map((v, k) => <Table.Row key={k}>
+const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors}) => {
+  const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
     <Table.Cell><Dropdown options={CONTEXT_TYPES} value={v.get('contextType')} onChange={(evt, data) => onChangeAttr(v.get('name'), 'contextType', data.value)} /></Table.Cell>
@@ -39,8 +39,8 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
   );
 };
 
-const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr}) => {
-  const rows = variables.map((v, k) => <Table.Row key={k}>
+const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors}) => {
+  const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
     <Table.Cell><Input transparent fluid value={v.get('expression') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'expression', e.target.value)}/></Table.Cell>
@@ -65,6 +65,12 @@ const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr}) 
 
 class VariablesDialog extends Component {
 
+  getErrors(variableId) {
+    return this.props.errors
+      ? this.props.errors.filter(e => e.get('itemId') === variableId)
+      : [];
+  }
+
   render() {
     if (this.props.variablesOpen) {
       const contextVariables = this.props.variables ? this.props.variables.filter(v => v.get('context') === true) : Immutable.List();
@@ -76,6 +82,7 @@ class VariablesDialog extends Component {
                                                           onRemove={this.props.deleteVariable}
                                                           onIdChange={this.props.showChangeId}
                                                           onChangeAttr={this.props.updateVariable}
+                                                          getErrors={this.getErrors.bind(this)}
                                                       />},
         {menuItem: 'Expression variables', render: () => <Expressions
                                                           variables={expressionVariables}
@@ -83,6 +90,7 @@ class VariablesDialog extends Component {
                                                           onRemove={this.props.deleteVariable}
                                                           onIdChange={this.props.showChangeId}
                                                           onChangeAttr={this.props.updateVariable}
+                                                          getErrors={this.getErrors.bind(this)}
                                                        />}
       ];
 
@@ -106,7 +114,8 @@ class VariablesDialog extends Component {
 const VariablesDialogConnected = connect(
   state => ({
     variablesOpen: state.editor && state.editor.get('variablesDialog'),
-    variables: state.form && state.form.get('variables')
+    variables: state.form && state.form.get('variables'),
+    errors: state.editor && state.editor.get('errors')
   }), {
     hideVariables,
     createContextVariable,

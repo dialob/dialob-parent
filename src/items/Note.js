@@ -23,8 +23,8 @@ class Note extends Item {
         <Table onClick={() => this.props.setActive()}  celled attached >
           <Table.Body>
             <Table.Row>
-              <Table.Cell>
-               <Input transparent fluid placeholder='Visibility' defaultValue={this.props.item.get('activeWhen')}/>
+              <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
+               <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
