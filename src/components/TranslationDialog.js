@@ -87,7 +87,21 @@ class TranslationDialog extends Component {
   }
 
   getValueSetTranslations() {
-    return {};
+    if (this.props.valueSets) {
+      let translations = {};
+      this.props.valueSets.forEach((vs, k) => {
+        if (vs.get('entries')) {
+          vs.get('entries').forEach((e, k) => {
+            translations[`v:${vs.get('id')}:${k}:${e.get('id')}`] = e.get('label').toJS();
+            return true;
+          });
+        }
+        return true;
+      });
+      return translations;
+    } else {
+      return {};
+    }
   }
 
   updateTranslation(key, language, text) {
@@ -102,9 +116,9 @@ class TranslationDialog extends Component {
       } else if (keyTokens[2] === 'v') {
         this.props.updateValidation(keyTokens[1], parseInt(keyTokens[3]), 'message', text, language);
       }
-    } else if (keyTokens[0] === 'l') {
-      // Valueset
-      //  updateValuesetEntry(valueSetId, index, id, label, language) {
+    } else if (keyTokens[0] === 'v') {
+        // Valueset
+        this.props.updateValuesetEntry(keyTokens[1], parseInt(keyTokens[2]), null, text, language);
     }
   }
 
@@ -159,7 +173,8 @@ const TranslationDialogConnected = connect(
     translationOpen: state.editor && state.editor.get('translationOpen'),
     language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
     formLanguages: state.form.getIn(['metadata', 'languages']),
-    items: state.form && state.form.get('data')
+    items: state.form && state.form.get('data'),
+    valueSets: state.form && state.form.get('valueSets')
   }), {
     hideTranslation,
     updateItem,
