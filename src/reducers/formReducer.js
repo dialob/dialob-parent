@@ -135,9 +135,9 @@ function updateValuesetEntry(state, valueSetId, index, id, label, language) {
   if (vsIndex === -1) {
     return state;
   }
-  if (id) {
+  if (id !== null) {
     return state.setIn(['valueSets', vsIndex, 'entries', index, 'id'], id);
-  } else if (label) {
+  } else if (label !== null) {
     return state.setIn(['valueSets', vsIndex, 'entries', index, 'label', language], label);
   }
   return state;
