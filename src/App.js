@@ -13,6 +13,7 @@ import IdChangeDialog from './components/IdChangeDialog';
 import PreviewContextDialog from './components/PreviewContextDialog';
 import ValueSetDialog from './components/ValueSetDialog';
 import TranslationDialog from './components/TranslationDialog';
+import FatalErrorDialog from './components/FatalErrorDialog';
 
 require('./style.css');
 
@@ -48,6 +49,7 @@ class App extends Component {
         <PreviewContextDialog />
         <ValueSetDialog />
         <TranslationDialog />
+        <FatalErrorDialog />
       </React.Fragment>);
   }
 }

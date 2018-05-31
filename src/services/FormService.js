@@ -3,7 +3,8 @@ function checkResponse(response) {
   if (response.ok) {
     return response;
   } else {
-    Promise.reject(new Error(response.statusText));
+    console.error('Service error', response);
+    throw new Error(`FATAL_${response.status}`);
   }
 }
 
