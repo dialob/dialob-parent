@@ -50,14 +50,15 @@ class LanguageConfigurator extends Component {
   }
 }
 
-const Translator = ({translations, sourceLang, targetLang, onChange}) => {
+const Translator = ({translations, initialLanguage, onChange, languages}) => {
   return (
     <Segment basic style={{ height: 500 }}>
       <UnderstoodTableEditor
         translations={translations}
         format='keyToLanguage'
-        initialLanguages={[targetLang]}
+        initialLanguages={[initialLanguage]}
         onChangeItem={onChange}
+        availableLanguages={languages}
       />
     </Segment>
   );
@@ -124,15 +125,15 @@ class TranslationDialog extends Component {
         },
         {menuItem: 'Fields', render: () => <Translator
                                               translations={this.getItemTranslations()}
-                                              sourceLang={this.props.formLanguages.get(0)}
-                                              targetLang={this.props.language}
-                                              onChange={this.updateTranslation.bind(this)} />
+                                              initialLanguage={this.props.language}
+                                              onChange={this.updateTranslation.bind(this)}
+                                              languages={this.props.formLanguages.toJS()} />
         },
         {menuItem: 'Lists', render: () =>  <Translator
                                               translations={this.getValueSetTranslations()}
-                                              sourceLang={this.props.formLanguages.get(0)}
-                                              targetLang={this.props.language}
-                                              onChange={this.updateTranslation.bind(this)} />
+                                              initialLanguage={this.props.language}
+                                              onChange={this.updateTranslation.bind(this)}
+                                              languages={this.props.formLanguages.toJS()} />
         }
       ];
 

@@ -369,6 +369,7 @@ export function addLanguage(language, copyFrom = null) {
   return {
     type: Actions.ADD_LANGUAGE,
     language,
-    copyFrom
+    copyFrom,
+    saveNeeded: true
   };
 }

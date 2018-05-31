@@ -10,9 +10,9 @@ class MainMenu extends Component {
 
   getLanguages() {
     return Defaults.LANGUAGES
-      .filter(lang => this.props.formLanguages && this.props.formLanguages.indexOf(lang) > -1)
+      .filter(lang => this.props.formLanguages && this.props.formLanguages.contains(lang.code))
       .map((lang, i) =>
-      <Dropdown.Item key={i} active={lang.code === this.props.language} onClick={() => this.props.setActiveLanguage(lang.code)}>{lang.name}</Dropdown.Item>);
+        <Dropdown.Item key={i} active={lang.code === this.props.language} onClick={() => this.props.setActiveLanguage(lang.code)}>{lang.name}</Dropdown.Item>);
   }
 
   getLanguageName(code) {
