@@ -257,6 +257,9 @@ export function formReducer(state = INITIAL_STATE, action) {
       return state;
     case Actions.SET_GLOBAL_VALUESET_NAME:
       return setValueSetName(state, action.valueSetId, action.name);
+    case Actions.ADD_LANGUAGE:
+      return state.updateIn(['metadata', 'languages'], languages =>
+         languages ? languages.push(action.language) : Immutable.List([action.language]));
     default:
       //NOP:
   }

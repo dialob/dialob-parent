@@ -352,3 +352,23 @@ export function setGlobalValuesetName(valueSetId, name) {
     saveNeeded: true
   };
 }
+
+export function showTranslation() {
+  return {
+    type: Actions.SHOW_TRANSLATION
+  };
+}
+
+export function hideTranslation() {
+  return {
+    type: Actions.HIDE_TRANSLATION
+  };
+}
+
+export function addLanguage(language, copyFrom = null) {
+  return {
+    type: Actions.ADD_LANGUAGE,
+    language,
+    copyFrom
+  };
+}

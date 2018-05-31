@@ -10,5 +10,9 @@ export const LANGUAGES = [
   {
     code: 'sv',
     name: 'Swedish'
+  },
+  {
+    code: 'et',
+    name: 'Estonian'
   }
 ];

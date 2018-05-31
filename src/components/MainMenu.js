@@ -2,14 +2,16 @@ import React, {Component} from 'react';
 import {Container, Menu, Icon, Dropdown, Loader, Popup} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
-import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets} from '../actions';
+import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
 
 class MainMenu extends Component {
 
   getLanguages() {
-    return Defaults.LANGUAGES.map((lang, i) =>
+    return Defaults.LANGUAGES
+      .filter(lang => this.props.formLanguages && this.props.formLanguages.indexOf(lang) > -1)
+      .map((lang, i) =>
       <Dropdown.Item key={i} active={lang.code === this.props.language} onClick={() => this.props.setActiveLanguage(lang.code)}>{lang.name}</Dropdown.Item>);
   }
 
@@ -27,7 +29,7 @@ class MainMenu extends Component {
           <Menu.Item disabled>
             Versioning
           </Menu.Item>
-          <Menu.Item disabled>
+          <Menu.Item onClick={() => this.props.showTranslation()}>
             Translations
           </Menu.Item>
           <Menu.Item onClick={() => this.props.showVariables()}>
@@ -65,7 +67,8 @@ class MainMenu extends Component {
 const MainMenuConnected = connect(
   state => ({
     status: state.editor && state.editor.get('status'),
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE
+    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    formLanguages: state.form.getIn(['metadata', 'languages'])
   }),
   {
     setActiveLanguage,
@@ -73,7 +76,8 @@ const MainMenuConnected = connect(
     showVariables,
     requestPreview,
     downloadForm,
-    showValueSets
+    showValueSets,
+    showTranslation
   }
 )(MainMenu);
 

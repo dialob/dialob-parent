@@ -44,3 +44,6 @@ export const UPDATE_VALIDATION = 'composer/UPDATE_VALIDATION';
 export const SHOW_VALUESETS = 'composer/SHOW_VALUESETS';
 export const HIDE_VALUESETS = 'composer/HIDE_VALUESETS';
 export const SET_GLOBAL_VALUESET_NAME = 'composer/SET_GLOBAL_VALUESET_NAME';
+export const SHOW_TRANSLATION = 'composer/SHOW_TRANSLATION';
+export const HIDE_TRANSLATION = 'composer/HIDE_TRANSLATION';
+export const ADD_LANGUAGE = 'composer/ADD_LANGUAGE';

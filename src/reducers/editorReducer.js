@@ -60,6 +60,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('valueSetsOpen', true);
     case Actions.HIDE_VALUESETS:
       return state.delete('valueSetsOpen');
+    case Actions.SHOW_TRANSLATION:
+      return state.set('translationOpen', true)
+    case Actions.HIDE_TRANSLATION:
+      return state.delete('translationOpen');
     default:
       // NOP
   }
