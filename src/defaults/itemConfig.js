@@ -19,6 +19,14 @@ export const DEFAULT_ITEM_CONFIG = {
       }
     },
     {
+      matcher: item => item.get('type') === 'rowgroup',
+      component: Group,
+      props: {
+        icon: 'table',
+        placeholder: 'Multi-row group label'
+      }
+    },
+    {
       matcher: item => item.get('type') === 'survey',
       component: SimpleField,
       props: {
