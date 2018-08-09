@@ -152,7 +152,7 @@ class TranslationDialog extends Component {
       ];
 
       return (
-        <Modal open size='large'>
+        <Modal open size='large' centered={false}>
           <Modal.Header>Translation</Modal.Header>
           <Modal.Content >
             <Tab panes={panes} />

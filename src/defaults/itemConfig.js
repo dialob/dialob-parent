@@ -94,7 +94,7 @@ export const DEFAULT_ITEM_CONFIG = {
       matcher: item => item.get('type') === 'note',
       component: Note,
       props: {
-        icon: 'file text outline',
+        icon: 'file outline',
         placeholder: 'List field label'
       }
     }
