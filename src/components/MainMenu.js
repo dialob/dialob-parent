@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Menu, Icon, Dropdown, Loader, Popup} from 'semantic-ui-react';
+import {Container, Menu, Icon, Dropdown, Loader, Popup, Header} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
 import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation} from '../actions';
@@ -24,7 +24,8 @@ class MainMenu extends Component {
       <Container>
         <Menu fixed='top'>
           <Menu.Item header>
-            Dialob Composer
+              Dialob Composer
+              &nbsp;<small>{this.props.formLabel}</small>
           </Menu.Item>
           <Menu.Item disabled>
             Versioning
@@ -68,7 +69,8 @@ const MainMenuConnected = connect(
   state => ({
     status: state.editor && state.editor.get('status'),
     language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    formLanguages: state.form.getIn(['metadata', 'languages'])
+    formLanguages: state.form.getIn(['metadata', 'languages']),
+    formLabel: state.form.getIn(['metadata', 'label'])
   }),
   {
     setActiveLanguage,

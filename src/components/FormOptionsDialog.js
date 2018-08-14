@@ -34,6 +34,9 @@ const OptionsPane = ({metadata, onChange}) => {
     <Tab.Pane>
       <Form>
         <Form.Field>
+          <Form.Input fluid label='Dialog name' value={metadata.get('label') || ''} onChange={(evt) => onChange('label', evt.target.value)} />
+        </Form.Field>
+        <Form.Field>
           <label>Labels</label>
           <Dropdown allowAdditions fluid multiple search selection
           options={options} value={metadata.get('labels') ? metadata.get('labels').toJS() : []} onChange={(evt, data) => onChange('labels', data.value)} />

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Segment, Menu, Icon, Input, Button, Popup, Dropdown, Loader} from 'semantic-ui-react';
+import {Segment, Menu, Icon, Input, Button, Popup, Dropdown, Loader, Label} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
 import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId} from '../actions';
@@ -59,6 +59,7 @@ class Editor extends Component {
           {pages}
           <Menu.Menu position='right'>
             <Menu.Item>
+              { pages.size === 0 && <Label pointing='right' size='large' color='blue'>No pages yet, click here to add one</Label> }
               <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} />
             </Menu.Item>
           </Menu.Menu>
