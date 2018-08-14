@@ -59,7 +59,7 @@ class Editor extends Component {
           {pages}
           <Menu.Menu position='right'>
             <Menu.Item>
-              { pages.size === 0 && <Label pointing='right' size='large' color='blue'>No pages yet, click here to add one</Label> }
+              { (!pages || pages.size === 0) && <Label pointing='right' size='large' color='blue'>No pages yet, click here to add one</Label> }
               <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} />
             </Menu.Item>
           </Menu.Menu>
