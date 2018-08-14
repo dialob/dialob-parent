@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
 import {isGlobalValueSet} from '../helpers/utils';
+import { addItemProp } from '../actions';
 
 const INITIAL_STATE = Immutable.Map();
 
@@ -198,6 +199,26 @@ function createValidation(language) {
   return Immutable.fromJS(validation);
 }
 
+function addItemProperty(state, itemId, propKey) {
+  return state.updateIn(['data', itemId, 'props'], props => {
+    if (!props) {
+      return new Immutable.Map([[propKey, '']]);
+    } else {
+      return props.set(propKey, '');
+    }
+  });
+}
+
+function updateItemProperty(state, itemId, propKey, value) {
+  return state.updateIn(['data', itemId, 'props'], props => {
+    if (props && props.get(propKey) !== undefined) {
+      return props.set(propKey, value);
+    } else {
+      return props;
+    }
+  });
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
@@ -260,6 +281,12 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.ADD_LANGUAGE:
       return state.updateIn(['metadata', 'languages'], languages =>
          languages ? languages.push(action.language) : Immutable.List([action.language]));
+    case Actions.ADD_ITEM_PROP:
+      return addItemProperty(state, action.itemId, action.propKey);
+    case Actions.UPDATE_ITEM_PROP:
+      return updateItemProperty(state, action.itemId, action.propKey, action.value);
+    case Actions.DELETE_ITEM_PROP:
+      return state.deleteIn(['data', action.itemId, 'props', action.propKey]);
     default:
       //NOP:
   }

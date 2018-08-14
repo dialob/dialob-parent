@@ -373,3 +373,32 @@ export function addLanguage(language, copyFrom = null) {
     saveNeeded: true
   };
 }
+
+export function addItemProp(itemId, propKey) {
+  return {
+    type: Actions.ADD_ITEM_PROP,
+    itemId,
+    propKey,
+    saveNeeded: true
+  };
+}
+
+export function deleteItemProp(itemId, propKey) {
+  return {
+    type: Actions.DELETE_ITEM_PROP,
+    itemId,
+    propKey,
+    saveNeeded: true,
+    confirm: true
+  };
+}
+
+export function updateItemProp(itemId, propKey, value) {
+  return {
+    type: Actions.UPDATE_ITEM_PROP,
+    itemId,
+    propKey,
+    value,
+    saveNeeded: true
+  };
+}
