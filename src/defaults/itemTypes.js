@@ -20,6 +20,13 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           }
         },
         {
+          title: 'Survey group (vertical)',
+          config: {
+            type: 'surveygroup',
+            className: ['vertical']
+          }
+        },
+        {
           title: 'Multi-Row',
           config: {
             type: 'rowgroup'
@@ -47,7 +54,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           title: 'Text box',
           config: {
             type: 'text',
-            styleClass: ['textbox']
+            className: ['textbox']
           }
         },
         {
