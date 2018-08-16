@@ -402,3 +402,14 @@ export function updateItemProp(itemId, propKey, value) {
     saveNeeded: true
   };
 }
+
+export function moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId) {
+  return {
+    type: Actions.MOVE_ITEM,
+    dragIndex,
+    hoverIndex,
+    dragParent,
+    hoverParent,
+    itemId
+  };
+}

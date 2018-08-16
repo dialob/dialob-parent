@@ -14,7 +14,8 @@ const itemSource = {
       id: props.id,
       index: props.index,
       parent: props.parent,
-      isPage: props.isPage
+      isPage: props.isPage,
+      itemType: props.item.get('type')
     }
   }
 };
@@ -31,10 +32,11 @@ const itemTarget = {
     ) {
       return;
     }
+    if (monitor.didDrop()) {
+      return;
+    }
 
-    props.moveItem(
-      dragIndex, hoverIndex, dragParent, hoverParent
-    );
+    props.moveItem(dragIndex, hoverIndex, dragParent, hoverParent, monitor.getItem().id);
   }
 };
 

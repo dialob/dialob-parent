@@ -1,7 +1,6 @@
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
 import {isGlobalValueSet} from '../helpers/utils';
-import { addItemProp } from '../actions';
 
 const INITIAL_STATE = Immutable.Map();
 
@@ -219,6 +218,11 @@ function updateItemProperty(state, itemId, propKey, value) {
   });
 }
 
+function moveItem(state, fromIndex, toIndex, fromParent, toParent, itemId) {
+  return state.updateIn(['data', fromParent, 'items'], items => items.delete(fromIndex))
+              .updateIn(['data', toParent, 'items'], items => items.insert(toIndex, itemId));
+}
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
@@ -287,6 +291,8 @@ export function formReducer(state = INITIAL_STATE, action) {
       return updateItemProperty(state, action.itemId, action.propKey, action.value);
     case Actions.DELETE_ITEM_PROP:
       return state.deleteIn(['data', action.itemId, 'props', action.propKey]);
+    case Actions.MOVE_ITEM:
+      return moveItem(state, action.dragIndex, action.hoverIndex, action.dragParent, action.hoverParent, action.itemId);
     default:
       //NOP:
   }

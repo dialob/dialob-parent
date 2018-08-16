@@ -50,3 +50,4 @@ export const ADD_LANGUAGE = 'composer/ADD_LANGUAGE';
 export const ADD_ITEM_PROP = 'composer/ADD_ITEM_PROP';
 export const DELETE_ITEM_PROP = 'composer/DELETE_ITEM_PROP';
 export const UPDATE_ITEM_PROP = 'composer/UPDATE_ITEM_PROP';
+export const MOVE_ITEM = 'composer/MOVE_ITEM';

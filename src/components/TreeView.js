@@ -3,11 +3,12 @@ import {connect} from 'react-redux';
 import {Menu, List} from 'semantic-ui-react';
 import {findRoot} from '../helpers/utils';
 import {TreeItem} from '../items';
+import {moveItem} from '../actions';
 
 class TreeView extends Component {
 
-  moveItem(dragIndex, hoverIndex, dragParent, hoverParent) {
-    console.log('MV', dragIndex, hoverIndex, dragParent, hoverParent);
+  moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId) {
+    this.props.moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId);
   }
 
   render() {
@@ -32,7 +33,9 @@ const TreeViewConnected = connect(
     items: state.form && state.form.get('data'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
-  {}
+  {
+    moveItem
+  }
 )(TreeView);
 
 export {
