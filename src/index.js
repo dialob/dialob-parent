@@ -6,6 +6,8 @@ import {middleware} from './middleware';
 import {createStore, applyMiddleware} from 'redux';
 import Immutable from 'immutable';
 import App from './App';
+import HTML5Backend from 'react-dnd-html5-backend'
+import { DragDropContextProvider } from 'react-dnd'
 
 const initialState = {
   config: Immutable.fromJS({
@@ -21,4 +23,4 @@ const initialState = {
 
 const store = createStore(reducer, initialState, applyMiddleware(...middleware));
 
-render(<Provider store={store}><App/></Provider>, document.querySelector('#app'));
+render(<DragDropContextProvider backend={HTML5Backend}><Provider store={store}><App/></Provider></DragDropContextProvider>, document.querySelector('#app'));

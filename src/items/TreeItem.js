@@ -1,22 +1,54 @@
 import React, {Component} from 'react';
-import {List} from 'semantic-ui-react';
+import {List, Ref} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import {treeItemFactory} from '.';
 import md_strip_tags from 'remove-markdown';
 import classnames from 'classnames';
+import { DragSource, DropTarget } from 'react-dnd'
 
 const MAX_LENGTH = 55;
+
+const itemSource = {
+  beginDrag(props) {
+    return {
+      id: props.id,
+      index: props.index,
+      parent: props.parent,
+      isPage: props.isPage
+    }
+  }
+};
+
+const itemTarget = {
+  drop(props, monitor, component) {
+    const dragIndex = monitor.getItem().index;
+    const dragParent = monitor.getItem().parent;
+    const hoverIndex = props.index;
+    const hoverParent = props.parent;
+
+    if (dragIndex === hoverIndex
+        && dragParent === hoverParent
+    ) {
+      return;
+    }
+
+    props.moveItem(
+      dragIndex, hoverIndex, dragParent, hoverParent
+    );
+  }
+};
 
 class TreeItem extends Item {
 
   createChildren(props, config) {
     return this.props.item.get('items') && this.props.item.get('items')
       .map(itemId => this.props.items.get(itemId))
-      .map(item => treeItemFactory(item, props, config));
+      .map((item, index) => treeItemFactory(item, Object.assign(props, {index}), config));
   }
 
   getSubList() {
-    const children = this.createChildren({pageId: this.props.pageId});
+    const parent = this.props.item.get('id');
+    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem});
     if (children && children.size > 0) {
       return (
         <List.List>
@@ -46,18 +78,31 @@ class TreeItem extends Item {
   }
 
   render() {
+    const {connectDragSource, connectDropTarget} = this.props;
     return (
-      <List.Item onClick={(e) => {e.stopPropagation(); this.props.setActivePage(this.props.pageId); this.props.setActive();}}>
-        <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
-        <List.Content>
-          <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>
-          {this.getSubList()}
-        </List.Content>
-      </List.Item>);
+      <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node);}}>
+        <List.Item >
+          <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
+          <List.Content>
+            <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>
+            {this.getSubList()}
+          </List.Content>
+        </List.Item>
+      </Ref>
+    );
   }
 }
 
-const TreeItemConnected = connectItem(TreeItem);
+const TreeItemConnected =
+  DragSource('item', itemSource, (connect, monitor) =>
+    ({
+      connectDragSource: connect.dragSource(),
+      isDragging: monitor.isDragging
+    }))
+    (DropTarget('item', itemTarget, connect => ({
+    connectDropTarget: connect.dropTarget()
+    }))
+      (connectItem(TreeItem)));
 
 export {
   TreeItem,
