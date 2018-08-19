@@ -5,3 +5,11 @@
 .composer-active {
   border-color: #1e7aca !important;
 }
+
+.composer-drag-above {
+  box-shadow: inset 0px 1px 0px 0px #1e7aca;
+}
+
+.composer-drag-below {
+  box-shadow: inset 0px -1px 0px 0px #1e7aca;
+}

@@ -5,6 +5,8 @@ import {treeItemFactory} from '.';
 import md_strip_tags from 'remove-markdown';
 import classnames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd'
+import {findDOMNode} from 'react-dom';
+import {canContain} from '../defaults';
 
 const MAX_LENGTH = 55;
 
@@ -21,6 +23,13 @@ const itemSource = {
 };
 
 const itemTarget = {
+  hover(props, monitor, component) {
+    if (!component) {
+      return;
+    }
+    //console.log('C', findDOMNode(component).classList);
+  },
+
   drop(props, monitor, component) {
     const dragIndex = monitor.getItem().index;
     const dragParent = monitor.getItem().parent;
@@ -35,6 +44,8 @@ const itemTarget = {
     if (monitor.didDrop()) {
       return;
     }
+
+    // console.log('over type', monitor.getItem().itemType, props.item.get('type'));
 
     props.moveItem(dragIndex, hoverIndex, dragParent, hoverParent, monitor.getItem().id);
   }
@@ -80,10 +91,10 @@ class TreeItem extends Item {
   }
 
   render() {
-    const {connectDragSource, connectDropTarget} = this.props;
+    const {connectDragSource, connectDropTarget, isOver} = this.props;
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node);}}>
-        <List.Item >
+        <List.Item className={classnames({'composer-drag-below': isOver})}>
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
             <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>
@@ -101,8 +112,9 @@ const TreeItemConnected =
       connectDragSource: connect.dragSource(),
       isDragging: monitor.isDragging
     }))
-    (DropTarget('item', itemTarget, connect => ({
-    connectDropTarget: connect.dropTarget()
+    (DropTarget('item', itemTarget, (connect, monitor) => ({
+      connectDropTarget: connect.dropTarget(),
+      isOver: monitor.isOver({shallow: true})
     }))
       (connectItem(TreeItem)));
 
