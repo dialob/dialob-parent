@@ -220,7 +220,7 @@ function updateItemProperty(state, itemId, propKey, value) {
 
 function moveItem(state, fromIndex, toIndex, fromParent, toParent, itemId) {
   return state.updateIn(['data', fromParent, 'items'], items => items.delete(fromIndex))
-              .updateIn(['data', toParent, 'items'], items => items.insert(toIndex, itemId));
+              .updateIn(['data', toParent, 'items'], items => !items ? new Immutable.List([itemId]) : items.insert(toIndex, itemId));
 }
 
 export function formReducer(state = INITIAL_STATE, action) {

@@ -6,7 +6,8 @@ const CONTAINMENT = {
   page: CONTAINER_TYPES,
   group: CONTAINER_TYPES.concat(ITEM_TYPES),
   rowgroup: ALL_TYPES,
-  surveygroup: ITEM_TYPES.concat(['survey'])
+  surveygroup: ITEM_TYPES.concat(['survey']),
+  questionnaire: 'page'
 };
 
 export function canContain(container, item) {

@@ -35,9 +35,8 @@ const itemTarget = {
     const dragParent = monitor.getItem().parent;
     const hoverIndex = props.index;
     const hoverParent = props.parent;
-
     if (dragIndex === hoverIndex
-        && dragParent === hoverParent
+        && dragParent.get('id') === hoverParent.get('id')
     ) {
       return;
     }
@@ -45,9 +44,27 @@ const itemTarget = {
       return;
     }
 
-    // console.log('over type', monitor.getItem().itemType, props.item.get('type'));
+    /*
+    console.log('Props', props);
+    console.log(`Dragged item: ${monitor.getItem().id}`);
+    console.log(`Hovered item: ${props.item.get('id')}`);
+    console.log(`Hovered item's parent: ${props.parent.get('id')}`);
+    console.log(`Hovered item's type: ${props.item.get('type')}`);
+    console.log(`Hovered item's parent type: ${props.parent.get('type')}`);
 
-    props.moveItem(dragIndex, hoverIndex, dragParent, hoverParent, monitor.getItem().id);
+    console.log(`Can drop above`, canContain(props.parent.get('type'), monitor.getItem().itemType));
+    console.log(`Can drop into`, canContain(props.item.get('type'), monitor.getItem().itemType));
+    */
+
+    if (canContain(props.parent.get('type'), monitor.getItem().itemType)) {
+      // Dropping above
+      console.log('Dropping above');
+      props.moveItem(dragIndex, hoverIndex, dragParent.get('id'), hoverParent.get('id'), monitor.getItem().id);
+    } else if (canContain(props.item.get('type'), monitor.getItem().itemType)) {
+      // Dropping into
+      console.log('Dropping into');
+      props.moveItem(dragIndex, 0, dragParent.get('id'), props.item.get('id'), monitor.getItem().id);
+    }
   }
 };
 
@@ -60,8 +77,8 @@ class TreeItem extends Item {
   }
 
   getSubList() {
-    const parent = this.props.item.get('id');
-    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem});
+    const parent = this.props.item;
+    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem, isPage: false});
     if (children && children.size > 0) {
       return (
         <List.List>
@@ -94,7 +111,7 @@ class TreeItem extends Item {
     const {connectDragSource, connectDropTarget, isOver} = this.props;
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node);}}>
-        <List.Item className={classnames({'composer-drag-below': isOver})}>
+        <List.Item className={classnames({'composer-drag-above': isOver})}>
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
             <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>
