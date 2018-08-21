@@ -410,6 +410,7 @@ export function moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId)
     hoverIndex,
     dragParent,
     hoverParent,
-    itemId
+    itemId,
+    saveNeeded: true
   };
 }

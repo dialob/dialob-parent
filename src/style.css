@@ -7,9 +7,9 @@
 }
 
 .composer-drag-above {
-  box-shadow: inset 0px 1px 0px 0px #1e7aca;
+  box-shadow: inset 0px 2px 0px 0px #1e7aca;
 }
 
 .composer-drag-below {
-  box-shadow: inset 0px -1px 0px 0px #1e7aca;
+  box-shadow: inset 0px -2px 0px 0px #1e7aca;
 }
