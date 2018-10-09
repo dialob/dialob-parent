@@ -47,6 +47,7 @@ export const SET_GLOBAL_VALUESET_NAME = 'composer/SET_GLOBAL_VALUESET_NAME';
 export const SHOW_TRANSLATION = 'composer/SHOW_TRANSLATION';
 export const HIDE_TRANSLATION = 'composer/HIDE_TRANSLATION';
 export const ADD_LANGUAGE = 'composer/ADD_LANGUAGE';
+export const DELETE_LANGUAGE = 'composer/DELETE_LANGUAGE';
 export const ADD_ITEM_PROP = 'composer/ADD_ITEM_PROP';
 export const DELETE_ITEM_PROP = 'composer/DELETE_ITEM_PROP';
 export const UPDATE_ITEM_PROP = 'composer/UPDATE_ITEM_PROP';

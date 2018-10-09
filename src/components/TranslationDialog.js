@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Modal, Button, Menu, Label, Table, Tab, Segment, Dropdown} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import Immutable from 'immutable';
-import {hideTranslation, updateItem, updateValuesetEntry, updateValidation, addLanguage, setActiveLanguage} from '../actions';
+import {hideTranslation, updateItem, updateValuesetEntry, updateValidation, addLanguage, setActiveLanguage, deleteLanguage} from '../actions';
 import { UnderstoodTableEditor } from '@resys/understood';
 import * as Defaults from '../defaults';
 
@@ -18,7 +18,7 @@ class LanguageConfigurator extends Component {
         return (
           <Table.Row key={i}>
             <Table.Cell onClick={() => this.props.setActiveLanguage(l)}>{l == this.props.activeLanguage ? <Label ribbon color='blue'>{name}</Label>: name}</Table.Cell>
-            <Table.Cell></Table.Cell>
+            <Table.Cell><Button size='mini' disabled={l == this.props.activeLanguage} onClick={() => this.props.deleteLanguage(l)}>Delete</Button></Table.Cell>
           </Table.Row>);
       }
     );
@@ -40,7 +40,7 @@ class LanguageConfigurator extends Component {
                 value={this.state.selectedLanguage}
                 onChange={(evt, data) => this.setState({selectedLanguage: data.value})} /></Table.HeaderCell>
             <Table.HeaderCell singleLine>
-              <Button size='mini' disabled>Copy from active</Button>
+              <Button size='mini' onClick={() => this.props.addLanguage(this.state.selectedLanguage, this.props.activeLanguage)} disabled={!this.state.selectedLanguage}>Copy from active</Button>
               <Button size='mini' onClick={() => this.props.addLanguage(this.state.selectedLanguage)} disabled={!this.state.selectedLanguage}>Create empty</Button>
             </Table.HeaderCell>
           </Table.Row>
@@ -135,6 +135,7 @@ class TranslationDialog extends Component {
                                                newLanguages={newLanguages}
                                                addLanguage={this.props.addLanguage}
                                                setActiveLanguage={this.props.setActiveLanguage}
+                                               deleteLanguage={this.props.deleteLanguage}
                                               />
         },
         {menuItem: 'Fields', render: () => <Translator
@@ -181,7 +182,8 @@ const TranslationDialogConnected = connect(
     updateValuesetEntry,
     updateValidation,
     addLanguage,
-    setActiveLanguage
+    setActiveLanguage,
+    deleteLanguage
   }
 )(TranslationDialog);
 

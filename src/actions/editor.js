@@ -374,6 +374,15 @@ export function addLanguage(language, copyFrom = null) {
   };
 }
 
+export function deleteLanguage(language) {
+  return {
+    type: Actions.DELETE_LANGUAGE,
+    language,
+    confirm: true,
+    saveNeeded: true
+  };
+}
+
 export function addItemProp(itemId, propKey) {
   return {
     type: Actions.ADD_ITEM_PROP,

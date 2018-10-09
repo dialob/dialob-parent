@@ -1,6 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
 import * as Actions from "../../src/actions/constants";
-import { addItem, updateItem, deleteItem, createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, createContextVariable, createExpressionVariable } from '../../src/actions';
+import { addItem, updateItem, deleteItem, createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, createContextVariable, createExpressionVariable, addLanguage, deleteLanguage } from '../../src/actions';
 import Immutable from "immutable";
 import sinon from "sinon";
 
@@ -186,6 +186,28 @@ describe("formReducer", () => {
     expect(state).to.be.an.instanceof(Immutable.Map);
     expect(state.get('variables')).to.be.an.instanceof(Immutable.List);
     expect(state.toJS().variables).to.deep.include({name: 'var1', expression: ''});
-  })
+  });
+  it ('Copies new language from existing', () => {
+    let state = formReducer(INITAL_STATE, createValueset('text1'));
+    state = formReducer(state, createValuesetEntry('vs1'));
+    state = formReducer(state, updateValuesetEntry('vs1', 0, null, 'abc', 'en'));
+    state = formReducer(state, addLanguage('fi', 'en'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.get('valueSets')).to.be.an.instanceof(Immutable.List);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: [{id: '', label: {en: 'abc', fi: 'abc'}}]});
+    expect(state.toJS().data.text1.label).to.deep.equal({en: 'Text', fi: 'Text'});
+    expect(state.toJS().metadata.languages).to.deep.equal(['en', 'fi']);
+  });
+  it ('Deletes a language', () => {
+    let state = formReducer(INITAL_STATE, createValueset('text1'));
+    state = formReducer(state, createValuesetEntry('vs1'));
+    state = formReducer(state, updateValuesetEntry('vs1', 0, null, 'abc', 'en'));
+    state = formReducer(state, addLanguage('fi', 'en'));
+    state = formReducer(state, deleteLanguage('en'));
+    expect(state).to.be.an.instanceof(Immutable.Map);
+    expect(state.toJS().valueSets).to.deep.include({id: 'vs1', entries: [{id: '', label: {fi: 'abc'}}]});
+    expect(state.toJS().data.text1.label).to.deep.equal({fi: 'Text'});
+    expect(state.toJS().metadata.languages).to.deep.equal(['fi']);
+  });
 });
 

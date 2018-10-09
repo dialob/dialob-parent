@@ -223,6 +223,46 @@ function moveItem(state, fromIndex, toIndex, fromParent, toParent, itemId) {
               .updateIn(['data', toParent, 'items'], items => !items ? new Immutable.List([itemId]) : items.insert(toIndex, itemId));
 }
 
+function copyLanguage(state, languageFrom, languageTo) {
+  // Items
+  let formData = state.get('data').map(item =>
+      item.update('label', label => label && label.set(languageTo, label.get(languageFrom))) // Item labels
+        .update('description', description => description ? description.set(languageTo, description.get(languageFrom)) : description) // Item description
+        .update('validations', validations => validations ? validations.map(v => v.update('message', msg => msg.set(languageTo, msg.get(languageFrom)))) : validations) // Validation messages
+    );
+  // Valueset entry labels
+  let newState = state.get('valueSets') ?  state.update('valueSets', valuesets =>
+    valuesets.map(valueset =>
+      valueset.update('entries', entries =>
+        entries.map(entry => entry.update('label', label => label.set(languageTo, label.get(languageFrom))))
+      )
+    )
+  ) : state;
+
+  // Metadata
+  return newState.set('data', formData)
+              .updateIn(['metadata', 'languages'], languages => languages.push(languageTo));
+}
+
+function deleteLanguage(state, language) {
+  // Items
+  let formData = state.get('data').map(item =>
+    item.update('label', label => label && label.delete(language))
+        .update('description', description => description && description.delete(language))
+        .update('validations', validations => validations && validations.map(v => v.update('message', msg => msg.delete(language))))
+  );
+  // Valueset entry labels
+  let newState = state.get('valueSets') ? state.update('valueSets', valuesets =>
+    valuesets.map(valueset => valueset.update('entries', entries =>
+      entries.map(entry => entry.update('label', label => label.delete(language)))
+    ))
+  ) : state;
+  // Metadata
+  return newState.set('data', formData)
+    .updateIn(['metadata', 'languages'], languages => languages.delete(languages.indexOf(language)));
+}
+
+
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
@@ -267,7 +307,7 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.CREATE_VALIDATION:
       return state.updateIn(['data', action.itemId],
         item => item.update('validations',
-          validations => validations ?  validations.push(createValidation(action.languae)) : Immutable.List([createValidation(action.language)])));
+          validations => validations ?  validations.push(createValidation(action.language)) : Immutable.List([createValidation(action.language)])));
     case Actions.DELETE_VALIDATION:
       return state.updateIn(['data', action.itemId],
         item => item.update('validations',
@@ -283,8 +323,14 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.SET_GLOBAL_VALUESET_NAME:
       return setValueSetName(state, action.valueSetId, action.name);
     case Actions.ADD_LANGUAGE:
-      return state.updateIn(['metadata', 'languages'], languages =>
-         languages ? languages.push(action.language) : Immutable.List([action.language]));
+      if (action.copyFrom) {
+        return copyLanguage(state, action.copyFrom, action.language);
+      } else {
+        return state.updateIn(['metadata', 'languages'], languages =>
+          languages ? languages.push(action.language) : Immutable.List([action.language]));
+      }
+    case Actions.DELETE_LANGUAGE:
+      return deleteLanguage(state, action.language);
     case Actions.ADD_ITEM_PROP:
       return addItemProperty(state, action.itemId, action.propKey);
     case Actions.UPDATE_ITEM_PROP:
