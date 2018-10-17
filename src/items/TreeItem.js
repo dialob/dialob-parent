@@ -115,7 +115,7 @@ class TreeItem extends Item {
         <List.Item className={dragClass}>
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
-            <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', 'en'])), this.props.item.get('id'))}</List.Header>
+            <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', this.props.language])), this.props.item.get('id'))}</List.Header>
             {this.getSubList()}
           </List.Content>
         </List.Item>
