@@ -43,8 +43,8 @@ class Page extends Component {
 
 const PageConnected = connect(
   state => ({
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    errors: state.editor && state.editor.get('errors')
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
   }),
   (dispatch, props) => ({
     setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language)),

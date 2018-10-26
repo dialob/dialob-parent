@@ -67,10 +67,10 @@ class MainMenu extends Component {
 
 const MainMenuConnected = connect(
   state => ({
-    status: state.editor && state.editor.get('status'),
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    formLanguages: state.form.getIn(['metadata', 'languages']),
-    formLabel: state.form.getIn(['metadata', 'label'])
+    status: state.dialobComposer.editor && state.dialobComposer.editor.get('status'),
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    formLanguages: state.dialobComposer.form.getIn(['metadata', 'languages']),
+    formLabel: state.dialobComposer.form.getIn(['metadata', 'label'])
   }),
   {
     setActiveLanguage,

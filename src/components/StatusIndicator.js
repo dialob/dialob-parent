@@ -20,7 +20,7 @@ class StatusIndicator extends Component {
 
 const StatusIndicatorConnected = connect(
   state => ({
-    status: state.editor && state.editor.get('status'),
+    status: state.dialobComposer.editor && state.dialobComposer.editor.get('status'),
   }),
   {
   }

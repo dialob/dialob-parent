@@ -1,7 +1,8 @@
-import Immutable from 'immutable';
+import * as Actions from '../actions/constants';
 
-const INITIAL_STATE = Immutable.Map();
-
-export function configReducer(state = INITIAL_STATE, action) {
+export function configReducer(state = {}, action) {
+  if (action.type === Actions.SET_CONFIG) {
+    return state = action.config;
+  }
   return state;
 }

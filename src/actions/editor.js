@@ -423,3 +423,10 @@ export function moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId)
     saveNeeded: true
   };
 }
+
+export function setConfig(config) {
+  return {
+    type: Actions.SET_CONFIG,
+    config
+  };
+}

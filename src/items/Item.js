@@ -23,10 +23,10 @@ class Item extends Component {
 function connectItem(component) {
   return connect(
     (state, props) => ({
-      items: state.form && state.form.get('data'),
-      active: props.item && state.editor && props.item.get('id') === state.editor.get('activeItemId'),
-      language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-      errors: state.editor && state.editor.get('errors'),
+      items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+      active: props.item && state.editor && props.item.get('id') === state.dialobComposer.editor.get('activeItemId'),
+      language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+      errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
       get findRootItem() { return () => findRoot(this.items); }
     }),
     (dispatch, props) => ({

@@ -31,7 +31,7 @@ class Choices extends Component {
 
 const ChoicesConnected = connect(
   state => ({
-    globalValueSets: state.form && state.form.getIn(['metadata', 'composer', 'globalValueSets'])
+    globalValueSets: state.dialobComposer.form && state.dialobComposer.form.getIn(['metadata', 'composer', 'globalValueSets'])
   }), {
     createValueset,
     updateItem

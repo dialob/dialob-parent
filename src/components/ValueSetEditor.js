@@ -44,8 +44,8 @@ class ValueSetEditor extends Component {
 
 const ValueSetEditorConnected = connect(
   (state, props) => ({
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    get getValueset() { return () => findValueset(state.form, props.valueSetId); }
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    get getValueset() { return () => findValueset(state.dialobComposer.form, props.valueSetId); }
   }), {
     createValueset,
     createValuesetEntry,

@@ -40,7 +40,7 @@ class ErrorList extends Component {
 
 const ErrorListConnected = connect(
   state => ({
-    errors: state.editor && state.editor.get('errors'),
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
   }),
   {
     setActiveItem,

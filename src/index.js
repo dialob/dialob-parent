@@ -1,14 +1,25 @@
 import React from 'react';
-import {render} from 'react-dom';
-import {Provider} from 'react-redux';
-import {reducer} from './reducers';
-import {middleware} from './middleware';
-import {createStore, applyMiddleware} from 'redux';
-import Immutable from 'immutable';
-import App from './App';
-import HTML5Backend from 'react-dnd-html5-backend'
-import { DragDropContextProvider } from 'react-dnd'
+//import {render} from 'react-dom';
+//import {Provider} from 'react-redux';
+//import {reducer} from './reducers';
+import createDialobComposerReducer from './reducers';
+import createDialobComposerMiddleware from './middleware';
+//import {createStore, applyMiddleware} from 'redux';
+//import Immutable from 'immutable';
+import DialobComposer from './DialobComposer';
+//import HTML5Backend from 'react-dnd-html5-backend'
+//import { DragDropContextProvider } from 'react-dnd'
+import {DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from './defaults';
 
+export {
+  DialobComposer,
+  createDialobComposerReducer,
+  createDialobComposerMiddleware,
+  DEFAULT_ITEM_CONFIG,
+  DEFAULT_ITEMTYPE_CONFIG
+};
+
+/*
 const initialState = {
   config: Immutable.fromJS({
     csrf: {
@@ -23,4 +34,6 @@ const initialState = {
 
 const store = createStore(reducer, initialState, applyMiddleware(...middleware));
 
-render(<DragDropContextProvider backend={HTML5Backend}><Provider store={store}><App/></Provider></DragDropContextProvider>, document.querySelector('#app'));
+render(<DragDropContextProvider backend={HTML5Backend}><Provider store={store}><DialobComposer/></Provider></DragDropContextProvider>, document.querySelector('#app'));
+
+*/

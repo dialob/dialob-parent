@@ -54,9 +54,9 @@ class ValueSetDialog extends Component {
 
 const ValueSetDialogConnected = connect(
   state => ({
-    valueSetsOpen: state.editor && state.editor.get('valueSetsOpen'),
-    globalValueSets: state.form && state.form.getIn(['metadata', 'composer', 'globalValueSets']),
-    items: state.form && state.form.get('data')
+    valueSetsOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('valueSetsOpen'),
+    globalValueSets: state.dialobComposer.form && state.dialobComposer.form.getIn(['metadata', 'composer', 'globalValueSets']),
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data')
   }), {
     hideValueSets,
     createValueset,

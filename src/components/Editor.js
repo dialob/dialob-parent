@@ -30,18 +30,25 @@ class Editor extends Component {
     this.props.addItem(config, activePageId);
   }
 
+  /*
   componentDidMount() {
     const rootItem = this.props.findRootItem();
     if (!rootItem) {
       this.props.loadForm(this.props.config.get('formId'));
     }
   }
+  */
 
   render() {
     const rootItem = this.props.findRootItem();
     if (!rootItem) {
+      return null;
+    }
+    /*
+    if (!rootItem) {
       return <Segment basic padded><Loader active /></Segment>;
     }
+    */
     const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
     const activePage = this.props.items.get(activePageId);
     const pages = rootItem && rootItem.get('items') ? rootItem.get('items')
@@ -80,9 +87,9 @@ class Editor extends Component {
 
 const EditorConnected = connect(
   state => ({
-    config: state.config,
-    items: state.form && state.form.get('data'),
-    activePageId: state.editor && state.editor.get('activePageId'),
+    config: state.dialobComposer.config,
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+    activePageId: state.dialobComposer.editor && state.dialobComposer.editor.get('activePageId'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {

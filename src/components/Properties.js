@@ -64,8 +64,8 @@ class Properties extends Component {
 
 const PropertiesConnected = connect(
   state => ({
-    activeItemId: state.editor && state.editor.get('activeItemId'),
-    items: state.form && state.form.get('data')
+    activeItemId: state.dialobComposer.editor && state.dialobComposer.editor.get('activeItemId'),
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data')
   }),
   {}
 )(Properties);

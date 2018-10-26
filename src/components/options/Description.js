@@ -25,7 +25,7 @@ class Description extends Component {
 
 const DescriptionConnected = connect(
   state => ({
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
   }),
   (dispatch, props) => ({
     setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language)),
