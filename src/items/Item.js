@@ -4,13 +4,14 @@ import {PropTypes} from 'prop-types';
 import {connect} from 'react-redux';
 import {setActiveItem, addItem, changeItemType, updateItem, deleteItem, showChangeId, setActivePage} from '../actions';
 import * as Defaults from '../defaults';
+import {findValueset} from '../helpers/utils';
 
 class Item extends Component {
 
   createChildren(props, config) {
     return this.props.item.get('items') && this.props.item.get('items')
       .map(itemId => this.props.items.get(itemId))
-      .map(item => itemFactory(item, props, config));
+      .map(item => itemFactory(item, props, config || this.props.itemEditors));
   }
 
   getErrors() {
@@ -27,6 +28,8 @@ function connectItem(component) {
       active: props.item && state.editor && props.item.get('id') === state.dialobComposer.editor.get('activeItemId'),
       language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
       errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
+      itemEditors: state.dialobComposer.config.itemEditors,
+      get getValueset() { return (valueSetId) => findValueset(state.dialobComposer.form, valueSetId); },
       get findRootItem() { return () => findRoot(this.items); }
     }),
     (dispatch, props) => ({

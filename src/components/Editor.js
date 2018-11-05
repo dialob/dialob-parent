@@ -71,7 +71,7 @@ class Editor extends Component {
             </Menu.Item>
           </Menu.Menu>
         </Menu>
-        {this.createChildren(activePage, {parentItemId: activePageId})}
+        {this.createChildren(activePage, {parentItemId: activePageId}, this.props.itemEditors)}
         {
           activePage &&
             <Dropdown button text='Add item'>
@@ -90,6 +90,7 @@ const EditorConnected = connect(
     config: state.dialobComposer.config,
     items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
     activePageId: state.dialobComposer.editor && state.dialobComposer.editor.get('activePageId'),
+    itemEditors:  state.dialobComposer.config && state.dialobComposer.config.itemEditors,
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {

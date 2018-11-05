@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Menu, Dropdown, Popup, Button} from 'semantic-ui-react';
-import {DEFAULT_ITEMTYPE_CONFIG} from '../defaults';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 
 class ItemTypeMenu extends Component {
 
@@ -14,7 +14,7 @@ class ItemTypeMenu extends Component {
   }
 
   render() {
-    return  DEFAULT_ITEMTYPE_CONFIG.categories.filter(this.props.categoryFilter || (i => i)).map((category, ckey) =>
+    return  this.props.itemTypes.categories.filter(this.props.categoryFilter || (i => i)).map((category, ckey) =>
       <Dropdown key={ckey} item text={category.title} closeOnChange>
         <Dropdown.Menu>
         {
@@ -26,4 +26,14 @@ class ItemTypeMenu extends Component {
   }
 }
 
-export default ItemTypeMenu;
+const ItemTypeMenuConnected = connect(
+  state => ({
+    itemTypes:  state.dialobComposer.config.itemTypes
+  }), {
+  }
+)(ItemTypeMenu);
+
+export {
+  ItemTypeMenuConnected as default,
+  ItemTypeMenu
+};

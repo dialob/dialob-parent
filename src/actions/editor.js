@@ -87,10 +87,11 @@ export function hideItemOptions() {
   };
 }
 
-export function createValueset(forItem = null) {
+export function createValueset(forItem = null, entries = null) {
   return {
     type: Actions.CREATE_VALUESET,
     forItem,
+    entries,
     saveNeeded: true
   };
 }

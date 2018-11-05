@@ -34,7 +34,7 @@ class DialobComposer extends Component {
 
   render() {
     const rootItem = this.props.findRootItem();
-    if (!rootItem) {
+    if (!rootItem || !this.props.config)  {
       return <Segment basic padded><Loader active /></Segment>;
     }
     const {configuration, formId} = this.props;
