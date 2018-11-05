@@ -27,7 +27,7 @@ const CUSTOM_ITEM_EDITORS = {
 const CUSTOM_ITEM_TYPES = {
   categories: [
     {
-      title: 'Nesa Survey',
+      title: 'Nesa',
       type: 'structure',
       items: [
         {
@@ -41,7 +41,7 @@ const CUSTOM_ITEM_TYPES = {
         }
       ]
     }
-  ].concat(DEFAULT_ITEMTYPE_CONFIG)
+  ].concat(DEFAULT_ITEMTYPE_CONFIG.categories)
 };
 
 const DIALOB_COMPOSER_CONFIG = {

@@ -1,16 +1,21 @@
 import React, {Component} from 'react';
 import {Table, Input, Dropdown, Button} from 'semantic-ui-react';
-import {Item, ItemMenu, connectItem} from '../../src';
+import {Item, ItemMenu, connectItem, DialobActions} from '../../src';
 import {connect} from 'react-redux';
 
 class SurveyGroup extends Item {
   render() {
-    const valueSet = this.props.getValueset(this.props.item.get('valueSetId'));
+    const vsetId= this.props.item.get('valueSetId');
+    const valueSet = this.props.getValueset(vsetId);
     const entries = valueSet && valueSet.get('entries') && valueSet.get('entries').map((e, i) =>
       <Table.Row key={i}>
-        <Table.Cell>{e.get('id')}</Table.Cell>
-        <Table.Cell>{e.getIn(['label', this.props.language])}</Table.Cell>
-        <Table.Cell>
+        <Table.Cell width={4}>
+          <Input transparent fluid value={e.get('id') || ''} onChange={(e) => this.props.updateValuesetEntry(vsetId, i, e.target.value, null, null)} />
+        </Table.Cell>
+        <Table.Cell width={12}>
+          <Input transparent fluid value={e.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.updateValuesetEntry(vsetId, i, null, e.target.value, this.props.language)}/>
+        </Table.Cell>
+        <Table.Cell collapsing>
           <Button size='tiny' icon='remove' />
         </Table.Cell>
       </Table.Row>
@@ -32,7 +37,7 @@ class SurveyGroup extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table attached='bottom'>
+        <Table celled attached='bottom'>
           <Table.Body>
             {entries}
           </Table.Body>
@@ -51,7 +56,13 @@ class SurveyGroup extends Item {
   }
 }
 
-const SurveyGroupConnected = connectItem(SurveyGroup);
+const SurveyGroupConnected = connect(
+  state => ({
+  }),
+  {
+    updateValuesetEntry: DialobActions.updateValuesetEntry
+  }
+)(connectItem(SurveyGroup));
 
 export {
   SurveyGroupConnected as default
