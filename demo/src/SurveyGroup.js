@@ -16,7 +16,7 @@ class SurveyGroup extends Item {
           <Input transparent fluid value={e.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.updateValuesetEntry(vsetId, i, null, e.target.value, this.props.language)}/>
         </Table.Cell>
         <Table.Cell collapsing>
-          <Button size='tiny' icon='remove' />
+          <Button size='tiny' icon='remove' onClick={() => this.props.deleteValuesetEntry(vsetId, i)} />
         </Table.Cell>
       </Table.Row>
     );
@@ -46,7 +46,7 @@ class SurveyGroup extends Item {
               <Table.HeaderCell />
               <Table.HeaderCell />
               <Table.HeaderCell>
-                <Button size='tiny' icon='add' />
+                <Button size='tiny' icon='add' onClick={() => this.props.createValuesetEntry(vsetId)} />
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>
@@ -60,7 +60,9 @@ const SurveyGroupConnected = connect(
   state => ({
   }),
   {
-    updateValuesetEntry: DialobActions.updateValuesetEntry
+    updateValuesetEntry: DialobActions.updateValuesetEntry,
+    deleteValuesetEntry: DialobActions.deleteValuesetEntry,
+    createValuesetEntry: DialobActions.createValuesetEntry
   }
 )(connectItem(SurveyGroup));
 
