@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import {DialobComposer, Item, connectItem, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '../../src';
+import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '../../src';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import {Provider} from 'react-redux';
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContextProvider } from 'react-dnd'
-import {Segment, Grid} from 'semantic-ui-react';
 import SurveyGroup from './SurveyGroup';
 import {postSurveyGroupCreate} from './surveyGroupCreator';
 
@@ -59,7 +58,8 @@ const DIALOB_COMPOSER_CONFIG = {
     if (lastItem.get('type') === 'surveygroup' && lastItem.getIn(['props', 'nesa']) === '1') {
       postSurveyGroupCreate(dispatch, action, lastItem);
     }
-  }
+  },
+  closeHandler: () => window.alert('CLOSE!')
 };
 
 const reducers = {

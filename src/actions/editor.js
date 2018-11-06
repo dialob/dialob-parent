@@ -431,3 +431,10 @@ export function setConfig(config) {
     config
   };
 }
+
+export function closeEditor() {
+  return {
+    type: Actions.CLOSE_EDITOR,
+    confirm: true
+  };
+}

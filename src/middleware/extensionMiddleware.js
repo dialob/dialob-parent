@@ -3,8 +3,12 @@ import {} from '../actions';
 
 export const extensionMiddleware = store => {
   return next => action => {
-    console.log('ZZ', action);
     let config = store.getState().dialobComposer.config;
+
+    if (action.type === Actions.CLOSE_EDITOR) {
+      config.closeHandler && config.closeHandler();
+    }
+
     // PRE callbacks
     let result = next(action);
     // POST callbacks
