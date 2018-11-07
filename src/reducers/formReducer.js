@@ -24,14 +24,17 @@ function generateValueSetId(state, prefix) {
 
 function addItem(state, action) {
   const itemId = generateItemId(state, action.config.type);
-  return state.update('data', data => data.set(itemId, Immutable.fromJS(Object.assign({id: itemId}, action.config)))
+  const itemConfig = Immutable.fromJS(Object.assign({id: itemId}, action.config));
+  return state.update('data', data => data.set(itemId, itemConfig)
               .update(action.parentItemId, parent => {
                 if (action.afterItemId) {
                   return parent.update('items', items => items ? items.insert(items.findIndex(i => i === action.afterItemId) + 1, itemId) : Immutable.List([itemId]));
                 } else {
                   return parent.update('items', items => items ? items.push(itemId) : Immutable.List([itemId]));
                 }
-              }));
+              }))
+              .setIn(['metadata', 'composer', 'transient', 'lastItem'], itemConfig);
+
 }
 
 function deleteItem(state, itemId) {
@@ -64,11 +67,11 @@ function deleteItem(state, itemId) {
      : newState;
 }
 
-function newValueSet(state, itemId = null) {
+function newValueSet(state, itemId = null, entries = null) {
   const valueSetId = generateValueSetId(state.get('valueSets'), 'vs');
   const valueSet = Immutable.fromJS({
     id: valueSetId,
-    entries: []
+    entries: entries || []
   });
   let newState = state.update('valueSets', valueSets => {
     if (!valueSets) {
@@ -281,7 +284,7 @@ export function formReducer(state = INITIAL_STATE, action) {
      // return state.update('data', data => deleteItem(data, action.itemId));
       return deleteItem(state, action.itemId);
     case Actions.CREATE_VALUESET:
-      return newValueSet(state, action.forItem);
+      return newValueSet(state, action.forItem, action.entries);
     case Actions.CREATE_VALUESET_ENTRY:
       return newValueSetEntry(state, action.valueSetId);
     case Actions.UPDATE_VALUESET_ENTRY:

@@ -1,7 +1,19 @@
 module.exports = {
-  type: 'react-app',
+  type: 'react-component',
+  npm: {
+    esModules: true,
+    umd: {
+      global: 'DialobComposer',
+      externals: {
+        react: 'React'
+      }
+    }
+  },
 
   webpack: {
+    html: {
+      template: 'demo/src/index.html'
+    },
     extractText: {
       filename: '[name].css'
     },

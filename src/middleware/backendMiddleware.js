@@ -7,10 +7,16 @@ const SAVE_DELAY = 500;
 var saveTimer;
 
 export const backendMiddleware = store => {
-  let config = store.getState().config;
-  let formService = new FormService(config.get('apiUrl'), config.get('csrf'));
-
   return next => action => {
+    let formService = null;
+    if (store.getState().dialobComposer.config.transport) {
+      let config = store.getState().dialobComposer.config.transport;
+
+      formService = new FormService(config.apiUrl, config.csrf);
+    } else {
+      return next(action);
+    }
+
     if (action.type === Actions.LOAD_FORM) {
       formService.loadForm(action.formId)
         .then(json => {
@@ -19,14 +25,14 @@ export const backendMiddleware = store => {
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.SAVE_FORM) {
-      formService.saveForm(store.getState().form.toJS())
+      formService.saveForm(store.getState().dialobComposer.form.toJS())
         .then(json => {
           store.dispatch(setFormRevision(json.rev));
           store.dispatch(setErrors(json.errors));
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.PERFORM_CHANGE_ID) {
-      formService.changeItemId(store.getState().form.toJS(), action.oldId, action.newId)
+      formService.changeItemId(store.getState().dialobComposer.form.toJS(), action.oldId, action.newId)
         .then(json => {
           store.dispatch(setForm(json.form));
           store.dispatch(setErrors(json.errors));
@@ -37,7 +43,7 @@ export const backendMiddleware = store => {
       if (action.context) {
         context = store.getState().form.getIn(['metadata', 'composer', 'contextValues']).entrySeq().map(e => ({id: e[0], value: e[1]})).toJS();
       }
-      formService.createSession(store.getState().form.get('_id'), action.language, context)
+      formService.createSession(store.getState().dialobComposer.form.get('_id'), action.language, context)
         .then(json => {
           store.dispatch(redirectPreview(json._id));
         })

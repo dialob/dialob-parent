@@ -81,9 +81,9 @@ class FormOptionsDialog extends Component {
 
 const FormOptionsDialogConnected = connect(
   state => ({
-    formOptions: state.editor && state.editor.get('formOptions'),
-    metadata:  state.form && state.form.get('metadata'),
-    formId: state.form && state.form.get('_id')
+    formOptions: state.dialobComposer.editor && state.dialobComposer.editor.get('formOptions'),
+    metadata:  state.dialobComposer.form && state.dialobComposer.form.get('metadata'),
+    formId: state.dialobComposer.form && state.dialobComposer.form.get('_id')
   }), {
     hideFormOptions,
     setMetadataValue

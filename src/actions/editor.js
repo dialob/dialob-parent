@@ -87,10 +87,11 @@ export function hideItemOptions() {
   };
 }
 
-export function createValueset(forItem = null) {
+export function createValueset(forItem = null, entries = null) {
   return {
     type: Actions.CREATE_VALUESET,
     forItem,
+    entries,
     saveNeeded: true
   };
 }
@@ -421,5 +422,19 @@ export function moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId)
     hoverParent,
     itemId,
     saveNeeded: true
+  };
+}
+
+export function setConfig(config) {
+  return {
+    type: Actions.SET_CONFIG,
+    config
+  };
+}
+
+export function closeEditor() {
+  return {
+    type: Actions.CLOSE_EDITOR,
+    confirm: true
   };
 }

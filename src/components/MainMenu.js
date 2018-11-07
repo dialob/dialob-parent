@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Container, Menu, Icon, Dropdown, Loader, Popup, Header} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
-import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation} from '../actions';
+import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation, closeEditor} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
 
@@ -57,7 +57,14 @@ class MainMenu extends Component {
                   {this.getLanguages()}
                 </Dropdown.Menu>
               </Dropdown>
-              <Menu.Item disabled={this.props.status !== Status.STATUS_OK} onClick={() => this.props.requestPreview()}><Icon name='eye' /> Preview</Menu.Item>
+              {
+                this.props.config && this.props.config.transport.previewUrl &&
+                <Menu.Item disabled={this.props.status !== Status.STATUS_OK} onClick={() => this.props.requestPreview()}><Icon name='eye' /> Preview</Menu.Item>
+              }
+              {
+                this.props.config && this.props.config.closeHandler &&
+               <Menu.Item icon='close' onClick={() => this.props.closeEditor()} />
+              }
           </Menu.Menu>
         </Menu>
       </Container>
@@ -67,10 +74,11 @@ class MainMenu extends Component {
 
 const MainMenuConnected = connect(
   state => ({
-    status: state.editor && state.editor.get('status'),
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    formLanguages: state.form.getIn(['metadata', 'languages']),
-    formLabel: state.form.getIn(['metadata', 'label'])
+    status: state.dialobComposer.editor && state.dialobComposer.editor.get('status'),
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    formLanguages: state.dialobComposer.form.getIn(['metadata', 'languages']),
+    formLabel: state.dialobComposer.form.getIn(['metadata', 'label']),
+    config: state.dialobComposer.config
   }),
   {
     setActiveLanguage,
@@ -79,7 +87,8 @@ const MainMenuConnected = connect(
     requestPreview,
     downloadForm,
     showValueSets,
-    showTranslation
+    showTranslation,
+    closeEditor
   }
 )(MainMenu);
 

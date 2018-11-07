@@ -30,7 +30,7 @@ class TreeView extends Component {
 
 const TreeViewConnected = connect(
   state => ({
-    items: state.form && state.form.get('data'),
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {

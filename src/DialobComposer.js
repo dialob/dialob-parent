@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Grid, Sticky} from 'semantic-ui-react';
+import {Grid, Sticky, Segment, Loader} from 'semantic-ui-react';
+import {loadForm, setConfig} from './actions';
 import MainMenu from './components/MainMenu';
 import TreeView from './components/TreeView';
 import Editor from './components/Editor';
@@ -14,11 +15,29 @@ import PreviewContextDialog from './components/PreviewContextDialog';
 import ValueSetDialog from './components/ValueSetDialog';
 import TranslationDialog from './components/TranslationDialog';
 import FatalErrorDialog from './components/FatalErrorDialog';
+import {connect} from 'react-redux';
+import {findRoot} from './helpers/utils';
 
 require('./style.css');
 
-class App extends Component {
+class DialobComposer extends Component {
+
+  componentDidMount() {
+    if (!this.config) {
+      this.props.setConfig(this.props.configuration);
+    }
+    const rootItem = this.props.findRootItem();
+    if (!rootItem) {
+      this.props.loadForm(this.props.formId);
+    }
+  }
+
   render() {
+    const rootItem = this.props.findRootItem();
+    if (!rootItem || !this.props.config)  {
+      return <Segment basic padded><Loader active /></Segment>;
+    }
+    const {configuration, formId} = this.props;
     const marginTop = '42px';
     const menuWidth = Defaults.TREE_WIDTH;
     return (
@@ -54,4 +73,19 @@ class App extends Component {
   }
 }
 
-export default App;
+const DialobComposerConnected = connect(
+  state => ({
+    config: state.dialobComposer.config,
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+    get findRootItem() { return () => findRoot(this.items); }
+  }),
+  {
+    loadForm,
+    setConfig
+  }
+)(DialobComposer);
+
+export {
+  DialobComposerConnected as default,
+  DialobComposer
+};

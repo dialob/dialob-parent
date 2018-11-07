@@ -45,9 +45,9 @@ class FatalErrorDialog extends Component {
 
 const FatalErrorDialogConnected = connect(
   state => ({
-    status: state.editor && state.editor.get('status'),
-    formLoaded: state.form && state.form.get('_id'),
-    errors: state.editor && state.editor.get('errors')
+    status: state.dialobComposer.editor && state.dialobComposer.editor.get('status'),
+    formLoaded: state.dialobComposer.form && state.dialobComposer.form.get('_id'),
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
   }), {
     downloadForm
   }

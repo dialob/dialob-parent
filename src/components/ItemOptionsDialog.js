@@ -46,8 +46,8 @@ class ItemOptionsDialog extends Component {
 
 const ItemOptionsDialogConnected = connect(
   state => ({
-    itemOptions: state.editor && state.editor.get('itemOptions'),
-    get getItem() { return () => state.form && state.form.getIn(['data', this.itemOptions.get('itemId')]); }
+    itemOptions: state.dialobComposer.editor && state.dialobComposer.editor.get('itemOptions'),
+    get getItem() { return () => state.dialobComposer.form && state.dialobComposer.form.getIn(['data', this.itemOptions.get('itemId')]); }
   }), {
     hideItemOptions
   }

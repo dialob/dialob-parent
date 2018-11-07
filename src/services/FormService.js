@@ -11,7 +11,7 @@ function checkResponse(response) {
 export default class FormService {
   constructor(baseUrl, csrf) {
     this.baseUrl = baseUrl;
-    this.csrf = csrf && csrf.toJS();
+    this.csrf = csrf;
   }
 
   doFetch(url, method, body = null) {

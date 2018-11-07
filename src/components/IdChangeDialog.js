@@ -108,9 +108,9 @@ class IdChangeDialog extends Component {
 
 const IdChangeDialogConnected = connect(
   state => ({
-    changeId: state.editor && state.editor.get('changeId'),
-    items: state.form && state.form.get('data'),
-    variables: state.form && state.form.get('variables')
+    changeId: state.dialobComposer.editor && state.dialobComposer.editor.get('changeId'),
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+    variables: state.dialobComposer.form && state.dialobComposer.form.get('variables')
   }), {
     hideChangeId,
     performChangeId

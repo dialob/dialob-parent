@@ -52,3 +52,5 @@ export const ADD_ITEM_PROP = 'composer/ADD_ITEM_PROP';
 export const DELETE_ITEM_PROP = 'composer/DELETE_ITEM_PROP';
 export const UPDATE_ITEM_PROP = 'composer/UPDATE_ITEM_PROP';
 export const MOVE_ITEM = 'composer/MOVE_ITEM';
+export const SET_CONFIG = 'composer/SET_CONFIG';
+export const CLOSE_EDITOR = 'composer/CLOSE_EDITOR';

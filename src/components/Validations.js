@@ -54,8 +54,8 @@ class Validations extends Component {
 
 const ValidationsConnected = connect(
   state => ({
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    errors: state.editor && state.editor.get('errors')
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
   }),
   (dispatch, props) => ({
     newValidation: (language) => dispatch(createValidation(props.item.get('id'), language)),

@@ -113,9 +113,9 @@ class VariablesDialog extends Component {
 
 const VariablesDialogConnected = connect(
   state => ({
-    variablesOpen: state.editor && state.editor.get('variablesDialog'),
-    variables: state.form && state.form.get('variables'),
-    errors: state.editor && state.editor.get('errors')
+    variablesOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('variablesDialog'),
+    variables: state.dialobComposer.form && state.dialobComposer.form.get('variables'),
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
   }), {
     hideVariables,
     createContextVariable,

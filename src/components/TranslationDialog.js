@@ -171,11 +171,11 @@ class TranslationDialog extends Component {
 
 const TranslationDialogConnected = connect(
   state => ({
-    translationOpen: state.editor && state.editor.get('translationOpen'),
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-    formLanguages: state.form.getIn(['metadata', 'languages']),
-    items: state.form && state.form.get('data'),
-    valueSets: state.form && state.form.get('valueSets')
+    translationOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('translationOpen'),
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    formLanguages: state.dialobComposer.form.getIn(['metadata', 'languages']),
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+    valueSets: state.dialobComposer.form && state.dialobComposer.form.get('valueSets')
   }), {
     hideTranslation,
     updateItem,

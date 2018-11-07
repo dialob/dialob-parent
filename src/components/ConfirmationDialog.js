@@ -24,7 +24,7 @@ class ConfirmationDialog extends Component {
 
 const ConfirmationDialogConnected = connect(
   state => ({
-    confirmableAction: state.editor && state.editor.get('confirmableAction'),
+    confirmableAction: state.dialobComposer.editor && state.dialobComposer.editor.get('confirmableAction'),
   }),
   (dispatch, props) => ({
     cancel: () => dispatch(cancelConfirmation()),

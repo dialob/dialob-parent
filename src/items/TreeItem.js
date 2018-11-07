@@ -67,7 +67,7 @@ class TreeItem extends Item {
 
   getSubList() {
     const parent = this.props.item;
-    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem, isPage: false});
+    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem, isPage: false}, this.props.itemEditors);
     if (children && children.size > 0) {
       return (
         <List.List>

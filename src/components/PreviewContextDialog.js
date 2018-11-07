@@ -50,10 +50,10 @@ class PreviewContextDialog extends Component {
 
 const PreviewContextDialogConnected = connect(
   state => ({
-    previewContextOpen: state.editor && state.editor.get('previewContextDialog'),
-    variables: state.form && state.form.get('variables'),
-    contextValues: state.form && state.form.getIn(['metadata', 'composer', 'contextValues']),
-    language: (state.editor && state.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE
+    previewContextOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('previewContextDialog'),
+    variables: state.dialobComposer.form && state.dialobComposer.form.get('variables'),
+    contextValues: state.dialobComposer.form && state.dialobComposer.form.getIn(['metadata', 'composer', 'contextValues']),
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE
   }), {
     hidePreviewContext,
     setContextValue,
