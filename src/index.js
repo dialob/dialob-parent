@@ -19,7 +19,7 @@ const DIALOB_COMPOSER_CONFIG = {
   },
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
-  // closeHandler: () => {}
+  closeHandler : () => window.location.href = window.COMPOSER_CONFIG.adminAppUrl
 };
 
 const reducers = {
