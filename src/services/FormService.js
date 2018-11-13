@@ -14,7 +14,7 @@ export default class FormService {
     this.csrf = csrf;
   }
 
-  doFetch(url, method, body = null) {
+  doFetch(url, method, body = undefined) {
     let headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json; charset=UTF-8'
@@ -25,9 +25,11 @@ export default class FormService {
     let options = {
       method,
       credentials: 'include',
-      headers,
-      body: body && JSON.stringify(body)
+      headers
     };
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
     return fetch(url, options)
       .then(response => checkResponse(response))
       .then(response => response.json());
