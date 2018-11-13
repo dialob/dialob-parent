@@ -39,17 +39,23 @@ class IdChangeDialog extends Component {
     this.state = {
       valid: true,
       value: null,
+      originalId: null,
       inputElement: null,
       processing: false
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    return {
-      valid: true,
-      value: null,
-      processing: false
-    };
+    if (prevState.originalId !== nextProps.changeId) {
+      return {
+        valid: true,
+        value: nextProps.changeId,
+        originalId: nextProps.changeId,
+        processing: false
+      };
+    } else {
+      return prevState;
+    }
   }
 
   validate(value) {
@@ -91,7 +97,7 @@ class IdChangeDialog extends Component {
               <List.Item>IDs must not match reserved words used in expressions.</List.Item>
             </List>
             <Ref innerRef={inputElement => this.setState({inputElement})}>
-              <Input error={!this.state.valid} fluid value={this.state.value !== null ? this.state.value : this.props.changeId} onChange={(evt) => this.setState({valid: this.validate(evt.target.value), value: evt.target.value})} />
+              <Input error={!this.state.valid} fluid value={this.state.value || ''} onChange={(evt) => this.setState({valid: this.validate(evt.target.value), value: evt.target.value})} />
             </Ref>
           </Modal.Content>
           <Modal.Actions>
