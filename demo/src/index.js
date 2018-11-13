@@ -38,4 +38,4 @@ class Demo extends Component {
   }
 }
 
-render(<DragDropContextProvider backend={HTML5Backend}><Provider store={store}><Demo/></Provider></DragDropContextProvider>, document.querySelector('#demo'))
+render(<DragDropContextProvider backend={HTML5Backend}><Provider store={store}><Demo/></Provider></DragDropContextProvider>, document.querySelector('#app'))
