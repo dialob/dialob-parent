@@ -17,6 +17,9 @@ function treeItemFactory(item, props = {}, config = DEFAULT_ITEM_CONFIG) {
   if (!item) {
     return null;
   }
+  if (itemConfig.hideInTree) {
+    return null;
+  }
   let itemConfig = config.items.find(c => c.matcher(item, props));
   return itemConfig ? <TreeItem key={item.get('id')} id={item.get('id')} item={item} {...itemConfig.props} {...props} /> : null;
 }
