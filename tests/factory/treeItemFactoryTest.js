@@ -10,6 +10,7 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const TestComponentA = (props) => <div>A</div>;
 const TestComponentB = (props) => <div>B</div>;
+const TestComponentD= (props) => <div>D</div>;
 const TestFixture = ({item, props, config}) => <div>{treeItemFactory(item, props, config)}</div>;
 
 const TEST_CONFIG = {
@@ -25,6 +26,15 @@ const TEST_CONFIG = {
     {
       matcher: item => item.get('type') === 'b',
       component: TestComponentB,
+      props: {
+        icon: 'font',
+        placeholder: 'Text field label'
+      }
+    },
+    {
+      matcher: item => item.get('type') === 'd',
+      component: TestComponentD,
+      hideInTree: true,
       props: {
         icon: 'font',
         placeholder: 'Text field label'
@@ -47,6 +57,11 @@ describe('treeItemFactory', () => {
   it ('Creates component A with custom props', () => {
     const wrapper = shallow(<TestFixture item={Immutable.fromJS({type: 'a'})} config={TEST_CONFIG} props={{d: 'test'}}/>);
     expect(wrapper.containsMatchingElement(<TreeItem d='test' />)).to.equal(true);
+  });
+
+  it ('Doesn\'t create tree item if hidden', () => {
+    const wrapper = shallow(<TestFixture item={Immutable.fromJS({type: 'd'})} config={TEST_CONFIG}/>);
+    expect(wrapper.children().exists()).to.equal(false);
   });
 
   it ('Skip unknown components', () => {
