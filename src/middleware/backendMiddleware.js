@@ -1,7 +1,7 @@
 import * as Actions from '../actions/constants';
 import * as Status from '../helpers/constants';
 import FormService from '../services/FormService';
-import {setForm, saveForm, setFormRevision, setStatus, setErrors, redirectPreview} from '../actions';
+import {setForm, saveForm, setFormRevision, setStatus, setErrors, redirectPreview, setVersions, hideNewTag} from '../actions';
 
 const SAVE_DELAY = 500;
 var saveTimer;
@@ -46,6 +46,18 @@ export const backendMiddleware = store => {
       formService.createSession(store.getState().dialobComposer.form.get('_id'), action.language, context)
         .then(json => {
           store.dispatch(redirectPreview(json._id));
+        })
+        .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+    } else if (action.type === Actions.FETCH_VERSIONS) {
+      formService.loadVersions(store.getState().dialobComposer.form.get('name'))
+        .then(json => {
+          store.dispatch(setVersions(json));
+        })
+        .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+    } else if (action.type === Actions.CREATE_NEW_TAG) {
+      formService.createTag(store.getState().dialobComposer.form.get('name'), action.name)
+        .then(json => {
+          store.dispatch(hideNewTag());
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     }

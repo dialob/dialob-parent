@@ -438,3 +438,47 @@ export function closeEditor() {
     confirm: true
   };
 }
+
+export function showVersioning() {
+  return {
+    type: Actions.SHOW_VERSIONING
+  };
+}
+
+export function hideVersioning() {
+  return {
+    type: Actions.HIDE_VERSIONING
+  };
+}
+
+export function fetchVersions() {
+  return {
+    type: Actions.FETCH_VERSIONS
+  };
+}
+
+export function setVersions(versions) {
+  return {
+    type: Actions.SET_VERSIONS,
+    versions
+  };
+}
+
+export function showNewTag() {
+  return {
+    type: Actions.SHOW_NEW_TAG
+  };
+}
+
+export function hideNewTag() {
+  return {
+    type: Actions.HIDE_NEW_TAG
+  };
+}
+
+export function createNewTag(name) {
+  return {
+    type: Actions.CREATE_NEW_TAG,
+    name
+  };
+}

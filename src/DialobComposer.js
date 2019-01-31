@@ -15,6 +15,8 @@ import PreviewContextDialog from './components/PreviewContextDialog';
 import ValueSetDialog from './components/ValueSetDialog';
 import TranslationDialog from './components/TranslationDialog';
 import FatalErrorDialog from './components/FatalErrorDialog';
+import VersioningDialog from './components/VersioningDialog';
+import NewTagDialog from './components/NewTagDialog';
 import {connect} from 'react-redux';
 import {findRoot} from './helpers/utils';
 
@@ -69,6 +71,8 @@ class DialobComposer extends Component {
         <ValueSetDialog />
         <TranslationDialog />
         <FatalErrorDialog />
+        <VersioningDialog />
+        <NewTagDialog />
       </React.Fragment>);
   }
 }

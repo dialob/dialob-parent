@@ -64,6 +64,18 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('translationOpen', true)
     case Actions.HIDE_TRANSLATION:
       return state.delete('translationOpen');
+    case Actions.SHOW_VERSIONING:
+      return state.set('versioningDialog', true);
+    case Actions.HIDE_VERSIONING:
+      return state.delete('versioningDialog').delete('versions');
+    case Actions.FETCH_VERSIONS:
+      return state.delete('versions');
+    case Actions.SET_VERSIONS:
+      return state.set('versions', Immutable.fromJS(action.versions));
+    case Actions.SHOW_NEW_TAG:
+      return state.set('newTagDialog', true);
+    case Actions.HIDE_NEW_TAG:
+      return state.delete('newTagDialog');
     default:
       // NOP
   }

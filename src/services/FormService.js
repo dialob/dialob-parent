@@ -65,4 +65,19 @@ export default class FormService {
     return this.doFetch(`${this.baseUrl}/questionnaires`, 'post', session);
   }
 
+  loadVersions(formName) {
+    return this.doFetch(`${this.baseUrl}/forms/${formName}/tags`);
+  }
+
+  createTag(formName, tagName, formId = null) {
+    let tagData = {
+      name: tagName,
+      formName
+    };
+    if (formId) {
+      tagData.formId = formId;
+    }
+    return this.doFetch(`${this.baseUrl}/forms/${formName}/tags`, 'post', tagData);
+  }
+
 }

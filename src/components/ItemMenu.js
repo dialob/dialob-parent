@@ -17,7 +17,7 @@ class ItemMenu extends Component {
 
   render() {
     return (
-      <Dropdown icon='content'>
+      <Dropdown icon='content' lazyLoad>
         <Dropdown.Menu>
           <Dropdown.Item icon='options' text='Options...' onClick={() => this.props.showItemOptions(this.props.item.get('id'))}/>
           <Dropdown.Item  icon='remove' text='Delete' onClick={() => this.props.onDelete()} />

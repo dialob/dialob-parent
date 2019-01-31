@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Container, Menu, Icon, Dropdown, Loader, Popup, Header} from 'semantic-ui-react';
+import {Container, Menu, Icon, Dropdown, Popup} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import * as Defaults from '../defaults';
-import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation, closeEditor} from '../actions';
+import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation, closeEditor, showVersioning, showNewTag} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
 
@@ -27,9 +27,7 @@ class MainMenu extends Component {
               Dialob Composer
               &nbsp;<small>{this.props.formLabel}</small>
           </Menu.Item>
-          <Menu.Item disabled>
-            Versioning
-          </Menu.Item>
+
           <Menu.Item onClick={() => this.props.showTranslation()}>
             Translations
           </Menu.Item>
@@ -42,6 +40,12 @@ class MainMenu extends Component {
           <Menu.Item onClick={() => this.props.showFormOptions()}>
             Options
           </Menu.Item>
+          <Dropdown item text='Version: LATEST' lazyLoad>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => this.props.showVersioning()}>Manage versions...</Dropdown.Item>
+              <Dropdown.Item onClick={() => this.props.showNewTag() }>Create version tag</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           <Menu.Menu position='right'>
               <Menu.Item onClick={() => this.props.downloadForm()}>
                 <Popup
@@ -52,7 +56,7 @@ class MainMenu extends Component {
               <Menu.Item>
                 <StatusIndicator />
               </Menu.Item>
-              <Dropdown item text={this.getLanguageName(this.props.language)}>
+              <Dropdown item text={this.getLanguageName(this.props.language)} lazyLoad>
                 <Dropdown.Menu>
                   {this.getLanguages()}
                 </Dropdown.Menu>
@@ -88,7 +92,9 @@ const MainMenuConnected = connect(
     downloadForm,
     showValueSets,
     showTranslation,
-    closeEditor
+    closeEditor,
+    showVersioning,
+    showNewTag
   }
 )(MainMenu);
 
