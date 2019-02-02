@@ -20,6 +20,7 @@ class MainMenu extends Component {
   }
 
   render() {
+    const formTag = this.props.formTag || 'LATEST';
     return (
       <Container>
         <Menu fixed='top'>
@@ -40,10 +41,10 @@ class MainMenu extends Component {
           <Menu.Item onClick={() => this.props.showFormOptions()}>
             Options
           </Menu.Item>
-          <Dropdown item text='Version: LATEST' lazyLoad>
+          <Dropdown item text={`Version: ${formTag}`} lazyLoad>
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => this.props.showVersioning()}>Manage versions...</Dropdown.Item>
-              <Dropdown.Item onClick={() => this.props.showNewTag() }>Create version tag</Dropdown.Item>
+              <Dropdown.Item disabled={formTag !== 'LATEST'} onClick={() => this.props.showNewTag() }>Create version tag</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
           <Menu.Menu position='right'>
@@ -82,6 +83,7 @@ const MainMenuConnected = connect(
     language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
     formLanguages: state.dialobComposer.form.getIn(['metadata', 'languages']),
     formLabel: state.dialobComposer.form.getIn(['metadata', 'label']),
+    formTag: state.dialobComposer.form.get('_tag'),
     config: state.dialobComposer.config
   }),
   {

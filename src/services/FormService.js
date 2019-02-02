@@ -35,8 +35,12 @@ export default class FormService {
       .then(response => response.json());
   }
 
-  loadForm(formId) {
-    return this.doFetch(this.baseUrl + '/forms/' + formId, 'get');
+  loadForm(formId, tagName = null) {
+    let url = this.baseUrl + '/forms/' + formId;
+    if (tagName && tagName !== 'LATEST') {
+      url += `?rev=${tagName}`;
+    }
+    return this.doFetch(url, 'get');
   }
 
   saveForm(formData) {
@@ -77,7 +81,11 @@ export default class FormService {
     if (formId) {
       tagData.formId = formId;
     }
-    return this.doFetch(`${this.baseUrl}/forms/${formName}/tags`, 'post', tagData);
+    let url = `${this.baseUrl}/forms/${formName}/tags`;
+    if (!formId) {
+      url += '?snapshot=true';
+    }
+    return this.doFetch(url, 'post', tagData);
   }
 
 }

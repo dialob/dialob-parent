@@ -18,19 +18,21 @@ export const backendMiddleware = store => {
     }
 
     if (action.type === Actions.LOAD_FORM) {
-      formService.loadForm(action.formId)
+      formService.loadForm(action.formId, action.tagName)
         .then(json => {
-          store.dispatch(setForm(json));
+          store.dispatch(setForm(json, action.tagName));
           store.dispatch(setStatus(Status.STATUS_OK)); // TODO: Check status
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.SAVE_FORM) {
-      formService.saveForm(store.getState().dialobComposer.form.toJS())
-        .then(json => {
-          store.dispatch(setFormRevision(json.rev));
-          store.dispatch(setErrors(json.errors));
-        })
-        .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+      if (!store.getState().dialobComposer.form.get('_tag')) {
+        formService.saveForm(store.getState().dialobComposer.form.toJS())
+          .then(json => {
+            store.dispatch(setFormRevision(json.rev));
+            store.dispatch(setErrors(json.errors));
+          })
+          .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+        }
     } else if (action.type === Actions.PERFORM_CHANGE_ID) {
       formService.changeItemId(store.getState().dialobComposer.form.toJS(), action.oldId, action.newId)
         .then(json => {
@@ -62,7 +64,7 @@ export const backendMiddleware = store => {
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     }
     let result = next(action);
-    if (action.saveNeeded === true) {
+    if (action.saveNeeded === true && !store.getState().dialobComposer.form.get('_tag')) {
       store.dispatch(setStatus(Status.STATUS_BUSY));
       clearTimeout(saveTimer);
       // TODO: show dirty indicator

@@ -269,9 +269,20 @@ function deleteLanguage(state, language) {
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
-      return Immutable.fromJS(action.formData);
+      const newState = Immutable.fromJS(action.formData);
+      return action.tagName ? newState.set('_tag', action.tagName) : newState;
     case Actions.SET_FORM_REVISION:
       return state.set('_rev', action.revision);
+    default:
+      //NOP:
+  }
+
+  if (state.get('_tag')) {
+    // No editing if not on "LATEST"
+    return state;
+  }
+
+  switch (action.type) {
     case Actions.ADD_ITEM:
       return addItem(state, action);
     case Actions.UPDATE_ITEM:

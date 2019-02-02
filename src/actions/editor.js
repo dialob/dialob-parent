@@ -126,17 +126,19 @@ export function deleteValuesetEntry(valueSetId, index) {
   };
 }
 
-export function loadForm(formId) {
+export function loadForm(formId, tagName = null) {
   return {
     type: Actions.LOAD_FORM,
-    formId
+    formId,
+    tagName
   };
 }
 
-export function setForm(formData) {
+export function setForm(formData, tagName = null) {
   return {
     type: Actions.SET_FORM,
-    formData
+    formData,
+    tagName
   };
 }
 

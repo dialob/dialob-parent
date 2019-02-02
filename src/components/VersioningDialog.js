@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { Modal, Button, List, Header, Loader, Segment } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { hideVersioning, fetchVersions } from "../actions";
+import { hideVersioning, fetchVersions, loadForm } from "../actions";
 
-const VersionItem = ({name, created, icon}) => {
+const VersionItem = ({name, created, icon, active, onActivate}) => {
   return (
-    <List.Item>
+    <List.Item active={active}>
       <List.Content floated='right'>
-        <Button size='tiny'>Activate</Button>
+        <Button size='tiny' disabled={active} onClick={onActivate}>Activate</Button>
       </List.Content>
-      <List.Icon name={icon} size='large' verticalAlign='middle' />
+      <List.Icon name={icon} size='large' verticalAlign='middle' color={active && 'blue'} />
       <List.Content>
         <List.Header>{name}</List.Header>
         <List.Description>{created}</List.Description>
@@ -31,8 +31,8 @@ class VersioningDialog extends Component {
       return <Loader inline='centered' active/>;
    }
 
-   let items = this.props.versions.map((v, i) => <VersionItem key={i} name={v.get('name')} created={v.get('created')} icon='tag' />);
-   items = items.push(<VersionItem key='latest' name='LATEST' created='----' icon='edit' />);
+   let items = this.props.versions.map((v, i) => <VersionItem key={i} name={v.get('name')} created={v.get('created')} icon='tag' active={this.props.formTag === v.get('name')} onActivate={() => this.props.loadForm(this.props.formName, v.get('name') )} />);
+   items = items.push(<VersionItem key='latest' name='LATEST' created='----' icon='edit' active={!this.props.formTag} onActivate={() => this.props.loadForm(this.props.formName)} />);
 
    return (
     <List celled selection>
@@ -40,24 +40,6 @@ class VersioningDialog extends Component {
     </List>
    );
   }
-
-  /*
-
-            <Label as='a' tag>
-      New
-      <Label.Detail>xxxx</Label.Detail>
-    </Label>
-    <Label as='a' color='red' tag>
-      Upcoming
-      <Label.Detail>xxxx</Label.Detail>
-    </Label>
-    <Label as='a' color='teal' tag>
-      Featured
-      <Label.Detail>xxxx</Label.Detail>
-       <Icon name='delete' />
-    </Label>
-            */
-
 
   render() {
     if (this.props.versioningOpen) {
@@ -90,10 +72,13 @@ const VersioningDialogConnected = connect(
     versions:
       state.dialobComposer.editor &&
       state.dialobComposer.editor.get("versions"),
+    formTag: state.dialobComposer.form.get('_tag'),
+    formName: state.dialobComposer.form.get('name'),
   }),
   {
     hideVersioning,
-    fetchVersions
+    fetchVersions,
+    loadForm
   }
 )(VersioningDialog);
 
