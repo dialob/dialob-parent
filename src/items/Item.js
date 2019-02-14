@@ -25,7 +25,7 @@ function connectItem(component) {
   return connect(
     (state, props) => ({
       items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
-      active: props.item && state.editor && props.item.get('id') === state.dialobComposer.editor.get('activeItemId'),
+      active: props.item && state.dialobComposer.editor && props.item.get('id') === state.dialobComposer.editor.get('activeItemId'),
       language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
       errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
       itemEditors: state.dialobComposer.config.itemEditors,
