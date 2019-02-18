@@ -21,13 +21,7 @@ class Group extends Item {
                 <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
               <Table.Cell collapsing>
-                <Dropdown text={this.props.item.get('type')}>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>Group</Dropdown.Item>
-                    <Dropdown.Item>Survey</Dropdown.Item>
-                    <Dropdown.Item>Multi-row</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                {this.props.item.get('type')}
               </Table.Cell>
               <Table.Cell collapsing>
                 <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.props.delete}/>

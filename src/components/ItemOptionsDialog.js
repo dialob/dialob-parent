@@ -14,7 +14,8 @@ class ItemOptionsDialog extends Component {
   render() {
     if (this.props.itemOptions) {
       let tabs = [
-        {menuItem: 'Properties', render: () => <Tab.Pane><ItemProps item={this.props.getItem()} /></Tab.Pane>},
+      // Enable this after https://git.resys.io/dialob/dialob-backend/issues/158 is resolved
+      //  {menuItem: 'Properties', render: () => <Tab.Pane><ItemProps item={this.props.getItem()} /></Tab.Pane>},
         {menuItem: 'Style classes', render: () => <Tab.Pane><Styleclasses item={this.props.getItem()} /></Tab.Pane>},
         {menuItem: 'Description', render: () => <Tab.Pane><Description item={this.props.getItem()} /></Tab.Pane>}
       ];

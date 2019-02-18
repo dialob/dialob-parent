@@ -8,9 +8,11 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           title: 'Group',
           config: {
             type: 'group',
+            /*
             props: {
               columns: '1'
             }
+            */
           }
         },
         {
