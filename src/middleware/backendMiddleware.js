@@ -43,7 +43,7 @@ export const backendMiddleware = store => {
     } else if (action.type === Actions.CREATE_PREVIEW_SESSION) {
       let context = null;
       if (action.context) {
-        context = store.getState().form.getIn(['metadata', 'composer', 'contextValues']).entrySeq().map(e => ({id: e[0], value: e[1]})).toJS();
+        context = store.getState().dialobComposer.form.getIn(['metadata', 'composer', 'contextValues']).entrySeq().map(e => ({id: e[0], value: e[1]})).toJS();
       }
       formService.createSession(store.getState().dialobComposer.form.get('_id'), action.language, context)
         .then(json => {
