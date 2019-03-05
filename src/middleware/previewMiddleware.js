@@ -1,5 +1,5 @@
 import * as Actions from '../actions/constants';
-import {showPreviewContext, hidePreviewContext, createPreviewSession} from '../actions';
+import {showPreviewContext, hidePreviewContext, createPreviewSession, setErrors} from '../actions';
 
 export const previewMiddleware = store => next => action => {
   if (action.type === Actions.REQUEST_FORM_PREVIEW) {
@@ -14,7 +14,11 @@ export const previewMiddleware = store => next => action => {
   } else if (action.type === Actions.REDIRECT_PREVIEW) {
     let previewUrl = store.getState().dialobComposer.config.transport.previewUrl;
     let win = window.open(`${previewUrl}/${action.sessionId}`);
-    win.focus();
+    if (win) {
+      win.focus();
+    } else {
+      store.dispatch(setErrors([{severity: 'FATAL', message: 'FATAL_POPUP'}]));
+    }
     return store.dispatch(hidePreviewContext());
   }
   return next(action);
