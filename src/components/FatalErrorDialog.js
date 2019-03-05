@@ -14,6 +14,8 @@ function translateFatal(message) {
       return 'Session was expired, please log in again';
     case 'FATAL_404':
       return 'Dialog does not exist';
+    case 'FATAL_POPUP':
+      return 'Preview window blocked. Please allow pop-ups for preview';
     default:
       return 'Communication problem';
   }
