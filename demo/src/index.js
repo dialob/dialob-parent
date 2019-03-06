@@ -15,7 +15,8 @@ const DIALOB_COMPOSER_CONFIG = {
       token: null
     },
     apiUrl: 'http://localhost:8081/webapi',
-    previewUrl: 'http://localhost:8081/webapi'
+    previewUrl: 'http://localhost:8081/webapi',
+    tenantId: null
   },
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
