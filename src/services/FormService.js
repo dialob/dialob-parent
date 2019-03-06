@@ -9,9 +9,10 @@ function checkResponse(response) {
 }
 
 export default class FormService {
-  constructor(baseUrl, csrf) {
+  constructor(baseUrl, csrf, tenantId) {
     this.baseUrl = baseUrl;
     this.csrf = csrf;
+    this.tenantId = tenantId;
   }
 
   doFetch(url, method, body = undefined) {
@@ -29,6 +30,13 @@ export default class FormService {
     };
     if (body) {
       options.body = JSON.stringify(body);
+    }
+    if (this.tenantId) {
+      if (url.indexOf('?') > 0) {
+        url = url + `&tenantId=${this.tenantId}`;
+      } else {
+        url = url + `?tenantId=${this.tenantId}`;
+      }
     }
     return fetch(url, options)
       .then(response => checkResponse(response))
