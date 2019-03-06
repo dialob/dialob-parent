@@ -16,6 +16,7 @@ const DIALOB_COMPOSER_CONFIG = {
     },
     apiUrl: window.COMPOSER_CONFIG.backend_api_url,
     previewUrl: window.COMPOSER_CONFIG.filling_app_url,
+    tenantId: window.COMPOSER_CONFIG.tenantId,
   },
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
