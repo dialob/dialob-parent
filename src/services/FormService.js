@@ -32,7 +32,7 @@ export default class FormService {
       options.body = JSON.stringify(body);
     }
     if (this.tenantId) {
-      if (url.indexOf('?') > 0) {
+      if (url.indexOf('?') >= 0) {
         url = url + `&tenantId=${this.tenantId}`;
       } else {
         url = url + `?tenantId=${this.tenantId}`;
