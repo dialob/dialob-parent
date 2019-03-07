@@ -10,4 +10,5 @@ yarn-error.log
 /es
 /umd
 /lib
-
+.project
+.settings/
