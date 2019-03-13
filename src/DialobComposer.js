@@ -34,6 +34,12 @@ class DialobComposer extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.formId !== this.props.formId) {
+      this.props.loadForm(this.props.formId);
+    }
+  }
+
   render() {
     const rootItem = this.props.findRootItem();
     if (!rootItem || !this.props.config)  {

@@ -9,7 +9,7 @@ const VersionItem = ({name, created, icon, active, onActivate}) => {
       <List.Content floated='right'>
         <Button size='tiny' disabled={active} onClick={onActivate}>Activate</Button>
       </List.Content>
-      <List.Icon name={icon} size='large' verticalAlign='middle' color={active && 'blue'} />
+      <List.Icon name={icon} size='large' verticalAlign='middle' color={active ? 'blue' : null} />
       <List.Content>
         <List.Header>{name}</List.Header>
         <List.Description>{created}</List.Description>
