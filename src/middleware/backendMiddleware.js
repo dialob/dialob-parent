@@ -42,7 +42,7 @@ export const backendMiddleware = store => {
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.CREATE_PREVIEW_SESSION) {
       let context = null;
-      if (action.context) {
+      if (action.context && store.getState().dialobComposer.form.getIn(['metadata', 'composer', 'contextValues'])) {
         context = store.getState().dialobComposer.form.getIn(['metadata', 'composer', 'contextValues']).entrySeq().map(e => ({id: e[0], value: e[1]})).toJS();
       }
       formService.createSession(store.getState().dialobComposer.form.get('_id'), action.language, context)
