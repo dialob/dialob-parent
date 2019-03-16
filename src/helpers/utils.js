@@ -42,6 +42,10 @@ export function translateErrorMessage(error) {
       return 'Syntax error';
     case 'COULD_NOT_DEDUCE_TYPE':
       return 'Can\'t deduce type ';
+    case 'NO_ORDER_RELATION_BETWEEN_TYPES':
+      return 'Can\'t compare these variables';
+    case 'NO_EQUALITY_RELATION_BETWEEN_TYPES':
+      return 'Can\'t compare these variables';
     default:
       return error.get('message');
   };
