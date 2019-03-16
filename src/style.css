@@ -13,3 +13,7 @@
 .composer-drag-below {
   box-shadow: inset 0px -2px 0px 0px #1e7aca;
 }
+
+.item.upward.dropdown.composer-item-menu>.menu {
+  top: auto !important;
+}
