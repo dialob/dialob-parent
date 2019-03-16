@@ -15,7 +15,7 @@ class ItemTypeMenu extends Component {
 
   render() {
     return  this.props.itemTypes.categories.filter(this.props.categoryFilter || (i => i)).map((category, ckey) =>
-      <Dropdown key={ckey} item text={category.title} closeOnChange lazyLoad>
+      <Dropdown key={ckey} item text={category.title} closeOnChange lazyLoad className='composer-item-menu'>
         <Dropdown.Menu>
         {
           category.items.filter(this.props.itemTypeFilter || (i => i)).map((item, ikey) => <Dropdown.Item key={ikey} onClick={() => this.props.onSelect(item.config)}>{item.title}</Dropdown.Item>)
