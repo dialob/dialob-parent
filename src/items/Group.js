@@ -38,7 +38,7 @@ class Group extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
+        <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
           {this.createChildren({parentItemId: this.props.item.get('id')})}
 
           <Dropdown button text='Add item'>
