@@ -14,7 +14,7 @@ module.exports = {
     html: {
       template: 'demo/src/index.html'
     },
-    extractText: {
+    extractCSS: {
       filename: '[name].css'
     },
     extra: {
