@@ -15,15 +15,18 @@ class ItemMenu extends Component {
     };
   }
 
+  /*
+    <Dropdown.Divider />
+    <Dropdown.Item icon='copy' text='Duplicate' />
+    <Dropdown.Item icon='move' text='Move to' />
+  */
+
   render() {
     return (
       <Dropdown icon='content' lazyLoad>
         <Dropdown.Menu>
           <Dropdown.Item icon='options' text='Options...' onClick={() => this.props.showItemOptions(this.props.item.get('id'))}/>
-          <Dropdown.Item  icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
-          <Dropdown.Divider />
-          <Dropdown.Item icon='copy' text='Duplicate' />
-          <Dropdown.Item icon='move' text='Move to' />
+          <Dropdown.Item icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
           <Dropdown.Divider />
           <Dropdown item text='Insert new'>
               <Dropdown.Menu>
