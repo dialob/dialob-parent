@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {Modal, Button, Tab, List, Statistic, Form, Dropdown} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideFormOptions, setMetadataValue} from '../actions';
+import moment from 'moment';
 
-const InformationPane = ({metadata, formId}) => {
+const InformationPane = ({metadata, formId, formName, stats}) => {
   return (
     <Tab.Pane>
       <List divided>
@@ -12,16 +13,20 @@ const InformationPane = ({metadata, formId}) => {
           {formId}
         </List.Item>
         <List.Item>
+          <List.Header>Technical name</List.Header>
+          {formName}
+        </List.Item>
+        <List.Item>
           <List.Header>Created</List.Header>
-          {metadata.get('created')}
+          {moment(metadata.get('created')).format('LLLL')}
+        </List.Item>
+        <List.Item>
+          <List.Header>Last saved</List.Header>
+          {moment(metadata.get('lastSaved')).fromNow()}
         </List.Item>
         <List.Item>
           <List.Header>Stats</List.Header>
-          <Statistic.Group size='mini'>
-            <Statistic value={0} label='Items' />
-            <Statistic value={0} label='Value sets' />
-            <Statistic value={0} label='Variables' />
-          </Statistic.Group>
+          <Statistic.Group size='mini' items={stats} />
         </List.Item>
       </List>
     </Tab.Pane>
@@ -55,11 +60,27 @@ const OptionsPane = ({metadata, onChange}) => {
 class FormOptionsDialog extends Component {
 
   render() {
-    if (this.props.formOptions) {
+    const {formOptions, form} = this.props;
+    if (formOptions) {
+      const metadata = form.get('metadata');
+      const items = form.get('data');
+      const valueSets = form.get('valueSets');
+      const variables = form.get('variables');
+      const formId = form.get('_id');
+      const formName = form.get('name');
 
       const tabs = [
-        {menuItem: 'Options', render: () => <OptionsPane metadata={this.props.metadata} onChange={(attr, value) => this.props.setMetadataValue(attr, value) } />},
-        {menuItem: 'Information', render: () => <InformationPane metadata={this.props.metadata} formId={this.props.formId} />}
+        {menuItem: 'Options', render: () => <OptionsPane metadata={metadata} onChange={(attr, value) => this.props.setMetadataValue(attr, value) } />},
+        {menuItem: 'Information', render: () => <InformationPane
+           metadata={metadata}
+           formId={formId}
+           formName={formName}
+           stats={[
+            { key: 'items', label: 'Items', value: items.size },
+            { key: 'valueSets', label: 'Lists', value: valueSets ? valueSets.size : 0 },
+            { key: 'vars', label: 'Variables', value: variables ? variables.size : 0 }
+           ]}
+           />}
       ];
 
       return (
@@ -82,8 +103,7 @@ class FormOptionsDialog extends Component {
 const FormOptionsDialogConnected = connect(
   state => ({
     formOptions: state.dialobComposer.editor && state.dialobComposer.editor.get('formOptions'),
-    metadata:  state.dialobComposer.form && state.dialobComposer.form.get('metadata'),
-    formId: state.dialobComposer.form && state.dialobComposer.form.get('_id')
+    form: state.dialobComposer.form
   }), {
     hideFormOptions,
     setMetadataValue
