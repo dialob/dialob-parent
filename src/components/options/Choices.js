@@ -15,12 +15,12 @@ class Choices extends Component {
       return (
         <React.Fragment>
           <Form.Field>
-            <label>Select global valueset</label>
+            <label>Select global list</label>
             <Dropdown fluid search selection options={options} value={this.props.item.get('valueSetId')}
               onChange={(evt, data) => this.props.updateItem(this.props.item.get('id'), 'valueSetId', data.value)} />
           </Form.Field>
           <Divider horizontal>Or</Divider>
-          <Button onClick={() => this.props.createValueset(this.props.item.get('id'))}>Create local value set</Button>
+          <Button onClick={() => this.props.createValueset(this.props.item.get('id'))}>Create local list</Button>
         </React.Fragment>
       );
     } else  {
