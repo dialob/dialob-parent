@@ -1,24 +1,18 @@
 import React, {Component} from 'react';
-import {Form, TextArea} from 'semantic-ui-react';
+import {Segment} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {updateItem} from '../../actions'
 import * as Defaults from '../../defaults';
+import RichEditor from '../RichEditor';
 
 class Description extends Component {
-
-  onChange(v) {
-    this.props.setAttribute('description', v.value, this.props.language);
-  }
 
   render() {
     const value = this.props.item.getIn(['description', this.props.language]) || '';
     return (
-      <Form>
-        <Form.Field>
-        <label>Enter description for this item</label>
-        <TextArea autoHeight onChange={(evt, data) => this.onChange(data)} value={value} />
-        </Form.Field>
-      </Form>
+      <Segment>
+        <RichEditor id={`dscr_${this.props.item.get('id')}`} onChange={(v) => this.props.setAttribute('description', v, this.props.language)} defaultValue={value} placeholder='Enter description for this item' />
+      </Segment>
     );
   }
 }

@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Message, Table, Icon, Input} from 'semantic-ui-react';
+import {Segment, Table, Input} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
-import Markdown from 'react-markdown';
 import ItemMenu from '../components/ItemMenu';
+import RichEditor from '../components/RichEditor';
+import classnames from 'classnames';
 
 class Note extends Item {
   render() {
@@ -29,9 +30,9 @@ class Note extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Message info={this.props.active} onClick={() => this.props.setActive()} attached='bottom'>
-          <Markdown source={this.props.item.getIn(['label', 'en'])} />
-        </Message>
+        <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
+          <RichEditor id={`nrt_${this.props.item.get('id')}`} onChange={(v) => this.props.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', 'en'])} placeholder='Write note text...' />
+        </Segment>
       </React.Fragment>
     );
   }
