@@ -484,3 +484,11 @@ export function createNewTag(name) {
     name
   };
 }
+
+export function copyItem(itemId) {
+  return {
+    type: Actions.COPY_ITEM,
+    itemId,
+    confirm: true
+  };
+}

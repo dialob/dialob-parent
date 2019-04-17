@@ -2,18 +2,19 @@ import React, {Component} from 'react';
 import {Segment, Menu, Icon, Input, Button, Popup, Dropdown, Loader, Label} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
-import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId} from '../actions';
+import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
 import { ItemMenu } from './ItemMenu';
 
-const PageMenu = ({onDelete, onOptions, onChangeId}) => (
+const PageMenu = ({onDelete, onOptions, onChangeId, onDuplicate, editable}) => (
   <Dropdown icon='content' style={{marginLeft: '0.5em'}}>
     <Dropdown.Menu>
       <Dropdown.Item icon='options' text='Options...' onClick={onOptions}/>
-      <Dropdown.Item icon='key' text='Change ID...' onClick={onChangeId} />
-      <Dropdown.Item  icon='remove' text='Delete' onClick={onDelete} />
+      <Dropdown.Item disabled={!editable} icon='key' text='Change ID...' onClick={onChangeId} />
+      <Dropdown.Item disabled={!editable} icon='remove' text='Delete' onClick={onDelete} />
+      <Dropdown.Item disabled={!editable} icon='copy' text='Duplicate' onClick={onDuplicate} />
     </Dropdown.Menu>
   </Dropdown>
 );
@@ -58,6 +59,8 @@ class Editor extends Component {
                                <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))}
                                          onOptions={() => this.props.showItemOptions(item.get('id'), true)}
                                          onChangeId={() => this.props.showChangeId(item.get('id'))}
+                                         onDuplicate={() => this.props.copyItem(item.get('id'))}
+                                         editable={!this.props.formTag}
                                  />
                             </Menu.Item>) : null;
     return (
@@ -91,6 +94,7 @@ const EditorConnected = connect(
     items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
     activePageId: state.dialobComposer.editor && state.dialobComposer.editor.get('activePageId'),
     itemEditors:  state.dialobComposer.config && state.dialobComposer.config.itemEditors,
+    formTag: state.dialobComposer.form.get('_tag'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {
@@ -99,7 +103,8 @@ const EditorConnected = connect(
     deleteItem,
     loadForm,
     showItemOptions,
-    showChangeId
+    showChangeId,
+    copyItem
   }
 )(Editor);
 

@@ -13,7 +13,7 @@ class SimpleField extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable collapsing width={2} >
-                <a onClick={() => this.props.changeId()}>{this.props.item.get('id')}</a>
+                <a onClick={() => {if (this.props.editable) { this.props.changeId(); }}}>{this.props.item.get('id')}</a>
               </Table.Cell>
               <Table.Cell>
                 <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>

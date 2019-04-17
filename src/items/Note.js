@@ -13,7 +13,7 @@ class Note extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable>
-                <a onClick={() => this.props.changeId()}>{this.props.item.get('id')}</a>
+                <a onClick={() => {if (this.props.editable) { this.props.changeId(); }}}>{this.props.item.get('id')}</a>
               </Table.Cell>
               <Table.Cell collapsing>
                 <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.props.delete}/>

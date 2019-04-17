@@ -62,6 +62,17 @@ export const backendMiddleware = store => {
           store.dispatch(hideNewTag());
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+    } else if (action.type === Actions.COPY_ITEM) {
+      formService.duplicateItem(store.getState().dialobComposer.form.toJS(), action.itemId)
+          .then(json => {
+            store.dispatch(setFormRevision(json.rev));
+            store.dispatch(setErrors(json.errors));
+            if (json.form) {
+              store.dispatch(setForm(json.form));
+              store.dispatch(saveForm());
+            }
+          })
+          .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     }
     let result = next(action);
     if (action.saveNeeded === true && !store.getState().dialobComposer.form.get('_tag')) {
