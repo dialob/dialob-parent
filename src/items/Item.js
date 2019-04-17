@@ -29,13 +29,13 @@ function connectItem(component) {
       language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
       errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
       itemEditors: state.dialobComposer.config.itemEditors,
+      editable: !state.dialobComposer.form.get('_tag'),
       get getValueset() { return (valueSetId) => findValueset(state.dialobComposer.form, valueSetId); },
       get findRootItem() { return () => findRoot(this.items); }
     }),
     (dispatch, props) => ({
       setActive: () => dispatch(setActiveItem(props.item.get('id'))),
       newItem: (config, parentItemId, afterItemId) => dispatch(addItem(config, parentItemId, afterItemId)),
-//      setType: (config) => dispatch(changeItemType(config, props.item.get('id'))),
       setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language)),
       delete: () => dispatch(deleteItem(props.item.get('id'))),
       changeId: () => dispatch(showChangeId(props.item.get('id'))),

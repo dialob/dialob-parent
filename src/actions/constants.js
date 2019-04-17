@@ -7,6 +7,7 @@ export const SET_ACTIVE_LANGUAGE = 'composer/SET_ACTIVE_LANGUAGE';
 export const ASK_CONFIRMATION = 'composer/ASK_CONFIRMATION';
 export const CANCEL_CONFIRMATION = 'composer/CANCEL_CONFIRMATION';
 export const DELETE_ITEM = 'composer/DELETE_ITEM';
+export const COPY_ITEM = 'composer/COPY_ITEM';
 export const SHOW_ITEM_OPTIONS = 'composer/SHOW_ITEM_OPTIONS';
 export const HIDE_ITEM_OPTIONS = 'composer/HIDE_ITEM_OPTIONS';
 export const CREATE_VALUESET = 'composer/CREATE_VALUESET';

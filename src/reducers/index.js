@@ -9,8 +9,6 @@ const reducers = {
   config: configReducer,
 };
 
-//export const reducer = combineReducers(reducers);
-
 export default function createDialobComposerReducer() {
   return combineReducers(reducers);
 }

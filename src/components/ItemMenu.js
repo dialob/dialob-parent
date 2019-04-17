@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Dropdown} from 'semantic-ui-react';
 import ItemTypeMenu from './ItemTypeMenu';
 import {connect} from 'react-redux';
-import {addItem, showItemOptions} from '../actions';
+import {addItem, showItemOptions, copyItem} from '../actions';
 import PropTypes from 'prop-types';
 
 class ItemMenu extends Component {
@@ -17,7 +17,6 @@ class ItemMenu extends Component {
 
   /*
     <Dropdown.Divider />
-    <Dropdown.Item icon='copy' text='Duplicate' />
     <Dropdown.Item icon='move' text='Move to' />
   */
 
@@ -26,7 +25,8 @@ class ItemMenu extends Component {
       <Dropdown icon='content' lazyLoad>
         <Dropdown.Menu>
           <Dropdown.Item icon='options' text='Options...' onClick={() => this.props.showItemOptions(this.props.item.get('id'))}/>
-          <Dropdown.Item icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
+          <Dropdown.Item disabled={!!this.props.formTag} icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
+          <Dropdown.Item disabled={!!this.props.formTag} icon='copy' text='Duplicate' onClick={() => this.props.copyItem(this.props.item.get('id'))} />
           <Dropdown.Divider />
           <Dropdown item text='Insert new'>
               <Dropdown.Menu>
@@ -41,11 +41,13 @@ class ItemMenu extends Component {
 
 const ItemMenuConnected = connect(
   state => ({
-    items: state.dialobComposer.form && state.dialobComposer.form.get('data')
+    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+    formTag: state.dialobComposer.form.get('_tag'),
   }),
   {
     addItem,
-    showItemOptions
+    showItemOptions,
+    copyItem
   }
 )(ItemMenu);
 
