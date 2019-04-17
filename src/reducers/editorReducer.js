@@ -1,4 +1,4 @@
-import Immutable from 'immutable';
+import Immutable, { List } from 'immutable';
 import * as Actions from '../actions/constants';
 import * as Status from '../helpers/constants';
 
@@ -76,6 +76,18 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('newTagDialog', true);
     case Actions.HIDE_NEW_TAG:
       return state.delete('newTagDialog');
+    case Actions.SET_TREE_COLLAPSE:
+      return state.update('treeCollapse', treeCollapse => {
+        if (!treeCollapse) {
+          treeCollapse = new List();
+        }
+        if (!action.collapsed && treeCollapse.findIndex(id => id === action.itemId) > -1) {
+          treeCollapse = treeCollapse.delete(treeCollapse.findIndex(id => id === action.itemId))
+        } else if (action.collapsed && treeCollapse.findIndex(id => id === action.itemId) === -1) {
+          treeCollapse = treeCollapse.push(action.itemId);
+        }
+        return treeCollapse;
+      });
     default:
       // NOP
   }
