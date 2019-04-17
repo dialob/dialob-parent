@@ -47,12 +47,13 @@ class DialobComposer extends Component {
     }
     const {configuration, formId} = this.props;
     const marginTop = '42px';
+    const paddingBottom = '55px';
     const menuWidth = Defaults.TREE_WIDTH;
     return (
       <React.Fragment>
         <MainMenu />
         <div >
-          <TreeView marginTop={marginTop} menuWidth={menuWidth} />
+          <TreeView marginTop={marginTop} menuWidth={menuWidth} paddingBottom={paddingBottom}/>
           <div style={{marginLeft: menuWidth, marginTop}}>
             <Grid columns='equal'>
               <Grid.Row>

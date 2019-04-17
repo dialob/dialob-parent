@@ -7,7 +7,8 @@ export const DEFAULT_ITEM_CONFIG = {
       component: Group,
       props: {
         icon: 'square outline',
-        placeholder: 'Group label'
+        placeholder: 'Group label',
+        treeCollapsible: true
       }
     },
     {
@@ -15,7 +16,8 @@ export const DEFAULT_ITEM_CONFIG = {
       component: Group,
       props: {
         icon: 'braille',
-        placeholder: 'Survey group label'
+        placeholder: 'Survey group label',
+        treeCollapsible: true
       }
     },
     {
@@ -23,7 +25,8 @@ export const DEFAULT_ITEM_CONFIG = {
       component: Group,
       props: {
         icon: 'table',
-        placeholder: 'Multi-row group label'
+        placeholder: 'Multi-row group label',
+        treeCollapsible: true
       }
     },
     {

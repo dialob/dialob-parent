@@ -485,6 +485,14 @@ export function createNewTag(name) {
   };
 }
 
+export function setTreeCollapse(itemId, collapsed) {
+  return {
+    type: Actions.SET_TREE_COLLAPSE,
+    itemId,
+    collapsed
+  };
+}
+
 export function copyItem(itemId) {
   return {
     type: Actions.COPY_ITEM,
@@ -492,3 +500,5 @@ export function copyItem(itemId) {
     confirm: true
   };
 }
+
+

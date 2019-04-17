@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {itemFactory} from '.';
-import {PropTypes} from 'prop-types';
 import {connect} from 'react-redux';
-import {setActiveItem, addItem, changeItemType, updateItem, deleteItem, showChangeId, setActivePage} from '../actions';
+import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse} from '../actions';
 import * as Defaults from '../defaults';
 import {findValueset} from '../helpers/utils';
 
@@ -30,6 +29,7 @@ function connectItem(component) {
       errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
       itemEditors: state.dialobComposer.config.itemEditors,
       editable: !state.dialobComposer.form.get('_tag'),
+      treeCollapsed: state.dialobComposer.editor && state.dialobComposer.editor.get('treeCollapse') && state.dialobComposer.editor.get('treeCollapse').findIndex(id => id === props.item.get('id')) > -1,
       get getValueset() { return (valueSetId) => findValueset(state.dialobComposer.form, valueSetId); },
       get findRootItem() { return () => findRoot(this.items); }
     }),
@@ -39,7 +39,8 @@ function connectItem(component) {
       setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language)),
       delete: () => dispatch(deleteItem(props.item.get('id'))),
       changeId: () => dispatch(showChangeId(props.item.get('id'))),
-      setActivePage: (pageId) => dispatch(setActivePage(pageId))
+      setActivePage: (pageId) => dispatch(setActivePage(pageId)),
+      setTreeCollapsed: collapsed => dispatch(setTreeCollapse(props.item.get('id'), collapsed))
     })
   )(component);
 }

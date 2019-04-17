@@ -62,3 +62,4 @@ export const SET_VERSIONS = 'composer/SET_VERSIONS';
 export const SHOW_NEW_TAG = 'composer/SHOW_NEW_TAG';
 export const HIDE_NEW_TAG = 'composer/HIDE_NEW_TAG';
 export const CREATE_NEW_TAG = 'composer/CREATE_NEW_TAG';
+export const SET_TREE_COLLAPSE = 'composer/SET_TREE_COLLAPSE';

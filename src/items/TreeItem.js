@@ -97,7 +97,7 @@ class TreeItem extends Item {
   }
 
   render() {
-    const {connectDragSource, connectDropTarget, isOver, clientOffset} = this.props;
+    const {connectDragSource, connectDropTarget, isOver, clientOffset, setTreeCollapsed, treeCollapsed} = this.props;
     let dragClass = null;
     if (isOver) {
       const boundingRect = this.node.getBoundingClientRect();
@@ -113,10 +113,14 @@ class TreeItem extends Item {
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node); this.node = node;}}>
         <List.Item className={dragClass}>
+          {
+            this.props.treeCollapsible &&
+              <List.Icon name={treeCollapsed ? 'caret right' : 'caret down'} style={{float: 'initial'}} onClick={() => setTreeCollapsed(!treeCollapsed)}/>
+          }
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
             <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', this.props.language])), this.props.item.get('id'))}</List.Header>
-            {this.getSubList()}
+            {!treeCollapsed && this.getSubList()}
           </List.Content>
         </List.Item>
       </Ref>

@@ -1,5 +1,5 @@
 export const FALLBACK_LANGUAGE = 'en';
-export const TREE_WIDTH = '250px';
+export const TREE_WIDTH = '300px';
 
 export const PAGE_CONFIG = {
   type: 'group'
