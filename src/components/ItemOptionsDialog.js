@@ -2,12 +2,10 @@ import React, {Component} from 'react';
 import {Modal, Button, Tab} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideItemOptions} from '../actions';
-import ItemProps from './options/ItemProps';
 import Styleclasses from './options/Styleclasses';
 import Description from './options/Description';
 import Choices from './options/Choices';
 import {CHOICE_ITEM_TYPES} from '../defaults';
-import Page from './options/Page';
 
 class ItemOptionsDialog extends Component {
 
@@ -22,10 +20,6 @@ class ItemOptionsDialog extends Component {
 
       if (CHOICE_ITEM_TYPES.findIndex(t => t === this.props.getItem().get('type')) > -1) {
         tabs.unshift({menuItem: 'Choices', render: () => <Tab.Pane><Choices item={this.props.getItem()} /></Tab.Pane>});
-      }
-
-      if (this.props.itemOptions.get('isPage')) {
-        tabs.unshift({menuItem: 'Page', render: () => <Tab.Pane><Page item={this.props.getItem()} /></Tab.Pane>});
       }
 
       return (
