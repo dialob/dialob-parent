@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import {Segment, Menu, Icon, Input, Button, Popup, Dropdown, Loader, Label} from 'semantic-ui-react';
+import {Segment, Menu, Input, Button, Dropdown, Label, Table} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findRoot} from '../helpers/utils';
-import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem} from '../actions';
+import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
-import { ItemMenu } from './ItemMenu';
 
 const PageMenu = ({onDelete, onOptions, onChangeId, onDuplicate, editable}) => (
   <Dropdown icon='content' style={{marginLeft: '0.5em'}}>
@@ -65,15 +64,30 @@ class Editor extends Component {
                             </Menu.Item>) : null;
     return (
       <Segment basic>
-        <Menu tabular>
+        <Menu tabular attached='top'>
           {pages}
-          <Menu.Menu position='right'>
+          <Menu.Menu position='right' >
             <Menu.Item>
               { (!pages || pages.size === 0) && <Label pointing='right' size='large' color='blue'>No pages yet, click here to add one</Label> }
               <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} />
             </Menu.Item>
           </Menu.Menu>
         </Menu>
+        <Table attached='bottom'>
+        <Table.Body>
+            <Table.Row>
+              <Table.Cell>
+                <Input transparent fluid placeholder='Page label' value={activePage.getIn(['label', this.props.language]) || ''} onChange={(evt) => this.props.updateItem(activePageId, 'label', evt.target.value, this.props.language)}/>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
+                <Input icon='eye' transparent fluid placeholder='Visibility'  value={activePage.get('activeWhen') || ''} onChange={(evt) => this.props.updateItem(activePageId, 'activeWhen', evt.target.value)}/>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+
         {this.createChildren(activePage, {parentItemId: activePageId}, this.props.itemEditors)}
         {
           activePage &&
@@ -95,6 +109,8 @@ const EditorConnected = connect(
     activePageId: state.dialobComposer.editor && state.dialobComposer.editor.get('activePageId'),
     itemEditors:  state.dialobComposer.config && state.dialobComposer.config.itemEditors,
     formTag: state.dialobComposer.form.get('_tag'),
+    language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
     get findRootItem() { return () => findRoot(this.items); }
   }),
   {
@@ -104,7 +120,8 @@ const EditorConnected = connect(
     loadForm,
     showItemOptions,
     showChangeId,
-    copyItem
+    copyItem,
+    updateItem
   }
 )(Editor);
 
