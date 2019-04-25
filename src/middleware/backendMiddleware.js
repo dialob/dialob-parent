@@ -1,7 +1,7 @@
 import * as Actions from '../actions/constants';
 import * as Status from '../helpers/constants';
 import FormService from '../services/FormService';
-import {setForm, saveForm, setFormRevision, setStatus, setErrors, redirectPreview, setVersions, hideNewTag} from '../actions';
+import {setForm, saveForm, setFormRevision, setStatus, setErrors, redirectPreview, setVersions, hideNewTag, scheduleSave} from '../actions';
 
 const SAVE_DELAY = 500;
 var saveTimer;
@@ -26,13 +26,18 @@ export const backendMiddleware = store => {
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.SAVE_FORM) {
       if (!store.getState().dialobComposer.form.get('_tag')) {
-        formService.saveForm(store.getState().dialobComposer.form.toJS())
-          .then(json => {
-            store.dispatch(setFormRevision(json.rev));
-            store.dispatch(setErrors(json.errors));
-          })
-          .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+        if (store.getState().dialobComposer.editor.get('status') === Status.STATUS_BUSY) {
+          store.dispatch(scheduleSave());
+        } else {
+          store.dispatch(setStatus(Status.STATUS_BUSY));
+          formService.saveForm(store.getState().dialobComposer.form.toJS())
+            .then(json => {
+              store.dispatch(setFormRevision(json.rev));
+              store.dispatch(setErrors(json.errors));
+            })
+            .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
         }
+      }
     } else if (action.type === Actions.PERFORM_CHANGE_ID) {
       formService.changeItemId(store.getState().dialobComposer.form.toJS(), action.oldId, action.newId)
         .then(json => {
@@ -76,7 +81,6 @@ export const backendMiddleware = store => {
     }
     let result = next(action);
     if (action.saveNeeded === true && !store.getState().dialobComposer.form.get('_tag')) {
-      store.dispatch(setStatus(Status.STATUS_BUSY));
       clearTimeout(saveTimer);
       // TODO: show dirty indicator
       saveTimer = setTimeout(() => store.dispatch(saveForm()), SAVE_DELAY);
