@@ -501,4 +501,10 @@ export function copyItem(itemId) {
   };
 }
 
+export function scheduleSave() {
+  return {
+    type: Actions.SCHEDULE_SAVE,
+    saveNeeded: true
+  };
+}
 
