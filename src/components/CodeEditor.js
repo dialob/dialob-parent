@@ -11,7 +11,6 @@ import 'codemirror/addon/hint/show-hint';
 class CodeEditor extends Component {
 
   handleChange = debounce(value => {
-    console.log(value);
     if (this.props.onChange) {
       this.props.onChange(value);
     }
@@ -22,6 +21,7 @@ class CodeEditor extends Component {
     if (element) {
 
         const editor = CodeMirrorIntegration.fromTextArea(element, {
+          mode: 'del',
           lineNumbers: false,
           tabSize: 2,
         });
