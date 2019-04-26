@@ -6,7 +6,8 @@ class RichEditor extends Component {
 
   handleChange = debounce(value => {
    if (this.props.onChange) {
-     this.props.onChange(value());
+     const v = value().replace(/\\{/gm, '{').replace(/\\}/gm, '}');
+     this.props.onChange(v);
    }
   }, 250);
 
