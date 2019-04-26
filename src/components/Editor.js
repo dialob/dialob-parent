@@ -6,6 +6,7 @@ import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChang
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
+import CodeEditor from './CodeEditor';
 
 const PageMenu = ({onDelete, onOptions, onChangeId, onDuplicate, editable}) => (
   <Dropdown icon='content' style={{marginLeft: '0.5em'}}>
@@ -82,7 +83,7 @@ class Editor extends Component {
             </Table.Row>
             <Table.Row>
               <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
-                <Input icon='eye' transparent fluid placeholder='Visibility'  value={activePage.get('activeWhen') || ''} onChange={(evt) => this.props.updateItem(activePageId, 'activeWhen', evt.target.value)}/>
+                <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} />
               </Table.Cell>
             </Table.Row>
           </Table.Body>

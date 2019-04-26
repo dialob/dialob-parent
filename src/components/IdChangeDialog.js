@@ -2,35 +2,7 @@ import React, {Component} from 'react';
 import {Modal, Button, Input, List, Ref} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideChangeId, performChangeId} from '../actions';
-
-const RESERVED_WORDS = [
-  'now',
-  'in',
-  'not',
-  'and',
-  'or',
-  'true',
-  'false',
-  'matches',
-  'today',
-  'now',
-  'year',
-  'years',
-  'minute',
-  'minutes',
-  'second',
-  'seconds',
-  'day',
-  'days',
-  'week',
-  'weeks',
-  'hour',
-  'hours',
-  'answered',
-  'answer',
-  'is',
-  'lengthOf'
-];
+import {RESERVED_WORDS, VALID_ID_PATTERN} from '../del/language';
 
 class IdChangeDialog extends Component {
 
@@ -62,7 +34,7 @@ class IdChangeDialog extends Component {
     return (
       value === this.props.changeId || // 'Renaming' to itself is valid (NO-OP)
       (
-        /^[a-zA-Z][_a-zA-Z\d]*$/g.test(value) // Check shape
+        VALID_ID_PATTERN.test(value) // Check shape
         && RESERVED_WORDS.indexOf(value) === -1 // Check reserved words
         && (!this.props.items || this.props.items.findKey(v => v.get('id') === value) === undefined) // Check other items
         && (!this.props.variables || this.props.variables.findKey(v => v.get('name') === value) === undefined) // Check variables

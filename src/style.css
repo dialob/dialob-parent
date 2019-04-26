@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin,latin-ext);
+
 .list .item .content .header.composer-active {
   color: #1e7aca !important;
 }
@@ -20,4 +22,11 @@
 
 .item.upward.dropdown.composer-item-menu>.menu {
   top: auto !important;
+}
+
+.CodeMirror {
+  line-height: 1.2em;
+  min-height: 1.2em;
+  height: auto;
+  font-family: Inconsolata, monospace;
 }
