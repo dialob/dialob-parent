@@ -30,3 +30,25 @@
   height: auto;
   font-family: Inconsolata, monospace;
 }
+
+.CodeMirror-hints {
+  font-family: Inconsolata, monospace;
+}
+
+.del-hint-keyword {
+  color: #708;
+  font-weight: bold;
+}
+
+.del-hint-item {
+
+}
+
+.del-hint-variable-context {
+  color: #0400f2;
+  font-style: italic;
+}
+
+.del-hint-variable {
+  color: #0400f2;
+}
