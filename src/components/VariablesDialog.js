@@ -3,6 +3,7 @@ import {Modal, Button, Tab, Table, Dropdown, Input} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideVariables, createContextVariable, createExpressionVariable, deleteVariable, showChangeId, updateVariable} from '../actions';
 import Immutable from 'immutable';
+import CodeEditor from './CodeEditor';
 
 const CONTEXT_TYPES = [
   {key: 'text', text: 'Text', value: 'text'},
@@ -43,7 +44,9 @@ const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, g
   const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
-    <Table.Cell><Input transparent fluid value={v.get('expression') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'expression', e.target.value)}/></Table.Cell>
+    <Table.Cell>
+      <CodeEditor value={v.get('expression') || ''} onChange={(value) => onChangeAttr(v.get('name'), 'expression', value)} />
+    </Table.Cell>
   </Table.Row>);
   return (
     <Tab.Pane>

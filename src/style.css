@@ -33,6 +33,7 @@
 
 .CodeMirror-hints {
   font-family: Inconsolata, monospace;
+  z-index: 1000000;
 }
 
 .del-hint-keyword {
