@@ -46,6 +46,8 @@ export function translateErrorMessage(error) {
       return 'Can\'t compare these variables';
     case 'NO_EQUALITY_RELATION_BETWEEN_TYPES':
       return 'Can\'t compare these variables';
+    case 'BOOLEAN_EXPRESSION_EXPECTED':
+      return 'Boolean expression expected';
     default:
       return error.get('message');
   };

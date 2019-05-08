@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin,latin-ext);
+
 .list .item .content .header.composer-active {
   color: #1e7aca !important;
 }
@@ -20,4 +22,58 @@
 
 .item.upward.dropdown.composer-item-menu>.menu {
   top: auto !important;
+}
+
+.CodeMirror {
+  line-height: 1.2em;
+  min-height: 1.2em;
+  height: auto;
+  font-family: Inconsolata, monospace;
+  background: transparent;
+}
+
+.CodeMirror-hints {
+  font-family: Inconsolata, monospace;
+  z-index: 1000000;
+}
+
+.CodeMirror-lint-tooltip {
+  font-family: Inconsolata, monospace;
+  background-color: rgba(255, 255, 255, 0.87) !important;
+  z-index: 1000000;
+  border: 1px solid rgba(34,36,38,.15);
+}
+
+.CodeMirror pre.CodeMirror-placeholder {
+  color: rgba(191,191,191,.87);
+}
+
+.del-hint-keyword {
+  color: #708;
+  font-weight: bold;
+}
+
+.del-hint-item {
+
+}
+
+.del-hint-variable-context {
+  color: #0400f2;
+  font-style: italic;
+}
+
+.del-hint-variable {
+  color: #0400f2;
+}
+
+.ui.input.bordered {
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: .28571429rem;
+  padding: .67857143em 1em;
+}
+
+.ui.input.bordered.focused {
+  border-color: #85b7d9;
+  -webkit-box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
+  box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
 }

@@ -19,6 +19,7 @@ import VersioningDialog from './components/VersioningDialog';
 import NewTagDialog from './components/NewTagDialog';
 import {connect} from 'react-redux';
 import {findRoot} from './helpers/utils';
+import './del/codemirrorMode';
 
 require('./style.css');
 

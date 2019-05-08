@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Input, Segment, Table, Dropdown, Icon, Popup, Button, Menu} from 'semantic-ui-react';
+import {Input, Segment, Table, Dropdown} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemTypeMenu from '../components/ItemTypeMenu';
 import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
+import CodeEditor from '../components/CodeEditor';
 
 class Group extends Item {
 
@@ -33,7 +34,7 @@ class Group extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-               <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
+               <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
@@ -41,7 +42,7 @@ class Group extends Item {
         <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
           {this.createChildren({parentItemId: this.props.item.get('id')})}
 
-          <Dropdown button text='Add item'>
+          <Dropdown button text='Add item' disabled={!this.props.editable}>
             <Dropdown.Menu>
               <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
             </Dropdown.Menu>
