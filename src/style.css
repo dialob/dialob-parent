@@ -29,11 +29,16 @@
   min-height: 1.2em;
   height: auto;
   font-family: Inconsolata, monospace;
+  background: transparent;
 }
 
 .CodeMirror-hints {
   font-family: Inconsolata, monospace;
   z-index: 1000000;
+}
+
+.CodeMirror pre.CodeMirror-placeholder {
+  color: rgba(191,191,191,.87);
 }
 
 .del-hint-keyword {

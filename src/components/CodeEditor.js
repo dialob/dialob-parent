@@ -3,14 +3,21 @@ import CodeMirrorIntegration from 'codemirror';
 import {debounce} from 'lodash';
 import delHinter from '../del/hinting';
 import {connect} from 'react-redux';
+import classnames from 'classnames';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/display/placeholder';
 
 class CodeEditor extends Component {
+
+  constructor(props) {
+    super(props);
+    this.editor = null;
+  }
 
   handleChange = debounce(value => {
     if (this.props.onChange) {
@@ -57,13 +64,28 @@ class CodeEditor extends Component {
         });
 
         editor.on('change', e => this.handleChange(e.getValue()));
+
+        this.editor = editor;
+    }
+  }
+
+  focusEditor() {
+    if (this.editor) {
+      this.editor.focus();
     }
   }
 
   render() {
-    return <textarea rows={2} id={this.props.id} ref={element => this.element = element} defaultValue={this.props.value} />;
+    const {id, value, placeholder, icon} = this.props;
+    return (
+      <div className={classnames('ui fluid transparent', {'icon': !!icon}, 'input')} onClick={() => this.focusEditor()} >
+        <textarea rows={2} id={id} ref={element => this.element = element} defaultValue={value} placeholder={placeholder} />
+        {icon &&
+          <i aria-hidden='true' className={classnames(icon, 'icon')} />
+        }
+      </div>
+    );
   }
-
 }
 
 const CodeEditorConnected = connect(

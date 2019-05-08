@@ -74,20 +74,22 @@ class Editor extends Component {
             </Menu.Item>
           </Menu.Menu>
         </Menu>
-        <Table attached='bottom'>
-        <Table.Body>
-            <Table.Row>
-              <Table.Cell>
-                <Input transparent fluid placeholder='Page label' value={activePage.getIn(['label', this.props.language]) || ''} onChange={(evt) => this.props.updateItem(activePageId, 'label', evt.target.value, this.props.language)}/>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
-                <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} />
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+        { pages && pages.size > 0 &&
+          <Table attached='bottom'>
+           <Table.Body>
+              <Table.Row>
+                <Table.Cell>
+                  <Input transparent fluid placeholder='Page label' value={activePage.getIn(['label', this.props.language]) || ''} onChange={(evt) => this.props.updateItem(activePageId, 'label', evt.target.value, this.props.language)}/>
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
+                  <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} placeholder='Visibility' icon='eye'/>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+        }
 
         {this.createChildren(activePage, {parentItemId: activePageId}, this.props.itemEditors)}
         {

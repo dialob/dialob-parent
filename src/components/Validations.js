@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {Table, Segment, Label, Icon, Button, Input, Form, Header} from 'semantic-ui-react';
+import {Table, Segment, Label, Button, Form, Header} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {createValidation, deleteValidation, updateValidation} from '../actions';
 import * as Defaults from '../defaults';
-import { METHODS } from 'http';
+import CodeEditor from '../components/CodeEditor';
 
 const ValidationRule = ({onChangeMessage, onChangeRule, onRemove, message, rule, getErrors}) => {
   return (
@@ -11,7 +11,9 @@ const ValidationRule = ({onChangeMessage, onChangeRule, onRemove, message, rule,
       <Label as='a' ribbon='right' icon='remove' onClick={onRemove} />
       <Form>
         <Form.Input label='Message' icon='exclamation circle' fluid value={message || ''} onChange={onChangeMessage}/>
-        <Form.Input label='Validation rule' icon='check' fluid value={rule || ''} onChange={onChangeRule} error={getErrors().size > 0}/>
+        <Form.Field label='Validation rule' error={getErrors().size > 0}>
+          <CodeEditor value={rule || ''} onChange={onChangeRule} icon='check'/>
+        </Form.Field>
       </Form>
     </Segment>
    );
@@ -32,7 +34,7 @@ class Validations extends Component {
         message={v.getIn(['message', this.props.language])}
         rule={v.get('rule')}
         onChangeMessage={(evt) => this.props.changeValidation(index, 'message', evt.target.value, this.props.language)}
-        onChangeRule={(evt) => this.props.changeValidation(index, 'rule', evt.target.value)}
+        onChangeRule={(value) => this.props.changeValidation(index, 'rule', value)}
         onRemove={() => this.props.removeValidation(index)}
         getErrors={this.getErrors.bind(this, index)}
        /> ) : [];

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {Table, Input, Icon, Dropdown} from 'semantic-ui-react';
+import {Table, Input} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
-import ItemTypeMenu from '../components/ItemTypeMenu';
 import ItemMenu from '../components/ItemMenu';
 import Validations from '../components/Validations';
+import CodeEditor from '../components/CodeEditor';
 
 class SimpleField extends Item {
   render() {
@@ -31,12 +31,12 @@ class SimpleField extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                <Input icon='eye' transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
+                <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' icon='eye'/>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT').size > 0}>
-               <Input icon='asterisk' transparent fluid placeholder='Required' value={this.props.item.get('required') || ''} onChange={(e) => this.props.setAttribute('required', e.target.value)}/>
+                <CodeEditor value={this.props.item.get('required') || ''} onChange={value => this.props.setAttribute('required', value)} placeholder='Required' icon='asterisk'/>
               </Table.Cell>
             </Table.Row>
             {
