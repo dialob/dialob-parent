@@ -14,10 +14,10 @@ const CONTEXT_TYPES = [
   {key: 'time', text: 'Time', value: 'time'}
 ];
 
-const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors}) => {
+const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors, readOnly}) => {
   const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
-    <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
-    <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
+    <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} disabled={readOnly} /></Table.Cell>
+    <Table.Cell selectable><a onClick={() => { if (!readOnly) { onIdChange(v.get('name'))}}}>{v.get('name')}</a></Table.Cell>
     <Table.Cell><Dropdown options={CONTEXT_TYPES} value={v.get('contextType')} onChange={(evt, data) => onChangeAttr(v.get('name'), 'contextType', data.value)} /></Table.Cell>
     <Table.Cell><Input transparent fluid value={v.get('defaultValue') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'defaultValue', e.target.value)}/></Table.Cell>
   </Table.Row>);
@@ -26,7 +26,7 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
       <Table celled>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => onCreate()} /></Table.HeaderCell>
+            <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => onCreate()} disabled={readOnly}/></Table.HeaderCell>
             <Table.HeaderCell>ID</Table.HeaderCell>
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>Default value</Table.HeaderCell>
@@ -40,12 +40,12 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
   );
 };
 
-const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors}) => {
+const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors, readOnly}) => {
   const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
-    <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} /></Table.Cell>
-    <Table.Cell selectable><a onClick={() => onIdChange(v.get('name'))}>{v.get('name')}</a></Table.Cell>
+    <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} disabled={readOnly}/></Table.Cell>
+    <Table.Cell selectable><a onClick={() => { if (!readOnly) { onIdChange(v.get('name'))}}}>{v.get('name')}</a></Table.Cell>
     <Table.Cell>
-      <CodeEditor value={v.get('expression') || ''} onChange={(value) => onChangeAttr(v.get('name'), 'expression', value)} />
+      <CodeEditor value={v.get('expression') || ''} onChange={(value) => onChangeAttr(v.get('name'), 'expression', value)} readOnly={readOnly}/>
     </Table.Cell>
   </Table.Row>);
   return (
@@ -86,6 +86,7 @@ class VariablesDialog extends Component {
                                                           onIdChange={this.props.showChangeId}
                                                           onChangeAttr={this.props.updateVariable}
                                                           getErrors={this.getErrors.bind(this)}
+                                                          readOnly={!this.props.editable}
                                                       />},
         {menuItem: 'Expression variables', render: () => <Expressions
                                                           variables={expressionVariables}
@@ -94,6 +95,7 @@ class VariablesDialog extends Component {
                                                           onIdChange={this.props.showChangeId}
                                                           onChangeAttr={this.props.updateVariable}
                                                           getErrors={this.getErrors.bind(this)}
+                                                          readOnly={!this.props.editable}
                                                        />}
       ];
 
@@ -118,7 +120,8 @@ const VariablesDialogConnected = connect(
   state => ({
     variablesOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('variablesDialog'),
     variables: state.dialobComposer.form && state.dialobComposer.form.get('variables'),
-    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
+    editable: !state.dialobComposer.form.get('_tag')
   }), {
     hideVariables,
     createContextVariable,

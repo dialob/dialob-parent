@@ -70,7 +70,7 @@ class Editor extends Component {
           <Menu.Menu position='right' >
             <Menu.Item>
               { (!pages || pages.size === 0) && <Label pointing='right' size='large' color='blue'>No pages yet, click here to add one</Label> }
-              <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} />
+              <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} disabled={!!this.props.formTag} />
             </Menu.Item>
           </Menu.Menu>
         </Menu>
@@ -84,7 +84,7 @@ class Editor extends Component {
               </Table.Row>
               <Table.Row>
                 <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
-                  <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} placeholder='Visibility' icon='eye'/>
+                  <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} placeholder='Visibility' icon='eye' readOnly={this.props.formTag} />
                 </Table.Cell>
               </Table.Row>
             </Table.Body>
@@ -94,7 +94,7 @@ class Editor extends Component {
         {this.createChildren(activePage, {parentItemId: activePageId}, this.props.itemEditors)}
         {
           activePage &&
-            <Dropdown button text='Add item'>
+            <Dropdown button text='Add item' disabled={!!this.props.formTag}>
               <Dropdown.Menu>
                 <ItemTypeMenu categoryFilter={(category => category.type === 'structure')} onSelect={(config) => this.newItem(config, activePageId)}/>
               </Dropdown.Menu>

@@ -31,12 +31,12 @@ class SimpleField extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' icon='eye'/>
+                <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye'/>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT').size > 0}>
-                <CodeEditor value={this.props.item.get('required') || ''} onChange={value => this.props.setAttribute('required', value)} placeholder='Required' icon='asterisk'/>
+                <CodeEditor value={this.props.item.get('required') || ''} onChange={value => this.props.setAttribute('required', value)} placeholder='Required' readOnly={!this.props.editable} icon='asterisk'/>
               </Table.Cell>
             </Table.Row>
             {
@@ -50,7 +50,7 @@ class SimpleField extends Item {
           </Table.Body>
         </Table>
         {
-          this.props.active && <Validations item={this.props.item} />
+          this.props.active && <Validations item={this.props.item} readOnly={!this.props.editable} />
         }
       </React.Fragment>
     );

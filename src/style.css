@@ -58,3 +58,15 @@
 .del-hint-variable {
   color: #0400f2;
 }
+
+.ui.input.bordered {
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: .28571429rem;
+  padding: .67857143em 1em;
+}
+
+.ui.input.bordered.focused {
+  border-color: #85b7d9;
+  -webkit-box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
+  box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
+}

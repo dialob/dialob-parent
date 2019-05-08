@@ -17,6 +17,9 @@ class CodeEditor extends Component {
   constructor(props) {
     super(props);
     this.editor = null;
+    this.state = {
+      focused: false
+    };
   }
 
   handleChange = debounce(value => {
@@ -56,6 +59,8 @@ class CodeEditor extends Component {
         const editor = CodeMirrorIntegration.fromTextArea(element, {
           mode: 'del',
           lineNumbers: false,
+          lineWrapping: true,
+          readOnly: this.props.readOnly,
           tabSize: 2,
           extraKeys: {
             'Ctrl-Space': 'autocomplete'
@@ -64,6 +69,8 @@ class CodeEditor extends Component {
         });
 
         editor.on('change', e => this.handleChange(e.getValue()));
+        editor.on('focus', () =>  this.setState({focused: true}));
+        editor.on('blur', () => this.setState({focused: false}));
 
         this.editor = editor;
     }
@@ -75,11 +82,17 @@ class CodeEditor extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.editor) {
+      this.editor.setOption('readOnly', this.props.readOnly);
+    }
+  }
+
   render() {
-    const {id, value, placeholder, icon} = this.props;
+    const {id, value, placeholder, icon, styleClass} = this.props;
     return (
-      <div className={classnames('ui fluid transparent', {'icon': !!icon}, 'input')} onClick={() => this.focusEditor()} >
-        <textarea rows={2} id={id} ref={element => this.element = element} defaultValue={value} placeholder={placeholder} />
+      <div className={classnames('ui fluid', {'icon': !!icon}, 'input', styleClass, {'focused': this.state.focused})} onClick={() => this.focusEditor()} >
+        <textarea className='testclass' rows={2} id={id} ref={element => this.element = element} defaultValue={value} placeholder={placeholder} />
         {icon &&
           <i aria-hidden='true' className={classnames(icon, 'icon')} />
         }

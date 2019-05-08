@@ -5,15 +5,13 @@ import {createValidation, deleteValidation, updateValidation} from '../actions';
 import * as Defaults from '../defaults';
 import CodeEditor from '../components/CodeEditor';
 
-const ValidationRule = ({onChangeMessage, onChangeRule, onRemove, message, rule, getErrors}) => {
+const ValidationRule = ({onChangeMessage, onChangeRule, onRemove, message, rule, getErrors, readOnly}) => {
   return (
     <Segment>
-      <Label as='a' ribbon='right' icon='remove' onClick={onRemove} />
+      { readOnly ? null : <Label as='a' ribbon='right' icon='remove' onClick={onRemove} /> }
       <Form>
         <Form.Input label='Message' icon='exclamation circle' fluid value={message || ''} onChange={onChangeMessage}/>
-        <Form.Field label='Validation rule' error={getErrors().size > 0}>
-          <CodeEditor value={rule || ''} onChange={onChangeRule} icon='check'/>
-        </Form.Field>
+        <Form.Field label='Validation rule' error={getErrors().size > 0} control={CodeEditor} value={rule || ''} onChange={onChangeRule} icon='check' styleClass='bordered' readOnly={readOnly} />
       </Form>
     </Segment>
    );
@@ -37,6 +35,7 @@ class Validations extends Component {
         onChangeRule={(value) => this.props.changeValidation(index, 'rule', value)}
         onRemove={() => this.props.removeValidation(index)}
         getErrors={this.getErrors.bind(this, index)}
+        readOnly={this.props.readOnly}
        /> ) : [];
     return (
       <Table celled attached='bottom' onClick={(evt) => evt.stopPropagation()}>
@@ -45,7 +44,7 @@ class Validations extends Component {
             <Table.Cell>
               <Header as='h5'>Validation rules</Header>
               {items}
-              <Button onClick={() => this.props.newValidation(this.props.language)}>Add validation rule</Button>
+              <Button disabled={this.props.readOnly} onClick={() => this.props.newValidation(this.props.language)}>Add validation rule</Button>
             </Table.Cell>
           </Table.Row>
         </Table.Body>
