@@ -37,6 +37,13 @@
   z-index: 1000000;
 }
 
+.CodeMirror-lint-tooltip {
+  font-family: Inconsolata, monospace;
+  background-color: rgba(255, 255, 255, 0.87) !important;
+  z-index: 1000000;
+  border: 1px solid rgba(34,36,38,.15);
+}
+
 .CodeMirror pre.CodeMirror-placeholder {
   color: rgba(191,191,191,.87);
 }

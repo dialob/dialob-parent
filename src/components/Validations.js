@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {createValidation, deleteValidation, updateValidation} from '../actions';
 import * as Defaults from '../defaults';
 import CodeEditor from '../components/CodeEditor';
+import Immutable from 'immutable';
 
 const ValidationRule = ({onChangeMessage, onChangeRule, onRemove, message, rule, getErrors, readOnly}) => {
   return (
@@ -11,7 +12,7 @@ const ValidationRule = ({onChangeMessage, onChangeRule, onRemove, message, rule,
       { readOnly ? null : <Label as='a' ribbon='right' icon='remove' onClick={onRemove} /> }
       <Form>
         <Form.Input label='Message' icon='exclamation circle' fluid value={message || ''} onChange={onChangeMessage}/>
-        <Form.Field label='Validation rule' error={getErrors().size > 0} control={CodeEditor} value={rule || ''} onChange={onChangeRule} icon='check' styleClass='bordered' readOnly={readOnly} />
+        <Form.Field label='Validation rule' error={getErrors().size > 0} control={CodeEditor} value={rule || ''} onChange={onChangeRule} icon='check' styleClass='bordered' readOnly={readOnly} errors={getErrors()} />
       </Form>
     </Segment>
    );
@@ -22,7 +23,7 @@ class Validations extends Component {
   getErrors(index) {
     return this.props.errors
       ? this.props.errors.filter(e => e.get('type') === 'VALIDATION' && e.get('itemId') === this.props.item.get('id') && e.get('index') === index)
-      : [];
+      : new Immutable.List([]);;
   }
 
   render() {

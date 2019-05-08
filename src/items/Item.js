@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse} from '../actions';
 import * as Defaults from '../defaults';
 import {findValueset} from '../helpers/utils';
+import Immutable from 'immutable';
 
 class Item extends Component {
 
@@ -16,7 +17,7 @@ class Item extends Component {
   getErrors() {
     return this.props.errors
       ? this.props.errors.filter(e => e.get('itemId') === this.props.item.get('id'))
-      : [];
+      : new Immutable.List([]);
   }
 }
 

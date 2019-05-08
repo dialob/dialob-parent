@@ -84,7 +84,7 @@ class Editor extends Component {
               </Table.Row>
               <Table.Row>
                 <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
-                  <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} placeholder='Visibility' icon='eye' readOnly={this.props.formTag} />
+                  <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} placeholder='Visibility' icon='eye' readOnly={this.props.formTag} errors={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId)} />
                 </Table.Cell>
               </Table.Row>
             </Table.Body>

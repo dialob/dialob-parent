@@ -4,6 +4,7 @@ import {debounce} from 'lodash';
 import delHinter from '../del/hinting';
 import {connect} from 'react-redux';
 import classnames from 'classnames';
+import { translateErrorMessage } from '../helpers/utils';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/lint/lint.css';
@@ -46,6 +47,24 @@ class CodeEditor extends Component {
     };
   }
 
+  getAnnotations(content, updateLinting, options, cm) {
+    let annotations = [];
+    if (this.props.errors) {
+      annotations = this.props.errors.map(e => (
+        {
+          message: translateErrorMessage(e),
+          severity: e.get('level') === 'ERROR' ? 'error' : 'warning',
+          from: cm.getDoc().posFromIndex(e.get('startIndex')),
+          to: cm.getDoc().posFromIndex(e.get('endIndex') + 1)
+        }
+      )).toJS();
+    }
+    if (annotations.length > 0) {
+      updateLinting(annotations, content);
+    }
+
+  }
+
   componentDidMount() {
     const element = this.element;
     if (element) {
@@ -54,7 +73,12 @@ class CodeEditor extends Component {
           completeSingle: false,
           hint: this.getHints,
           getList: this.props.hinter
-        }
+        };
+
+        const lintOptions = {
+          getAnnotations: this.getAnnotations.bind(this),
+          async: true
+        };
 
         const editor = CodeMirrorIntegration.fromTextArea(element, {
           mode: 'del',
@@ -65,7 +89,8 @@ class CodeEditor extends Component {
           extraKeys: {
             'Ctrl-Space': 'autocomplete'
           },
-          hintOptions
+          hintOptions,
+          lint: lintOptions
         });
 
         editor.on('change', e => this.handleChange(e.getValue()));
@@ -85,6 +110,7 @@ class CodeEditor extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.editor) {
       this.editor.setOption('readOnly', this.props.readOnly);
+      this.editor.performLint(); // TODO: Only if errors changed
     }
   }
 

@@ -31,12 +31,12 @@ class SimpleField extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye'/>
+                <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT').size > 0}>
-                <CodeEditor value={this.props.item.get('required') || ''} onChange={value => this.props.setAttribute('required', value)} placeholder='Required' readOnly={!this.props.editable} icon='asterisk'/>
+                <CodeEditor value={this.props.item.get('required') || ''} onChange={value => this.props.setAttribute('required', value)} placeholder='Required' readOnly={!this.props.editable} icon='asterisk' errors={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT')}/>
               </Table.Cell>
             </Table.Row>
             {
