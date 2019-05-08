@@ -29,15 +29,17 @@ const hinter = (context, form) => {
 
     result = result.concat(itemIds);
 
-    const variables = form.get('variables')
-      .map(v => ({
-        text: v.get('name'),
-        className: v.get('context') ? 'del-hint-variable-context' : 'del-hint-variable'
-      }))
-      .toJS()
-      .sort((a, b) => a.text.localeCompare(b.text));
+    if (form.get('variables')) {
+      const variables = form.get('variables')
+        .map(v => ({
+          text: v.get('name'),
+          className: v.get('context') ? 'del-hint-variable-context' : 'del-hint-variable'
+        }))
+        .toJS()
+        .sort((a, b) => a.text.localeCompare(b.text));
 
-    result = result.concat(variables);
+      result = result.concat(variables);
+    }
   }
 
   if (!context.isEmpty) {

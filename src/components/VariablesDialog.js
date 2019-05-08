@@ -71,7 +71,7 @@ class VariablesDialog extends Component {
   getErrors(variableId) {
     return this.props.errors
       ? this.props.errors.filter(e => e.get('itemId') === variableId)
-      : [];
+      : new Immutable.List([]);
   }
 
   render() {
