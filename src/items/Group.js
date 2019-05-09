@@ -42,7 +42,7 @@ class Group extends Item {
         <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
           {this.createChildren({parentItemId: this.props.item.get('id')})}
 
-          <Dropdown button text='Add item' disabled={!this.props.editable}>
+          <Dropdown button text='Add item' disabled={!this.props.editable} lazyLoad>
             <Dropdown.Menu>
               <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
             </Dropdown.Menu>
