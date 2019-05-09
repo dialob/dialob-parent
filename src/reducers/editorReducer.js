@@ -1,6 +1,7 @@
 import Immutable, { List } from 'immutable';
 import * as Actions from '../actions/constants';
 import * as Status from '../helpers/constants';
+import {findRoot} from '../helpers/utils';
 
 const INITIAL_STATE = Immutable.Map();
 
@@ -21,9 +22,12 @@ function setErrors(state, errors) {
 export function editorReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
-      return state.delete('changeId').set('activeLanguage', action.formData.metadata.languages[0]).set('loaded', true);
+      return state.delete('changeId')
+                  .set('activeLanguage', action.formData.metadata.languages[0])
+                  .set('rootItemId', findRoot(Immutable.fromJS(action.formData).get('data')).get('id'))
+                  .set('loaded', true)
     case Actions.LOAD_FORM:
-      return state.delete('loaded');
+      return state.delete('loaded').delete('rootItemId');
     case Actions.SET_ACTIVE_ITEM:
       return state.set('activeItemId', action.itemId);
     case Actions.SET_ACTIVE_PAGE:

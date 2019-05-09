@@ -31,8 +31,8 @@ function connectItem(component) {
       itemEditors: state.dialobComposer.config.itemEditors,
       editable: !state.dialobComposer.form.get('_tag'),
       treeCollapsed: state.dialobComposer.editor && state.dialobComposer.editor.get('treeCollapse') && state.dialobComposer.editor.get('treeCollapse').findIndex(id => id === props.item.get('id')) > -1,
+      rootItemId: state.dialobComposer.editor.get('rootItemId'),
       get getValueset() { return (valueSetId) => findValueset(state.dialobComposer.form, valueSetId); },
-      get findRootItem() { return () => findRoot(this.items); }
     }),
     (dispatch, props) => ({
       setActive: () => dispatch(setActiveItem(props.item.get('id'))),

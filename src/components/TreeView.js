@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Menu, List} from 'semantic-ui-react';
-import {findRoot} from '../helpers/utils';
 import {TreeItem} from '../items';
 import {moveItem} from '../actions';
 
@@ -12,7 +11,7 @@ class TreeView extends Component {
   }
 
   render() {
-    const rootItem = this.props.findRootItem();
+    const rootItem = this.props.items.get(this.props.rootItemId);
     const parent = rootItem;
     const treeItems = rootItem && rootItem.get('items') && rootItem.get('items')
             .map(itemId => this.props.items.get(itemId))
@@ -31,7 +30,7 @@ class TreeView extends Component {
 const TreeViewConnected = connect(
   state => ({
     items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
-    get findRootItem() { return () => findRoot(this.items); }
+    rootItemId: state.dialobComposer.editor.get('rootItemId')
   }),
   {
     moveItem

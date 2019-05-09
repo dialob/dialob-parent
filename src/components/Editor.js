@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Segment, Menu, Input, Button, Dropdown, Label, Table} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {findRoot} from '../helpers/utils';
 import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
@@ -21,9 +20,13 @@ const PageMenu = ({onDelete, onOptions, onChangeId, onDuplicate, editable}) => (
 
 class Editor extends Component {
 
+  getItemById(itemId) {
+    return this.props.items.get(itemId);
+  }
+
   createChildren(activePage, props, config) {
     return activePage && activePage.get('items') && activePage.get('items')
-      .map(itemId => this.props.items.get(itemId))
+      .map(itemId => this.getItemById(itemId))
       .map(item => itemFactory(item, props, config));
   }
 
@@ -32,15 +35,16 @@ class Editor extends Component {
   }
 
   render() {
-    const rootItem = this.props.findRootItem();
-    if (!rootItem) {
+    const {rootItemId} = this.props;
+    if (!rootItemId) {
       return null;
     }
+    const rootItem = this.getItemById(rootItemId);
 
     const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
     const activePage = this.props.items.get(activePageId);
     const pages = rootItem && rootItem.get('items') ? rootItem.get('items')
-                        .map(itemId => this.props.items.get(itemId))
+                        .map(itemId => this.getItemById(itemId))
                         .map((item, index) =>
                             <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en']) || <em>{item.get('id')}</em>}
                                <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))}
@@ -57,7 +61,7 @@ class Editor extends Component {
           <Menu.Menu position='right' >
             <Menu.Item>
               { (!pages || pages.size === 0) && <Label pointing='right' size='large' color='blue'>No pages yet, click here to add one</Label> }
-              <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItem.get('id'))} disabled={!!this.props.formTag} />
+              <Button icon='add' onClick={() => this.newItem(Defaults.PAGE_CONFIG, rootItemId)} disabled={!!this.props.formTag} />
             </Menu.Item>
           </Menu.Menu>
         </Menu>
@@ -101,7 +105,7 @@ const EditorConnected = connect(
     formTag: state.dialobComposer.form.get('_tag'),
     language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
     errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
-    get findRootItem() { return () => findRoot(this.items); }
+    rootItemId: state.dialobComposer.editor.get('rootItemId')
   }),
   {
     setActivePage,
