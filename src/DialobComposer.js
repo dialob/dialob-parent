@@ -18,7 +18,6 @@ import FatalErrorDialog from './components/FatalErrorDialog';
 import VersioningDialog from './components/VersioningDialog';
 import NewTagDialog from './components/NewTagDialog';
 import {connect} from 'react-redux';
-import {findRoot} from './helpers/utils';
 import './del/codemirrorMode';
 
 require('./style.css');
@@ -29,24 +28,21 @@ class DialobComposer extends Component {
     if (!this.config) {
       this.props.setConfig(this.props.configuration);
     }
-    const rootItem = this.props.findRootItem();
-    if (!rootItem) {
+    if (!this.props.loaded) {
       this.props.loadForm(this.props.formId);
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.formId !== this.props.formId) {
       this.props.loadForm(this.props.formId);
     }
   }
 
   render() {
-    const rootItem = this.props.findRootItem();
-    if (!rootItem || !this.props.config)  {
+    if (!this.props.loaded) {
       return <Segment basic padded><Loader active /></Segment>;
     }
-    const {configuration, formId} = this.props;
     const marginTop = '42px';
     const paddingBottom = '55px';
     const menuWidth = Defaults.TREE_WIDTH;
@@ -88,8 +84,7 @@ class DialobComposer extends Component {
 const DialobComposerConnected = connect(
   state => ({
     config: state.dialobComposer.config,
-    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
-    get findRootItem() { return () => findRoot(this.items); }
+    loaded: state.dialobComposer.editor.get('loaded')
   }),
   {
     loadForm,

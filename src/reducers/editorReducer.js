@@ -21,7 +21,9 @@ function setErrors(state, errors) {
 export function editorReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
-      return state.delete('changeId').set('activeLanguage', action.formData.metadata.languages[0]);
+      return state.delete('changeId').set('activeLanguage', action.formData.metadata.languages[0]).set('loaded', true);
+    case Actions.LOAD_FORM:
+      return state.delete('loaded');
     case Actions.SET_ACTIVE_ITEM:
       return state.set('activeItemId', action.itemId);
     case Actions.SET_ACTIVE_PAGE:
