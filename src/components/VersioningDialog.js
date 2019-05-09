@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Button, List, Header, Loader, Segment } from "semantic-ui-react";
+import { Modal, Button, List, Header, Loader } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { hideVersioning, fetchVersions, loadForm } from "../actions";
 

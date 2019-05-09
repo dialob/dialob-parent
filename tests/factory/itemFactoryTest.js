@@ -1,8 +1,7 @@
 import React from 'react';
 import {itemFactory} from '../../src/items';
 import Immutable from 'immutable';
-import {mount, render, shallow} from 'enzyme'
-import sinon from 'sinon';
+import {shallow} from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16';
 import Enzyme from 'enzyme';
 

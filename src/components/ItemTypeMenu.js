@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Menu, Dropdown, Popup, Button} from 'semantic-ui-react';
+import {Dropdown} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 

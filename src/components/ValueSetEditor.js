@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Table, Button, Input, Dropdown, Form, Divider} from 'semantic-ui-react';
+import {Table, Button, Input} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findValueset} from '../helpers/utils';
 import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry} from '../actions';

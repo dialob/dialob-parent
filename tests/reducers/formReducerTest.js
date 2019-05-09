@@ -1,8 +1,6 @@
 import { formReducer } from "../../src/reducers/formReducer";
-import * as Actions from "../../src/actions/constants";
 import { addItem, updateItem, deleteItem, createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, createContextVariable, createExpressionVariable, addLanguage, deleteLanguage } from '../../src/actions';
 import Immutable from "immutable";
-import sinon from "sinon";
 
 const INITAL_STATE = Immutable.fromJS({
   _id: "e8fa5f95873b08b1013a5f1fdd16be41",

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Message} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import * as Status from '../helpers/constants';
 import {setActiveItem, showVariables} from '../actions';
 import { translateErrorType, translateErrorMessage } from '../helpers/utils';
 

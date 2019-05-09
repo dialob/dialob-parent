@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {Modal, Button, Message, Icon} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {downloadForm} from '../actions';
-import Immutable from 'immutable';
-import * as Defaults from '../defaults';
 import * as Status from '../helpers/constants';
 
 function translateFatal(message) {

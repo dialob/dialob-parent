@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Button, List, Header, Loader, Segment, Form } from "semantic-ui-react";
+import { Modal, Button, Form } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { hideNewTag, createNewTag } from "../actions";
 

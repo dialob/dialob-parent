@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {Table, Button, Input, Dropdown, Form, Divider} from 'semantic-ui-react';
+import {Button, Dropdown, Form, Divider} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {findValueset, isGlobalValueSet} from '../../helpers/utils';
-import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, updateItem} from '../../actions';
-import * as Defaults from '../../defaults';
+import {isGlobalValueSet} from '../../helpers/utils';
+import {createValueset, updateItem} from '../../actions';
 import ValueSetEditor from '../ValueSetEditor';
 
 class Choices extends Component {

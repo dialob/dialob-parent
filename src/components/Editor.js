@@ -31,25 +31,12 @@ class Editor extends Component {
     this.props.addItem(config, activePageId);
   }
 
-  /*
-  componentDidMount() {
-    const rootItem = this.props.findRootItem();
-    if (!rootItem) {
-      this.props.loadForm(this.props.config.get('formId'));
-    }
-  }
-  */
-
   render() {
     const rootItem = this.props.findRootItem();
     if (!rootItem) {
       return null;
     }
-    /*
-    if (!rootItem) {
-      return <Segment basic padded><Loader active /></Segment>;
-    }
-    */
+
     const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
     const activePage = this.props.items.get(activePageId);
     const pages = rootItem && rootItem.get('items') ? rootItem.get('items')

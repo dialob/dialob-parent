@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {Modal, Button, Menu, Label, Table, Tab, Segment, Dropdown} from 'semantic-ui-react';
+import {Modal, Button, Label, Table, Tab, Segment, Dropdown} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import Immutable from 'immutable';
 import {hideTranslation, updateItem, updateValuesetEntry, updateValidation, addLanguage, setActiveLanguage, deleteLanguage} from '../actions';
 import { UnderstoodTableEditor } from '@resys/understood';
 import * as Defaults from '../defaults';

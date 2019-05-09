@@ -15,11 +15,6 @@ class ItemMenu extends Component {
     };
   }
 
-  /*
-    <Dropdown.Divider />
-    <Dropdown.Item icon='move' text='Move to' />
-  */
-
   render() {
     return (
       <Dropdown icon='content' lazyLoad>
