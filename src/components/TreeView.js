@@ -6,16 +6,26 @@ import {moveItem} from '../actions';
 
 class TreeView extends Component {
 
+  constructor(props) {
+     super(props);
+     this.doMoveItem = this.moveItem.bind(this);
+     this.doGetItemById = this.getItemById.bind(this);
+  }
+
   moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId) {
     this.props.moveItem(dragIndex, hoverIndex, dragParent, hoverParent, itemId);
+  }
+
+  getItemById(itemId) {
+    return this.props.items.get(itemId);
   }
 
   render() {
     const rootItem = this.props.items.get(this.props.rootItemId);
     const parent = rootItem;
     const treeItems = rootItem && rootItem.get('items') && rootItem.get('items')
-            .map(itemId => this.props.items.get(itemId))
-            .map((page, index) => <TreeItem treeCollapsible={true} index={index} parent={parent} isPage={true} id={page.get('id')} moveItem={this.moveItem.bind(this)} key={page.get('id')} item={page.set('type', 'page')} icon='folder' pageId={page.get('id')}/>);
+            .map(itemId => this.getItemById(itemId))
+            .map((page, index) => <TreeItem treeCollapsible={true} index={index} parent={parent} isPage={true} id={page.get('id')} moveItem={this.doMoveItem} getItemById={this.doGetItemById} key={page.get('id')} item={page.set('type', 'page')} icon='folder' pageId={page.get('id')}/>);
     return (
       <Menu vertical fixed='left' style={{marginTop: this.props.marginTop, width: this.props.menuWidth, overflowY: 'auto', paddingBottom: this.props.paddingBottom}}>
         <Menu.Item>

@@ -61,13 +61,13 @@ class TreeItem extends Item {
 
   createChildren(props, config) {
     return this.props.item.get('items') && this.props.item.get('items')
-      .map(itemId => this.props.items.get(itemId))
+      .map(itemId => this.props.getItemById(itemId))
       .map((item, index) => treeItemFactory(item, Object.assign(props, {index}), config));
   }
 
   getSubList() {
     const parent = this.props.item;
-    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem, isPage: false}, this.props.itemEditors);
+    const children = this.createChildren({pageId: this.props.pageId, parent, moveItem: this.props.moveItem, isPage: false, getItemById: this.props.getItemById}, this.props.itemEditors);
     if (children && children.size > 0) {
       return (
         <List.List>

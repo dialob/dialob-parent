@@ -10,7 +10,7 @@ class Item extends Component {
 
   createChildren(props, config) {
     return this.props.item.get('items') && this.props.item.get('items')
-      .map(itemId => this.props.items.get(itemId))
+      .map(itemId => this.props.getItemById(itemId))
       .map(item => itemFactory(item, props, config || this.props.itemEditors));
   }
 
@@ -24,7 +24,6 @@ class Item extends Component {
 function connectItem(component) {
   return connect(
     (state, props) => ({
-      items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
       active: props.item && state.dialobComposer.editor && props.item.get('id') === state.dialobComposer.editor.get('activeItemId'),
       language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
       errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),

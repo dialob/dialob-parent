@@ -82,7 +82,7 @@ class Editor extends Component {
           </Table>
         }
 
-        {this.createChildren(activePage, {parentItemId: activePageId}, this.props.itemEditors)}
+        {this.createChildren(activePage, {parentItemId: activePageId, getItemById: this.getItemById.bind(this)}, this.props.itemEditors)}
         {
           activePage &&
             <Dropdown button text='Add item' disabled={!!this.props.formTag}>

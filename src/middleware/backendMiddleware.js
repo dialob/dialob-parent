@@ -3,7 +3,7 @@ import * as Status from '../helpers/constants';
 import FormService from '../services/FormService';
 import {setForm, saveForm, setFormRevision, setStatus, setErrors, redirectPreview, setVersions, hideNewTag, scheduleSave} from '../actions';
 
-const SAVE_DELAY = 500;
+const SAVE_DELAY = 5000;
 var saveTimer;
 
 export const backendMiddleware = store => {
