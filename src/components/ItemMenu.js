@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Dropdown} from 'semantic-ui-react';
 import ItemTypeMenu from './ItemTypeMenu';
 import {connect} from 'react-redux';
 import {addItem, showItemOptions, copyItem} from '../actions';
 import PropTypes from 'prop-types';
 
-class ItemMenu extends Component {
+class ItemMenu extends React.PureComponent {
 
   static get propTypes() {
     return {
@@ -15,17 +15,24 @@ class ItemMenu extends Component {
     };
   }
 
+  constructor(props) {
+    super(props);
+    this.showItemOptions = () => this.props.showItemOptions(this.props.item.get('id'));
+    this.onItemSelect = (config) => this.props.addItem(config, this.props.parentItemId, this.props.item.get('id'));
+    this.copyItem = () => this.props.copyItem(this.props.item.get('id'));
+  }
+
   render() {
     return (
       <Dropdown icon='content' lazyLoad>
         <Dropdown.Menu>
-          <Dropdown.Item icon='options' text='Options...' onClick={() => this.props.showItemOptions(this.props.item.get('id'))}/>
-          <Dropdown.Item disabled={!!this.props.formTag} icon='remove' text='Delete' onClick={() => this.props.onDelete()} />
-          <Dropdown.Item disabled={!!this.props.formTag} icon='copy' text='Duplicate' onClick={() => this.props.copyItem(this.props.item.get('id'))} />
+          <Dropdown.Item icon='options' text='Options...' onClick={this.showItemOptions}/>
+          <Dropdown.Item disabled={!!this.props.formTag} icon='remove' text='Delete' onClick={this.props.onDelete} />
+          <Dropdown.Item disabled={!!this.props.formTag} icon='copy' text='Duplicate' onClick={this.copyItem} />
           <Dropdown.Divider />
           <Dropdown item text='Insert new'>
               <Dropdown.Menu>
-                <ItemTypeMenu onSelect={(config) => this.props.addItem(config, this.props.parentItemId, this.props.item.get('id'))} />
+                <ItemTypeMenu onSelect={this.onItemSelect} />
               </Dropdown.Menu>
           </Dropdown>
         </Dropdown.Menu>
@@ -36,8 +43,7 @@ class ItemMenu extends Component {
 
 const ItemMenuConnected = connect(
   state => ({
-    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
-    formTag: state.dialobComposer.form.get('_tag'),
+    formTag: state.dialobComposer.form.get('_tag')
   }),
   {
     addItem,
