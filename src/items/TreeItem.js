@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {List, Ref} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import {treeItemFactory} from '.';
@@ -7,8 +7,17 @@ import classnames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd'
 import {findDOMNode} from 'react-dom';
 import {canContain} from '../defaults';
+import memoize from 'memoizee';
 
 const MAX_LENGTH = 55;
+
+const formatLabel = memoize((label, type) => {
+  if (!label) {
+     return label;
+  }
+  const text = type === 'note' ? md_strip_tags(label) : label;
+  return text.length > MAX_LENGTH ? text.substring(0, MAX_LENGTH) + '\u2026': text;
+});
 
 const itemSource = {
   beginDrag(props) {
@@ -78,6 +87,7 @@ class TreeItem extends Item {
     return null;
   }
 
+  /*
   preprocessLabel(label) {
     if (this.props.item.get('type') === 'note') {
       return label && md_strip_tags(label);
@@ -94,6 +104,11 @@ class TreeItem extends Item {
     } else {
       return label;
     }
+  }
+  */
+  getLabel() {
+    const text= formatLabel(this.props.item.getIn(['label', this.props.language]), this.props.item.get('type'));
+    return !text ? <em>{this.props.item.get('id')}</em> : text;
   }
 
   render() {
@@ -119,7 +134,7 @@ class TreeItem extends Item {
           }
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
-            <List.Header className={classnames({'composer-active': this.props.active})}>{this.formatLabel(this.preprocessLabel(this.props.item.getIn(['label', this.props.language])), this.props.item.get('id'))}</List.Header>
+            <List.Header className={classnames({'composer-active': this.props.active})}>{this.getLabel()}</List.Header>
             {!treeCollapsed && this.getSubList()}
           </List.Content>
         </List.Item>
