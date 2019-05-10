@@ -12,11 +12,11 @@ class Group extends Item {
     const itemTypeFilter = i => this.props.item.get('type') !== 'surveygroup' ? i.config.type !== 'survey' : true;
     return (
       <React.Fragment>
-        <Table attached='top' onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  color={this.props.active ? 'blue' : null}>
+        <Table attached='top' onClick={(e) => {e.stopPropagation(); this.setActive();}}  color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable collapsing width={2}>
-                <a onClick={() => {if (this.props.editable) { this.props.changeId(); }}}>{this.props.item.get('id')}</a>
+                <a onClick={() => {if (this.props.editable) { this.changeId(); }}}>{this.props.item.get('id')}</a>
               </Table.Cell>
               <Table.Cell>
                 <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>
@@ -25,26 +25,26 @@ class Group extends Item {
                 {this.props.item.get('type')}
               </Table.Cell>
               <Table.Cell collapsing>
-                <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.props.delete}/>
+                <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.deleteItem}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  celled attached >
+        <Table onClick={(e) => {e.stopPropagation(); this.setActive();}}  celled attached >
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-               <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.props.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
+               <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
-        <Segment onClick={(e) => {e.stopPropagation(); this.props.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
+        <Segment onClick={(e) => {e.stopPropagation(); this.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
           {this.createChildren({parentItemId: this.props.item.get('id')})}
 
           <Dropdown button text='Add item' disabled={!this.props.editable} lazyLoad>
             <Dropdown.Menu>
-              <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.props.newItem(config, this.props.item.get('id'))}/>
+              <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.newItem(config, this.props.item.get('id'))}/>
             </Dropdown.Menu>
           </Dropdown>
         </Segment>

@@ -87,32 +87,13 @@ class TreeItem extends Item {
     return null;
   }
 
-  /*
-  preprocessLabel(label) {
-    if (this.props.item.get('type') === 'note') {
-      return label && md_strip_tags(label);
-    } else {
-      return label;
-    }
-  }
-
-  formatLabel(label, id) {
-    if (!label || !label.trim()) {
-      return <em>{id}</em>;
-    } else if (label.length > MAX_LENGTH) {
-      return label.substring(0, MAX_LENGTH) + '\u2026';
-    } else {
-      return label;
-    }
-  }
-  */
   getLabel() {
     const text= formatLabel(this.props.item.getIn(['label', this.props.language]), this.props.item.get('type'));
     return !text ? <em>{this.props.item.get('id')}</em> : text;
   }
 
   render() {
-    const {connectDragSource, connectDropTarget, isOver, clientOffset, setTreeCollapsed, treeCollapsed} = this.props;
+    const {connectDragSource, connectDropTarget, isOver, clientOffset, treeCollapsed} = this.props;
     let dragClass = null;
     if (isOver) {
       const boundingRect = this.node.getBoundingClientRect();
@@ -130,7 +111,7 @@ class TreeItem extends Item {
         <List.Item className={dragClass}>
           {
             this.props.treeCollapsible &&
-              <List.Icon name={treeCollapsed ? 'caret right' : 'caret down'} style={{float: 'initial'}} onClick={() => setTreeCollapsed(!treeCollapsed)}/>
+              <List.Icon name={treeCollapsed ? 'caret right' : 'caret down'} style={{float: 'initial'}} onClick={() => this.setTreeCollapsed(!treeCollapsed)}/>
           }
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>

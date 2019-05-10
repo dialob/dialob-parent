@@ -20,13 +20,23 @@ const PageMenu = ({onDelete, onOptions, onChangeId, onDuplicate, editable}) => (
 
 class Editor extends Component {
 
-  getItemById(itemId) {
+  constructor(props) {
+    super(props);
+    this.getValueset = this.findValueset.bind(this);
+    this.getItemById = this.findItemById.bind(this);
+  }
+
+  findItemById(itemId) {
     return this.props.items.get(itemId);
+  }
+
+  findValueset(valueSetId) {
+    return (this.props.valueSets && valueSetId) ? data.get('valueSets').find(v => v.get('id') === id) : null;
   }
 
   createChildren(activePage, props, config) {
     return activePage && activePage.get('items') && activePage.get('items')
-      .map(itemId => this.getItemById(itemId))
+      .map(itemId => this.findItemById(itemId))
       .map(item => itemFactory(item, props, config));
   }
 
@@ -39,12 +49,12 @@ class Editor extends Component {
     if (!rootItemId) {
       return null;
     }
-    const rootItem = this.getItemById(rootItemId);
+    const rootItem = this.findItemById(rootItemId);
 
     const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
     const activePage = this.props.items.get(activePageId);
     const pages = rootItem && rootItem.get('items') ? rootItem.get('items')
-                        .map(itemId => this.getItemById(itemId))
+                        .map(itemId => this.findItemById(itemId))
                         .map((item, index) =>
                             <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en']) || <em>{item.get('id')}</em>}
                                <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))}
@@ -82,7 +92,7 @@ class Editor extends Component {
           </Table>
         }
 
-        {this.createChildren(activePage, {parentItemId: activePageId, getItemById: this.getItemById.bind(this)}, this.props.itemEditors)}
+        {this.createChildren(activePage, {parentItemId: activePageId, getItemById: this.getItemById, getValueset: this.getValueset}, this.props.itemEditors)}
         {
           activePage &&
             <Dropdown button text='Add item' disabled={!!this.props.formTag}>
@@ -100,6 +110,7 @@ const EditorConnected = connect(
   state => ({
     config: state.dialobComposer.config,
     items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
+    valueSets: state.dialobComposer.form && state.dialobComposer.form.get('valueSets'),
     activePageId: state.dialobComposer.editor && state.dialobComposer.editor.get('activePageId'),
     itemEditors:  state.dialobComposer.config && state.dialobComposer.config.itemEditors,
     formTag: state.dialobComposer.form.get('_tag'),

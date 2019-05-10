@@ -3,10 +3,15 @@ import {itemFactory} from '.';
 import {connect} from 'react-redux';
 import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse} from '../actions';
 import * as Defaults from '../defaults';
-import {findValueset} from '../helpers/utils';
+
 import Immutable from 'immutable';
 
 class Item extends Component {
+
+  constructor(props) {
+    super(props);
+    this.deleteItem = this.props.deleteItem.bind(this, props.item.get('id'));
+  }
 
   createChildren(props, config) {
     return this.props.item.get('items') && this.props.item.get('items')
@@ -19,6 +24,31 @@ class Item extends Component {
       ? this.props.errors.filter(e => e.get('itemId') === this.props.item.get('id'))
       : new Immutable.List([]);
   }
+
+  setActive() {
+    this.props.setActiveItem(this.props.item.get('id'));
+  }
+
+  newItem(config, parentItemId, afterItemId) {
+    this.props.addItem(config, parentItemId, afterItemId);
+  }
+
+  setAttribute(attribute, value, language = null) {
+    this.props.updateItem(updateItem(this.props.item.get('id'), attribute, value, language));
+  }
+
+  changeId() {
+    this.props.showChangeId(this.props.item.get('id'));
+  }
+
+  setActivePage(pageId) {
+    this.props.setActivePage(pageId);
+  }
+
+  setTreeCollapsed(collapsed) {
+    this.props.setTreeCollapse(this.props.item.get('id'), collapsed);
+  }
+
 }
 
 function connectItem(component) {
@@ -31,17 +61,16 @@ function connectItem(component) {
       editable: !state.dialobComposer.form.get('_tag'),
       treeCollapsed: state.dialobComposer.editor && state.dialobComposer.editor.get('treeCollapse') && state.dialobComposer.editor.get('treeCollapse').findIndex(id => id === props.item.get('id')) > -1,
       rootItemId: state.dialobComposer.editor.get('rootItemId'),
-      get getValueset() { return (valueSetId) => findValueset(state.dialobComposer.form, valueSetId); },
     }),
-    (dispatch, props) => ({
-      setActive: () => dispatch(setActiveItem(props.item.get('id'))),
-      newItem: (config, parentItemId, afterItemId) => dispatch(addItem(config, parentItemId, afterItemId)),
-      setAttribute: (attribute, value, language = null) => dispatch(updateItem(props.item.get('id'), attribute, value, language)),
-      delete: () => dispatch(deleteItem(props.item.get('id'))),
-      changeId: () => dispatch(showChangeId(props.item.get('id'))),
-      setActivePage: (pageId) => dispatch(setActivePage(pageId)),
-      setTreeCollapsed: collapsed => dispatch(setTreeCollapse(props.item.get('id'), collapsed))
-    })
+    {
+      setActiveItem,
+      addItem,
+      updateItem,
+      deleteItem,
+      showChangeId,
+      setActivePage,
+      setTreeCollapse
+    }
   )(component);
 }
 
