@@ -26,15 +26,27 @@ class Validations extends Component {
       : new Immutable.List([]);;
   }
 
+  newValidation(language) {
+    this.props.createValidation(this.props.item.get('id'), language);
+  }
+
+  removeValidation(index) {
+    this.props.deleteValidation(this.props.item.get('id'), index)
+  }
+
+  changeValidation(index, attribute, value, language) {
+    this.props.updateValidation(this.props.item.get('id'), index, attribute, value, language)
+  }
+
   render() {
-    const validations = this.props.item.get('validations');
+    const {validations} = this.props;
     const items = validations ? validations.map((v, index) => <ValidationRule
         key={index}
         message={v.getIn(['message', this.props.language])}
         rule={v.get('rule')}
-        onChangeMessage={(evt) => this.props.changeValidation(index, 'message', evt.target.value, this.props.language)}
-        onChangeRule={(value) => this.props.changeValidation(index, 'rule', value)}
-        onRemove={() => this.props.removeValidation(index)}
+        onChangeMessage={(evt) => this.changeValidation(index, 'message', evt.target.value, this.props.language)}
+        onChangeRule={(value) => this.changeValidation(index, 'rule', value)}
+        onRemove={() => this.removeValidation(index)}
         getErrors={this.getErrors.bind(this, index)}
         readOnly={this.props.readOnly}
        /> ) : [];
@@ -45,7 +57,7 @@ class Validations extends Component {
             <Table.Cell>
               <Header as='h5'>Validation rules</Header>
               {items}
-              <Button disabled={this.props.readOnly} onClick={() => this.props.newValidation(this.props.language)}>Add validation rule</Button>
+              <Button disabled={this.props.readOnly} onClick={() => this.newValidation(this.props.language)}>Add validation rule</Button>
             </Table.Cell>
           </Table.Row>
         </Table.Body>
@@ -59,11 +71,11 @@ const ValidationsConnected = connect(
     language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
     errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
   }),
-  (dispatch, props) => ({
-    newValidation: (language) => dispatch(createValidation(props.item.get('id'), language)),
-    removeValidation: (index) => dispatch(deleteValidation(props.item.get('id'), index)),
-    changeValidation: (index, attribute, value, language) => dispatch(updateValidation(props.item.get('id'), index, attribute, value, language))
-  })
+  {
+    createValidation,
+    deleteValidation,
+    updateValidation,
+  }
 )(Validations);
 
 export {

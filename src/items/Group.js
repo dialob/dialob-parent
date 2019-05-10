@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Input, Segment, Table, Dropdown} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemTypeMenu from '../components/ItemTypeMenu';
@@ -19,7 +19,7 @@ class Group extends Item {
                 <a onClick={() => {if (this.props.editable) { this.changeId(); }}}>{this.props.item.get('id')}</a>
               </Table.Cell>
               <Table.Cell>
-                <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.props.setAttribute('label', e.target.value, this.props.language)}/>
+                <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
               <Table.Cell collapsing>
                 {this.props.item.get('type')}
@@ -40,7 +40,7 @@ class Group extends Item {
           </Table.Body>
         </Table>
         <Segment onClick={(e) => {e.stopPropagation(); this.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
-          {this.createChildren({parentItemId: this.props.item.get('id')})}
+          {this.createChildren({parentItemId: this.props.item.get('id'), getItemById: this.props.getItemById})}
 
           <Dropdown button text='Add item' disabled={!this.props.editable} lazyLoad>
             <Dropdown.Menu>

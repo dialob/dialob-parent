@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {itemFactory} from '.';
 import {connect} from 'react-redux';
 import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse} from '../actions';
@@ -6,7 +6,7 @@ import * as Defaults from '../defaults';
 
 import Immutable from 'immutable';
 
-class Item extends Component {
+class Item extends React.Component {
 
   constructor(props) {
     super(props);
@@ -34,7 +34,7 @@ class Item extends Component {
   }
 
   setAttribute(attribute, value, language = null) {
-    this.props.updateItem(updateItem(this.props.item.get('id'), attribute, value, language));
+    this.props.updateItem(this.props.item.get('id'), attribute, value, language);
   }
 
   changeId() {
@@ -53,15 +53,21 @@ class Item extends Component {
 
 function connectItem(component) {
   return connect(
-    (state, props) => ({
-      active: props.item && state.dialobComposer.editor && props.item.get('id') === state.dialobComposer.editor.get('activeItemId'),
-      language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
-      errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
-      itemEditors: state.dialobComposer.config.itemEditors,
-      editable: !state.dialobComposer.form.get('_tag'),
-      treeCollapsed: state.dialobComposer.editor && state.dialobComposer.editor.get('treeCollapse') && state.dialobComposer.editor.get('treeCollapse').findIndex(id => id === props.item.get('id')) > -1,
-      rootItemId: state.dialobComposer.editor.get('rootItemId'),
-    }),
+    (state, props) => {
+      const item = state.dialobComposer.form.getIn(['data', props.itemId]);
+      return ({
+        item,
+        active: item && state.dialobComposer.editor && props.itemId === state.dialobComposer.editor.get('activeItemId'),
+        language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
+        errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
+        itemEditors: state.dialobComposer.config.itemEditors,
+        editable: !state.dialobComposer.form.get('_tag'),
+        treeCollapsed: state.dialobComposer.editor && state.dialobComposer.editor.get('treeCollapse') && state.dialobComposer.editor.get('treeCollapse').findIndex(id => id === props.itemId) > -1,
+        rootItemId: state.dialobComposer.editor.get('rootItemId'),
+        validations: item && item.get('validations')
+      });
+    }
+    ,
     {
       setActiveItem,
       addItem,

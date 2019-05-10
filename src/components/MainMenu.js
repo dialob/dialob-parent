@@ -29,33 +29,33 @@ class MainMenu extends Component {
               &nbsp;<small>{this.props.formLabel}</small>
           </Menu.Item>
 
-          <Menu.Item onClick={() => this.props.showTranslation()}>
+          <Menu.Item onClick={this.props.showTranslation}>
             Translations
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.showVariables()}>
+          <Menu.Item onClick={this.props.showVariables}>
             Variables
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.showValueSets()}>
+          <Menu.Item onClick={this.props.showValueSets}>
             Lists
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.showFormOptions()}>
+          <Menu.Item onClick={this.props.showFormOptions}>
             Options
           </Menu.Item>
           <Dropdown item text={`Version: ${formTag}`} lazyLoad>
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => this.props.showVersioning()}>Manage versions...</Dropdown.Item>
-              <Dropdown.Item disabled={formTag !== 'LATEST'} onClick={() => this.props.showNewTag() }>Create version tag</Dropdown.Item>
+              <Dropdown.Item onClick={this.props.showVersioning}>Manage versions...</Dropdown.Item>
+              <Dropdown.Item disabled={formTag !== 'LATEST'} onClick={() => this.props.showNewTag}>Create version tag</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
           <Menu.Menu position='right'>
-              <Menu.Item onClick={() => this.props.downloadForm()}>
+              <Menu.Item onClick={this.props.downloadForm}>
                 <Popup
                   trigger={<Icon name='download' />}
                   content='Download dialog as JSON'
                   on='hover' />
               </Menu.Item>
               <Menu.Item>
-                <StatusIndicator />
+                <StatusIndicator status={this.props.status}/>
               </Menu.Item>
               <Dropdown item text={this.getLanguageName(this.props.language)} lazyLoad>
                 <Dropdown.Menu>
@@ -64,11 +64,11 @@ class MainMenu extends Component {
               </Dropdown>
               {
                 this.props.config && this.props.config.transport.previewUrl &&
-                <Menu.Item disabled={this.props.status !== Status.STATUS_OK} onClick={() => this.props.requestPreview()}><Icon name='eye' /> Preview</Menu.Item>
+                <Menu.Item disabled={this.props.status !== Status.STATUS_OK} onClick={this.props.requestPreview}><Icon name='eye' /> Preview</Menu.Item>
               }
               {
                 this.props.config && this.props.config.closeHandler &&
-               <Menu.Item icon='close' onClick={() => this.props.closeEditor()} />
+               <Menu.Item icon='close' onClick={this.props.closeEditor} />
               }
           </Menu.Menu>
         </Menu>
