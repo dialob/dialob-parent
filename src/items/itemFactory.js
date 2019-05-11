@@ -10,7 +10,7 @@ function itemFactory(item, props = {}, config = DEFAULT_ITEM_CONFIG) {
   if (!itemConfig) {
     console.warn('Unknown type:', item.get('type'));
   }
-  return itemConfig ? <itemConfig.component key={item.get('id')} itemId={item.get('id')} {...itemConfig.props} {...props} /> : null;
+  return itemConfig ? <itemConfig.component key={item.get('id')} itemType={item.get('type')} itemId={item.get('id')} {...itemConfig.props} {...props} /> : null;
 }
 
 function treeItemFactory(item, props = {}, config = DEFAULT_ITEM_CONFIG) {
@@ -21,7 +21,7 @@ function treeItemFactory(item, props = {}, config = DEFAULT_ITEM_CONFIG) {
   if (itemConfig && itemConfig.hideInTree) {
     return null;
   }
-  return itemConfig ? <TreeItem key={item.get('id')} id={item.get('id')} itemId={item.get('id')} {...itemConfig.props} {...props} /> : null;
+  return itemConfig ? <TreeItem key={item.get('id')} id={item.get('id')} itemType={item.get('type')} itemId={item.get('id')} {...itemConfig.props} {...props} /> : null;
 }
 
 export {

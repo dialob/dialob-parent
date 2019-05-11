@@ -10,7 +10,7 @@ class Item extends React.Component {
 
   constructor(props) {
     super(props);
-    this.deleteItem = this.props.deleteItem.bind(this, props.item.get('id'));
+    this.deleteItem = this.props.deleteItem.bind(this, props.itemId);
   }
 
   createChildren(props, config) {
@@ -21,12 +21,12 @@ class Item extends React.Component {
 
   getErrors() {
     return this.props.errors
-      ? this.props.errors.filter(e => e.get('itemId') === this.props.item.get('id'))
+      ? this.props.errors.filter(e => e.get('itemId') === this.props.itemId)
       : new Immutable.List([]);
   }
 
   setActive() {
-    this.props.setActiveItem(this.props.item.get('id'));
+    this.props.setActiveItem(this.props.itemId);
   }
 
   newItem(config, parentItemId, afterItemId) {
@@ -34,11 +34,11 @@ class Item extends React.Component {
   }
 
   setAttribute(attribute, value, language = null) {
-    this.props.updateItem(this.props.item.get('id'), attribute, value, language);
+    this.props.updateItem(this.props.itemId, attribute, value, language);
   }
 
   changeId() {
-    this.props.showChangeId(this.props.item.get('id'));
+    this.props.showChangeId(this.props.itemId);
   }
 
   setActivePage(pageId) {
@@ -46,7 +46,7 @@ class Item extends React.Component {
   }
 
   setTreeCollapsed(collapsed) {
-    this.props.setTreeCollapse(this.props.item.get('id'), collapsed);
+    this.props.setTreeCollapse(this.props.itemId, collapsed);
   }
 
 }

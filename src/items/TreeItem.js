@@ -26,7 +26,7 @@ const itemSource = {
       index: props.index,
       parent: props.parent,
       isPage: props.isPage,
-      itemType: props.item.get('type')
+      itemType: props.itemType
     }
   }
 };
@@ -34,6 +34,7 @@ const itemSource = {
 const itemTarget = {
 
   drop(props, monitor, component) {
+    console.log('M', component);
     const dragIndex = monitor.getItem().index;
     const dragParent = monitor.getItem().parent;
     const hoverIndex = props.index;
@@ -89,7 +90,7 @@ class TreeItem extends Item {
 
   getLabel() {
     const text= formatLabel(this.props.item.getIn(['label', this.props.language]), this.props.item.get('type'));
-    return !text ? <em>{this.props.item.get('id')}</em> : text;
+    return !text ? <em>{this.props.itemId}</em> : text;
   }
 
   render() {

@@ -16,7 +16,7 @@ class Group extends Item {
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable collapsing width={2}>
-                <a onClick={() => {if (this.props.editable) { this.changeId(); }}}>{this.props.item.get('id')}</a>
+                <a onClick={() => {if (this.props.editable) { this.changeId(); }}}>{this.props.itemId}</a>
               </Table.Cell>
               <Table.Cell>
                 <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.setAttribute('label', e.target.value, this.props.language)}/>
@@ -40,11 +40,11 @@ class Group extends Item {
           </Table.Body>
         </Table>
         <Segment onClick={(e) => {e.stopPropagation(); this.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
-          {this.createChildren({parentItemId: this.props.item.get('id'), getItemById: this.props.getItemById})}
+          {this.createChildren({parentItemId: this.props.itemId, getItemById: this.props.getItemById})}
 
           <Dropdown button text='Add item' disabled={!this.props.editable} lazyLoad>
             <Dropdown.Menu>
-              <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.newItem(config, this.props.item.get('id'))}/>
+              <ItemTypeMenu itemTypeFilter={itemTypeFilter} onSelect={(config) => this.newItem(config, this.props.itemId)}/>
             </Dropdown.Menu>
           </Dropdown>
         </Segment>
