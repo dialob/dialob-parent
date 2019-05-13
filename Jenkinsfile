@@ -32,7 +32,7 @@ pipeline {
     stage('Test') {
       steps {
         sh 'node -v'
-        sh 'yarn install'
+        sh 'npm install'
       //  sh 'yarn test' // Temporarily disabled test
       }
     }
@@ -41,7 +41,7 @@ pipeline {
       steps {
         sh 'git checkout -- yarn.lock'
         sh 'npm version prerelease'
-        sh 'yarn build'
+        sh 'npm run build'
         sshagent(credentials: ['f41971b1-4bca-4f7c-91a4-9fd6f46e0df3']) {
           sh "git push origin HEAD:$BRANCH_NAME && git push --tags origin HEAD:$BRANCH_NAME"
         }
