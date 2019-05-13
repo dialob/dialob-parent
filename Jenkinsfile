@@ -39,7 +39,7 @@ pipeline {
 
     stage('Build') {
       steps {
-       // sh 'git checkout -- yarn.lock'
+        sh 'git checkout -- package-lock.json'
         sh 'npm version prerelease'
         sh 'npm run build'
         sshagent(credentials: ['f41971b1-4bca-4f7c-91a4-9fd6f46e0df3']) {
