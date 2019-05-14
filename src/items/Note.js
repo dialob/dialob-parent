@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
-import {Segment, Table, Input} from 'semantic-ui-react';
+import React from 'react';
+import {Segment, Table} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemMenu from '../components/ItemMenu';
 import RichEditor from '../components/RichEditor';
+import CodeEditor from '../components/CodeEditor';
 import classnames from 'classnames';
 
 class Note extends Item {
   render() {
     return (
       <React.Fragment>
-         <Table attached='top' onClick={() => this.setActive()} color={this.props.active ? 'blue' : null}>
+         <Table attached='top' onClick={(e) => {e.stopPropagation(); this.setActive();}} color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable>
@@ -21,11 +22,11 @@ class Note extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={() => this.props.setActive()}  celled attached >
+        <Table onClick={(e) => {e.stopPropagation(); this.setActive();}}  celled attached >
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-               <Input transparent fluid placeholder='Visibility' value={this.props.item.get('activeWhen') || ''} onChange={(e) => this.props.setAttribute('activeWhen', e.target.value)}/>
+               <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
