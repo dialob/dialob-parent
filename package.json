@@ -1,0 +1,12 @@
+{
+  "name": "dialob-fill-api",
+  "version": "0.0.1",
+  "description": "Dialob filling API",
+  "main": "lib/index.js",
+  "author": "Oskar Köök <oskar.kook@resys.io>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^3.4.5"
+  }
+}
