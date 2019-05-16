@@ -15,6 +15,7 @@ class RichEditor extends Component {
     const {id, defaultValue, placeholder} = this.props;
     return (
       <RichMarkdownEditor
+        readOnly={!this.props.active}
         id={id}
         defaultValue={defaultValue || ''}
         onShowToast={message => window.alert(message)}

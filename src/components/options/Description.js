@@ -11,7 +11,7 @@ class Description extends Component {
     const value = this.props.item.getIn(['description', this.props.language]) || '';
     return (
       <Segment>
-        <RichEditor id={`dscr_${this.props.item.get('id')}`} onChange={(v) => this.props.setAttribute('description', v, this.props.language)} defaultValue={value} placeholder='Enter description for this item' />
+        <RichEditor active={true} id={`dscr_${this.props.item.get('id')}`} onChange={(v) => this.props.setAttribute('description', v, this.props.language)} defaultValue={value} placeholder='Enter description for this item' />
       </Segment>
     );
   }
