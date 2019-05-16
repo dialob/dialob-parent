@@ -9,9 +9,6 @@ export const DEFAULT_ITEM_CONFIG = {
         icon: 'square outline',
         placeholder: 'Group label',
         treeCollapsible: true,
-        props: {
-          columns: '1'
-        }
       }
     },
     {
