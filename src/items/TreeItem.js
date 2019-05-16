@@ -34,7 +34,6 @@ const itemSource = {
 const itemTarget = {
 
   drop(props, monitor, component) {
-    console.log('M', component);
     const dragIndex = monitor.getItem().index;
     const dragParent = monitor.getItem().parent;
     const hoverIndex = props.index;
@@ -126,7 +125,7 @@ class TreeItem extends Item {
 }
 
 const TreeItemConnected =
-  DragSource('item', itemSource, (connect, monitor) =>
+  connectItem(DragSource('item', itemSource, (connect, monitor) =>
     ({
       connectDragSource: connect.dragSource(),
       isDragging: monitor.isDragging
@@ -135,8 +134,7 @@ const TreeItemConnected =
       connectDropTarget: connect.dropTarget(),
       isOver: monitor.isOver({shallow: true}),
       clientOffset: monitor.getClientOffset()
-    }))
-      (connectItem(TreeItem)));
+    }))(TreeItem)));
 
 export {
   TreeItem,
