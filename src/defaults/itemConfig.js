@@ -8,7 +8,7 @@ export const DEFAULT_ITEM_CONFIG = {
       props: {
         icon: 'square outline',
         placeholder: 'Group label',
-        treeCollapsible: true
+        treeCollapsible: true,
       }
     },
     {
