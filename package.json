@@ -1,9 +1,11 @@
 {
   "name": "@resys/dialob-fill-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Dialob filling API",
   "main": "lib/index.js",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "author": "Oskar Köök <oskar.kook@resys.io>",
   "license": "UNLICENSED",
   "publishConfig": {
