@@ -1,0 +1,28 @@
+{
+  "name": "@resys/dialob-fill-react",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "https://repo.resys.io/repository/npm/",
+    "always-auth": true
+  },
+  "scripts": {
+    "build": "rm -rf ./lib && tsc",
+    "push": "yarn build && yarn publish",
+    "test": "jest --watch"
+  },
+  "devDependencies": {
+    "@resys/dialob-fill-api": "^0.0.1",
+    "@types/react": "^16.8.17",
+    "typescript": "^3.4.5"
+  },
+  "peerDependencies": {
+    "@resys/dialob-fill-api": "^0.0.1",
+    "react": "^16.8.0"
+  },
+  "dependencies": {}
+}
