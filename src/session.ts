@@ -133,10 +133,6 @@ export class Session {
     return this.state;
   }
 
-  public getQuestionnaire(): SessionItem | undefined {
-    return this.state.items['questionnaire'];
-  }
-
   public getItem(id: string): SessionItem | undefined {
     return this.state.items[id];
   }
