@@ -1,32 +1,32 @@
 import produce from 'immer';
-import { Action, ErrorAction, ItemActionGroup, ItemActionQuestionnaire, ItemActionValue, ValueSetAction } from './actions';
+import { Action, ErrorAction, ItemAction, ItemActionQuestionnaire, ValueSetAction } from './actions';
+import { DialobError, DialobRequestError } from './error';
 import { DialobResponse, Transport } from './transport';
 
 type ErrorActionValue = ErrorAction['error'];
+export type SessionItem = ItemAction['item'];
 export interface SessionError extends ErrorActionValue {};
 export interface SessionQuestionnaire extends ItemActionQuestionnaire {};
-export interface SessionGroup extends ItemActionGroup {};
-export interface SessionAnswer extends ItemActionValue {
-  errors: SessionError[];
-}
 type ValueSetActionValue = ValueSetAction['valueSet'];
 export interface SessionValueSet extends ValueSetActionValue {};
 
 export interface SessionState {
-  questionnaires: Record<string, SessionQuestionnaire>;
-  groups: Record<string, SessionGroup>;
-  answers: Record<string, SessionAnswer>;
+  items: Record<string, SessionItem>;
+  reverseItemMap: {
+    [id: string]: Set<string>;
+  };
   valueSets: Record<string, SessionValueSet>;
   errors: SessionError[];
   locale?: string;
   rev: number;
+  complete: boolean;
 };
 
 export type onUpdateFn = () => void;
-export type onSyncFn = () => void;
-export type onErrorFn = (error: DialobError) => void;
-export type onClientErrorFn = (error: DialobError) => void;
-export type onSyncErrorFn = (error: DialobError) => void;
+export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE') => void;
+export type onErrorFn = (type: 'CLIENT' | 'SYNC', error: DialobError) => void;
+
+type Event = 'update' | 'sync' | 'error';
 
 export class Session {
   id: string;
@@ -35,63 +35,94 @@ export class Session {
   private syncActionQueue: Action[];
   private syncTimer?: number;
 
-  private updateListeners: onUpdateFn[] = [];
-  private syncListeners: onSyncFn[] = [];
-  private errorListeners: onErrorFn[] = [];
-  private clientErrorListeners: onClientErrorFn[] = [];
-  private syncErrorListeners: onSyncErrorFn[] = [];
+  private listeners: {
+    update: onUpdateFn[],
+    sync: onSyncFn[],
+    error: onErrorFn[],
+  } = {
+    update: [],
+    sync: [],
+    error: [],
+  };
 
   constructor(id: string, transport: Transport) {
     this.id = id;
     this.transport = transport;
     this.state = {
-      questionnaires: {},
-      groups: {},
-      answers: {},
+      items: {},
+      reverseItemMap: {},
       valueSets: {},
       errors: [],
       rev: 0,
+      complete: false,
     };
     this.syncActionQueue = [];
   }
+  
+  private insertReverseRef(state: SessionState, parentId: string, refIds: string[]) {
+    for(const refId of refIds) {
+      if(!state.reverseItemMap[refId]) {
+        state.reverseItemMap[refId] = new Set();
+      }
+      state.reverseItemMap[refId].add(parentId);
+    }
+  }
 
   /** STATE LOGIC */
-  private applyActions(actions: Action[]): SessionState {
+  private applyActions(actions: Action[], rev?: number): SessionState {
     this.state = produce(this.state, state => {
+      if(rev) {
+        state.rev = rev;
+      }
       for(const action of actions) {
         if(action.type === 'RESET') {
-          state.questionnaires = {};
-          state.groups = {};
-          state.answers = {};
+          state.items = {};
+          state.reverseItemMap = {};
           state.valueSets = {};
           state.errors = [];
           state.locale = undefined;
+          state.complete = false;
         } else if(action.type === 'ANSWER') {
-          const answer = state.answers[action.id];
+          const answer = state.items[action.id];
           if(!answer) throw new DialobError(`No item found with id '${action.id}'`);
+          if(answer.type === 'questionnaire' || answer.type === 'group' || answer.type === 'surveygroup' || answer.type === 'note') {
+            throw new DialobError(`Item '${action.id}' is not an answer!`);
+          }
+
           answer.value = action.answer;
         } else if(action.type === 'ITEM') {
           const item = action.item;
-          if(item.type === 'questionnaire') {
-            state.questionnaires[item.id] = item;
-          } else if(item.type === 'group') {
-            state.groups[item.id] = item;
-          } else {
-            state.answers[item.id] = { ...item, errors: [] };
+          state.items[item.id] = item;
+
+          if('items' in item && item.items) {
+            this.insertReverseRef(state, item.id, item.items);
           }
         } else if(action.type === 'ERROR') {
           state.errors.push(action.error);
-          const answer = state.answers[action.error.id];
-          if(answer) {
-            answer.errors.push(action.error);
-          }
         } else if(action.type === 'LOCALE') {
           state.locale = action.value;
         } else if(action.type === 'VALUE_SET') {
           state.valueSets[action.valueSet.id] = action.valueSet;
+        } else if(action.type === 'REMOVE_ITEMS') {
+          for(const id of action.ids) {
+            delete state.items[id];
+
+            if(state.reverseItemMap[id]) {
+              state.reverseItemMap[id].forEach(reference => {
+                const referencedItem: any = state.items[reference];
+                if(!referencedItem || !referencedItem['items']) return;
+                const idx = referencedItem.items.indexOf(reference);
+                if(idx === -1) return;
+                referencedItem.items.splice(idx, 1);
+              });
+            }
+            delete state.reverseItemMap[id];
+          }
         } else if(action.type === 'COMPLETE') {
-          // Do nothing
+          state.complete = true;
         } else if(action.type === 'NEXT') {
+          // Do nothing
+        } else if(action.type === 'PREVIOUS') {
           // Do nothing
         } else {
           this.handleError(new DialobError('Unexpected action type!'));
@@ -99,68 +130,37 @@ export class Session {
       }
     });
 
-    this.updateListeners.map(l => l());
+    this.listeners.update.map(l => l());
     return this.state;
   }
 
-  // basically a polyfill for `Object.values()`, which isn't available in es5
-  private mapToList<T>(data: { [s: string]: T }): T[] {
-    return Object.keys(data).map(key => data[key]);
+  public getQuestionnaire(): SessionQuestionnaire | undefined {
+    return this.state.items['questionnaire'] as SessionQuestionnaire;
   }
 
-  public getQuestionnaire(id: string): SessionQuestionnaire | undefined {
-    return this.state.questionnaires[id];
-  }
-
-  public getAllQuestionnaires(): SessionQuestionnaire[] {
-    return this.mapToList(this.state.questionnaires);
-  }
-
-  public getQuestionnaireGroups(questionnaireId: string): SessionGroup[] {
-    return this.state.questionnaires[questionnaireId].items.map(id => this.state.groups[id]);
-  }
-
-  public getGroup(id: string): SessionGroup | undefined {
-    return this.state.groups[id];
-  }
-
-  public getAllGroups(): SessionGroup[] {
-    return this.mapToList(this.state.groups);
-  }
-
-  public getGroupChildren(groupId: string): (SessionAnswer | SessionGroup)[] {
-    return this.state.groups[groupId].items.map(id => {
-      return this.state.answers[id] || this.state.groups[id];
-    });
-  }
-
-  public getAnswer(id: string): SessionAnswer | undefined {
-    return this.state.answers[id];
-  }
-
-  public getAllAnswers(): SessionAnswer[] {
-    return this.mapToList(this.state.answers);
+  public getItem(id: string): SessionItem | undefined {
+    return this.state.items[id];
   }
 
   public getValueSet(id: string): SessionValueSet | undefined {
     return this.state.valueSets[id];
   }
 
-  public getAllValueSets(): SessionValueSet[] {
-    return this.mapToList(this.state.valueSets);
+  public isComplete(): boolean {
+    return this.state.complete;
   }
 
   /** SYNCING */
   private queueAction(action: Action) {
     if(this.syncTimer) {
       clearTimeout(this.syncTimer);
-      this.syncTimer = setTimeout(this.syncQueuedActions, 50);
     }
+    this.syncTimer = setTimeout(this.syncQueuedActions, 500);
     this.syncActionQueue.push(action);
     this.applyActions([action]);
   }
 
-  private syncQueuedActions(): Promise<DialobResponse> {
+  private syncQueuedActions = (): Promise<DialobResponse> => {
     if(this.syncTimer) {
       clearTimeout(this.syncTimer);
       this.syncTimer = undefined;
@@ -172,6 +172,7 @@ export class Session {
   }
 
   private async sync(actions: Action[], rev: number): Promise<DialobResponse> {
+    this.listeners.sync.map(l => l('INPROGRESS'));
     let response;
     try {
       response = await this.transport.update(this.id, actions, rev);
@@ -179,14 +180,14 @@ export class Session {
       this.handleError(e);
       throw e;
     }
-    this.state.rev = response.rev;
-    this.applyActions(response.actions);
 
-    this.syncListeners.map(l => l());
+    this.applyActions(response.actions, response.rev);
+    this.listeners.sync.map(l => l('DONE'));
     return response;
   }
 
   public async pull(): Promise<DialobResponse> {
+    this.listeners.sync.map(l => l('INPROGRESS'));
     let response;
     try {
       response = await this.transport.getFullState(this.id);
@@ -195,10 +196,8 @@ export class Session {
       throw e;
     }
 
-    this.state.rev = response.rev;
-    this.applyActions(response.actions);
-
-    this.syncListeners.map(l => l());
+    this.applyActions(response.actions, response.rev);
+    this.listeners.sync.map(l => l('DONE'));
     return response;
   }
 
@@ -215,26 +214,34 @@ export class Session {
     this.queueAction({ type: 'COMPLETE' });
   }
 
-  /** EVENT LISTENERS */
-  private listenerSubscriber<T>(target: T[]) {
-    return (listener: T) => {
-      target.push(listener);
-    }
+  public next() {
+    this.queueAction({ type: 'NEXT' });
   }
 
-  public onUpdate = this.listenerSubscriber(this.updateListeners);
-  public onSync = this.listenerSubscriber(this.syncListeners);
-  public onError = this.listenerSubscriber(this.errorListeners);
-  public onClientError = this.listenerSubscriber(this.clientErrorListeners);
-  public onSyncError = this.listenerSubscriber(this.syncErrorListeners);
+  public previous() {
+    this.queueAction({ type: 'PREVIOUS' });
+  }
+
+  /** EVENT LISTENERS */
+  public on(type: 'update', listener: onUpdateFn): void;
+  public on(type: 'sync', listener: onSyncFn): void;
+  public on(type: 'error', listener: onErrorFn): void;
+  public on(type: Event, listener: Function): void {
+    const target: Function[] = this.listeners[type];
+    target.push(listener);
+  }
+
+  public removeListener(type: Event, listener: Function): any {
+    const target: Function[] = this.listeners[type];
+    const idx = target.findIndex(t => t === listener);
+    target.splice(idx, 1);
+  }
 
   private handleError(error: DialobError) {
-    this.errorListeners.map(l => l(error));
-
     if(error instanceof DialobRequestError) {
-      this.syncErrorListeners.map(l => l(error));
+      this.listeners.error.map(l => l('SYNC', error));
     } else {
-      this.clientErrorListeners.map(l => l(error));
+      this.listeners.error.map(l => l('CLIENT', error));
     }
   }
 };

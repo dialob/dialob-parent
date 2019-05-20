@@ -1,5 +1,6 @@
 import { Action } from './actions';
 import { TransportConfig } from './config';
+import { DialobRequestError } from './error';
 
 export interface DialobResponse {
   rev: number;

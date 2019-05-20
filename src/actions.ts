@@ -11,7 +11,7 @@ export interface ItemActionGroup {
   id: string;
   type: 'group';
   label: string;
-  items: string[];
+  items?: string[];
   answered: boolean;
 }
 
@@ -22,21 +22,67 @@ export interface ItemActionQuestionnaire {
   items: string[];
   activeItem: string;
   availableItems: string[];
-  allowedActions: Array<'ANSWER'>;
+  allowedActions: Array<'ANSWER' | 'NEXT' | 'PREVIOUS' | 'COMPLETE'>;
   answered: boolean;
 }
 
-export interface ItemActionValue {
+interface ItemActionValue<T extends string, K> {
   id: string;
-  type: 'number' | 'string';
+  type: T;
   label: string;
-  value: any;
+  value: K;
+  answered: boolean;
+}
+
+export type ItemActionText = ItemActionValue<'text', string>;
+export type ItemActionNumber = ItemActionValue<'number', number>;
+export type ItemActionBoolean = ItemActionValue<'boolean', boolean>;
+
+export interface ItemActionMultiChoice {
+  id: string;
+  type: 'multichoice';
+  valueSetId: string;
+  label?: string;
+  value?: string[];
+  answered: boolean;
+}
+
+export interface ItemActionSurvey {
+  id: string;
+  type: 'survey';
+  label: string;
+  value?: string;
+  answered: boolean;
+}
+
+export interface ItemActionSurveyGroup {
+  id: string;
+  type: 'surveygroup';
+  label: string;
+  items: string[];
+  answered: boolean;
+  valueSetId: string;
+}
+
+export interface ItemActionList {
+  id: string;
+  type: 'list';
+  valueSetId: string;
+  label?: string;
+  value?: string;
+  answered: boolean;
+}
+
+export interface ItemActionNote {
+  id: string;
+  type: 'note';
+  label: string;
   answered: boolean;
 }
 
 export interface ItemAction {
   type: 'ITEM';
-  item: ItemActionGroup | ItemActionQuestionnaire | ItemActionValue;
+  item: ItemActionGroup | ItemActionQuestionnaire | ItemActionText | ItemActionNumber | ItemActionBoolean | ItemActionMultiChoice | ItemActionSurvey | ItemActionSurveyGroup | ItemActionList | ItemActionNote;
 }
 
 export interface ValueSetAction {
@@ -50,10 +96,19 @@ export interface ValueSetAction {
   }
 }
 
+export interface RemoveItemsAction {
+  type: 'REMOVE_ITEMS',
+  ids: string[];
+}
+
 export interface AnswerAction {
   type: 'ANSWER';
   id: string;
   answer: any;
+}
+
+export interface PreviousAction {
+  type: 'PREVIOUS';
 }
 
 export interface NextAction {
@@ -73,4 +128,4 @@ export interface ErrorAction {
   };
 }
 
-export type Action = ResetAction | LocaleAction | ItemAction | ValueSetAction | AnswerAction | NextAction | CompleteAction | ErrorAction;
+export type Action = ResetAction | LocaleAction | ItemAction | ValueSetAction | RemoveItemsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction;

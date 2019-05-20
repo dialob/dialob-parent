@@ -1,4 +1,4 @@
-class DialobRequestError extends Error {
+export class DialobRequestError extends Error {
   reason: string;
   code: number;
   constructor(reason: string, code: number) {
@@ -10,7 +10,7 @@ class DialobRequestError extends Error {
   }
 }
 
-class DialobError extends Error {
+export class DialobError extends Error {
   constructor(reason: string) {
     super(reason);
     Object.setPrototypeOf(this, DialobError.prototype);

@@ -26,28 +26,21 @@ session.setAnswer('itemId', 'newAnswer');
 session.complete();
 
 // The session object batches updates and syncs them at appropriate times, however, it also updates
-// its local cache instantly. `onUpdate` is ran on any state change, local or remote.
-session.onUpdate(() => {
+// its local cache instantly. The `update` event is emitted on any state change, local or remote.
+session.on('update', () => {
   console.log('onUpdate');
 });
 
-// `onSync` is only ran after the state is successfully synced to the server.
-session.onSync(() => {
-  console.log('onSync');
+// `sync` event is emitted when syncing starts or ends.
+session.on('sync' (syncState) => {
+  console.log('onSync', syncState);
 });
 
-// `onError` is only ran after any error, remote or local.
-session.onError(error => {
-  console.error(error);
+// `error` event is emitted after any error, remote or local.
+session.on('error', (type, error) => {
+  console.error(type, error);
 });
 
-// `onClientError` is ran after some sort of client-side error.
-session.onClientError(error => {
-  console.error(error);
-});
-
-// `onSyncError` is ran when there is some sync error
-session.onSyncError(error => {
-  console.error(error);
-});
+// You can remove listeners with `removeListener()`
+session.removeListener('update', updateFn);
 ```
