@@ -1,12 +1,11 @@
 import produce from 'immer';
-import { Action, ErrorAction, ItemAction, ItemActionQuestionnaire, ValueSetAction } from './actions';
+import { Action, ErrorAction, ItemAction, ValueSetAction } from './actions';
 import { DialobError, DialobRequestError } from './error';
 import { DialobResponse, Transport } from './transport';
 
 type ErrorActionValue = ErrorAction['error'];
 export type SessionItem = ItemAction['item'];
 export interface SessionError extends ErrorActionValue {};
-export interface SessionQuestionnaire extends ItemActionQuestionnaire {};
 type ValueSetActionValue = ValueSetAction['valueSet'];
 export interface SessionValueSet extends ValueSetActionValue {};
 
@@ -134,8 +133,8 @@ export class Session {
     return this.state;
   }
 
-  public getQuestionnaire(): SessionQuestionnaire | undefined {
-    return this.state.items['questionnaire'] as SessionQuestionnaire;
+  public getQuestionnaire(): SessionItem | undefined {
+    return this.state.items['questionnaire'];
   }
 
   public getItem(id: string): SessionItem | undefined {

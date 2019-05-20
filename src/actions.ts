@@ -7,82 +7,28 @@ export interface LocaleAction {
   value: string;
 }
 
-export interface ItemActionGroup {
-  id: string;
-  type: 'group';
-  label: string;
-  items?: string[];
-  answered: boolean;
-}
-
-export interface ItemActionQuestionnaire {
-  id: string;
-  type: 'questionnaire';
-  label: string;
-  items: string[];
-  activeItem: string;
-  availableItems: string[];
-  allowedActions: Array<'ANSWER' | 'NEXT' | 'PREVIOUS' | 'COMPLETE'>;
-  answered: boolean;
-}
-
-interface ItemActionValue<T extends string, K> {
-  id: string;
-  type: T;
-  label: string;
-  value: K;
-  answered: boolean;
-}
-
-export type ItemActionText = ItemActionValue<'text', string>;
-export type ItemActionNumber = ItemActionValue<'number', number>;
-export type ItemActionBoolean = ItemActionValue<'boolean', boolean>;
-
-export interface ItemActionMultiChoice {
-  id: string;
-  type: 'multichoice';
-  valueSetId: string;
-  label?: string;
-  value?: string[];
-  answered: boolean;
-}
-
-export interface ItemActionSurvey {
-  id: string;
-  type: 'survey';
-  label: string;
-  value?: string;
-  answered: boolean;
-}
-
-export interface ItemActionSurveyGroup {
-  id: string;
-  type: 'surveygroup';
-  label: string;
-  items: string[];
-  answered: boolean;
-  valueSetId: string;
-}
-
-export interface ItemActionList {
-  id: string;
-  type: 'list';
-  valueSetId: string;
-  label?: string;
-  value?: string;
-  answered: boolean;
-}
-
-export interface ItemActionNote {
-  id: string;
-  type: 'note';
-  label: string;
-  answered: boolean;
-}
-
 export interface ItemAction {
   type: 'ITEM';
-  item: ItemActionGroup | ItemActionQuestionnaire | ItemActionText | ItemActionNumber | ItemActionBoolean | ItemActionMultiChoice | ItemActionSurvey | ItemActionSurveyGroup | ItemActionList | ItemActionNote;
+  item: {
+    id: string;
+    type: 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note';
+    view?: string;
+    label?: string;
+    description?: string;
+    disabled?: boolean;
+    required?: boolean;
+    className?: string[];
+    value?: any;
+    items?: string[];
+    activeItem?: string;
+    availableItems?: string[];
+    allowedActions?: Array<'ANSWER' | 'NEXT' | 'PREVIOUS' | 'COMPLETE'>;
+    answered?: boolean;
+    valueSetId?: string;
+    props?: {
+      [name: string]: any;
+    }
+  };
 }
 
 export interface ValueSetAction {
