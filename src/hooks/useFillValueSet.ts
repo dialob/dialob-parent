@@ -2,7 +2,7 @@ import { SessionValueSet } from '@resys/dialob-fill-api';
 import { useEffect, useState } from 'react';
 import { useFillSession } from './useFillSession';
 
-export function useValueSet(id: string): SessionValueSet | undefined {
+export function useFillValueSet(id: string): SessionValueSet | undefined {
   const session = useFillSession();
   const [valueSet, setValueSet] = useState<SessionValueSet | undefined>(session.getValueSet(id));
 
