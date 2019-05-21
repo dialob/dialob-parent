@@ -18,8 +18,14 @@ const session = DialobFill.newSession(sessionId, {
 // from the server
 session.pull();
 
-// Update answers
+// Update answer
 session.setAnswer('itemId', 'newAnswer');
+
+// Add row to row group
+session.addRowToGroup('rowGroup1');
+
+// Delete row from row group
+session.deleteRow('rowGroup1.1');
 
 // Next page
 session.next();

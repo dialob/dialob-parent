@@ -3,11 +3,9 @@ import { Action, ErrorAction, ItemAction, ValueSetAction } from './actions';
 import { DialobError, DialobRequestError } from './error';
 import { DialobResponse, Transport } from './transport';
 
-type ErrorActionValue = ErrorAction['error'];
 export type SessionItem = ItemAction['item'];
-export interface SessionError extends ErrorActionValue {};
-type ValueSetActionValue = ValueSetAction['valueSet'];
-export interface SessionValueSet extends ValueSetActionValue {};
+export type SessionError = ErrorAction['error'];
+export type SessionValueSet = ValueSetAction['valueSet'];
 
 export interface SessionState {
   items: Record<string, SessionItem>;
@@ -117,12 +115,27 @@ export class Session {
             }
             delete state.reverseItemMap[id];
           }
+        } else if(action.type === 'ADD_ROW') {
+          // Wait for server response
+        } else if(action.type === 'DELETE_ROW') {
+          delete state.items[action.id];
         } else if(action.type === 'COMPLETE') {
           state.complete = true;
         } else if(action.type === 'NEXT') {
-          // Do nothing
+          // Wait for server response
         } else if(action.type === 'PREVIOUS') {
-          // Do nothing
+          // Wait for server response
+        } else if(action.type === 'REMOVE_ERROR') {
+          for(let i = 0; i < state.errors.length; i++) {
+            if(state.errors[i].id === action.error.id) {
+              state.errors.splice(i, 1);
+              break;
+            }
+          }
+        } else if(action.type === 'REMOVE_VALUE_SETS') {
+          for(const id of action.ids) {
+            delete state.valueSets[id];
+          }
         } else {
           this.handleError(new DialobError('Unexpected action type!'));
         }
@@ -203,6 +216,14 @@ export class Session {
       answer,
       id: itemId,
     });
+  }
+
+  public addRowToGroup(rowGroupId: string) {
+    this.queueAction({ type: 'ADD_ROW', id: rowGroupId })
+  }
+
+  public deleteRow(rowId: string) {
+    this.queueAction({ type: 'DELETE_ROW', id: rowId });
   }
 
   public complete() {

@@ -11,7 +11,7 @@ export interface ItemAction {
   type: 'ITEM';
   item: {
     id: string;
-    type: 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note';
+    type: 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
     view?: string;
     label?: string;
     description?: string;
@@ -47,10 +47,25 @@ export interface RemoveItemsAction {
   ids: string[];
 }
 
+export interface RemoveValueSetsAction {
+  type: 'REMOVE_VALUE_SETS',
+  ids: string[];
+}
+
 export interface AnswerAction {
   type: 'ANSWER';
   id: string;
   answer: any;
+}
+
+export interface AddRowAction {
+  type: 'ADD_ROW';
+  id: string;
+}
+
+export interface DeleteRowAction {
+  type: 'DELETE_ROW';
+  id: string;
 }
 
 export interface PreviousAction {
@@ -65,13 +80,19 @@ export interface CompleteAction {
   type: 'COMPLETE';
 }
 
+interface FillError {
+  id: string;
+  code: string;
+  description: string;
+}
 export interface ErrorAction {
   type: 'ERROR';
-  error: {
-    id: string;
-    code: string;
-    description: string;
-  };
+  error: FillError;
 }
 
-export type Action = ResetAction | LocaleAction | ItemAction | ValueSetAction | RemoveItemsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction;
+export interface RemoveErrorAction {
+  type: 'REMOVE_ERROR';
+  error: FillError
+}
+
+export type Action = ResetAction | LocaleAction | ItemAction | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
