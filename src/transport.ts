@@ -4,7 +4,7 @@ import { DialobRequestError } from './error';
 
 export interface DialobResponse {
   rev: number;
-  actions: Action[];
+  actions?: Action[];
 };
 
 export interface Transport {

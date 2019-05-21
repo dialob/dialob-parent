@@ -189,7 +189,7 @@ export class Session {
       throw e;
     }
 
-    this.applyActions(response.actions, response.rev);
+    this.applyActions(response.actions || [], response.rev);
     this.listeners.sync.map(l => l('DONE'));
     return response;
   }
@@ -204,7 +204,7 @@ export class Session {
       throw e;
     }
 
-    this.applyActions(response.actions, response.rev);
+    this.applyActions(response.actions || [], response.rev);
     this.listeners.sync.map(l => l('DONE'));
     return response;
   }
