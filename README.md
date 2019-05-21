@@ -40,10 +40,16 @@ const Item = ({ id }) => {
 
   if(item.type === 'text') {
     return <input type='text' value={item.value}/>
+  } else if(item.type === 'group') {
+    return (
+      <div className='group'>
+        {item.items && item.items.map(itemId => (
+          <Item key={itemId} id={itemId}/>
+        ))}
+      </div>
+    );
   } else if(item.type === 'surveyGroup') {
     return <SurveyGroup item={item}/>
-  } else if(item.type === 'survey') {
-    return <Survey item={item}/>
   } else {
     // etc... add your own selectors
     return null;
@@ -66,17 +72,17 @@ const SurveyGroup = ({ item }) => {
       </thead>
       <tbody>
         {item.items.map(itemId => (
-          <Item key={itemId} id={itemId}/>
+          <Survey key={itemId} id={itemId} valueSet={valueSet}/>
         ))}
       </tbody>
     </div>
   );
 }
 
-const Survey = ({ item }) => {
-  const valueSet = useFillValueSet(item.valueSetId);
+const Survey = ({ id, valueSet }) => {
+  const item = useFillItem(id);
   const session = useFillSession();
-  if(!valueSet) return null;
+  if(!item) return null;
 
   return (
     <tr>
