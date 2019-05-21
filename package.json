@@ -1,6 +1,6 @@
 {
   "name": "@resys/dialob-fill-react",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "lib/index.js",
   "files": [
     "lib"
@@ -16,7 +16,7 @@
     "test": "jest --watch"
   },
   "devDependencies": {
-    "@resys/dialob-fill-api": "0.0.2",
+    "@resys/dialob-fill-api": "^0.0.3",
     "@types/react": "^16.8.17",
     "typescript": "^3.4.5"
   },
