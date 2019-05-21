@@ -1,9 +1,20 @@
 # Dialob Fill React
 This package provides convenience methods for interacting with Dialob Fill sessions through React.
 
+Components:
+
+- `<Session id={id} config={config}>` where `id` is the session id and `config` is the fill API
+config. `<Session/>` creates a session object and makes it accessible through the React context API.
+
+Hooks:
+
+- `useFillSession()` returns the fill API session object
+- `useFillItem(id)` pulls the item with the given id from the session and keeps it updated
+- `useFillValueSet(id)` pulls the value set with the given id from the session and keeps it updated
+
 ## Install
 ```sh
-yarn add @resys/dialob-fill-react
+yarn add @resys/dialob-fill-react @resys/dialob-fill-api
 ```
 
 ## Quick-start
