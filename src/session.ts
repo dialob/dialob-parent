@@ -164,6 +164,10 @@ export class Session {
     return this.state.valueSets[id];
   }
 
+  public getLocale(): string | undefined {
+    return this.state.locale;
+  }
+
   public isComplete(): boolean {
     return this.state.complete;
   }

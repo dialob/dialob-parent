@@ -45,6 +45,9 @@ session.getItemErrors(itemId);
 // Get valueSet
 session.getValueSet(valueSetId);
 
+// Get locale
+session.getLocale();
+
 // The session object batches updates and syncs them at appropriate times, however, it also updates
 // its local cache instantly. The `update` event is emitted on any state change, local or remote.
 session.on('update', () => {
