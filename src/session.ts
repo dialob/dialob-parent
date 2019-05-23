@@ -9,11 +9,9 @@ export type SessionValueSet = ValueSetAction['valueSet'];
 
 export interface SessionState {
   items: Record<string, SessionItem>;
-  reverseItemMap: {
-    [id: string]: Set<string>;
-  };
+  reverseItemMap: Record<string, Set<string>>;
   valueSets: Record<string, SessionValueSet>;
-  errors: SessionError[];
+  errors: Record<string, SessionError[]>;
   locale?: string;
   rev: number;
   complete: boolean;
@@ -49,7 +47,7 @@ export class Session {
       items: {},
       reverseItemMap: {},
       valueSets: {},
-      errors: [],
+      errors: {},
       rev: 0,
       complete: false,
     };
@@ -76,7 +74,7 @@ export class Session {
           state.items = {};
           state.reverseItemMap = {};
           state.valueSets = {};
-          state.errors = [];
+          state.errors = {};
           state.locale = undefined;
           state.complete = false;
         } else if(action.type === 'ANSWER') {
@@ -95,7 +93,12 @@ export class Session {
             this.insertReverseRef(state, item.id, item.items);
           }
         } else if(action.type === 'ERROR') {
-          state.errors.push(action.error);
+          const error = action.error;
+          if(!state.errors[error.id]) {
+            state.errors[error.id] = [];
+          }
+
+          state.errors[error.id].push(error);
         } else if(action.type === 'LOCALE') {
           state.locale = action.value;
         } else if(action.type === 'VALUE_SET') {
@@ -103,6 +106,7 @@ export class Session {
         } else if(action.type === 'REMOVE_ITEMS') {
           for(const id of action.ids) {
             delete state.items[id];
+            delete state.errors[id];
 
             if(state.reverseItemMap[id]) {
               state.reverseItemMap[id].forEach(reference => {
@@ -126,10 +130,12 @@ export class Session {
         } else if(action.type === 'PREVIOUS') {
           // Wait for server response
         } else if(action.type === 'REMOVE_ERROR') {
-          for(let i = 0; i < state.errors.length; i++) {
-            if(state.errors[i].id === action.error.id) {
-              state.errors.splice(i, 1);
-              break;
+          const error = action.error;
+          const itemErrors = state.errors[error.id];
+          if(itemErrors) {
+            const errorIdx = itemErrors.findIndex(e => e.code === error.code);
+            if(errorIdx !== -1) {
+              itemErrors.splice(errorIdx, 1);
             }
           }
         } else if(action.type === 'REMOVE_VALUE_SETS') {
@@ -148,6 +154,10 @@ export class Session {
 
   public getItem(id: string): SessionItem | undefined {
     return this.state.items[id];
+  }
+
+  public getItemErrors(id: string): SessionError[] | undefined {
+    return this.state.errors[id];
   }
 
   public getValueSet(id: string): SessionValueSet | undefined {
