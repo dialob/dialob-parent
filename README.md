@@ -9,7 +9,7 @@ config. `<Session/>` creates a session object and makes it accessible through th
 Hooks:
 
 - `useFillSession()` returns the fill API session object
-- `useFillItem(id)` pulls the item with the given id from the session and keeps it updated
+- `useFillItem(id)` pulls the item and its errors with the given id from the session and keeps it updated
 - `useFillValueSet(id)` pulls the value set with the given id from the session and keeps it updated
 
 ## Install
@@ -29,7 +29,7 @@ const App = () => (
 );
 
 const Questionnaire = () => {
-  const questionnaire = useFillItem('questionnaire');
+  const { item: questionnaire, errors } = useFillItem('questionnaire');
   if(!questionnaire) return null;
 
   if(questionnaire.items) {
@@ -37,6 +37,9 @@ const Questionnaire = () => {
       <div>
         {questionnaire.items.map(itemId => (
           <Item key={itemId} id={itemId}/>
+        ))}
+        {errors.map(error => (
+          <span key={error.code}>{error.description}</span>
         ))}
       </div>
     );
@@ -46,11 +49,18 @@ const Questionnaire = () => {
 }
 
 const Item = ({ id }) => {
-  const item = useFillItem(id);
+  const { item, errors } = useFillItem(id);
   if(!item) return null;
 
   if(item.type === 'text') {
-    return <input type='text' value={item.value}/>
+    return (
+      <div>
+        <input type='text' value={item.value}/>
+        {errors.map(error => (
+          <span key={error.code}>{error.description}</span>
+        ))}
+      </div>
+    );
   } else if(item.type === 'group') {
     return (
       <div className='group'>
@@ -91,7 +101,7 @@ const SurveyGroup = ({ item }) => {
 }
 
 const Survey = ({ id, valueSet }) => {
-  const item = useFillItem(id);
+  const { item } = useFillItem(id);
   const session = useFillSession();
   if(!item) return null;
 
