@@ -27,5 +27,5 @@ export const RESERVED_WORDS = [
   'lengthOf'
 ];
 
-export const VALID_ID_PATTERN = /^[a-zA-Z][_a-zA-Z\d]*$/g;
+export const VALID_ID_PATTERN = /^[a-zA-Z][_a-zA-Z\d]*$/;
 
