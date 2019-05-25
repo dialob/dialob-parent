@@ -6,7 +6,7 @@ export interface TransportConfig {
   };
 }
 
-export interface Config {
+export interface SessionConfig {
   endpoint: string;
   transport?: TransportConfig;
 }
