@@ -11,6 +11,12 @@ import memoize from 'memoizee';
 
 const MAX_LENGTH = 55;
 
+const DropPosition = {
+  ABOVE: 0,
+  BELOW: 1,
+  INSIDE: 2
+};
+
 const formatLabel = memoize((label, type) => {
   if (!label) {
      return label;
@@ -18,6 +24,36 @@ const formatLabel = memoize((label, type) => {
   const text = type === 'note' ? md_strip_tags(label) : label;
   return text.length > MAX_LENGTH ? text.substring(0, MAX_LENGTH) + '\u2026': text;
 });
+
+const getDropPosition = (boundingRect, clientOffset, parentType, targetType, itemType) => {
+  let result = null;
+  const canDropAside = canContain(parentType, itemType);
+  const canDropIn = canContain(targetType, itemType)
+  if (canDropAside) {
+    const midY = (boundingRect.bottom - boundingRect.top) / 2;
+    const y = clientOffset.y - boundingRect.top;
+
+    if (y >= midY) {
+      result = DropPosition.BELOW;
+    } else {
+      result = DropPosition.ABOVE;
+    }
+  }
+
+  if (canDropIn && canDropAside) {
+    const x = clientOffset.x - boundingRect.left;
+    const midX = (boundingRect.right - boundingRect.left) / 2;
+    if (x >= midX) {
+      result = DropPosition.INSIDE;
+    }
+  }
+
+  if (canDropIn && !canDropAside) {
+    result = DropPosition.INSIDE;
+  }
+
+  return result;
+}
 
 const itemSource = {
   beginDrag(props) {
@@ -47,15 +83,12 @@ const itemTarget = {
       return;
     }
 
-    if (canContain(props.parent.get('type'), monitor.getItem().itemType)) {
-      // Dropping aside
-      const boundingRect = findDOMNode(component).getBoundingClientRect();
-      const midY = (boundingRect.bottom - boundingRect.top) / 2;
-      const y = monitor.getClientOffset().y - boundingRect.top;
-      const targetIndex = y >= midY ? hoverIndex + 1 : hoverIndex;
-      props.moveItem(dragIndex, targetIndex, dragParent.get('id'), hoverParent.get('id'), monitor.getItem().id);
-    } else if (canContain(props.item.get('type'), monitor.getItem().itemType)) {
-      // Dropping into
+    const dropPosition = getDropPosition(findDOMNode(component).getBoundingClientRect(), monitor.getClientOffset(), props.parent.get('type'), props.isPage ? 'page' : props.itemType, monitor.getItem().isPage ? 'page' : monitor.getItem().itemType);
+    if (dropPosition === DropPosition.ABOVE) {
+      props.moveItem(dragIndex, hoverIndex, dragParent.get('id'), hoverParent.get('id'), monitor.getItem().id);
+    } else if (dropPosition === DropPosition.BELOW) {
+      props.moveItem(dragIndex, hoverIndex + 1, dragParent.get('id'), hoverParent.get('id'), monitor.getItem().id);
+    } else if (dropPosition === DropPosition.INSIDE) {
       props.moveItem(dragIndex, 0, dragParent.get('id'), props.item.get('id'), monitor.getItem().id);
     }
   }
@@ -93,18 +126,18 @@ class TreeItem extends Item {
   }
 
   render() {
-    const {connectDragSource, connectDropTarget, isOver, clientOffset, treeCollapsed} = this.props;
+    const {connectDragSource, connectDropTarget, isOver, clientOffset, treeCollapsed, isPage} = this.props;
     let dragClass = null;
     if (isOver) {
-      const boundingRect = this.node.getBoundingClientRect();
-      const midY = (boundingRect.bottom - boundingRect.top) / 2;
-      const y = this.props.clientOffset.y - boundingRect.top;
-      if (y < midY) {
+      const dropPosition = getDropPosition(this.node.getBoundingClientRect(), clientOffset, this.props.parent.get('type'),  isPage ? 'page': this.props.itemType, this.props.dragItem.isPage ? 'page' : this.props.dragItem.itemType);
+      if (dropPosition === DropPosition.ABOVE) {
         dragClass = 'composer-drag-above';
-      }
-      if (y >= midY) {
+      } else if (dropPosition === DropPosition.BELOW) {
         dragClass = 'composer-drag-below';
+      } else if (dropPosition === DropPosition.INSIDE) {
+        dragClass = 'composer-drag-inside';
       }
+
     }
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node); this.node = node;}}>
@@ -133,7 +166,8 @@ const TreeItemConnected =
     (DropTarget('item', itemTarget, (connect, monitor) => ({
       connectDropTarget: connect.dropTarget(),
       isOver: monitor.isOver({shallow: true}),
-      clientOffset: monitor.getClientOffset()
+      clientOffset: monitor.getClientOffset(),
+      dragItem: monitor.getItem()
     }))(TreeItem)));
 
 export {
