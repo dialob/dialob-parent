@@ -16,6 +16,10 @@
   box-shadow: inset 0px -2px 0px 0px #1e7aca;
 }
 
+.composer-drag-inside {
+  box-shadow: inset 0px 0px 2px 2px #1e7aca;
+}
+
 .composer-group {
   background-color: #00000005 !important;
 }
