@@ -4,7 +4,8 @@ import {isGlobalValueSet} from '../helpers/utils';
 
 const INITIAL_STATE = Immutable.Map();
 
-function generateItemId(state, prefix) {
+function generateItemId(state, type, view) {
+  const prefix = view || type;
   let idx = 1;
   let data = state.get('data') || Immutable.Map();
   let variables = state.get('variables') || Immutable.List();
@@ -23,7 +24,7 @@ function generateValueSetId(state, prefix) {
 }
 
 function addItem(state, action) {
-  const itemId = generateItemId(state, action.config.type);
+  const itemId = generateItemId(state, action.config.type, action.config.view);
   const itemConfig = Immutable.fromJS(Object.assign({id: itemId}, action.config));
   return state.update('data', data => data.set(itemId, itemConfig)
               .update(action.parentItemId, parent => {

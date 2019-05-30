@@ -23,7 +23,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           title: 'Survey group (vertical)',
           config: {
             type: 'surveygroup',
-            className: ['vertical']
+            view: 'verticalSurveygroup',
           }
         },
         {
@@ -41,20 +41,22 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         {
           title: 'Survey item',
           config: {
-            type: 'survey'
+            type: 'survey',
+            view: 'survey'
           }
         },
         {
           title: 'Text',
           config: {
-            type: 'text'
+            type: 'text',
+            view: 'text'
           }
         },
         {
           title: 'Text box',
           config: {
             type: 'text',
-            className: ['textbox']
+            view: 'textBox'
           }
         },
         {
