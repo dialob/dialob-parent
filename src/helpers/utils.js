@@ -54,6 +54,10 @@ export function translateErrorMessage(error) {
       return `Choice list has duplicate key '${error.get('expression')}'`;
     case 'VALUESET_EMPTY_KEY':
       return 'Choice list has empty key';
+    case 'CONTEXT_VARIABLE_UNDEFINED_TYPE':
+      return 'Context variable type not defined';
+    case 'VALUE_TYPE_NOT_SET':
+      return 'Value type not set';
     default:
       return error.get('message');
   };
