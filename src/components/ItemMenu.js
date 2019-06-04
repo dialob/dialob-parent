@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dropdown} from 'semantic-ui-react';
+import {Dropdown, Label} from 'semantic-ui-react';
 import ItemTypeMenu from './ItemTypeMenu';
 import {connect} from 'react-redux';
 import {addItem, showItemOptions, copyItem} from '../actions';

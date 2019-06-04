@@ -11,6 +11,8 @@ class StatusIndicator extends React.PureComponent {
       return <Icon name='check' color='green' fitted size='small' />;
     } else if (status === Status.STATUS_BUSY) {
       return <Loader size='mini' inline active />;
+    } else if (status === Status.STATUS_WARNINGS) {
+      return <Icon name='warning sign' color='yellow' fitted size='small'/>;
     } else if (status === Status.STATUS_ERRORS ||
                status === Status.STATUS_FATAL) {
                 return <Icon name='warning sign' color='red' fitted size='small'/>;
