@@ -44,7 +44,7 @@ class MainMenu extends Component {
           <Dropdown item text={`Version: ${formTag}`} lazyLoad>
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.props.showVersioning}>Manage versions...</Dropdown.Item>
-              <Dropdown.Item disabled={formTag !== 'LATEST'} onClick={() => this.props.showNewTag}>Create version tag</Dropdown.Item>
+              <Dropdown.Item disabled={formTag !== 'LATEST'} onClick={() => this.props.showNewTag()}>Create version tag</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
           <Menu.Menu position='right'>
