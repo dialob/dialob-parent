@@ -64,7 +64,7 @@ class MainMenu extends Component {
               </Dropdown>
               {
                 this.props.config && this.props.config.transport.previewUrl &&
-                <Menu.Item disabled={this.props.status !== Status.STATUS_OK} onClick={this.props.requestPreview}><Icon name='eye' /> Preview</Menu.Item>
+                <Menu.Item disabled={this.props.status !== Status.STATUS_OK && this.props.status !== Status.STATUS_WARNINGS} onClick={this.props.requestPreview}><Icon name='eye' /> Preview</Menu.Item>
               }
               {
                 this.props.config && this.props.config.closeHandler &&

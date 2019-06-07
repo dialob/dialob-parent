@@ -20,7 +20,7 @@ export function translateErrorType(error) {
     case 'VISIBILITY':
       return 'Visibility';
     case 'GENERAL':
-      return error.get('message') === 'INVALID_DEFAULT_VALUE' ? 'Default' : 'General';
+      return error.get('message') === 'INVALID_DEFAULT_VALUE' ? 'Default' : '';
     case 'REQUIREMENT':
       return 'Requirement';
     case 'VALIDATION':
@@ -48,6 +48,16 @@ export function translateErrorMessage(error) {
       return 'Can\'t compare these variables';
     case 'BOOLEAN_EXPRESSION_EXPECTED':
       return 'Boolean expression expected';
+    case 'VALUESET_EMPTY':
+      return 'Choice list is empty';
+    case 'VALUESET_DUPLICATE_KEY':
+      return `Choice list has duplicate key '${error.get('expression')}'`;
+    case 'VALUESET_EMPTY_KEY':
+      return 'Choice list has empty key';
+    case 'CONTEXT_VARIABLE_UNDEFINED_TYPE':
+      return 'Context variable type not defined';
+    case 'VALUE_TYPE_NOT_SET':
+      return 'Value type not set';
     default:
       return error.get('message');
   };

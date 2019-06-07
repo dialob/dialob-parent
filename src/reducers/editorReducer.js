@@ -8,12 +8,15 @@ const INITIAL_STATE = Immutable.Map();
 function setErrors(state, errors) {
   let newState = state.set('errors', Immutable.fromJS(errors));
   if (errors && errors.length > 0) {
-    if (errors.findIndex(e => e.severity === 'FATAL') > -1) {
+    if (errors.findIndex(e => e.level === 'FATAL') > -1) {
       return newState.set('status', Status.STATUS_FATAL);
     } else {
-      return newState.set('status', Status.STATUS_ERRORS);
+      if (errors.length === errors.filter(e => e.level === 'WARNING').length) {
+        return newState.set('status', Status.STATUS_WARNINGS);
+      } else {
+        return newState.set('status', Status.STATUS_ERRORS);
+      }
     }
-    // TODO: Handle warnings only case
   } else {
     return newState.set('status', Status.STATUS_OK);
   }
