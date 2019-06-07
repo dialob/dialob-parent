@@ -8,10 +8,11 @@ import { translateErrorMessage } from '../helpers/utils';
 
 class ValueSetEditor extends Component {
 
-  entryEditor(entry, index) {
+  entryEditor(entry, index, valueSetErrors) {
     const vsId = this.props.valueSetId;
+    const entryErrors = valueSetErrors && valueSetErrors.find(e => e.get('index') === index || e.get('expression') === entry.get('id'));
     return (
-      <Table.Row key={index}>
+      <Table.Row key={index} error={entryErrors ? true : false}>
         <Table.Cell collapsing>
           <Button size='tiny' icon='remove' onClick={() => this.props.deleteValuesetEntry(vsId, index)} />
         </Table.Cell>
@@ -27,11 +28,10 @@ class ValueSetEditor extends Component {
   render() {
       const dedupe = (item, idx, arr) => arr.indexOf(item) === idx;
 
-      const rows = this.props.getValueset().get('entries') ? this.props.getValueset().get('entries').map((e, i) => this.entryEditor(e, i)) : [];
-      const errors = this.props.errors &&
+      const valueSetErrors = this.props.errors &&
           this.props.errors
             .filter(e => e.get('message').startsWith('VALUESET_') && e.get('itemId') === this.props.valueSetId)
-            .groupBy(e => e.get('level'));
+      const errors = valueSetErrors && valueSetErrors.groupBy(e => e.get('level'));
 
       const errorList = errors && errors.get('ERROR') &&
                 <Message attached={errors.get('WARNING') ? true : 'bottom'} error header='Errors'
@@ -40,6 +40,8 @@ class ValueSetEditor extends Component {
       const warningList = errors && errors.get('WARNING') &&
                 <Message attached='bottom' warning header='Warnings'
                     list={errors.get('WARNING').map(e => translateErrorMessage(e)).toJS().filter(dedupe)} />;
+
+      const rows = this.props.getValueset().get('entries') ? this.props.getValueset().get('entries').map((e, i) => this.entryEditor(e, i, valueSetErrors)) : [];
 
       return (
       <React.Fragment>
