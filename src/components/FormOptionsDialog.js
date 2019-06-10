@@ -50,7 +50,7 @@ const OptionsPane = ({metadata, onChange}) => {
           <Form.Input fluid label='Default submit URL' value={metadata.get('defaultSubmitUrl') || ''} onChange={(evt) => onChange('defaultSubmitUrl', evt.target.value)} />
         </Form.Field>
         <Form.Field>
-          <Form.Checkbox label='Show inactive elements during filling' checked={metadata.get('showDisabled')} onChange={(evt, data) => onChange('showDisabled', data.checked)} />
+          <Form.Checkbox label='Show inactive pages during filling' checked={metadata.get('showDisabled')} onChange={(evt, data) => onChange('showDisabled', data.checked)} />
         </Form.Field>
       </Form>
     </Tab.Pane>
