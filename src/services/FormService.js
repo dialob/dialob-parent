@@ -51,8 +51,8 @@ export default class FormService {
     return this.doFetch(url, 'get');
   }
 
-  saveForm(formData) {
-    return this.doFetch(this.baseUrl + '/forms/' + formData._id, 'put', formData);
+  saveForm(formData, dryRun = false) {
+    return this.doFetch(`${this.baseUrl}/forms/${formData._id}${dryRun ? '?dryRun=true' : ''}`, 'put', formData);
   }
 
   duplicateItem(formData, itemId) {
