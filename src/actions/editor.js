@@ -142,9 +142,10 @@ export function setForm(formData, tagName = null) {
   };
 }
 
-export function saveForm() {
+export function saveForm(dryRun = false) {
   return {
-    type: Actions.SAVE_FORM
+    type: Actions.SAVE_FORM,
+    dryRun
   };
 }
 

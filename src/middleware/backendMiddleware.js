@@ -21,7 +21,8 @@ export const backendMiddleware = store => {
       formService.loadForm(action.formId, action.tagName)
         .then(json => {
           store.dispatch(setForm(json, action.tagName));
-          store.dispatch(setStatus(Status.STATUS_OK)); // TODO: Check status
+          store.dispatch(setStatus(Status.STATUS_OK)); 
+          store.dispatch(saveForm(true));
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.SAVE_FORM) {
@@ -30,7 +31,7 @@ export const backendMiddleware = store => {
           store.dispatch(scheduleSave());
         } else {
           store.dispatch(setStatus(Status.STATUS_BUSY));
-          formService.saveForm(store.getState().dialobComposer.form.toJS())
+          formService.saveForm(store.getState().dialobComposer.form.toJS(), action.dryRun)
             .then(json => {
               store.dispatch(setFormRevision(json.rev));
               store.dispatch(setErrors(json.errors));
