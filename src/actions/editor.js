@@ -126,6 +126,16 @@ export function deleteValuesetEntry(valueSetId, index) {
   };
 }
 
+export function moveValuesetEntry(valueSetId, from, to) {
+  return {
+    type: Actions.MOVE_VALUESET_ENTRY,
+    valueSetId,
+    from,
+    to,
+    saveNeeded: true
+  };
+}
+
 export function loadForm(formId, tagName = null) {
   return {
     type: Actions.LOAD_FORM,

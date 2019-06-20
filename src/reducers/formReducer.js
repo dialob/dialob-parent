@@ -155,6 +155,17 @@ function deleteValuesetEntry(state, valueSetId, index) {
   return state.deleteIn(['valueSets', vsIndex, 'entries', index]);
 }
 
+function moveValuesetEntry(state, valueSetId, from, to) {
+  const vsIndex = findValuesetIndex(state, valueSetId);
+  if (vsIndex === -1) {
+    return state;
+  }
+  const entry = state.getIn(['valueSets', vsIndex, 'entries', from]);
+  return state.updateIn(['valueSets', vsIndex, 'entries'], entries =>
+      entries.splice(from, 1).splice(to > from ? to - 1 : to, 0, entry)
+  );
+}
+
 function newVariable(state, context = false) {
   const variableId = generateItemId(state, context ? 'context' : 'var');
   const variable = Immutable.fromJS(context ?
@@ -303,6 +314,8 @@ export function formReducer(state = INITIAL_STATE, action) {
       return updateValuesetEntry(state, action.valueSetId, action.index, action.id, action.label, action.language);
     case Actions.DELETE_VALUESET_ENTRY:
       return deleteValuesetEntry(state, action.valueSetId, action.index);
+    case Actions.MOVE_VALUESET_ENTRY:
+      return moveValuesetEntry(state, action.valueSetId, action.from, action.to);
     case Actions.SET_METADATA_VALUE:
       if (action.value) {
         return state.setIn(['metadata', action.attribute], Immutable.fromJS(action.value));
