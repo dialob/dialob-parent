@@ -26,7 +26,11 @@ class Item extends React.Component {
   }
 
   setActive() {
-    this.props.setActiveItem(this.props.itemId);
+    if (this.props.isPage) {
+      this.props.setActivePage(this.props.itemId);
+    } else {
+      this.props.setActiveItem(this.props.itemId);
+    }
   }
 
   newItem(config, parentItemId, afterItemId) {
