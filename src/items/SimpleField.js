@@ -3,12 +3,13 @@ import {Table, Input} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemMenu from '../components/ItemMenu';
 import Validations from '../components/Validations';
-import CodeEditor from '../components/CodeEditor';
+import CodeEditor from '../components/CodeEditor'
+import Scrolltarget from './Scrolltarget';
 
 class SimpleField extends Item {
   render() {
     return (
-      <React.Fragment>
+      <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
         <Table onClick={(e) => {e.stopPropagation(); this.setActive();}}  attached='top' color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
@@ -52,7 +53,7 @@ class SimpleField extends Item {
         {
           this.props.active && <Validations item={this.props.item} validations={this.props.validations} readOnly={!this.props.editable} />
         }
-      </React.Fragment>
+      </Scrolltarget>
     );
   }
 }

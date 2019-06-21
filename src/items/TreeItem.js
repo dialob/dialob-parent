@@ -148,7 +148,7 @@ class TreeItem extends Item {
           }
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
-            <List.Header className={classnames({'composer-active': this.props.active})}>{this.getLabel()}</List.Header>
+            <List.Header onClick={() => this.setActive()} className={classnames({'composer-active': this.props.active})}>{this.getLabel()}</List.Header>
             {!treeCollapsed && this.getSubList()}
           </List.Content>
         </List.Item>

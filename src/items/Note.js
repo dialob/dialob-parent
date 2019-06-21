@@ -5,11 +5,12 @@ import ItemMenu from '../components/ItemMenu';
 import RichEditor from '../components/RichEditor';
 import CodeEditor from '../components/CodeEditor';
 import classnames from 'classnames';
+import Scrolltarget from './Scrolltarget';
 
 class Note extends Item {
   render() {
     return (
-      <React.Fragment>
+      <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
          <Table attached='top' onClick={(e) => {e.stopPropagation(); this.setActive();}} color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
@@ -34,7 +35,7 @@ class Note extends Item {
         <Segment onClick={(e) => {e.stopPropagation(); this.setActive();}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
           <RichEditor active={this.props.active} id={`nrt_${this.props.item.get('id')}`} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', 'en'])} placeholder='Write note text...' />
         </Segment>
-      </React.Fragment>
+      </Scrolltarget>
     );
   }
 }

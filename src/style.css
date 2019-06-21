@@ -24,6 +24,10 @@
   background-color: #00000005 !important;
 }
 
+.composer-scrolltarget {
+  margin-bottom: 1rem;
+}
+
 .item.upward.dropdown.composer-item-menu>.menu {
   top: auto !important;
 }

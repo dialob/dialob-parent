@@ -3,14 +3,17 @@ import {backendMiddleware} from './backendMiddleware';
 import {previewMiddleware} from './previewMiddleware';
 import {downloadMiddleware} from './downloadMiddleware';
 import {extensionMiddleware} from './extensionMiddleware';
-import {applyMiddleware} from 'redux';
+import {navigationMiddleware} from './navigationMiddleware';
+import {createScrollMiddleware} from 'react-redux-scroll';
 
 const middleware = [
+  navigationMiddleware,
   confirmationMiddleware,
   extensionMiddleware,
   backendMiddleware,
   previewMiddleware,
-  downloadMiddleware
+  downloadMiddleware,
+  createScrollMiddleware()
 ];
 
 export default function createDialobComposerMiddleware() {

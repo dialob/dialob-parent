@@ -5,6 +5,7 @@ import ItemTypeMenu from '../components/ItemTypeMenu';
 import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
 import CodeEditor from '../components/CodeEditor';
+import Scrolltarget from './Scrolltarget';
 
 class Group extends Item {
 
@@ -13,7 +14,7 @@ class Group extends Item {
     const itemTypeFilter = i => item.get('type') !== 'surveygroup' ? i.config.type !== 'survey' : true;
 
     return (
-      <React.Fragment>
+      <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
         <Table attached={treeCollapsed ? null :'top'} onClick={(e) => {e.stopPropagation(); this.setActive();}}  color={this.props.active ? 'blue' : null}>
           <Table.Body>
             <Table.Row>
@@ -59,7 +60,7 @@ class Group extends Item {
         </React.Fragment>
         : null
         }
-      </React.Fragment>);
+      </Scrolltarget>);
   }
 }
 
