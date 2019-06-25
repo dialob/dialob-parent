@@ -8,6 +8,22 @@
   border-color: #1e7aca !important;
 }
 
+.list .item .content .header.composer-warning {
+  color: #fbbd08 !important;
+}
+
+.composer-warning {
+  border-color: #fbbd08;
+}
+
+.list .item .content .header.composer-error {
+  color: #db2828 !important;
+}
+
+.composer-error {
+  border-color: #db2828;
+}
+
 .composer-drag-above {
   box-shadow: inset 0px 2px 0px 0px #1e7aca;
 }
@@ -18,6 +34,11 @@
 
 .composer-drag-inside {
   box-shadow: inset 0px 0px 2px 2px #1e7aca;
+}
+
+.composer-error-link {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .composer-group {

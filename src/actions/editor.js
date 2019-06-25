@@ -1,9 +1,10 @@
 import * as Actions from './constants';
 
-export function setActiveItem(itemId) {
+export function setActiveItem(itemId, noScroll = false) {
   return {
     type: Actions.SET_ACTIVE_ITEM,
-    itemId
+    itemId,
+    noScroll
   };
 }
 

@@ -33,7 +33,7 @@ class ErrorList extends Component {
     let errors = errorMap.entrySeq().map((e, i) => {
       const uiItemId = this.resolveItemId(e[1]);
       return (<Message key={i} error={e[1].getIn([0, 'level']) != 'WARNING'} warning={e[1].getIn([0, 'level']) === 'WARNING'}>
-        <Message.Header onClick={() => e[1].getIn([0, 'type']) === 'VARIABLE' ? this.props.showVariables() : this.props.setActiveItem(uiItemId)}>{uiItemId}</Message.Header>
+        <Message.Header className='composer-error-link' onClick={() => e[1].getIn([0, 'type']) === 'VARIABLE' ? this.props.showVariables() : this.props.setActiveItem(uiItemId)}>{uiItemId}</Message.Header>
         <Message.List>
           {
             e[1].map((m, j) => <Message.Item key={j}>{this.translateError(m)}</Message.Item>)

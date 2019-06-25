@@ -8,6 +8,7 @@ import { DragSource, DropTarget } from 'react-dnd'
 import {findDOMNode} from 'react-dom';
 import {canContain} from '../defaults';
 import memoize from 'memoizee';
+import * as Status from '../helpers/constants';
 
 const MAX_LENGTH = 55;
 
@@ -139,6 +140,7 @@ class TreeItem extends Item {
       }
 
     }
+    const errorLevel = this.getErrorLevel();
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node); this.node = node;}}>
         <List.Item className={dragClass}>
@@ -148,7 +150,14 @@ class TreeItem extends Item {
           }
           <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
           <List.Content>
-            <List.Header onClick={() => this.setActive()} className={classnames({'composer-active': this.props.active})}>{this.getLabel()}</List.Header>
+            <List.Header onClick={() => this.setActive()}
+              className={classnames({'composer-active': this.props.active,
+                'composer-warning': errorLevel === Status.STATUS_WARNINGS,
+                'composer-error': errorLevel === Status.STATUS_ERRORS
+            })}
+            >
+              {this.getLabel()}
+            </List.Header>
             {!treeCollapsed && this.getSubList()}
           </List.Content>
         </List.Item>

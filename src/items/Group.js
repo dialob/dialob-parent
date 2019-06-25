@@ -15,7 +15,7 @@ class Group extends Item {
 
     return (
       <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
-        <Table attached={treeCollapsed ? null :'top'} onClick={(e) => {e.stopPropagation(); this.setActive();}}  color={this.props.active ? 'blue' : null}>
+        <Table attached={treeCollapsed ? null :'top'} onClick={(e) => {e.stopPropagation(); this.setActive(true);}} color={this.getBorderColor()}>
           <Table.Body>
             <Table.Row>
               <Table.Cell collapsing>
@@ -39,7 +39,7 @@ class Group extends Item {
 
         { !treeCollapsed ?
          <React.Fragment>
-            <Table onClick={(e) => {e.stopPropagation(); this.setActive();}}  celled attached >
+            <Table onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  celled attached >
               <Table.Body>
                 <Table.Row>
                   <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
@@ -48,7 +48,7 @@ class Group extends Item {
                 </Table.Row>
               </Table.Body>
             </Table>
-            <Segment onClick={(e) => {e.stopPropagation(); this.setActive();}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
+            <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
               {this.createChildren({parentItemId: itemId, getItemById: this.props.getItemById})}
 
               <Dropdown button text='Add item' disabled={!editable} lazyLoad>
