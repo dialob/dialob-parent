@@ -105,7 +105,7 @@ class ValueSetEditor extends Component {
 
       const valueSetErrors = this.props.errors &&
           this.props.errors
-            .filter(e => e.get('message').startsWith('VALUESET_') && e.get('itemId') === valueSetId)
+            .filter(e => e.get('message').startsWith('VALUESET_') && e.get('itemId') === valueSetId);
       const errors = valueSetErrors && valueSetErrors.groupBy(e => e.get('level'));
 
       const errorList = errors && errors.get('ERROR') &&

@@ -10,7 +10,7 @@ class SimpleField extends Item {
   render() {
     return (
       <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
-        <Table onClick={(e) => {e.stopPropagation(); this.setActive();}}  attached='top' color={this.props.active ? 'blue' : null}>
+        <Table onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  attached='top' color={this.getBorderColor()}>
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable collapsing width={2} >
@@ -28,7 +28,7 @@ class SimpleField extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={(e) => {e.stopPropagation(); this.setActive();}} celled attached={this.props.active ? true : 'bottom'} >
+        <Table onClick={(e) => {e.stopPropagation(); this.setActive(true);}} celled attached={this.props.active ? true : 'bottom'} >
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>

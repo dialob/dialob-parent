@@ -11,7 +11,7 @@ class Note extends Item {
   render() {
     return (
       <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
-         <Table attached='top' onClick={(e) => {e.stopPropagation(); this.setActive();}} color={this.props.active ? 'blue' : null}>
+         <Table attached='top' onClick={(e) => {e.stopPropagation(); this.setActive(true);}} color={this.getBorderColor()}>
           <Table.Body>
             <Table.Row>
               <Table.Cell selectable>
@@ -23,7 +23,7 @@ class Note extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Table onClick={(e) => {e.stopPropagation(); this.setActive();}}  celled attached >
+        <Table onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  celled attached >
           <Table.Body>
             <Table.Row>
               <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
@@ -32,7 +32,7 @@ class Note extends Item {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Segment onClick={(e) => {e.stopPropagation(); this.setActive();}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
+        <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
           <RichEditor active={this.props.active} id={`nrt_${this.props.item.get('id')}`} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', 'en'])} placeholder='Write note text...' />
         </Segment>
       </Scrolltarget>

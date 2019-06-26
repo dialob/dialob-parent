@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Message} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {setActiveItem, showVariables} from '../actions';
+import {setActiveItem, showVariables, showValueSets} from '../actions';
 import { translateErrorType, translateErrorMessage } from '../helpers/utils';
 
 class ErrorList extends Component {
@@ -22,9 +22,21 @@ class ErrorList extends Component {
       const item = this.props.items.find(i => i.get('valueSetId') === error.get(0).get('itemId'));
       if (item) { 
         return item.get('id');
-      } // TODO: Resolve global list name if item is undefined
+      } else {
+        return null;
+      }
     }
     return error.get(0).get('itemId');
+  }
+
+  clickHandler(error, itemId) {
+    if (error.getIn([0, 'type']) === 'VARIABLE') {
+      this.props.showVariables();
+    } else if (itemId) {
+      this.props.setActiveItem(itemId);
+    } else if (!itemId && error.getIn([0, 'message']).startsWith('VALUESET_')) {
+      this.props.showValueSets();
+    }
   }
 
   render() {
@@ -33,7 +45,7 @@ class ErrorList extends Component {
     let errors = errorMap.entrySeq().map((e, i) => {
       const uiItemId = this.resolveItemId(e[1]);
       return (<Message key={i} error={e[1].getIn([0, 'level']) != 'WARNING'} warning={e[1].getIn([0, 'level']) === 'WARNING'}>
-        <Message.Header onClick={() => e[1].getIn([0, 'type']) === 'VARIABLE' ? this.props.showVariables() : this.props.setActiveItem(uiItemId)}>{uiItemId}</Message.Header>
+        <Message.Header className='composer-error-link' onClick={this.clickHandler.bind(this, e[1], uiItemId)}>{uiItemId ? uiItemId : 'Global list'}</Message.Header>
         <Message.List>
           {
             e[1].map((m, j) => <Message.Item key={j}>{this.translateError(m)}</Message.Item>)
@@ -60,7 +72,8 @@ const ErrorListConnected = connect(
   }),
   {
     setActiveItem,
-    showVariables
+    showVariables,
+    showValueSets
   }
 )(ErrorList);
 

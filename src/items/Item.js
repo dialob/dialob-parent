@@ -3,6 +3,7 @@ import {itemFactory} from '.';
 import {connect} from 'react-redux';
 import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse} from '../actions';
 import * as Defaults from '../defaults';
+import * as Status from '../helpers/constants';
 
 import Immutable from 'immutable';
 
@@ -21,15 +22,40 @@ class Item extends React.Component {
 
   getErrors() {
     return this.props.errors
-      ? this.props.errors.filter(e => e.get('itemId') === this.props.itemId)
+      ? this.props.errors.filter(e => (e.get('message').startsWith('VALUESET_') && e.get('itemId') === this.props.item.get('valueSetId')) || e.get('itemId') === this.props.itemId)
       : new Immutable.List([]);
   }
 
-  setActive() {
+  getErrorLevel() {
+    const errors = this.getErrors();
+    if (errors.size === 0) {
+      return Status.STATUS_OK;
+    } else  if (errors.size === errors.filter(e => e.get('level') === 'WARNING').size) {
+      return Status.STATUS_WARNINGS;
+    } else {
+      return Status.STATUS_ERRORS;
+    }
+  }
+
+  getBorderColor() {
+    const errorLevel = this.getErrorLevel();
+    if (this.props.active) {
+      return 'blue';
+    } else if (errorLevel === Status.STATUS_WARNINGS) {
+      return 'yellow';
+    } else if (errorLevel === Status.STATUS_ERRORS) {
+      return 'red';
+    } else {
+      return null;
+    }
+
+  }
+
+  setActive(noScroll = false) {
     if (this.props.isPage) {
       this.props.setActivePage(this.props.itemId);
     } else {
-      this.props.setActiveItem(this.props.itemId);
+      this.props.setActiveItem(this.props.itemId, noScroll);
     }
   }
 
