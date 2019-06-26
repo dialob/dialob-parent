@@ -15,7 +15,7 @@
   "dependencies": {
     "@resys/understood": "1.1.5",
     "classnames": "2.2.6",
-    "codemirror": "5.46.0",
+    "codemirror": "5.48.0",
     "file-saver": "2.0.2",
     "immutable": "4.0.0-rc.12",
     "memoizee": "0.4.14",
@@ -29,7 +29,7 @@
     "redux": "4.0.1",
     "remove-markdown": "0.3.0",
     "rich-markdown-editor": "9.4.0",
-    "semantic-ui-react": "0.87.1"
+    "semantic-ui-react": "0.87.2"
   },
   "peerDependencies": {
     "react": "16.8.x"
