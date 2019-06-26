@@ -277,6 +277,17 @@ function deleteLanguage(state, language) {
     .updateIn(['metadata', 'languages'], languages => languages.delete(languages.indexOf(language)));
 }
 
+function convertItem(state, itemId, config) {
+  return state.updateIn(['data', itemId], item => {
+    return item
+            .set('type', config.type)
+            .set('view', config.view)
+            .update('props', p => { if (p) { return p.merge(Immutable.fromJS(config.props)); } else { return Immutable.fromJS(config.props);}})
+            .update('className', p => { if (p) {
+              return p.concat(Immutable.List(config.className).filter(c => !p.includes(c)));
+            } else { return Immutable.fromJS(config.className);}});
+  });
+}
 
 export function formReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -301,8 +312,7 @@ export function formReducer(state = INITIAL_STATE, action) {
       return action.language ? state.setIn(['data', action.itemId, action.attribute, action.language], action.value)
                              : state.setIn(['data', action.itemId, action.attribute], action.value);
     case Actions.CHANGE_ITEM_TYPE:
-      console.log('CHANGE_ITEM_TYPE', action);
-      return state;
+      return convertItem(state, action.itemId, action.config.config);
     case Actions.DELETE_ITEM:
      // return state.update('data', data => deleteItem(data, action.itemId));
       return deleteItem(state, action.itemId);

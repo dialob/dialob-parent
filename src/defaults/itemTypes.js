@@ -15,12 +15,14 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Survey group',
+          convertible: ['verticalSurveygroup'],
           config: {
             type: 'surveygroup'
           }
         },
         {
           title: 'Survey group (vertical)',
+          convertible: ['surveygroup'],
           config: {
             type: 'surveygroup',
             view: 'verticalSurveygroup',
@@ -47,6 +49,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Text',
+          convertible: ['textBox'],
           config: {
             type: 'text',
             view: 'text'
@@ -54,6 +57,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Text box',
+          convertible: ['text'],
           config: {
             type: 'text',
             view: 'textBox'
@@ -61,12 +65,14 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Decimal',
+          convertible: ['number'],
           config: {
             type: 'decimal'
           }
         },
         {
           title: 'Integer',
+          convertible: ['decimal'],
           config: {
             type: 'number'
           }
@@ -91,12 +97,14 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Choice',
+          convertible: ['multichoice'],
           config: {
             type: 'list'
           }
         },
         {
           title: 'Multi-choice',
+          convertible: ['list'],
           config: {
             type: 'multichoice'
           }
