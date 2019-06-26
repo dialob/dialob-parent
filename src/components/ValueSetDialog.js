@@ -27,7 +27,7 @@ class ValueSetDialog extends Component {
     const valueSetErrors = this.props.errors &&
       this.props.errors
         .filter(e => e.get('message').startsWith('VALUESET_') && e.get('itemId') === valueSetId);
-    if (valueSetErrors.size === 0) {
+    if (!valueSetErrors || valueSetErrors.size === 0) {
       return null;
     } else  if (valueSetErrors.size === valueSetErrors.filter(e => e.get('level') === 'WARNING').size) {
       return 'composer-warning';
