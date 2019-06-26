@@ -1,3 +1,5 @@
+import memoize from 'memoizee';
+
 export function findRoot(data) {
   if (!data) {return null;}
   return data.find((v, k) => v.get('type') === 'questionnaire');
@@ -62,3 +64,27 @@ export function translateErrorMessage(error) {
       return error.get('message');
   };
 }
+
+const findItemTypeConfig = memoize((itemTypes, viewType) => {
+    if (!viewType) {
+      return null;
+    }
+    for (let idx in itemTypes.categories) {
+      const c = itemTypes.categories[idx];
+      const resultConfig = c.items.find(v => v.config.view === viewType);
+      if (resultConfig) {
+        return resultConfig;
+      }
+    }
+    for (let idx in itemTypes.categories) {
+      const c = itemTypes.categories[idx];
+      const resultConfig = c.items.find(v => v.config.type === viewType);
+      if (resultConfig) {
+        return resultConfig;
+      }
+    }
+    return null;
+  }
+);
+
+export {findItemTypeConfig};

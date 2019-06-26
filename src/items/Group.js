@@ -6,6 +6,7 @@ import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
 import CodeEditor from '../components/CodeEditor';
 import Scrolltarget from './Scrolltarget';
+import ConvertItem from '../components/ConvertItem';
 
 class Group extends Item {
 
@@ -28,7 +29,7 @@ class Group extends Item {
                 <Input transparent fluid placeholder={this.props.placeholder} value={item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
               <Table.Cell collapsing>
-                {item.get('type')}
+                <ConvertItem itemType={this.props.item.get('type')} viewType={this.props.item.get('view')} itemId={this.props.itemId}/>
               </Table.Cell>
               <Table.Cell collapsing>
                 <ItemMenu item={item} parentItemId={this.props.parentItemId} onDelete={this.deleteItem}/>
