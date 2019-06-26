@@ -8,7 +8,8 @@
   border-color: #1e7aca !important;
 }
 
-.list .item .content .header.composer-warning {
+.list .item .content .header.composer-warning,
+.vertical.menu .item.composer-warning {
   color: #fbbd08 !important;
 }
 
@@ -16,7 +17,8 @@
   border-color: #fbbd08;
 }
 
-.list .item .content .header.composer-error {
+.list .item .content .header.composer-error,
+.vertical.menu .item.composer-error {
   color: #db2828 !important;
 }
 

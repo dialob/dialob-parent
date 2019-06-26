@@ -30,9 +30,8 @@ class ErrorList extends Component {
   }
 
   clickHandler(error, itemId) {
-    console.log('CLK', error, itemId);
     if (error.getIn([0, 'type']) === 'VARIABLE') {
-      this.props.showVariables()
+      this.props.showVariables();
     } else if (itemId) {
       this.props.setActiveItem(itemId);
     } else if (!itemId && error.getIn([0, 'message']).startsWith('VALUESET_')) {
