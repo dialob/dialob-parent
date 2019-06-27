@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Modal, Button, List, Header, Loader } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { hideVersioning, fetchVersions, loadForm } from "../actions";
+import moment from 'moment';
 
 const VersionItem = ({name, created, icon, active, onActivate}) => {
   return (
@@ -12,7 +13,7 @@ const VersionItem = ({name, created, icon, active, onActivate}) => {
       <List.Icon name={icon} size='large' verticalAlign='middle' color={active ? 'blue' : null} />
       <List.Content>
         <List.Header>{name}</List.Header>
-        <List.Description>{created}</List.Description>
+        <List.Description>{moment(created).format('LLLL')}</List.Description>
       </List.Content>
     </List.Item>
   );
