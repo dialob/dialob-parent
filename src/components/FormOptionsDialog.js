@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Button, Tab, List, Statistic, Form, Dropdown} from 'semantic-ui-react';
+import {Modal, Button, Tab, List, Statistic, Form, Dropdown, Message} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideFormOptions, setMetadataValue} from '../actions';
 import moment from 'moment';
@@ -35,6 +35,21 @@ const InformationPane = ({metadata, formId, formName, stats}) => {
 
 const OptionsPane = ({metadata, onChange}) => {
   const options = metadata.get('labels') ? metadata.get('labels').toJS().map(c => ({key: c, text: c, value: c})) : [];
+
+  const visibilityModeOptions = [
+    {text: 'Show only active questions', value: 'ONLY_ENABLED'},
+    {text: 'Show inactive pages', value: 'SHOW_DISABLED'},
+    {text: 'Show all questions', value: 'ALL'}
+  ];
+
+  const visibiltyModeDescriptions = {
+    'ONLY_ENABLED': 'Only information about active elements is sent to filling side (default).',
+    'SHOW_DISABLED': 'Information about inactive pages is sent to filling side, useful for navigation features.',
+    'ALL': 'Information about all elements is sent to filling side, useful for debugging reasons.'
+  }
+
+  const visibilityMode = metadata.get('questionClientVisibility') || (metadata.get('showDisabled') ? 'SHOW_DISABLED' : 'ONLY_ENABLED');
+
   return (
     <Tab.Pane>
       <Form>
@@ -44,13 +59,16 @@ const OptionsPane = ({metadata, onChange}) => {
         <Form.Field>
           <label>Labels</label>
           <Dropdown allowAdditions fluid multiple search selection
-          options={options} value={metadata.get('labels') ? metadata.get('labels').toJS() : []} onChange={(evt, data) => onChange('labels', data.value)} />
+          options={options} value={metadata.get('labels') ? metadata.get('labels').toJS() : []} onChange={(_, data) => onChange('labels', data.value)} />
         </Form.Field>
         <Form.Field>
           <Form.Input fluid label='Default submit URL' value={metadata.get('defaultSubmitUrl') || ''} onChange={(evt) => onChange('defaultSubmitUrl', evt.target.value)} />
         </Form.Field>
         <Form.Field>
-          <Form.Checkbox label='Show inactive pages during filling' checked={metadata.get('showDisabled')} onChange={(evt, data) => onChange('showDisabled', data.checked)} />
+          <Form.Select fluid label='Question visibility during filling' options={visibilityModeOptions} value={visibilityMode} onChange={(_, data) => onChange('questionClientVisibility', data.value)}/>
+          <Message>
+            <p>{visibiltyModeDescriptions[visibilityMode]}</p>
+          </Message>
         </Form.Field>
       </Form>
     </Tab.Pane>
