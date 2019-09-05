@@ -13,6 +13,27 @@ export function useFillItem(id: string | undefined): FillItem {
   const initialErrors = id ? session.getItemErrors(id) || [] : [];
   const [errors, setErrors] = useState<SessionError[]>(initialErrors);
 
+  // This is required because if a child of this item is shown or hidden, we need to update this item
+  const [availableItems, setAvailableItems] = useState(getAvailableItems([]));
+
+  function getAvailableItems(prevValue: boolean[]): boolean[] {
+    if(!id) return [];
+    const item = session.getItem(id);
+    if(!item || !item.items) return [];
+    let isSame = true;
+    const newValue = item.items.map((itemId, index) => {
+      const visible = session.getItem(itemId) !== undefined;
+      if(isSame && prevValue[index] !== visible) {
+        isSame = false;
+      }
+      return visible;
+    });
+
+    if(isSame) return prevValue;
+    return newValue;
+  };
+
+
   useEffect(() => {
     if(!id) return;
 
@@ -29,9 +50,14 @@ export function useFillItem(id: string | undefined): FillItem {
       }
     }
 
+    const updateAvailableItems = () => {
+      setAvailableItems(getAvailableItems(availableItems));
+    }
+
     const listener = () => {
       updateItem();
       updateErrors();
+      updateAvailableItems();
     };
     session.on('update', listener);
     listener();
