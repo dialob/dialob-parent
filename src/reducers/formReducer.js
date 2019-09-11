@@ -334,7 +334,7 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.MOVE_VALUESET_ENTRY:
       return moveValuesetEntry(state, action.valueSetId, action.from, action.to);
     case Actions.UPDATE_VALUESET_ENTRY_ATTR:
-      return updateValueSetEntryAttr(state, action.valueSetId, action.id, action.attr, action.value);
+      return updateValueSetEntryAttr(state, action.valueSetId, action.id, action.attr, Immutable.fromJS(action.value));
     case Actions.SET_METADATA_VALUE:
       if (action.value) {
         return state.setIn(['metadata', action.attribute], Immutable.fromJS(action.value));
