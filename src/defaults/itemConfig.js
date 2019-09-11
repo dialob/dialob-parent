@@ -1,10 +1,14 @@
 import {Group, SimpleField, Note} from '../items';
+import GenericPropEditor from '../components/options/GenericPropEditor';
 
 export const DEFAULT_ITEM_CONFIG = {
   items: [
     {
       matcher: item => item.get('type') === 'group',
       component: Group,
+      propEditors: [
+         {name: 'Additional props', editor: GenericPropEditor}
+      ],
       props: {
         icon: 'square outline',
         placeholder: 'Group label',

@@ -166,6 +166,13 @@ function moveValuesetEntry(state, valueSetId, from, to) {
   );
 }
 
+function updateValueSetEntryAttr(state, valueSetId, id, attr, value) {
+  const vsIndex = findValuesetIndex(state, valueSetId);
+  return state.updateIn(['valueSets', vsIndex, 'entries'], entries =>
+    entries.setIn([entries.findIndex(e => e.get('id') === id), attr], value)
+  );
+}
+
 function newVariable(state, context = false) {
   const variableId = generateItemId(state, context ? 'context' : 'var');
   const variable = Immutable.fromJS(context ?
@@ -326,6 +333,8 @@ export function formReducer(state = INITIAL_STATE, action) {
       return deleteValuesetEntry(state, action.valueSetId, action.index);
     case Actions.MOVE_VALUESET_ENTRY:
       return moveValuesetEntry(state, action.valueSetId, action.from, action.to);
+    case Actions.UPDATE_VALUESET_ENTRY_ATTR:
+      return updateValueSetEntryAttr(state, action.valueSetId, action.id, action.attr, action.value);
     case Actions.SET_METADATA_VALUE:
       if (action.value) {
         return state.setIn(['metadata', action.attribute], Immutable.fromJS(action.value));

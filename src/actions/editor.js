@@ -117,6 +117,17 @@ export function updateValuesetEntry(valueSetId, index, id, label, language) {
   };
 }
 
+export function updateValueSetEntryAttr(valueSetId, id, attr, value) {
+  return {
+    type: Actions.UPDATE_VALUESET_ENTRY_ATTR,
+    valueSetId,
+    id,
+    attr,
+    value,
+    saveNeeded: true
+  };
+}
+
 export function deleteValuesetEntry(valueSetId, index) {
   return {
     type: Actions.DELETE_VALUESET_ENTRY,

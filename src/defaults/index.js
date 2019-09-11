@@ -12,3 +12,4 @@ export * from './itemConfig';
 export * from './itemTypes';
 export * from './languages';
 export * from './containment';
+export * from './valueSetProps';
