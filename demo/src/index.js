@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '../../src';
+import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS} from '../../src';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import {Provider} from 'react-redux';
 import HTML5Backend from 'react-dnd-html5-backend'
@@ -21,6 +21,7 @@ const DIALOB_COMPOSER_CONFIG = {
   },
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
+  valueSetProps: DEFAULT_VALUESET_PROPS,
   closeHandler : () => window.location.href = window.COMPOSER_CONFIG.adminAppUrl
 };
 

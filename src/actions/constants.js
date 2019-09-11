@@ -15,6 +15,7 @@ export const CREATE_VALUESET_ENTRY = 'composer/CREATE_VALUESET_ENTRY';
 export const UPDATE_VALUESET_ENTRY = 'composer/UPDATE_VALUESET_ENTRY';
 export const DELETE_VALUESET_ENTRY = 'composer/DELETE_VALUESET_ENTRY';
 export const MOVE_VALUESET_ENTRY = 'composer/MOVE_VALUESET_ENTRY';
+export const UPDATE_VALUESET_ENTRY_ATTR = 'composer/UPDATE_VALUESET_ENTRY_ATTR';
 export const LOAD_FORM = 'composer/LOAD_FORM';
 export const SET_FORM = 'composer/SET_FORM';
 export const SAVE_FORM = 'composer/SAVE_FORM';

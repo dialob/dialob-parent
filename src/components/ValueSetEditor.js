@@ -2,11 +2,12 @@ import React, {Component} from 'react';
 import {Table, Button, Input, Message, Ref} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findValueset} from '../helpers/utils';
-import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, moveValuesetEntry} from '../actions';
+import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, moveValuesetEntry, updateValueSetEntryAttr} from '../actions';
 import * as Defaults from '../defaults';
 import { translateErrorMessage } from '../helpers/utils';
 import { DragSource, DropTarget } from 'react-dnd'
 import {findDOMNode} from 'react-dom';
+import { DEFAULT_VALUESET_PROPS } from '../defaults';
 
 const DropPosition = {
   ABOVE: 0,
@@ -54,7 +55,7 @@ class EntryRow extends Component {
   }
 
   render() {
-    const {entry, index, valueSetErrors, deleteValuesetEntry, updateValuesetEntry, valueSetId, language, isOver, connectDragSource, connectDropTarget, clientOffset} = this.props;
+    const {entry, index, valueSetErrors, deleteValuesetEntry, updateValuesetEntry, valueSetId, language, isOver, connectDragSource, connectDropTarget, clientOffset, valueSetPropEditors, updateValueSetEntryAttr} = this.props;
     const entryErrors = valueSetErrors && valueSetErrors.find(e => e.get('index') === index || e.get('expression') === entry.get('id'));
     let dragClass = null;
     if (isOver) {
@@ -73,6 +74,12 @@ class EntryRow extends Component {
           <Table.Cell>
               <Input transparent fluid value={entry.getIn(['label', language]) || ''} onChange={(e) => updateValuesetEntry(valueSetId, index, null, e.target.value, language)}/>
           </Table.Cell>
+          {
+            valueSetPropEditors.map((e, i) =>
+            <Table.Cell key={i}>
+                <e.editor value={entry.get(e.name)} onChange={(value) => updateValueSetEntryAttr(valueSetId, entry.get('id'), e.name, value)} />
+            </Table.Cell>)
+          }
         </Table.Row>
       </Ref>);
   }
@@ -99,10 +106,15 @@ class ValueSetEditor extends Component {
     this.props.moveValuesetEntry(this.props.valueSetId, from, to);
   }
 
-  render() {
-      const {deleteValuesetEntry, updateValuesetEntry, valueSetId, language} = this.props;
-      const dedupe = (item, idx, arr) => arr.indexOf(item) === idx;
+  getValueSetPropEditors() {
+    const config = this.props.valueSetProps || DEFAULT_VALUESET_PROPS;
+    return config ? config : [];
+  }
 
+  render() {
+      const {deleteValuesetEntry, updateValuesetEntry, valueSetId, language, updateValueSetEntryAttr} = this.props;
+      const dedupe = (item, idx, arr) => arr.indexOf(item) === idx;
+      const valueSetPropEditors = this.getValueSetPropEditors();
       const valueSetErrors = this.props.errors &&
           this.props.errors
             .filter(e => e.get('message').startsWith('VALUESET_') && e.get('itemId') === valueSetId);
@@ -119,8 +131,11 @@ class ValueSetEditor extends Component {
       const rows = this.props.getValueset().get('entries')
         ? this.props.getValueset().get('entries').map((e, i) =>
            <DraggableEntryRow key={i} entry={e} moveEntry={this.moveEntry} index={i} valueSetErrors={valueSetErrors}
-              deleteValuesetEntry={deleteValuesetEntry} updateValuesetEntry={updateValuesetEntry} valueSetId={valueSetId} language={language} />)
+              deleteValuesetEntry={deleteValuesetEntry} updateValuesetEntry={updateValuesetEntry} valueSetId={valueSetId} language={language}
+              valueSetPropEditors={valueSetPropEditors}  updateValueSetEntryAttr={updateValueSetEntryAttr}/>)
         : [];
+
+
 
       return (
       <React.Fragment>
@@ -130,6 +145,9 @@ class ValueSetEditor extends Component {
               <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => this.props.createValuesetEntry(this.props.getValueset().get('id'))} /></Table.HeaderCell>
               <Table.HeaderCell>Key</Table.HeaderCell>
               <Table.HeaderCell>Text</Table.HeaderCell>
+              {
+                valueSetPropEditors.map((e, i) => <Table.HeaderCell key={i}>{e.title}</Table.HeaderCell>)
+              }
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -147,13 +165,15 @@ const ValueSetEditorConnected = connect(
   (state, props) => ({
     language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
     get getValueset() { return () => findValueset(state.dialobComposer.form, props.valueSetId); },
-    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
+    valueSetProps:  state.dialobComposer.config && state.dialobComposer.config.valueSetProps
   }), {
     createValueset,
     createValuesetEntry,
     updateValuesetEntry,
     deleteValuesetEntry,
-    moveValuesetEntry
+    moveValuesetEntry,
+    updateValueSetEntryAttr
   }
 )(ValueSetEditor);
 
