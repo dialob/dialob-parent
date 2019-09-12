@@ -7,7 +7,6 @@ import SimpleField from './items/SimpleField';
 import Group from './items/Group';
 import ItemMenu from './components/ItemMenu';
 import * as DialobActions from './actions/editor';
-import { Group } from './items';
 
 export {
   DialobComposer,
