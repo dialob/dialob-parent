@@ -111,6 +111,13 @@ class CodeEditor extends Component {
     if (this.editor) {
       this.editor.setOption('readOnly', this.props.readOnly);
       this.editor.performLint(); // TODO: Only if errors changed
+      if (prevProps.value !== this.props.value) {
+        const cPos = this.editor.hasFocus() ? this.editor.getCursor() : null;
+        this.editor.setValue(this.props.value);
+        if (this.editor.hasFocus()) {
+          this.editor.setCursor(cPos);
+        }
+      }
     }
   }
 
