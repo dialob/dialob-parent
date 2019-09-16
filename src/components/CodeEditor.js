@@ -59,10 +59,7 @@ class CodeEditor extends Component {
         }
       )).toJS();
     }
-    if (annotations.length > 0) {
-      updateLinting(annotations, content);
-    }
-
+    updateLinting(annotations, content);
   }
 
   componentDidMount() {
