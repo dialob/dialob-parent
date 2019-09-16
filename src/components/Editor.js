@@ -7,6 +7,8 @@ import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
 import CodeEditor from './CodeEditor';
 
+const MAX_LENGTH = 40;
+
 const PageMenu = ({onDelete, onOptions, onChangeId, onDuplicate, editable}) => (
   <Dropdown icon='content' style={{marginLeft: '0.5em'}}>
     <Dropdown.Menu>
@@ -44,6 +46,15 @@ class Editor extends Component {
     this.props.addItem(config, activePageId);
   }
 
+  getPageTabTitle(item) {
+    const rawLabel = item.getIn(['label', this.props.language]);
+    if (!rawLabel) {
+      return (<em>{item.get('id')}</em>);
+    } else {
+      return rawLabel.length > MAX_LENGTH ? rawLabel.substring(0, MAX_LENGTH) + '\u2026': rawLabel;
+    }
+  }
+
   render() {
     const {rootItemId} = this.props;
     if (!rootItemId) {
@@ -56,7 +67,7 @@ class Editor extends Component {
     const pages = rootItem && rootItem.get('items') ? rootItem.get('items')
                         .map(itemId => this.findItemById(itemId))
                         .map((item, index) =>
-                            <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{item.getIn(['label', 'en']) || <em>{item.get('id')}</em>}
+                            <Menu.Item onClick={() => this.props.setActivePage(item.get('id'))} key={index} active={item.get('id') === activePageId}>{this.getPageTabTitle(item)}
                                <PageMenu onDelete={() => this.props.deleteItem(item.get('id'))}
                                          onOptions={() => this.props.showItemOptions(item.get('id'), true)}
                                          onChangeId={() => this.props.showChangeId(item.get('id'))}
@@ -66,7 +77,7 @@ class Editor extends Component {
                             </Menu.Item>) : null;
     return (
       <Segment basic>
-        <Menu tabular attached='top'>
+        <Menu tabular attached='top' className='composer-pagelist'>
           {pages}
           <Menu.Menu position='right' >
             <Menu.Item>

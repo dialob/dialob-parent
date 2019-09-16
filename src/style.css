@@ -51,6 +51,12 @@
   margin-bottom: 1rem;
 }
 
+.composer-pagelist {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .item.upward.dropdown.composer-item-menu>.menu {
   top: auto !important;
 }
