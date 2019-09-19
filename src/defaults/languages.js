@@ -1,18 +1,22 @@
 export const LANGUAGES = [
   {
     code: 'en',
-    name: 'English'
+    name: 'English',
+    flag: 'uk'
   },
   {
     code: 'fi',
-    name: 'Finnish'
+    name: 'Finnish',
+    flag: 'fi'
   },
   {
     code: 'sv',
-    name: 'Swedish'
+    name: 'Swedish',
+    flag: 'se'
   },
   {
     code: 'et',
-    name: 'Estonian'
+    name: 'Estonian',
+    flag: 'ee'
   }
 ];

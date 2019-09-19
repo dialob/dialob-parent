@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {debounce} from 'lodash';
 import RichMarkdownEditor from 'rich-markdown-editor';
+import editorTheme from 'rich-markdown-editor/lib/theme';
 
 class RichEditor extends Component {
 
@@ -12,7 +13,9 @@ class RichEditor extends Component {
   }, 250);
 
   render() {
-    const {id, defaultValue, placeholder} = this.props;
+    const {id, defaultValue, placeholder, zIndex} = this.props;
+    const customTheme = editorTheme;
+    if (zIndex) { customTheme.zIndex = zIndex; }
     return (
       <RichMarkdownEditor
         readOnly={!this.props.active}
@@ -21,6 +24,7 @@ class RichEditor extends Component {
         onShowToast={message => window.alert(message)}
         onChange={this.handleChange}
         placeholder={placeholder}
+        theme={customTheme}
       />
     );
   }

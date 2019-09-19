@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Modal, Button, Label, Table, Tab, Segment, Dropdown} from 'semantic-ui-react';
+import {Modal, Button, Label, Table, Tab, Segment, Dropdown, TextArea} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideTranslation, updateItem, updateValuesetEntry, updateValidation, addLanguage, setActiveLanguage, deleteLanguage} from '../actions';
 import { UnderstoodTableEditor } from '@resys/understood';
 import * as Defaults from '../defaults';
+import RichEditor from './RichEditor';
 
 class LanguageConfigurator extends Component {
 
@@ -49,7 +50,21 @@ class LanguageConfigurator extends Component {
   }
 }
 
-const Translator = ({translations, initialLanguage, onChange, languages}) => {
+const TranslationEditor = ({value, onChange, metadata}) => {
+  if (metadata.richText) {
+    return (
+      <Segment>
+        <RichEditor active={true} placeholder='&nbsp;' id={`trEdit`} onChange={(v) => onChange(v)} defaultValue={value} zIndex={10000}/>
+      </Segment>
+    );
+  } else {
+    return (
+        <TextArea value={value} onChange={e => onChange(e.currentTarget.value)}/>
+    );
+  }
+}
+
+const Translator = ({translations, metadata, initialLanguage, onChange, languages}) => {
   return (
     <Segment basic style={{ height: 500 }}>
       <UnderstoodTableEditor
@@ -58,6 +73,8 @@ const Translator = ({translations, initialLanguage, onChange, languages}) => {
         initialLanguages={[initialLanguage]}
         onChangeItem={onChange}
         availableLanguages={languages}
+        metadata={metadata}
+        components={{ Editor: TranslationEditor }}
       />
     </Segment>
   );
@@ -67,39 +84,49 @@ class TranslationDialog extends Component {
 
   getItemTranslations() {
     let translations = {};
+    let metadata = {key : {}};
     this.props.items.forEach((v, k) => {
       if (v.get('label')) {
-        translations[`i:${v.get('id')}:l`] = v.get('label').toJS();
+        const key = `i:${v.get('id')}:l`;
+        translations[key] = v.get('label').toJS();
+        metadata.key[key] = {description: 'Item label', richText: v.get('type') === 'note'};
       }
       if (v.get('description')) {
-        translations[`i:${v.get('id')}:d`] = v.get('description').toJS();
+        const key = `i:${v.get('id')}:d`;
+        translations[key] = v.get('description').toJS();
+        metadata.key[key] = {description: 'Item description', richText: true};
       }
       if (v.get('validations')) {
         v.get('validations').forEach((val, idx) => {
-          translations[`i:${v.get('id')}:v:${idx}`] = val.get('message').toJS();
+          const key = `i:${v.get('id')}:v:${idx}`;
+          translations[key] = val.get('message').toJS();
+          metadata.key[key] = {description: 'Validation'};
           return true;
         });
       }
       return true;
     });
-    return translations;
+    return {translations, metadata};
   }
 
   getValueSetTranslations() {
     if (this.props.valueSets) {
       let translations = {};
+      let metadata = {key : {}};
       this.props.valueSets.forEach((vs, k) => {
         if (vs.get('entries')) {
           vs.get('entries').forEach((e, k) => {
-            translations[`v:${vs.get('id')}:${k}:${e.get('id')}`] = e.get('label').toJS();
+            const key = `v:${vs.get('id')}:${k}:${e.get('id')}`;
+            translations[key] = e.get('label').toJS();
+            metadata.key[key] = {description: 'Valueset entry'};
             return true;
           });
         }
         return true;
       });
-      return translations;
+      return {translations, metadata};
     } else {
-      return {};
+      return {translations: {}, metadata: {}};
     }
   }
 
@@ -127,6 +154,19 @@ class TranslationDialog extends Component {
           .filter(lang => !this.props.formLanguages.contains(lang.code))
           .map(lang => ({key: lang.code, text: lang.name, value: lang.code}));
 
+      const languages = {};
+      this.props.formLanguages.forEach(l => {
+        const lang = Defaults.LANGUAGES.find(c => c.code === l);
+        languages[l] = {
+          longName: lang.name || l,
+          flag: lang.flag || l
+        };
+      })
+      let itemTranslations = this.getItemTranslations();
+      let valueSetTranslations = this.getValueSetTranslations();
+      itemTranslations.metadata.language = languages;
+      valueSetTranslations.metadata.language = languages;
+
       const panes = [
         {menuItem: 'Languages', render: () => <LanguageConfigurator
                                                languages={this.props.formLanguages}
@@ -138,13 +178,17 @@ class TranslationDialog extends Component {
                                               />
         },
         {menuItem: 'Fields', render: () => <Translator
-                                              translations={this.getItemTranslations()}
+                                              key='fields'
+                                              translations={itemTranslations.translations}
+                                              metadata={itemTranslations.metadata}
                                               initialLanguage={this.props.language}
                                               onChange={this.updateTranslation.bind(this)}
                                               languages={this.props.formLanguages.toJS()} />
         },
         {menuItem: 'Lists', render: () =>  <Translator
-                                              translations={this.getValueSetTranslations()}
+                                              key='lists'
+                                              translations={valueSetTranslations.translations}
+                                              metadata={valueSetTranslations.metadata}
                                               initialLanguage={this.props.language}
                                               onChange={this.updateTranslation.bind(this)}
                                               languages={this.props.formLanguages.toJS()} />

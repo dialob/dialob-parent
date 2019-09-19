@@ -13,7 +13,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
-    "@resys/understood": "1.1.5",
+    "@resys/understood": "1.4.3",
     "classnames": "2.2.6",
     "codemirror": "5.48.4",
     "file-saver": "2.0.2",
