@@ -22,11 +22,24 @@ function setErrors(state, errors) {
   }
 }
 
+function selectActiveLanguage(state, languages) {
+  const activeLanguage = state.get('activeLanguage');
+  if (!activeLanguage) {
+    return languages[0];
+  } else {
+    if (languages.findIndex(l => l === activeLanguage) < 0) {
+      return languages[0];
+    } else {
+      return activeLanguage;
+    }
+  }
+}
+
 export function editorReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Actions.SET_FORM:
       return state.delete('changeId')
-                  .set('activeLanguage', action.formData.metadata.languages[0])
+                  .set('activeLanguage', selectActiveLanguage(state, action.formData.metadata.languages))
                   .set('rootItemId', findRoot(Immutable.fromJS(action.formData).get('data')).get('id'))
                   .set('loaded', true)
     case Actions.LOAD_FORM:
