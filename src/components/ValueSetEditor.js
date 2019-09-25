@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Table, Button, Input, Message, Ref} from 'semantic-ui-react';
+import {Table, Button, Input, Message, Ref, Grid} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findValueset} from '../helpers/utils';
 import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, moveValuesetEntry, updateValueSetEntryAttr} from '../actions';
@@ -8,6 +8,7 @@ import { translateErrorMessage } from '../helpers/utils';
 import { DragSource, DropTarget } from 'react-dnd'
 import {findDOMNode} from 'react-dom';
 import { DEFAULT_VALUESET_PROPS } from '../defaults';
+import PopupText from './PopupText';
 
 const DropPosition = {
   ABOVE: 0,
@@ -68,15 +69,15 @@ class EntryRow extends Component {
           <Table.Cell collapsing>
             <Button size='tiny' icon='remove' onClick={() => deleteValuesetEntry(valueSetId, index)} />
           </Table.Cell>
-          <Table.Cell>
+          <Table.Cell >
               <Input transparent fluid value={entry.get('id') || ''} onChange={(e) => updateValuesetEntry(valueSetId, index, e.target.value, null, null)} />
           </Table.Cell>
           <Table.Cell>
-              <Input transparent fluid value={entry.getIn(['label', language]) || ''} onChange={(e) => updateValuesetEntry(valueSetId, index, null, e.target.value, language)}/>
+              <PopupText value={entry.getIn(['label', language]) || ''} onChange={(v) => updateValuesetEntry(valueSetId, index, null, v, language)} />
           </Table.Cell>
           {
             valueSetPropEditors.map((e, i) =>
-            <Table.Cell key={i}>
+            <Table.Cell key={i} >
                 <e.editor value={entry.get(e.name)} onChange={(value) => updateValueSetEntryAttr(valueSetId, entry.get('id'), e.name, value)} />
             </Table.Cell>)
           }
@@ -140,6 +141,10 @@ class ValueSetEditor extends Component {
       return (
       <React.Fragment>
         <Table celled attached={errorList || warningList ? 'top' : null}>
+          <colgroup>
+            <col width={1} />
+          </colgroup>
+          <colgroup span={3} width={`${100 / (valueSetPropEditors.length + 2)}%`}  />
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => this.props.createValuesetEntry(this.props.getValueset().get('id'))} /></Table.HeaderCell>
