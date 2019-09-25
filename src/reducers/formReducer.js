@@ -1,11 +1,12 @@
 import Immutable from 'immutable';
 import * as Actions from '../actions/constants';
 import {isGlobalValueSet} from '../helpers/utils';
+import {camelCase} from 'lodash'
 
 const INITIAL_STATE = Immutable.Map();
 
 function generateItemId(state, type, view) {
-  const prefix = view || type;
+  const prefix = view ? camelCase(view) : type;
   let idx = 1;
   let data = state.get('data') || Immutable.Map();
   let variables = state.get('variables') || Immutable.List();
