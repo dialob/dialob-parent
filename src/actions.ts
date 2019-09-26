@@ -7,18 +7,37 @@ export interface LocaleAction {
   value: string;
 }
 
-export interface ItemAction<T> {
+export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
+type IsType<Given extends ItemType, Matching extends ItemType, Result> = Given extends Matching ? Result : never;
+
+export interface ItemAction<T extends ItemType> {
   type: 'ITEM';
   item: {
     id: string;
-    type: 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
+    type: T;
     view?: string;
     label?: string;
     description?: string;
     disabled?: boolean;
     required?: boolean;
     className?: string[];
-    value?: T | null | undefined;
+    value?: 
+        IsType<T, 'questionnaire', never>
+      | IsType<T, 'group', never>
+      | IsType<T, 'text', string>
+      | IsType<T, 'number', number>
+      | IsType<T, 'boolean', boolean>
+      | IsType<T, 'multichoice', string[]>
+      | IsType<T, 'survey', string>
+      | IsType<T, 'surveygroup', never>
+      | IsType<T, 'list', string>
+      | IsType<T, 'note', never>
+      | IsType<T, 'date', string>
+      | IsType<T, 'time', string>
+      | IsType<T, 'decimal', number>
+      | IsType<T, 'row', never>
+      | IsType<T, 'rowgroup', never>
+    ;
     items?: string[];
     activeItem?: string;
     availableItems?: string[];
@@ -95,4 +114,4 @@ export interface RemoveErrorAction {
   error: FillError
 }
 
-export type Action<T = any> = ResetAction | LocaleAction | ItemAction<T> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
+export type Action = ResetAction | LocaleAction | ItemAction<ItemType> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;

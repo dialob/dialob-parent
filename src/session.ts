@@ -1,9 +1,9 @@
 import produce from 'immer';
-import { Action, ErrorAction, ItemAction, ValueSetAction } from './actions';
+import { Action, ErrorAction, ItemAction, ItemType, ValueSetAction } from './actions';
 import { DialobError, DialobRequestError } from './error';
 import { DialobResponse, Transport } from './transport';
 
-export type SessionItem<T = any> = ItemAction<T>['item'];
+export type SessionItem<T extends ItemType = ItemType> = ItemAction<T>['item'];
 export type SessionError = ErrorAction['error'];
 export type SessionValueSet = ValueSetAction['valueSet'];
 
@@ -152,7 +152,7 @@ export class Session {
     return this.state;
   }
 
-  public getItem<T>(id: string): SessionItem<T> | undefined {
+  public getItem(id: string): SessionItem | undefined {
     return this.state.items[id];
   }
 
