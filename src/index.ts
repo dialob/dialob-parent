@@ -24,5 +24,6 @@ export function newSession(sessionId: string, config: SessionConfig): Session {
   return session;
 }
 
+export * from './actions';
 export { SessionConfig as Config, Session, SessionError, SessionItem, SessionValueSet, DialobError, DialobRequestError };
 export default { newSession };
