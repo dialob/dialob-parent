@@ -7,7 +7,7 @@ export interface LocaleAction {
   value: string;
 }
 
-export interface ItemAction {
+export interface ItemAction<T> {
   type: 'ITEM';
   item: {
     id: string;
@@ -18,7 +18,7 @@ export interface ItemAction {
     disabled?: boolean;
     required?: boolean;
     className?: string[];
-    value?: any;
+    value?: T | null | undefined;
     items?: string[];
     activeItem?: string;
     availableItems?: string[];
@@ -95,4 +95,4 @@ export interface RemoveErrorAction {
   error: FillError
 }
 
-export type Action = ResetAction | LocaleAction | ItemAction | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
+export type Action<T = any> = ResetAction | LocaleAction | ItemAction<T> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
