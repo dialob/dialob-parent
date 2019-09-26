@@ -13,9 +13,9 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
-    "@resys/understood": "1.4.3",
+    "@resys/understood": "2.1.1",
     "classnames": "2.2.6",
-    "codemirror": "5.48.4",
+    "codemirror": "5.49.0",
     "file-saver": "2.0.2",
     "immutable": "3.8.2",
     "memoizee": "0.4.14",
@@ -29,7 +29,7 @@
     "redux": "4.0.4",
     "remove-markdown": "0.3.0",
     "rich-markdown-editor": "9.8.8",
-    "semantic-ui-react": "0.88.0"
+    "semantic-ui-react": "0.88.1"
   },
   "peerDependencies": {
     "react": "16.8.x"

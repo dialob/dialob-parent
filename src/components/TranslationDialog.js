@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {Modal, Button, Label, Table, Tab, Segment, Dropdown, TextArea} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideTranslation, updateItem, updateValuesetEntry, updateValidation, addLanguage, setActiveLanguage, deleteLanguage} from '../actions';
-import { UnderstoodTableEditor } from '@resys/understood';
+import { Understood } from '@resys/understood';
 import * as Defaults from '../defaults';
 import RichEditor from './RichEditor';
+import md_strip_tags from 'remove-markdown';
 
 class LanguageConfigurator extends Component {
 
@@ -67,14 +68,15 @@ const TranslationEditor = ({value, onChange, metadata}) => {
 const Translator = ({translations, metadata, initialLanguage, onChange, languages}) => {
   return (
     <Segment basic style={{ height: 500 }}>
-      <UnderstoodTableEditor
-        translations={translations}
+      <Understood
+        initialTranslations={translations}
         format='keyToLanguage'
         initialLanguages={[initialLanguage]}
         onChangeItem={onChange}
         availableLanguages={languages}
-        metadata={metadata}
+        initialMetadata={metadata}
         components={{ Editor: TranslationEditor }}
+        plaintextTranslation={md_strip_tags}
       />
     </Segment>
   );
