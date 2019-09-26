@@ -1,6 +1,6 @@
 {
   "name": "@resys/dialob-fill-api",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Dialob filling API",
   "main": "lib/index.js",
   "files": [
