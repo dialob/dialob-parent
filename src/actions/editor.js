@@ -409,11 +409,12 @@ export function deleteLanguage(language) {
   };
 }
 
-export function addItemProp(itemId, propKey) {
+export function addItemProp(itemId, propKey, value = '') {
   return {
     type: Actions.ADD_ITEM_PROP,
     itemId,
     propKey,
+    value,
     saveNeeded: true
   };
 }

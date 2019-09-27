@@ -221,12 +221,12 @@ function createValidation(language) {
   return Immutable.fromJS(validation);
 }
 
-function addItemProperty(state, itemId, propKey) {
+function addItemProperty(state, itemId, propKey, value) {
   return state.updateIn(['data', itemId, 'props'], props => {
     if (!props) {
-      return new Immutable.Map([[propKey, '']]);
+      return new Immutable.Map([[propKey, value]]);
     } else {
-      return props.set(propKey, '');
+      return props.set(propKey, value);
     }
   });
 }
@@ -380,7 +380,7 @@ export function formReducer(state = INITIAL_STATE, action) {
     case Actions.DELETE_LANGUAGE:
       return deleteLanguage(state, action.language);
     case Actions.ADD_ITEM_PROP:
-      return addItemProperty(state, action.itemId, action.propKey);
+      return addItemProperty(state, action.itemId, action.propKey, action.value);
     case Actions.UPDATE_ITEM_PROP:
       return updateItemProperty(state, action.itemId, action.propKey, action.value);
     case Actions.DELETE_ITEM_PROP:

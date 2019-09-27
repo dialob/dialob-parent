@@ -7,6 +7,7 @@ import SimpleField from './items/SimpleField';
 import Group from './items/Group';
 import ItemMenu from './components/ItemMenu';
 import * as DialobActions from './actions/editor';
+import * as PropEditors from './components/propEditors/';
 
 export {
   DialobComposer,
@@ -20,5 +21,6 @@ export {
   Group,
   connectItem,
   ItemMenu,
-  DialobActions
+  DialobActions,
+  PropEditors
 };

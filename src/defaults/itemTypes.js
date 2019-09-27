@@ -1,3 +1,6 @@
+
+import * as PropEditors from '../components/propEditors';
+
 export const DEFAULT_ITEMTYPE_CONFIG = {
   categories: [
     {
@@ -6,10 +9,20 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
       items: [
         {
           title: 'Group',
+          propEditors: {
+            columns: {
+              component: PropEditors.InputProp,
+              props: {
+                type: 'number',
+                min: 1,
+                max: 20
+              }
+            }
+          },
           config: {
             type: 'group',
             props: {
-              columns: '1'
+              columns: 1
             }
           }
         },
