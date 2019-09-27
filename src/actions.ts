@@ -8,9 +8,8 @@ export interface LocaleAction {
 }
 
 export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
-type IsType<Given extends ItemType, Matching extends ItemType, Result> = Given extends Matching ? Result : never;
 
-export interface ItemAction<T extends ItemType> {
+interface GenericItemAction<T extends ItemType, K> {
   type: 'ITEM';
   item: {
     id: string;
@@ -21,23 +20,7 @@ export interface ItemAction<T extends ItemType> {
     disabled?: boolean;
     required?: boolean;
     className?: string[];
-    value?: 
-        IsType<T, 'questionnaire', never>
-      | IsType<T, 'group', never>
-      | IsType<T, 'text', string>
-      | IsType<T, 'number', number>
-      | IsType<T, 'boolean', boolean>
-      | IsType<T, 'multichoice', string[]>
-      | IsType<T, 'survey', string>
-      | IsType<T, 'surveygroup', never>
-      | IsType<T, 'list', string>
-      | IsType<T, 'note', never>
-      | IsType<T, 'date', string>
-      | IsType<T, 'time', string>
-      | IsType<T, 'decimal', number>
-      | IsType<T, 'row', never>
-      | IsType<T, 'rowgroup', never>
-    ;
+    value?: K;
     items?: string[];
     activeItem?: string;
     availableItems?: string[];
@@ -49,6 +32,26 @@ export interface ItemAction<T extends ItemType> {
     }
   };
 }
+type IsType<Given extends ItemType, Matching extends ItemType, Result> = Given extends Matching ? GenericItemAction<Given, Result> : never;
+
+export type ItemAction<T extends ItemType> = 
+    IsType<T, 'questionnaire', never>
+  | IsType<T, 'group', never>
+  | IsType<T, 'text', string>
+  | IsType<T, 'number', number>
+  | IsType<T, 'boolean', boolean>
+  | IsType<T, 'multichoice', string[]>
+  | IsType<T, 'survey', string>
+  | IsType<T, 'surveygroup', never>
+  | IsType<T, 'list', string>
+  | IsType<T, 'note', never>
+  | IsType<T, 'date', string>
+  | IsType<T, 'time', string>
+  | IsType<T, 'decimal', number>
+  | IsType<T, 'row', never>
+  | IsType<T, 'rowgroup', never>
+;
+
 
 export interface ValueSetAction {
   type: 'VALUE_SET';
