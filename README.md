@@ -70,3 +70,19 @@ session.on('error', (type, error) => {
 // You can remove listeners with `removeListener()`
 session.removeListener('update', updateFn);
 ```
+
+## Session options
+You can define session options as the third argument to the session constructor:
+```js
+const session = DialobFill.newSession(sessionId, transport, options);
+```
+
+The possible options are:
+```ts
+interface SessionOptions {
+  // Defines how many milliseconds session should batch actions for before syncing them to server.
+  // A value of -1 disables the batching logic and always immediately syncs each action. This can
+  // be used if you want to do debouncing yourself, for exapmle.
+  syncWait?: number;
+}
+```

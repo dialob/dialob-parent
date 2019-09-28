@@ -21,6 +21,10 @@ export type onUpdateFn = () => void;
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE') => void;
 export type onErrorFn = (type: 'CLIENT' | 'SYNC', error: DialobError) => void;
 
+interface Options {
+  syncWait?: number;
+}
+
 type Event = 'update' | 'sync' | 'error';
 
 export class Session {
@@ -28,6 +32,7 @@ export class Session {
   private transport: Transport;
   private state: SessionState;
   private syncActionQueue: Action[];
+  private syncWait: number;
   private syncTimer?: number;
 
   private listeners: {
@@ -40,7 +45,7 @@ export class Session {
     error: [],
   };
 
-  constructor(id: string, transport: Transport) {
+  constructor(id: string, transport: Transport, options: Options = {}) {
     this.id = id;
     this.transport = transport;
     this.state = {
@@ -52,6 +57,11 @@ export class Session {
       complete: false,
     };
     this.syncActionQueue = [];
+
+    this.syncWait = options.syncWait || 250;
+    if(this.syncWait < -1) {
+      throw new Error('syncWait must be -1 or higher!');
+    }
   }
   
   private insertReverseRef(state: SessionState, parentId: string, refIds: string[]) {
@@ -174,12 +184,17 @@ export class Session {
 
   /** SYNCING */
   private queueAction(action: Action) {
-    if(this.syncTimer) {
-      clearTimeout(this.syncTimer);
+    if(this.syncWait === -1) {
+      this.applyActions([action]);
+      this.sync([action], this.state.rev);
+    } else {
+      if(this.syncTimer) {
+        clearTimeout(this.syncTimer);
+      }
+      this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
+      this.syncActionQueue.push(action);
+      this.applyActions([action]);
     }
-    this.syncTimer = setTimeout(this.syncQueuedActions, 500);
-    this.syncActionQueue.push(action);
-    this.applyActions([action]);
   }
 
   private syncQueuedActions = (): Promise<DialobResponse> => {
