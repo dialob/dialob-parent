@@ -158,7 +158,7 @@ export class Session {
       }
     });
 
-    this.listeners.update.map(l => l());
+    this.listeners.update.forEach(l => l());
     return this.state;
   }
 
@@ -209,7 +209,7 @@ export class Session {
     if(action.type === 'ANSWER') {
       // If answer change is already in sync queue, update that answer instead of appending new one
       const existingAnswerIdx = this.syncActionQueue.findIndex(queuedAction => {
-        return queuedAction.type === action.type && queuedAction.id === action.id
+        return queuedAction.type === action.type && queuedAction.id === action.id;
       });
 
       if(existingAnswerIdx !== -1) {
@@ -275,7 +275,7 @@ export class Session {
   }
 
   private async sync(actions: Action[], rev: number): Promise<DialobResponse> {
-    this.listeners.sync.map(l => l('INPROGRESS'));
+    this.listeners.sync.forEach(l => l('INPROGRESS'));
     let response;
     try {
       response = await this.transport.update(this.id, actions, rev);
@@ -285,12 +285,12 @@ export class Session {
     }
 
     this.applyActions(response.actions || [], response.rev);
-    this.listeners.sync.map(l => l('DONE'));
+    this.listeners.sync.forEach(l => l('DONE'));
     return response;
   }
 
   public async pull(): Promise<DialobResponse> {
-    this.listeners.sync.map(l => l('INPROGRESS'));
+    this.listeners.sync.forEach(l => l('INPROGRESS'));
     let response;
     try {
       response = await this.transport.getFullState(this.id);
@@ -300,7 +300,7 @@ export class Session {
     }
 
     this.applyActions(response.actions || [], response.rev);
-    this.listeners.sync.map(l => l('DONE'));
+    this.listeners.sync.forEach(l => l('DONE'));
     return response;
   }
 
@@ -350,9 +350,9 @@ export class Session {
 
   private handleError(error: DialobError) {
     if(error instanceof DialobRequestError) {
-      this.listeners.error.map(l => l('SYNC', error));
+      this.listeners.error.forEach(l => l('SYNC', error));
     } else {
-      this.listeners.error.map(l => l('CLIENT', error));
+      this.listeners.error.forEach(l => l('CLIENT', error));
     }
   }
 };
