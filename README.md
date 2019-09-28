@@ -114,7 +114,7 @@ const Survey = ({ id, valueSet }) => {
             onChange={e => session.setAnswer(item.id, e.currentTarget.value)}
             type='checkbox'
             checked={entry.value}
-          >
+          />
         </td>
       ))}
     </tr>
