@@ -192,8 +192,27 @@ export class Session {
         clearTimeout(this.syncTimer);
       }
       this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
-      this.syncActionQueue.push(action);
+      this.addToSyncQueue(action);
       this.applyActions([action]);
+    }
+  }
+
+  private addToSyncQueue(action: Action) {
+    if(action.type === 'ANSWER') {
+      // If answer change is already in sync queue, update that answer instead of appending new one
+      const existingAnswerIdx = this.syncActionQueue.findIndex(queuedAction => {
+        return queuedAction.type === action.type && queuedAction.id === action.id
+      });
+
+      if(existingAnswerIdx !== -1) {
+        this.syncActionQueue = produce(this.syncActionQueue, actionQueue => {
+          actionQueue[existingAnswerIdx] = action;
+        });
+      } else {
+        this.syncActionQueue.push(action);
+      }
+    } else {
+      this.syncActionQueue.push(action);
     }
   }
 
