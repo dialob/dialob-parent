@@ -21,7 +21,7 @@ export type onUpdateFn = () => void;
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE') => void;
 export type onErrorFn = (type: 'CLIENT' | 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
 
-interface Options {
+export interface SessionOptions {
   syncWait?: number;
 }
 
@@ -45,7 +45,7 @@ export class Session {
     error: [],
   };
 
-  constructor(id: string, transport: Transport, options: Options = {}) {
+  constructor(id: string, transport: Transport, options: SessionOptions = {}) {
     this.id = id;
     this.transport = transport;
     this.state = {

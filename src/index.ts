@@ -1,6 +1,6 @@
 import { SessionConfig } from './config';
 import { DialobError, DialobRequestError } from './error';
-import { Session, SessionError, SessionItem, SessionValueSet } from './session';
+import { Session, SessionError, SessionItem, SessionOptions, SessionValueSet } from './session';
 import { RESTTransport, Transport } from './transport';
 
 export function newSession(sessionId: string, config: SessionConfig): Session {
@@ -25,5 +25,5 @@ export function newSession(sessionId: string, config: SessionConfig): Session {
 }
 
 export * from './actions';
-export { SessionConfig as Config, Session, SessionError, SessionItem, SessionValueSet, DialobError, DialobRequestError };
+export { SessionConfig as Config, Session, SessionError, SessionItem, SessionValueSet, SessionOptions, DialobError, DialobRequestError };
 export default { newSession };
