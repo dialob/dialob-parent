@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@resys/dialob-fill-api@^0.0.5":
-  version "0.0.5"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-api/-/dialob-fill-api-0.0.5.tgz#c356c84f53e213f7e060a0611a33f836a850ae50"
-  integrity sha512-mSbNtR4BGiXo1Edu52DwjEijXdUjEHvSHLWWhvptOkRs3wrqiabhDnAL6UgBx8Bde133yFEnwqNlzELO11axOg==
+"@resys/dialob-fill-api@^1.0.2":
+  version "1.0.2"
+  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-api/-/dialob-fill-api-1.0.2.tgz#00ffc55b6551129d35625eee9cba43043926e1e4"
+  integrity sha512-33CEvBNWgTxYb3xMrypIrypOxlUAPD6F/70tsmQti851x/XQ0x9qDBDFSjolcsAScDJS701I3RkOWHHIrukWwA==
   dependencies:
     immer "^3.1.2"
 

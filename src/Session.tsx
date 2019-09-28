@@ -1,13 +1,14 @@
-import DialobFill, { Config } from '@resys/dialob-fill-api';
+import DialobFill, { Config, SessionOptions } from '@resys/dialob-fill-api';
 import React from 'react';
 import { SessionContext } from './context/sessionContext';
 
 export interface SessionProps {
   id: string;
   config: Config;
+  options?: SessionOptions;
 };
-export const Session: React.FC<SessionProps> = ({ id, config, children }) => {
-  const session = DialobFill.newSession(id, config);
+export const Session: React.FC<SessionProps> = ({ id, config, options, children }) => {
+  const session = DialobFill.newSession(id, config, options);
   session.pull();
 
   return (
