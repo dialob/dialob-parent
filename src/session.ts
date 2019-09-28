@@ -197,6 +197,7 @@ export class Session {
     }
   }
 
+  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS']);
   private addToSyncQueue(action: Action) {
     if(action.type === 'ANSWER') {
       // If answer change is already in sync queue, update that answer instead of appending new one
@@ -213,6 +214,10 @@ export class Session {
       }
     } else {
       this.syncActionQueue.push(action);
+    }
+
+    if(this.immediateSync.has(action.type)) {
+      this.syncQueuedActions();
     }
   }
 
