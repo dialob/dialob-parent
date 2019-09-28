@@ -217,6 +217,18 @@ export class Session {
       } else {
         this.syncActionQueue.push(action);
       }
+    } else if(this.immediateSync.has(action.type)) {
+      // In cases where server response is required, only add the action to queue once. Otherwise
+      // you can create a situation where user clicks something multiple times because nothing is
+      // happening on screen and then once sync succeeds, all the queued actions create a very
+      // unexpected state on user's screen
+      const actionIsQueued = this.syncActionQueue.some(queuedAction => {
+        return queuedAction.type === action.type;
+      });
+
+      if(!actionIsQueued) {
+        this.syncActionQueue.push(action);
+      }
     } else {
       this.syncActionQueue.push(action);
     }
