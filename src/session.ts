@@ -19,7 +19,7 @@ export interface SessionState {
 
 export type onUpdateFn = () => void;
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE') => void;
-export type onErrorFn = (type: 'CLIENT' | 'SYNC', error: DialobError) => void;
+export type onErrorFn = (type: 'CLIENT' | 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
 
 interface Options {
   syncWait?: number;
@@ -183,10 +183,15 @@ export class Session {
   }
 
   /** SYNCING */
+  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS']);
   private queueAction(action: Action) {
     if(this.syncWait === -1) {
       this.applyActions([action]);
-      this.sync([action], this.state.rev);
+      // We use queue here instead of calling this.sync() directly, because if sync fails we need
+      // to re-try and to have an efficient re-try, we need to work with an action queue anyway.
+      // Better to re-use the existing logic than to have multiple implementations.
+      this.addToSyncQueue(action);
+      this.syncQueuedActions();
     } else {
       if(this.syncTimer) {
         clearTimeout(this.syncTimer);
@@ -194,10 +199,12 @@ export class Session {
       this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
       this.addToSyncQueue(action);
       this.applyActions([action]);
+      if(this.immediateSync.has(action.type)) {
+        this.syncQueuedActions();
+      }
     }
   }
 
-  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS']);
   private addToSyncQueue(action: Action) {
     if(action.type === 'ANSWER') {
       // If answer change is already in sync queue, update that answer instead of appending new one
@@ -215,13 +222,16 @@ export class Session {
     } else {
       this.syncActionQueue.push(action);
     }
-
-    if(this.immediateSync.has(action.type)) {
-      this.syncQueuedActions();
-    }
   }
 
-  private syncQueuedActions = (): Promise<DialobResponse> => {
+  private inSync = false;
+  private retryCount = 0;
+  private syncQueuedActions = async (): Promise<void> => {
+    if(this.inSync) {
+      return;
+    }
+
+    this.inSync = true;
     if(this.syncTimer) {
       clearTimeout(this.syncTimer);
       this.syncTimer = undefined;
@@ -229,7 +239,29 @@ export class Session {
 
     const queue = this.syncActionQueue;
     this.syncActionQueue = [];
-    return this.sync(queue, this.state.rev);
+    try {
+      await this.sync(queue, this.state.rev);
+      this.inSync = false;
+      this.retryCount = 0;
+
+      if(this.syncActionQueue.length > 0 && !this.syncTimer) {
+        this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
+      }
+    } catch(e) {
+      this.inSync = false;
+      this.retryCount++;
+      const newQueue = this.syncActionQueue;
+      this.syncActionQueue = queue;
+      newQueue.forEach(this.addToSyncQueue);
+
+      if(!this.syncTimer) {
+        this.syncTimer = setTimeout(this.syncQueuedActions, 1000);
+      }
+
+      if(this.retryCount >= 3) {
+        this.listeners.error.forEach(l => l('SYNC-REPEATED', e));
+      }
+    }
   }
 
   private async sync(actions: Action[], rev: number): Promise<DialobResponse> {

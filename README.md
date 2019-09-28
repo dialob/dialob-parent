@@ -63,7 +63,8 @@ session.on('sync' (syncState) => {
 
 // `error` event is emitted after any error, remote or local.
 session.on('error', (type, error) => {
-  // `type` is either `CLIENT` (client-side error) or `SYNC` (sync error)
+  // `type` is either `CLIENT` (client-side error) or `SYNC` (sync error) or `SYNC-REPEATED`
+  // (repeated sync error, indication of systematic failure and should require user interaction)
   console.error(type, error);
 });
 
