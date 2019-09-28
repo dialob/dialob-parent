@@ -96,7 +96,7 @@ const SurveyGroup = ({ item }) => {
           <Survey key={itemId} id={itemId} valueSet={valueSet}/>
         ))}
       </tbody>
-    </div>
+    </table>
   );
 }
 
