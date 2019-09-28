@@ -213,9 +213,7 @@ export class Session {
       });
 
       if(existingAnswerIdx !== -1) {
-        this.syncActionQueue = produce(this.syncActionQueue, actionQueue => {
-          actionQueue[existingAnswerIdx] = action;
-        });
+        this.syncActionQueue[existingAnswerIdx] = action;
       } else {
         this.syncActionQueue.push(action);
       }
