@@ -3,7 +3,7 @@ import { DialobError, DialobRequestError } from './error';
 import { Session, SessionError, SessionItem, SessionOptions, SessionValueSet } from './session';
 import { RESTTransport, Transport } from './transport';
 
-export function newSession(sessionId: string, config: SessionConfig): Session {
+export function newSession(sessionId: string, config: SessionConfig, options?: SessionOptions): Session {
   let { transport } = config;
   if(!transport) {
     transport = {
@@ -20,7 +20,7 @@ export function newSession(sessionId: string, config: SessionConfig): Session {
       throw new Error('Unexpected transport mode!');
   }
 
-  const session = new Session(sessionId, transportObj);
+  const session = new Session(sessionId, transportObj, options);
   return session;
 }
 
