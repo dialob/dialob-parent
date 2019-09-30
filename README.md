@@ -83,6 +83,9 @@ Item type configuration corresponds to "Add new" item creation menu structure an
       items: [
         {
           title: 'Group',
+          optionEditors: [
+            {name: 'Additional option', editor: GenericOptionEditor}
+          ],
           propEditors: {
             columns: {
               component: PropEditors.InputProp,
@@ -138,6 +141,7 @@ Item type configuration corresponds to "Add new" item creation menu structure an
   * `items` Array of item configurations within this category. Item objects contain following attributes
     * `title` Label used in UI
     * `convertible` (Optional) Array of item type identifiers into which this item can be converted. Entries are first matched by `view` attribute, if not found then by `type`. If omitted, item can't be converted to other types.
+    * `optionEditors` (Optional) Array of additional pages for item options dialog. Array of objects: `{name: 'Title of page', editor: OptionEditorComponent}` (see below)
     * `propEditors` (Optional) if custom property editors are configured for item. If prop editor is not defined, it will be fallen back to plain text. Editor configuration is set of objects having prop name as a key:
         * `component` : React component to use for editing the prop
         * `props` : (Optional) Additional properties for the editing component. (see below)
@@ -161,12 +165,23 @@ const CustomProp = ({ onChange, value, name, item, ...props }) => {
   // onChange(value) - callback function for setting the prop's value
   // value - current value of the prop
   // name - prop name
-  // item - item data for current item.
+  // item - item data for current item. (Immutable.Map)
   // props - additional editor component props passed on from configuration
 
   // Return react component here that renders UI for prop editor
   return (<Input onChange={(e) => onChange(e.target.value)} value={value || ''} {...props} />);
 };
+```
+
+#### Item option dialog pages
+
+Custom item option dialog page component template
+```javascript
+const OptionEditorComponent = ({item}) => {
+  // item - item data for current item. (Immutable.Map)
+
+  // Return react compinent here that renders UI for option dialog page
+}
 ```
 
 ### Item editor configuration

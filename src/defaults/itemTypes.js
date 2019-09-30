@@ -1,5 +1,6 @@
 
 import * as PropEditors from '../components/propEditors';
+import GenericOptionEditor from '../components/options/GenericOptionEditor';
 
 export const DEFAULT_ITEMTYPE_CONFIG = {
   categories: [
@@ -9,6 +10,9 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
       items: [
         {
           title: 'Group',
+          optionEditors: [
+            {name: 'Additional option', editor: GenericOptionEditor}
+          ],
           propEditors: {
             columns: {
               component: PropEditors.InputProp,

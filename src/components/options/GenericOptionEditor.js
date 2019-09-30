@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {updateItem} from '../../actions';
 import * as Defaults from '../../defaults';
 
-class GenericPropEditor extends Component {
+class GenericOptionEditor extends Component {
   render() {
     const {item, updateItem, language} = this.props;
     return (
@@ -20,15 +20,15 @@ class GenericPropEditor extends Component {
   }
 }
 
-const GenericPropEditorConnected = connect(
+const GenericOptionEditorConnected = connect(
   state => ({
     language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
   }), {
     updateItem
   }
-)(GenericPropEditor);
+)(GenericOptionEditor);
 
 export {
-  GenericPropEditorConnected as default,
-  GenericPropEditor
+  GenericOptionEditorConnected as default,
+  GenericOptionEditor
 };
