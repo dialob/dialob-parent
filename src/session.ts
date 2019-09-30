@@ -250,12 +250,12 @@ export class Session {
       this.syncTimer = undefined;
     }
 
-    const queue = this.syncActionQueue;
-    this.syncActionQueue = [];
+    const syncedCount = this.syncActionQueue.length;
     try {
-      await this.sync(queue, this.state.rev);
+      await this.sync(this.syncActionQueue, this.state.rev);
       this.inSync = false;
       this.retryCount = 0;
+      this.syncActionQueue = this.syncActionQueue.slice(syncedCount);
 
       if(this.syncActionQueue.length > 0 && !this.syncTimer) {
         this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
@@ -263,9 +263,6 @@ export class Session {
     } catch(e) {
       this.inSync = false;
       this.retryCount++;
-      const newQueue = this.syncActionQueue;
-      this.syncActionQueue = queue;
-      newQueue.forEach(this.addToSyncQueue);
 
       if(!this.syncTimer) {
         this.syncTimer = setTimeout(this.syncQueuedActions, 1000);
