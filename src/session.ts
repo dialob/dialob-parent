@@ -240,7 +240,7 @@ export class Session {
   private inSync = false;
   private retryCount = 0;
   private syncQueuedActions = async (): Promise<void> => {
-    if(this.inSync) {
+    if(this.inSync || this.syncActionQueue.length === 0) {
       return;
     }
 
