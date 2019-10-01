@@ -9,53 +9,51 @@ export interface LocaleAction {
 
 export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
 
-interface GenericItemAction<T extends ItemType, K> {
+interface GenericItemAction<Type extends ItemType, Value, Props extends {}> {
   type: 'ITEM';
   item: {
     id: string;
-    type: T;
+    type: Type;
     view?: string;
     label?: string;
     description?: string;
     disabled?: boolean;
     required?: boolean;
     className?: string[];
-    value?: K;
+    value?: Value;
     items?: string[];
     activeItem?: string;
     availableItems?: string[];
     allowedActions?: Array<'ANSWER' | 'NEXT' | 'PREVIOUS' | 'COMPLETE'>;
     answered?: boolean;
     valueSetId?: string;
-    props?: {
-      [name: string]: any;
-    }
+    props?: Props;
   };
 }
 
-type IsType<Given extends ItemType, Value, Matching extends ItemType, Result> =
+type IsType<Given extends ItemType, Value, Matching extends ItemType, Result, Props extends {}> =
   Given extends Matching
   ? Result extends Value
-    ? GenericItemAction<Matching, Result>
+    ? GenericItemAction<Matching, Result, Props>
     : never
   : never;
 
-export type ItemAction<T extends ItemType, K = unknown> = 
-    IsType<T, K, 'questionnaire', undefined>
-  | IsType<T, K, 'group', undefined>
-  | IsType<T, K, 'text', string>
-  | IsType<T, K, 'number', number>
-  | IsType<T, K, 'boolean', boolean>
-  | IsType<T, K, 'multichoice', string[]>
-  | IsType<T, K, 'survey', string>
-  | IsType<T, K, 'surveygroup', undefined>
-  | IsType<T, K, 'list', string>
-  | IsType<T, K, 'note', undefined>
-  | IsType<T, K, 'date', string>
-  | IsType<T, K, 'time', string>
-  | IsType<T, K, 'decimal', number>
-  | IsType<T, K, 'row', undefined>
-  | IsType<T, K, 'rowgroup', undefined>
+export type ItemAction<T extends ItemType, Props extends {} = { [name: string]: any }, K = unknown> = 
+    IsType<T, K, 'questionnaire', undefined, Props>
+  | IsType<T, K, 'group', undefined, Props>
+  | IsType<T, K, 'text', string, Props>
+  | IsType<T, K, 'number', number, Props>
+  | IsType<T, K, 'boolean', boolean, Props>
+  | IsType<T, K, 'multichoice', string[], Props>
+  | IsType<T, K, 'survey', string, Props>
+  | IsType<T, K, 'surveygroup', undefined, Props>
+  | IsType<T, K, 'list', string, Props>
+  | IsType<T, K, 'note', undefined, Props>
+  | IsType<T, K, 'date', string, Props>
+  | IsType<T, K, 'time', string, Props>
+  | IsType<T, K, 'decimal', number, Props>
+  | IsType<T, K, 'row', undefined, Props>
+  | IsType<T, K, 'rowgroup', undefined, Props>
 ;
 
 export interface ValueSetAction {
