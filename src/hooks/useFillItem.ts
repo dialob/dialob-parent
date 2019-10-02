@@ -17,9 +17,15 @@ export function useFillItem(id: string | undefined): FillItem {
   const [availableItems, setAvailableItems] = useState(() => getAvailableItems([]));
 
   function getAvailableItems(prevValue: boolean[]): boolean[] {
-    if(!id) return [];
+    if(!id) {
+      return prevValue.length > 0 ? [] : prevValue;
+    }
+
     const item = session.getItem(id);
-    if(!item || !item.items) return [];
+    if(!item || !item.items) {
+      return prevValue.length > 0 ? [] : prevValue;
+    }
+
     let isSame = true;
     const newValue = item.items.map((itemId, index) => {
       const visible = session.getItem(itemId) !== undefined;
@@ -65,7 +71,7 @@ export function useFillItem(id: string | undefined): FillItem {
     return () => {
       session.removeListener('update', listener);
     }
-  }, [session, id, setItem, setErrors, availableItems, setAvailableItems]);
+  }, [session, id, setItem, errors, setErrors, availableItems, setAvailableItems]);
 
   return { item, errors };
 }
