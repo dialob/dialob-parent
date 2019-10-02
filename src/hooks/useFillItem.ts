@@ -14,7 +14,7 @@ export function useFillItem(id: string | undefined): FillItem {
   const [errors, setErrors] = useState<SessionError[]>(initialErrors);
 
   // This is required because if a child of this item is shown or hidden, we need to update this item
-  const [availableItems, setAvailableItems] = useState(getAvailableItems([]));
+  const [availableItems, setAvailableItems] = useState(() => getAvailableItems([]));
 
   function getAvailableItems(prevValue: boolean[]): boolean[] {
     if(!id) return [];
@@ -65,7 +65,7 @@ export function useFillItem(id: string | undefined): FillItem {
     return () => {
       session.removeListener('update', listener);
     }
-  }, [session, id, setItem, setErrors]);
+  }, [session, id, setItem, setErrors, availableItems, setAvailableItems]);
 
   return { item, errors };
 }
