@@ -12,7 +12,6 @@ class IdChangeDialog extends Component {
       valid: true,
       value: null,
       originalId: null,
-      inputElement: null,
       processing: false
     };
   }
@@ -53,9 +52,6 @@ class IdChangeDialog extends Component {
 
   render() {
     if (this.props.changeId) {
-      if (this.state.inputElement) {
-        this.state.inputElement.firstChild.focus();
-      }
       return (
         <Modal open basic size='small' onClose={() => this.props.hideChangeId()}>
           <Modal.Header>ID Change</Modal.Header>
@@ -68,7 +64,7 @@ class IdChangeDialog extends Component {
               <List.Item>IDs must be unique.</List.Item>
               <List.Item>IDs must not match reserved words used in expressions.</List.Item>
             </List>
-            <Ref innerRef={inputElement => this.setState({inputElement})}>
+            <Ref innerRef={ref => ref && ref.firstChild.focus()}>
               <Input error={!this.state.valid} fluid value={this.state.value || ''} onChange={(evt) => this.setState({valid: this.validate(evt.target.value), value: evt.target.value})} />
             </Ref>
           </Modal.Content>
