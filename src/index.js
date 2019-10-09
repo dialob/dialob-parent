@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
 import {combineReducers, applyMiddleware, createStore} from 'redux';
-import {Provider, ReactReduxContext} from 'react-redux';
+import {Provider} from 'react-redux';
 import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '@resys/dialob-composer';
 
 const FORM_ID = window.COMPOSER_CONFIG.formId;
@@ -32,7 +32,7 @@ const reducer = combineReducers(reducers);
 const store = createStore(reducer, applyMiddleware(...createDialobComposerMiddleware()));
 
 render(<DragDropContextProvider backend={HTML5Backend}>
-        <Provider store={store} context={ReactReduxContext}>
+        <Provider store={store}>
           <DialobComposer formId={FORM_ID} configuration={DIALOB_COMPOSER_CONFIG}/>
         </Provider>
       </DragDropContextProvider>, document.querySelector('#app'));
