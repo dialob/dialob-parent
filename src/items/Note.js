@@ -9,6 +9,7 @@ import Scrolltarget from './Scrolltarget';
 
 class Note extends Item {
   render() {
+    const editorKey = `nrt_${this.props.item.get('id')}_${this.props.language}`;
     return (
       <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
          <Table attached='top' onClick={(e) => {e.stopPropagation(); this.setActive(true);}} color={this.getBorderColor()}>
@@ -33,7 +34,7 @@ class Note extends Item {
           </Table.Body>
         </Table>
         <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
-          <RichEditor active={this.props.active} id={`nrt_${this.props.item.get('id')}`} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', this.props.language])} placeholder='Write note text...' />
+          <RichEditor key={editorKey} active={this.props.active} id={editorKey} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', this.props.language])} placeholder='Write note text...' />
         </Segment>
       </Scrolltarget>
     );
