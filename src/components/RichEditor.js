@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {debounce} from 'lodash';
+import debounce from 'lodash.debounce';
 import RichMarkdownEditor from 'rich-markdown-editor';
 import editorTheme from 'rich-markdown-editor/lib/theme';
 

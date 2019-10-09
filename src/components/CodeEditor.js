@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import CodeMirrorIntegration from 'codemirror';
-import {debounce} from 'lodash';
+import debounce from 'lodash.debounce';
 import delHinter from '../del/hinting';
 import {connect} from 'react-redux';
 import classnames from 'classnames';

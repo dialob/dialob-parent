@@ -5,6 +5,7 @@ import * as Defaults from '../defaults';
 import {setActiveLanguage, showFormOptions, showVariables, requestPreview, downloadForm, showValueSets, showTranslation, closeEditor, showVersioning, showNewTag} from '../actions';
 import StatusIndicator from './StatusIndicator';
 import * as Status from '../helpers/constants';
+import SearchMenu from './SearchMenu';
 
 class MainMenu extends Component {
 
@@ -48,6 +49,9 @@ class MainMenu extends Component {
             </Dropdown.Menu>
           </Dropdown>
           <Menu.Menu position='right'>
+              <Menu.Item>
+                <SearchMenu />
+              </Menu.Item>
               <Menu.Item onClick={this.props.downloadForm}>
                 <Popup
                   trigger={<Icon name='download' />}
