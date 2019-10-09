@@ -33,7 +33,7 @@ class Note extends Item {
           </Table.Body>
         </Table>
         <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
-          <RichEditor active={this.props.active} id={`nrt_${this.props.item.get('id')}`} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', 'en'])} placeholder='Write note text...' />
+          <RichEditor active={this.props.active} id={`nrt_${this.props.item.get('id')}`} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', this.props.language])} placeholder='Write note text...' />
         </Segment>
       </Scrolltarget>
     );
