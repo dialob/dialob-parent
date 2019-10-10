@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import { Search } from 'semantic-ui-react';
+import { Search, Ref } from 'semantic-ui-react';
 import {useDebounce} from 'use-lodash-debounce';
 import escapeRegexp from 'lodash.escaperegexp';
 import * as Defaults from '../defaults';
@@ -14,6 +14,13 @@ const SearchMenu = () => {
   const [results, setResults] = useState([]);
   const searchTerm = useDebounce(value, 500);
   const dispatch = useDispatch();
+  const componentRef = useRef(null);
+
+  useEffect(() => {
+    if (componentRef && componentRef.current.firstChild) {
+      componentRef.current.firstChild.classList.add('transparent');
+    }
+  });
 
   const navigate = (result) => {
     switch (result.type) {
@@ -78,7 +85,9 @@ const SearchMenu = () => {
     setResults(resultCategories);
   }, [searchTerm]);
   return (
-    <Search category value={value} onSearchChange={(e, {value}) => setValue(value)} results={results} onResultSelect={(e, {result}) => navigate(result)} />
+    <Ref innerRef={componentRef}>
+      <Search placeholder='Search' minCharacters={2} className='item' category value={value} onSearchChange={(e, {value}) => setValue(value)} results={results} onResultSelect={(e, {result}) => navigate(result)} />
+    </Ref>
   );
 }
 

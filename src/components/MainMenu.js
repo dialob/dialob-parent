@@ -49,9 +49,7 @@ class MainMenu extends Component {
             </Dropdown.Menu>
           </Dropdown>
           <Menu.Menu position='right'>
-              <Menu.Item>
-                <SearchMenu />
-              </Menu.Item>
+              <SearchMenu />
               <Menu.Item onClick={this.props.downloadForm}>
                 <Popup
                   trigger={<Icon name='download' />}
