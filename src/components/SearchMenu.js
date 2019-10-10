@@ -58,7 +58,7 @@ const SearchMenu = () => {
                         }
                       )).toJS();
 
-    const variablesResult = variables.filter(v => rxp.test(v.get('name')))
+    const variablesResult = variables ? variables.filter(v => rxp.test(v.get('name')))
                        .map(v => (
                         {
                           childKey: v.get('name'),
@@ -66,7 +66,7 @@ const SearchMenu = () => {
                           description: v.get('context') ? 'Context' : 'Expression',
                           type: 'variable'
                         }
-                       )).toJS();
+                       )).toJS() : [];
 
     const resultCategories = {};
     if (itemResults.length > 0) {
