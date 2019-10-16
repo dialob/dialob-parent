@@ -27,7 +27,7 @@ class TreeView extends Component {
             .map(itemId => this.getItemById(itemId))
             .map((page, index) => <TreeItem treeCollapsible={true} index={index} parent={parent} isPage={true} id={page.get('id')} moveItem={this.doMoveItem} getItemById={this.doGetItemById} key={page.get('id')} itemId={page.get('id')} icon='folder' pageId={page.get('id')}/>);
     return (
-      <Menu vertical fixed='left' style={{marginTop: this.props.marginTop, width: this.props.menuWidth, overflowY: 'auto', paddingBottom: this.props.paddingBottom}}>
+      <Menu vertical>
         <Menu.Item>
           <List size='small'>
              {treeItems}

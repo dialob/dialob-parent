@@ -114,3 +114,59 @@
   -webkit-box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
   box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
 }
+
+
+.composer-editor-wrapper {
+  display: grid;
+  grid-template-columns: 300px 1fr auto;
+  /* grid-template-rows: 1fr 30px; /* for statusbar */
+  grid-template-rows: 1fr;
+  grid-gap: 0 5px;
+  height: 100vh;
+  padding-top: 42px;
+}
+
+.composer-editor-tree {
+  grid-row: 1;
+  grid-column: 1;
+  overflow: auto;
+}
+
+.composer-editor-tree .ui.vertical.menu {
+  width: initial;
+  border: initial;
+  box-shadow: initial;
+}
+
+.composer-editor-tree .ui.list>.item>.icon+.content,
+.composer-editor-tree .ui.list .item>.icon+.content {
+  padding: initial;
+}
+
+.composer-editor-content {
+  grid-row: 1;
+  grid-column: 2;
+  overflow-y: auto;
+  padding-top: 13px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 20px;
+}
+
+.composer-editor-errors {
+  grid-row: 1;
+  grid-column: 3;
+  overflow: auto;
+  padding-top: 13px;
+}
+
+.composer-editor-errors .list {
+  padding-right: 10px;
+}
+
+/*
+.composer-editor-statusbar {
+  grid-row: 2;
+  grid-column: 1 / span 3;
+}
+*/

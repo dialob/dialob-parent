@@ -89,7 +89,7 @@ export const DEFAULT_ITEM_CONFIG = {
       matcher: item => item.get('type') === 'list',
       component: SimpleField,
       props: {
-        icon: 'caret down',
+        icon: 'angle down',
         placeholder: 'List field label'
       }
     },

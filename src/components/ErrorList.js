@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Message} from 'semantic-ui-react';
+import {List} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {setActiveItem, showVariables, showValueSets} from '../actions';
 import { translateErrorType, translateErrorMessage } from '../helpers/utils';
@@ -44,20 +44,26 @@ class ErrorList extends Component {
     let errorMap = this.props.errors.groupBy(e => e.get('itemId') || '$general$');
     let errors = errorMap.entrySeq().map((e, i) => {
       const uiItemId = this.resolveItemId(e[1]);
-      return (<Message key={i} error={e[1].getIn([0, 'level']) != 'WARNING'} warning={e[1].getIn([0, 'level']) === 'WARNING'}>
-        <Message.Header className='composer-error-link' onClick={this.clickHandler.bind(this, e[1], uiItemId)}>{uiItemId ? uiItemId : 'Global list'}</Message.Header>
-        <Message.List>
-          {
-            e[1].map((m, j) => <Message.Item key={j}>{this.translateError(m)}</Message.Item>)
-          }
-        </Message.List>
-      </Message>);
+      return (
+        <List.Item key={i}>
+          <List.Icon name='warning sign' color={e[1].getIn([0, 'level']) != 'WARNING' ? 'red' : 'yellow'} size='large' />
+          <List.Content>
+            <List.Header as='a' onClick={this.clickHandler.bind(this, e[1], uiItemId)}>
+              {uiItemId ? uiItemId : 'Global list'}
+            </List.Header>
+            {
+              e[1].toSet().toList().map((m, j) => <React.Fragment key={j}>{this.translateError(m)}<br /></React.Fragment>)
+            }
+          </List.Content>
+        </List.Item>
+      );
       }
     );
-
-    return (<React.Fragment>
+   return (
+    <List divided>
       {errors}
-    </React.Fragment>);
+    </List>
+   );
    } else {
      return null;
    }

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Segment, Menu, Input, Button, Dropdown, Label, Table} from 'semantic-ui-react';
+import {Menu, Input, Button, Dropdown, Label, Table} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem} from '../actions';
 import {itemFactory} from '../items';
@@ -76,7 +76,7 @@ class Editor extends Component {
                                  />
                             </Menu.Item>) : null;
     return (
-      <Segment basic>
+      <div>
         <Menu tabular attached='top' className='composer-pagelist'>
           {pages}
           <Menu.Menu position='right' >
@@ -112,7 +112,7 @@ class Editor extends Component {
               </Dropdown.Menu>
             </Dropdown>
         }
-      </Segment>
+      </div>
     );
   }
 }

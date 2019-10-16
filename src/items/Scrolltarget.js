@@ -1,5 +1,5 @@
 import React from 'react';
-import {scrollToWhen} from 'react-redux-scroll';
+import {scrollToWhen} from '@resys/react-redux-scroll';
 import * as Actions from '../actions/constants';
 
 const isItemActivated = (action, props) =>
@@ -10,7 +10,7 @@ const Scrolltarget = scrollToWhen({
   scrollOptions: {
     yMargin: 50
   },
-  excludeProps: ['itemId']
+  excludedProps: ['itemId']
 })('div');
 
 export {

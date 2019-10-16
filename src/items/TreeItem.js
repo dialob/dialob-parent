@@ -148,7 +148,9 @@ class TreeItem extends Item {
             this.props.treeCollapsible &&
               <List.Icon name={treeCollapsed ? 'caret right' : 'caret down'} style={{float: 'initial'}} onClick={() => this.setTreeCollapsed(!treeCollapsed)}/>
           }
-          <List.Icon name={this.props.icon} style={{float: 'initial'}}/>
+          <List.Icon name={errorLevel === Status.STATUS_OK ? this.props.icon : 'warning sign'}
+             color={ errorLevel === Status.STATUS_ERRORS ? 'red' : errorLevel === Status.STATUS_WARNINGS ? 'yellow' : ''}
+             style={{float: 'initial'}}/>
           <List.Content>
             <List.Header onClick={() => this.setActive()}
               className={classnames({'composer-active': this.props.active,
