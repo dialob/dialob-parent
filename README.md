@@ -19,14 +19,21 @@ yarn add @resys/dialob-fill-react @resys/dialob-fill-api
 
 ## Quick-start
 ```jsx
-import React from 'react';
+import React, { useMemo } from 'react';
+import DialobFill from '@resys/dialob-fill-api';
 import { Session, useFillItem, useFillSession, useFillValueSet } from '@resys/dialob-fill-react';
 
-const App = () => (
-  <Session id={sessionId} config={config}>
-    <Questionnaire/>
-  </Session>
-);
+const App = () => {
+  const session = useMemo(() => {
+    return DialobFill.newSession(sessionId, config);
+  }, []);
+
+  return (
+    <Session session={session}>
+      <Questionnaire/>
+    </Session>
+  );
+}
 
 const Questionnaire = () => {
   const { item: questionnaire, errors } = useFillItem('questionnaire');
