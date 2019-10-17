@@ -24,7 +24,7 @@ class ItemMenu extends React.PureComponent {
 
   render() {
     return (
-      <Dropdown icon='content' lazyLoad>
+      <Dropdown icon='content' lazyLoad direction='left'>
         <Dropdown.Menu>
           <Dropdown.Item icon='options' text='Options...' onClick={this.showItemOptions}/>
           <Dropdown.Item disabled={!!this.props.formTag} icon='remove' text='Delete' onClick={this.props.onDelete} />
