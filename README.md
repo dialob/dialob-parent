@@ -3,8 +3,8 @@ This package provides convenience methods for interacting with Dialob Fill sessi
 
 Components:
 
-- `<Session id={id} config={config}>` where `id` is the session id and `config` is the fill API
-config. `<Session/>` creates a session object and makes it accessible through the React context API.
+- `<Session session={session}/>` where `session` is a session object created through
+`@resys/dialob-fill-api` library.
 
 Hooks:
 
