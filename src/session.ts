@@ -170,6 +170,10 @@ export class Session {
     return this.state.errors[id];
   }
 
+  public getAllItems(): SessionItem[] {
+    return Object.values(this.state.items);
+  }
+
   public getValueSet(id: string): SessionValueSet | undefined {
     return this.state.valueSets[id];
   }
