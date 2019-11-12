@@ -105,7 +105,7 @@ export interface CompleteAction {
   type: 'COMPLETE';
 }
 
-interface FillError {
+export interface FillError {
   id: string;
   code: string;
   description: string;
