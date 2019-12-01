@@ -1,6 +1,31 @@
-import { SessionItem, SessionError } from '@resys/dialob-fill-api';
+import { SessionItem, SessionError, Session } from '@resys/dialob-fill-api';
 import { useEffect, useState, useRef } from 'react';
 import { useFillSession } from './useFillSession';
+
+function getAvailableItems(session: Session, id: string | undefined, prevValue: boolean[]): boolean[] {
+  if(!id) {
+    return prevValue.length > 0 ? [] : prevValue;
+  }
+
+  const item = session.getItem(id);
+  if(!item || !item.items) {
+    return prevValue.length > 0 ? [] : prevValue;
+  }
+
+  let isSame = true;
+  const newValue = item.items.map((itemId, index) => {
+    const visible = session.getItem(itemId) !== undefined;
+    if(isSame && prevValue[index] !== visible) {
+      isSame = false;
+    }
+    return visible;
+  });
+
+  if(isSame) return prevValue;
+  return newValue;
+};
+
+
 
 export interface FillItem {
   item?: SessionItem;
@@ -17,32 +42,8 @@ export function useFillItem(id: string | undefined): FillItem {
   const prevErrors = useRef(initialErrors);
 
   // This is required because if a child of this item is shown or hidden, we need to update this item
-  const [availableItems, setAvailableItems] = useState(() => getAvailableItems([]));
+  const [availableItems, setAvailableItems] = useState(() => getAvailableItems(session, id, []));
   const prevAvailableItems = useRef(availableItems);
-
-  function getAvailableItems(prevValue: boolean[]): boolean[] {
-    if(!id) {
-      return prevValue.length > 0 ? [] : prevValue;
-    }
-
-    const item = session.getItem(id);
-    if(!item || !item.items) {
-      return prevValue.length > 0 ? [] : prevValue;
-    }
-
-    let isSame = true;
-    const newValue = item.items.map((itemId, index) => {
-      const visible = session.getItem(itemId) !== undefined;
-      if(isSame && prevValue[index] !== visible) {
-        isSame = false;
-      }
-      return visible;
-    });
-
-    if(isSame) return prevValue;
-    return newValue;
-  };
-
 
   useEffect(() => {
     if(!id) return;
@@ -64,7 +65,7 @@ export function useFillItem(id: string | undefined): FillItem {
     }
 
     const updateAvailableItems = () => {
-      const newItems = getAvailableItems(prevAvailableItems.current);
+      const newItems = getAvailableItems(session, id, prevAvailableItems.current);
       prevAvailableItems.current = newItems;
       setAvailableItems(newItems);
     }
