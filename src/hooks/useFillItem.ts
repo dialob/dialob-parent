@@ -1,5 +1,5 @@
 import { SessionItem, SessionError } from '@resys/dialob-fill-api';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useFillSession } from './useFillSession';
 
 export interface FillItem {
@@ -8,13 +8,17 @@ export interface FillItem {
 }
 export function useFillItem(id: string | undefined): FillItem {
   const session = useFillSession();
+
   const initialValue = id ? session.getItem(id) : undefined;
   const [item, setItem] = useState<SessionItem | undefined>(initialValue);
+
   const initialErrors = id ? session.getItemErrors(id) || [] : [];
   const [errors, setErrors] = useState<SessionError[]>(initialErrors);
+  const prevErrors = useRef(initialErrors);
 
   // This is required because if a child of this item is shown or hidden, we need to update this item
   const [availableItems, setAvailableItems] = useState(() => getAvailableItems([]));
+  const prevAvailableItems = useRef(availableItems);
 
   function getAvailableItems(prevValue: boolean[]): boolean[] {
     if(!id) {
@@ -51,13 +55,18 @@ export function useFillItem(id: string | undefined): FillItem {
       const newErrors = session.getItemErrors(id);
       if(newErrors) {
         setErrors(newErrors);
-      } else if(errors.length > 0) {
-        setErrors([]);
+        prevErrors.current = newErrors;
+      } else if(prevErrors.current.length > 0) {
+        const empty: typeof errors = [];
+        setErrors(empty);
+        prevErrors.current = empty;
       }
     }
 
     const updateAvailableItems = () => {
-      setAvailableItems(getAvailableItems(availableItems));
+      const newItems = getAvailableItems(prevAvailableItems.current);
+      prevAvailableItems.current = newItems;
+      setAvailableItems(newItems);
     }
 
     const listener = () => {
@@ -71,7 +80,7 @@ export function useFillItem(id: string | undefined): FillItem {
     return () => {
       session.removeListener('update', listener);
     }
-  }, [session, id, setItem, errors, setErrors, availableItems, setAvailableItems]);
+  }, [session, id, prevErrors, prevAvailableItems, setItem, setErrors, setAvailableItems]);
 
   return { item, errors };
 }
