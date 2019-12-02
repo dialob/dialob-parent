@@ -1,4 +1,6 @@
 ## next
+
+## 2.1.0
 ### Enhancements
 - return `availableItems` property from `useFillItem()`. This contains the id-s of items that are
 actually available (visible) in the session.
