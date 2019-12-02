@@ -83,7 +83,7 @@ The possible options are:
 interface SessionOptions {
   // Defines how many milliseconds session should batch actions for before syncing them to server.
   // A value of -1 disables the batching logic and always immediately syncs each action. This can
-  // be used if you want to do debouncing yourself, for exapmle.
+  // be used if you want to do debouncing yourself, for example.
   syncWait?: number;
 }
 ```
