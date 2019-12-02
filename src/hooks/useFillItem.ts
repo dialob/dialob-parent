@@ -25,11 +25,10 @@ function getAvailableItems(session: Session, id: string | undefined, prevValue: 
   return newValue;
 };
 
-
-
 export interface FillItem {
   item?: SessionItem;
   errors: SessionError[];
+  availableItems: string[];
 }
 export function useFillItem(id: string | undefined): FillItem {
   const session = useFillSession();
@@ -83,5 +82,16 @@ export function useFillItem(id: string | undefined): FillItem {
     }
   }, [session, id, prevErrors, prevAvailableItems, setItem, setErrors, setAvailableItems]);
 
-  return { item, errors };
+  let visibleItems: string[];
+  if(!item || !item.items) {
+    visibleItems = [];
+  } else {
+    visibleItems = item.items.filter((id) => {
+      if(session.getItem(id) === undefined) {
+        return false;
+      }
+      return true;
+    });
+  }
+  return { item, errors, availableItems: visibleItems };
 }
