@@ -40,15 +40,17 @@ class Group extends Item {
 
         { !treeCollapsed ?
          <React.Fragment>
-            <Table onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  celled attached >
-              <Table.Body>
-                <Table.Row>
-                  <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                  <CodeEditor value={item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
-                  </Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            </Table>
+            { this.props.active &&
+              <Table onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  celled attached >
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
+                    <CodeEditor value={item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
+                    </Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table>
+            }
             <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames('composer-group', {'composer-active': this.props.active})} attached='bottom'>
               {this.createChildren({parentItemId: itemId, getItemById: this.props.getItemById})}
 
