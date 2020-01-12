@@ -170,3 +170,20 @@
   grid-column: 1 / span 3;
 }
 */
+
+.dialob-rule {
+  font-family: Inconsolata, monospace;
+}
+
+.dialob-placeholder {
+  color: rgba(191,191,191,.87);
+}
+
+.dialob-window-codeedit {
+  min-height: 150px;
+}
+
+.dialob-rule-icon {
+  opacity: 0.5 !important;
+  float: right;
+}

@@ -110,6 +110,10 @@ export function editorReducer(state = INITIAL_STATE, action) {
         }
         return treeCollapse;
       });
+    case Actions.SHOW_RULE_EDIT:
+      return state.set('ruleEditOpen', Immutable.fromJS({itemId: action.itemId, rule: action.rule}));
+    case Actions.HIDE_RULE_EDIT:
+      return state.delete('ruleEditOpen');
     default:
       // NOP
   }

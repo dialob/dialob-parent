@@ -1,10 +1,9 @@
 import React from 'react';
 import {itemFactory} from '.';
 import {connect} from 'react-redux';
-import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse} from '../actions';
+import {setActiveItem, addItem, updateItem, deleteItem, showChangeId, setActivePage, setTreeCollapse, showRuleEdit} from '../actions';
 import * as Defaults from '../defaults';
 import * as Status from '../helpers/constants';
-
 import Immutable from 'immutable';
 
 class Item extends React.Component {
@@ -79,6 +78,10 @@ class Item extends React.Component {
     this.props.setTreeCollapse(this.props.itemId, collapsed);
   }
 
+  openRuleEdit(rule) {
+    this.props.showRuleEdit(this.props.itemId, rule);
+  }
+
 }
 
 function connectItem(component) {
@@ -105,7 +108,8 @@ function connectItem(component) {
       deleteItem,
       showChangeId,
       setActivePage,
-      setTreeCollapse
+      setTreeCollapse,
+      showRuleEdit
     }
   )(component);
 }
