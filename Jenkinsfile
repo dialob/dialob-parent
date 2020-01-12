@@ -2,7 +2,7 @@
 pipeline {
   agent any
   tools {
-    nodejs 'nodejs-9'
+    nodejs 'nodejs-12'
   }
   options {
     gitLabConnection('git.resys.io')
