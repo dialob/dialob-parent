@@ -1,9 +1,8 @@
 import React from 'react';
-import {Segment, Table} from 'semantic-ui-react';
+import {Segment, Table, Icon} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemMenu from '../components/ItemMenu';
 import RichEditor from '../components/RichEditor';
-import CodeEditor from '../components/CodeEditor';
 import classnames from 'classnames';
 import Scrolltarget from './Scrolltarget';
 
@@ -30,7 +29,10 @@ class Note extends Item {
             <Table.Body>
               <Table.Row>
                 <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                <CodeEditor value={this.props.item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
+                  <div className='dialob-rule' onClick={() => this.openRuleEdit('activeWhen')}>
+                    <Icon name='eye' className='dialob-rule-icon' />
+                    {this.props.item.get('activeWhen') || <span className='dialob-placeholder'>Visibility</span>}
+                  </div>
                 </Table.Cell>
               </Table.Row>
             </Table.Body>

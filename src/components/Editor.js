@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {Menu, Input, Button, Dropdown, Label, Table} from 'semantic-ui-react';
+import {Menu, Input, Button, Dropdown, Label, Table, Icon} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem} from '../actions';
+import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem, showRuleEdit} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
-import CodeEditor from './CodeEditor';
+
 
 const MAX_LENGTH = 40;
 
@@ -96,7 +96,10 @@ class Editor extends Component {
               </Table.Row>
               <Table.Row>
                 <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
-                  <CodeEditor value={activePage.get('activeWhen') || ''} onChange={value => this.props.updateItem(activePageId, 'activeWhen', value)} placeholder='Visibility' icon='eye' readOnly={this.props.formTag} errors={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId)} />
+                   <div className='dialob-rule' onClick={() => this.props.showRuleEdit(activePageId, 'activeWhen')}>
+                     <Icon name='eye' className='dialob-rule-icon' />
+                     {activePage.get('activeWhen') || <span className='dialob-placeholder'>Visibility</span>}
+                    </div>
                 </Table.Cell>
               </Table.Row>
             </Table.Body>
@@ -137,7 +140,8 @@ const EditorConnected = connect(
     showItemOptions,
     showChangeId,
     copyItem,
-    updateItem
+    updateItem,
+    showRuleEdit
   }
 )(Editor);
 

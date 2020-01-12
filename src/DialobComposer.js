@@ -20,6 +20,7 @@ import NewTagDialog from './components/NewTagDialog';
 import {connect} from 'react-redux';
 import './del/codemirrorMode';
 import { scrollableArea } from '@resys/react-redux-scroll';
+import RuleEditDialog from './components/RuleEditDialog';
 
 require('./style.css');
 
@@ -93,6 +94,7 @@ class DialobComposer extends Component {
         <FatalErrorDialog />
         <VersioningDialog />
         <NewTagDialog />
+        <RuleEditDialog />
       </React.Fragment>);
   }
 }

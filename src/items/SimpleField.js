@@ -1,9 +1,8 @@
 import React from 'react';
-import {Table, Input} from 'semantic-ui-react';
+import {Table, Input, Icon} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemMenu from '../components/ItemMenu';
 import Validations from '../components/Validations';
-import CodeEditor from '../components/CodeEditor'
 import Scrolltarget from './Scrolltarget';
 import ConvertItem from '../components/ConvertItem';
 
@@ -34,7 +33,10 @@ class SimpleField extends Item {
             <Table.Body>
               <Table.Row>
                 <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                  <CodeEditor active={this.props.active} value={this.props.item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!this.props.editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
+                  <div className='dialob-rule' onClick={() => this.openRuleEdit('activeWhen')}>
+                    <Icon name='eye' className='dialob-rule-icon' />
+                    {this.props.item.get('activeWhen') || <span className='dialob-placeholder'>Visibility</span>}
+                  </div>
                 </Table.Cell>
               </Table.Row>
               {
@@ -42,7 +44,10 @@ class SimpleField extends Item {
                   <React.Fragment>
                     <Table.Row>
                       <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT').size > 0}>
-                        <CodeEditor active={this.props.active} value={this.props.item.get('required') || ''} onChange={value => this.setAttribute('required', value)} placeholder='Required' readOnly={!this.props.editable} icon='asterisk' errors={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT')}/>
+                        <div className='dialob-rule' onClick={() => this.openRuleEdit('required')}>
+                          <Icon name='gavel' className='dialob-rule-icon' />
+                          {this.props.item.get('required') || <span className='dialob-placeholder'>Requirement</span>}
+                        </div>
                       </Table.Cell>
                     </Table.Row>
                     <Table.Row>

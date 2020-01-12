@@ -79,7 +79,8 @@ class CodeEditor extends Component {
 
         const editor = CodeMirrorIntegration.fromTextArea(element, {
           mode: 'del',
-          lineNumbers: false,
+          autofocus: true,
+          lineNumbers: true,
           lineWrapping: true,
           readOnly: this.props.readOnly,
           tabSize: 2,
@@ -119,10 +120,10 @@ class CodeEditor extends Component {
   }
 
   render() {
-    const {id, value, placeholder, icon, styleClass} = this.props;
+    const {id, value, icon, styleClass} = this.props;
     return (
       <div className={classnames('ui fluid', {'icon': !!icon}, 'input', styleClass, {'focused': this.state.focused})} onClick={() => this.focusEditor()} >
-        <textarea className='testclass' rows={2} id={id} ref={element => this.element = element} defaultValue={value} placeholder={placeholder} />
+        <textarea className='testclass' rows={2} id={id} ref={element => this.element = element} defaultValue={value} />
         {icon &&
           <i aria-hidden='true' className={classnames(icon, 'icon')} />
         }

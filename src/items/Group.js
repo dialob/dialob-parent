@@ -4,7 +4,6 @@ import Item, {connectItem} from './Item';
 import ItemTypeMenu from '../components/ItemTypeMenu';
 import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
-import CodeEditor from '../components/CodeEditor';
 import Scrolltarget from './Scrolltarget';
 import ConvertItem from '../components/ConvertItem';
 
@@ -44,7 +43,10 @@ class Group extends Item {
               <Table.Body>
                 <Table.Row>
                   <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                  <CodeEditor value={item.get('activeWhen') || ''} onChange={value => this.setAttribute('activeWhen', value)} placeholder='Visibility' readOnly={!editable} icon='eye' errors={this.getErrors().filter(e => e.get('type') === 'VISIBILITY')}/>
+                    <div className='dialob-rule' onClick={() => this.openRuleEdit('activeWhen')}>
+                      <Icon name='eye' className='dialob-rule-icon' />
+                      {this.props.item.get('activeWhen') || <span className='dialob-placeholder'>Visibility</span>}
+                    </div>
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>
