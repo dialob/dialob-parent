@@ -12,7 +12,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
-    "@resys/dialob-composer": "2.1.2-2",
+    "@resys/dialob-composer": "2.1.2-4",
     "immutable": "3.8.2",
     "react": "16.12.0",
     "react-dom": "16.12.0"
