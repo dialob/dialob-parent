@@ -15,7 +15,7 @@
   "dependencies": {
     "@resys/understood": "2.1.1",
     "classnames": "2.2.6",
-    "codemirror": "5.49.2",
+    "codemirror": "5.50.2",
     "file-saver": "2.0.2",
     "immutable": "3.8.2",
     "lodash.debounce": "^4.0.8",
