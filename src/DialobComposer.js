@@ -20,7 +20,7 @@ import NewTagDialog from './components/NewTagDialog';
 import {connect} from 'react-redux';
 import './del/codemirrorMode';
 import { scrollableArea } from '@resys/react-redux-scroll';
-import RuleEditDialog from './components/RuleEditDialog';
+import RuleEditor from './components/RuleEditor';
 
 require('./style.css');
 
@@ -66,11 +66,7 @@ class DialobComposer extends Component {
     const marginTop = '42px';
     const paddingBottom = '55px';
     const menuWidth = Defaults.TREE_WIDTH;
-    /*
-      <div className='composer-editor-statusbar'>
-            Statusbar...
-      </div>
-    */
+
     return (
       <React.Fragment>
         <MainMenu />
@@ -81,6 +77,9 @@ class DialobComposer extends Component {
           <ScrollableEditor />
           <div className='composer-editor-errors'>
             <ErrorList />
+          </div>
+          <div className='composer-editor-rules'>
+            <RuleEditor />
           </div>
         </div>
         <ConfirmationDialog />
@@ -94,7 +93,6 @@ class DialobComposer extends Component {
         <FatalErrorDialog />
         <VersioningDialog />
         <NewTagDialog />
-        <RuleEditDialog />
       </React.Fragment>);
   }
 }

@@ -1,30 +1,29 @@
 import React, {Component} from 'react';
-import {Modal, Button, Tab } from 'semantic-ui-react';
+import {Tab, Header } from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {updateItem, hideRuleEdit} from '../actions';
+import {updateItem} from '../actions';
 import CodeEditor from './CodeEditor';
 import Immutable from 'immutable';
 
 const NOT_EDITABLE_TYPES = ['group', 'rowgroup', 'surveygroup', 'note'];
-const TAB_PAGES = ['activeWhen', 'required'];
 
-class RuleEditDialog extends Component {
+class RuleEditor extends Component {
 
   setAttribute(attribute, value, language = null) {
-    this.props.updateItem(this.props.ruleEditOpen.get('itemId'), attribute, value, language);
+    this.props.updateItem(this.props.activeItemId, attribute, value, language);
   }
 
   getErrors() {
-    const itemId = this.props.ruleEditOpen.get('itemId');
+    const itemId = this.props.activeItemId
     return this.props.errors
     ? this.props.errors.filter(e => (e.get('message').startsWith('VALUESET_') && e.get('itemId') === this.props.item.get('valueSetId')) || e.get('itemId') === itemId)
     : new Immutable.List([]);
   }
 
   render() {
-    const {ruleEditOpen, hideRuleEdit, getItem} = this.props;
+    const {activeItemId, getItem} = this.props;
 
-    if (ruleEditOpen) {
+    if (activeItemId) {
       const item = getItem();
 
       const errors = this.getErrors();
@@ -47,15 +46,10 @@ class RuleEditDialog extends Component {
       }
 
       return (
-        <Modal open size='large' centered={false} closeOnEscape={true} onClose={() => hideRuleEdit()}>
-          <Modal.Header>Rules for <em>{item.get('id')}</em></Modal.Header>
-          <Modal.Content >
-            <Tab panes={panes} defaultActiveIndex={TAB_PAGES.indexOf(ruleEditOpen.get('rule'))} />
-          </Modal.Content>
-          <Modal.Actions>
-            <Button primary onClick={() => hideRuleEdit()}>OK</Button>
-          </Modal.Actions>
-        </Modal>
+        <React.Fragment>
+          <Header as='h5' style={{marginBottom: '5px'}}>Rules for <em>{activeItemId}</em></Header>
+          <Tab menu={{fluid: true, vertical: true, tabluar: 'left'}} panes={panes} />
+        </React.Fragment>
       );
     } else {
       return null;
@@ -63,18 +57,17 @@ class RuleEditDialog extends Component {
   }
 }
 
-const RuleEditDialogConnected = connect(
+const RuleEditorConnected = connect(
   state => ({
-    ruleEditOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('ruleEditOpen'),
+    activeItemId: state.dialobComposer.editor && state.dialobComposer.editor.get('activeItemId'),
     errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors'),
-    get getItem() { return () => state.dialobComposer.form && state.dialobComposer.form.getIn(['data', this.ruleEditOpen.get('itemId')]); }
+    get getItem() { return () => state.dialobComposer.form && this.activeItemId && state.dialobComposer.form.getIn(['data', this.activeItemId]); }
   }), {
-    hideRuleEdit,
-    updateItem,
+    updateItem
   }
-)(RuleEditDialog);
+)(RuleEditor);
 
 export {
-  RuleEditDialogConnected as default,
-  RuleEditDialog
+  RuleEditorConnected as default,
+  RuleEditor
 };

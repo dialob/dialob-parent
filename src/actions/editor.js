@@ -531,17 +531,3 @@ export function scheduleSave() {
     saveNeeded: true
   };
 }
-
-export function showRuleEdit(itemId, rule) {
-  return {
-    type: Actions.SHOW_RULE_EDIT,
-    itemId,
-    rule
-  };
-}
-
-export function hideRuleEdit() {
-  return {
-    type: Actions.HIDE_RULE_EDIT
-  };
-}

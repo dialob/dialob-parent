@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Menu, Input, Button, Dropdown, Label, Table, Icon} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem, showRuleEdit} from '../actions';
+import {setActivePage, addItem, deleteItem, loadForm, showItemOptions, showChangeId, copyItem, updateItem, setActiveItem} from '../actions';
 import {itemFactory} from '../items';
 import * as Defaults from '../defaults';
 import ItemTypeMenu from './ItemTypeMenu';
@@ -87,16 +87,16 @@ class Editor extends Component {
           </Menu.Menu>
         </Menu>
         { pages && pages.size > 0 &&
-          <Table attached='bottom'>
-           <Table.Body>
+          <Table attached='bottom' onClick={() =>  this.props.setActiveItem(activePageId, true)}>
+           <Table.Body >
               <Table.Row>
-                <Table.Cell>
+                <Table.Cell >
                   <Input transparent fluid placeholder='Page label' value={activePage.getIn(['label', this.props.language]) || ''} onChange={(evt) => this.props.updateItem(activePageId, 'label', evt.target.value, this.props.language)}/>
                 </Table.Cell>
               </Table.Row>
               <Table.Row>
                 <Table.Cell error={this.props.errors && this.props.errors.filter(e => e.get('type') === 'VISIBILITY' && e.get('itemId') === activePageId).size > 0}>
-                   <div className='dialob-rule' onClick={() => this.props.showRuleEdit(activePageId, 'activeWhen')}>
+                   <div className='dialob-rule'>
                      <Icon name='eye' className='dialob-rule-icon' />
                      {activePage.get('activeWhen') || <span className='dialob-placeholder'>Visibility</span>}
                     </div>
@@ -141,7 +141,7 @@ const EditorConnected = connect(
     showChangeId,
     copyItem,
     updateItem,
-    showRuleEdit
+    setActiveItem
   }
 )(Editor);
 

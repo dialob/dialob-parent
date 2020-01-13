@@ -78,10 +78,6 @@ class Item extends React.Component {
     this.props.setTreeCollapse(this.props.itemId, collapsed);
   }
 
-  openRuleEdit(rule) {
-    this.props.showRuleEdit(this.props.itemId, rule);
-  }
-
 }
 
 function connectItem(component) {
@@ -108,8 +104,7 @@ function connectItem(component) {
       deleteItem,
       showChangeId,
       setActivePage,
-      setTreeCollapse,
-      showRuleEdit
+      setTreeCollapse
     }
   )(component);
 }

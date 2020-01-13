@@ -33,7 +33,7 @@ class SimpleField extends Item {
             <Table.Body>
               <Table.Row>
                 <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'VISIBILITY').size > 0}>
-                  <div className='dialob-rule' onClick={() => this.openRuleEdit('activeWhen')}>
+                  <div className='dialob-rule'>
                     <Icon name='eye' className='dialob-rule-icon' />
                     {this.props.item.get('activeWhen') || <span className='dialob-placeholder'>Visibility</span>}
                   </div>
@@ -44,7 +44,7 @@ class SimpleField extends Item {
                   <React.Fragment>
                     <Table.Row>
                       <Table.Cell error={this.getErrors().filter(e => e.get('type') === 'REQUIREMENT').size > 0}>
-                        <div className='dialob-rule' onClick={() => this.openRuleEdit('required')}>
+                        <div className='dialob-rule'>
                           <Icon name='gavel' className='dialob-rule-icon' />
                           {this.props.item.get('required') || <span className='dialob-placeholder'>Requirement</span>}
                         </div>

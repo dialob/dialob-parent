@@ -66,5 +66,3 @@ export const HIDE_NEW_TAG = 'composer/HIDE_NEW_TAG';
 export const CREATE_NEW_TAG = 'composer/CREATE_NEW_TAG';
 export const SET_TREE_COLLAPSE = 'composer/SET_TREE_COLLAPSE';
 export const SCHEDULE_SAVE = 'composer/SCHEDULE_SAVE';
-export const SHOW_RULE_EDIT = 'composer/SHOW_RULE_EDIT';
-export const HIDE_RULE_EDIT = 'composer/HIDE_RULE_EDIT';
