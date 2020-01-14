@@ -20,6 +20,10 @@ function findPageForItem(formData, rootItemId, itemId) {
     return false;
   }
 
+  if (pages.contains(itemId)) {
+    return itemId; // Active item is a page
+  }
+
   for (let pageId of pages) {
     const page = formData.getIn(['data', pageId]);
     if (containsItem(page, itemId)) {
