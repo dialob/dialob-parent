@@ -14,9 +14,10 @@ class RuleEditor extends Component {
   }
 
   getErrors() {
-    const itemId = this.props.activeItemId
+    const itemId = this.props.activeItemId;
+    const item = this.props.getItem();
     return this.props.errors
-    ? this.props.errors.filter(e => (e.get('message').startsWith('VALUESET_') && e.get('itemId') === this.props.item.get('valueSetId')) || e.get('itemId') === itemId)
+    ? this.props.errors.filter(e => (e.get('message').startsWith('VALUESET_') && e.get('itemId') === item.get('valueSetId')) || e.get('itemId') === itemId)
     : new Immutable.List([]);
   }
 
