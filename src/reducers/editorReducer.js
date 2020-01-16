@@ -100,6 +100,8 @@ export function editorReducer(state = INITIAL_STATE, action) {
       return state.set('newTagDialog', true);
     case Actions.HIDE_NEW_TAG:
       return state.delete('newTagDialog');
+    case Actions.PERFORM_CHANGE_ID:
+      return state.get('activeItemId') === action.oldId ? state.set('activeItemId', action.newId) : state;
     case Actions.SET_TREE_COLLAPSE:
       return state.update('treeCollapse', treeCollapse => {
         if (!treeCollapse) {

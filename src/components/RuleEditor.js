@@ -26,6 +26,9 @@ class RuleEditor extends Component {
 
     if (activeItemId) {
       const item = getItem();
+      if (!item) {
+        return null;
+      }
 
       const errors = this.getErrors();
 
