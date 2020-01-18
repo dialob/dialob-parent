@@ -18,7 +18,7 @@
   "devDependencies": {
     "@resys/dialob-fill-api": "^1.0.2",
     "@types/react": "^16.8.17",
-    "typescript": "^3.4.5"
+    "typescript": "~3.7.5"
   },
   "peerDependencies": {
     "@resys/dialob-fill-api": "^1.0.2",
