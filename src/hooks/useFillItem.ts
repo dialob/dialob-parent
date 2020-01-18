@@ -1,4 +1,4 @@
-import { SessionItem, SessionError, Session } from '@resys/dialob-fill-api';
+import { SessionItem, SessionError, Session, ItemType } from '@resys/dialob-fill-api';
 import { useEffect, useState, useRef } from 'react';
 import { useFillSession } from './useFillSession';
 
@@ -25,12 +25,12 @@ function getAvailableItems(session: Session, id: string | undefined, prevValue: 
   return newValue;
 };
 
-export interface FillItem {
-  item?: SessionItem;
+export interface FillItem<T extends ItemType> {
+  item?: SessionItem<T>;
   errors: SessionError[];
   availableItems: string[];
 }
-export function useFillItem(id: string | undefined): FillItem {
+export function useFillItem<T extends ItemType>(id: string | undefined): FillItem<T> {
   const session = useFillSession();
 
   const initialValue = id ? session.getItem(id) : undefined;

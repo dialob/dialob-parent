@@ -1,4 +1,11 @@
 ## next
+- it's now possible to define which type will be returned from `useFillItem`:
+```ts
+const item = useFillItem<'boolean'>('booleanItem');
+```
+It is advised to use this only if you have manually verified the type of this item and are absolutely
+certain it can not change in runtime (for example, the UI is only ran against a tagged form that
+has been manually verified).
 
 ## 2.1.0
 ### Enhancements
