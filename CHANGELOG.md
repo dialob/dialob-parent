@@ -1,4 +1,7 @@
 ## next
+
+## 2.2.0
+### Enhancements
 - it's now possible to define which type will be returned from `useFillItem`:
 ```ts
 const item = useFillItem<'boolean'>('booleanItem');
