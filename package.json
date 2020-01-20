@@ -5,7 +5,7 @@
   "files": [
     "lib"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "publishConfig": {
     "registry": "https://repo.resys.io/repository/npm/",
     "always-auth": true
