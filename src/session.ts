@@ -197,16 +197,24 @@ export class Session {
       this.addToSyncQueue(action);
       this.syncQueuedActions();
     } else {
-      if(this.syncTimer) {
-        clearTimeout(this.syncTimer);
-      }
-      this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
+      this.clearDeferredSync();
       this.addToSyncQueue(action);
       this.applyActions([action]);
       if(this.immediateSync.has(action.type)) {
         this.syncQueuedActions();
+      } else {
+        this.deferSync();
       }
     }
+  }
+
+  private deferSync(timeout = this.syncWait) {
+    this.syncTimer = setTimeout(this.syncQueuedActions, timeout);
+  }
+
+  private clearDeferredSync() {
+    clearTimeout(this.syncTimer);
+    this.syncTimer = undefined;
   }
 
   private addToSyncQueue(action: Action) {
@@ -249,10 +257,7 @@ export class Session {
     }
 
     this.inSync = true;
-    if(this.syncTimer) {
-      clearTimeout(this.syncTimer);
-      this.syncTimer = undefined;
-    }
+    this.clearDeferredSync();
 
     const syncedCount = this.syncActionQueue.length;
     try {
@@ -262,14 +267,14 @@ export class Session {
       this.syncActionQueue = this.syncActionQueue.slice(syncedCount);
 
       if(this.syncActionQueue.length > 0 && !this.syncTimer) {
-        this.syncTimer = setTimeout(this.syncQueuedActions, this.syncWait);
+        this.deferSync();
       }
     } catch(e) {
       this.inSync = false;
       this.retryCount++;
 
       if(!this.syncTimer) {
-        this.syncTimer = setTimeout(this.syncQueuedActions, 1000);
+        this.deferSync(1000);
       }
 
       if(this.retryCount >= 3) {
