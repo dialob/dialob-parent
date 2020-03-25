@@ -38,7 +38,7 @@ type IsType<Given extends ItemType, Value, Matching extends ItemType, Result, Pr
     : never
   : never;
 
-export type ItemAction<T extends ItemType, Props extends {} = { [name: string]: any }, K = unknown> = 
+export type ItemAction<T extends ItemType, Props extends {} = { [name: string]: any }, K = unknown> =
     IsType<T, K, 'questionnaire', undefined, Props>
   | IsType<T, K, 'group', undefined, Props>
   | IsType<T, K, 'text', string, Props>
@@ -101,6 +101,11 @@ export interface NextAction {
   type: 'NEXT';
 }
 
+export interface GotoAction {
+  type: 'GOTO';
+  id: string;
+}
+
 export interface CompleteAction {
   type: 'COMPLETE';
 }
@@ -120,4 +125,4 @@ export interface RemoveErrorAction {
   error: FillError
 }
 
-export type Action = ResetAction | LocaleAction | ItemAction<ItemType> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
+export type Action = ResetAction | LocaleAction | ItemAction<ItemType> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | GotoAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
