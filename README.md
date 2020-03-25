@@ -33,6 +33,9 @@ session.next();
 // Previous page
 session.previous();
 
+// Go directly to a page
+session.goToPage(pageId);
+
 // Complete the session
 session.complete();
 

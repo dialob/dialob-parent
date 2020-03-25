@@ -63,7 +63,7 @@ export class Session {
       throw new Error('syncWait must be -1 or higher!');
     }
   }
-  
+
   private insertReverseRef(state: SessionState, parentId: string, refIds: string[]) {
     for(const refId of refIds) {
       if(!state.reverseItemMap[refId]) {
@@ -139,6 +139,8 @@ export class Session {
           // Wait for server response
         } else if(action.type === 'PREVIOUS') {
           // Wait for server response
+        } else if (action.type === 'GOTO') {
+          // Wait for server response
         } else if(action.type === 'REMOVE_ERROR') {
           const error = action.error;
           const itemErrors = state.errors[error.id];
@@ -187,7 +189,7 @@ export class Session {
   }
 
   /** SYNCING */
-  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS']);
+  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS', 'GOTO']);
   private queueAction(action: Action) {
     if(this.syncWait === -1) {
       this.applyActions([action]);
@@ -235,10 +237,10 @@ export class Session {
     // happening on screen and then once sync succeeds, all the queued actions create a very
     // unexpected state on user's screen
     } else if(action.type === 'ADD_ROW') {
-      add = !this.syncActionQueue.some(queuedAction => 
+      add = !this.syncActionQueue.some(queuedAction =>
         queuedAction.type === action.type && queuedAction.id === action.id
       );
-    } else if(action.type === 'NEXT' || action.type === 'PREVIOUS') {
+    } else if(action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO') {
       add = !this.syncActionQueue.some(queuedAction => queuedAction.type === action.type);
     } else {
       add = true;
@@ -340,6 +342,10 @@ export class Session {
 
   public previous() {
     this.queueAction({ type: 'PREVIOUS' });
+  }
+
+  public goToPage(pageId: string) {
+    this.queueAction({ type: 'GOTO', id: pageId});
   }
 
   /** EVENT LISTENERS */
