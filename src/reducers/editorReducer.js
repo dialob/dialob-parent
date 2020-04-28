@@ -49,7 +49,8 @@ export function editorReducer(state = INITIAL_STATE, action) {
     case Actions.SET_ACTIVE_PAGE:
       return state.set('activeItemId', action.itemId).set('activePageId', action.itemId);
     case Actions.DELETE_ITEM:
-      return state.get('activeItemId') === action.itemId ? state.delete('activeItemId') : state;
+      const nextState = state.get('activeItemId') === action.itemId ? state.delete('activeItemId') : state;
+      return state.get('activePageId') === action.itemId ? nextState.delete('activePageId') : nextState;
     case Actions.SET_ACTIVE_LANGUAGE:
       return state.set('activeLanguage', action.language);
     case Actions.ASK_CONFIRMATION:
