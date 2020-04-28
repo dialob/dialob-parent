@@ -4,7 +4,7 @@ import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddlew
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import {Provider} from 'react-redux';
 import HTML5Backend from 'react-dnd-html5-backend'
-import { DragDropContextProvider } from 'react-dnd'
+import { DndProvider } from 'react-dnd'
 import { Button } from 'semantic-ui-react';
 
 const FORM_ID = window.COMPOSER_CONFIG.formId;
@@ -53,4 +53,4 @@ class Demo extends Component {
   //   <Button style={{position: 'absolute', zIndex: 9999999}} onClick={() => this.setState({formId: 'test2'})} >TEST2</Button>
 }
 
-render(<DragDropContextProvider backend={HTML5Backend}><Provider store={store}><Demo/></Provider></DragDropContextProvider>, document.querySelector('#app'))
+render(<DndProvider backend={HTML5Backend}><Provider store={store}><Demo/></Provider></DndProvider>, document.querySelector('#app'))
