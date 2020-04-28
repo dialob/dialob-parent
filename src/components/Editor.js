@@ -64,6 +64,11 @@ class Editor extends Component {
 
     const activePageId = this.props.activePageId ? this.props.activePageId: rootItem.getIn(['items', 0]);
     const activePage = this.props.items.get(activePageId);
+
+    if (activePage === undefined) {
+      return null;
+    }
+
     const pages = rootItem && rootItem.get('items') ? rootItem.get('items')
                         .map(itemId => this.findItemById(itemId))
                         .map((item, index) =>
