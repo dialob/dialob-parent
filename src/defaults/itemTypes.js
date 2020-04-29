@@ -21,7 +21,9 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
                 min: 1,
                 max: 20
               }
-            }
+            },
+            editable: PropEditors.BoolProp,
+            noscore: PropEditors.BoolProp
           },
           config: {
             type: 'group',

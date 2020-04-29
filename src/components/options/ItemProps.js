@@ -1,9 +1,60 @@
-import React, {Component} from 'react';
-import {Table, Button, Input, Form} from 'semantic-ui-react';
+import React, {Component, useState} from 'react';
+import {Table, Button, Form} from 'semantic-ui-react';
 import {addItemProp, updateItemProp, deleteItemProp} from '../../actions';
 import {connect} from 'react-redux';
 import {InputProp} from '../propEditors';
 import {findItemTypeConfig} from '../../helpers/utils';
+import AutoSuggest from 'react-autosuggest';
+
+const PropSuggest = ({suggestions, onChange, value}) => {
+  const [currentValue, setCurrentValue] = useState(value);
+  const [shownSuggestions, setShownSuggestions] = useState([]);
+
+  const handleChange = value => {
+    setCurrentValue(value);
+    if (onChange) {
+      onChange(value);
+    }
+  }
+
+  const onFetch = ({value}) => {
+    setShownSuggestions(suggestions.filter(suggestion => suggestion.startsWith(value)));
+  };
+
+  const onClear = () => {
+    setShownSuggestions([]);
+  };
+
+  const getSuggestionValue = suggestion => {
+    return suggestion;
+  };
+
+  const renderSuggestion = suggestion => {
+    return <span>{suggestion}</span>
+  };
+
+  const suggestionSelected = (e, {suggestion}) => {
+    handleChange(suggestion);
+  }
+
+  const inputProps = {
+    value: currentValue,
+    onChange: (e) => handleChange(e.target.value)
+  };
+
+  return <AutoSuggest suggestions={shownSuggestions}
+    onSuggestionsFetchRequested={onFetch}
+    onSuggestionsClearRequested={onClear}
+    getSuggestionValue={getSuggestionValue}
+    renderSuggestion={renderSuggestion}
+    onSuggestionSelected={suggestionSelected}
+    alwaysRenderSuggestions={true}
+    inputProps={inputProps}
+    multiSection={false}
+    renderSectionTitle={() => {}}
+    getSectionSuggestions={() => {}}
+  />;
+}
 
 class ItemProps extends Component {
 
@@ -12,7 +63,7 @@ class ItemProps extends Component {
     this.state = {
       newItemKey: '',
       itemTypeConfig: null,
-      definedProps: []
+      definedProps: [],
     };
   }
 
@@ -62,15 +113,8 @@ class ItemProps extends Component {
   componentDidMount() {
     const {itemTypes, item} = this.props;
     const itemTypeConfig = findItemTypeConfig(itemTypes, item.get('view') || item.get('type'));
-    const definedProps = itemTypeConfig && itemTypeConfig.propEditors
-      ? Object.keys(itemTypeConfig.propEditors).map(k => ({ key: k, text: k, value: k }))
-    : [];
+    const definedProps = itemTypeConfig && itemTypeConfig.propEditors ? Object.keys(itemTypeConfig.propEditors) : [];
     this.setState({itemTypeConfig, definedProps});
-  }
-
-  addDefinedProp(prop) {
-    const newProps = this.state.definedProps.concat([{key: prop, text: prop, value: prop}]);
-    this.setState({definedProps: newProps});
   }
 
   render() {
@@ -78,16 +122,19 @@ class ItemProps extends Component {
     const {itemTypeConfig, definedProps, newItemKey} = this.state;
     const props = item.get('props') && item.get('props');
     const rows = props ? props.entrySeq().map((p, i) => this.propEditor(p, i, itemTypeConfig)) : [];
-    const suggestions = props ? definedProps.filter(p => !props.has(p.value)) : [];
+    const suggestions = props ? definedProps.filter(p => !props.has(p)) : definedProps;
 
     return (
       <React.Fragment>
-        <Form>
-          <Form.Group>
-              <Form.Dropdown fluid search selection width={14} allowAdditions label='New property' options={suggestions} value={this.state.newItemKey} onAddItem={(_, data) => this.addDefinedProp(data.value)} onChange={(_, data) => this.setState({newItemKey: data.value})} />
-              <Form.Button width={2} fluid label={'\u00A0'} disabled={!newItemKey} onClick={() => this.addKey(newItemKey)}>Add</Form.Button>
-          </Form.Group>
-        </Form>
+      <div style={{display: 'flex', flexDirection: 'row'}}>
+          <div style={{paddingRight: '10px'}}>
+            <label>Add property</label>
+            <PropSuggest suggestions={suggestions} onChange={value => this.setState({newItemKey: value})} value={newItemKey}/>
+          </div>
+          <div>
+            <Form.Button width={2} fluid label={'\u00A0'} disabled={!newItemKey} onClick={() => this.addKey(newItemKey)}>Add</Form.Button>
+          </div>
+        </div>
         <Table celled compact>
           <Table.Header>
             <Table.Row>

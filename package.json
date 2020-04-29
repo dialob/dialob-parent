@@ -13,6 +13,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
+    "@resys/react-redux-scroll": "0.2.3",
     "@resys/understood": "2.1.1",
     "classnames": "2.2.6",
     "codemirror": "5.53.2",
@@ -23,11 +24,11 @@
     "memoizee": "0.4.14",
     "moment": "2.24.0",
     "prop-types": "^15.7.2",
+    "react-autosuggest": "^10.0.1",
     "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",
     "react-dom": "16.13.1",
     "react-redux": "7.2.0",
-    "@resys/react-redux-scroll": "0.2.3",
     "redux": "4.0.5",
     "remove-markdown": "0.3.0",
     "rich-markdown-editor": "9.11.2",
