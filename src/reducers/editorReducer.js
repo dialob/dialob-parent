@@ -5,8 +5,10 @@ import {findRoot} from '../helpers/utils';
 
 const INITIAL_STATE = Immutable.Map();
 
-function setErrors(state, errors) {
-  let newState = state.set('errors', Immutable.fromJS(errors));
+function setErrors(state, errors, append) {
+  let newState = append && state.get('errors') ? state.update('errors', e => e.concat(Immutable.fromJS(errors)))
+                                               : state.set('errors', Immutable.fromJS(errors));
+
   if (errors && errors.length > 0) {
     if (errors.findIndex(e => e.level === 'FATAL') > -1) {
       return newState.set('status', Status.STATUS_FATAL);
@@ -19,6 +21,14 @@ function setErrors(state, errors) {
     }
   } else {
     return newState.set('status', Status.STATUS_OK);
+  }
+}
+
+function clearErrors(state, prefix) {
+  if (!state.get('errors')) {
+    return state;
+  } else {
+    return state.update('errors', errors => errors.filter(e => prefix ? !e.get('message').startsWith(prefix) : false));
   }
 }
 
@@ -64,7 +74,7 @@ export function editorReducer(state = INITIAL_STATE, action) {
     case Actions.SET_STATUS:
       return state.set('status', action.status);
     case Actions.SET_ERRORS:
-      return setErrors(state, action.errors);
+      return setErrors(state, action.errors, action.append);
     case Actions.SHOW_FORM_OPTIONS:
       return state.set('formOptions', true);
     case Actions.HIDE_FORM_OPTIONS:
@@ -100,7 +110,7 @@ export function editorReducer(state = INITIAL_STATE, action) {
     case Actions.SHOW_NEW_TAG:
       return state.set('newTagDialog', true);
     case Actions.HIDE_NEW_TAG:
-      return state.delete('newTagDialog');
+      return clearErrors(state, 'TAG_').delete('newTagDialog');
     case Actions.PERFORM_CHANGE_ID:
       const newState = state.get('activeItemId') === action.oldId ? state.set('activeItemId', action.newId) : state;
       return newState.get('activePageId') === action.oldId ? newState.set('activePageId', action.newId) : newState;

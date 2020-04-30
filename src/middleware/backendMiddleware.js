@@ -21,7 +21,7 @@ export const backendMiddleware = store => {
       formService.loadForm(action.formId, action.tagName)
         .then(json => {
           store.dispatch(setForm(json, action.tagName));
-          store.dispatch(setStatus(Status.STATUS_OK)); 
+          store.dispatch(setStatus(Status.STATUS_OK));
           store.dispatch(saveForm(true));
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
@@ -67,7 +67,13 @@ export const backendMiddleware = store => {
         .then(json => {
           store.dispatch(hideNewTag());
         })
-        .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
+        .catch(error => {
+          if (error.message === 'FATAL_409') {
+            return store.dispatch(setErrors([{severity: 'FATAL', message: 'TAG_EXISTS'}], true));
+          } else {
+            return store.dispatch(setErrors([{severity: 'FATAL', message: error.message}]));
+          }
+        });
     } else if (action.type === Actions.COPY_ITEM) {
       formService.duplicateItem(store.getState().dialobComposer.form.toJS(), action.itemId)
           .then(json => {

@@ -185,10 +185,11 @@ export function setStatus(status) {
   };
 }
 
-export function setErrors(errors) {
+export function setErrors(errors, append = false) {
   return {
     type: Actions.SET_ERRORS,
-    errors
+    errors,
+    append
   };
 }
 

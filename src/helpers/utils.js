@@ -60,6 +60,8 @@ export function translateErrorMessage(error) {
       return 'Context variable type not defined';
     case 'VALUE_TYPE_NOT_SET':
       return 'Value type not set';
+    case 'TAG_EXISTS':
+      return 'Tag already exists';
     default:
       return error.get('message');
   };

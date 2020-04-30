@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Modal, Button, Form } from "semantic-ui-react";
+import { Modal, Button, Form, Message } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { hideNewTag, createNewTag } from "../actions";
+import { translateErrorMessage } from '../helpers/utils';
 
 class NewTagDialog extends Component {
 
@@ -20,6 +21,15 @@ class NewTagDialog extends Component {
 
   render() {
     if (this.props.newTagOpen) {
+
+      const tagErrors = this.props.errors &&
+          this.props.errors
+            .filter(e => e.get('message').startsWith('TAG_'));
+
+      const errorList = tagErrors && tagErrors.size > 0 &&
+      <Message error header='Errors'
+          list={tagErrors.map(e => translateErrorMessage(e)).toJS()} />;
+
       return (
         <Modal open size='tiny'>
           <Modal.Header>New Tag</Modal.Header>
@@ -29,6 +39,7 @@ class NewTagDialog extends Component {
                 <Form.Input label='New tag name' fluid focus value={this.state.tag} onChange={(e, d) => this.setState({tag: d.value}) }/>
               </Form.Field>
             </Form>
+            {errorList}
           </Modal.Content>
           <Modal.Actions>
             <Button primary onClick={() => this.props.createNewTag(this.state.tag)}>
@@ -50,7 +61,8 @@ const NewTagDialogConnected = connect(
   state => ({
     newTagOpen:
       state.dialobComposer.editor &&
-      state.dialobComposer.editor.get('newTagDialog')
+      state.dialobComposer.editor.get('newTagDialog'),
+    errors: state.dialobComposer.editor && state.dialobComposer.editor.get('errors')
   }),
   {
     hideNewTag,
