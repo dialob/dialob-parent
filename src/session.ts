@@ -261,17 +261,22 @@ export class Session {
     this.inSync = true;
     this.clearDeferredSync();
 
-    const syncedCount = this.syncActionQueue.length;
+    const syncedActions = this.syncActionQueue;
+    this.syncActionQueue = [];
     try {
-      await this.sync(this.syncActionQueue, this.state.rev);
+      await this.sync(syncedActions, this.state.rev);
       this.inSync = false;
       this.retryCount = 0;
-      this.syncActionQueue = this.syncActionQueue.slice(syncedCount);
 
       if(this.syncActionQueue.length > 0 && !this.syncTimer) {
         this.deferSync();
       }
     } catch(e) {
+      const newActions = this.syncActionQueue;
+      this.syncActionQueue = syncedActions;
+      for(const action of newActions) {
+        this.addToSyncQueue(action);
+      }
       this.inSync = false;
       this.retryCount++;
 
