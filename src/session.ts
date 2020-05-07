@@ -350,7 +350,7 @@ export class Session {
   }
 
   public goToPage(pageId: string) {
-    this.queueAction({ type: 'GOTO', id: pageId});
+    this.queueAction({ type: 'GOTO', id: pageId });
   }
 
   /** EVENT LISTENERS */
