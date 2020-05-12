@@ -1,7 +1,8 @@
 import produce from 'immer';
 import { Action, ErrorAction, ItemAction, ItemType, ValueSetAction } from './actions';
-import { DialobError, DialobRequestError } from './error';
-import { DialobResponse, Transport } from './transport';
+import { DialobError } from './error';
+import { onSyncFn, SyncQueue } from './sync-queue';
+import { Transport } from './transport';
 
 export type SessionItem<T extends ItemType = ItemType> = ItemAction<T>['item'];
 export type SessionError = ErrorAction['error'];
@@ -13,12 +14,10 @@ export interface SessionState {
   valueSets: Record<string, SessionValueSet>;
   errors: Record<string, SessionError[]>;
   locale?: string;
-  rev: number;
   complete: boolean;
 };
 
 export type onUpdateFn = () => void;
-export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE') => void;
 export type onErrorFn = (type: 'CLIENT' | 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
 
 export interface SessionOptions {
@@ -28,42 +27,34 @@ export interface SessionOptions {
 type Event = 'update' | 'sync' | 'error';
 
 export class Session {
-  id: string;
-  private transport: Transport;
   private state: SessionState;
-  private syncActionQueue: Action[];
-  private syncWait: number;
-  private syncTimer?: number;
+  private syncQueue: SyncQueue;
 
   private listeners: {
     update: onUpdateFn[],
-    sync: onSyncFn[],
     error: onErrorFn[],
   } = {
     update: [],
-    sync: [],
     error: [],
   };
 
   constructor(id: string, transport: Transport, options: SessionOptions = {}) {
-    this.id = id;
-    this.transport = transport;
     this.state = {
       items: {},
       reverseItemMap: {},
       valueSets: {},
       errors: {},
-      rev: 0,
       complete: false,
     };
-    this.syncActionQueue = [];
-
-    this.syncWait = options.syncWait || 250;
-    if(this.syncWait < -1) {
-      throw new Error('syncWait must be -1 or higher!');
-    }
+    this.syncQueue = new SyncQueue(id, transport, options.syncWait || 250);
+    this.syncQueue.on('sync', (type, response) => {
+      if(type === 'DONE' && response?.actions) {
+        this.applyActions(response.actions);
+      }
+    });
   }
 
+  /** STATE LOGIC */
   private insertReverseRef(state: SessionState, parentId: string, refIds: string[]) {
     for(const refId of refIds) {
       if(!state.reverseItemMap[refId]) {
@@ -73,12 +64,8 @@ export class Session {
     }
   }
 
-  /** STATE LOGIC */
-  private applyActions(actions: Action[], rev?: number): SessionState {
+  private applyActions(actions: Action[]): SessionState {
     this.state = produce(this.state, state => {
-      if(rev) {
-        state.rev = rev;
-      }
       for(const action of actions) {
         if(action.type === 'RESET') {
           state.items = {};
@@ -189,135 +176,13 @@ export class Session {
   }
 
   /** SYNCING */
-  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS', 'GOTO']);
+  public pull(): Promise<void> {
+    return this.syncQueue.pull();
+  }
+
   private queueAction(action: Action) {
-    if(this.syncWait === -1) {
-      this.applyActions([action]);
-      // We use queue here instead of calling this.sync() directly, because if sync fails we need
-      // to re-try and to have an efficient re-try, we need to work with an action queue anyway.
-      // Better to re-use the existing logic than to have multiple implementations.
-      this.addToSyncQueue(action);
-      this.syncQueuedActions();
-    } else {
-      this.clearDeferredSync();
-      this.addToSyncQueue(action);
-      this.applyActions([action]);
-      if(this.immediateSync.has(action.type)) {
-        this.syncQueuedActions();
-      } else {
-        this.deferSync();
-      }
-    }
-  }
-
-  private deferSync(timeout = this.syncWait) {
-    this.syncTimer = setTimeout(this.syncQueuedActions, timeout);
-  }
-
-  private clearDeferredSync() {
-    clearTimeout(this.syncTimer);
-    this.syncTimer = undefined;
-  }
-
-  private addToSyncQueue(action: Action) {
-    let add = false;
-    if(action.type === 'ANSWER') {
-      // If answer change is already in sync queue, update that answer instead of appending new one
-      const existingAnswerIdx = this.syncActionQueue.findIndex(queuedAction => {
-        return queuedAction.type === action.type && queuedAction.id === action.id;
-      });
-
-      if(existingAnswerIdx !== -1) {
-        this.syncActionQueue[existingAnswerIdx] = action;
-      } else {
-        add = true;
-      }
-    // In cases where server response is required, only add the action to queue once. Otherwise
-    // you can create a situation where user clicks something multiple times because nothing is
-    // happening on screen and then once sync succeeds, all the queued actions create a very
-    // unexpected state on user's screen
-    } else if(action.type === 'ADD_ROW') {
-      add = !this.syncActionQueue.some(queuedAction =>
-        queuedAction.type === action.type && queuedAction.id === action.id
-      );
-    } else if(action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO') {
-      add = !this.syncActionQueue.some(queuedAction => queuedAction.type === action.type);
-    } else {
-      add = true;
-    }
-
-    if(add) {
-      this.syncActionQueue.push(action);
-    }
-  }
-
-  private inSync = false;
-  private retryCount = 0;
-  private syncQueuedActions = async (): Promise<void> => {
-    if(this.inSync || this.syncActionQueue.length === 0) {
-      return;
-    }
-
-    this.inSync = true;
-    this.clearDeferredSync();
-
-    const syncedActions = this.syncActionQueue;
-    this.syncActionQueue = [];
-    try {
-      await this.sync(syncedActions, this.state.rev);
-      this.inSync = false;
-      this.retryCount = 0;
-
-      if(this.syncActionQueue.length > 0 && !this.syncTimer) {
-        this.deferSync();
-      }
-    } catch(e) {
-      const newActions = this.syncActionQueue;
-      this.syncActionQueue = syncedActions;
-      for(const action of newActions) {
-        this.addToSyncQueue(action);
-      }
-      this.inSync = false;
-      this.retryCount++;
-
-      if(!this.syncTimer) {
-        this.deferSync(1000);
-      }
-
-      if(this.retryCount >= 3) {
-        this.listeners.error.forEach(l => l('SYNC-REPEATED', e));
-      }
-    }
-  }
-
-  private async sync(actions: Action[], rev: number): Promise<DialobResponse> {
-    this.listeners.sync.forEach(l => l('INPROGRESS'));
-    let response;
-    try {
-      response = await this.transport.update(this.id, actions, rev);
-    } catch(e) {
-      this.handleError(e);
-      throw e;
-    }
-
-    this.applyActions(response.actions || [], response.rev);
-    this.listeners.sync.forEach(l => l('DONE'));
-    return response;
-  }
-
-  public async pull(): Promise<DialobResponse> {
-    this.listeners.sync.forEach(l => l('INPROGRESS'));
-    let response;
-    try {
-      response = await this.transport.getFullState(this.id);
-    } catch(e) {
-      this.handleError(e);
-      throw e;
-    }
-
-    this.applyActions(response.actions || [], response.rev);
-    this.listeners.sync.forEach(l => l('DONE'));
-    return response;
+    this.applyActions([action]);
+    this.syncQueue.add(action);
   }
 
   /** CONVENIENCE METHODS */
@@ -358,21 +223,33 @@ export class Session {
   public on(type: 'sync', listener: onSyncFn): void;
   public on(type: 'error', listener: onErrorFn): void;
   public on(type: Event, listener: Function): void {
-    const target: Function[] = this.listeners[type];
-    target.push(listener);
+    if(type === 'sync') {
+      this.syncQueue.on('sync', listener as any);
+    } else {
+      if(type === 'error') {
+        this.syncQueue.on(type, listener as any);
+      }
+
+      const target: Function[] = this.listeners[type];
+      target.push(listener);
+    }
   }
 
   public removeListener(type: Event, listener: Function): any {
-    const target: Function[] = this.listeners[type];
-    const idx = target.findIndex(t => t === listener);
-    target.splice(idx, 1);
+    if(type === 'sync') {
+      this.syncQueue.removeListener(type, listener);
+    } else {
+      if(type === 'error') {
+        this.syncQueue.removeListener(type, listener);
+      }
+
+      const target: Function[] = this.listeners[type];
+      const idx = target.findIndex(t => t === listener);
+      target.splice(idx, 1);
+    }
   }
 
   private handleError(error: DialobError) {
-    if(error instanceof DialobRequestError) {
-      this.listeners.error.forEach(l => l('SYNC', error));
-    } else {
-      this.listeners.error.forEach(l => l('CLIENT', error));
-    }
+    this.listeners.error.forEach(l => l('CLIENT', error));
   }
 };
