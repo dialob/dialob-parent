@@ -430,8 +430,8 @@ test('syncs new actions immediately if an action was queued that needs to be imm
   expect(transport.update).toBeCalledTimes(1);
 
   session.setAnswer('item1', 'second sync');
-  session.setAnswer('item1', 'newest change');
   session.next();
+  session.setAnswer('item1', 'newest change');
 
   jest.advanceTimersByTime(100);
   await flushPromises();
@@ -440,14 +440,14 @@ test('syncs new actions immediately if an action was queued that needs to be imm
     {
       type: 'ANSWER',
       id: 'item1',
-      answer: 'newest change',
+      answer: 'second sync',
     },
     {
       type: 'NEXT',
     },
   ]);
 
-  await verifyUpdates(transport, 2);
+  await verifyUpdates(transport, 3);
 });
 
 test.todo('calls event handlers on state update');

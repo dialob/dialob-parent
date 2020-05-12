@@ -126,7 +126,9 @@ export class SyncQueue {
     
     this.inSync = true;
     const syncedActions = this.syncActionQueue;
+    const syncImmediately = this.syncQueueImmediately;
     this.syncActionQueue = [];
+    this.syncQueueImmediately = false;
     try {
       await this.sync(syncedActions, this.rev);
       this.inSync = false;
@@ -145,6 +147,7 @@ export class SyncQueue {
         this.addToSyncQueue(action);
       }
       this.inSync = false;
+      this.syncQueueImmediately = this.syncQueueImmediately || syncImmediately;
       this.retryCount++;
 
       if(!this.syncTimer) {
