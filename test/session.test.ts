@@ -3,6 +3,16 @@ import { Session, SessionOptions } from '../src/session';
 import { MockTransport } from './mocks/mock-transport';
 
 jest.useFakeTimers();
+
+// https://stackoverflow.com/a/51045733
+const flushPromises = () => new Promise(setImmediate);
+
+async function verifyUpdates(transport: MockTransport, n: number) {
+  jest.runAllTimers();
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(n);
+}
+
 function makeSession(options?: SessionOptions) {
   const transport = new MockTransport();
   transport.update.mockReturnValue({
@@ -10,24 +20,6 @@ function makeSession(options?: SessionOptions) {
   });
   const session = new Session('session.test.ts', transport, options);
   return { transport, session };
-}
-
-function expectUpdates(session: Session, transport: MockTransport, updates: Action[][], onDone: () => void) {
-  let n = -1;
-
-  const listener = (type: any, response: any) => {
-    if(type !== 'DONE' || !response) return;
-    n++;
-    if(n === 0) return;
-
-    expect(transport.update.mock.calls[n - 1][1]).toEqual(updates[n - 1]);
-    if(n === updates.length) {
-      session.removeListener('sync', listener);
-      onDone();
-    }
-  }
-
-  session.on('sync', listener);
 }
 
 test('state is empty on initial session creation', () => {
@@ -226,7 +218,6 @@ test('does not batch an answer to the same item multiple times', async () => {
 });
 
 test('syncs new actions that were queued during previous sync', async () => {
-  expect.assertions(3);
   const { session, transport } = makeSession({ syncWait: 100 });
 
   transport.getFullState.mockReturnValue({
@@ -259,45 +250,47 @@ test('syncs new actions that were queued during previous sync', async () => {
     }, 500);
   }));
 
-  expectUpdates(session, transport, [
-    [
-      {
-        type: 'ANSWER',
-        id: 'item2',
-        answer: 'item2 value',
-      },
-      {
-        type: 'ANSWER',
-        id: 'item1',
-        answer: 'newest value',
-      },
-    ], [
-      {
-        type: 'ANSWER',
-        id: 'item1',
-        answer: 'second sync',
-      }
-    ],
-  ], () => {
-    expect(transport.update).toBeCalledTimes(2);
-  });
-
   await session.pull();
   session.setAnswer('item2', 'item2 value');
   session.setAnswer('item1', 'new value');
   session.setAnswer('item1', 'newest value');
 
   jest.advanceTimersByTime(100);
+  await flushPromises();
+  expect(transport.update.mock.calls[0][1]).toEqual([
+    {
+      type: 'ANSWER',
+      id: 'item2',
+      answer: 'item2 value',
+    },
+    {
+      type: 'ANSWER',
+      id: 'item1',
+      answer: 'newest value',
+    },
+  ]);
+
   session.setAnswer('item1', 'change again');
 
   jest.advanceTimersByTime(200);
+  await flushPromises();
   session.setAnswer('item1', 'second sync');
 
   jest.advanceTimersByTime(200);
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(2);
+  expect(transport.update.mock.calls[1][1]).toEqual([
+    {
+      type: 'ANSWER',
+      id: 'item1',
+      answer: 'second sync',
+    },
+  ]);
+
+  await verifyUpdates(transport, 2);
 });
 
 test('syncs new actions after syncWait if no actions that need to be immediately synced were queued', async () => {
-  expect.assertions(2);
   const { session, transport } = makeSession({ syncWait: 10000 });
 
   transport.getFullState.mockReturnValue({
@@ -322,23 +315,6 @@ test('syncs new actions after syncWait if no actions that need to be immediately
     ],
   });
 
-  expectUpdates(session, transport, [
-    [
-      {
-        type: 'ANSWER',
-        id: 'item2',
-        answer: 'item2 value',
-      },
-      {
-        type: 'ANSWER',
-        id: 'item1',
-        answer: 'newest value',
-      },
-    ],
-  ], () => {
-    expect(transport.update).toBeCalledTimes(1);
-  });
-
   transport.update.mockReturnValue(new Promise(resolve => {
     setTimeout(() => {
       resolve({
@@ -353,16 +329,49 @@ test('syncs new actions after syncWait if no actions that need to be immediately
   session.setAnswer('item1', 'newest value');
 
   jest.advanceTimersByTime(10000);
+  await flushPromises();
+  expect(transport.update.mock.calls[0][1]).toEqual([
+    {
+      type: 'ANSWER',
+      id: 'item2',
+      answer: 'item2 value',
+    },
+    {
+      type: 'ANSWER',
+      id: 'item1',
+      answer: 'newest value',
+    },
+  ]);
+
   session.setAnswer('item1', 'change again');
 
   jest.advanceTimersByTime(50);
+  await flushPromises();
   session.setAnswer('item1', 'second sync');
 
   jest.advanceTimersByTime(1000);
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(1);
+
+  jest.advanceTimersByTime(5000);
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(1);
+
+  jest.advanceTimersByTime(4000);
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(2);
+  expect(transport.update.mock.calls[1][1]).toEqual([
+    {
+      type: 'ANSWER',
+      id: 'item1',
+      answer: 'second sync',
+    }
+  ]);
+
+  await verifyUpdates(transport, 2);
 });
 
 test('syncs new actions immediately if an action was queued that needs to be immediately synced', async () => {
-  expect.assertions(3);
   const { session, transport } = makeSession({ syncWait: 10000 });
 
   transport.getFullState.mockReturnValue({
@@ -387,32 +396,6 @@ test('syncs new actions immediately if an action was queued that needs to be imm
     ],
   });
 
-  expectUpdates(session, transport, [
-    [
-      {
-        type: 'ANSWER',
-        id: 'item2',
-        answer: 'item2 value',
-      },
-      {
-        type: 'ANSWER',
-        id: 'item1',
-        answer: 'newest value',
-      },
-    ], [
-      {
-        type: 'ANSWER',
-        id: 'item1',
-        answer: 'newest change',
-      },
-      {
-        type: 'NEXT',
-      },
-    ],
-  ], () => {
-    expect(transport.update).toBeCalledTimes(2);
-  });
-
   transport.update.mockReturnValue(new Promise(resolve => {
     setTimeout(() => {
       resolve({
@@ -427,14 +410,44 @@ test('syncs new actions immediately if an action was queued that needs to be imm
   session.setAnswer('item1', 'newest value');
 
   jest.advanceTimersByTime(10000);
-  session.setAnswer('item1', 'change again');
+  await flushPromises();
+  expect(transport.update.mock.calls[0][1]).toEqual([
+    {
+      type: 'ANSWER',
+      id: 'item2',
+      answer: 'item2 value',
+    },
+    {
+      type: 'ANSWER',
+      id: 'item1',
+      answer: 'newest value',
+    },
+  ]);
 
+  session.setAnswer('item1', 'change again');
   jest.advanceTimersByTime(50);
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(1);
+
   session.setAnswer('item1', 'second sync');
-  session.next();
   session.setAnswer('item1', 'newest change');
+  session.next();
 
   jest.advanceTimersByTime(100);
+  await flushPromises();
+  expect(transport.update).toBeCalledTimes(2);
+  expect(transport.update.mock.calls[1][1]).toEqual([
+    {
+      type: 'ANSWER',
+      id: 'item1',
+      answer: 'newest change',
+    },
+    {
+      type: 'NEXT',
+    },
+  ]);
+
+  await verifyUpdates(transport, 2);
 });
 
 test.todo('calls event handlers on state update');
