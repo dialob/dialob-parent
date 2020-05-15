@@ -7,6 +7,11 @@ export interface LocaleAction {
   value: string;
 }
 
+export interface SetLocaleAction {
+  type: 'SET_LOCALE';
+  value: string;
+}
+
 export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
 
 interface GenericItemAction<Type extends ItemType, Value, Props extends {}> {
@@ -125,4 +130,4 @@ export interface RemoveErrorAction {
   error: FillError
 }
 
-export type Action = ResetAction | LocaleAction | ItemAction<ItemType> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | GotoAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;
+export type Action = ResetAction | LocaleAction | SetLocaleAction | ItemAction<ItemType> | ValueSetAction | RemoveItemsAction | RemoveValueSetsAction | AnswerAction | PreviousAction | NextAction | GotoAction | CompleteAction | ErrorAction | RemoveErrorAction | DeleteRowAction | AddRowAction;

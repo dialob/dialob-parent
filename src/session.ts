@@ -141,6 +141,8 @@ export class Session {
           // Wait for server response
         } else if (action.type === 'GOTO') {
           // Wait for server response
+        } else if (action.type === 'SET_LOCALE') {
+          // Wait for server response
         } else if(action.type === 'REMOVE_ERROR') {
           const error = action.error;
           const itemErrors = state.errors[error.id];
@@ -184,12 +186,18 @@ export class Session {
     return this.state.locale;
   }
 
+  public setLocale(locale: string) {
+    if (locale !== this.state.locale) {
+      this.queueAction({type: 'SET_LOCALE', value: locale});
+    }
+  }
+
   public isComplete(): boolean {
     return this.state.complete;
   }
 
   /** SYNCING */
-  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS', 'GOTO']);
+  private immediateSync = new Set(['ADD_ROW', 'NEXT', 'PREVIOUS', 'GOTO', 'SET_LOCALE']);
   private queueAction(action: Action) {
     if(this.syncWait === -1) {
       this.applyActions([action]);
