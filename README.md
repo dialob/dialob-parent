@@ -93,3 +93,13 @@ interface SessionOptions {
   syncWait?: number;
 }
 ```
+
+## Compatibility
+This API does not follow the same versioning as Dialob backend. To ensure full compatibility, refer
+to this table. Each row documents a compatibility change, any versions in between can be assumed to
+be compatible with eachother.
+
+| fill-api   | backend  |
+| ---------- | -------- |
+| 1.3.0      | 1.0.8    |
+| 1.0.0      | 1.0.0    |
