@@ -3,8 +3,8 @@ This package provides convenience methods for interacting with Dialob Fill sessi
 
 Components:
 
-- `<Session session={session}/>` where `session` is a session object created through
-`@resys/dialob-fill-api` library.
+- `<Session session={session} locale={locale}/>` where `session` is a session object created through
+`@resys/dialob-fill-api` library and `locale` is optional prop to override filling session locale. Can be changed during filling.
 
 Hooks:
 

@@ -1,5 +1,9 @@
 ## next
 
+## 2.3.0
+### Enhancements
+-  Added optional `locale` prop to `<Session>` component to support overriding session language
+
 ## 2.2.0
 ### Enhancements
 - it's now possible to define which type will be returned from `useFillItem`:
