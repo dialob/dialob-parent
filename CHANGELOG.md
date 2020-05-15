@@ -1,3 +1,6 @@
+# 1.3.0
+* Implemented SET_LOCALE action (`session.setLocale(locale)`)
+
 # 1.2.3
 * Fix bug where an answer could get lost if a sync took a long time
 
