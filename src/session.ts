@@ -33,7 +33,7 @@ export class Session {
   private state: SessionState;
   private syncActionQueue: Action[];
   private syncWait: number;
-  private syncTimer?: number;
+  private syncTimer?: ReturnType<typeof setTimeout>;
 
   private listeners: {
     update: onUpdateFn[],
@@ -223,6 +223,8 @@ export class Session {
   }
 
   private clearDeferredSync() {
+    if(!this.syncTimer) return;
+
     clearTimeout(this.syncTimer);
     this.syncTimer = undefined;
   }
