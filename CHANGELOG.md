@@ -1,4 +1,4 @@
-# next
+# 1.3.1
 * Fixes issue where on a big form sometimes event listeners go out of sync, which for example can
 result in rendering issues when using React
 
