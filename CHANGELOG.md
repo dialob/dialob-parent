@@ -1,5 +1,9 @@
 ## next
 
+## 2.3.0
+### Enhancements
+-  Added optional `locale` prop to `<Session>` component to support overriding session language (Requires Dialob Backend 1.0.8)
+
 ## 2.2.1
 ### Enhancements
 - Package source is included on publish for sourcemaps.
