@@ -62,6 +62,10 @@ export function translateErrorMessage(error) {
       return 'Value type not set';
     case 'TAG_EXISTS':
       return 'Tag already exists';
+    case 'MATCHER_REGEX_SYNTAX_ERROR':
+      return 'Invalid regular expression';
+    case 'MATCHER_DYNAMIC_REGEX':
+      return 'Dynamic regular expressions not supported';
     default:
       return error.get('message');
   };
