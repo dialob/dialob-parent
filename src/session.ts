@@ -366,14 +366,18 @@ export class Session {
   public on(type: 'sync', listener: onSyncFn): void;
   public on(type: 'error', listener: onErrorFn): void;
   public on(type: Event, listener: Function): void {
-    const target: Function[] = this.listeners[type];
-    target.push(listener);
+    this.listeners = produce(this.listeners, listeners => {
+      const target: Function[] = listeners[type];
+      target.push(listener);
+    });
   }
 
   public removeListener(type: Event, listener: Function): any {
-    const target: Function[] = this.listeners[type];
-    const idx = target.findIndex(t => t === listener);
-    target.splice(idx, 1);
+    this.listeners = produce(this.listeners, listeners => {
+      const target: Function[] = listeners[type];
+      const idx = target.findIndex(t => t === listener);
+      target.splice(idx, 1);
+    });
   }
 
   private handleError(error: DialobError) {
