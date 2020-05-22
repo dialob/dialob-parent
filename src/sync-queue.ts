@@ -1,6 +1,7 @@
 import { Action } from './actions';
 import { DialobError } from './error';
 import { DialobResponse, Transport } from './transport';
+import produce from 'immer';
 
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE', response?: DialobResponse) => void;
 export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
@@ -75,14 +76,18 @@ export class SyncQueue {
   public on(type: 'sync', listener: onSyncFn): void;
   public on(type: 'error', listener: onErrorFn): void;
   public on(type: 'sync' | 'error', listener: Function) {
-    const target: Function[] = this.listeners[type];
-    target.push(listener);
+    this.listeners = produce(this.listeners, listeners => {
+      const target: Function[] = listeners[type];
+      target.push(listener);
+    });
   }
 
   public removeListener(type: 'sync' | 'error', listener: Function): any {
-    const target: Function[] = this.listeners[type];
-    const idx = target.findIndex(t => t === listener);
-    target.splice(idx, 1);
+    this.listeners = produce(this.listeners, listeners => {
+      const target: Function[] = listeners[type];
+      const idx = target.findIndex(t => t === listener);
+      target.splice(idx, 1);
+    });
   }
 
   private addToSyncQueue(action: Action): void {

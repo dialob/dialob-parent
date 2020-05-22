@@ -230,8 +230,10 @@ export class Session {
         this.syncQueue.on(type, listener as any);
       }
 
-      const target: Function[] = this.listeners[type];
-      target.push(listener);
+      this.listeners = produce(this.listeners, listeners => {
+        const target: Function[] = listeners[type];
+        target.push(listener);
+      });
     }
   }
 
@@ -243,9 +245,11 @@ export class Session {
         this.syncQueue.removeListener(type, listener);
       }
 
-      const target: Function[] = this.listeners[type];
-      const idx = target.findIndex(t => t === listener);
-      target.splice(idx, 1);
+      this.listeners = produce(this.listeners, listeners => {
+        const target: Function[] = listeners[type];
+        const idx = target.findIndex(t => t === listener);
+        target.splice(idx, 1);
+      });
     }
   }
 
