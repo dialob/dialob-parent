@@ -1,5 +1,9 @@
 ## next
 
+## 2.2.1
+### Enhancements
+- Package source is included on publish for sourcemaps.
+
 ## 2.2.0
 ### Enhancements
 - it's now possible to define which type will be returned from `useFillItem`:
