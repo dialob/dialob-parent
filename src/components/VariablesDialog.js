@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Button, Tab, Table, Dropdown, Input} from 'semantic-ui-react';
+import {Modal, Button, Tab, Table, Dropdown, Input, Icon} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideVariables, createContextVariable, createExpressionVariable, deleteVariable, showChangeId, updateVariable} from '../actions';
 import Immutable from 'immutable';
@@ -19,7 +19,7 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} disabled={readOnly} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => { if (!readOnly) { onIdChange(v.get('name'))}}}>{v.get('name')}</a></Table.Cell>
     <Table.Cell><Dropdown options={CONTEXT_TYPES} value={v.get('contextType')} onChange={(evt, data) => onChangeAttr(v.get('name'), 'contextType', data.value)} /></Table.Cell>
-    <Table.Cell><Input transparent fluid value={v.get('defaultValue') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'defaultValue', e.target.value)}/></Table.Cell>
+    <Table.Cell><Input icon={<Icon name='delete' link onClick={(e) => onChangeAttr(v.get('name'), 'defaultValue', null)}/>} iconPosition='right' transparent fluid value={v.get('defaultValue') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'defaultValue', e.target.value)}/></Table.Cell>
   </Table.Row>);
   return (
     <Tab.Pane>
