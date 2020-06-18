@@ -16,7 +16,8 @@ class PreviewContextDialog extends Component {
             <Input transparent fluid
               placeholder={v.get('defaultValue')}
               value={(this.props.contextValues && this.props.contextValues.get(v.get('name'))) || ''}
-              onChange={(evt) => this.props.setContextValue(v.get('name'), evt.target.value)}/>
+              onChange={(evt) => this.props.setContextValue(v.get('name'), evt.target.value)}
+              icon={<Icon name='delete' link onClick={(e) => this.props.setContextValue(v.get('name'), null)}/>} iconPosition='right'/>
           </Table.Cell>
         </Table.Row>);
       return (
