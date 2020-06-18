@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Button, Table, Input} from 'semantic-ui-react';
+import {Modal, Button, Table, Input, Icon} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hidePreviewContext, setContextValue, createPreviewSession} from '../actions';
 import Immutable from 'immutable';
