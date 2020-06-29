@@ -1,4 +1,6 @@
 ## next
+### Enhancements
+- Added `useFillUpdate()` hook.
 
 ## 2.3.1
 ### Enhancements

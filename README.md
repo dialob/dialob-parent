@@ -11,6 +11,7 @@ Hooks:
 - `useFillSession()` returns the fill API session object
 - `useFillItem(id)` pulls the item and its errors with the given id from the session and keeps it updated
 - `useFillValueSet(id)` pulls the value set with the given id from the session and keeps it updated
+- `useFillUpdate(session => console.log(session.getLocale()))` runs the given callback every time the session updates
 
 ## Install
 ```sh
