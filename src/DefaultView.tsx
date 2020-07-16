@@ -20,21 +20,23 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
   const session = useFillSession();
   const [completed, setCompleted] = useState(session.isComplete());
   const [completeConfirmationOpen, setCompleteConfirmationOpen] = useState(false);
-  const [onCompleteFired, setOnCompleteFired] = useState(false);
 
   useEffect(() => {
-    const listener = () => {
+    const updateListener = () => {
       setCompleted(session.isComplete());
-      if (session.isComplete() && !onCompleteFired) {
-        setOnCompleteFired(true);
-        onComplete && onComplete(session);
+    }
+    const completeListener = (syncState) => {
+      if (syncState === 'DONE' && session.isComplete() && onComplete) {
+        onComplete(session);
       }
     }
-    session.on('update', listener);
+    session.on('update', updateListener);
+    session.on('sync', completeListener);
     return () => {
-      session.removeListener('update', listener);
+      session.removeListener('update', updateListener);
+      session.removeListener('sync', completeListener);
     }
-  }, [session, onCompleteFired]);
+  }, [session]);
 
   let locale: 'en' | 'fi' | 'sv' = 'en';
   const sessionLocale = session.getLocale();
