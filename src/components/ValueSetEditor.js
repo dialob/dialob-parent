@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
-import {Table, Button, Input, Message, Ref, Grid} from 'semantic-ui-react';
+import {Table, Button, Input, Message, Ref} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findValueset} from '../helpers/utils';
-import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, moveValuesetEntry, updateValueSetEntryAttr} from '../actions';
+import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, moveValuesetEntry, updateValueSetEntryAttr, setValuesetEntries} from '../actions';
 import * as Defaults from '../defaults';
 import { translateErrorMessage } from '../helpers/utils';
 import { DragSource, DropTarget } from 'react-dnd'
 import {findDOMNode} from 'react-dom';
 import { DEFAULT_VALUESET_PROPS } from '../defaults';
 import PopupText from './PopupText';
+import {ValuesetUploadDialog} from './ValuesetUploadDialog';
+import FileSaver from 'file-saver';
+import Papa from 'papaparse';
 
 const DropPosition = {
   ABOVE: 0,
@@ -66,7 +69,7 @@ class EntryRow extends Component {
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node); this.node = node;}}>
         <Table.Row key={index} error={entryErrors ? true : false} className={dragClass}>
-          <Table.Cell collapsing>
+          <Table.Cell collapsing textAlign='center'>
             <Button size='tiny' icon='remove' onClick={() => deleteValuesetEntry(valueSetId, index)} />
           </Table.Cell>
           <Table.Cell >
@@ -112,8 +115,23 @@ class ValueSetEditor extends Component {
     return config ? config : [];
   }
 
+  downloadValueSet(valueSet) {
+    const entries = valueSet.get('entries').toJS();
+    const result = [];
+    entries.forEach(e => {
+      let entry = {ID: e.id};
+      for (const lang in e.label) {
+        entry[lang] = e.label[lang];
+      }
+      result.push(entry);
+    });
+    const csv = Papa.unparse(result);
+    const blob = new Blob([csv], {type: 'text/csv'});
+    FileSaver.saveAs(blob, `valueSet.csv`);
+  }
+
   render() {
-      const {deleteValuesetEntry, updateValuesetEntry, valueSetId, language, updateValueSetEntryAttr} = this.props;
+      const {deleteValuesetEntry, updateValuesetEntry, valueSetId, language, updateValueSetEntryAttr, setValuesetEntries} = this.props;
       const dedupe = (item, idx, arr) => arr.indexOf(item) === idx;
       const valueSetPropEditors = this.getValueSetPropEditors();
       const valueSetErrors = this.props.errors &&
@@ -136,8 +154,6 @@ class ValueSetEditor extends Component {
               valueSetPropEditors={valueSetPropEditors}  updateValueSetEntryAttr={updateValueSetEntryAttr}/>)
         : [];
 
-
-
       return (
       <React.Fragment>
         <Table celled attached={errorList || warningList ? 'top' : null}>
@@ -147,7 +163,13 @@ class ValueSetEditor extends Component {
           <colgroup span={3} width={`${100 / (valueSetPropEditors.length + 2)}%`}  />
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => this.props.createValuesetEntry(this.props.getValueset().get('id'))} /></Table.HeaderCell>
+              <Table.HeaderCell collapsing>
+                <Button size='tiny' icon='add' onClick={() => this.props.createValuesetEntry(this.props.getValueset().get('id'))} />
+                <ValuesetUploadDialog entries={this.props.getValueset().get('entries')} setEntries={entries => {
+                  setValuesetEntries(valueSetId, entries);
+                }} />
+                <Button size='tiny' icon='download' onClick={() => this.downloadValueSet(this.props.getValueset())}/>
+              </Table.HeaderCell>
               <Table.HeaderCell>Key</Table.HeaderCell>
               <Table.HeaderCell>Text</Table.HeaderCell>
               {
@@ -178,7 +200,8 @@ const ValueSetEditorConnected = connect(
     updateValuesetEntry,
     deleteValuesetEntry,
     moveValuesetEntry,
-    updateValueSetEntryAttr
+    updateValueSetEntryAttr,
+    setValuesetEntries
   }
 )(ValueSetEditor);
 

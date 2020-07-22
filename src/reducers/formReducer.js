@@ -135,6 +135,17 @@ function newValueSetEntry(state, valueSetId) {
   }
 }
 
+function setValuesetEntries(state, valueSetId, newEntries) {
+  const index = findValuesetIndex(state, valueSetId);
+  if (index === -1) {
+    return state;
+  } else {
+    return state.updateIn(['valueSets', index, 'entries'], entries => {
+      return Immutable.fromJS(newEntries);
+    });
+  }
+}
+
 function updateValuesetEntry(state, valueSetId, index, id, label, language) {
   const vsIndex = findValuesetIndex(state, valueSetId);
   if (vsIndex === -1) {
@@ -326,6 +337,8 @@ export function formReducer(state = INITIAL_STATE, action) {
       return deleteItem(state, action.itemId);
     case Actions.CREATE_VALUESET:
       return newValueSet(state, action.forItem, action.entries);
+    case Actions.SET_VALUESET_ENTRIES:
+      return setValuesetEntries(state, action.valueSetId, action.entries);
     case Actions.CREATE_VALUESET_ENTRY:
       return newValueSetEntry(state, action.valueSetId);
     case Actions.UPDATE_VALUESET_ENTRY:

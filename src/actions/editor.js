@@ -105,6 +105,15 @@ export function createValuesetEntry(valueSetId) {
   };
 }
 
+export function setValuesetEntries(valueSetId, entries) {
+  return {
+    type: Actions.SET_VALUESET_ENTRIES,
+    valueSetId,
+    entries,
+    saveNeeded: true
+  };
+}
+
 export function updateValuesetEntry(valueSetId, index, id, label, language) {
   return {
     type: Actions.UPDATE_VALUESET_ENTRY,
