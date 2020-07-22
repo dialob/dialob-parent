@@ -1,6 +1,8 @@
 # 2.2.0
 
-Upload Valueset entries from CSV file. Click upload button in any valueset editor. CSV file structure:
+Upload and download valueset entries from CSV file.
+
+For upload, click upload button in any valueset editor. CSV file structure:
 
 |ID|en|fi|...|
 |-|-|-|-|
@@ -19,6 +21,8 @@ Upload Valueset entries from CSV file. Click upload button in any valueset edito
 * Order of entries in the file is retained
 * All defined languages are imported, in case form doesn't support a language, value remains hidden.
 * All entry ID-s are imported as is, in case of conflicts or other problems, error messages will be displayed and these are to be resolved by user as normal.
+
+For download, click download button in any valueset editor. Valueset entries are downloaded as CSV file in the same format as described above.
 
 **Following import modes are supported**
 

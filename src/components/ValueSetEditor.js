@@ -10,6 +10,8 @@ import {findDOMNode} from 'react-dom';
 import { DEFAULT_VALUESET_PROPS } from '../defaults';
 import PopupText from './PopupText';
 import {ValuesetUploadDialog} from './ValuesetUploadDialog';
+import FileSaver from 'file-saver';
+import Papa from 'papaparse';
 
 const DropPosition = {
   ABOVE: 0,
@@ -113,6 +115,21 @@ class ValueSetEditor extends Component {
     return config ? config : [];
   }
 
+  downloadValueSet(valueSet) {
+    const entries = valueSet.get('entries').toJS();
+    const result = [];
+    entries.forEach(e => {
+      let entry = {ID: e.id};
+      for (const lang in e.label) {
+        entry[lang] = e.label[lang];
+      }
+      result.push(entry);
+    });
+    const csv = Papa.unparse(result);
+    const blob = new Blob([csv], {type: 'text/csv'});
+    FileSaver.saveAs(blob, `valueSet.csv`);
+  }
+
   render() {
       const {deleteValuesetEntry, updateValuesetEntry, valueSetId, language, updateValueSetEntryAttr, setValuesetEntries} = this.props;
       const dedupe = (item, idx, arr) => arr.indexOf(item) === idx;
@@ -151,6 +168,7 @@ class ValueSetEditor extends Component {
                 <ValuesetUploadDialog entries={this.props.getValueset().get('entries')} setEntries={entries => {
                   setValuesetEntries(valueSetId, entries);
                 }} />
+                <Button size='tiny' icon='download' onClick={() => this.downloadValueSet(this.props.getValueset())}/>
               </Table.HeaderCell>
               <Table.HeaderCell>Key</Table.HeaderCell>
               <Table.HeaderCell>Text</Table.HeaderCell>
