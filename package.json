@@ -1,6 +1,6 @@
 {
   "name": "@resys/dialob-review-material",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Material UI components for Dialob review",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,8 +19,8 @@
   "peerDependencies": {
     "@material-ui/core": "^4.11.*",
     "@material-ui/icons": "^4.9.*",
-    "react-intl": "^5.3.*",
     "moment": "^2.24.*",
+    "react-intl": "^5.3.*",
     "react-markdown": "^4.3.*"
   },
   "devDependencies": {
@@ -28,13 +28,12 @@
     "@material-ui/icons": "^4.9.1",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
+    "moment": "^2.24.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-intl": "^5.3.2",
     "react-markdown": "^4.3.1",
-    "typescript": "^3.9.6",
-    "moment": "^2.24.0"
+    "typescript": "^3.9.6"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
