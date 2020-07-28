@@ -12,7 +12,7 @@ export const Boolean: React.FC<ItemProps> = ({ item, answerId }) => {
 
   return (
     <Item label={dC.getTranslated(item.label)}>
-      <span>{intl.formatMessage({id: answer === true ? 'booleanValue.true': 'booleanValue.false'})}</span>
+      <span>{intl.formatMessage({id: answer === 'true' ? 'booleanValue.true': 'booleanValue.false'})}</span>
     </Item>
   );
 
