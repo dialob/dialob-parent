@@ -270,3 +270,25 @@
   font-size: 12px;
   color: #777;
 }
+
+.composer-md-editor {
+  border: 0;
+  width: 100%;
+  font-family: monospace;
+  resize: none;
+}
+
+.composer-md-editor:focus {
+  outline: none;
+}
+
+.composer-md-editor-toolbar {
+  padding: 3px !important;
+}
+.composer-md-editor-content {
+  padding: 3px !important;
+}
+
+.composer-segment-nopadding {
+  padding: 0px !important;
+}

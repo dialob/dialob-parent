@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {hideTranslation, updateItem, updateValuesetEntry, updateValidation, addLanguage, setActiveLanguage, deleteLanguage} from '../actions';
 import { Understood } from '@resys/understood';
 import * as Defaults from '../defaults';
-import RichEditor from './RichEditor';
+import {MarkdownEditor} from './MarkdownEditor';
 import md_strip_tags from 'remove-markdown';
 
 class LanguageConfigurator extends Component {
@@ -54,9 +54,7 @@ class LanguageConfigurator extends Component {
 const TranslationEditor = ({value, onChange, metadata}) => {
   if (metadata.richText) {
     return (
-      <Segment>
-        <RichEditor active={true} placeholder='&nbsp;' id={`trEdit`} onChange={(v) => onChange(v)} defaultValue={value} zIndex={10000}/>
-      </Segment>
+      <MarkdownEditor onChange={(v) => onChange(v)} value={value} /> 
     );
   } else {
     return (
