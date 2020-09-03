@@ -2,9 +2,9 @@ import React from 'react';
 import {Segment, Table, Icon} from 'semantic-ui-react';
 import Item, {connectItem} from './Item';
 import ItemMenu from '../components/ItemMenu';
-import RichEditor from '../components/RichEditor';
 import classnames from 'classnames';
 import Scrolltarget from './Scrolltarget';
+import { MarkdownEditor } from '../components/MarkdownEditor';
 
 class Note extends Item {
   render() {
@@ -38,8 +38,8 @@ class Note extends Item {
             </Table.Body>
           </Table>
         }
-        <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames({'composer-active': this.props.active})} attached='bottom'>
-          <RichEditor key={editorKey} active={this.props.active} id={editorKey} onChange={(v) => this.setAttribute('label', v, this.props.language)} defaultValue={this.props.item.getIn(['label', this.props.language])} placeholder='Write note text...' />
+        <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames({'composer-active': this.props.active}, 'composer-segment-nopadding')} attached='bottom'>
+          <MarkdownEditor onChange={(v) => this.setAttribute('label', v, this.props.language)} value={this.props.item.getIn(['label', this.props.language])} />
         </Segment>
       </Scrolltarget>
     );
