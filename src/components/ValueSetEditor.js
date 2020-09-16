@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Table, Button, Input, Message, Ref} from 'semantic-ui-react';
+import {Table, Button, Input, Message, Ref, Segment, Icon} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {findValueset} from '../helpers/utils';
 import {createValueset, createValuesetEntry, updateValuesetEntry, deleteValuesetEntry, moveValuesetEntry, updateValueSetEntryAttr, setValuesetEntries} from '../actions';
@@ -12,6 +12,20 @@ import PopupText from './PopupText';
 import {ValuesetUploadDialog} from './ValuesetUploadDialog';
 import FileSaver from 'file-saver';
 import Papa from 'papaparse';
+import {CodeEditor} from './CodeEditor';
+
+const VisibilityEditor = ({attached, valueSetId, entry, updateValueSetEntryAttr}) => {
+  return (
+    <Segment attached={attached}>
+      {!entry ? <i>Please select entry...</i> :
+      <div>
+      <label>Visibility rule for <i>{entry.get('id')}</i>:</label>
+      <CodeEditor active={true} value={entry.get('when') || ''} onChange={value => updateValueSetEntryAttr(valueSetId, entry.get('id'), 'when', value)} placeholder='Visibility'/>
+      </div>
+      }
+    </Segment>
+  );
+};
 
 const DropPosition = {
   ABOVE: 0,
@@ -59,7 +73,7 @@ class EntryRow extends Component {
   }
 
   render() {
-    const {entry, index, valueSetErrors, deleteValuesetEntry, updateValuesetEntry, valueSetId, language, isOver, connectDragSource, connectDropTarget, clientOffset, valueSetPropEditors, updateValueSetEntryAttr} = this.props;
+    const {entry, index, valueSetErrors, deleteValuesetEntry, updateValuesetEntry, valueSetId, language, isOver, connectDragSource, connectDropTarget, clientOffset, valueSetPropEditors, updateValueSetEntryAttr, active, setActiveItem} = this.props;
     const entryErrors = valueSetErrors && valueSetErrors.find(e => e.get('index') === index || e.get('expression') === entry.get('id'));
     let dragClass = null;
     if (isOver) {
@@ -68,9 +82,10 @@ class EntryRow extends Component {
     }
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node); this.node = node;}}>
-        <Table.Row key={index} error={entryErrors ? true : false} className={dragClass}>
+        <Table.Row key={index} error={entryErrors ? true : false} className={dragClass} active={active} onClick={() => setActiveItem(entry.get('id'))}>
           <Table.Cell collapsing textAlign='center'>
             <Button size='tiny' icon='remove' onClick={() => deleteValuesetEntry(valueSetId, index)} />
+            <Icon name='eye' disabled={!entry.get('when')}/>
           </Table.Cell>
           <Table.Cell >
               <Input transparent fluid value={entry.get('id') || ''} onChange={(e) => updateValuesetEntry(valueSetId, index, e.target.value, null, null)} />
@@ -104,6 +119,9 @@ class ValueSetEditor extends Component {
   constructor(props) {
     super(props);
     this.moveEntry = this.moveVSEntry.bind(this);
+    this.state = {
+      activeItem: null
+    };
   }
 
   moveVSEntry(from, to) {
@@ -147,16 +165,22 @@ class ValueSetEditor extends Component {
                 <Message attached='bottom' warning header='Warnings'
                     list={errors.get('WARNING').map(e => translateErrorMessage(e)).toJS().filter(dedupe)} />;
 
+      const setActiveItem = (itemId) => {
+        this.setState({activeItem: itemId});
+      }
+
       const rows = this.props.getValueset().get('entries')
         ? this.props.getValueset().get('entries').map((e, i) =>
            <DraggableEntryRow key={i} entry={e} moveEntry={this.moveEntry} index={i} valueSetErrors={valueSetErrors}
               deleteValuesetEntry={deleteValuesetEntry} updateValuesetEntry={updateValuesetEntry} valueSetId={valueSetId} language={language}
-              valueSetPropEditors={valueSetPropEditors}  updateValueSetEntryAttr={updateValueSetEntryAttr}/>)
+              valueSetPropEditors={valueSetPropEditors}  updateValueSetEntryAttr={updateValueSetEntryAttr} active={this.state.activeItem === e.get('id')} setActiveItem={setActiveItem}/>)
         : [];
+
+      const activeEntry = this.props.getValueset().get('entries').find(e => e.get('id') === this.state.activeItem);
 
       return (
       <React.Fragment>
-        <Table celled attached={errorList || warningList ? 'top' : null}>
+        <Table celled attached='top'>
           <colgroup>
             <col width={1} />
           </colgroup>
@@ -181,6 +205,7 @@ class ValueSetEditor extends Component {
             {rows}
           </Table.Body>
         </Table>
+        <VisibilityEditor attached={errors ? true : 'bottom'} valueSetId={valueSetId} entry={activeEntry} updateValueSetEntryAttr={updateValueSetEntryAttr}/>
         {errorList}
         {warningList}
       </React.Fragment>
