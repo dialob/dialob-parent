@@ -13,14 +13,16 @@ import {ValuesetUploadDialog} from './ValuesetUploadDialog';
 import FileSaver from 'file-saver';
 import Papa from 'papaparse';
 import {CodeEditor} from './CodeEditor';
+import Immutable from 'immutable';
 
-const VisibilityEditor = ({attached, valueSetId, entry, updateValueSetEntryAttr}) => {
+const VisibilityEditor = ({attached, valueSetId, entry, updateValueSetEntryAttr, valueSetErrors}) => {
+  const entryErrors = entry ? valueSetErrors && valueSetErrors.find(e => e.get('index') === index || e.get('expression') === entry.get('id')).filter(e => e.type === 'VALUESET_ENTRY_WHEN') :  new Immutable.List([]);
   return (
     <Segment attached={attached}>
       {!entry ? <i>Please select entry...</i> :
       <div>
       <label>Visibility rule for <i>{entry.get('id')}</i>:</label>
-      <CodeEditor active={true} value={entry.get('when') || ''} onChange={value => updateValueSetEntryAttr(valueSetId, entry.get('id'), 'when', value)} placeholder='Visibility'/>
+      <CodeEditor active={true} value={entry.get('when') || ''} onChange={value => updateValueSetEntryAttr(valueSetId, entry.get('id'), 'when', value)} placeholder='Visibility' errors={entryErrors}/>
       </div>
       }
     </Segment>
@@ -205,7 +207,7 @@ class ValueSetEditor extends Component {
             {rows}
           </Table.Body>
         </Table>
-        <VisibilityEditor attached={errors ? true : 'bottom'} valueSetId={valueSetId} entry={activeEntry} updateValueSetEntryAttr={updateValueSetEntryAttr}/>
+        <VisibilityEditor attached={errors ? true : 'bottom'} valueSetId={valueSetId} entry={activeEntry} updateValueSetEntryAttr={updateValueSetEntryAttr} valueSetErrors={valueSetErrors}/>
         {errorList}
         {warningList}
       </React.Fragment>
