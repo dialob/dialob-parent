@@ -27,6 +27,10 @@ export function translateErrorType(error) {
       return 'Requirement';
     case 'VALIDATION':
       return 'Validation';
+    case 'VALUESET':
+      return 'List';
+    case 'VALUESET_ENTRY':
+      return 'Liet entry';
     default:
       return error.get('type');
   };
