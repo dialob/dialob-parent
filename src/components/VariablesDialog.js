@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Button, Tab, Table, Dropdown, Input, Icon} from 'semantic-ui-react';
+import {Modal, Button, Tab, Table, Dropdown, Input, Icon, Checkbox} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {hideVariables, createContextVariable, createExpressionVariable, deleteVariable, showChangeId, updateVariable} from '../actions';
 import Immutable from 'immutable';
@@ -17,9 +17,10 @@ const CONTEXT_TYPES = [
 const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors, readOnly}) => {
   const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} disabled={readOnly} /></Table.Cell>
+    <Table.Cell collapsing textAlign='center' verticalAlign='middle'><Checkbox checked={v.get('published')} onChange={((e, {checked}) => onChangeAttr(v.get('name'), 'published', checked))} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => { if (!readOnly) { onIdChange(v.get('name'))}}}>{v.get('name')}</a></Table.Cell>
     <Table.Cell><Dropdown options={CONTEXT_TYPES} value={v.get('contextType')} onChange={(evt, data) => onChangeAttr(v.get('name'), 'contextType', data.value)} /></Table.Cell>
-    <Table.Cell><Input icon={<Icon name='delete' link onClick={(e) => onChangeAttr(v.get('name'), 'defaultValue', null)}/>} iconPosition='right' transparent fluid value={v.get('defaultValue') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'defaultValue', e.target.value)}/></Table.Cell>
+    <Table.Cell><Input icon={<Icon name='delete' link onClick={(e) => onChangeAttr(v.get('name'), 'defaultValue', null)}/>} transparent fluid value={v.get('defaultValue') || ''} onChange={(e) => onChangeAttr(v.get('name'), 'defaultValue', e.target.value)}/></Table.Cell>
   </Table.Row>);
   return (
     <Tab.Pane>
@@ -27,6 +28,7 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => onCreate()} disabled={readOnly}/></Table.HeaderCell>
+            <Table.HeaderCell collapsing>Published</Table.HeaderCell>
             <Table.HeaderCell>ID</Table.HeaderCell>
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>Default value</Table.HeaderCell>
@@ -43,6 +45,7 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
 const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors, readOnly}) => {
   const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} disabled={readOnly}/></Table.Cell>
+    <Table.Cell collapsing collapsing textAlign='center' verticalAlign='middle'><Checkbox checked={v.get('published')} onChange={((e, {checked}) => onChangeAttr(v.get('name'), 'published', checked))} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => { if (!readOnly) { onIdChange(v.get('name'))}}}>{v.get('name')}</a></Table.Cell>
     <Table.Cell>
       <CodeEditor value={v.get('expression') || ''} onChange={(value) => onChangeAttr(v.get('name'), 'expression', value)} readOnly={readOnly} errors={getErrors(v.get('name'))}/>
@@ -54,6 +57,7 @@ const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, g
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell collapsing><Button size='tiny' icon='add' onClick={() => onCreate()} /></Table.HeaderCell>
+            <Table.HeaderCell collapsing>Published</Table.HeaderCell>
             <Table.HeaderCell>ID</Table.HeaderCell>
             <Table.HeaderCell>Expression</Table.HeaderCell>
           </Table.Row>
