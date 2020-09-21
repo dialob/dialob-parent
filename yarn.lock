@@ -177,10 +177,10 @@
   dependencies:
     immer "^3.1.2"
 
-"@resys/dialob-fill-react@2.3.1":
-  version "2.3.1"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-react/-/dialob-fill-react-2.3.1.tgz#c3b293092f27bc113e3e1bcda24d88de32764d90"
-  integrity sha512-wEJ2VggAzQNLnvOTPRKMvmuuMF2n37nDQ5d8t+P0VMtNsBQbyFTBEQ0x/FRK7ty3UuqzBXUl2tZlGksWW0CBLA==
+"@resys/dialob-fill-react@^2.4.1":
+  version "2.4.1"
+  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-react/-/dialob-fill-react-2.4.1.tgz#1282f89f96af1894c582a42de2b67e0ba69d28b6"
+  integrity sha512-UMAH2Yb7c9pHJzgTerlxPtzix1Brq05mSqnqdDeguDh4kGI1DE2GiVhwHB/CC3X2kqsfDm5G686020Pq61NpUQ==
 
 "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"
