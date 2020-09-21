@@ -1,3 +1,15 @@
+# 2.4.0
+
+Requires Dialob Backend v. 1.0.11 or newer
+
+### Valueset entry visibility rule editing.
+
+Click on valueset entry to see its visibility rule expression below the entry list.
+
+### Context and Expression Variable publish control
+
+Expression and Context variables have checkbox for publish control. When checkbox is checked, variable value is communicated to filling side. 
+
 # 2.3.0
 
 Upload and download valueset entries from CSV file.
