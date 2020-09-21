@@ -18,8 +18,9 @@ class ErrorList extends Component {
   }
 
   resolveItemId(error) {
-    if (error.get(0).get('message').startsWith('VALUESET_')) {
-      const item = this.props.items.find(i => i.get('valueSetId') === error.get(0).get('itemId'));
+    if (error.get(0).get('type').startsWith('VALUESET')) {
+      const [valueSetId] = error.get(0).get('itemId').split(':', 2);
+      const item = this.props.items.find(i => i.get('valueSetId') === valueSetId);
       if (item) { 
         return item.get('id');
       } else {
@@ -34,7 +35,7 @@ class ErrorList extends Component {
       this.props.showVariables();
     } else if (itemId) {
       this.props.setActiveItem(itemId);
-    } else if (!itemId && error.getIn([0, 'message']).startsWith('VALUESET_')) {
+    } else if (!itemId && error.getIn([0, 'type']).startsWith('VALUESET')) {
       this.props.showValueSets();
     }
   }

@@ -15,9 +15,9 @@ import Papa from 'papaparse';
 import {CodeEditor} from './CodeEditor';
 import Immutable from 'immutable';
 
-const VisibilityEditor = ({attached, valueSetId, entry, updateValueSetEntryAttr, valueSetErrors}) => {
-  const entryErrors = entry ? valueSetErrors && valueSetErrors.find(e => e.get('index') === index || e.get('expression') === entry.get('id')).filter(e => e.type === 'VALUESET_ENTRY_WHEN') :  new Immutable.List([]);
-  return (
+const VisibilityEditor = ({attached, valueSetId, entry, updateValueSetEntryAttr, valueSetErrors, index}) => {
+ const  entryErrors = entry ? valueSetErrors && valueSetErrors.filter(e => e.get('index') === index && e.get('tyoe') === 'VALUESET_ENTRY') :  new Immutable.List([]);
+ return (
     <Segment attached={attached}>
       {!entry ? <i>Please select entry...</i> :
       <div>
@@ -84,7 +84,7 @@ class EntryRow extends Component {
     }
     return (
       <Ref innerRef={node => {connectDropTarget(node); connectDragSource(node); this.node = node;}}>
-        <Table.Row key={index} error={entryErrors ? true : false} className={dragClass} active={active} onClick={() => setActiveItem(entry.get('id'))}>
+        <Table.Row key={index} error={entryErrors ? true : false} className={dragClass} active={active} onClick={() => setActiveItem(index)}>
           <Table.Cell collapsing textAlign='center'>
             <Button size='tiny' icon='remove' onClick={() => deleteValuesetEntry(valueSetId, index)} />
             <Icon name='eye' disabled={!entry.get('when')}/>
@@ -156,7 +156,10 @@ class ValueSetEditor extends Component {
       const valueSetPropEditors = this.getValueSetPropEditors();
       const valueSetErrors = this.props.errors &&
           this.props.errors
-            .filter(e => e.get('message').startsWith('VALUESET_') && e.get('itemId') === valueSetId);
+            .filter(e => {
+              const [vsId] = e.get('itemId').split(':', 2);
+              return e.get('type').startsWith('VALUESET') && vsId === valueSetId}
+            );
       const errors = valueSetErrors && valueSetErrors.groupBy(e => e.get('level'));
 
       const errorList = errors && errors.get('ERROR') &&
@@ -167,18 +170,18 @@ class ValueSetEditor extends Component {
                 <Message attached='bottom' warning header='Warnings'
                     list={errors.get('WARNING').map(e => translateErrorMessage(e)).toJS().filter(dedupe)} />;
 
-      const setActiveItem = (itemId) => {
-        this.setState({activeItem: itemId});
+      const setActiveItem = (activeItemIndex) => {
+        this.setState({activeItem: activeItemIndex});
       }
 
       const rows = this.props.getValueset().get('entries')
         ? this.props.getValueset().get('entries').map((e, i) =>
            <DraggableEntryRow key={i} entry={e} moveEntry={this.moveEntry} index={i} valueSetErrors={valueSetErrors}
               deleteValuesetEntry={deleteValuesetEntry} updateValuesetEntry={updateValuesetEntry} valueSetId={valueSetId} language={language}
-              valueSetPropEditors={valueSetPropEditors}  updateValueSetEntryAttr={updateValueSetEntryAttr} active={this.state.activeItem === e.get('id')} setActiveItem={setActiveItem}/>)
+              valueSetPropEditors={valueSetPropEditors}  updateValueSetEntryAttr={updateValueSetEntryAttr} active={this.state.activeItem === i} setActiveItem={setActiveItem}/>)
         : [];
 
-      const activeEntry = this.props.getValueset().get('entries').find(e => e.get('id') === this.state.activeItem);
+      const activeEntry = this.props.getValueset().get('entries') && this.props.getValueset().get('entries').get(this.state.activeItem);
 
       return (
       <React.Fragment>
@@ -207,7 +210,7 @@ class ValueSetEditor extends Component {
             {rows}
           </Table.Body>
         </Table>
-        <VisibilityEditor attached={errors ? true : 'bottom'} valueSetId={valueSetId} entry={activeEntry} updateValueSetEntryAttr={updateValueSetEntryAttr} valueSetErrors={valueSetErrors}/>
+        <VisibilityEditor attached={errors ? true : 'bottom'} valueSetId={valueSetId} entry={activeEntry} updateValueSetEntryAttr={updateValueSetEntryAttr} valueSetErrors={valueSetErrors} index={this.state.activeItem}/>
         {errorList}
         {warningList}
       </React.Fragment>
