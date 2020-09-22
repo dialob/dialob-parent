@@ -3,4 +3,5 @@ export { useFillItem } from './hooks/useFillItem';
 export { useFillSession } from './hooks/useFillSession';
 export { useFillUpdate } from './hooks/useFillUpdate';
 export { useFillValueSet } from './hooks/useFillValueSet';
+export { useFillVariable } from './hooks/useFillVariable';
 export { Session, SessionProps } from './Session';
