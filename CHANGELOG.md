@@ -1,4 +1,7 @@
 ## next
+
+## 2.5.0
+### Enhancements
 - Added `useFillVariable()` hook.
 
 ## 2.4.1
