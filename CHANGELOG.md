@@ -1,3 +1,6 @@
+# next
+* Handle incoming context and expression variable value ITEM messages, make them available from `session.getVariable('id')`.
+
 # 1.3.1
 * Fixes issue where on a big form sometimes event listeners go out of sync, which for example can
 result in rendering issues when using React

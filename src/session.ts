@@ -15,6 +15,9 @@ export interface SessionState {
   locale?: string;
   rev: number;
   complete: boolean;
+  variables: {
+    [id: string]: any;
+  }
 };
 
 export type onUpdateFn = () => void;
@@ -55,6 +58,7 @@ export class Session {
       errors: {},
       rev: 0,
       complete: false,
+      variables: {}
     };
     this.syncActionQueue = [];
 
@@ -97,10 +101,15 @@ export class Session {
           answer.value = action.answer;
         } else if(action.type === 'ITEM') {
           const item = action.item;
-          state.items[item.id] = item;
 
-          if('items' in item && item.items) {
-            this.insertReverseRef(state, item.id, item.items);
+          if (action.item.type === 'context' || action.item.type === 'variable') {
+            this.state.variables[action.item.id] = action.item.value;
+          } else {
+            state.items[item.id] = item;
+
+            if('items' in item && item.items) {
+              this.insertReverseRef(state, item.id, item.items);
+            }
           }
         } else if(action.type === 'ERROR') {
           const error = action.error;
@@ -190,6 +199,10 @@ export class Session {
     if (locale !== this.state.locale) {
       this.queueAction({type: 'SET_LOCALE', value: locale});
     }
+  }
+  
+  public getVariable(id: string): any {
+    return this.state.variables[id];
   }
 
   public isComplete(): boolean {

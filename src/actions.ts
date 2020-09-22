@@ -12,7 +12,7 @@ export interface SetLocaleAction {
   value: string;
 }
 
-export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
+export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup' | 'context' | 'variable';
 
 interface GenericItemAction<Type extends ItemType, Value, Props extends {}> {
   type: 'ITEM';
@@ -59,6 +59,8 @@ export type ItemAction<T extends ItemType, Props extends {} = { [name: string]: 
   | IsType<T, K, 'decimal', number, Props>
   | IsType<T, K, 'row', undefined, Props>
   | IsType<T, K, 'rowgroup', undefined, Props>
+  | IsType<T, K, 'context', any, Props>
+  | IsType<T, K, 'variable', any, Props>
 ;
 
 export interface ValueSetAction {
