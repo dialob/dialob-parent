@@ -1,4 +1,6 @@
 # next
+
+# 1.4.0
 * Handle incoming context and expression variable value ITEM messages, make them available from `session.getVariable('id')`.
 
 # 1.3.1
