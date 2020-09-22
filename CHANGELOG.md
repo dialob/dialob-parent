@@ -1,4 +1,5 @@
 ## next
+- Added `useFillVariable()` hook.
 
 ## 2.4.1
 ### Enhancements

@@ -12,6 +12,7 @@ Hooks:
 - `useFillItem(id)` pulls the item and its errors with the given id from the session and keeps it updated
 - `useFillValueSet(id)` pulls the value set with the given id from the session and keeps it updated
 - `useFillUpdate(session => console.log(session.getLocale()))` runs the given callback every time the session updates
+- `useFillVariable(id)` pulls the value of the context or expression variable with the given id from the session and keeps it updated. Result can be undefined if variable value is not known.
 
 ## Install
 ```sh
