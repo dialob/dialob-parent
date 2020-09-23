@@ -104,5 +104,6 @@ be compatible with eachother.
 
 | fill-api   | backend  |
 | ---------- | -------- |
+| 1.4.0      | 1.0.11   |
 | 1.3.0      | 1.0.8    |
 | 1.0.0      | 1.0.0    |
