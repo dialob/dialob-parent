@@ -1,4 +1,5 @@
 # next
+* Package is built with CommonJS module target
 
 # 1.4.0
 * Handle incoming context and expression variable value ITEM messages, make them available from `session.getVariable('id')`.
