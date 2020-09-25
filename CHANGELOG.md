@@ -1,4 +1,5 @@
 ## next
+- Package is built with CommonJS module target
 
 ## 2.5.0
 ### Enhancements
