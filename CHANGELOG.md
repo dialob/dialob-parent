@@ -1,3 +1,5 @@
+## next
+
 ## 2.5.1
 ### Other
 - Package is built with CommonJS module target
