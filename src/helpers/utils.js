@@ -70,6 +70,17 @@ export function translateErrorMessage(error) {
       return 'Invalid regular expression';
     case 'MATCHER_DYNAMIC_REGEX':
       return 'Dynamic regular expressions not supported';
+    case 'REDUCER_TARGET_MUST_BE_REFERENCE':
+      return 'Multirow aggregate function target must be directly multirow item';
+    case 'CANNOT_USE_REDUCER_INSIDE_SCOPE':
+      return 'Multirow aggregate function can\'t be used for non-multirow item';
+    case 'UNKNOWN_REDUCER_OPERATOR':
+      return 'Unknown multirow aggregate function';
+    case 'OPERATOR_CANNOT_REDUCE_TYPE':
+      return 'This aggregate function can\'t be used for this item type';
+    case 'UNKNOWN_FUNCTION':
+      return 'Undefined function';
+
     default:
       return error.get('message');
   };
