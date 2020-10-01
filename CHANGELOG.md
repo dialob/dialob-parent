@@ -1,3 +1,7 @@
+# Next
+
+Added error message texts related to multirow aggregate functions
+
 # 2.4.0
 
 Requires Dialob Backend v. 1.0.11 or newer
