@@ -2,6 +2,8 @@
 
 Added error message texts related to multirow aggregate functions
 
+Added Form option to set all answers required
+
 # 2.4.0
 
 Requires Dialob Backend v. 1.0.11 or newer

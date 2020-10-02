@@ -70,6 +70,17 @@ const OptionsPane = ({metadata, onChange}) => {
             <p>{visibiltyModeDescriptions[visibilityMode]}</p>
           </Message>
         </Form.Field>
+        <Form.Field>
+          <Form.Checkbox label='All answers required by default' checked={metadata.get('answersRequiredByDefault')} onChange={(_, data) => onChange('answersRequiredByDefault', data.checked)} />
+          <Message>
+            <p>
+            { metadata.get('answersRequiredByDefault') ?
+              <span>Return <strong>false</strong> from requirement rule to make answer not required.</span>
+            : <span>Return <strong>true</strong> from requirement rule to make answer required.</span>
+              }
+            </p>
+          </Message>
+        </Form.Field>
       </Form>
     </Tab.Pane>
   );
