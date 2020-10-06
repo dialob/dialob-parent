@@ -25,7 +25,14 @@ export const RESERVED_WORDS = [
   'answer',
   'is',
   'lengthOf',
-  'valid'
+  'valid',
+  'count',
+  'of',
+  'sum',
+  'min',
+  'max',
+  'any',
+  'all'
 ];
 
 export const VALID_ID_PATTERN = /^[a-zA-Z][_a-zA-Z\d]*$/;
