@@ -26,6 +26,24 @@ We also can't change the `useFillSession()` hook to just always auto-update. Thi
 
 For those reasons, the `useFillActions()` hook was chosen. It can stay constant across renders (i.e. it won't trigger React updates), and for any other case where data is required from the session, the appropriate hooks should be used. These hooks can properly track changes to the specific properties of the session, enabling efficient updates.
 
+Example usage of `useFillActions()`:
+
+```jsx
+const { setAnswer, next, previous } = useFillActions();
+setAnswer('itemId', 'new value');
+next();
+previous();
+```
+
+or:
+
+```jsx
+const fillActions = useFillActions();
+fillActions.setAnswer('itemId', 'new value');
+fillActions.next();
+fillActions.previous();
+```
+
 ## 2.5.1
 ### Other
 - Package is built with CommonJS module target
