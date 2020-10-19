@@ -1,4 +1,6 @@
-# next
+## next
+
+# 2.6.0
 ### Enhancements
 - `useFillLocale()` hook has been added
 
