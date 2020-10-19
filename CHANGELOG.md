@@ -1,4 +1,6 @@
 ## next
+
+## 2.6.2
 ### Bug fixes
 - Actually expose `useFillLocale()`
 
