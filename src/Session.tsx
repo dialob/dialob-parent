@@ -1,5 +1,5 @@
 import { Session as DialobSession } from '@resys/dialob-fill-api';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { SessionContext } from './context/sessionContext';
 
 export interface SessionProps {
@@ -15,10 +15,24 @@ export const Session: React.FC<SessionProps> = ({ session, children, locale }) =
     if (locale) {
       session.setLocale(locale);
     }
-  }, [locale])
+  }, [locale]);
+
+  const actions = useMemo(() => {
+    return {
+      setAnswer: session.setAnswer.bind(session),
+      addRowToGroup: session.addRowToGroup.bind(session),
+      deleteRow: session.deleteRow.bind(session),
+      complete: session.complete.bind(session),
+      next: session.next.bind(session),
+      previous: session.previous.bind(session),
+      goToPage: session.goToPage.bind(session),
+      on: session.on.bind(session),
+      removeListener: session.removeListener.bind(session),
+    };
+  }, [session]);
 
   return (
-    <SessionContext.Provider value={session}>
+    <SessionContext.Provider value={{ session, actions }}>
       {children}
     </SessionContext.Provider>
   );

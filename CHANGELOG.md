@@ -1,4 +1,6 @@
 ## next
+### Enhancements
+- Avoid creation of session actions on every function invocation.
 
 ## 2.6.2
 ### Bug fixes
