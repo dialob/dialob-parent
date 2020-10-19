@@ -1,4 +1,6 @@
 ## next
+### Bug fixes
+- Actually expose `useFillActions()`
 
 # 2.6.0
 ### Enhancements

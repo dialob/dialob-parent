@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { SessionContext } from '../context/sessionContext';
 
-export function useFillSession() {
+export function useFillActions() {
   const context = useContext(SessionContext);
   return {
     setAnswer: context.setAnswer,
