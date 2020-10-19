@@ -25,7 +25,7 @@ yarn add @resys/dialob-fill-react @resys/dialob-fill-api
 ```jsx
 import React, { useMemo } from 'react';
 import DialobFill from '@resys/dialob-fill-api';
-import { Session, useFillItem, useFillSession, useFillValueSet } from '@resys/dialob-fill-react';
+import { Session, useFillActions, useFillItem, useFillValueSet } from '@resys/dialob-fill-react';
 
 const App = () => {
   const session = useMemo(() => {
@@ -113,7 +113,7 @@ const SurveyGroup = ({ item }) => {
 
 const Survey = ({ id, valueSet }) => {
   const { item } = useFillItem(id);
-  const session = useFillSession();
+  const { setAnswer } = useFillActions();
   if(!item) return null;
 
   return (
@@ -122,7 +122,7 @@ const Survey = ({ id, valueSet }) => {
       {valueSet.entries.map(entry => (
         <td key={entry.key}>
           <input
-            onChange={e => session.setAnswer(item.id, e.currentTarget.value)}
+            onChange={e => setAnswer(item.id, e.currentTarget.value)}
             type='checkbox'
             checked={entry.value}
           />
