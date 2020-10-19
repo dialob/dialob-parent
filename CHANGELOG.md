@@ -1,4 +1,20 @@
-## next
+# next
+### Enhancements
+- `useFillLocale()` hook has been added
+
+### Deprecations
+- `useFillSession()` has been deprecated and replaced with `useFillActions()`. `useFillActions()` exposes only functions that can modify the session, but does not expose any functions that can query data from the session. This is to avoid any accidental mistakes, for example:
+
+```jsx
+const session = useFillSession();
+return <SomeItem language={session.getLocale()}>;
+```
+
+The issue with this is that this item won't automatically render when the session's locale changes. It's extremely rare that this sort of non-updating behaviour is required - instead, you'd normally expect the value returned from the hook to auto-update.
+
+We also can't change the `useFillSession()` hook to just always auto-update. This could too easily create cascading updates in the React tree, making each change possibly laggy.
+
+For those reasons, the `useFillActions()` hook was chosen. It can stay constant across renders (i.e. it won't trigger React updates), and for any other case where data is required from the session, the appropriate hooks should be used. These hooks can properly track changes to the specific properties of the session, enabling efficient updates.
 
 ## 2.5.1
 ### Other
