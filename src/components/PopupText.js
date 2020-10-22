@@ -6,6 +6,16 @@ const PopupText = ({value, onChange}) => {
 
   return (
     <Popup on='click' basic flowing
+      popperModifiers={[ // This is workaround for https://github.com/Semantic-Org/Semantic-UI-React/issues/4083
+        {
+          name: 'zIndex',
+          enabled: true,
+          phase: 'write',
+          fn: ({state}) => {
+            state.styles.popper.zIndex = 999999;
+          }
+        }
+      ]}
       open={open}
       onOpen={() => setOpen(true)}
       trigger={
