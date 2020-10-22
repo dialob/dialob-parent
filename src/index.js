@@ -8,6 +8,7 @@ import Group from './items/Group';
 import ItemMenu from './components/ItemMenu';
 import * as DialobActions from './actions/editor';
 import * as PropEditors from './components/propEditors/';
+import { MarkdownEditor } from './components/MarkdownEditor';
 
 export {
   DialobComposer,
@@ -22,5 +23,6 @@ export {
   connectItem,
   ItemMenu,
   DialobActions,
-  PropEditors
+  PropEditors,
+  MarkdownEditor
 };

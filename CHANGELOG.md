@@ -1,3 +1,7 @@
+# 2.5.1
+
+Export `MarkdownEditor` component
+
 # 2.5.0
 
 Requires Dialob Backend v. 1.0.12 or newer
