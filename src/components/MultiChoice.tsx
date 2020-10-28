@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession, useFillValueSet } from '@resys/dialob-fill-react';
+import { useFillActions, useFillValueSet } from '@resys/dialob-fill-react';
 import React from 'react';
 import { FormControl, Checkbox,  FormLabel, FormGroup, FormControlLabel } from '@material-ui/core';
 import { ErrorHelperText } from './helpers';
@@ -10,7 +10,7 @@ export interface MultiChoiceProps {
   errors: SessionError[];
 };
 export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors }) => {
-  const session = useFillSession();
+  const {setAnswer} = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const currentValue: string[] = multichoice.value || [];
 
@@ -22,9 +22,9 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
         <FormControlLabel key={entry.key}
           control={<Checkbox checked={isSelected} onChange={() => {
             if (isSelected) {
-              session.setAnswer(multichoice.id, currentValue.filter(v => v !== entry.key));
+              setAnswer(multichoice.id, currentValue.filter(v => v !== entry.key));
             } else {
-              session.setAnswer(multichoice.id, [...currentValue, entry.key]);
+              setAnswer(multichoice.id, [...currentValue, entry.key]);
             }
           }}
             value={entry.key} />}

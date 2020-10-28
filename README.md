@@ -14,7 +14,9 @@ Following peer dependencies need to be installed:
 
 ```json
 {
-  "@material-ui/core": "^4.10.*",
+  "@resys/dialob-fill-api": "^1.4.*",
+  "@resys/dialob-fill-react": "^2.6.*",
+  "@material-ui/core": "^4.11.*",
   "@material-ui/icons": "^4.9.*",
   "@material-ui/lab": "^4.0.*",
   "@material-ui/pickers": "^3.2.*",
@@ -73,12 +75,13 @@ Following components are exported
 * `<Text>` Text field
 * `<TextBox>` Multi-line text field
 * `<TimeField>` Time field
+* `<SurveyGroup>` Survey group
+* `<Survey>` Survey item. NB! Survey item shouldn't be directly created, it is created by SurveyGroup.
+* `<GroupContext>` Group context provider
 
 (This needs improvement)
 
 ### Missing features
 
-* Survey / survey group
-* onComplete event handling
 * Network / service error handling
 * Default `<Item>` implementation for convenience

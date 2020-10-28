@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions } from '@resys/dialob-fill-react';
 import React from 'react';
 import {DatePicker} from '@material-ui/pickers';
 import moment from 'moment';
@@ -11,9 +11,9 @@ export interface DateFieldProps {
   errors: SessionError[];
 };
 export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
-  const session = useFillSession();
+  const {setAnswer} = useFillActions();
   const handleChange = (value: any) => {
-    session.setAnswer(datefield.id, (value as moment.Moment).format('YYYY-MM-DD'));
+    setAnswer(datefield.id, (value as moment.Moment).format('YYYY-MM-DD'));
   }
   const value = datefield.value ? datefield.value as string : null;
   return (

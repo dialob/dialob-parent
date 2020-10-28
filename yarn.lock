@@ -76,10 +76,10 @@
   dependencies:
     emojis-list "^3.0.0"
 
-"@material-ui/core@^4.10.2":
-  version "4.10.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.10.2.tgz#0ef78572132fcef1a25f6969bce0d34652d42e31"
-  integrity sha512-Uf4iDLi9sW6HKbVQDyDZDr1nMR4RUAE7w/RIIJZGNVZResC0xwmpLRZMtaUdSO43N0R0yJehfxTi4Z461Cd49A==
+"@material-ui/core@^4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.0.tgz#b69b26e4553c9e53f2bfaf1053e216a0af9be15a"
+  integrity sha512-bYo9uIub8wGhZySHqLQ833zi4ZML+XCBE1XwJ8EuUVSpTWWG57Pm+YugQToJNFsEyiKFhPh8DPD0bgupz8n01g==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@material-ui/styles" "^4.10.0"
@@ -170,17 +170,17 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@resys/dialob-fill-api@^1.3.1":
-  version "1.3.1"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-api/-/dialob-fill-api-1.3.1.tgz#aacb56ad2ac9bc392f7481fabfd089602546610e"
-  integrity sha512-O5r/u09tQk9bGB7gcEedcdKZZb1kbvMLUNqUM3oFSCQlWynLkuaQipNjFu/WpRqQ4pCRek9S3wjz5YzHabU9cg==
+"@resys/dialob-fill-api@^1.4.0":
+  version "1.4.1"
+  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-api/-/dialob-fill-api-1.4.1.tgz#a5bc5b803d0c8acd928849cc5cafb371e6fbc1e6"
+  integrity sha512-SCMBPis3Gn8EAvi0Gu2k6UZip6ON8SbREiEA+Fnww66PDW6WstBxQPggTPcCsCU2jZgi/eqhRhZtGS9z33LUKg==
   dependencies:
     immer "^3.1.2"
 
-"@resys/dialob-fill-react@^2.4.1":
-  version "2.4.1"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-react/-/dialob-fill-react-2.4.1.tgz#1282f89f96af1894c582a42de2b67e0ba69d28b6"
-  integrity sha512-UMAH2Yb7c9pHJzgTerlxPtzix1Brq05mSqnqdDeguDh4kGI1DE2GiVhwHB/CC3X2kqsfDm5G686020Pq61NpUQ==
+"@resys/dialob-fill-react@^2.6.3":
+  version "2.6.3"
+  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-react/-/dialob-fill-react-2.6.3.tgz#b088ec5d8515c56fadef913d39ad9cc726409c48"
+  integrity sha512-j5C24AMwGRFieAX71zjtQ1LmfMihXBDUfU21NqTX+YN3JJSVEK/M83Yk5MSciXL5R/RF4X9lpFbOD036UaMVHg==
 
 "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"

@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions } from '@resys/dialob-fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
 import { renderErrors } from './helpers';
@@ -10,7 +10,7 @@ export interface NumberProps {
   errors: SessionError[];
 };
 export const Number: React.FC<NumberProps> = ({ number, errors }) => {
-  const session = useFillSession();
+  const {setAnswer} = useFillActions();
 
   return (
     <DescriptionWrapper text={number.description} title={number.label}>
@@ -20,7 +20,7 @@ export const Number: React.FC<NumberProps> = ({ number, errors }) => {
         required={number.required}
         error={errors.length > 0}
         value={number.value || ''}
-        onChange={e => session.setAnswer(number.id, e.currentTarget.value)}
+        onChange={e => setAnswer(number.id, e.currentTarget.value)}
         helperText={renderErrors(errors)}
         type='number'
       />

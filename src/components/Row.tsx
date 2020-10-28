@@ -1,5 +1,5 @@
 import { ItemAction } from '@resys/dialob-fill-api';
-import { useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions, useFillSession } from '@resys/dialob-fill-react';
 import React, {useState} from 'react';
 import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -45,11 +45,12 @@ export interface RowProps {
 };
 export const Row: React.FC<RowProps> = ({ row, children }) => {
   const session = useFillSession();
+  const {deleteRow} = useFillActions();
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
   const classes = useStyles();
   const removeRow = () => {
     setConfirmationOpen(false);
-    session.deleteRow(row.id);
+    deleteRow(row.id);
   };
   let responsiveProps = {};
 

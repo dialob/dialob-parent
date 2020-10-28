@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions } from '@resys/dialob-fill-react';
 import React from 'react';
 import {TimePicker} from '@material-ui/pickers';
 import moment from 'moment';
@@ -11,9 +11,9 @@ export interface TimeFieldProps {
   errors: SessionError[];
 };
 export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
-  const session = useFillSession();
+  const {setAnswer} = useFillActions();
   const handleChange = (value: any) => {
-    session.setAnswer(timefield.id, (value as moment.Moment).format('HH:mm'));
+    setAnswer(timefield.id, (value as moment.Moment).format('HH:mm'));
   }
   const value = timefield.value ? timefield.value as string : null;
   return (

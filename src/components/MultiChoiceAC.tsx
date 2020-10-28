@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession, useFillValueSet } from '@resys/dialob-fill-react';
+import { useFillActions, useFillValueSet } from '@resys/dialob-fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
@@ -17,7 +17,7 @@ interface ValueSetEntry {
 };
 
 export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, errors }) => {
-  const session = useFillSession();
+  const {setAnswer} = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const entries: ValueSetEntry[] = valueSet?.entries ? valueSet.entries : [];
 
@@ -32,7 +32,7 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
         fullWidth
         autoComplete
         onChange = {(event: any, newValue: (ValueSetEntry | undefined)[]) => {
-          session.setAnswer(multichoice.id, newValue?.map(c => c?.key));
+          setAnswer(multichoice.id, newValue?.map(c => c?.key));
         }}
         renderInput={params => <TextField {...params} inputProps={{...params.inputProps, autoComplete: 'new-password'}} label={multichoice.label} error={errors.length > 0} helperText={renderErrors(errors)}/>}
       />

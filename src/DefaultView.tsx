@@ -1,4 +1,4 @@
-import { useFillItem, useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions, useFillItem, useFillSession } from '@resys/dialob-fill-react';
 import { Session } from '@resys/dialob-fill-api';
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
@@ -18,6 +18,7 @@ export interface DefaultViewProps {
 export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) => {
   const { item: questionnaire } = useFillItem('questionnaire');
   const session = useFillSession();
+  const fillActions = useFillActions();
   const [completed, setCompleted] = useState(session.isComplete());
   const [completeConfirmationOpen, setCompleteConfirmationOpen] = useState(false);
 
@@ -30,11 +31,11 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
         onComplete(session);
       }
     }
-    session.on('update', updateListener);
-    session.on('sync', completeListener);
+    fillActions.on('update', updateListener);
+    fillActions.on('sync', completeListener);
     return () => {
-      session.removeListener('update', updateListener);
-      session.removeListener('sync', completeListener);
+      fillActions.removeListener('update', updateListener);
+      fillActions.removeListener('sync', completeListener);
     }
   }, [session]);
 
@@ -93,7 +94,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
           <Grid container justify='space-between' spacing={3} style={{marginTop: '1em', marginBottom: '1em'}}>
             <Grid item >
               {questionnaire.allowedActions.includes('PREVIOUS') && (
-                <Button variant='contained' onClick={() => {window.scrollTo(0, 0); session.previous();}} startIcon={<ChevronLeftIcon />}>
+                <Button variant='contained' onClick={() => {window.scrollTo(0, 0); fillActions.previous();}} startIcon={<ChevronLeftIcon />}>
                   <FormattedMessage id='page.previous' />
                 </Button>
               )}
@@ -109,7 +110,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
             </Grid>
             <Grid item >
               {questionnaire.allowedActions.includes('NEXT') && (
-                <Button variant='contained' onClick={() => {window.scrollTo(0, 0); session.next();}} endIcon={<ChevronRightIcon />}>
+                <Button variant='contained' onClick={() => {window.scrollTo(0, 0); fillActions.next();}} endIcon={<ChevronRightIcon />}>
                   <FormattedMessage id='page.next' />
                 </Button>
               )}
@@ -125,7 +126,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => setCompleteConfirmationOpen(false)} color='secondary'><FormattedMessage id='complete.confirmation.cancel' /></Button>
-                <Button onClick={() => session.complete()} color='primary' autoFocus><FormattedMessage id='complete.confirmation.confirm' /></Button>
+                <Button onClick={() => fillActions.complete()} color='primary' autoFocus><FormattedMessage id='complete.confirmation.confirm' /></Button>
             </DialogActions>
           </Dialog>
     </MuiPickersUtilsProvider>

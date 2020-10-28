@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions } from '@resys/dialob-fill-react';
 import React from 'react';
 import { FormControlLabel, Checkbox, FormControl } from '@material-ui/core';
 import { ErrorHelperText } from './helpers';
@@ -11,7 +11,7 @@ export interface BooleanCheckboxProps {
 };
 
 export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, errors }) => {
-  const session = useFillSession();
+  const {setAnswer} = useFillActions();
   return (
     <DescriptionWrapper text={boolean.description} title={boolean.label}>
       <FormControl fullWidth={true} required={boolean.required} error={errors.length > 0}>
@@ -20,7 +20,7 @@ export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, error
           control={
             <Checkbox
               checked={boolean.value || false}
-              onChange={e => session.setAnswer(boolean.id, e.target.checked)}
+              onChange={e => setAnswer(boolean.id, e.target.checked)}
               />
           }
         />

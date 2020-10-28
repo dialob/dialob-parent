@@ -1,5 +1,5 @@
 import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillSession, useFillValueSet } from '@resys/dialob-fill-react';
+import { useFillActions, useFillValueSet, useFillSession } from '@resys/dialob-fill-react';
 import React, {useMemo} from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -21,6 +21,7 @@ export interface ChoiceProps {
 export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
   const classes = useStyles();
   const session = useFillSession();
+  const {setAnswer} = useFillActions();
   const valueSet = useFillValueSet(choice.valueSetId);
   const itemId = `item_${session.id}_${choice.id}`;
   const options = useMemo(() => {
@@ -40,7 +41,7 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
       <InputLabel id={`${itemId}_label`}>{choice.label}</InputLabel>
       <Select labelId={`${itemId}_label`}
         value={choice.value || ''}
-        onChange={e => session.setAnswer(choice.id, e.target.value)}
+        onChange={e => setAnswer(choice.id, e.target.value)}
        >
          {options}
        </Select>
