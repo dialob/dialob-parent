@@ -25,4 +25,4 @@ export {MarkdownView, MarkdownViewProps} from './components/MarkdownView';
 
 export {GroupContext} from './context/GroupContext';
 
-export {renderErrors} from './components/helpers';
+export {renderErrors, ErrorHelperText} from './components/helpers';

@@ -78,7 +78,8 @@ Following components are exported
 * `<SurveyGroup>` Survey group
 * `<Survey>` Survey item. NB! Survey item shouldn't be directly created, it is created by SurveyGroup.
 * `<GroupContext>` Group context provider
-* `renderErrors(errors:FillError[])` Helper function to render Materia's `<FormHelperText>` with filling validation errors, usable for example `<TextField helperText={}`
+* `renderErrors(errors:FillError[])` Helper function to render filling validation errors in unified manner, usable for example `<TextField helperText={}`
+` <ErrorHelperText>` Materia's `<FormHelperText>` with filling validation errors. 
 
 (This needs improvement)
 
