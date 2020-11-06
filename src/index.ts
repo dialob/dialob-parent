@@ -16,6 +16,7 @@ export {TextBox, TextBoxProps} from './components/TextBox';
 export {TimeField, TimeFieldProps} from './components/TimeField';
 export {Survey, SurveyProps} from './components/Survey';
 export {SurveyGroup, SurveyGroupProps} from './components/SurveyGroup';
+export {Address, AddressProps} from './components/Address';
 
 export {MaterialDialob, MaterialDialobProps} from './MaterialDialob';
 export {DefaultView, DefaultViewProps} from './DefaultView';

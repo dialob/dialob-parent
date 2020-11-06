@@ -16,6 +16,7 @@ Following peer dependencies need to be installed:
 {
   "@resys/dialob-fill-api": "^1.4.*",
   "@resys/dialob-fill-react": "^2.6.*",
+  "@resys/mapbox-connector": "^1.1.*",
   "@material-ui/core": "^4.11.*",
   "@material-ui/icons": "^4.9.*",
   "@material-ui/lab": "^4.0.*",
@@ -77,6 +78,7 @@ Following components are exported
 * `<TimeField>` Time field
 * `<SurveyGroup>` Survey group
 * `<Survey>` Survey item. NB! Survey item shouldn't be directly created, it is created by SurveyGroup.
+* `<Address>` Address lookup using Mapbox. Using this in an implementation requires setting up Mapbox API access token.
 * `<GroupContext>` Group context provider
 * `renderErrors(errors:FillError[])` Helper function to render filling validation errors in unified manner, usable for example `<TextField helperText={}`
 ` <ErrorHelperText>` Materia's `<FormHelperText>` with filling validation errors. 

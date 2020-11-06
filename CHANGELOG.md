@@ -2,6 +2,10 @@
 
 * Fixed MarkDown rendering
 
+# 0.3.0
+
+* Added `<Address>` item type
+
 # 0.2.2
 
 * Export `renderErrors()` and `<ErrorHelperText>` 

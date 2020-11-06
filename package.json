@@ -24,6 +24,7 @@
     "@material-ui/pickers": "^3.2.*",
     "@resys/dialob-fill-api": "^1.4.*",
     "@resys/dialob-fill-react": "^2.6.*",
+    "@resys/mapbox-connector": "^1.1.*",
     "moment": "^2.24.*",
     "react-intl": "^4.5.*",
     "react-markdown": "^4.3.*"
@@ -36,6 +37,7 @@
     "@material-ui/pickers": "^3.2.10",
     "@resys/dialob-fill-api": "^1.4.0",
     "@resys/dialob-fill-react": "^2.6.3",
+    "@resys/mapbox-connector": "^1.1.2",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
     "moment": "^2.24.0",
