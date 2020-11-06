@@ -24,3 +24,5 @@ export {DescriptionWrapper, DescriptionWrapperProps} from './components/Descript
 export {MarkdownView, MarkdownViewProps} from './components/MarkdownView';
 
 export {GroupContext} from './context/GroupContext';
+
+export {renderErrors} from './components/helpers';

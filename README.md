@@ -54,7 +54,7 @@ export const Dialob: React.FC<DialobProps> = ({session, locale}) => {
 };
 ```
 
-`<Item>` is a component that renders an actual fill component depending on item's properties. You have to provide your own depending on application needs. (See example here:   needs better docs)
+`<Item>` is a component that renders an actual fill component depending on item's properties. You have to provide your own depending on application needs. (See example here: https://git.resys.io/dialob/dialob-fill-material-demo/-/blob/master/src/dialob/Item.tsx  (needs better docs))
 
 ### Component types
 
@@ -78,6 +78,7 @@ Following components are exported
 * `<SurveyGroup>` Survey group
 * `<Survey>` Survey item. NB! Survey item shouldn't be directly created, it is created by SurveyGroup.
 * `<GroupContext>` Group context provider
+* `renderErrors(errors:FillError[])` Helper function to render Materia's `<FormHelperText>` with filling validation errors, usable for example `<TextField helperText={}`
 
 (This needs improvement)
 
