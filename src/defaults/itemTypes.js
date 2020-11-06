@@ -66,7 +66,7 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Text',
-          convertible: ['textBox'],
+          convertible: ['textBox', 'address'],
           config: {
             type: 'text',
             view: 'text'
@@ -74,10 +74,34 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
         },
         {
           title: 'Text box',
-          convertible: ['text'],
+          convertible: ['text', 'address'],
           config: {
             type: 'text',
             view: 'textBox'
+          }
+        },
+        {
+          title: 'Address',
+          convertible: ['text', 'textBox'],
+          propEditors: {
+            country: {
+            component: PropEditors.MultiChoiceProp,
+            props: {
+              allowAdditions: true,
+              options: [
+                {key: 'fi', label: 'Finland'},
+                {key: 'sv', label: 'Sweden'},
+                {key: 'ee', label: 'Estonia'}
+              ]
+            }
+          }
+          },
+          config: {
+            type: 'text',
+            view: 'address',
+            props: {
+              country: []
+            }
           }
         },
         {

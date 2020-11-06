@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {InputProp} from '../propEditors';
 import {findItemTypeConfig} from '../../helpers/utils';
 import AutoSuggest from 'react-autosuggest';
+import Immutable from 'immutable';
 
 const PropSuggest = ({suggestions, onChange, value}) => {
   const [currentValue, setCurrentValue] = useState(value);
@@ -90,7 +91,7 @@ class ItemProps extends Component {
           {prop[0]}
         </Table.Cell>
         <Table.Cell>
-          <editor.component value={prop[1]} name={prop[0]} item={this.props.item} onChange={(v) => this.props.updateItemProp(itemId, prop[0], v)} {...editor.props} />
+          <editor.component value={Immutable.Iterable.isIterable(prop[1]) ? prop[1].toJS() : prop[1]} name={prop[0]} item={this.props.item} onChange={(v) => this.props.updateItemProp(itemId, prop[0], v)} {...editor.props} />
         </Table.Cell>
       </Table.Row>);
   }

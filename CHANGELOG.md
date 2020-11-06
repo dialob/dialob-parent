@@ -1,3 +1,8 @@
+# 2.6.0
+
+Added `MultiChoiceProp` PropEditor
+Added configuration for `address` item
+
 # 2.5.1
 
 Export `MarkdownEditor` component

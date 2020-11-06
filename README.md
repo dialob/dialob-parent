@@ -16,7 +16,8 @@ export {
   connectItem,                      // Function that connects React component to Composer's Redux store
   ItemMenu,
   DialobActions,                    // Action API for modifying Dialob form
-  PropEditors                       // React components for built-in item prop types
+  PropEditors,                      // React components for built-in item prop types
+  MarkdownEditor                    // Markdown editor component with preview
 };
 ```
 
@@ -158,6 +159,8 @@ Built in editors:
 * `PropEditors.ChoiceProp` - Dropdown selection list, `options` prop having an array of `{key: '', label: ''},` entries, where `key` is value stored in prop and `label` is text displayed in UI.
 
 * `PropEditors.BoolProp` - Boolean switch.
+
+* `PropEditors.MultiChoiceProp` - Dropdown selection list, allows multiple selections (Array of string value). `options` prop as in `ChoiceProp`, `allowAdditions` true/false -- Allow adding arbitrary strings to list.
 
 Custom editing component template
 ```javascript

@@ -38,6 +38,14 @@ export const DEFAULT_ITEM_CONFIG = {
       }
     },
     {
+      matcher: item => item.get('view') === 'address',
+      component: SimpleField,
+      props: {
+        icon: 'map marker alternate',
+        placeholder: 'Address field label'
+      }
+    },
+    {
       matcher: item => item.get('type') === 'text',
       component: SimpleField,
       props: {
