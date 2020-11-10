@@ -33,7 +33,7 @@
     "react-redux": "7.2.1",
     "redux": "4.0.5",
     "remove-markdown": "0.3.0",
-    "semantic-ui-react": "2.0.0",
+    "semantic-ui-react": "2.0.1",
     "use-lodash-debounce": "^1.1.0"
   },
   "peerDependencies": {
