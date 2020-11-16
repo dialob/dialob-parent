@@ -1,10 +1,13 @@
-import { useFillActions, useFillItem, useFillSession } from '@resys/dialob-fill-react';
+import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@resys/dialob-fill-react';
 import { Session } from '@resys/dialob-fill-api';
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
 import {MuiPickersUtilsProvider} from '@material-ui/pickers';
 import moment from 'moment';
+import 'moment/locale/fi';
+import 'moment/locale/sv';
+import 'moment/locale/et';
 import { FormattedMessage } from 'react-intl';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -18,6 +21,7 @@ export interface DefaultViewProps {
 export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) => {
   const { item: questionnaire } = useFillItem('questionnaire');
   const session = useFillSession();
+  const sessionLocale = useFillLocale();
   const fillActions = useFillActions();
   const [completed, setCompleted] = useState(session.isComplete());
   const [completeConfirmationOpen, setCompleteConfirmationOpen] = useState(false);
@@ -39,11 +43,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
     }
   }, [session]);
 
-  let locale: 'en' | 'fi' | 'sv' = 'en';
-  const sessionLocale = session.getLocale();
-  if (sessionLocale && (sessionLocale === 'fi' || sessionLocale === 'sv')) {
-    locale = sessionLocale;
-  }
+  const locale = sessionLocale || 'en';
 
   const preComplete = () => {
     setCompleteConfirmationOpen(true);
