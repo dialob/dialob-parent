@@ -57,8 +57,8 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
   const gridClass = vertical ? classes.vertical : classes.horizontal;
   const optionCount = valueSet?.entries.length || 0;
 
-  const rowCount = vertical ? surveys.length + 2 : optionCount;
-  const colCount = vertical ? optionCount : surveys.length + 1;
+  const rowCount = vertical ? optionCount + 1 : surveys.length;
+  const colCount = vertical ? surveys.length : optionCount;
 
   return (
     <GroupContext.Provider value={{ level: groupCtx.level < 6 ? groupCtx.level + 1 : groupCtx.level }}>
