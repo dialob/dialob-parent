@@ -1,16 +1,16 @@
 const sv = {
-  'yes': 'Yes',
-  'no': 'No',
+  'yes': 'Ja',
+  'no': 'Nej',
 
   'session.not.found': 'Session not found!',
   'form.completed': 'Form has been completed!',
   'page.previous': 'Previous',
   'page.next': 'Page next',
-  'complete': 'Complete',
-  'complete.confirmation.title': 'Are you sure you want to complete this dialog?',
+  'complete': 'Avslutad',
+  'complete.confirmation.title': 'Är du säker?',
   'complete.confirmation.message': 'You will not be able to change your answers after completion',
   'complete.confirmation.cancel': 'Cancel',
-  'complete.confirmation.confirm': 'Confirm',
+  'complete.confirmation.confirm': 'Bekräfta',
 
   'row.add.button': 'Add',
   'row.remove.button': 'Remove',
