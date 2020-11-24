@@ -9,7 +9,8 @@ class NewTagDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tag: ''
+      tag: '',
+      description: ''
     };
   }
 
@@ -38,11 +39,14 @@ class NewTagDialog extends Component {
               <Form.Field>
                 <Form.Input label='New tag name' fluid focus value={this.state.tag} onChange={(e, d) => this.setState({tag: d.value}) }/>
               </Form.Field>
+              <Form.Field>
+                <Form.TextArea label='Description' fluid value={this.state.descrption} onChange={(e, d) => this.setState({description: d.value}) }/>
+              </Form.Field>
             </Form>
             {errorList}
           </Modal.Content>
           <Modal.Actions>
-            <Button primary onClick={() => this.props.createNewTag(this.state.tag)}>
+            <Button primary onClick={() => this.props.createNewTag(this.state.tag, this.state.description)}>
               OK
             </Button>
             <Button onClick={() => this.props.hideNewTag()}>

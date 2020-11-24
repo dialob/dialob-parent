@@ -63,15 +63,15 @@ export const backendMiddleware = store => {
         })
         .catch(error => store.dispatch(setErrors([{severity: 'FATAL', message: error.message}])));
     } else if (action.type === Actions.CREATE_NEW_TAG) {
-      formService.createTag(store.getState().dialobComposer.form.get('name'), action.name)
+      formService.createTag(store.getState().dialobComposer.form.get('name'), action.name, action.description)
         .then(json => {
           store.dispatch(hideNewTag());
         })
         .catch(error => {
           if (error.message === 'FATAL_409') {
-            return store.dispatch(setErrors([{severity: 'FATAL', message: 'TAG_EXISTS'}], true));
+            return store.dispatch(setErrors([{severity: 'FATAL', type: 'TAG_ERROR', message: 'TAG_EXISTS'}], true));
           } else {
-            return store.dispatch(setErrors([{severity: 'FATAL', message: error.message}]));
+            return store.dispatch(setErrors([{severity: 'FATAL', type: 'TAG_ERROR', message: error.message}]));
           }
         });
     } else if (action.type === Actions.COPY_ITEM) {
