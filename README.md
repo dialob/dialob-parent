@@ -52,6 +52,7 @@ const DIALOB_COMPOSER_CONFIG = {
     previewUrl: window.COMPOSER_CONFIG.filling_app_url,
     tenantId: window.COMPOSER_CONFIG.tenantId,
   },
+  documentationUrl: '',
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
   valueSetProps: CUSTOM_VALUESET_PROPS,
@@ -64,6 +65,7 @@ const DIALOB_COMPOSER_CONFIG = {
 * **apiUrl** - URL for Dialob backend service API
 * **previewUrl** - (Optional) URL for Dialob Filling preview application. If omitted, "Preview" feature is disabled.  `/<sessionId>` is appended to the URL for preview.
 * **itemEditors** - Configuration for item editors
+* **documentationUrl** - (Optional) URL for user guide documentaion, defaults to `https://docs.dialob.io/`
 * **itemTypes** - Configuration for item types
 * **valueSetProps** - (Optional) configuration for custom properties for valueset entries
 * **postAddItem** - (Optional) callback function that gets called after a new item gets added to a form. Arguments: `dispatch` - Redux dispatch for dispatching additional actions into composer state, `action`- The Redux action that was used for creating the item, `lastItem` - The item that was added (including ID). Use this, for example, to create addtitional form structure depending on the created item, communicate to other parts of application etc.

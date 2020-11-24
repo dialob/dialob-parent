@@ -48,6 +48,17 @@ class MainMenu extends Component {
               <Dropdown.Item disabled={formTag !== 'LATEST' || (this.props.status !== Status.STATUS_OK && this.props.status !== Status.STATUS_WARNINGS)} onClick={() => this.props.showNewTag()}>Create version tag</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+          <Menu.Item onClick={() => {
+              let win = window.open(this.props.config.documentationUrl || 'https://docs.dialob.io/');
+              if (win) {
+                win.focus();
+              }
+             }}>
+            <Popup
+              trigger={<Icon name='life ring outline' />}
+              content='Dialob Composer User Guide'
+              on='hover' />
+          </Menu.Item>
           <Menu.Menu position='right'>
               <SearchMenu />
               <Menu.Item onClick={this.props.downloadForm}>
