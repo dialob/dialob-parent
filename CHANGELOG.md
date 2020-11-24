@@ -1,6 +1,9 @@
 # 0.2.1
 
 * Fixed MarkDown rendering
+# 0.4.0
+
+* Added `<ChoiceAC>` item type
 
 # 0.3.0
 

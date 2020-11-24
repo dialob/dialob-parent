@@ -1,6 +1,7 @@
 export {BooleanCheckbox, BooleanCheckboxProps} from './components/BooleanCheckbox';
 export {BooleanRadio, BooleanRadioProps} from './components/BooleanRadio';
 export {Choice, ChoiceProps} from './components/Choice';
+export {ChoiceAC, ChoiceACProps} from './components/ChoiceAC';
 export {DateField, DateFieldProps} from './components/DateField';
 export {Group, GroupProps} from './components/Group';
 export {MultiChoice, MultiChoiceProps} from './components/MultiChoice';

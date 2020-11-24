@@ -64,6 +64,7 @@ Following components are exported
 * `<BooleanCheckbox>` Boolean, checkbox style
 * `<BooleanRadio>` Boolean, radiobutton style (Yes/No)
 * `<Choice>` Choice dropdown
+* `<ChoiceAC>` Choice dropdown with autocomplete
 * `<DateField>` Date field
 * `<Group>` Group
 * `<MultiChoice>` Multi-choice, checbkox list style
