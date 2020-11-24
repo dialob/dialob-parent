@@ -1,20 +1,43 @@
 import React, {Component} from 'react';
-import {Modal, Button, Tab, Segment, Input, Grid, Statistic, Menu} from 'semantic-ui-react';
-import {connect} from 'react-redux';
-import {hideValueSets, createValueset, setGlobalValuesetName} from '../actions';
+import {Modal, Button, Tab, Segment, Input, Grid, Statistic, Menu, Popup, List} from 'semantic-ui-react';
+import {connect, useDispatch, useSelector} from 'react-redux';
+import {hideValueSets, createValueset, setGlobalValuesetName, setActiveItem} from '../actions';
 import ValueSetEditor from './ValueSetEditor';
+import * as Defaults from '../defaults';
 
 const VSEdit = ({valueSetId, label, onChangeName, items}) => {
-  const users = items.entrySeq().reduce((r, v) => v[1].get('valueSetId') === valueSetId ? r = r + 1 : r, 0);
+  const dispatch = useDispatch();
+  const language = useSelector(state => (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE);
+  const users = items.entrySeq().filter(v => v[1].get('valueSetId') === valueSetId).toJS();
+
   return (
     <Segment>
-      <Grid columns={2}  verticalAlign='middle'>
-          <Grid.Column width={12}>
-            <Input fluid value={label || ''} placeholder = 'List name' onChange={(evt) => onChangeName(valueSetId, evt.target.value)} />
-          </Grid.Column>
-          <Grid.Column width={4} >
-            <Statistic horizontal size='mini' label='Users' value={users} />
-          </Grid.Column>
+      <Grid columns={2} verticalAlign='middle'>
+        <Grid.Column width={12}>
+          <Input fluid value={label || ''} placeholder='List name' onChange={(evt) => onChangeName(valueSetId, evt.target.value)} />
+        </Grid.Column>
+        <Grid.Column width={4} >
+          <Popup on='click'
+            flowing
+            trigger={<Statistic style={{ cursor: 'pointer' }} horizontal size='mini' label='Users' value={users.length} />}
+          >
+            <List divided selection >
+              {
+                users.map(u =>
+                  <List.Item key={u[0]} onClick={() => {
+                    dispatch(setActiveItem(u[0]));
+                    dispatch(hideValueSets());
+                  }}>
+                    <List.Content>
+                      <List.Header>{u[1].getIn(['label', language]) || <i>(Untitled)</i>}</List.Header>
+                      <List.Description>{u[1].get('id')}</List.Description>
+                    </List.Content>
+                  </List.Item>)
+              }
+            </List>
+          </Popup>
+
+        </Grid.Column>
       </Grid>
       <ValueSetEditor valueSetId={valueSetId} />
     </Segment>

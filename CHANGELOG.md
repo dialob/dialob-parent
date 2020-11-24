@@ -1,5 +1,9 @@
 # 2.7.0
 
+Requires Dialob Backend v. 1.0.13 or newer
+
+Show global valueset users with navigation to focus them
+
 Descriptiont text for version tags
 
 Configurable user guide documenation URL
