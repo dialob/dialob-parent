@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { hideVersioning, fetchVersions, loadForm } from "../actions";
 import moment from 'moment';
 
-const VersionItem = ({name, created, icon, active, onActivate}) => {
+const VersionItem = ({name, description, created, icon, active, onActivate}) => {
   return (
     <List.Item active={active}>
       <List.Content floated='right'>
@@ -12,8 +12,14 @@ const VersionItem = ({name, created, icon, active, onActivate}) => {
       </List.Content>
       <List.Icon name={icon} size='large' verticalAlign='middle' color={active ? 'blue' : null} />
       <List.Content>
-        <List.Header>{name}</List.Header>
-        <List.Description>{moment(created).format('LLLL')}</List.Description>
+    <List.Header>{name} { created && <div style={{float:'right', fontWeight: 'normal'}}><i>{moment(created).format('LLLL')}</i></div>}</List.Header>
+        { description && 
+        <List.Description>
+          {
+            description 
+          }
+        </List.Description>
+}
       </List.Content>
     </List.Item>
   );
@@ -32,8 +38,8 @@ class VersioningDialog extends Component {
       return <Loader inline='centered' active/>;
    }
 
-   let items = this.props.versions.map((v, i) => <VersionItem key={i} name={v.get('name')} created={v.get('created')} icon='tag' active={this.props.formTag === v.get('name')} onActivate={() => this.props.loadForm(this.props.formName, v.get('name') )} />);
-   items = items.push(<VersionItem key='latest' name='LATEST' created='----' icon='edit' active={!this.props.formTag} onActivate={() => this.props.loadForm(this.props.formName)} />);
+   let items = this.props.versions.map((v, i) => <VersionItem key={i} name={v.get('name')} created={v.get('created')} description={v.get('description')} icon='tag' active={this.props.formTag === v.get('name')} onActivate={() => this.props.loadForm(this.props.formName, v.get('name') )} />);
+   items = items.push(<VersionItem key='latest' name='LATEST' created={null} icon='edit' active={!this.props.formTag} onActivate={() => this.props.loadForm(this.props.formName)} />);
 
    return (
     <List celled selection>
