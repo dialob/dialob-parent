@@ -2,6 +2,8 @@
 
 Descriptiont text for version tags
 
+Configurable user guide documenation URL
+
 # 2.6.0
 
 Added `MultiChoiceProp` PropEditor
