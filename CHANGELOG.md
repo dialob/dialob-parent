@@ -1,3 +1,7 @@
+# 2.7.0
+
+Descriptiont text for version tags
+
 # 2.6.0
 
 Added `MultiChoiceProp` PropEditor
