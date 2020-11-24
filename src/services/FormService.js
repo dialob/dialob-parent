@@ -81,9 +81,10 @@ export default class FormService {
     return this.doFetch(`${this.baseUrl}/forms/${formName}/tags`);
   }
 
-  createTag(formName, tagName, formId = null) {
+  createTag(formName, tagName, tagDescription, formId = null) {
     let tagData = {
       name: tagName,
+      description: tagDescription,
       formName
     };
     if (formId) {

@@ -512,10 +512,11 @@ export function hideNewTag() {
   };
 }
 
-export function createNewTag(name) {
+export function createNewTag(name, description) {
   return {
     type: Actions.CREATE_NEW_TAG,
-    name
+    name,
+    description
   };
 }
 
