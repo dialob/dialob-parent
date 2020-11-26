@@ -1,6 +1,10 @@
 # 0.2.1
 
 * Fixed MarkDown rendering
+# 0.5.0
+
+* Item type `<Address>` moved to separate library `@resys/dialob-fill-material-item-address`.
+
 # 0.4.0
 
 * Added `<ChoiceAC>` item type
