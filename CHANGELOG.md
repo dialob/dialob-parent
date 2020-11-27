@@ -1,5 +1,9 @@
 ## next
 
+## 3.0.0
+
+- Renamed to `@dialob/fill-react` and published to npmjs
+
 ## 2.6.3
 ### Enhancements
 - Avoid creation of session actions on every function invocation.

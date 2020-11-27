@@ -4,7 +4,7 @@ This package provides convenience methods for interacting with Dialob Fill sessi
 Components:
 
 - `<Session session={session} locale={locale}/>` where `session` is a session object created through
-`@resys/dialob-fill-api` library and `locale` is optional prop to override filling session locale. Can be changed during filling.
+`@dialob/fill-api` library and `locale` is optional prop to override filling session locale. Can be changed during filling.
 
 Hooks:
 
@@ -18,14 +18,20 @@ Deprecated:
 - ~~`useFillSession()` returns the fill API session object~~
 ## Install
 ```sh
-yarn add @resys/dialob-fill-react @resys/dialob-fill-api
+yarn add @dialob/fill-react @dialob/fill-api
 ```
+
+## Migration from 2.x
+
+* Change dependencies: `@resys/dialob-fill-api` -> `@dialob/fill-api` and `@resys/dialob-fill-react` -> `@dialob/fill-react`
+* `yarn install`
+* Change imports accordingly
 
 ## Quick-start
 ```jsx
 import React, { useMemo } from 'react';
-import DialobFill from '@resys/dialob-fill-api';
-import { Session, useFillActions, useFillItem, useFillValueSet } from '@resys/dialob-fill-react';
+import DialobFill from '@dialob/fill-api';
+import { Session, useFillActions, useFillItem, useFillValueSet } from '@dialob/fill-react';
 
 const App = () => {
   const session = useMemo(() => {
