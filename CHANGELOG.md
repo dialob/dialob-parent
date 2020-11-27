@@ -1,5 +1,7 @@
 # next
 
+* Package renamed to `@dialob/fill-api` and is published to npmjs
+
 # 1.4.1
 * Package is built with CommonJS module target
 

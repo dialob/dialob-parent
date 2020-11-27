@@ -1,12 +1,12 @@
 # Dialob Fill API
 ## Install
 ```sh
-yarn add @resys/dialob-fill-api
+yarn add @dialob/fill-api
 ```
 
 ## Quick-start
 ```js
-import DialobFill from '@resys/dialob-fill-api';
+import DialobFill from '@dialob/fill-api';
 
 // Replace `sessionId` and `endpoint` with appropriate values
 const sessionId = '8bab410b7bfac6f64fbbb1024d52a96f';
