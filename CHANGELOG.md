@@ -1,6 +1,8 @@
-# 0.2.1
 
-* Fixed MarkDown rendering
+# 0.6.0
+
+* Renamed to `@dialob/fill-react` and moved to npmjs
+
 # 0.5.0
 
 * Item type `<Address>` moved to separate library `@resys/dialob-fill-material-item-address`.
@@ -16,6 +18,10 @@
 # 0.2.2
 
 * Export `renderErrors()` and `<ErrorHelperText>` 
+
+# 0.2.1
+
+* Fixed MarkDown rendering
 
 # 0.2.0
 

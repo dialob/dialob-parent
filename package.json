@@ -1,6 +1,6 @@
 {
-  "name": "@resys/dialob-fill-material",
-  "version": "0.5.0",
+  "name": "@dialob/fill-material",
+  "version": "0.6.0",
   "description": "Material UI components for Dialob fill",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,10 +8,10 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "rm -rf ./lib && tsc",
     "clean": "rm -rf ./lib"
@@ -22,8 +22,8 @@
     "@material-ui/icons": "^4.9.*",
     "@material-ui/lab": "^4.0.*",
     "@material-ui/pickers": "^3.2.*",
-    "@resys/dialob-fill-api": "^1.4.*",
-    "@resys/dialob-fill-react": "^2.6.*",
+    "@dialob/fill-api": "^1.4.*",
+    "@dialob/fill-react": "^3.0.*",
     "moment": "^2.24.*",
     "react-intl": "^4.5.*",
     "react-markdown": "^4.3.*"
@@ -34,8 +34,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
-    "@resys/dialob-fill-api": "^1.4.0",
-    "@resys/dialob-fill-react": "^2.6.3",
+    "@dialob/fill-api": "^1.4.1",
+    "@dialob/fill-react": "^3.0.0",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
     "moment": "^2.24.0",

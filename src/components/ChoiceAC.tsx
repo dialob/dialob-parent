@@ -1,5 +1,5 @@
-import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillActions, useFillValueSet } from '@resys/dialob-fill-react';
+import { ItemAction, SessionError } from '@dialob/fill-api';
+import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ItemAction } from '@resys/dialob-fill-api';
+import { ItemAction } from '@dialob/fill-api';
 import { MarkdownView } from './MarkdownView';
 
 export interface NoteProps {

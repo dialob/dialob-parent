@@ -1,5 +1,5 @@
-import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillActions } from '@resys/dialob-fill-react';
+import { ItemAction, SessionError } from '@dialob/fill-api';
+import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { FormControlLabel, Checkbox, FormControl } from '@material-ui/core';
 import { ErrorHelperText } from './helpers';

@@ -1,5 +1,5 @@
-import { ItemAction } from '@resys/dialob-fill-api';
-import { useFillActions } from '@resys/dialob-fill-react';
+import { ItemAction } from '@dialob/fill-api';
+import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { Typography, Grid, Button, } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';

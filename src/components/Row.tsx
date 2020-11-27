@@ -1,5 +1,5 @@
-import { ItemAction } from '@resys/dialob-fill-api';
-import { useFillActions, useFillSession } from '@resys/dialob-fill-react';
+import { ItemAction } from '@dialob/fill-api';
+import { useFillActions, useFillSession } from '@dialob/fill-react';
 import React, {useState} from 'react';
 import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
