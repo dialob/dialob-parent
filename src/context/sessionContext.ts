@@ -1,5 +1,5 @@
 import React from 'react';
-import { Session } from '@resys/dialob-fill-api';
+import { Session } from '@dialob/fill-api';
 
 export interface Actions {
   setAnswer: Session['setAnswer'];

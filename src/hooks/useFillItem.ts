@@ -1,4 +1,4 @@
-import { SessionItem, SessionError, Session, ItemType } from '@resys/dialob-fill-api';
+import { SessionItem, SessionError, Session, ItemType } from '@dialob/fill-api';
 import { useEffect, useState, useRef } from 'react';
 import { useFillSession } from './useFillSession';
 

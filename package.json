@@ -1,6 +1,6 @@
 {
-  "name": "@resys/dialob-fill-react",
-  "version": "2.6.3",
+  "name": "@dialob/fill-react",
+  "version": "3.0.0",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -8,7 +8,7 @@
   ],
   "license": "Apache-2.0",
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "scripts": {
@@ -17,12 +17,12 @@
     "test": "jest --watch"
   },
   "devDependencies": {
-    "@resys/dialob-fill-api": "^1.4.0",
+    "@dialob/fill-api": "^1.4.1",
     "@types/react": "^16.8.17",
     "typescript": "~3.7.5"
   },
   "peerDependencies": {
-    "@resys/dialob-fill-api": "^1.4.0",
+    "@dialob/fill-api": "^1.4.1",
     "react": "^16.8.0"
   },
   "dependencies": {}

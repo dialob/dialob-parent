@@ -1,4 +1,4 @@
-import { Session as DialobSession } from '@resys/dialob-fill-api';
+import { Session as DialobSession } from '@dialob/fill-api';
 import React, { useEffect, useMemo } from 'react';
 import { SessionContext } from './context/sessionContext';
 
