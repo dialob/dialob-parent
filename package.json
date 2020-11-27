@@ -1,5 +1,5 @@
 {
-  "name": "@resys/dialob-fill-api",
+  "name": "@dialob/fill-api",
   "version": "1.4.1",
   "description": "Dialob filling API",
   "main": "lib/index.js",
@@ -9,7 +9,7 @@
   "author": "Oskar Köök <oskar.kook@resys.io>",
   "license": "Apache-2.0",
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "scripts": {
