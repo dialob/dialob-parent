@@ -1,5 +1,5 @@
-import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillActions, useFillLocale } from '@resys/dialob-fill-react';
+import { ItemAction, SessionError } from '@dialob/fill-api';
+import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import React from 'react';
 import {DatePicker} from '@material-ui/pickers';
 import moment from 'moment';

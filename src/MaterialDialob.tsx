@@ -1,6 +1,6 @@
 import React from 'react';
-import { Session as DialobSession } from '@resys/dialob-fill-api';
-import { Session } from '@resys/dialob-fill-react';
+import { Session as DialobSession } from '@dialob/fill-api';
+import { Session } from '@dialob/fill-react';
 import { IntlProvider } from 'react-intl';
 import messages from './intl';
 

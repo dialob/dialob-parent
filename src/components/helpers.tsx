@@ -1,5 +1,5 @@
 import React from 'react';
-import { FillError } from "@resys/dialob-fill-api";
+import { FillError } from "@dialob/fill-api";
 import { FormHelperText } from '@material-ui/core';
 
 export const renderErrors = (errors:FillError[]) => errors.length > 0 ?  <ul>{errors.map((e, i) => <li key={i}>{e.description}</li>)}</ul> : undefined;

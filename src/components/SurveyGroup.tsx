@@ -1,8 +1,8 @@
 import { Box, createStyles, Fade, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
-import { ItemAction } from '@resys/dialob-fill-api';
+import { ItemAction } from '@dialob/fill-api';
 import { Description } from './Description';
 import { GroupContext } from '../context/GroupContext';
-import { useFillSession, useFillValueSet } from '@resys/dialob-fill-react';
+import { useFillSession, useFillValueSet } from '@dialob/fill-react';
 import React, { useContext } from 'react';
 import { Survey } from './Survey';
 

@@ -1,5 +1,5 @@
-import { ItemAction, SessionError } from '@resys/dialob-fill-api';
-import { useFillActions, useFillValueSet, useFillSession } from '@resys/dialob-fill-react';
+import { ItemAction, SessionError } from '@dialob/fill-api';
+import { useFillActions, useFillValueSet, useFillSession } from '@dialob/fill-react';
 import React, {useMemo} from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';

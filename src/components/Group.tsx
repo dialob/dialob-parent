@@ -1,4 +1,4 @@
-import { ItemAction } from '@resys/dialob-fill-api';
+import { ItemAction } from '@dialob/fill-api';
 import React, {useContext} from 'react';
 import { Paper, Typography, Grid, Fade } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';

@@ -21,6 +21,18 @@
   dependencies:
     "@date-io/core" "^1.3.13"
 
+"@dialob/fill-api@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@dialob/fill-api/-/fill-api-1.4.1.tgz#bea4a96403c936c8d28a0a8c098c36bfb45420f1"
+  integrity sha512-+8i+/H8b850IEvVqZAU/UBIRtU2ofdWgFdZ19+YQ9Xdd8/3h1buoR7vQXiuIGsew7B0PZURpKz5uS7XpXanhZQ==
+  dependencies:
+    immer "^3.1.2"
+
+"@dialob/fill-react@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@dialob/fill-react/-/fill-react-3.0.0.tgz#61c61020c0e6a0d9930ce6c39247e2dc0115b785"
+  integrity sha512-f7cpMM9g+MoTYoJYAA8/dl81FgVhIO8z2fItH5ZGFb2AkoQZinJ37G8leFs1Y7V/dWujvwpqusCjUW4Tu3J2lg==
+
 "@emotion/hash@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.8.0.tgz#bbbff68978fefdbe68ccb533bc8cbe1d1afb5413"
@@ -169,23 +181,6 @@
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
     react-is "^16.8.0"
-
-"@resys/dialob-fill-api@^1.4.0":
-  version "1.4.1"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-api/-/dialob-fill-api-1.4.1.tgz#a5bc5b803d0c8acd928849cc5cafb371e6fbc1e6"
-  integrity sha512-SCMBPis3Gn8EAvi0Gu2k6UZip6ON8SbREiEA+Fnww66PDW6WstBxQPggTPcCsCU2jZgi/eqhRhZtGS9z33LUKg==
-  dependencies:
-    immer "^3.1.2"
-
-"@resys/dialob-fill-react@^2.6.3":
-  version "2.6.3"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-fill-react/-/dialob-fill-react-2.6.3.tgz#b088ec5d8515c56fadef913d39ad9cc726409c48"
-  integrity sha512-j5C24AMwGRFieAX71zjtQ1LmfMihXBDUfU21NqTX+YN3JJSVEK/M83Yk5MSciXL5R/RF4X9lpFbOD036UaMVHg==
-
-"@resys/mapbox-connector@^1.1.2":
-  version "1.1.2"
-  resolved "https://repo.resys.io/repository/npm/@resys/mapbox-connector/-/mapbox-connector-1.1.2.tgz#fcd931981251b09341e2187646570a8c65dff6cb"
-  integrity sha512-LMuQ4JFd9YPsTb66pT/D0Sfejk0heyZhmRRX7nWIHmqLlWrBdvKWROzT598zvCVRm2Rx7GoHGoYcxqcOOjj8Dg==
 
 "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"

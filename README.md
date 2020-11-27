@@ -7,15 +7,15 @@
 Add dependency
 
 ```
-yarn add @resys/dialob-fill-material
+yarn add @dialob/fill-material
 ```
 
 Following peer dependencies need to be installed:
 
 ```json
 {
-  "@resys/dialob-fill-api": "^1.4.*",
-  "@resys/dialob-fill-react": "^2.6.*",
+  "@dialob/fill-api": "^1.4.*",
+  "@dialob/fill-react": "^3.0.*",
   "@material-ui/core": "^4.11.*",
   "@material-ui/icons": "^4.9.*",
   "@material-ui/lab": "^4.0.*",
@@ -33,8 +33,8 @@ One possibility to implement
 
 ```ts
 import React from 'react';
-import {Session as DialobSession } from '@resys/dialob-fill-api';
-import {MaterialDialob, DefaultView} from '@resys/dialob-fill-material';
+import {Session as DialobSession } from '@dialob/fill-api';
+import {MaterialDialob, DefaultView} from '@dialob/fill-material';
 import {Item} from './Item';
 
 export interface DialobProps {

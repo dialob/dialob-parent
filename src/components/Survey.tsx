@@ -1,7 +1,7 @@
-import { ValueSetAction } from '@resys/dialob-fill-api';
+import { ValueSetAction } from '@dialob/fill-api';
 import React from 'react';
 import { Box, createStyles, makeStyles, Radio, Theme } from '@material-ui/core';
-import { useFillItem, useFillActions } from '@resys/dialob-fill-react';
+import { useFillItem, useFillActions } from '@dialob/fill-react';
 import { Description } from './Description';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

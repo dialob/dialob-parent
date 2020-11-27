@@ -1,5 +1,5 @@
-import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@resys/dialob-fill-react';
-import { Session } from '@resys/dialob-fill-api';
+import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@dialob/fill-react';
+import { Session } from '@dialob/fill-api';
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
