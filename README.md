@@ -70,7 +70,7 @@ session.on('sync' (syncState) => {
   console.log('onSync', syncState);
 });
 
-// `error` event is emitted after any error, remote or local.
+// `error` event is emitted if some error happens that can't be handled by the library
 session.on('error', (type, error) => {
   // `type` is either `SYNC` (sync error) or `SYNC-REPEATED` (repeated sync error, indication of systematic failure and should require user interaction)
   console.error(type, error);
