@@ -1,4 +1,5 @@
 # next
+* `CLIENT` error type has been removed. It wasn't really used anyway.
 
 # 1.4.1
 * Package renamed to `@dialob/fill-api` and is published to npmjs

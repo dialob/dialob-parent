@@ -7,7 +7,7 @@ import { Transport } from './transport';
 
 type Event = 'update' | 'sync' | 'error';
 export type onUpdateFn = () => void;
-export type onErrorFn = (type: 'CLIENT' | 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
+export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
 
 export interface SessionOptions {
   syncWait?: number;
@@ -153,9 +153,5 @@ export class Session {
         target.splice(idx, 1);
       });
     }
-  }
-
-  private handleError(error: DialobError) {
-    this.listeners.error.forEach(l => l('CLIENT', error));
   }
 };
