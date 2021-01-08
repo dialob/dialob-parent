@@ -450,5 +450,88 @@ test('syncs new actions immediately if an action was queued that needs to be imm
   await verifyUpdates(transport, 3);
 });
 
-test.todo('calls event handlers on state update');
-test.todo('calls event handlers on sync update');
+test('calls event handlers on state update', async () => {
+  const { session, transport } = makeSession();
+  transport.getFullState.mockReturnValue({
+    rev: 120,
+    actions: [
+      {
+        type: 'ITEM',
+        item: {
+          id: 'item1',
+          type: 'text',
+          value: null
+        }
+      },
+      {
+        type: 'ITEM',
+        item: {
+          id: 'item2',
+          type: 'text',
+          value: null
+        }
+      }
+    ],
+  });
+
+  await session.pull();
+  const onUpdate = jest.fn();
+
+  session.on('update', onUpdate);
+  session.setAnswer('item1', 'new-text');
+
+  expect(onUpdate).toBeCalledTimes(1);
+  expect(onUpdate).lastCalledWith();
+});
+
+test('calls event handlers on sync update', async () => {
+  const { session, transport } = makeSession({ syncWait: 10000 });
+  const onUpdate = jest.fn();
+  const onSync = jest.fn();
+  session.on('update', onUpdate);
+  session.on('sync', onSync);
+
+  await flushPromises();
+  expect(onUpdate).not.toBeCalled();
+
+  const transportResponse = {
+    rev: 120,
+    actions: [
+      {
+        type: 'ITEM',
+        item: {
+          id: 'item1',
+          type: 'text',
+          value: null
+        }
+      },
+      {
+        type: 'ITEM',
+        item: {
+          id: 'item2',
+          type: 'text',
+          value: null
+        }
+      }
+    ],
+  }
+  transport.getFullState.mockReturnValue(transportResponse);
+
+  await session.pull();
+  expect(onUpdate).toBeCalledTimes(1);
+  expect(onSync).toBeCalledTimes(2);
+
+  expect(onSync).toBeCalledWith('INPROGRESS');
+  expect(onSync).toBeCalledWith('DONE', transportResponse);
+});
+
+test('throws error if item does not exist', () => {
+  const { session } = makeSession();
+  expect(() => {
+    session.setAnswer('someItem', 'yes');
+  }).toThrowError(`No item found with id 'someItem'`);
+});
+
+test('throws error if syncWait is smaller than -1', () => {
+  expect(() => makeSession({ syncWait: -2 })).toThrowError('syncWait must be -1 or higher!');
+});
