@@ -7,7 +7,7 @@ export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE', response?: DialobRespo
 export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
 
 function syncActionImmediately(action: Action): boolean {
-  return action.type === 'ADD_ROW' || action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO';
+  return action.type === 'ADD_ROW' || action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO' || action.type === 'SET_LOCALE';
 }
 
 export class SyncQueue {

@@ -1,12 +1,12 @@
 # Dialob Fill API
 ## Install
 ```sh
-yarn add @resys/dialob-fill-api
+yarn add @dialob/fill-api
 ```
 
 ## Quick-start
 ```js
-import DialobFill from '@resys/dialob-fill-api';
+import DialobFill from '@dialob/fill-api';
 
 // Replace `sessionId` and `endpoint` with appropriate values
 const sessionId = '8bab410b7bfac6f64fbbb1024d52a96f';
@@ -51,6 +51,12 @@ session.getValueSet(valueSetId);
 // Get locale
 session.getLocale();
 
+// Set locale
+session.setLocale(locale);
+
+// Get context or expression variable value
+session.getVariable(id);
+
 // The session object batches updates and syncs them at appropriate times, however, it also updates
 // its local cache instantly. The `update` event is emitted on any state change, local or remote.
 session.on('update', () => {
@@ -90,3 +96,14 @@ interface SessionOptions {
   syncWait?: number;
 }
 ```
+
+## Compatibility
+This API does not follow the same versioning as Dialob backend. To ensure full compatibility, refer
+to this table. Each row documents a compatibility change, any versions in between can be assumed to
+be compatible with eachother.
+
+| fill-api   | backend  |
+| ---------- | -------- |
+| 1.4.0      | 1.0.11   |
+| 1.3.0      | 1.0.8    |
+| 1.0.0      | 1.0.0    |

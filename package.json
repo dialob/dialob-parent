@@ -1,6 +1,6 @@
 {
-  "name": "@resys/dialob-fill-api",
-  "version": "1.2.3",
+  "name": "@dialob/fill-api",
+  "version": "1.4.1",
   "description": "Dialob filling API",
   "main": "lib/index.js",
   "files": [
@@ -9,7 +9,7 @@
   "author": "Oskar Köök <oskar.kook@resys.io>",
   "license": "Apache-2.0",
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "scripts": {
@@ -21,7 +21,7 @@
     "@types/jest": "^25.2.1",
     "jest": "^26.0.1",
     "ts-jest": "^25.5.0",
-    "typescript": "^3.8.0"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "immer": "^3.1.2"

@@ -15,6 +15,9 @@ export interface SessionState {
   errors: Record<string, SessionError[]>;
   locale?: string;
   complete: boolean;
+  variables: {
+    [id: string]: any;
+  }
 };
 
 export type onUpdateFn = () => void;
@@ -45,6 +48,7 @@ export class Session {
       valueSets: {},
       errors: {},
       complete: false,
+      variables: {}
     };
     this.syncQueue = new SyncQueue(id, transport, options.syncWait || 250);
     this.syncQueue.on('sync', (type, response) => {
@@ -84,10 +88,15 @@ export class Session {
           answer.value = action.answer;
         } else if(action.type === 'ITEM') {
           const item = action.item;
-          state.items[item.id] = item;
 
-          if('items' in item && item.items) {
-            this.insertReverseRef(state, item.id, item.items);
+          if (action.item.type === 'context' || action.item.type === 'variable') {
+            this.state.variables[action.item.id] = action.item.value;
+          } else {
+            state.items[item.id] = item;
+
+            if('items' in item && item.items) {
+              this.insertReverseRef(state, item.id, item.items);
+            }
           }
         } else if(action.type === 'ERROR') {
           const error = action.error;
@@ -127,6 +136,8 @@ export class Session {
         } else if(action.type === 'PREVIOUS') {
           // Wait for server response
         } else if (action.type === 'GOTO') {
+          // Wait for server response
+        } else if (action.type === 'SET_LOCALE') {
           // Wait for server response
         } else if(action.type === 'REMOVE_ERROR') {
           const error = action.error;
@@ -169,6 +180,10 @@ export class Session {
 
   public getLocale(): string | undefined {
     return this.state.locale;
+  }
+  
+  public getVariable(id: string): any {
+    return this.state.variables[id];
   }
 
   public isComplete(): boolean {
@@ -216,6 +231,12 @@ export class Session {
 
   public goToPage(pageId: string) {
     this.queueAction({ type: 'GOTO', id: pageId });
+  }
+
+  public setLocale(locale: string) {
+    if (locale !== this.state.locale) {
+      this.queueAction({type: 'SET_LOCALE', value: locale});
+    }
   }
 
   /** EVENT LISTENERS */
