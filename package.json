@@ -14,9 +14,13 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "yarn build && yarn publish"
+    "push": "yarn build && yarn publish",
+    "test": "jest --watch"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "jest": "^26.0.1",
+    "ts-jest": "^25.5.0",
     "typescript": "^3.9.7"
   },
   "dependencies": {
