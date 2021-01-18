@@ -41,17 +41,11 @@ export class SyncQueue {
   }
 
   public async pull(): Promise<void> {
-    this.listeners.sync.forEach(l => l('INPROGRESS'));
-    let response: DialobResponse | undefined;
     try {
-      response = await this.transport.getFullState(this.id);
+      await this.runSyncFn(() => this.transport.getFullState(this.id));
     } catch(e) {
       this.handleError(e);
-      return;
     }
-
-    this.rev = response.rev;
-    this.listeners.sync.forEach(l => l('DONE', response));
   }
 
   public add(action: Action) {
@@ -135,7 +129,7 @@ export class SyncQueue {
     this.syncActionQueue = [];
     this.syncQueueImmediately = false;
     try {
-      await this.sync(syncedActions, this.rev);
+      await this.runSyncFn(() => this.transport.update(this.id, syncedActions, this.rev));
       this.inSync = false;
       this.retryCount = 0;
 
@@ -143,6 +137,7 @@ export class SyncQueue {
         this.syncQueuedActions();
       }
     } catch(e) {
+      this.handleError(e);
       const newActions = this.syncActionQueue;
       this.syncActionQueue = syncedActions;
       for(const action of newActions) {
@@ -162,20 +157,6 @@ export class SyncQueue {
     }
   }
 
-  private async sync(actions: Action[], rev: number): Promise<void> {
-    this.listeners.sync.forEach(l => l('INPROGRESS'));
-    let response: DialobResponse | undefined;
-    try {
-      response = await this.transport.update(this.id, actions, rev);
-    } catch(e) {
-      this.handleError(e);
-      return;
-    }
-
-    this.rev = response.rev;
-    this.listeners.sync.forEach(l => l('DONE', response));
-  }
-
   private deferSync(timeout = this.syncWait) {
     this.syncTimer = setTimeout(this.syncQueuedActions, timeout);
   }
@@ -185,6 +166,14 @@ export class SyncQueue {
 
     clearTimeout(this.syncTimer);
     this.syncTimer = undefined;
+  }
+
+  private async runSyncFn(syncFn: () => Promise<DialobResponse>): Promise<DialobResponse> {
+    this.listeners.sync.forEach(l => l('INPROGRESS'));
+    const response = await syncFn();
+    this.rev = response.rev;
+    this.listeners.sync.forEach(l => l('DONE', response));
+    return response;
   }
 
   private handleError(error: Error) {
