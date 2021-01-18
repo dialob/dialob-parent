@@ -1,5 +1,8 @@
 # next
+
+# 1.4.2
 * `CLIENT` error type has been removed. It wasn't really used anyway.
+* Errors during sync are no longer thrown. They can be handled through a listener.
 
 # 1.4.1
 * Package renamed to `@dialob/fill-api` and is published to npmjs
