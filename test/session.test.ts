@@ -1,4 +1,5 @@
 import { Action } from '../src/actions';
+import { DialobRequestError } from '../src/error';
 import { Session, SessionOptions } from '../src/session';
 import { MockTransport } from './mocks/mock-transport';
 
@@ -523,6 +524,58 @@ test('calls event handlers on sync update', async () => {
 
   expect(onSync).toBeCalledWith('INPROGRESS');
   expect(onSync).toBeCalledWith('DONE', transportResponse);
+});
+
+test('does not throw when fetch fails', async () => {
+  const { session, transport } = makeSession({ syncWait: -1 });
+  transport.getFullState.mockImplementation(() => {
+    throw new DialobRequestError('Failure during fetch', 500);
+  });
+
+  await expect(session.pull()).resolves.not.toThrow();
+
+  transport.update.mockImplementation(() => {
+    const error = new Error();
+    error.name = 'NetworkError';
+
+    throw error;
+  });
+
+  transport.getFullState.mockReset();
+  transport.getFullState.mockReturnValue({
+    rev: 120,
+    actions: [
+      {
+        type: 'ITEM',
+        item: {
+          id: 'item1',
+          type: 'text',
+          value: null
+        }
+      },
+      {
+        type: 'ITEM',
+        item: {
+          id: 'item2',
+          type: 'text',
+          value: null
+        }
+      }
+    ],
+  });
+  await session.pull();
+  expect(() => {
+    session.setAnswer('item1', 'value');
+  }).not.toThrow();
+});
+
+test('throws error during sync if it is not a network error', async () => {
+  const { session, transport } = makeSession({ syncWait: -1 });
+  transport.getFullState.mockImplementation(() => {
+    throw new Error();
+  });
+
+  await expect(session.pull()).rejects.toThrow();
 });
 
 test('throws error if item does not exist', () => {
