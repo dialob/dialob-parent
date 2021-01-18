@@ -7,6 +7,7 @@ export class DialobRequestError extends Error {
     Object.setPrototypeOf(this, DialobRequestError.prototype);
     this.reason = reason;
     this.code = code;
+    this.name = 'DialobRequestError';
   }
 }
 

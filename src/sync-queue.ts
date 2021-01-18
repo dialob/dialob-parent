@@ -47,7 +47,7 @@ export class SyncQueue {
       response = await this.transport.getFullState(this.id);
     } catch(e) {
       this.handleError(e);
-      throw e;
+      return;
     }
 
     this.rev = response.rev;
@@ -143,9 +143,6 @@ export class SyncQueue {
         this.syncQueuedActions();
       }
     } catch(e) {
-      if(e.name !== 'NetworkError') {
-        throw e;
-      }
       const newActions = this.syncActionQueue;
       this.syncActionQueue = syncedActions;
       for(const action of newActions) {
@@ -172,7 +169,7 @@ export class SyncQueue {
       response = await this.transport.update(this.id, actions, rev);
     } catch(e) {
       this.handleError(e);
-      throw e;
+      return;
     }
 
     this.rev = response.rev;
@@ -191,6 +188,9 @@ export class SyncQueue {
   }
 
   private handleError(error: Error) {
+    if(error.name !== 'NetworkError' && error.name !== 'DialobRequestError') {
+      throw error;
+    }
     this.listeners.error.forEach(l => l('SYNC', error));
   }
 }
