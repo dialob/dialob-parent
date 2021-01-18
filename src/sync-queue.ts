@@ -40,6 +40,10 @@ export class SyncQueue {
     this.transport = transport;
   }
 
+  public getId() {
+    return this.id;
+  }
+
   public async pull(): Promise<void> {
     try {
       await this.runSyncFn(() => this.transport.getFullState(this.id));

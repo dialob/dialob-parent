@@ -120,6 +120,10 @@ export class Session {
     }
   }
 
+  public get id() {
+    return this.syncQueue.getId();
+  }
+
   /** EVENT LISTENERS */
   public on(type: 'update', listener: onUpdateFn): void;
   public on(type: 'sync', listener: onSyncFn): void;
