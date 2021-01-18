@@ -1,5 +1,11 @@
 # next
 
+# 1.4.4
+* Fix state initialization
+
+# 1.4.3
+* Fix accidentally removed attribute `session.id`
+
 # 1.4.2
 * `CLIENT` error type has been removed. It wasn't really used anyway.
 * Errors during sync are no longer thrown. They can be handled through a listener.
