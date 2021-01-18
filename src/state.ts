@@ -18,15 +18,14 @@ export interface SessionState {
   }
 };
 
-export function initState(): SessionState {
-  return {
-    items: {},
-    reverseItemMap: {},
-    valueSets: {},
-    errors: {},
-    complete: false,
-    variables: {}
-  };
+export function initState(state: SessionState = ({} as SessionState)): SessionState {
+  state.items = {};
+  state.reverseItemMap = {};
+  state.valueSets = {};
+  state.errors = {};
+  state.complete = false;
+  state.variables = {};
+  return state;
 }
 
 function insertReverseRef(state: SessionState, parentId: string, refIds: string[]) {
@@ -42,7 +41,7 @@ export function updateState(state: SessionState, actions: Action[]): SessionStat
   return produce(state, state => {
     for(const action of actions) {
       if(action.type === 'RESET') {
-        return initState();
+        initState(state);
       } else if(action.type === 'ANSWER') {
         const answer = state.items[action.id];
         if(!answer) throw new DialobError(`No item found with id '${action.id}'`);
