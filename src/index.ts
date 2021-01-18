@@ -1,6 +1,7 @@
 import { SessionConfig } from './config';
 import { DialobError, DialobRequestError } from './error';
-import { Session, SessionError, SessionItem, SessionOptions, SessionValueSet } from './session';
+import { Session, SessionOptions } from './session';
+import { SessionError, SessionItem, SessionValueSet } from './state';
 import { RESTTransport, Transport } from './transport';
 
 export function newSession(sessionId: string, config: SessionConfig, options?: SessionOptions): Session {
