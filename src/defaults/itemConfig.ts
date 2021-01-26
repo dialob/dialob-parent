@@ -1,5 +1,5 @@
 import {ItemProps} from '../components/componentTypes';
-import {Page, Group, DateItem, Time, Text, Boolean, Choice, MultiChoice, Note, RowGroup} from '../components';
+import {Page, Group, DateItem, Time, Text, Boolean, Choice, MultiChoice, Note, RowGroup, SurveyGroup} from '../components';
 
 interface ItemConfigEntry {
   matcher: (item: any, isMainGroupItem: boolean) => boolean;
@@ -32,14 +32,12 @@ export const DEFAULT_ITEM_CONFIG: ItemconfigType = {
       answerRequired: false,
       childrenRequired: true
     },
-    /*
     {
       matcher: item => item.type === 'surveygroup',
       component: SurveyGroup,
       answerRequired: false,
-      childrenRequired: true
+      childrenRequired: false
     },
-    */
     {
       matcher: item => item.type === 'rowgroup',
       component: RowGroup,
@@ -72,7 +70,7 @@ export const DEFAULT_ITEM_CONFIG: ItemconfigType = {
     },
     /*
     {
-      matcher: item => item.type === 'survey',
+      matcher: item => item.type === 'survey', // Survey is handled within survey group
       component: SurveyItem,
       answerRequired: true,
       childrenRequired: false

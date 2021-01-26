@@ -8,3 +8,4 @@ export {Note} from './Note';
 export {RowGroup} from './RowGroup';
 export {DateItem} from './DateItem';
 export {Time} from './Time';
+export {SurveyGroup} from './SurveyGroup';

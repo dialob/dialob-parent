@@ -58,5 +58,4 @@ TBD..
 
 ### Missing features
 
-* Survey
 * Description popups
