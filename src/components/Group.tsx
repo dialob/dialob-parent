@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 })
 );
 
+type ColumnType = boolean | "auto" | 2 | 1 | 12 | 6 | 3 | 4 | 5 | 7 | 8 | 9 | 10 | 11 | undefined;
+
 export interface GroupProps {
   group: ItemAction<'group' | 'rowgroup'>['item'];
 };
@@ -19,6 +21,12 @@ export interface GroupProps {
 export const Group: React.FC<GroupProps> = ({ group, children }) => {
   const classes = useStyles();
   const groupCtx = useContext(GroupContext);
+  let columns = group.props?.columns || 1;
+  columns = columns > 4 ? 4 : columns;
+  //@ts-ignore
+  const lg: ColumnType = columns > 1 ? Math.floor(12 / columns) : undefined;
+
+  //@ts-ignore
   return (
     <GroupContext.Provider value={{level: groupCtx.level < 6 ? groupCtx.level + 1 : groupCtx.level}}>
       <Fade in={true}>
@@ -32,7 +40,7 @@ export const Group: React.FC<GroupProps> = ({ group, children }) => {
             </Grid>
             {
               React.Children.map(children, i =>
-                <Grid item xs={12}>{i}</Grid>
+                <Grid item xs={12} lg={lg}>{i}</Grid>
               )
             }
           </Grid>

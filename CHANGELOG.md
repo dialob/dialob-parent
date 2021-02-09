@@ -1,3 +1,6 @@
+# 0.6.1
+
+* Fixed `columns` property for groups
 
 # 0.6.0
 
