@@ -65,7 +65,7 @@ Following components are exported
 * `<Choice>` Choice dropdown
 * `<ChoiceAC>` Choice dropdown with autocomplete
 * `<DateField>` Date field
-* `<Group>` Group
+* `<Group>` Group, supports 'columns' optional properties, max 4 columns
 * `<MultiChoice>` Multi-choice, checbkox list style
 * `<MultiChoiceAC>` Multi-choice, dropdown autocomplete style
 * `<Note>` Note
