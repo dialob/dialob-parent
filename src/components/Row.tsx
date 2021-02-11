@@ -1,10 +1,11 @@
 import { ItemAction } from '@dialob/fill-api';
 import { useFillActions, useFillSession } from '@dialob/fill-react';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Remove } from '@material-ui/icons';
 import { FormattedMessage } from 'react-intl';
+import { RowGroupContext } from '../context/RowGroupContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   rowSurface: {
@@ -48,6 +49,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
   const {deleteRow} = useFillActions();
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
   const classes = useStyles();
+  const rowGroupContext = useContext(RowGroupContext);
   const removeRow = () => {
     setConfirmationOpen(false);
     deleteRow(row.id);
@@ -56,8 +58,14 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
 
   const itemIds = row?.items ? row.items.filter(itemId => session.getItem(itemId)) : [];
 
+  let columns = rowGroupContext.rowGroup?.props?.columns || 1;
+  columns = columns > 4 ? 4 : columns;
+  //@ts-ignore
+  const lg: ColumnType = columns > 1 ? Math.floor(12 / columns) : undefined;
+
   responsiveProps = {
-    xs: 12
+    xs: 12,
+    lg
   };
 
   return (

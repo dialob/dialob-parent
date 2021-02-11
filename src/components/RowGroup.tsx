@@ -6,6 +6,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Add } from '@material-ui/icons';
 import { FormattedMessage } from 'react-intl';
 import { Description } from './Description';
+import { RowGroupContext } from '../context/RowGroupContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   addButton: {
@@ -29,7 +30,9 @@ export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
           <Button size='small' color='primary' variant='contained' className={classes.addButton} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }}><FormattedMessage id='row.add.button' /></Button>
         </Typography>
       </Grid>
-      {children}
+      <RowGroupContext.Provider value={{rowGroup}}>
+        {children}
+      </RowGroupContext.Provider>
     </>
   );
 };

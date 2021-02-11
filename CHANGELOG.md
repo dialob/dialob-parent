@@ -1,3 +1,7 @@
+# 0.7.0
+
+* RowGroup can now tage `columns` property
+
 # 0.6.1
 
 * Fixed `columns` property for groups
