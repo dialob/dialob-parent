@@ -1,6 +1,6 @@
 {
   "name": "@resys/dialob-review-material",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Material UI components for Dialob review",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
