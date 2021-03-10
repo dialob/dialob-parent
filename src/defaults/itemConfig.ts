@@ -1,5 +1,6 @@
 import {ItemProps} from '../components/componentTypes';
 import {Page, Group, DateItem, Time, Text, Boolean, Choice, MultiChoice, Note, RowGroup, SurveyGroup} from '../components';
+import { Decimal } from '../components/Decimal';
 
 interface ItemConfigEntry {
   matcher: (item: any, isMainGroupItem: boolean) => boolean;
@@ -91,6 +92,12 @@ export const DEFAULT_ITEM_CONFIG: ItemconfigType = {
     {
       matcher: item => item.type === 'time',
       component: Time,
+      answerRequired: true,
+      childrenRequired: false
+    },
+    {
+      matcher: item => item.type === 'number' || item.type === 'decimal',
+      component: Decimal,
       answerRequired: true,
       childrenRequired: false
     }
