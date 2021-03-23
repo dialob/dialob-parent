@@ -1,6 +1,8 @@
-import produce from 'immer';
+import produce, { enableMapSet } from 'immer';
 import { DialobError } from './error';
 import { Action, ErrorAction, ItemAction, ItemType, ValueSetAction } from './actions';
+
+enableMapSet();
 
 export type SessionItem<T extends ItemType = ItemType> = ItemAction<T>['item'];
 export type SessionError = ErrorAction['error'];

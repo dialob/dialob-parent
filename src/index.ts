@@ -3,9 +3,6 @@ import { DialobError, DialobRequestError } from './error';
 import { Session, SessionOptions } from './session';
 import { SessionError, SessionItem, SessionValueSet } from './state';
 import { RESTTransport, Transport } from './transport';
-import { enableMapSet } from 'immer';
-
-enableMapSet();
 
 export function newSession(sessionId: string, config: SessionConfig, options?: SessionOptions): Session {
   let { transport } = config;
