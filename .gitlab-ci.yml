@@ -7,8 +7,8 @@ stages:
 
 sast:
   stage: test
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
 
 test:
   stage: test
