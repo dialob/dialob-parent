@@ -10,6 +10,20 @@ sast:
   only:
     - master
 
+test:
+  stage: test
+  image:
+    name: node:14.11
+  before_script:
+    - yarn install
+  script:
+    - yarn test --reporters=default --reporters=jest-junit
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Dependency-Scanning.gitlab-ci.yml
