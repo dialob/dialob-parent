@@ -1,5 +1,8 @@
 # next
 
+# 1.4.6
+* Fixes issue from Immer upgrade
+
 # 1.4.5
 * Errors with the same id & code replace existing ones. This should fix issues with persistent errors after locale change.
 
