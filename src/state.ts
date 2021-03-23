@@ -10,6 +10,9 @@ export interface SessionState {
   items: Record<string, SessionItem>;
   reverseItemMap: Record<string, Set<string>>;
   valueSets: Record<string, SessionValueSet>;
+  // We keep errors in an array as this is the common structure in which errors are needed by client UIs. See
+  // `session.getItemErrors()`. It adds some slight overhead when adding/removing errors, but that happens less
+  // frequently than the client asking for the errors.
   errors: Record<string, SessionError[]>;
   locale?: string;
   complete: boolean;
@@ -65,10 +68,16 @@ export function updateState(state: SessionState, actions: Action[]): SessionStat
       } else if(action.type === 'ERROR') {
         const error = action.error;
         if(!state.errors[error.id]) {
-          state.errors[error.id] = [];
+          state.errors[error.id] = [error];
+        } else {
+          const itemErrors = state.errors[error.id];
+          const errorIdx = itemErrors.findIndex(e => e.code === error.code);
+          if(errorIdx !== -1) {
+            itemErrors[errorIdx] = error;
+          } else {
+            itemErrors.push(error);
+          }
         }
-
-        state.errors[error.id].push(error);
       } else if(action.type === 'LOCALE') {
         state.locale = action.value;
       } else if(action.type === 'VALUE_SET') {
