@@ -23,6 +23,9 @@ test:
 sast:
   stage: security
 
+dependency_scanning:
+  stage: security
+
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Dependency-Scanning.gitlab-ci.yml
