@@ -3,9 +3,13 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
 stages:
-- test
+  - test
+
 sast:
   stage: test
+  only:
+    - master
+
 include:
-- template: Security/SAST.gitlab-ci.yml
-- template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
