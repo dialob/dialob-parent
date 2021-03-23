@@ -4,11 +4,7 @@
 # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
 stages:
   - test
-
-sast:
-  stage: test
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+  - security
 
 test:
   stage: test
@@ -23,6 +19,9 @@ test:
     reports:
       junit:
         - junit.xml
+
+sast:
+  stage: security
 
 include:
   - template: Security/SAST.gitlab-ci.yml
