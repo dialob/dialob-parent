@@ -102,6 +102,31 @@ function newValueSet(state, itemId = null, entries = null) {
   return newState;
 }
 
+function makeValuesetGlobal(state, valueSetId) {
+  let newState = state.updateIn(['metadata', 'composer', 'globalValueSets'], gvs => {
+    const gvsInfo = Immutable.fromJS({
+      valueSetId,
+      label: ''
+    });
+    if (!gvs) {
+      return new Immutable.List([gvsInfo]);
+    } else {
+      return gvs.push(gvsInfo);
+    }
+  });
+  return newState;
+}
+
+function copyValuesetLocal(state, valueSetId, itemId) {
+  const newValueSetId = generateValueSetId(state.get('valueSets'), 'vs');
+  let newState = state.setIn(['data', itemId, 'valueSetId'], newValueSetId);
+  const idx =  findValuesetIndex(state, valueSetId);
+  const sourceValueSet = state.get('valueSets').get(idx);
+  const newValueSet = sourceValueSet.set('id', newValueSetId);
+  newState = newState.update('valueSets', valueSets => valueSets.push(newValueSet));
+  return newState;
+}
+
 function setValueSetName(state, valueSetId, name) {
   const gvsIndex = state.getIn(['metadata', 'composer', 'globalValueSets']).findIndex(vs => vs.get('valueSetId') === valueSetId);
   if (gvsIndex > -1) {
@@ -337,6 +362,10 @@ export function formReducer(state = INITIAL_STATE, action) {
       return deleteItem(state, action.itemId);
     case Actions.CREATE_VALUESET:
       return newValueSet(state, action.forItem, action.entries);
+    case Actions.MAKE_VALUESET_GLOBAL:
+      return makeValuesetGlobal(state, action.valueSetId);
+    case Actions.COPY_VALUESET_LOCAL:
+      return copyValuesetLocal(state, action.valueSetId, action.itemId);
     case Actions.SET_VALUESET_ENTRIES:
       return setValuesetEntries(state, action.valueSetId, action.entries);
     case Actions.CREATE_VALUESET_ENTRY:

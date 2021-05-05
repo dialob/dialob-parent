@@ -97,6 +97,25 @@ export function createValueset(forItem = null, entries = null) {
   };
 }
 
+export function makeValuesetGlobal(valueSetId) {
+  return {
+    type: Actions.MAKE_VALUESET_GLOBAL,
+    valueSetId,
+    saveNeeded: true,
+    confirm: true
+  }
+}
+
+export function copyValuesetLocal(valueSetId, itemId) {
+  return {
+    type: Actions.COPY_VALUESET_LOCAL,
+    valueSetId,
+    itemId,
+    saveNeeded: true,
+    confirm: true
+  }
+}
+
 export function createValuesetEntry(valueSetId) {
   return {
     type: Actions.CREATE_VALUESET_ENTRY,

@@ -1,3 +1,10 @@
+# 2.8.0
+
+It is now possible to create a global choice list from a local choice list and make a local copy of a global choicelist.
+
+* In case of a local list, "Make Global" button will make the list global and switch to this list.
+* If a global list is chosen for an item, "Copy as local" button will create a local copy of the choicelist.
+
 # 2.7.0
 
 Requires Dialob Backend v. 1.0.13 or newer
