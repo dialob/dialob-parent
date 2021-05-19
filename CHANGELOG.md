@@ -1,3 +1,7 @@
+# 0.7.1
+
+* Fixed translation for completion dialog title
+
 # 0.7.0
 
 * RowGroup can now tage `columns` property

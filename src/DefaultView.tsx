@@ -118,7 +118,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
           </Grid>
           )}
           <Dialog open={completeConfirmationOpen}>
-            <DialogTitle><FormattedMessage id='Are you sure you want to complete this dialog?' /></DialogTitle>
+            <DialogTitle><FormattedMessage id='complete.confirmation.title' /></DialogTitle>
             <DialogContent>
               <Typography variant='body1'>
                 <FormattedMessage id='complete.confirmation.message' />
