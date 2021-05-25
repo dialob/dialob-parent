@@ -39,7 +39,7 @@ class Note extends Item {
           </Table>
         }
         <Segment onClick={(e) => {e.stopPropagation(); this.setActive(true);}}  className={classnames({'composer-active': this.props.active}, 'composer-segment-nopadding')} attached='bottom'>
-          <MarkdownEditor onChange={(v) => this.setAttribute('label', v, this.props.language)} value={this.props.item.getIn(['label', this.props.language])} />
+          <MarkdownEditor key={editorKey} onChange={(v) => this.setAttribute('label', v, this.props.language)} value={this.props.item.getIn(['label', this.props.language])} />
         </Segment>
       </Scrolltarget>
     );
