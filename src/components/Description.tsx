@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles, IconButton, Dialog, DialogTitle, Typography, DialogContent, useTheme, useMediaQuery } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import CloseIcon from '@material-ui/icons/Close';
-import { MarkdownView } from './MarkdownView';
+
+import { ConfigContext } from '../';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   dialogTitle: {
@@ -25,6 +26,7 @@ export interface DescriptionProps {
 
 export const Description: React.FC<DescriptionProps> = ({ title, text }) => {
   const classes = useStyles();
+  const config = React.useContext(ConfigContext);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -46,7 +48,7 @@ export const Description: React.FC<DescriptionProps> = ({ title, text }) => {
             </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <MarkdownView text={text} />
+          {config.description(text)}
         </DialogContent>
       </Dialog>
     </>

@@ -3,7 +3,7 @@ import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { renderErrors } from './helpers';
+import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface MultiChoiceACProps {
@@ -34,7 +34,9 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
         onChange = {(event: any, newValue: (ValueSetEntry | undefined)[]) => {
           setAnswer(multichoice.id, newValue?.map(c => c?.key));
         }}
-        renderInput={params => <TextField {...params} inputProps={{...params.inputProps, autoComplete: 'new-password'}} label={multichoice.label} error={errors.length > 0} helperText={renderErrors(errors)}/>}
+        renderInput={params => <TextField {...params} inputProps={{...params.inputProps, autoComplete: 'new-password'}} label={multichoice.label} error={errors.length > 0} 
+        helperText={<RenderErrors errors={errors} />}
+        />}
       />
     </DescriptionWrapper>
   );

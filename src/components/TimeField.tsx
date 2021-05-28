@@ -3,7 +3,7 @@ import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import {TimePicker} from '@material-ui/pickers';
 import moment from 'moment';
-import { renderErrors } from './helpers';
+import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface TimeFieldProps {
@@ -30,7 +30,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
         autoOk
         required={timefield.required}
         error={errors.length > 0}
-        helperText={renderErrors(errors)}
+        helperText={<RenderErrors errors={errors} />}
       />
     </DescriptionWrapper>
   );

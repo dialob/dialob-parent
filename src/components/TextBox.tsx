@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
-import { renderErrors } from './helpers';
+import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface TextBoxProps {
@@ -21,7 +21,7 @@ export const TextBox: React.FC<TextBoxProps> = ({ text, errors }) => {
         value={text.value || ''}
         onChange={e => setAnswer(text.id, e.currentTarget.value)}
         multiline
-        helperText={renderErrors(errors)}
+        helperText={<RenderErrors errors={errors} />}
       />
     </DescriptionWrapper>
   );

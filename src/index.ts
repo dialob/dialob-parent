@@ -26,5 +26,6 @@ export {MarkdownView, MarkdownViewProps} from './components/MarkdownView';
 
 export {GroupContext} from './context/GroupContext';
 export {RowGroupContext} from './context/RowGroupContext';
+export {ConfigContext} from './context/ConfigContext';
 
-export {renderErrors, ErrorHelperText} from './components/helpers';
+export {RenderErrors, ErrorHelperText, DefaultRenderErrors} from './components/helpers';

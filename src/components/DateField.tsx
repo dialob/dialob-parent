@@ -3,7 +3,7 @@ import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import React from 'react';
 import {DatePicker} from '@material-ui/pickers';
 import moment from 'moment';
-import { renderErrors } from './helpers';
+import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface DateFieldProps {
@@ -29,7 +29,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
         format={format}
         required={datefield.required}
         error={errors.length > 0}
-        helperText={renderErrors(errors)}
+        helperText={<RenderErrors errors={errors} />}
        />
     </DescriptionWrapper>
   );

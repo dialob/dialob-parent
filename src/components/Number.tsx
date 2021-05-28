@@ -2,13 +2,15 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
-import { renderErrors } from './helpers';
+import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
+
 
 export interface NumberProps {
   number: ItemAction<any, any, number>['item'];
   errors: SessionError[];
 };
+
 export const Number: React.FC<NumberProps> = ({ number, errors }) => {
   const {setAnswer} = useFillActions();
 
@@ -21,7 +23,7 @@ export const Number: React.FC<NumberProps> = ({ number, errors }) => {
         error={errors.length > 0}
         value={number.value || ''}
         onChange={e => setAnswer(number.id, e.currentTarget.value)}
-        helperText={renderErrors(errors)}
+        helperText={<RenderErrors errors={errors} />}
         type='number'
       />
     </DescriptionWrapper>
