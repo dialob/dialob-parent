@@ -85,6 +85,42 @@ Following components are exported
 
 (This needs improvement)
 
+### Customising MaterialDialob component
+
+In case of using default MaterialDialob component, errors and descriptions can be overridden using "components props" that currently supports errors and description.   
+In case of overriding default MaterialDialob, ConfigContext needs to be used to provide error and description configuration.
+
+
+#### ConfigContext
+
+Currently supports two kinds of component customisations: 
+
+* errors: Converts fill api errors into a React component that is shown as "helper text".
+* description: Converts text used in Dialob "description" option into Markdown-based React component.
+
+
+
+Example MaterialDialob with ConfigContext:
+
+```ts
+
+export const MaterialDialob: React.FC<MaterialDialobProps> = ({ session, locale, children, components }) => {
+  const errors =  (items: FillError[]) => components?.errors ? components.errors(items) : <DefaultRenderErrors errors={items} />;
+  const description = (text: string) => components?.description ? components.description(text) : <MarkdownView text={text} />;
+        
+  return (
+    <ConfigContext.Provider value={{errors, description}} >
+      <Session key={session.id} session={session} locale={locale}>
+        <IntlProvider locale={session.getLocale() || locale} messages={messages[locale]}>
+          {children}
+        </IntlProvider>
+      </Session>
+    </ConfigContext.Provider>
+  );
+}
+```
+
+
 ### Missing features
 
 * Network / service error handling
