@@ -5,6 +5,18 @@ import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle,
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 
+import svLocale from 'date-fns/locale/sv';
+import fiLocale from 'date-fns/locale/fi';
+import etLocale from 'date-fns/locale/et';
+import enLocale from 'date-fns/locale/en-US';
+
+const localeMap = {
+  en: enLocale,
+  et: etLocale,
+  fi: fiLocale,
+  sv: svLocale,
+};
+
 import { FormattedMessage } from 'react-intl';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -73,7 +85,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} locale={locale}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Typography variant='h1'>{questionnaire.label}</Typography>
