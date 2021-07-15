@@ -3,11 +3,13 @@ import { Session } from '@dialob/fill-api';
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
-import {MuiPickersUtilsProvider} from '@material-ui/pickers';
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
+import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import moment from 'moment';
 import 'moment/locale/fi';
 import 'moment/locale/sv';
 import 'moment/locale/et';
+
 import { FormattedMessage } from 'react-intl';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -59,7 +61,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
     )
   } else if (!questionnaire) {
     return (
-      <Grid container={true} justify='center' alignItems='center' style={{minHeight: '100vh'}}>
+      <Grid container={true} justifyContent='center' alignItems='center' style={{minHeight: '100vh'}}>
         <Grid item>
           <CircularProgress size={50}/>
         </Grid>
@@ -76,7 +78,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
   }
 
   return (
-    <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={locale}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Typography variant='h1'>{questionnaire.label}</Typography>
@@ -91,7 +93,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
         </Grid>
 
           {questionnaire.allowedActions && (
-          <Grid container justify='space-between' spacing={3} style={{marginTop: '1em', marginBottom: '1em'}}>
+          <Grid container justifyContent='space-between' spacing={3} style={{marginTop: '1em', marginBottom: '1em'}}>
             <Grid item >
               {questionnaire.allowedActions.includes('PREVIOUS') && (
                 <Button variant='contained' onClick={() => {window.scrollTo(0, 0); fillActions.previous();}} startIcon={<ChevronLeftIcon />}>
@@ -129,6 +131,6 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
                 <Button onClick={() => fillActions.complete()} color='primary' autoFocus><FormattedMessage id='complete.confirmation.confirm' /></Button>
             </DialogActions>
           </Dialog>
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   )
 }
