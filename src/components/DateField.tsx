@@ -20,19 +20,20 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   }
   const value = datefield.value ? datefield.value as string : null;
   const format = moment.localeData(locale).longDateFormat('LL');
+  
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
       <DatePicker
-        fullWidth={true}
         label={datefield.label}
         value={value}
         onChange={handleChange}
-        autoOk
-        format={format}
-        required={datefield.required}
-        error={errors.length > 0}
-        helperText={<RenderErrors errors={errors} />}
-        renderInput={(props) => (<TextField {...props} />)}
+        inputFormat={format}
+        renderInput={(props) => (<TextField {...props} 
+          fullWidth 
+          required={datefield.required}
+          error={errors.length > 0}
+          helperText={<RenderErrors errors={errors} />} 
+        />)}
       />
       
     </DescriptionWrapper> 
