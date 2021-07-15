@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import Autocomplete from '@material-ui/core/Autocomplete';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
@@ -17,7 +17,7 @@ interface ValueSetEntry {
 };
 
 export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, errors }) => {
-  const {setAnswer} = useFillActions();
+  const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const entries: ValueSetEntry[] = valueSet?.entries ? valueSet.entries : [];
 
@@ -28,14 +28,14 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
         options={entries}
         getOptionLabel={c => c?.value || ''}
         value={multichoice.value ? multichoice.value.map(v => entries.find(e => e.key === v)) : []}
-        getOptionSelected={(option, value) => option?.key === value?.key}
+        isOptionEqualToValue={(option, value) => option?.key === value?.key}
         fullWidth
         autoComplete
-        onChange = {(event: any, newValue: (ValueSetEntry | undefined)[]) => {
+        onChange={(event: any, newValue: (ValueSetEntry | undefined)[]) => {
           setAnswer(multichoice.id, newValue?.map(c => c?.key));
         }}
-        renderInput={params => <TextField {...params} inputProps={{...params.inputProps, autoComplete: 'new-password'}} label={multichoice.label} error={errors.length > 0} 
-        helperText={<RenderErrors errors={errors} />}
+        renderInput={params => <TextField {...params} inputProps={{ ...params.inputProps, autoComplete: 'new-password' }} label={multichoice.label} error={errors.length > 0}
+          helperText={<RenderErrors errors={errors} />}
         />}
       />
     </DescriptionWrapper>
