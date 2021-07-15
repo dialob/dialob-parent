@@ -2,11 +2,16 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet, useFillSession } from '@dialob/fill-react';
 import React, {useMemo} from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+
+import { createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
+
 import { ErrorHelperText } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+
+const useStyles = makeStyles((_theme: Theme) => createStyles({
   formControl: {
     minWidth: 120,
   },

@@ -2,13 +2,8 @@ import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@dia
 import { Session } from '@dialob/fill-api';
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
-import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-import moment from 'moment';
-import 'moment/locale/fi';
-import 'moment/locale/sv';
-import 'moment/locale/et';
 
 import { FormattedMessage } from 'react-intl';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -32,7 +27,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
     const updateListener = () => {
       setCompleted(session.isComplete());
     }
-    const completeListener = (syncState) => {
+    const completeListener = (syncState: any) => {
       if (syncState === 'DONE' && session.isComplete() && onComplete) {
         onComplete(session);
       }
