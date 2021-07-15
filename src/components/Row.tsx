@@ -2,7 +2,8 @@ import { ItemAction } from '@dialob/fill-api';
 import { useFillActions, useFillSession } from '@dialob/fill-react';
 import React, {useContext, useState} from 'react';
 import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { Remove } from '@material-ui/icons';
 import { FormattedMessage } from 'react-intl';
 import { RowGroupContext } from '../context/RowGroupContext';
@@ -71,14 +72,14 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
   return (
     <>
       <Paper variant='outlined' className={classes.rowSurface}>
-        <Grid container spacing={1} justify='center'>
+        <Grid container spacing={1} justifyContent='center'>
           {children && itemIds.map(itemId => (
             <Grid item {...responsiveProps} key={itemId}>
               {children(itemId)}
             </Grid>
           ))}
         </Grid>
-        <Grid container spacing={1} justify='center'>
+        <Grid container spacing={1} justifyContent='center'>
           <Grid item xs={1} className={classes.removeButton} >
             <Button size='small' color='primary' variant='contained' startIcon={<Remove />} onClick={() => setConfirmationOpen(true)}><FormattedMessage id='row.remove.button' /></Button>
           </Grid>
