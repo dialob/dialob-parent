@@ -1,6 +1,8 @@
 import { ValueSetAction } from '@dialob/fill-api';
 import React from 'react';
-import { Box, createStyles, makeStyles, Radio, Theme } from '@material-ui/core';
+import { Box, Radio, Theme } from '@material-ui/core';
+import { makeStyles, createStyles } from '@material-ui/styles';
+
 import { useFillItem, useFillActions } from '@dialob/fill-react';
 import { Description } from './Description';
 

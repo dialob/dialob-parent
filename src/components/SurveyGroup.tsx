@@ -1,4 +1,5 @@
-import { Box, createStyles, Fade, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import { Box, Fade, Grid, Paper, Theme, Typography } from '@material-ui/core';
+import { makeStyles, createStyles } from '@material-ui/styles';
 import { ItemAction } from '@dialob/fill-api';
 import { Description } from './Description';
 import { GroupContext } from '../context/GroupContext';
