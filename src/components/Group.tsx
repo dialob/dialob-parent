@@ -1,7 +1,8 @@
 import { ItemAction } from '@dialob/fill-api';
 import React, {useContext} from 'react';
 import { Paper, Typography, Grid, Fade } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { GroupContext } from '../context/GroupContext';
 import { Description } from './Description';
 
