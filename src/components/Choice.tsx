@@ -3,8 +3,8 @@ import { useFillActions, useFillValueSet, useFillSession } from '@dialob/fill-re
 import React, {useMemo} from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 
-import { createStyles, Theme } from '@material-ui/core/styles';
-import { makeStyles } from '@material-ui/styles';
+import { Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles} from '@material-ui/styles';
 
 import { ErrorHelperText } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
