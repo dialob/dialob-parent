@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles, IconButton, Dialog, DialogTitle, Typography, DialogContent, useTheme, useMediaQuery } from '@material-ui/core';
+import { Theme, IconButton, Dialog, DialogTitle, Typography, DialogContent, useTheme, useMediaQuery } from '@material-ui/core';
+import { makeStyles, createStyles } from '@material-ui/styles';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -41,7 +42,7 @@ export const Description: React.FC<DescriptionProps> = ({ title, text }) => {
         <InfoOutlinedIcon />
       </IconButton>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth='lg' fullWidth fullScreen={fullScreen}>
-        <DialogTitle disableTypography className={classes.dialogTitle}>
+        <DialogTitle className={classes.dialogTitle}>
             <Typography variant='h2'>{title || <span>&nbsp;</span>}</Typography>
             <IconButton arial-label='close' className={classes.dialogClose} onClick={() => setOpen(false)}>
               <CloseIcon />
