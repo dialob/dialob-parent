@@ -11,10 +11,11 @@ export interface TimeFieldProps {
   timefield: ItemAction<'time'>['item'];
   errors: SessionError[];
 };
+const format = 'HH:mm';
 export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
   const { setAnswer } = useFillActions();
   const handleChange = (value: any) => {
-    setAnswer(timefield.id, (value as moment.Moment).format('HH:mm'));
+    setAnswer(timefield.id, moment(value).format(format));
   }
   const value = timefield.value ? timefield.value as string : null;
   return (
@@ -22,7 +23,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
       <TimePicker
         ampm={false}
         label={timefield.label}
-        value={value}
+        value={value ? moment(value, format).toDate() : null}
         onChange={handleChange}
         renderInput={(props) => <TextField {...props}
           fullWidth={true}
