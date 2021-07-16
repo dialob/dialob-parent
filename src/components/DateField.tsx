@@ -16,11 +16,12 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   const { setAnswer } = useFillActions();
   const locale = useFillLocale();
   const handleChange = (value: any) => {
-    setAnswer(datefield.id, (value as moment.Moment).format('YYYY-MM-DD'));
+    setAnswer(datefield.id, moment(value).format('YYYY-MM-DD'));
   }
   const value = datefield.value ? datefield.value as string : null;
-  const format = moment.localeData(locale).longDateFormat('LL');
-  
+  // https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+  const format = moment.localeData(locale).longDateFormat('LL').replaceAll("Y", "y").replaceAll("D", "d");
+
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
       <DatePicker
@@ -35,7 +36,6 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
           helperText={<RenderErrors errors={errors} />} 
         />)}
       />
-      
     </DescriptionWrapper> 
   );
 }
