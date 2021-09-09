@@ -1,0 +1,498 @@
+{
+  "rev": "-670941874",
+  "actions": [{
+    "type": "RESET"
+  }, {
+    "type": "LOCALE",
+    "value": "en"
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group1",
+      "type": "group",
+      "items": ["text1", "text11", "textBox1"],
+      "answered": false,
+      "props": {
+        "columns": 1
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text11",
+      "type": "text",
+      "view": "text",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text1",
+      "type": "text",
+      "view": "text",
+      "label": "Question 1",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text10",
+      "type": "text",
+      "view": "text",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text7",
+      "type": "text",
+      "view": "text",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text4",
+      "type": "text",
+      "view": "text",
+      "label": "What is your user ID?",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey7",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "rowgroup1",
+      "type": "rowgroup",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group7",
+      "type": "group",
+      "items": ["note3"],
+      "answered": false,
+      "props": {
+        "columns": 1
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey5",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "rowgroup2",
+      "type": "rowgroup",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group6",
+      "type": "group",
+      "items": ["list3"],
+      "answered": false,
+      "props": {
+        "columns": 1
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey6",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group5",
+      "type": "group",
+      "items": ["text7", "text8", "text9", "text10"],
+      "answered": false,
+      "props": {
+        "columns": "3"
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group4",
+      "type": "group",
+      "items": ["textBox2", "rowgroup2", "boolean2"],
+      "answered": false,
+      "props": {
+        "columns": 1
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group3",
+      "type": "group",
+      "items": ["boolean1", "multichoice2", "text4", "number1"],
+      "answered": false,
+      "props": {
+        "columns": 1
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "group2",
+      "type": "group",
+      "items": ["list1", "list2", "note2", "multichoice1", "note1"],
+      "answered": false,
+      "props": {
+        "columns": 1
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "questionnaire",
+      "type": "questionnaire",
+      "label": "Demo lomake 1",
+      "items": ["Sivu1"],
+      "activeItem": "Sivu1",
+      "availableItems": ["Sivu1"],
+      "allowedActions": ["ANSWER"],
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "verticalSurveygroup2",
+      "type": "surveygroup",
+      "view": "verticalSurveygroup",
+      "items": ["survey6", "survey7"],
+      "answered": false,
+      "valueSetId": "vs4"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "number1",
+      "type": "number",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text9",
+      "type": "text",
+      "view": "text",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "verticalSurveygroup1",
+      "type": "surveygroup",
+      "view": "verticalSurveygroup",
+      "items": ["list4", "multichoice3", "surveygroup2", "verticalSurveygroup2"],
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "text8",
+      "type": "text",
+      "view": "text",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "note3",
+      "type": "note",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "note1",
+      "type": "note",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "surveygroup2",
+      "type": "surveygroup",
+      "items": ["list5", "multichoice4"],
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "list5",
+      "type": "list",
+      "answered": false,
+      "valueSetId": "vs1"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "surveygroup1",
+      "type": "surveygroup",
+      "items": ["survey1", "survey2", "survey3", "survey4", "survey5"],
+      "answered": false,
+      "valueSetId": "vs4"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "list1",
+      "type": "list",
+      "answered": false,
+      "valueSetId": "vs1"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "boolean2",
+      "type": "boolean",
+      "required": true,
+      "answered": false,
+      "props": {
+        "display": "checkbox"
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "list2",
+      "type": "list",
+      "answered": false,
+      "valueSetId": "vs2"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "boolean1",
+      "type": "boolean",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "textBox2",
+      "type": "text",
+      "view": "textBox",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "list3",
+      "type": "list",
+      "answered": false,
+      "valueSetId": "vs1"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "textBox1",
+      "type": "text",
+      "view": "textBox",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "list4",
+      "type": "list",
+      "answered": false,
+      "valueSetId": "vs1"
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey3",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "multichoice3",
+      "type": "multichoice",
+      "answered": false,
+      "valueSetId": "vs1",
+      "props": {
+        "autocomplete": false
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey4",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "multichoice4",
+      "type": "multichoice",
+      "answered": false,
+      "valueSetId": "vs1",
+      "props": {
+        "autocomplete": false
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "multichoice1",
+      "type": "multichoice",
+      "answered": false,
+      "valueSetId": "vs3",
+      "props": {
+        "autocomplete": true
+      }
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey1",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "survey2",
+      "type": "survey",
+      "view": "survey",
+      "answered": false
+    }
+  }, {
+    "type": "ITEM",
+    "item": {
+      "id": "Sivu1",
+      "type": "group",
+      "view": "page",
+      "items": ["group1", "rowgroup1", "group2", "surveygroup1", "group3", "group4", "group5", "group6", "verticalSurveygroup1", "group7"],
+      "answered": false
+    }
+  }, {
+    "type": "VALUE_SET",
+    "valueSet": {
+      "id": "vs4",
+      "entries": [{
+        "key": "A5"
+      }, {
+        "key": "A4"
+      }, {
+        "key": "A3"
+      }, {
+        "key": "A2"
+      }, {
+        "key": "A1"
+      }]
+    }
+  }, {
+    "type": "VALUE_SET",
+    "valueSet": {
+      "id": "vs5",
+      "entries": [{
+        "key": "H1"
+      }, {
+        "key": "H2"
+      }, {
+        "key": "H3"
+      }]
+    }
+  }, {
+    "type": "VALUE_SET",
+    "valueSet": {
+      "id": "vs6",
+      "entries": [{
+        "key": "k"
+      }]
+    }
+  }, {
+    "type": "VALUE_SET",
+    "valueSet": {
+      "id": "vs1",
+      "entries": [{
+        "key": "Vaihtoehto1"
+      }, {
+        "key": "Vaihtoehto2"
+      }, {
+        "key": "Vaihtoehto3"
+      }, {
+        "key": "Vaihtoehto4"
+      }]
+    }
+  }, {
+    "type": "VALUE_SET",
+    "valueSet": {
+      "id": "vs2",
+      "entries": [{
+        "key": "kk1"
+      }, {
+        "key": "kk2"
+      }, {
+        "key": "kk3"
+      }]
+    }
+  }, {
+    "type": "VALUE_SET",
+    "valueSet": {
+      "id": "vs3",
+      "entries": [{
+        "key": "MCKK01"
+      }, {
+        "key": "MCKK02"
+      }, {
+        "key": "MCKK03"
+      }, {
+        "key": "MCKK04"
+      }, {
+        "key": "MCKK05"
+      }, {
+        "key": "MCKK06"
+      }, {
+        "key": "MCKK07"
+      }, {
+        "key": "MCKK08"
+      }, {
+        "key": "MCKK09"
+      }, {
+        "key": "MCKK10"
+      }, {
+        "key": "MCKK11"
+      }, {
+        "key": "MCKK12"
+      }]
+    }
+  }, {
+    "type": "ERROR",
+    "error": {
+      "id": "boolean2",
+      "code": "REQUIRED",
+      "description": "Fill in the missing information."
+    }
+  }]
+}
