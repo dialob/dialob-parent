@@ -1,3 +1,13 @@
+# 1.1.0
+
+* Material UI 5 (RC 1)
+* Use MUI 5 "system" styling (sx prop) instead of makeStyles
+* Use date-fns instead of moment
+* React 17
+* React-intl 5
+* React-markdown 7
+* Number item (decimal and integer) is now using locale-specific react-number-format input handling
+
 # 0.7.1
 
 * Fixed translation for completion dialog title

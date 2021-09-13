@@ -1,14 +1,14 @@
 import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@dialob/fill-react';
 import { Session } from '@dialob/fill-api';
 import React, { useEffect, useState } from 'react';
-import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
-import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 import svLocale from 'date-fns/locale/sv';
 import fiLocale from 'date-fns/locale/fi';
 import etLocale from 'date-fns/locale/et';
-import enLocale from 'date-fns/locale/en-US';
+import enLocale from 'date-fns/locale/en-GB';
 
 const localeMap = {
   en: enLocale,
@@ -18,8 +18,8 @@ const localeMap = {
 };
 
 import { FormattedMessage } from 'react-intl';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Questionnaire } from './components/Questionnaire';
 
 export interface DefaultViewProps {

@@ -16,14 +16,14 @@ Following peer dependencies need to be installed:
 {
   "@dialob/fill-api": "^1.4.*",
   "@dialob/fill-react": "^3.0.*",
-  "@material-ui/core": "^4.11.*",
-  "@material-ui/icons": "^4.9.*",
-  "@material-ui/lab": "^4.0.*",
-  "@material-ui/pickers": "^3.2.*",
-  "@date-io/moment": "^1.3.*",
-  "moment": "^2.24.*",
-  "react-intl": "^4.5.*",
-  "react-markdown": "^4.3.*"
+  "@mui/material": "^5.0.0-rc.1",
+  "@mui/lab": "^5.0.0-alpha.46",
+  "@mui/icons-material": "^5.0.0-rc.1",
+  "react-intl": "^5.20.*",
+  "react-markdown": "^7.0.*",
+  "@date-io/date-fns": "^2.11.*",
+  "date-fns": "^2.0.0",
+  "react-number-format": "^4.7.*"
 }
 ```
 
@@ -69,7 +69,7 @@ Following components are exported
 * `<MultiChoice>` Multi-choice, checbkox list style
 * `<MultiChoiceAC>` Multi-choice, dropdown autocomplete style
 * `<Note>` Note
-* `<Number>` Number field
+* `<Number>` Number field, boolean prop `integer` controls if decimals are supported or not
 * `<Page>` Page
 * `<RowGroup>` Row group
 * `<Row>` Row for Row group

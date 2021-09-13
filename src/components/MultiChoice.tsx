@@ -1,7 +1,7 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
-import { FormControl, Checkbox, FormLabel, FormGroup, FormControlLabel } from '@material-ui/core';
+import { FormControl, Checkbox, FormLabel, FormGroup, FormControlLabel } from '@mui/material';
 import { ErrorHelperText } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 

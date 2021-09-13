@@ -16,7 +16,9 @@ const et = {
   'row.remove.button': 'Eemalda',
   'row.remove.confirmation.title': 'Kas soovite rida eemaldada?',
   'row.remove.confirmation.cancel': 'Tühista',
-  'row.remove.confirmation.confirm': 'Eemalda'
+  'row.remove.confirmation.confirm': 'Eemalda',
+
+  'autocomplete.nooptions': 'Valikud puuduvad'
 };
 
 export default et;

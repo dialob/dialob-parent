@@ -1,33 +1,10 @@
-import { Box, Fade, Grid, Paper, Theme, Typography } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
+import { Box, Fade, Grid, Paper, Typography } from '@mui/material';
 import { ItemAction } from '@dialob/fill-api';
 import { Description } from './Description';
 import { GroupContext } from '../context/GroupContext';
 import { useFillSession, useFillValueSet } from '@dialob/fill-react';
 import React, { useContext } from 'react';
 import { Survey } from './Survey';
-
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  paper: {
-    padding: theme.spacing(2)
-  },
-  surveyContainer: {
-    display: 'grid',
-    alignItems: 'center',
-    width: '100%'
-  },
-  vertical: {
-    gridAutoFlow: 'column'
-  },
-  horizontal: {
-    gridAutoFlow: 'row'
-  },
-  surveyHeader: {
-    fontWeight: 'bold',
-    padding: theme.spacing(1)
-  }
-})
-);
 
 export interface SurveyGroupProps {
   surveyGroup: ItemAction<'surveygroup'>['item'];
@@ -37,7 +14,6 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
   const valueSet = useFillValueSet(surveyGroup.valueSetId);
   const session = useFillSession();
   const groupCtx = useContext(GroupContext);
-  const classes = useStyles();
 
   const surveys: string[] = [];
   const items: string[] = [];
@@ -55,7 +31,6 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
   }
 
   const vertical = surveyGroup.view === 'verticalSurveygroup';
-  const gridClass = vertical ? classes.vertical : classes.horizontal;
   const optionCount = valueSet?.entries.length || 0;
 
   const rowCount = vertical ? optionCount + 1 : surveys.length;
@@ -64,7 +39,7 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
   return (
     <GroupContext.Provider value={{ level: groupCtx.level < 6 ? groupCtx.level + 1 : groupCtx.level }}>
       <Fade in={true}>
-        <Paper elevation={groupCtx.level} className={classes.paper}>
+        <Paper elevation={groupCtx.level} sx={{p: 2}}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant='h3'>
@@ -74,13 +49,11 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
             </Grid>
 
             <Grid item xs={12}>
-              <Box className={`${classes.surveyContainer} ${gridClass}`}
-                style={{ gridTemplateRows: `repeat(${rowCount}, auto)`, gridTemplateColumns: `30% repeat(${colCount}, fit-content(30%))` }}
-              >
+              <Box sx={{display: 'grid', alignItems: 'center', width: '100%', gridAutoFlow: vertical ? 'column': 'row', gridTemplateRows: `repeat(${rowCount}, auto)`, gridTemplateColumns: `30% repeat(${colCount}, fit-content(30%))` }}>
                 <Box></Box>
                 {
                   valueSet && valueSet.entries.map(entry => (
-                    <Box className={classes.surveyHeader} key={entry.key}>{entry.value}</Box>
+                    <Box sx={{p: 1, fontWeight: 'bold'}} key={entry.key}>{entry.value}</Box>
                   ))
                 }
                 {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ItemAction } from '@dialob/fill-api';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
 
 export interface PageProps {
   page: ItemAction<'group'>['item'];

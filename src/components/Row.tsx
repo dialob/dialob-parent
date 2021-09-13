@@ -1,26 +1,10 @@
 import { ItemAction } from '@dialob/fill-api';
 import { useFillActions, useFillSession } from '@dialob/fill-react';
 import React, {useContext, useState} from 'react';
-import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles';
-import { makeStyles } from '@material-ui/styles';
-import { Remove } from '@material-ui/icons';
+import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@mui/material';
+import { Remove } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { RowGroupContext } from '../context/RowGroupContext';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  rowSurface: {
-    padding: theme.spacing(1),
-    marginTop: theme.spacing(1)
-  },
-  'rowSurface:hover': {
-    backgroundColor: '#ff0000'
-  },
-  removeButton: {
-    marginTop: theme.spacing(1),
-    textAlign: 'center'
-  }
-}));
 
 interface ConfirmationProps {
   isOpen: boolean;
@@ -49,7 +33,6 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
   const session = useFillSession();
   const {deleteRow} = useFillActions();
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
-  const classes = useStyles();
   const rowGroupContext = useContext(RowGroupContext);
   const removeRow = () => {
     setConfirmationOpen(false);
@@ -71,7 +54,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
 
   return (
     <>
-      <Paper variant='outlined' className={classes.rowSurface}>
+      <Paper variant='outlined' sx={{p: 1, mt: 1}}>
         <Grid container spacing={1} justifyContent='center'>
           {children && itemIds.map(itemId => (
             <Grid item {...responsiveProps} key={itemId}>
@@ -80,7 +63,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
           ))}
         </Grid>
         <Grid container spacing={1} justifyContent='center'>
-          <Grid item xs={1} className={classes.removeButton} >
+          <Grid item xs={1} sx={{mt: 1, textAlign: 'center'}} >
             <Button size='small' color='primary' variant='contained' startIcon={<Remove />} onClick={() => setConfirmationOpen(true)}><FormattedMessage id='row.remove.button' /></Button>
           </Grid>
         </Grid>

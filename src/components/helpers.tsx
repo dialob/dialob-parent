@@ -1,12 +1,11 @@
 import React from 'react';
 import { FillError } from "@dialob/fill-api";
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText } from '@mui/material';
 import { ConfigContext } from '../';
 
 interface ErrorHelperTextProps {
   errors: FillError[];
 }
-
 
 export const DefaultRenderErrors: React.FC<ErrorHelperTextProps> = ({ errors }) => {
   return <ul>{errors.map((e, i) => <li key={i}>{e.description}</li>)}</ul>;
@@ -20,6 +19,4 @@ export const RenderErrors: React.FC<ErrorHelperTextProps> = ({ errors }) => {
   return config.errors(errors);
 };
 
-
-
-export const ErrorHelperText: React.FC<ErrorHelperTextProps> = ({ errors }) => errors.length > 0 ? <FormHelperText><RenderErrors errors={errors} /></FormHelperText> : null;
+export const ErrorHelperText: React.FC<ErrorHelperTextProps> = ({ errors }) => errors.length > 0 ? <FormHelperText component='div'><RenderErrors errors={errors} /></FormHelperText> : null;

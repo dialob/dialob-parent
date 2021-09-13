@@ -16,7 +16,9 @@ const fi = {
   'row.remove.button': 'Poista',
   'row.remove.confirmation.title': 'Haluatko poistaa rivin?',
   'row.remove.confirmation.cancel': 'Peru',
-  'row.remove.confirmation.confirm': 'Poista'
+  'row.remove.confirmation.confirm': 'Poista',
+
+  'autocomplete.nooptions': 'Ei valintoja'
 };
 
 export default fi;

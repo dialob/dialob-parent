@@ -1,24 +1,9 @@
 import React, { useState } from 'react';
-import { Theme, IconButton, Dialog, DialogTitle, Typography, DialogContent, useTheme, useMediaQuery } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import CloseIcon from '@material-ui/icons/Close';
+import { IconButton, Dialog, DialogTitle, Typography, DialogContent, useTheme, useMediaQuery } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { ConfigContext } from '../';
-
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  dialogTitle: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  dialogClose: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  }
-})
-);
 
 export interface DescriptionProps {
   title?: string;
@@ -26,7 +11,6 @@ export interface DescriptionProps {
 }
 
 export const Description: React.FC<DescriptionProps> = ({ title, text }) => {
-  const classes = useStyles();
   const config = React.useContext(ConfigContext);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -42,9 +26,9 @@ export const Description: React.FC<DescriptionProps> = ({ title, text }) => {
         <InfoOutlinedIcon />
       </IconButton>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth='lg' fullWidth fullScreen={fullScreen}>
-        <DialogTitle className={classes.dialogTitle}>
-            <Typography variant='h2'>{title || <span>&nbsp;</span>}</Typography>
-            <IconButton arial-label='close' className={classes.dialogClose} onClick={() => setOpen(false)}>
+        <DialogTitle sx={{m: 0, p: 2}}>
+            <Typography variant='h6'>{title || <span>&nbsp;</span>}</Typography>
+            <IconButton arial-label='close' sx={{position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500]}} onClick={() => setOpen(false)}>
               <CloseIcon />
             </IconButton>
         </DialogTitle>

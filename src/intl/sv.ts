@@ -17,6 +17,8 @@ const sv = {
   'row.remove.confirmation.title': 'Do you want to remove the row?',
   'row.remove.confirmation.cancel': 'Cancel',
   'row.remove.confirmation.confirm': 'Remove',
+
+  'autocomplete.nooptions': 'No options'
 };
 
 export default sv;

@@ -1,10 +1,10 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
-import { TextField } from '@material-ui/core';
-import Autocomplete from '@material-ui/core/Autocomplete';
+import { TextField, Autocomplete } from '@mui/material';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
+import { useIntl } from 'react-intl';
 
 export interface ChoiceACProps {
   choice: ItemAction<'list'>['item'];
@@ -17,6 +17,7 @@ interface ValueSetEntry {
 };
 
 export const ChoiceAC: React.FC<ChoiceACProps> = ({ choice, errors }) => {
+  const intl = useIntl();
   const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(choice.valueSetId);
   const entries: ValueSetEntry[] = valueSet?.entries ? valueSet.entries : [];
@@ -25,6 +26,7 @@ export const ChoiceAC: React.FC<ChoiceACProps> = ({ choice, errors }) => {
     <DescriptionWrapper text={choice.description} title={choice.label}>
       <Autocomplete
         options={entries}
+        noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}
         getOptionLabel={c => c?.value || ''}
         value={choice.value ? entries.find(e => e.key === choice.value) : { key: '', value: '' } as ValueSetEntry}
         isOptionEqualToValue={(option, value) => option?.key === value?.key}

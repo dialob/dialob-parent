@@ -1,25 +1,10 @@
 import { ValueSetAction } from '@dialob/fill-api';
 import React from 'react';
-import { Box, Radio, Theme } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
+import { Box, Radio } from '@mui/material';
 
 import { useFillItem, useFillActions } from '@dialob/fill-react';
 import { Description } from './Description';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  questionLabel: {
-    fontWeight: 'bold',
-    padding: theme.spacing(1),
-  },
-  questionItem: {
-    textAlign: 'center',
-    padding: theme.spacing(1)
-  },
-  even: {
-    backgroundColor: theme.palette.background.default
-  }
-})
-);
 
 export interface SurveyProps {
   id: string;
@@ -29,7 +14,6 @@ export interface SurveyProps {
 
 export const Survey: React.FC<SurveyProps> = ({ id, valueSet, even }) => {
   const { item: survey } = useFillItem(id);
-  const classes = useStyles();
   const { setAnswer } = useFillActions();
 
   if (!survey) {
@@ -38,9 +22,9 @@ export const Survey: React.FC<SurveyProps> = ({ id, valueSet, even }) => {
 
   return (
     <>
-      <Box className={classes.questionLabel}>{survey?.label} <Description title={survey?.label} text={survey.description} /></Box>
+      <Box sx={{p: 1, fontWeight: 'bold'}}>{survey?.label} <Description title={survey?.label} text={survey.description} /></Box>
       { valueSet && valueSet.entries.map((entry) => (
-        <Box key={entry.key} className={`${classes.questionItem} ${even ? classes.even : ''}`}>
+        <Box key={entry.key} sx={{p: 1, textAlign: 'center', bgcolor: even  ? 'background.default' : undefined}} >
           <Radio checked={entry.key === survey?.value} onChange={() => setAnswer(survey?.id, entry.key)} />
         </Box>
       ))}

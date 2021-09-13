@@ -1,21 +1,31 @@
 import React from 'react';
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
-import TimePicker from '@material-ui/lab/TimePicker';
-import TextField from '@material-ui/core/TextField';
-import moment from 'moment';
+import TimePicker from '@mui/lab/TimePicker';
+import TextField from '@mui/material/TextField';
+import {format, parse} from 'date-fns';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
+
+const timeFormat = 'HH:mm';
 
 export interface TimeFieldProps {
   timefield: ItemAction<'time'>['item'];
   errors: SessionError[];
 };
-const format = 'HH:mm';
+
+const formatToWire = (value: any): string => {
+  try {
+    return format(value, timeFormat);
+  } catch (error) {
+    return '';
+  }
+}
+
 export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
   const { setAnswer } = useFillActions();
   const handleChange = (value: any) => {
-    setAnswer(timefield.id, moment(value).format(format));
+    setAnswer(timefield.id, formatToWire(value));
   }
   const value = timefield.value ? timefield.value as string : null;
   return (
@@ -23,7 +33,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
       <TimePicker
         ampm={false}
         label={timefield.label}
-        value={value ? moment(value, format).toDate() : null}
+        value={value ? parse(value, timeFormat, new Date()) : null}
         onChange={handleChange}
         renderInput={(props) => <TextField {...props}
           fullWidth={true}

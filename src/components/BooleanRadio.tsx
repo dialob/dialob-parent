@@ -1,7 +1,7 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
-import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@material-ui/core';
+import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
 import { ErrorHelperText } from './helpers';
 import { useIntl } from 'react-intl';
 import { DescriptionWrapper } from './DescriptionWrapper';
