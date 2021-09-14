@@ -1,6 +1,6 @@
 {
   "name": "@dialob/fill-material",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Material UI components for Dialob fill",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "peerDependencies": {
     "@dialob/fill-api": "^1.4.*",
-    "@dialob/fill-react": "^3.0.*",
+    "@dialob/fill-react": "^3.1.*",
     "@mui/material": "^5.0.0-rc.1",
     "@mui/lab": "^5.0.0-alpha.46",
     "@mui/icons-material": "^5.0.0-rc.1",
@@ -32,7 +32,7 @@
     "date-fns": "^2.0.0",
     "@date-io/date-fns": "^2.11.0",
     "@dialob/fill-api": "^1.4.1",
-    "@dialob/fill-react": "^3.0.0",
+    "@dialob/fill-react": "^3.1.0",
     "@mui/material": "^5.0.0-rc.1",
     "@mui/lab": "^5.0.0-alpha.46",
     "@mui/icons-material": "^5.0.0-rc.1",

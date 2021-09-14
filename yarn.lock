@@ -56,10 +56,10 @@
   dependencies:
     immer "^9.0.1"
 
-"@dialob/fill-react@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@dialob/fill-react/-/fill-react-3.0.0.tgz#61c61020c0e6a0d9930ce6c39247e2dc0115b785"
-  integrity sha512-f7cpMM9g+MoTYoJYAA8/dl81FgVhIO8z2fItH5ZGFb2AkoQZinJ37G8leFs1Y7V/dWujvwpqusCjUW4Tu3J2lg==
+"@dialob/fill-react@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@dialob/fill-react/-/fill-react-3.1.0.tgz#5b65adf59d7107d99284465e2b1dc04e7a79436b"
+  integrity sha512-8xoAbTzhDOZvob3Prl80womhDVdkfptW8q/zl55JueKz2XZ3K3LV/OpYTTiOcSiwY96KdcLUf3sfHnU4AQaoeQ==
 
 "@emotion/cache@^11.4.0":
   version "11.4.0"

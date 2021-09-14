@@ -1,3 +1,8 @@
+# 1.1.1
+
+* Fixed issues with number input label positioning
+* Requires `dialob-fill-react` **3.1.x**
+
 # 1.1.0
 
 * Material UI 5 (RC 1)

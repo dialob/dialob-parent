@@ -1,37 +1,40 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
-import React from 'react';
+import * as React from 'react';
 import { TextField } from '@mui/material';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import NumberFormat from 'react-number-format';
 
+
 interface FormattedNumberFieldProps {
-  inputRef: (instance: NumberFormat| null) => void;
   onChange: (event: {target: {name: string; value: string}}) => void;
   name: string;
   decimalSeparator: string;
   integer: boolean;
 }
 
-const FormattedNumberField: React.FC<FormattedNumberFieldProps> = ({inputRef, onChange, name, decimalSeparator, integer, ...other}) => {
-  return (
-    <NumberFormat {...other}
-      getInputRef={inputRef}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: name,
-            value: values.value
-          }
-        });
-      }}
-      isNumericString
-      decimalSeparator={decimalSeparator}
-      decimalScale={integer ? 0 : undefined}
-    />
-  );
-};
+const FormattedNumberField = React.forwardRef<NumberFormat, FormattedNumberFieldProps>(
+  function FormattedNumberField(props: FormattedNumberFieldProps, ref) {
+    const { onChange, name, integer, decimalSeparator, ...other } = props;
+    return (
+      <NumberFormat {...other}
+        getInputRef={ref}
+        onValueChange={(values) => {
+          onChange({
+            target: {
+              name: name,
+              value: values.value
+            }
+          });
+        }}
+        isNumericString
+        decimalSeparator={decimalSeparator}
+        decimalScale={integer ? 0 : undefined}
+      />
+    );
+  }
+);
 
 export interface NumberProps {
   number: ItemAction<any, any, number>['item'];
