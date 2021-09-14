@@ -1,7 +1,9 @@
-## next
+## 3.1.0
+### Enhancements
+- Add React v17 as peerDependency version
 
 ## 3.0.0
-
+### Breaking changes
 - Renamed to `@dialob/fill-react` and published to npmjs
 
 ## 2.6.3
