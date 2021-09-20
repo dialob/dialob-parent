@@ -7,10 +7,7 @@
   "scripts": {
     "build": "nwb build-react-component --copy-files",
     "clean": "nwb clean-module && nwb clean-demo",
-    "start": "nwb serve-react-demo",
-    "test": "nwb test-react",
-    "test:coverage": "nwb test-react --coverage",
-    "test:watch": "nwb test-react --server"
+    "start": "nwb serve-react-demo"
   },
   "dependencies": {
     "@resys/react-redux-scroll": "0.2.3",
@@ -40,15 +37,8 @@
     "react": "16.13.x"
   },
   "devDependencies": {
-    "chai": "4.2.0",
-    "chai-immutable": "2.0.0",
-    "enzyme": "3.9.0",
-    "enzyme-adapter-react-16": "1.11.2",
-    "karma-chai-immutable": "1.0.3",
-    "karma-chai-plugins": "0.9.0",
     "nwb": "0.24.5",
-    "react": "16.13.1",
-    "sinon": "7.2.7"
+    "react": "16.13.1"
   },
   "publishConfig": {
     "registry": "https://repo.resys.io/repository/npm/",
