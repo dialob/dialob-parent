@@ -6,13 +6,10 @@
   "scripts": {
     "build": "nwb build-react-app --no-vendor",
     "clean": "nwb clean-app",
-    "start": "nwb serve-react-app",
-    "test": "nwb test-react",
-    "test:coverage": "nwb test-react --coverage",
-    "test:watch": "nwb test-react --server"
+    "start": "nwb serve-react-app"
   },
   "dependencies": {
-    "@resys/dialob-composer": "2.8.2-1",
+    "@resys/dialob-composer": "2.8.2-2",
     "immutable": "3.8.2",
     "react": "16.13.1",
     "react-dom": "16.13.1"
