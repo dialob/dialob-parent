@@ -96,10 +96,13 @@ class ItemProps extends Component {
       </Table.Row>);
   }
 
-  addKey(key) {
-    if (!key || key.trim().length === 0)  {
+  addKey() {
+
+    if (!this.state.newItemKey || this.state.newItemKey.trim().length === 0)  {
       return;
     }
+
+    const key = this.state.newItemKey.trim();
 
     const defaultValue = this.state.itemTypeConfig &&
                          this.state.itemTypeConfig.config &&
@@ -107,7 +110,7 @@ class ItemProps extends Component {
                          this.state.itemTypeConfig.config.props[key]
                          : null
 
-    this.props.addItemProp(this.props.item.get('id'), this.state.newItemKey, defaultValue);
+    this.props.addItemProp(this.props.item.get('id'), key, defaultValue);
     this.setState({newItemKey: ''});
   }
 
@@ -133,7 +136,7 @@ class ItemProps extends Component {
             <PropSuggest suggestions={suggestions} onChange={value => this.setState({newItemKey: value})} value={newItemKey}/>
           </div>
           <div>
-            <Form.Button width={2} fluid label={'\u00A0'} disabled={!newItemKey} onClick={() => this.addKey(newItemKey)}>Add</Form.Button>
+            <Form.Button width={2} fluid label={'\u00A0'} disabled={!newItemKey} onClick={() => this.addKey()}>Add</Form.Button>
           </div>
         </div>
         <Table celled compact>
