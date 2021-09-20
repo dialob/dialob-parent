@@ -350,9 +350,10 @@ export function setContextValue(id, value) {
   };
 }
 
-export function downloadForm() {
+export function downloadForm(tag = null) {
   return {
-    type: Actions.DOWNLOAD_FORM
+    type: Actions.DOWNLOAD_FORM,
+    tag
   };
 }
 

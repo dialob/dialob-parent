@@ -1,3 +1,7 @@
+# 2.8.2
+
+* Download feature for all versions.
+
 # 2.8.0
 
 It is now possible to create a global choice list from a local choice list and make a local copy of a global choicelist.
