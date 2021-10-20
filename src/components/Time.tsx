@@ -2,8 +2,11 @@ import React, { useContext } from 'react';
 import { ItemProps } from './componentTypes';
 import { DialobContext } from '../context/DialobContext';
 import { FormattedTime } from 'react-intl';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { Item } from './Item';
+
+
+//<FormattedTime value={format(answer, 'HH:mm').toDate()} />
 
 export const Time: React.FC<ItemProps> = ({ item, answerId }) => {
   const dC = useContext(DialobContext);
@@ -11,7 +14,7 @@ export const Time: React.FC<ItemProps> = ({ item, answerId }) => {
   if (answer === null) { return null; }
   return (
     <Item label={dC.getTranslated(item.label)}>
-      <FormattedTime value={moment(answer, 'HH:mm').toDate()} />
+      <FormattedTime value={format(answer, 'HH:mm')} />
     </Item>
   );
 
