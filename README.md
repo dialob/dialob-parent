@@ -8,20 +8,26 @@ Add dependency
 
 ```
 yarn add @resys/dialob-review-material
+
 ```
 
-Following peer dependencies need to be installed:
+
+The following peer dependencies need to be installed for mui v5:
 
 ```json
 {
-  "@material-ui/core": "^4.11.*",
-  "@material-ui/icons": "^4.9.*",
-  "@date-io/moment": "^1.3.*",
-  "moment": "^2.24.*",
-  "react-intl": "5.3.*",
-  "react-markdown": "^4.3.*"
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.0.0",
+    "@mui/material": "^5.0.4",
+    "@mui/styles": "^5.0.1",
+    "react-intl": "^5.3.*",
+    "react-markdown": "^4.3.*",
+    "@date-io/date-fns": "^2.11.*",
+    "date-fns": "^2.0.0"
 }
 ```
+
 
 ### Exports
 
