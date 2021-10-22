@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Typography, Paper, Grid, Theme } from '@mui/material';
+
 import { ItemProps } from './componentTypes';
 import { DialobContext } from '../context/DialobContext';
 import { GroupContext } from '../context/GroupContext';
-import { Typography, Paper, Grid } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
 import Markdown from 'react-markdown';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

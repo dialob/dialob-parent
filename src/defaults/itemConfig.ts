@@ -1,5 +1,5 @@
-import {ItemProps} from '../components/componentTypes';
-import {Page, Group, DateItem, Time, Text, Boolean, Choice, MultiChoice, Note, RowGroup, SurveyGroup} from '../components';
+import { ItemProps } from '../components/componentTypes';
+import { Page, Group, DateItem, Time, Text, Boolean, Choice, MultiChoice, Note, RowGroup, SurveyGroup } from '../components';
 import { Decimal } from '../components/Decimal';
 
 interface ItemConfigEntry {
