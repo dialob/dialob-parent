@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
+import { Typography, Paper, Grid, Box, Theme } from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { ItemProps } from './componentTypes';
 import { DialobContext } from '../context/DialobContext';
 import { GroupContext } from '../context/GroupContext';
-import { Typography, Paper, Grid, Box } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
 import Markdown from 'react-markdown';
 import { Survey } from './Survey';
 

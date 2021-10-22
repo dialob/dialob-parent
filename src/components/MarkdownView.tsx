@@ -1,6 +1,7 @@
 import React from 'react';
+import { Typography, Link, Table, TableHead, TableBody, TableRow, TableCell, Divider } from '@mui/material';
+
 import Markdown from 'react-markdown';
-import { Typography, Link, Table, TableHead, TableBody, TableRow, TableCell, Divider } from '@material-ui/core';
 
 interface HeadingRendererProps {
   level: number;
@@ -10,7 +11,7 @@ interface LinkRendererProps {
   href: string;
 }
 
-const HLEVEL_MAPPING: ('h1'|'h2'|'h3'|'h4'|'h5'|'h6')[] = [
+const HLEVEL_MAPPING: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6')[] = [
   'h1',
   'h2',
   'h3',
@@ -28,7 +29,7 @@ const TableBodyRenderer: React.FC = ({ children }) => <TableBody>{children}</Tab
 const TableRowRenderer: React.FC = ({ children }) => <TableRow>{children}</TableRow>;
 const TableCellRenderer: React.FC = ({ children }) => <TableCell>{children}</TableCell>;
 const DividerRenderer: React.FC = () => <Divider variant='middle' />;
-const ListRenderer: React.FC = ({children}) => <Typography variant='body1'>{children}</Typography>;
+const ListRenderer: React.FC = ({ children }) => <Typography variant='body1'>{children}</Typography>;
 
 const renderers = {
   heading: HeadingRenderer,

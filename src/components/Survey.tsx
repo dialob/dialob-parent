@@ -1,7 +1,10 @@
 import React, { useContext } from 'react';
-import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Box, Theme } from '@mui/material';
+import { RadioButtonChecked, RadioButtonUnchecked } from '@mui/icons-material';
+
 import { DialobContext } from '../context/DialobContext';
-import { RadioButtonChecked, RadioButtonUnchecked } from '@material-ui/icons';
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   questionLabel: {

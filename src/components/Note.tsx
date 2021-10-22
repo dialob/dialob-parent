@@ -1,14 +1,16 @@
 import React, { useContext } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Paper, Theme } from '@mui/material';
 import { ItemProps } from './componentTypes';
 import { DialobContext } from '../context/DialobContext';
-import { Paper, makeStyles, Theme, createStyles } from '@material-ui/core';
+
 import { MarkdownView } from './MarkdownView';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    paper: {
-      padding: theme.spacing(1)
-    }
-  })
+  paper: {
+    padding: theme.spacing(1)
+  }
+})
 );
 
 export const Note: React.FC<ItemProps> = ({ item }) => {
