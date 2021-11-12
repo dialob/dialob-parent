@@ -1,3 +1,7 @@
+# 1.1.4
+
+* Fixed boolean radio default state
+
 # 1.1.3
 
 * Material UI 5.1
