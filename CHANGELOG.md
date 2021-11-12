@@ -1,3 +1,11 @@
+# 1.1.3
+
+* Material UI 5.1
+
+# 1.1.2
+
+* Material UI 5 Final
+
 # 1.1.1
 
 * Fixed issues with number input label positioning
