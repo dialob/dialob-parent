@@ -17,7 +17,7 @@ export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) =
     <DescriptionWrapper text={boolean.description} title={boolean.label}>
       <FormControl component='fieldset' required={boolean.required} fullWidth={true} error={errors.length > 0}>
         <FormLabel component="legend">{boolean.label}</FormLabel>
-        <RadioGroup value={boolean.value || false} onChange={e => {setAnswer(boolean.id, e.target.value);}} row={true}>
+        <RadioGroup value={boolean.value} onChange={e => {setAnswer(boolean.id, e.target.value);}} row={true}>
           <FormControlLabel
             value='true'
             control={<Radio />}
