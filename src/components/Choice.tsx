@@ -31,6 +31,7 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
     <FormControl fullWidth={true} required={choice.required} error={errors.length > 0} sx={{minWidth: 120}}>
       <InputLabel id={`${itemId}_label`} shrink>{choice.label}</InputLabel>
       <Select labelId={`${itemId}_label`}
+        label={choice.label}
         value={choice.value || ''}
         onChange={e => setAnswer(choice.id, e.target.value)}
        >
