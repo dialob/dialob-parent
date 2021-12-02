@@ -1,3 +1,7 @@
+# 1.2.0
+
+* MaterialDialob translation messages can be overridden by embmedding application
+
 # 1.1.4
 
 * Fixed boolean radio default state

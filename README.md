@@ -89,7 +89,7 @@ Following components are exported
 
 In case of using default MaterialDialob component, errors and descriptions can be overridden using "components props" that currently supports errors and description.   
 In case of overriding default MaterialDialob, ConfigContext needs to be used to provide error and description configuration.
-
+To override built-in translation messages, use `messages` prop for MaterialDialob component with a key-value object (see intl/en.ts for example).
 
 #### ConfigContext
 
