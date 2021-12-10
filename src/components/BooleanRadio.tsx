@@ -13,11 +13,27 @@ export interface BooleanRadioProps {
 export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) => {
   const {setAnswer} = useFillActions();
   const intl = useIntl();
+
+  const setValue = (value:string) => {
+    // convert text from radio button value to boolean
+    return value === 'true' ? true : (value === 'false' ? false : value);
+  }
+  const getValue = (value?:boolean) => {
+    // convert booleans to radio button string values
+    if (value === true) {
+      return 'true';
+    }
+    else if (value === false) {
+      return 'false';
+    }
+    // accept other values as they are (from previous version storing strings)
+    return value;
+  }
   return (
     <DescriptionWrapper text={boolean.description} title={boolean.label}>
       <FormControl component='fieldset' required={boolean.required} fullWidth={true} error={errors.length > 0}>
         <FormLabel component="legend">{boolean.label}</FormLabel>
-        <RadioGroup value={boolean.value} onChange={e => {setAnswer(boolean.id, e.target.value);}} row={true}>
+        <RadioGroup value={getValue(boolean.value)} onChange={e => {setAnswer(boolean.id, setValue(e.target.value));}} row={true}>
           <FormControlLabel
             value='true'
             control={<Radio />}
