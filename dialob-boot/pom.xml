@@ -67,23 +67,34 @@
         <artifactId>buildnumber-maven-plugin</artifactId>
         <version>1.4</version>
       </plugin>
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <configuration>
-          <from>
-            <image>docker.resys.io/docker/java-runtime:11-amzn</image>
-          </from>
-          <container>
-            <ports>
-              <port>8081</port>
-              <port>8082</port>
-            </ports>
-          </container>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
+  
+  <profiles>
+    <profile>
+      <id>jib</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <configuration>
+              <from>
+                <image>docker.resys.io/docker/java-runtime:11-amzn</image>
+              </from>
+              <container>
+                <ports>
+                  <port>8081</port>
+                  <port>8082</port>
+                </ports>
+              </container>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
