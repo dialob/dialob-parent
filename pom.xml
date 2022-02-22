@@ -8,7 +8,7 @@
   <version>999-SNAPSHOT</version>
   <packaging>pom</packaging>
   <inceptionYear>2015 - 2021</inceptionYear>
-  
+
   <organization>
     <name>Copyright 2021 ReSys OÜ</name>
   </organization>
@@ -68,8 +68,8 @@
       <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
-  
-  
+
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -204,7 +204,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>update-license-headers</id>
       <build>
@@ -224,12 +224,34 @@
         </plugins>
       </build>
     </profile>
-    
-    
+
+
     <profile>
       <id>dialob-release</id>
       <build>
         <plugins>
+          <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>ID_AS_IN_PARENT</id> <!-- id is necessary sometimes -->
+                <phase>none</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <from>
+                <image>docker.resys.io/docker/java-runtime:11-amzn</image>
+              </from>
+              <container>
+                <ports>
+                  <port>8081</port>
+                  <port>8082</port>
+                </ports>
+              </container>
+            </configuration>
+          </plugin>
+
           <plugin>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>1.5</version>
