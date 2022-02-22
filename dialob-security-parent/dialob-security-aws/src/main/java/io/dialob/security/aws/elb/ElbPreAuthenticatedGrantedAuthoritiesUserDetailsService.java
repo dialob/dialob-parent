@@ -42,7 +42,7 @@ public class ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService implements
 	}
 
 	/**
-	 * Creates the final <tt>UserDetails</tt> object. Can be overridden to customize the
+	 * Creates the final UserDetails object. Can be overridden to customize the
 	 * contents.
 	 *
 	 * @param token the authentication request token
