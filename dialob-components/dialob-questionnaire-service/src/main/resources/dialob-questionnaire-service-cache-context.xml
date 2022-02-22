@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+  <cache:advice id="questionnaireDatabaseCacheAdvice">
+    <cache:caching cache="questionnaireCache">
+      <cache:cacheable method="findOne" key="{'q',#a0,#a1,#a2}"/>
+      <cache:cacheable method="exists" key="{'e',#a0,#a1,null}"/>
+      <cache:cache-evict method="delete" all-entries="true"/>
+      <cache:cache-put method="save" key="{'q',#a0,#result.id,null}"/>
+      <cache:cache-put method="save" key="{'q',#a0,#result.id,#result.rev}"/>
+      <cache:cache-evict method="save" key="{'e',#a0,#result.id,null}"/>
+      <cache:cacheable method="findMetadata" key="{'md',#a0,#a1}"/>
+    </cache:caching>
+  </cache:advice>
+
+
+  <cache:advice id="questionnaireSessionSaveServiceCacheAdvice">
+    <cache:caching cache="sessionCache">
+      <cache:cache-put method="save" key="#result.sessionId"/>
+    </cache:caching>
+  </cache:advice>
+
+  <cache:advice id="questionnaireSessionServiceCacheAdvice">
+    <cache:caching cache="sessionCache">
+      <cache:cacheable method="findOne" key="#a0" unless="#result == null"/>
+    </cache:caching>
+  </cache:advice>
+
+
+  <aop:config proxy-target-class="false">
+    <aop:advisor advice-ref="questionnaireDatabaseCacheAdvice" pointcut="execution(* io.dialob.questionnaire.service.api.QuestionnaireDatabase.*(..))"/>
+    <aop:advisor advice-ref="questionnaireSessionServiceCacheAdvice" pointcut="execution(* io.dialob.questionnaire.service.api.session.QuestionnaireSessionService.*(..))"/>
+    <aop:advisor advice-ref="questionnaireSessionSaveServiceCacheAdvice" pointcut="execution(* io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService.*(..))"/>
+  </aop:config>
+  
+</beans>
+

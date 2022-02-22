@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="common_content(header,applicationContent,footer,scripts)">
+<head>
+  <title>Dialob</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta charset="UTF-8"/>
+  <meta th:if="${_csrf}" name="_csrf" th:content="${_csrf.token}"/>
+  <meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link th:each="stylesheet: ${stylesheets}" rel="stylesheet" type="text/css" th:href="${stylesheet.value}"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+  <script th:if="${reactHook}">__REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__</script>
+</head>
+<body>
+<div class="dialob-app-container">
+  <header th:if="${embedded == null || embedded == false}" th:insert="${header} ?: ~{this::header/div}">
+    <div class="dialob-app-top">
+      <img th:if="${logo}" th:src="${logo.url}" th:width="${logo.width}" th:height="${logo.height}" width="180"
+           height="40"
+           src="https://cdn.resys.io/dialob_logo.svg"/><span class="dialob-app-title"></span>
+      <span th:if="${subApplicationName}" th:text="${subApplicationName}" class="dialob-app-subtitle">Composer</span>
+    </div>
+  </header>
+  <th:block th:replace="${applicationContent} ?: ~{::#dialob-app-content}">
+    <div id="dialob-app-content">
+      <div class='dialob-loading-indicator'>
+        <i class='fa fa-spinner fa-spin fa-5x'></i>
+      </div>
+    </div>
+  </th:block>
+  <footer th:if="${embedded == null || embedded == false}" th:replace="${footer} ?: ~{}"/>
+</div>  
+</body>
+<th:block th:replace="${scripts} ?: ~{:: script}">
+  <script th:if="${javascriptFiles != null}" th:each="javascriptFile: ${javascriptFiles}" type="text/javascript"
+          th:src="${javascriptFile.value}"></script>
+</th:block>
+<script th:if="${trackerId != null}" th:inline="javascript" type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  var trackingId = /*[[${trackerId}]]*/ 'UA-85007536-1'; 
+  ga('create', trackingId, 'auto');
+  ga('send', 'pageview');
+</script>
+</html>

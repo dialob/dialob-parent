@@ -1,0 +1,72 @@
+/*
+ * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.dialob.db.jdbc;
+
+import io.dialob.api.form.Form;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.form.service.api.FormDatabase;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Slf4j
+class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionControlDatabaseTest implements AbstractPostgreSQLTest {
+
+
+  @Test
+  public void saveAndQueryFormsByMetadata() {
+
+    setActiveTenant("12341234-1234-1234-1234-123412341236");
+
+    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    form = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
+
+    Form form2 = ImmutableForm.builder().from(form).putData("questionnaire", ImmutableFormItem.builder()
+      .id("questionnaire")
+      .type("questionnaire")
+      .build())
+      .metadata(ImmutableFormMetadata.builder().label("test form 2").putAdditionalProperties("extra",1).build())
+      .id(null)
+      .rev(null)
+      .build();
+
+    form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form2);
+
+    List<FormDatabase.FormMetadataRow> rows = new ArrayList<FormDatabase.FormMetadataRow>();
+    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form 2").build(), rows::add);
+    assertEquals(1, rows.size());
+    assertEquals(form2.getId(), rows.get(0).getId());
+    rows.clear();
+
+    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form").build(), rows::add);
+    assertEquals(1, rows.size());
+    assertEquals(form.getId(), rows.get(0).getId());
+    rows.clear();
+
+
+    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().putAdditionalProperties("extra",1).build(), rows::add);
+    assertEquals(1, rows.size());
+    assertEquals(form2.getId(), rows.get(0).getId());
+    rows.clear();
+  }
+
+}

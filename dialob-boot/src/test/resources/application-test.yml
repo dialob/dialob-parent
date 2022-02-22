@@ -1,0 +1,18 @@
+questionnaire:
+  tenants:
+    default:
+      template: "https://cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/template.html"
+      attributes:
+        javascriptFiles:
+          - "//cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/runtime.js"
+          - "//cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/app.js"
+        stylesheets:
+          - "//cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/app.css"
+          - "//unpkg.com/semantic-ui@2.4.1/dist/semantic.min.css"
+    xx:
+      template: fill
+      attributes:
+        javascriptFiles:
+          - javaasc
+        stylesheets:
+          - csss

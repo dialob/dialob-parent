@@ -1,0 +1,63 @@
+{
+  "modifiableQuestionnaire": [
+    {
+      "_class": "io.dialob.api.questionnaire.ModifiableQuestionnaire",
+      "initBits": 0,
+      "rev": "0",
+      "answers": [
+        {
+          "_id": "q1",
+          "initBits": 0,
+          "value": "v1",
+          "_class": "io.dialob.api.questionnaire.ModifiableAnswer"
+        }
+      ],
+      "tables": [
+        {
+          "initBits": 0,
+          "tableId": "table1",
+          "rows": [
+            "2",
+            "3",
+            "5"
+          ],
+          "_class": "io.dialob.api.questionnaire.ModifiableTable"
+        }
+      ],
+      "context": [
+        {
+          "_id": "c1",
+          "initBits": 0,
+          "value": "c2",
+          "_class": "io.dialob.api.questionnaire.ModifiableContextValue"
+        }
+      ],
+      "errors": [
+        {
+          "_id": "err1",
+          "initBits": 0,
+          "code": "CODE1",
+          "description": "Error 1",
+          "_class": "io.dialob.api.questionnaire.ModifiableError"
+        }
+      ],
+      "variableValues": [
+        {
+          "_id": "var1",
+          "initBits": 0,
+          "value": 34,
+          "_class": "io.dialob.api.questionnaire.ModifiableVariableValue"
+        }
+      ],
+      "metadata": {
+        "initBits": 0,
+        "formId": "123",
+        "status": "NEW",
+        "created": {
+          "$date": "2018-01-20T10:10:56.800Z"
+        },
+        "additionalProperties": {}
+      }
+    }
+  ]
+}

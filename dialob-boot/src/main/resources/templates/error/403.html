@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: common_content(null,~{::applicationContent},null,null)">
+<body>
+<div th:fragment="applicationContent">
+  Access denied..
+  <a href="/logout">Try relogin... (updates user permissions)</a>
+</div>
+</body>
+</html>

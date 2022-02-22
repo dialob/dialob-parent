@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Dialob: Composer</title>
+  <meta name="description" content="">
+  <meta th:if="${_csrf}" name="_csrf" th:content="${_csrf.token}"/>
+  <meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link th:each="stylesheet: ${stylesheets}" rel="stylesheet" type="text/css" th:href="${stylesheet.value}"></link>
+<body>
+
+<script th:if="${appConfig}" th:inline="javascript">
+  window.COMPOSER_CONFIG = /*[[${appConfig}]]*/ {};
+</script>
+
+<div id="app"></div>
+
+<script th:each="javascriptFile: ${javascriptFiles}" type="text/javascript" th:src="${javascriptFile.value}"></script>
+</body>
+</html>

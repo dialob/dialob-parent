@@ -1,0 +1,7 @@
+dialob:
+  uaa:
+    url: "https://login.example.com"
+    clientId: "user.reader"
+    clientSecret: "client-secret-string"
+  tenant:
+    mode: URL_PARAM

@@ -1,0 +1,28 @@
+{
+  "_id": "3",
+  "_rev": "3",
+  "answers": [
+    {
+      "id": "text1",
+      "value": "Something",
+      "type": "STRING"
+    },
+    {
+      "id": "boolean1",
+      "value": "false",
+      "type": "BOOLEAN"
+    }
+  ],
+  "activeItem": "page1",
+  "metadata": {
+    "formId": "likeTotallyWrongForm",
+    "status": "COMPLETED",
+    "tenantId": "t-123",
+    "created": "2020-10-01T07:04:59.000+00:00",
+    "lastAnswer": "2020-10-01T07:10:21.000+00:00",
+    "label": "CSVTest",
+    "language": "fi",
+    "owner": "3caa74e7-0182-4afa-aadb-8b968984d768",
+    "creator": "3caa74e7-0182-4afa-aadb-8b968984d768"
+  }
+}
