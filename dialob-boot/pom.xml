@@ -177,10 +177,6 @@
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-security-spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-integration-queue</artifactId>
     </dependency>
     <dependency>
@@ -217,7 +213,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
     <dependency>
