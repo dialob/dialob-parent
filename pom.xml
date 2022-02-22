@@ -20,6 +20,37 @@
     </license>
   </licenses>
 
+  <url>http://github.com/dialob/dialob-parent</url>
+  <description>Form Engine</description>
+  <name>dialob-parent</name>
+  <developers>
+    <developer>
+      <name>Villu Vaimets</name>
+      <email>villu.vaimets@resys.io</email>
+      <organization>ReSys OÜ</organization>
+      <organizationUrl>http://www.resys.io</organizationUrl>
+    </developer>
+    <developer>
+      <name>Tomi Pakarinen</name>
+      <email>tomi.pakarinen@resys.io</email>
+      <organization>ReSys OÜ</organization>
+      <organizationUrl>http://www.resys.io</organizationUrl>
+    </developer>
+    <developer>
+      <name>Olev Mutso</name>
+      <email>olev.mutso@resys.io</email>
+      <organization>ReSys OÜ</organization>
+      <organizationUrl>http://www.resys.io</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jocelyn Mutso</name>
+      <email>jocelyn.mutso@resys.io</email>
+      <organization>ReSys OÜ</organization>
+      <organizationUrl>http://www.resys.io</organizationUrl>
+    </developer>
+  </developers>
+
+
   <scm>
     <connection>scm:git:https://github.com/dialob/dialob-parent.git</connection>
     <developerConnection>scm:git:https://github.com/dialob/dialob-parent.git</developerConnection>
