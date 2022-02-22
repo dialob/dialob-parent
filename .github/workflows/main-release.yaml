@@ -3,7 +3,7 @@ on:
     branches:
       - main
 
-name: main - release - java 15
+name: main - release - java 11
 jobs:
   build:
     name: Releasing branch - main
@@ -16,7 +16,7 @@ jobs:
 
     - uses: joschi/setup-jdk@v2
       with:
-        java-version: '15'
+        java-version: '11'
     
     - name: tag - release - upload
       run: ./dialob-build-parent/release.sh
