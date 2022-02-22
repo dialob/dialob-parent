@@ -293,20 +293,6 @@
         <version>${dialob-api.version}</version>
         <scope>test</scope>
       </dependency>
-      
-      
-      <dependency>
-        <groupId>io.dialob</groupId>
-        <artifactId>dialob-review</artifactId>
-        <version>${dialob-review.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.dialob</groupId>
-        <artifactId>dialob-admin-ui</artifactId>
-        <version>${dialob-admin-ui.version}</version>
-      </dependency>
-      
-
     </dependencies>
   </dependencyManagement>
 </project>
