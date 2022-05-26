@@ -34,6 +34,7 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
+import io.dialob.integration.redis.ProvideTestRedis;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -85,7 +86,7 @@ import io.dialob.security.user.CurrentUserProvider;
   "dialob.db.database-type=none"
 })
 @ContextConfiguration(classes = {Application.class, QuestionnairesRestControllerApiKeyTest.TestConfiguration.class})
-public class QuestionnairesRestControllerApiKeyTest {
+public class QuestionnairesRestControllerApiKeyTest implements ProvideTestRedis {
 
   public interface ListenerMock {
     @EventListener

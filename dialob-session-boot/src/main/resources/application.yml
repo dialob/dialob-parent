@@ -19,7 +19,7 @@ spring:
   aop:
     proxy-target-class: false
   application:
-    name: ${project.artifactId}
+    name: ${project.artifactId:}
   profiles:
     active: couchdb
 #    active: mongodb

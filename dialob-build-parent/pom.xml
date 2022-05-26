@@ -67,16 +67,15 @@
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
 
-    <logback.version>1.2.10</logback.version>
+    <logback.version>1.2.11</logback.version>
     <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
     <mockito.version>3.7.7</mockito.version>
     <okhttp3.version>4.9.3</okhttp3.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.6.3</spring-boot.version>
-    <spring-integration.version>5.5.6</spring-integration.version>
-    <spring-security.version>5.5.7</spring-security.version>
-    <springframework.version>5.3.16</springframework.version>
-    <spring-session.version>2.5.5</spring-session.version>
+    <spring-boot.version>2.7.0</spring-boot.version>
+    <spring-integration.version>5.5.12</spring-integration.version>
+    <spring-security.version>5.7.1</spring-security.version>
+    <spring-session.version>2.6.3</spring-session.version>
     <swagger.version>2.1.11</swagger.version>
     <validation-api.version>2.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
@@ -193,11 +192,6 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.el</artifactId>
-      <version>3.0.3</version>
     </dependency>
   </dependencies>
 
@@ -438,11 +432,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-aop</artifactId>
-        <version>${springframework.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.session</groupId>
         <artifactId>spring-session-core</artifactId>
         <version>${spring-session.version}</version>
@@ -469,11 +458,6 @@
         <groupId>com.ibm.db2.jcc</groupId>
         <artifactId>db2jcc4</artifactId>
         <version>${db2jcc4.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-jdbc</artifactId>
-        <version>${springframework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.immutables</groupId>

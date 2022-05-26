@@ -65,7 +65,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "dialob.session.cache.type=NONE"
   })
 @EnableConfigurationProperties(DialobSettings.class)
-class ApplicationCorsTest {
+class ApplicationCorsTest implements ProvideTestRedis {
 
   @Configuration(proxyBeanMethods = false)
   @EnableAutoConfiguration(exclude = {
