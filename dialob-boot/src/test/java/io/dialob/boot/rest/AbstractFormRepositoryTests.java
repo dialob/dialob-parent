@@ -38,6 +38,7 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
+import io.dialob.integration.redis.ProvideTestRedis;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +80,7 @@ import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 
-public class AbstractFormRepositoryTests {
+public class AbstractFormRepositoryTests implements ProvideTestRedis {
 
   public static final NoExceptionResponseErrorHandler NO_EXCEPTION_RESPONSE_ERROR_HANDLER = new NoExceptionResponseErrorHandler();
 

@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -48,7 +47,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -89,12 +88,12 @@ public class MongoDbQuestionnaireDatabaseTest {
     public MongoTemplate mongoTemplate() {
       MongoTemplate mongoTemplate = mock(MongoTemplate.class);
       when(mongoTemplate.getConverter()).thenReturn(mongoConverter());
-      ExecutableFindOperation.ExecutableFind executableFind = mock(ExecutableFindOperation.ExecutableFind.class);
+      var executableFind = mock(ExecutableFindOperation.ExecutableFind.class);
       when(executableFind.as(any())).thenReturn(executableFind);
-      ExecutableFindOperation.FindWithProjection findWithProjection = mock(ExecutableFindOperation.FindWithProjection.class);
+      var findWithProjection = mock(ExecutableFindOperation.FindWithProjection.class);
       when(findWithProjection.as(any())).thenReturn(findWithProjection);
       when(findWithProjection.matching(any(Query.class))).thenReturn(mock(ExecutableFindOperation.TerminatingFind.class));
-      ExecutableFindOperation.TerminatingFind terminatingFind = mock(ExecutableFindOperation.TerminatingFind.class);
+      var terminatingFind = mock(ExecutableFindOperation.TerminatingFind.class);
       when(terminatingFind.all()).thenReturn(Collections.emptyList());
       when(executableFind.matching(any(Query.class))).thenReturn(terminatingFind);
       when(mongoTemplate.query(any())).thenReturn(executableFind);
@@ -153,6 +152,7 @@ public class MongoDbQuestionnaireDatabaseTest {
     verify(mongoTemplate, times(1)).setApplicationContext(any());
     verify(mongoTemplate, atLeast(0)).getConverter();
     verify(mongoTemplate, times(1)).execute(any(DbCallback.class));
+    verify(mongoTemplate, times(2)).update(any(Class.class));
     verifyNoMoreInteractions(mongoTemplate, mongoDatabase, codecRegistry);
   }
 

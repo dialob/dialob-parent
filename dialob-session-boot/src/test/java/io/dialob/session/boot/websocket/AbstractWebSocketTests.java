@@ -30,12 +30,13 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
+import io.dialob.session.boot.ProvideTestRedis;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -59,7 +60,7 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.sockjs.WebSocketRequestTestTemplate;
 import io.dialob.security.tenant.CurrentTenant;
 
-public class AbstractWebSocketTests {
+public class AbstractWebSocketTests implements ProvideTestRedis {
 
   public static class TestConfiguration {
 
