@@ -52,7 +52,7 @@ export class DialobContextType {
   }
 
   public getTranslated(value: any): any {
-    return value ? value[this.language] : '';
+    return (value && value[this.language]) || '';
   }
 
   public createItem(itemId: string, answerId: string | null = null, isMainGroupItem: boolean = false): JSX.Element | null {
