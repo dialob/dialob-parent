@@ -24,14 +24,14 @@ pipeline {
     stage('Test') {
       steps {
       //  sh 'yarn install'
-        sh 'npm install' // Yarn 1.6 doesn't support private repos
+        sh 'yarn install' // Yarn 1.6 doesn't support private repos
       //  sh 'yarn test'
       }
     }
 
     stage('Build') {
       steps {
-        sh 'npm run build'
+        sh 'yarn build'
       }
     }
 

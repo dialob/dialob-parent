@@ -1,23 +1,32 @@
 {
   "name": "dialob-composer-generic-app",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Describe dialob-composer-generic-app here",
   "private": true,
   "scripts": {
-    "build": "nwb build-react-app --no-vendor",
-    "clean": "nwb clean-app",
-    "start": "nwb serve-react-app"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "dependencies": {
-    "@resys/dialob-composer": "2.8.2-2",
+    "@resys/dialob-composer": "2.9.1-1",
     "immutable": "3.8.2",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
-  },
-  "devDependencies": {
-    "nwb": "0.24.1"
+    "react-dom": "16.13.1",
+    "react-scripts": "4.0.3"
   },
   "author": "",
   "license": "MIT",
-  "repository": ""
+  "repository": "",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
