@@ -1,13 +1,16 @@
 {
   "name": "@resys/dialob-composer",
-  "version": "2.8.2-2",
+  "version": "2.9.1-1",
   "description": "dialob-composer React component",
   "main": "lib/index.js",
-  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "build": "nwb build-react-component --copy-files",
-    "clean": "nwb clean-module && nwb clean-demo",
-    "start": "nwb serve-react-demo"
+    "build": "rm -rf ./lib && tsc && yarn copy-files",
+    "clean": "rm -rf ./lib",
+    "copy-files": "copyfiles -u 1 src/*.css lib/"
   },
   "dependencies": {
     "@resys/react-redux-scroll": "0.2.3",
@@ -37,8 +40,9 @@
     "react": "16.13.x"
   },
   "devDependencies": {
-    "nwb": "0.24.5",
-    "react": "16.13.1"
+    "copyfiles": "^2.4.1",
+    "react": "16.13.1",
+    "typescript": "^4.7.4"
   },
   "publishConfig": {
     "registry": "https://repo.resys.io/repository/npm/",
