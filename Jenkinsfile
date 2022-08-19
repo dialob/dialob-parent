@@ -40,7 +40,7 @@ pipeline {
     stage('Build') {
       steps {
        // sh 'git checkout -- package-lock.json'
-        sh 'yarn version prerelease'
+        sh 'yarn version --prerelease'
         sh 'yarn build'
         sshagent(credentials: ['f41971b1-4bca-4f7c-91a4-9fd6f46e0df3']) {
           sh "git push origin HEAD:$BRANCH_NAME && git push --tags origin HEAD:$BRANCH_NAME"
