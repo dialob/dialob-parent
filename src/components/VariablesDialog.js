@@ -45,7 +45,7 @@ const ContextVariables = ({variables, onCreate, onRemove, onIdChange, onChangeAt
 const Expressions = ({variables, onCreate, onRemove, onIdChange, onChangeAttr, getErrors, readOnly}) => {
   const rows = variables.map((v, k) => <Table.Row key={k} error={getErrors(v.get('name')).size > 0}>
     <Table.Cell collapsing><Button size='tiny' icon='remove' onClick={() => onRemove(v.get('name'))} disabled={readOnly}/></Table.Cell>
-    <Table.Cell collapsing collapsing textAlign='center' verticalAlign='middle'><Checkbox checked={v.get('published')} onChange={((e, {checked}) => onChangeAttr(v.get('name'), 'published', checked))} /></Table.Cell>
+    <Table.Cell collapsing textAlign='center' verticalAlign='middle'><Checkbox checked={v.get('published')} onChange={((e, {checked}) => onChangeAttr(v.get('name'), 'published', checked))} /></Table.Cell>
     <Table.Cell selectable><a onClick={() => { if (!readOnly) { onIdChange(v.get('name'))}}}>{v.get('name')}</a></Table.Cell>
     <Table.Cell>
       <CodeEditor value={v.get('expression') || ''} onChange={(value) => onChangeAttr(v.get('name'), 'expression', value)} readOnly={readOnly} errors={getErrors(v.get('name'))}/>

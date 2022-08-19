@@ -1,3 +1,7 @@
+# 2.9.1
+
+* Dropped nwb build and introduced typescript
+
 # 2.8.2
 
 * Download feature for all versions.
