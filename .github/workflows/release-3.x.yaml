@@ -1,12 +1,13 @@
 on:
   push:
     branches:
-      - main
+      - digiexpress
 
-name: main - release - java 11
+name: 3.x - release - java 11
 jobs:
   build:
-    name: Releasing branch - main
+    name: Releasing branch - digiexpress - version 3.x
+    if: "contains(github.event.head_commit.message, 'make-release-3.x')"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -18,7 +19,7 @@ jobs:
       with:
         java-version: '11'
 
-    - name: tag - release - upload
+    - name: digiexpress - 3.x - tag - release - upload
       run: ./dialob-build-parent/release.sh
       env:
         CI: false
