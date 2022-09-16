@@ -1,3 +1,0 @@
-dialob:
-  security:
-    authenticationMethod: AWSELB

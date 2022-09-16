@@ -1,6 +1,0 @@
-dialob.db:
-  database-type: FILEDB
-  file:
-    service:
-      enabled: true
-      directory: "./filedb"
