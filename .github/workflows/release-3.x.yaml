@@ -13,7 +13,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@main
       with:
-        ref: main
+        ref: digiexpress
 
     - uses: joschi/setup-jdk@v2
       with:
