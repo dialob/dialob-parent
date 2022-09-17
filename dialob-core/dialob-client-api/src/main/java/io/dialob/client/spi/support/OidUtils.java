@@ -28,9 +28,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import io.dialob.client.spi.exceptions.DocumentNotFoundException;
 
-public final class IdUtils {
+public final class OidUtils {
 
-  private IdUtils() { }
+  private OidUtils() { }
 
   private static final SecureRandom SECURE_RANDOM;
 
@@ -51,15 +51,19 @@ public final class IdUtils {
   }
 
   @NotNull
-  static byte[] generateOID() {
+  public static byte[] generateOID() {
     byte[] oid = new byte[16];
     SECURE_RANDOM.nextBytes(oid);
     return oid;
   }
 
   @NotNull
-  static String toString(@NotNull byte[] oid) {
+  public static String toString(@NotNull byte[] oid) {
     return Hex.encodeHexString(oid);
+  }
+  
+  public static String generateVersionOID() {
+    return toString(generateOID());
   }
 
   @Nullable

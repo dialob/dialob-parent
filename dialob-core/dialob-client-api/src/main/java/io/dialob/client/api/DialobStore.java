@@ -29,6 +29,24 @@ public interface DialobStore {
   StoreRepoBuilder repo();
   
   
+  @Value.Immutable
+  @JsonSerialize(as = ImmutableStoreRelease.class)
+  @JsonDeserialize(as = ImmutableStoreRelease.class)
+  interface StoreRelease extends Serializable {
+    String getName();
+    LocalDateTime getCreated();
+    List<StoreReleaseValue> getValues();
+  }
+  
+  @Value.Immutable
+  @JsonSerialize(as = ImmutableStoreReleaseValue.class)
+  @JsonDeserialize(as = ImmutableStoreReleaseValue.class)
+  interface StoreReleaseValue {
+    String getHash();
+    BodyType getBodyType();
+    String getCommands();
+  } 
+  
   interface HistoryQuery {
     Uni<HistoryEntity> get(@Nonnull String id, @Nonnull String rev);
   }
@@ -42,14 +60,10 @@ public interface DialobStore {
   }
   
   interface QueryBuilder {
-    QueryBuilder id(@Nonnull String id);
-    QueryBuilder rev(String rev);
-    Uni<StoreEntity> findOne();
     Uni<StoreState> get();
+    Uni<StoreEntity> get(String id);
   }
 
-
-  
   @Value.Immutable @JsonSerialize(as = ImmutableStoreState.class) @JsonDeserialize(as = ImmutableStoreState.class)
   interface StoreState {
     Map<String, StoreEntity> getTags();
@@ -59,6 +73,7 @@ public interface DialobStore {
   @Value.Immutable @JsonSerialize(as = ImmutableStoreEntity.class) @JsonDeserialize(as = ImmutableStoreEntity.class)
   interface StoreEntity extends Serializable {
     String getId();
+    String getVersion();
     BodyType getBodyType();
     String getHash();
     String getBody();
@@ -78,28 +93,30 @@ public interface DialobStore {
     FormEntity getBody();
   }
   
-  
-  
   interface StoreCommand extends Serializable {
-    String getId();
-    BodyType getType();
+    BodyType getBodyType();
   }
 
   @Value.Immutable @JsonSerialize(as = ImmutableUpdateStoreEntity.class) @JsonDeserialize(as = ImmutableUpdateStoreEntity.class)
   interface UpdateStoreEntity extends StoreCommand {
-    FormEntity getBody();
+    String getId();
+    String getVersion();
+    String getBody();
   }
 
   @Value.Immutable @JsonSerialize(as = ImmutableCreateStoreEntity.class) @JsonDeserialize(as = ImmutableCreateStoreEntity.class)
   interface CreateStoreEntity extends StoreCommand {
-    FormEntity getBody();
+    String getBody();
   }
   
   @Value.Immutable @JsonSerialize(as = ImmutableDeleteStoreEntity.class) @JsonDeserialize(as = ImmutableDeleteStoreEntity.class)
-  interface DeleteStoreEntity extends StoreCommand { }  
+  interface DeleteStoreEntity extends StoreCommand {
+    String getId();
+    String getVersion();
+  }  
 
   
-  enum BodyType { FORM, TAG }
+  enum BodyType { FORM, FORM_TAG }
   enum BodyStatus { OK, ERROR }
   
   @Value.Immutable @JsonSerialize(as = ImmutableBodySource.class) @JsonDeserialize(as = ImmutableBodySource.class)
@@ -108,6 +125,13 @@ public interface DialobStore {
     String getHash();
     BodyType getBodyType();
     String getValue();
+  }
+  
+  @Value.Immutable @JsonSerialize(as = ImmutableStoreExceptionMsg.class)
+  interface StoreExceptionMsg {
+    String getId();
+    String getValue();
+    List<String> getArgs();
   }
   
 }

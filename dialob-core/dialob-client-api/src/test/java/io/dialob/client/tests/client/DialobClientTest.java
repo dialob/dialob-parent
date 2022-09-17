@@ -10,8 +10,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +22,7 @@ import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClientConfig;
+import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
 import io.dialob.client.spi.DialobClientImpl;
 import io.dialob.client.spi.DialobEhCache;
@@ -31,7 +30,6 @@ import io.dialob.client.spi.DialobTypesMapperImpl;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
 import io.dialob.client.spi.function.AsyncFunctionInvoker;
 import io.dialob.compiler.DialobProgramFromFormCompiler;
-import io.dialob.compiler.DialobSessionUpdateHook;
 import io.dialob.program.DialobSessionEvalContextFactory;
 import io.dialob.program.EvalContext;
 import io.dialob.rule.parser.api.ValueType;
@@ -66,36 +64,32 @@ public class DialobClientTest extends DialobClientImpl {
   @Data
   @EqualsAndHashCode(callSuper = false)
   public static class Builder extends DialobClientImpl.Builder {  
-    private @Nullable FunctionRegistry functionRegistry;
-    private @Nullable AsyncFunctionInvoker asyncFunctionInvoker;
-    private @Nullable QuestionnaireEventPublisher eventPublisher;
 
-    //private DialobStore store;
-    private @Nullable ObjectMapper objectMapper;
-    private @Nullable DialobSessionUpdateHook dialobSessionUpdateHook;
-    private @Nullable DialobCache cache;
-    private @Nullable Clock clock;
-    
     
     public DialobClientTest build() {
-      DialobCache cache = this.cache;
+      DialobCache cache = this.cache();
       if(cache == null) {
         cache = DialobEhCache.builder().build("inmem");
       }
       
-      Clock clock = this.clock;
+      Clock clock = this.clock();
       if(clock == null) {
         clock = Clock.systemDefaultZone();
       }
 
-      ObjectMapper objectMapper = this.objectMapper;
+      ObjectMapper objectMapper = this.objectMapper();
       if(objectMapper == null) {
         objectMapper = new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
       }
       
-      QuestionnaireEventPublisher eventPublisher = this.eventPublisher;
+      QuestionnaireEventPublisher eventPublisher = this.eventPublisher();
       if(eventPublisher == null) {
         eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
+      }
+      
+      DialobStore store = this.store();
+      if(store == null) {
+        store = Mockito.mock(DialobStore.class);
       }
       
       final var visitor = mock(EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor.class);
@@ -106,8 +100,8 @@ public class DialobClientTest extends DialobClientImpl {
       
       final var config = ImmutableDialobClientConfig.builder()
           .asyncFunctionInvoker(asyncFunctionInvoker)
-          .factory(new DialobSessionEvalContextFactory(functionRegistry, clock, dialobSessionUpdateHook))
-          //.store(store)
+          .factory(new DialobSessionEvalContextFactory(functionRegistry, clock, dialobSessionUpdateHook()))
+          .store(store)
           .cache(cache)
           .eventPublisher(eventPublisher)
           .mapper(new DialobTypesMapperImpl(objectMapper))

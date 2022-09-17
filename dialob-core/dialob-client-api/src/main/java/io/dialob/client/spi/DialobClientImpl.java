@@ -1,6 +1,7 @@
 package io.dialob.client.spi;
 
 import java.time.Clock;
+import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
@@ -11,10 +12,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobClientConfig;
+import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
 import io.dialob.client.spi.executor.QuestionnaireExecutorBuilderImpl;
 import io.dialob.client.spi.function.AsyncFunctionInvoker;
+import io.dialob.client.spi.program.ProgramBuilderImpl;
 import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.compiler.DialobProgramFromFormCompiler;
 import io.dialob.compiler.DialobSessionUpdateHook;
@@ -30,37 +33,33 @@ public class DialobClientImpl implements DialobClient {
   
   @Override
   public BodySourceBuilder ast() {
-    // TODO Auto-generated method stub
-    return null;
+    return new BodySourceBuilderImpl(config);
   }
-
   @Override
   public ProgramBuilder program() {
-    // TODO Auto-generated method stub
-    return null;
+    return new ProgramBuilderImpl(config.getCompiler());
   }
-
   @Override
   public QuestionnaireExecutorBuilder executor(ProgramEnvir envir) {
     return new QuestionnaireExecutorBuilderImpl(envir, config);
   }
-
   @Override
   public EnvirBuilder envir() {
     return new DialobClientEnvirBuilder(new DialobProgramEnvirFactory(config));
   }
-
   @Override
   public DialobClientConfig config() {
     return config;
   }
-
+  @Override
+  public DialobStore store() {
+    return config.getStore();
+  }
+  
   @Override
   public RepoBuilder repo() {
-    // TODO Auto-generated method stub
-    return null;
+    return new DialobRepoBuilderImpl(config);
   }
-
   
   public static Builder builder() {
     return new Builder();
@@ -73,7 +72,7 @@ public class DialobClientImpl implements DialobClient {
     private AsyncFunctionInvoker asyncFunctionInvoker;
     private QuestionnaireEventPublisher eventPublisher;
 
-    //private DialobStore store;
+    private DialobStore store;
     private @Nullable ObjectMapper objectMapper;
     private @Nullable DialobSessionUpdateHook dialobSessionUpdateHook;
     private @Nullable DialobCache cache;
@@ -102,10 +101,15 @@ public class DialobClientImpl implements DialobClient {
         objectMapper = new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
       }
       
+      DialobStore store = this.store;
+      if(store == null) {
+        store = new DialobMemoryStore(new HashMap<>());
+      }
+      
       final var config = ImmutableDialobClientConfig.builder()
           .asyncFunctionInvoker(asyncFunctionInvoker)
           .factory(new DialobSessionEvalContextFactory(functionRegistry, clock, dialobSessionUpdateHook))
-          //.store(store)
+          .store(store)
           .cache(cache)
           .eventPublisher(eventPublisher)
           .mapper(new DialobTypesMapperImpl(objectMapper))

@@ -57,7 +57,7 @@ public class DialobProgramEnvirFactory {
     
     switch (entity.getBodyType()) {
     case FORM: visitWrapper(visitForm(entity));
-    case TAG: visitTag(entity); break;
+    case FORM_TAG: visitTag(entity); break;
     default: throw new IllegalArgumentException("unknown command format type: '" + entity.getBodyType() + "'!");
     }
     

@@ -37,13 +37,18 @@ public interface DialobComposer {
   Uni<Form> apply(@Nonnull FormCommands asset);
   
   
-
+//TODO::
   @Value.Immutable @JsonSerialize(as = ImmutableComposerState.class) @JsonDeserialize(as = ImmutableComposerState.class)
   interface ComposerState extends Serializable {
     Map<String, ComposerEntity<FormTag>> getTags();
     Map<String, ComposerEntity<FormAndTags>> getForms();
   }
-  
+//TODO::
+  @Value.Immutable @JsonSerialize(as = ImmutableFormAndTags.class) @JsonDeserialize(as = ImmutableFormAndTags.class)
+  interface FormAndTags extends Serializable {
+    Form getForm();
+    List<FormTag> getTags();
+  }
 
   @Value.Immutable @JsonSerialize(as = ImmutableComposerEntity.class) @JsonDeserialize(as = ImmutableComposerEntity.class)
   interface ComposerEntity<A> {
@@ -53,19 +58,19 @@ public interface DialobComposer {
     BodyStatus getStatus();
   }
   
-  @Value.Immutable @JsonSerialize(as = ImmutableFormAndTags.class) @JsonDeserialize(as = ImmutableFormAndTags.class)
-  interface FormAndTags extends Serializable {
-    Form getForm();
-    List<FormTag> getTags();
-  }
-  
-  
   @Value.Immutable @JsonSerialize(as = ImmutableStoreDump.class) @JsonDeserialize(as = ImmutableStoreDump.class)
   interface StoreDump extends Serializable {
     String getId();
-    List<FormEntity> getValue();
+    List<StoreDumpValue> getValue();
   }
-  
+
+  @Value.Immutable @JsonSerialize(as = ImmutableStoreDumpValue.class) @JsonDeserialize(as = ImmutableStoreDumpValue.class)
+  interface StoreDumpValue extends Serializable {
+    String getId();
+    String getHash();
+    BodyType getBodyType();
+    String getValue();
+  }
 
   @Value.Immutable @JsonSerialize(as = ImmutableCreate.class) @JsonDeserialize(as = ImmutableCreate.class)
   interface Create extends Serializable {

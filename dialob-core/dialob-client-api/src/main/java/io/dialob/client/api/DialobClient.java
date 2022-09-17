@@ -42,6 +42,7 @@ public interface DialobClient {
   EnvirBuilder envir();
 
   DialobClientConfig config();
+  DialobStore store();
   RepoBuilder repo();
 
   interface QuestionnaireExecutorBuilder {
@@ -81,6 +82,7 @@ public interface DialobClient {
   }
   
   interface BodySourceBuilder {
+    BodySourceBuilder id(String id);
     BodySourceBuilder syntax(String src);
     BodySourceBuilder syntax(InputStream syntax);
     BodySource build(BodyType type);

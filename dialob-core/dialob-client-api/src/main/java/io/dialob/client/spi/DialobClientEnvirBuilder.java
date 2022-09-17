@@ -35,7 +35,7 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       }
       @Override
       public EnvirCommandFormatBuilder tag(String commandJson) {
-        this.type = BodyType.TAG;
+        this.type = BodyType.FORM_TAG;
         this.commandJson = commandJson;
         return this;
       }
@@ -53,7 +53,7 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       }
       @Override
       public EnvirCommandFormatBuilder tag(StoreEntity entity) {
-        this.type = BodyType.TAG;
+        this.type = BodyType.FORM_TAG;
         this.entity = entity;
         return this;
       }

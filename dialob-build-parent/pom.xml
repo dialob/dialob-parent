@@ -32,6 +32,7 @@
     <cyclonedx-maven-plugin.version>2.5.3</cyclonedx-maven-plugin.version>
     <quarkus.version>2.1.3.Final</quarkus.version>
     <ehcache.version>3.8.1</ehcache.version>
+    <spring.version>5.3.18</spring.version>
 
     <thirdparty.log.level>INFO</thirdparty.log.level>
     <antlr4.version>4.9.3</antlr4.version>
@@ -51,6 +52,8 @@
     <json-path.version>2.4.0</json-path.version>
     <jsoup.version>1.14.3</jsoup.version>
 
+    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
 
@@ -66,6 +69,7 @@
     <commons-validator.version>1.7</commons-validator.version>
     <groovy.version>3.0.9</groovy.version>
     <mockito.version>3.7.7</mockito.version>
+    <jsonassert.version>1.5.0</jsonassert.version>
     <thena.version>1.1.17</thena.version>
 
   </properties>
@@ -94,6 +98,11 @@
       <artifactId>lombok</artifactId>
       <version>${lombok.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.skyscreamer</groupId>
+      <artifactId>jsonassert</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -195,6 +204,12 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>io.dialob</groupId>
@@ -360,12 +375,6 @@
         <version>${caffeine.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <scope>test</scope>
-        <version>2.2.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>1.21</version>
@@ -380,20 +389,15 @@
         <artifactId>annotations</artifactId>
         <version>19.0.0</version>
       </dependency>
-
       <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers</artifactId>
-        <version>1.16.2</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>1.16.2</version>
+        <groupId>org.skyscreamer</groupId>
+        <artifactId>jsonassert</artifactId>
+        <version>${jsonassert.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
+
 
   <build>
     <plugins>
@@ -409,6 +413,20 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>
+            --illegal-access=permit
+          </argLine>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <quarkus.log.level>INFO</quarkus.log.level>
+            <maven.home>${maven.home}</maven.home>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -442,6 +460,37 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${quarkus.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>build</goal>
+                <goal>generate-code</goal>
+                <goal>generate-code-tests</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+          <version>${quarkus.version}</version>
+          <executions>
+            <execution>
+              <id>generate-extension-descriptor</id>
+              <goals>
+                <goal>extension-descriptor</goal>
+              </goals>
+              <phase>process-resources</phase>
+              <configuration>
+                <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
           <version>${maven-site-plugin.version}</version>
@@ -492,6 +541,11 @@
                 <groupId>org.immutables</groupId>
                 <artifactId>value</artifactId>
                 <version>${immutables.version}</version>
+              </path>
+              <path>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-extension-processor</artifactId>
+                <version>${quarkus.version}</version>
               </path>
             </annotationProcessorPaths>
           </configuration>
@@ -576,3 +630,4 @@
     </pluginManagement>
   </build>
 </project>
+

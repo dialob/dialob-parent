@@ -10,7 +10,7 @@ import io.dialob.program.DialobSessionEvalContextFactory;
 
 @Value.Immutable
 public interface DialobClientConfig {
-  //DialobStore getStore();
+  DialobStore getStore();
   DialobCache getCache();
   DialobSessionEvalContextFactory getFactory();
   AsyncFunctionInvoker getAsyncFunctionInvoker();
