@@ -9,9 +9,9 @@ import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 
-import io.dialob.api.form.FormEntity;
 import io.dialob.client.api.DialobCache;
-import io.dialob.client.api.DialobStore.BodySource;
+import io.dialob.client.api.DialobComposerDocument;
+import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableCacheEntry;
 import io.dialob.program.DialobProgram;
 
@@ -31,21 +31,21 @@ public class DialobEhCache implements DialobCache {
     return cacheManager.getCache(cacheName, String.class, CacheEntry.class);
   }
   @Override
-  public Optional<DialobProgram> getProgram(BodySource src) {
+  public Optional<DialobProgram> getProgram(StoreEntity src) {
     final var cache = getCache();
     return Optional.ofNullable(cache.get(src.getHash()))
         .or(() -> Optional.ofNullable(cache.get(src.getId())))
         .map(e -> e.getProgram().orElse(null));
   }
   @Override
-  public Optional<FormEntity> getAst(BodySource src) {
+  public Optional<DialobComposerDocument> getAst(StoreEntity src) {
     final var cache = getCache();
     return Optional.ofNullable(cache.get(src.getHash()))
         .or(() -> Optional.ofNullable(cache.get(src.getId())))
         .map(e -> e.getAst());
   }
   @Override
-  public DialobProgram setProgram(DialobProgram program, BodySource src) {
+  public DialobProgram setProgram(DialobProgram program, StoreEntity src) {
     final var cache = getCache();
     final var previous = cache.get(src.getHash());
     final var entry = ImmutableCacheEntry.builder().from(previous).program(program).build();
@@ -54,7 +54,7 @@ public class DialobEhCache implements DialobCache {
     return program;
   }
   @Override
-  public FormEntity setAst(FormEntity ast, BodySource src) {
+  public DialobComposerDocument setAst(DialobComposerDocument ast, StoreEntity src) {
     final var entry = ImmutableCacheEntry.builder().id(src.getId()).source(src).ast(ast).build();
     final var cache = getCache();
     cache.put(entry.getId(), entry);

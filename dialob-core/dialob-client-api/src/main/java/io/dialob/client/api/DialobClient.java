@@ -2,10 +2,6 @@ package io.dialob.client.api;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,16 +14,14 @@ import org.immutables.value.Value;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormTag;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.client.api.DialobStore.BodySource;
-import io.dialob.client.api.DialobStore.BodyType;
+import io.dialob.client.api.DialobComposerDocument.FormDocument;
+import io.dialob.client.api.DialobComposerDocument.FormRevision;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.program.DialobProgram;
 import io.smallrye.mutiny.Uni;
@@ -35,8 +29,6 @@ import io.smallrye.mutiny.Uni;
 public interface DialobClient {
   
   //origin-dialob-session-boot all tests
-  
-  BodySourceBuilder ast();
   ProgramBuilder program();
   QuestionnaireExecutorBuilder executor(ProgramEnvir envir);   
   EnvirBuilder envir();
@@ -77,15 +69,8 @@ public interface DialobClient {
   }
   
   interface ProgramBuilder {
-    ProgramBuilder form(Form form);
+    ProgramBuilder form(FormDocument form);
     DialobProgram build();
-  }
-  
-  interface BodySourceBuilder {
-    BodySourceBuilder id(String id);
-    BodySourceBuilder syntax(String src);
-    BodySourceBuilder syntax(InputStream syntax);
-    BodySource build(BodyType type);
   }
   
   interface EnvirBuilder {
@@ -99,11 +84,11 @@ public interface DialobClient {
     EnvirCommandFormatBuilder id(String externalId);
     EnvirCommandFormatBuilder cachless();
 
-    EnvirCommandFormatBuilder tag(String json);
+    EnvirCommandFormatBuilder rev(String json);
     EnvirCommandFormatBuilder form(String json);
     EnvirCommandFormatBuilder form(InputStream json);
     
-    EnvirCommandFormatBuilder tag(StoreEntity entity);
+    EnvirCommandFormatBuilder rev(StoreEntity entity);
     EnvirCommandFormatBuilder form(StoreEntity entity);
     
     EnvirBuilder build();
@@ -130,9 +115,9 @@ public interface DialobClient {
     
     List<ProgramMessage> getErrors();
 
-    BodySource getSource();
+    StoreEntity getSource();
     @JsonIgnore
-    Optional<Form> getAst();
+    Optional<FormDocument> getAst();
     @JsonIgnore
     Optional<DialobProgram> getProgram();
   } 
@@ -151,7 +136,6 @@ public interface DialobClient {
     Exception getException();
   }
   
-
   enum ProgramStatus { 
     UP, 
     AST_ERROR, 
@@ -166,17 +150,11 @@ public interface DialobClient {
     
     
     Questionnaire toQuestionnaire(InputStream entity);
-    Form toForm(InputStream entity);
-    Form toForm(String entity);
-    FormTag toFormTag(String entity);
+    FormDocument toForm(InputStream entity);
+    FormDocument toForm(String entity);
+    FormRevision toFormRev(String entity);
     
     Object toType(Object value, Class<?> toType);
     String toJson(Object anyObject);
-  }
-  
-  @Target(ElementType.TYPE)
-  @Retention(RetentionPolicy.RUNTIME)
-  @interface ServiceData {
-    String value() default "";
   }
 }

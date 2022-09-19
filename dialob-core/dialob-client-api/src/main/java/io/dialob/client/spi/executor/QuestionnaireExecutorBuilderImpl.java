@@ -62,7 +62,7 @@ public class QuestionnaireExecutorBuilderImpl implements DialobClient.Questionna
     DialobAssert.notEmpty(init.rev(), () -> "questionnaire.rev must be defined!");
     
     
-    final var questionnaire = this.createNewQuestionnaire(formDocument, init);
+    final var questionnaire = this.createNewQuestionnaire(formDocument.getValue(), init);
     final var dialobSession = this.createSession(questionnaire, formAndProgram);    
     return new QuestionnaireExecutorImpl(questionnaire, formAndProgram, dialobSession, config, true);
   }
@@ -84,7 +84,7 @@ public class QuestionnaireExecutorBuilderImpl implements DialobClient.Questionna
     final var dialobProgram = formAndProgram.getProgram().get();
     return dialobProgram.createSession(
         config.getFactory(),
-        formAndProgram.getAst().get().getMetadata().getTenantId(),
+        formAndProgram.getAst().get().getValue().getMetadata().getTenantId(),
         questionnaire.getId(),
         questionnaire.getMetadata().getLanguage(),
         questionnaire.getActiveItem(), 

@@ -42,9 +42,9 @@ import io.dialob.client.api.DialobComposer.StoreDumpValue;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.api.ImmutableStoreState;
+import io.dialob.client.spi.store.StoreEntityLocation;
 import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.client.spi.support.Sha2;
-import io.dialob.client.spi.support.StoreEntityLocation;
 import io.smallrye.mutiny.Uni;
 
 public class DialobMemoryStore implements DialobStore {
@@ -59,7 +59,7 @@ public class DialobMemoryStore implements DialobStore {
     final var builder = ImmutableStoreState.builder();
     for(final var entity : entities.values()) {
       switch (entity.getBodyType()) {
-      case FORM_TAG: builder.putTags(entity.getId(), entity); break;
+      case FORM_REV: builder.putRevs(entity.getId(), entity); break;
       case FORM: builder.putForms(entity.getId(), entity); break;
       default: continue;
       }
@@ -162,7 +162,7 @@ public class DialobMemoryStore implements DialobStore {
       
       list(location.getMigrationRegex()).stream().forEach(r -> {
         final Map<BodyType, Integer> order = Map.of(
-            BodyType.FORM_TAG, 1,
+            BodyType.FORM_REV, 1,
             BodyType.FORM, 2);
         migLog
           .append("Loading assets from release: " + r.getFilename()).append(System.lineSeparator());
@@ -192,7 +192,7 @@ public class DialobMemoryStore implements DialobStore {
         
         
         final Map<BodyType, Integer> order = Map.of(
-            BodyType.FORM_TAG, 1,
+            BodyType.FORM_REV, 1,
             BodyType.FORM, 2);
         migLog
           .append("Loading assets from dump: " + r.getFilename()).append(System.lineSeparator());
@@ -223,7 +223,7 @@ public class DialobMemoryStore implements DialobStore {
 
       // form tags
       list(location.getFormTagRegex()).stream().forEach(r -> {
-        final var entity = readStoreEntity(r).bodyType(BodyType.FORM_TAG).build();    
+        final var entity = readStoreEntity(r).bodyType(BodyType.FORM_REV).build();    
         migLog.append("  - ")
           .append(entity.getId()).append("/").append(entity.getBodyType()).append("/").append(entity.getHash())
           .append(System.lineSeparator());
@@ -241,11 +241,6 @@ public class DialobMemoryStore implements DialobStore {
       LOGGER.debug(migLog.toString());
       return new DialobMemoryStore(entities);
     }
-  }
-
-  @Override
-  public HistoryQuery history() {
-    throw new IllegalArgumentException("not implemented");
   }
   @Override
   public StoreRepoBuilder repo() {

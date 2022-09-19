@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import io.dialob.api.form.Form;
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClient.ProgramEnvir;
 import io.dialob.client.api.DialobClient.ProgramMessage;
@@ -14,9 +13,11 @@ import io.dialob.client.api.DialobClient.ProgramStatus;
 import io.dialob.client.api.DialobClient.ProgramWrapper;
 import io.dialob.client.api.DialobClient.TypesMapper;
 import io.dialob.client.api.DialobClientConfig;
-import io.dialob.client.api.DialobStore.BodySource;
+import io.dialob.client.api.DialobComposerDocument.FormDocument;
+import io.dialob.client.api.DialobComposerDocument.FormRevision;
 import io.dialob.client.api.ImmutableProgramMessage;
 import io.dialob.client.api.ImmutableProgramWrapper;
+import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.program.ImmutableProgramEnvir;
 import io.dialob.client.spi.program.ProgramBuilderImpl;
 import io.dialob.compiler.DialobProgramErrorsException;
@@ -50,14 +51,21 @@ public class DialobProgramEnvirFactory {
     this.baseEnvir = envir;
     return this;
   }
-  public DialobProgramEnvirFactory add(BodySource entity, boolean cachless) {
+  public DialobProgramEnvirFactory add(ImmutableStoreEntity entity, boolean cachless) {
     if(cachless) {
       cachlessIds.add(entity.getId());
     }
     
     switch (entity.getBodyType()) {
-    case FORM: visitWrapper(visitForm(entity));
-    case FORM_TAG: visitTag(entity); break;
+    case FORM: {
+      final var form = visitForm(entity);
+      visitWrapper(form);
+      break;
+    }
+    case FORM_REV: {
+      visitRevision(entity); 
+      break;
+    }
     default: throw new IllegalArgumentException("unknown command format type: '" + entity.getBodyType() + "'!");
     }
     
@@ -94,7 +102,7 @@ public class DialobProgramEnvirFactory {
   
   private void visitTreeLog(ProgramWrapper wrapper) {
     if(LOGGER.isDebugEnabled()) {
-      final String name = wrapper.getAst().map(w -> w.getName()).orElseGet(() -> wrapper.getId());
+      final String name = wrapper.getAst().map(w -> w.getValue().getName()).orElseGet(() -> wrapper.getId());
       treelog.append("  - ").append(name).append(": ").append(wrapper.getStatus()).append(System.lineSeparator());
       if(wrapper.getStatus() != ProgramStatus.UP) {
       
@@ -109,20 +117,20 @@ public class DialobProgramEnvirFactory {
 
   }
   
-  private ProgramWrapper visitForm(BodySource src) {
+  private ProgramWrapper visitForm(ImmutableStoreEntity src) {
     final var builder = ImmutableProgramWrapper.builder();
     builder.status(ProgramStatus.UP);
     
-    Form ast = null;
+    FormDocument ast = null;
     try {
       if(cachlessIds.contains(src.getId())) {
-        ast = mapper.toForm(src.getValue());
+        ast = mapper.toForm(src.getBody());
       } else {
         final var cached = cache.getAst(src);
         if(cached.isPresent()) {
-          ast = (Form) cached.get();
+          ast = (FormDocument) cached.get();
         } else {
-          ast = mapper.toForm(src.getValue());
+          ast = mapper.toForm(src.getBody());
           cache.setAst(ast, src);
         }
       }
@@ -130,7 +138,7 @@ public class DialobProgramEnvirFactory {
     } catch(Exception e) {
       LOGGER.error(new StringBuilder()
           .append(e.getMessage()).append(System.lineSeparator())
-          .append("  - form source: ").append(this.mapper.toForm(src.getValue()))
+          .append("  - form source: ").append(src.getBody())
           .toString(), e);
       builder.status(ProgramStatus.AST_ERROR).addAllErrors(visitException(e));
     }
@@ -152,7 +160,7 @@ public class DialobProgramEnvirFactory {
       } catch(Exception e) {
         LOGGER.error(new StringBuilder()
             .append(e.getMessage()).append(System.lineSeparator())
-            .append("  - form source: ").append(this.mapper.toForm(src.getValue()))
+            .append("  - form source: ").append(src.getBody())
             .toString(), e);
         
 
@@ -165,7 +173,28 @@ public class DialobProgramEnvirFactory {
         .build(); 
   }
   
-  private void visitTag(BodySource src) { 
+  private void visitRevision(ImmutableStoreEntity src) {
+    
+    FormRevision ast = null;
+    try {
+      if(cachlessIds.contains(src.getId())) {
+        ast = mapper.toFormRev(src.getBody());
+      } else {
+        final var cached = cache.getAst(src);
+        if(cached.isPresent()) {
+          ast = (FormRevision) cached.get();
+        } else {
+          ast = mapper.toFormRev(src.getBody());
+          cache.setAst(ast, src);
+        }
+      }
+      
+    } catch(Exception e) {
+      LOGGER.error(new StringBuilder()
+          .append(e.getMessage()).append(System.lineSeparator())
+          .append("  - form rev source: ").append(src.getBody())
+          .toString(), e);
+    }
   }
   
   private List<ProgramMessage> visitException(Exception e) {

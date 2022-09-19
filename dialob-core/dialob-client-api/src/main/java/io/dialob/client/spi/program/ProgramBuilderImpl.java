@@ -1,8 +1,8 @@
 package io.dialob.client.spi.program;
 
-import io.dialob.api.form.Form;
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobClient.ProgramBuilder;
+import io.dialob.client.api.DialobComposerDocument.FormDocument;
 import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.compiler.DialobProgramFromFormCompiler;
 import io.dialob.program.DialobProgram;
@@ -15,10 +15,10 @@ public class ProgramBuilderImpl implements DialobClient.ProgramBuilder {
   
   private final DialobProgramFromFormCompiler compiler;
   
-  private Form form;
+  private FormDocument form;
   
   @Override
-  public ProgramBuilder form(Form form) {
+  public ProgramBuilder form(FormDocument form) {
     this.form = form;
     return this;
   }
@@ -27,8 +27,8 @@ public class ProgramBuilderImpl implements DialobClient.ProgramBuilder {
   public DialobProgram build() {
     DialobAssert.notNull(form, () -> "form can't be null!");
    
-    LOGGER.info("Compiling form document {} rev {}", form.getId(), form.getRev());
-    return compiler.compileForm(form);
+    LOGGER.info("Compiling form document {} rev {}", form.getValue().getId(), form.getValue().getRev());
+    return compiler.compileForm(form.getValue());
   }
 
 }

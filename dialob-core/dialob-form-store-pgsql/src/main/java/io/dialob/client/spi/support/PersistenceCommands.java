@@ -110,7 +110,7 @@ public class PersistenceCommands implements PgSqlConfig.Commands {
   public StoreEntity getEntityFromState(StoreState state, String id) {
     final var entity = state.getForms().get(id);
     if(entity == null) {
-      return state.getTags().get(id);
+      return state.getRevs().get(id);
     }
     return null;
   }
@@ -145,7 +145,7 @@ public class PersistenceCommands implements PgSqlConfig.Commands {
             final var entity = config.getDeserializer().fromString(blob);
             switch(entity.getBodyType()) {
              case FORM: builder.putForms(entity.getId(), entity); break;
-             case FORM_TAG: builder.putTags(entity.getId(), entity);  break;
+             case FORM_REV: builder.putRevs(entity.getId(), entity);  break;
              default: throw new RuntimeException("Unknown type: " + entity.getBodyType() + "!");
             }
           }

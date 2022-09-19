@@ -251,13 +251,6 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
   private String gid(BodyType type) {
     return config.getGidProvider().getNextId(type);
   }
-
-  @Override
-  public HistoryQuery history() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   public static Builder builder() {
     return new Builder();
   }

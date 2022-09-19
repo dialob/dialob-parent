@@ -7,7 +7,7 @@ import io.dialob.client.api.DialobClient.EnvirCommandFormatBuilder;
 import io.dialob.client.api.DialobClient.ProgramEnvir;
 import io.dialob.client.api.DialobStore.BodyType;
 import io.dialob.client.api.DialobStore.StoreEntity;
-import io.dialob.client.api.ImmutableBodySource;
+import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.client.spi.support.Sha2;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +34,8 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
         return this;
       }
       @Override
-      public EnvirCommandFormatBuilder tag(String commandJson) {
-        this.type = BodyType.FORM_TAG;
+      public EnvirCommandFormatBuilder rev(String commandJson) {
+        this.type = BodyType.FORM_REV;
         this.commandJson = commandJson;
         return this;
       }
@@ -52,8 +52,8 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
         return this;
       }
       @Override
-      public EnvirCommandFormatBuilder tag(StoreEntity entity) {
-        this.type = BodyType.FORM_TAG;
+      public EnvirCommandFormatBuilder rev(StoreEntity entity) {
+        this.type = BodyType.FORM_REV;
         this.entity = entity;
         return this;
       }
@@ -74,11 +74,12 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
         DialobAssert.isTrue(commandJson != null || entity != null, () -> "commandJson or entity must be defined!");
         DialobAssert.isTrue(commandJson == null || entity == null, () -> "commandJson and entity can't be both defined!");
 
-        factory.add(ImmutableBodySource.builder()
+        factory.add(ImmutableStoreEntity.builder()
             .id(id)
             .bodyType(type)
+            .version("")
             .hash(entity == null ? Sha2.blob(commandJson) : entity.getHash())
-            .value(entity == null ? commandJson : entity.getBody())
+            .body(entity == null ? commandJson : entity.getBody())
             .build(), cachless);
         return enviBuilder;
       }

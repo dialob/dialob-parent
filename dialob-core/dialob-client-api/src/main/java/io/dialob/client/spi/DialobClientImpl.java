@@ -32,10 +32,6 @@ public class DialobClientImpl implements DialobClient {
   private final DialobClientConfig config; 
   
   @Override
-  public BodySourceBuilder ast() {
-    return new BodySourceBuilderImpl(config);
-  }
-  @Override
   public ProgramBuilder program() {
     return new ProgramBuilderImpl(config.getCompiler());
   }

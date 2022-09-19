@@ -10,10 +10,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.FormTag;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobComposerDocument.FormDocument;
+import io.dialob.client.api.DialobComposerDocument.FormRevision;
+import io.dialob.client.api.ImmutableFormDocument;
 import lombok.RequiredArgsConstructor;
 
 
@@ -65,26 +67,26 @@ public class DialobTypesMapperImpl implements DialobClient.TypesMapper {
   }
 
   @Override
-  public Form toForm(String entity) {
+  public FormDocument toForm(String entity) {
     try {
-      return objectMapper.readValue(entity, Form.class);
+      return ImmutableFormDocument.builder().value(objectMapper.readValue(entity, Form.class)).build();
     } catch (Exception e) {
       throw new DialobJsonException(e.getMessage(), e);
     }
   }
 
   @Override
-  public FormTag toFormTag(String entity) {
+  public FormRevision toFormRev(String entity) {
     try {
-      return objectMapper.readValue(entity, FormTag.class);
+      return objectMapper.readValue(entity, FormRevision.class);
     } catch (Exception e) {
       throw new DialobJsonException(e.getMessage(), e);
     }
   }
   @Override
-  public Form toForm(InputStream entity) {
+  public FormDocument toForm(InputStream entity) {
     try {
-      return objectMapper.readValue(entity, Form.class);
+      return ImmutableFormDocument.builder().value(objectMapper.readValue(entity, Form.class)).build();
     } catch (Exception e) {
       throw new DialobJsonException(e.getMessage(), e);
     }

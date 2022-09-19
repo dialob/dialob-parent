@@ -53,7 +53,7 @@
     <jsoup.version>1.14.3</jsoup.version>
 
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-    
+
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
 
@@ -90,6 +90,12 @@
     <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>value</artifactId>
+      <version>${immutables.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>gson</artifactId>
       <version>${immutables.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -542,6 +548,11 @@
                 <artifactId>value</artifactId>
                 <version>${immutables.version}</version>
               </path>
+              <dependency>
+                <groupId>org.immutables</groupId>
+                <artifactId>gson</artifactId>
+                <version>${immutables.version}</version>
+              </dependency>
               <path>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-extension-processor</artifactId>

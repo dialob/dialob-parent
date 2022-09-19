@@ -27,7 +27,7 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     }
     final var values = byFormId.get(formId);
     if(values.size() > 1) {
-      final var revs = String.join(",", values.stream().map(e -> e.getAst().get().getRev()).collect(Collectors.toList()));
+      final var revs = String.join(",", values.stream().map(e -> e.getAst().get().getValue().getRev()).collect(Collectors.toList()));
       throw new ProgramHasMultipleRevs("Program by formId: '" + formId + "' requires rev because of multpile revisions in use: '" + revs + "'!"); 
     }
     return values.get(0);
@@ -47,10 +47,10 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     final var values = byFormId.get(formId);
     final Optional<ProgramWrapper> result;
     if(Constants.LATEST_REV.equals(formRev)) {
-      final var fallback1 = values.stream().filter(r -> formRev.equals(r.getAst().get().getRev())).findFirst();
+      final var fallback1 = values.stream().filter(r -> formRev.equals(r.getAst().get().getValue().getRev())).findFirst();
       if(fallback1.isEmpty()) {
         final var byCreated = values.stream().sorted((b, a) -> 
-          a.getAst().get().getMetadata().getCreated().compareTo(b.getAst().get().getMetadata().getCreated())
+          a.getAst().get().getValue().getMetadata().getCreated().compareTo(b.getAst().get().getValue().getMetadata().getCreated())
         ).collect(Collectors.toList());
         
         result = Optional.ofNullable(byCreated.isEmpty() ? null : byCreated.get(0));
@@ -59,11 +59,11 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
         result = fallback1;        
       }
     } else {
-      result = values.stream().filter(r -> formRev.equals(r.getAst().get().getRev())).findFirst();  
+      result = values.stream().filter(r -> formRev.equals(r.getAst().get().getValue().getRev())).findFirst();  
     }
     
     if(result.isEmpty()) {
-      final var revs = String.join(",", values.stream().map(e -> e.getAst().get().getRev()).collect(Collectors.toList()));      
+      final var revs = String.join(",", values.stream().map(e -> e.getAst().get().getValue().getRev()).collect(Collectors.toList()));      
       throw new ProgramRevNotFound("Program by formId: '" + formId + "' revision: '" + formRev + "' not found, revisions in use: '" + revs + "'!");
     }
 
@@ -87,9 +87,9 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     public Builder add(ProgramWrapper wrapper) {
       final var form = wrapper.getAst().get();
       
-      final var revs = Optional.ofNullable(byFormId.get(form.getId())).orElseGet(() -> {
+      final var revs = Optional.ofNullable(byFormId.get(form.getValue().getId())).orElseGet(() -> {
         final var values = new ArrayList<ProgramWrapper>();
-        byFormId.put(form.getId(), values);
+        byFormId.put(form.getValue().getId(), values);
         return values;
       });
       revs.add(wrapper);

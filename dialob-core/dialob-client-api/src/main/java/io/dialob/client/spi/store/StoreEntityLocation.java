@@ -1,4 +1,4 @@
-package io.dialob.client.spi.support;
+package io.dialob.client.spi.store;
 
 /*-
  * #%L
@@ -50,7 +50,7 @@ public class StoreEntityLocation implements Serializable {
     return withRegex("**/form/**/*.json");
   }
   public String getFormTagRegex() {
-    return withRegex("**/formtag/**/*.json");
+    return withRegex("**/formrev/**/*.json");
   }
   public String getMigrationRegex() {
     return withRegex("**/dialob_migration/**/*.json");
@@ -65,8 +65,8 @@ public class StoreEntityLocation implements Serializable {
     switch (type) {
     case FORM:
       return "form";
-    case FORM_TAG:
-      return "formtag";
+    case FORM_REV:
+      return "formrev";
     default: throw new IllegalArgumentException("Unknown asset type:" + type + "!");
     }
   }

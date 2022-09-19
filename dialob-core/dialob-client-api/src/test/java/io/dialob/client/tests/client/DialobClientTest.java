@@ -170,7 +170,7 @@ public class DialobClientTest extends DialobClientImpl {
           .id(formFile)
           .form(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile)).build()
         .build();
-    final var formId = envir.findAll().stream().findFirst().get().getAst().get().getId();
+    final var formId = envir.findAll().stream().findFirst().get().getAst().get().getValue().getId();
     return new FillAssertionBuilder(formId, client, envir);
   }
 
@@ -178,7 +178,7 @@ public class DialobClientTest extends DialobClientImpl {
     final var client = get();
     final var formDocument = client.config().getMapper().toForm(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile));
     final var questionnaire = client.config().getMapper().toQuestionnaire(Thread.currentThread().getContextClassLoader().getResourceAsStream(questionnaireState));
-    return fillForm(formDocument, questionnaire);
+    return fillForm(formDocument.getValue(), questionnaire);
   }
 
   public static FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) throws java.io.IOException {
