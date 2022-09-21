@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import lombok.extern.slf4j.Slf4j;
 
-//@Disabled
+@Disabled
 @QuarkusTest
 @Slf4j
 @TestProfile(MigrationProfile.class)
@@ -65,7 +66,7 @@ public class CreateMigrationDB {
   public void downloadDataFromOldDB() throws IOException {
     final var client = new MigrationClient(pgPool);
     
-    final var migration = client.getRelease();
+    final var migration = client.getRelease("");
     LOGGER.error(migration.getLog());
     
     final var file = new File("src/test/resources/migration_dump.txt");

@@ -23,6 +23,7 @@ import io.dialob.client.spi.DialobTypesMapperImpl;
 import io.dialob.client.spi.migration.MigrationSupport.Migration;
 import io.resys.thena.docdb.spi.pgsql.sql.PgErrors;
 import io.smallrye.mutiny.Uni;
+import io.vertx.mutiny.sqlclient.Tuple;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -119,15 +120,17 @@ public class MigrationClient {
     return MAPPER;
   }
   
-  public Migration getRelease() {
+  public Migration getRelease(String tenant) {
     final var mapper = getMapper();
     final var visitor = new MigrationVisitor(mapper);
     
     pool.preparedQuery(
         "SELECT" + 
         " name, label, created, updated, latest_form_id" +
-        " FROM form" + 
-        " ORDER BY name, created ").execute()
+        " FROM form" +
+        " where tenant_id = $1 " +
+        " ORDER BY name, created ")
+    .execute(Tuple.of(tenant))
     .onItem().transform(rowset -> {
       final var  revs = new ArrayList<FormRevisionDocument>();
       final var iterator = rowset.iterator();
@@ -142,7 +145,9 @@ public class MigrationClient {
         "SELECT" + 
         " form_name, name, created, updated, form_document_id, description" +
         " FROM form_rev" + 
-        " ORDER BY form_name, created ").execute()
+        " where tenant_id = $1 " +
+        " ORDER BY form_name, created ")
+    .execute(Tuple.of(tenant))
     .onItem().transform(rowset -> {
       final var  revs = new ArrayList<FormRevisionDocument>();
       final var iterator = rowset.iterator();
@@ -157,8 +162,10 @@ public class MigrationClient {
     pool.preparedQuery(
         "SELECT" + 
         " id, rev, created, updated, CAST(data AS TEXT)" +
-        " FROM form_document" + 
-        " ORDER BY id, created ").execute()
+        " FROM form_document" +
+        " where tenant_id = $1 " +
+        " ORDER BY id, created ")
+    .execute(Tuple.of(tenant))
     .onItem().transform(rowset -> {
       final var  revs = new ArrayList<FormRevisionDocument>();
       final var iterator = rowset.iterator();
