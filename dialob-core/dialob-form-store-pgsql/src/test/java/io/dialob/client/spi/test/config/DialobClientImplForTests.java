@@ -1,13 +1,9 @@
 package io.dialob.client.spi.test.config;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
-import java.time.LocalDate;
 
 import org.mockito.Mockito;
 
@@ -25,10 +21,10 @@ import io.dialob.client.spi.DialobEhCache;
 import io.dialob.client.spi.DialobTypesMapperImpl;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
 import io.dialob.client.spi.function.AsyncFunctionInvoker;
+import io.dialob.client.spi.function.FunctionRegistryImpl;
 import io.dialob.compiler.DialobProgramFromFormCompiler;
 import io.dialob.program.DialobSessionEvalContextFactory;
 import io.dialob.program.EvalContext;
-import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.DefaultFunctions;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import lombok.Data;
@@ -112,47 +108,9 @@ public class DialobClientImplForTests extends DialobClientImpl {
   
   private static FunctionRegistry createFunctionRegistry() {
     try {
-      final FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-  
-      when(functionRegistry.returnTypeOf("today")).thenReturn(ValueType.DATE);
-      doAnswer(invocationOnMock -> {
-        ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(LocalDate.now());
-        return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("today"));
-  
-      when(functionRegistry.returnTypeOf(eq("isLyt"),eq(ValueType.STRING))).thenReturn(ValueType.BOOLEAN);
-      doAnswer(invocationOnMock -> {
-        ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(DefaultFunctions.isLyt(invocationOnMock.getArgument(1)));
-        return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("isLyt"));
-  
-      when(functionRegistry.returnTypeOf(eq("isHetu"),eq(ValueType.STRING))).thenReturn(ValueType.BOOLEAN);
-      doAnswer(invocationOnMock -> {
-        ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(DefaultFunctions.isHetu(invocationOnMock.getArgument(1)));
-        return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("isHetu"));
-  
-      when(functionRegistry.returnTypeOf(eq("count"),eq(ValueType.arrayOf(ValueType.INTEGER)))).thenReturn(ValueType.INTEGER);
-      doAnswer(invocationOnMock -> {
-        ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(DefaultFunctions.count(invocationOnMock.getArgument(1)));
-        return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("count"));
-  
-  
-      when(functionRegistry.returnTypeOf("lengthOf", ValueType.STRING)).thenReturn(ValueType.INTEGER);
-      doAnswer(invocation -> {
-        FunctionRegistry.FunctionCallback cb = invocation.getArgument(0);
-        String string = invocation.getArgument(2);
-        if (string == null) {
-          cb.succeeded(0);
-        } else {
-          cb.succeeded(string.length());
-        }
-        return null;
-      }).when(functionRegistry).invokeFunction(any(), eq("lengthOf"), any());
-  
-      when(functionRegistry.returnTypeOf("count", ValueType.arrayOf(ValueType.STRING))).thenReturn(ValueType.INTEGER);
-      return functionRegistry;
+      final var result = new FunctionRegistryImpl();
+      new DefaultFunctions(result);
+      return result;
     } catch(Exception e) {
       throw new RuntimeException(e.getMessage(), e);
     }

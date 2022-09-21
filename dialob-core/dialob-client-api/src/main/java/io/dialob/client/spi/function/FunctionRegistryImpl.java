@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Value.Enclosing
-class FunctionRegistryImpl implements FunctionRegistry {
+public class FunctionRegistryImpl implements FunctionRegistry {
 
   private final ListMultimap<String, ConfiguredFunction> configuredFunctions = Multimaps.newListMultimap(new HashMap<>(), ArrayList::new);
 

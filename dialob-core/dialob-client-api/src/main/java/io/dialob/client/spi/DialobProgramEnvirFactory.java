@@ -104,12 +104,12 @@ public class DialobProgramEnvirFactory {
       envir.add(wrapper);
     }    
 
-    if(LOGGER.isDebugEnabled()) {
-      LOGGER.debug(new StringBuilder()
-          .append("Envir status: " + treelog.length()).append(System.lineSeparator())
-          .append(treelog.toString())
-          .toString());
-    }
+
+    LOGGER.info(new StringBuilder()
+        .append("Envir status: " + treelog.length()).append(System.lineSeparator())
+        .append(treelog.toString())
+        .toString());
+
     return envir.build();
   }
   
@@ -122,7 +122,7 @@ public class DialobProgramEnvirFactory {
   }
   
   private void visitTreeLog(ProgramEnvirValue<?> value) {
-    if(LOGGER.isDebugEnabled() && value.getSource().getBodyType() == DocumentType.FORM) {
+    if(value.getSource().getBodyType() == DocumentType.FORM) {
       final var wrapper = (ProgramWrapper) value;
       final String name = wrapper.getDocument().getName();
       
@@ -132,7 +132,11 @@ public class DialobProgramEnvirFactory {
         for(final var error : wrapper.getErrors()) {
           treelog.append("    - ").append(error.getId()).append(": ").append(error.getMsg()).append(System.lineSeparator());
           if(error.getException() != null) {
-            treelog.append("      ").append(ExceptionUtils.getStackTrace(error.getException())).append(System.lineSeparator());
+            String stack = ExceptionUtils.getStackTrace(error.getException());
+            if(stack.length() > 100) {
+              stack = stack.substring(0, 100);
+            }
+            treelog.append("      ").append(stack).append(System.lineSeparator());
           }
         }
       }

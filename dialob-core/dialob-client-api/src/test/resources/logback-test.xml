@@ -18,6 +18,7 @@
   <logger name="org.springframework.web.socket.sockjs.DisconnectedClient" level="TRACE"/>
   -->
   <logger name="io.dialob.client.spi.executor" level="INFO"/>
+  <logger name="io.dialob.client.spi.DialobProgramEnvirFactory" level="INFO"/>
 
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
