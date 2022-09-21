@@ -146,6 +146,7 @@ public class PersistenceCommands implements PgSqlConfig.Commands {
             switch(entity.getBodyType()) {
              case FORM: builder.putForms(entity.getId(), entity); break;
              case FORM_REV: builder.putRevs(entity.getId(), entity);  break;
+             case RELEASE: builder.putTags(entity.getId(), entity);  break;
              default: throw new RuntimeException("Unknown type: " + entity.getBodyType() + "!");
             }
           }

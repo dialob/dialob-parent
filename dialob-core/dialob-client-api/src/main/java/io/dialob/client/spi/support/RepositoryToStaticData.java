@@ -27,6 +27,7 @@ import java.util.Comparator;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -150,14 +151,22 @@ public class RepositoryToStaticData {
     .append(System.lineSeparator())
     .append("Blobs").append(System.lineSeparator());
     
+    
+    List<String> blobs = new ArrayList<>();
+    
     ctx.query().blobs()
     .find().onItem()
     .transform(item -> {
-      result.append("  - ").append(ID.apply(item.getId())).append(": ")
+      final var log = new StringBuilder().append("  - ").append(ID.apply(item.getId())).append(": ")
         .append(replaceContent(item.getValue(), replacements))
         .append(System.lineSeparator());
+      
+      blobs.add(log.toString());
       return item;
     }).collect().asList().await().indefinitely();
+    
+    
+    blobs.stream().sorted().forEach(e -> result.append(e));
     
     return result.toString();
   }
@@ -172,8 +181,11 @@ public class RepositoryToStaticData {
         final var next = trailer.indexOf(",") + 1;
         newText = newText.substring(0, version) + trailer.substring(next);
       }
-      
     }
+    if(newText.length() > 100) {
+      newText = newText.substring(0, 100) + "... cropped";
+    }
+    
     return newText;
   }
   

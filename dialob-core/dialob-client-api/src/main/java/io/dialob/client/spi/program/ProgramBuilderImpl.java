@@ -2,7 +2,7 @@ package io.dialob.client.spi.program;
 
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobClient.ProgramBuilder;
-import io.dialob.client.api.DialobComposerDocument.FormDocument;
+import io.dialob.client.api.DialobDocument.FormDocument;
 import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.compiler.DialobProgramFromFormCompiler;
 import io.dialob.program.DialobProgram;
@@ -27,8 +27,8 @@ public class ProgramBuilderImpl implements DialobClient.ProgramBuilder {
   public DialobProgram build() {
     DialobAssert.notNull(form, () -> "form can't be null!");
    
-    LOGGER.info("Compiling form document {} rev {}", form.getValue().getId(), form.getValue().getRev());
-    return compiler.compileForm(form.getValue());
+    LOGGER.info("Compiling form document {} rev {}", form.getData().getId(), form.getData().getRev());
+    return compiler.compileForm(form.getData());
   }
 
 }

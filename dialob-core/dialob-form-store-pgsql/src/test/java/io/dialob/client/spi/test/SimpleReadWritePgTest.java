@@ -25,7 +25,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.dialob.client.api.DialobStore.BodyType;
+import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableCreateStoreEntity;
 import io.dialob.client.api.ImmutableDeleteStoreEntity;
@@ -38,7 +38,7 @@ import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
 @TestProfile(PgProfile.class)
-public class PersistencePgTest extends PgTestTemplate {
+public class SimpleReadWritePgTest extends PgTestTemplate {
 
   @Test
   public void basicReadWriteDeleteTest() {
@@ -46,7 +46,7 @@ public class PersistencePgTest extends PgTestTemplate {
         .await().atMost(Duration.ofMinutes(1));
     
     StoreEntity article1 = repo.create(
-        ImmutableCreateStoreEntity.builder().bodyType(BodyType.FORM)
+        ImmutableCreateStoreEntity.builder().bodyType(DocumentType.FORM)
             .body("id: firstFlow")
             .build()
         )
@@ -54,7 +54,7 @@ public class PersistencePgTest extends PgTestTemplate {
       .await().atMost(Duration.ofMinutes(1));
 
     // create state
-    var expected = RepositoryToStaticData.toString(PersistencePgTest.class, "create_state.txt");
+    var expected = RepositoryToStaticData.toString(SimpleReadWritePgTest.class, "create_state.txt");
     var actual = super.toRepoExport(repo.getRepoName());
     Assertions.assertEquals(expected, actual);
     
@@ -62,7 +62,7 @@ public class PersistencePgTest extends PgTestTemplate {
         .id(article1.getId())
         .version(article1.getVersion())
         .body("id: change flow symbolic id")
-        .bodyType(BodyType.FORM)
+        .bodyType(DocumentType.FORM)
         .build())
       .onFailure().invoke(e -> e.printStackTrace()).onFailure().recoverWithNull()
       .await().atMost(Duration.ofMinutes(1));
@@ -74,7 +74,7 @@ public class PersistencePgTest extends PgTestTemplate {
     Assertions.assertEquals(expected, actual);
     
     
-    repo.delete(ImmutableDeleteStoreEntity.builder().bodyType(BodyType.FORM).id(article1.getId()).version(article1_v2.getVersion()).build())
+    repo.delete(ImmutableDeleteStoreEntity.builder().bodyType(DocumentType.FORM).id(article1.getId()).version(article1_v2.getVersion()).build())
       .onFailure().invoke(e -> e.printStackTrace()).onFailure().recoverWithNull()
       .await().atMost(Duration.ofMinutes(1));
     

@@ -52,7 +52,7 @@ import lombok.Data;
 
 public class FillAssertionBuilder {
 
-  private final DialobClientTest client;
+  private final DialobClientImplWithAssertion client;
   private final ProgramEnvir envir;
   private final Questionnaire questionnaire;
   private final String formId;
@@ -71,13 +71,13 @@ public class FillAssertionBuilder {
   }
 
 
-  public FillAssertionBuilder(String formId, DialobClientTest client, ProgramEnvir envir) {
+  public FillAssertionBuilder(String formId, DialobClientImplWithAssertion client, ProgramEnvir envir) {
     this.formId = formId;
     this.questionnaire = null;
     this.client = client;
     this.envir = envir;
   }
-  public FillAssertionBuilder(Questionnaire questionnaire, DialobClientTest client, ProgramEnvir envir) {
+  public FillAssertionBuilder(Questionnaire questionnaire, DialobClientImplWithAssertion client, ProgramEnvir envir) {
     this.questionnaire = questionnaire;
     this.formId = questionnaire.getMetadata().getFormId();
     this.client = client;

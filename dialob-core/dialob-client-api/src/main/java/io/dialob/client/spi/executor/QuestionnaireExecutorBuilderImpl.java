@@ -54,7 +54,7 @@ public class QuestionnaireExecutorBuilderImpl implements DialobClient.Questionna
     DialobAssert.notNull(initWith, () -> "initWith can't be null!");
     
     final var formAndProgram = rev == null ? envir.findByFormId(id) : envir.findByFormIdAndRev(id, rev);
-    final var formDocument = formAndProgram.getAst().get();
+    final var formDocument = formAndProgram.getDocument();
     final var init = new QuestionnaireInitImpl();
     initWith.accept(init);
     
@@ -62,7 +62,7 @@ public class QuestionnaireExecutorBuilderImpl implements DialobClient.Questionna
     DialobAssert.notEmpty(init.rev(), () -> "questionnaire.rev must be defined!");
     
     
-    final var questionnaire = this.createNewQuestionnaire(formDocument.getValue(), init);
+    final var questionnaire = this.createNewQuestionnaire(formDocument.getData(), init);
     final var dialobSession = this.createSession(questionnaire, formAndProgram);    
     return new QuestionnaireExecutorImpl(questionnaire, formAndProgram, dialobSession, config, true);
   }
@@ -84,7 +84,7 @@ public class QuestionnaireExecutorBuilderImpl implements DialobClient.Questionna
     final var dialobProgram = formAndProgram.getProgram().get();
     return dialobProgram.createSession(
         config.getFactory(),
-        formAndProgram.getAst().get().getValue().getMetadata().getTenantId(),
+        formAndProgram.getDocument().getData().getMetadata().getTenantId(),
         questionnaire.getId(),
         questionnaire.getMetadata().getLanguage(),
         questionnaire.getActiveItem(), 

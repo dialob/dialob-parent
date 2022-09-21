@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.immutables.value.Value;
 
-import io.dialob.client.api.DialobStore.BodyType;
+import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.DialobStore.StoreState;
 import io.resys.thena.docdb.api.DocDB;
@@ -42,7 +42,7 @@ public interface PgSqlConfig {
   
   @FunctionalInterface
   interface GidProvider {
-    String getNextId(BodyType entity);
+    String getNextId(DocumentType entity);
   }
   
   GidProvider getGidProvider();

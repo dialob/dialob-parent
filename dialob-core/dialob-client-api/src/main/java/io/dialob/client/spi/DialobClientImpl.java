@@ -44,7 +44,7 @@ public class DialobClientImpl implements DialobClient {
     return new DialobClientEnvirBuilder(new DialobProgramEnvirFactory(config));
   }
   @Override
-  public DialobClientConfig config() {
+  public DialobClientConfig getConfig() {
     return config;
   }
   @Override

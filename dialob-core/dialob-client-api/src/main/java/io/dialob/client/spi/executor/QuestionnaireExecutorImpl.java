@@ -112,7 +112,7 @@ public class QuestionnaireExecutorImpl implements DialobClient.QuestionnaireExec
         .dialobProgram(formAndProgram.getProgram().get())
         .rev(questionnaire.getRev())
         .metadata(questionnaire.getMetadata())
-        .questionClientVisibility(getQuestionClientVisibility(formAndProgram.getAst().get().getValue()))
+        .questionClientVisibility(getQuestionClientVisibility(formAndProgram.getDocument().getData()))
         .build();
 
       if(newSession && !createOnly) {

@@ -9,7 +9,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.dialob.client.api.DialobClient.ProgramEnvir;
+import io.dialob.client.api.DialobClient.ProgramEnvirValue;
 import io.dialob.client.api.DialobClient.ProgramWrapper;
+import io.dialob.client.api.DialobClient.ReleaseWrapper;
+import io.dialob.client.api.DialobClient.RevisionWrapper;
 import io.dialob.client.api.DialobClientException;
 import io.dialob.spi.Constants;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,14 @@ import lombok.RequiredArgsConstructor;
 public class ImmutableProgramEnvir implements ProgramEnvir {
   
   private final Map<String, List<ProgramWrapper>> byFormId;
+  private final Map<String, RevisionWrapper> byId;
+  
+  @Override
+  public Map<String, ProgramEnvirValue<?>> getValues() {
+    final var result = new HashMap<String, ProgramEnvirValue<?>>(byId);
+    byFormId.values().stream().flatMap(e -> e.stream()).forEach(e -> result.put(e.getDocument().getId(), e));
+    return result;
+  }
 
   @Override
   public ProgramWrapper findByFormId(String formId) {
@@ -27,7 +38,7 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     }
     final var values = byFormId.get(formId);
     if(values.size() > 1) {
-      final var revs = String.join(",", values.stream().map(e -> e.getAst().get().getValue().getRev()).collect(Collectors.toList()));
+      final var revs = String.join(",", values.stream().map(e -> e.getDocument().getData().getRev()).collect(Collectors.toList()));
       throw new ProgramHasMultipleRevs("Program by formId: '" + formId + "' requires rev because of multpile revisions in use: '" + revs + "'!"); 
     }
     return values.get(0);
@@ -47,10 +58,10 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     final var values = byFormId.get(formId);
     final Optional<ProgramWrapper> result;
     if(Constants.LATEST_REV.equals(formRev)) {
-      final var fallback1 = values.stream().filter(r -> formRev.equals(r.getAst().get().getValue().getRev())).findFirst();
+      final var fallback1 = values.stream().filter(r -> formRev.equals(r.getDocument().getData().getRev())).findFirst();
       if(fallback1.isEmpty()) {
         final var byCreated = values.stream().sorted((b, a) -> 
-          a.getAst().get().getValue().getMetadata().getCreated().compareTo(b.getAst().get().getValue().getMetadata().getCreated())
+          a.getDocument().getData().getMetadata().getCreated().compareTo(b.getDocument().getData().getMetadata().getCreated())
         ).collect(Collectors.toList());
         
         result = Optional.ofNullable(byCreated.isEmpty() ? null : byCreated.get(0));
@@ -59,11 +70,11 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
         result = fallback1;        
       }
     } else {
-      result = values.stream().filter(r -> formRev.equals(r.getAst().get().getValue().getRev())).findFirst();  
+      result = values.stream().filter(r -> formRev.equals(r.getDocument().getData().getRev())).findFirst();  
     }
     
     if(result.isEmpty()) {
-      final var revs = String.join(",", values.stream().map(e -> e.getAst().get().getValue().getRev()).collect(Collectors.toList()));      
+      final var revs = String.join(",", values.stream().map(e -> e.getDocument().getData().getRev()).collect(Collectors.toList()));      
       throw new ProgramRevNotFound("Program by formId: '" + formId + "' revision: '" + formRev + "' not found, revisions in use: '" + revs + "'!");
     }
 
@@ -82,14 +93,30 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
   public static class Builder {
     
     private final Map<String, List<ProgramWrapper>> byFormId = new HashMap<>();
-
-   
-    public Builder add(ProgramWrapper wrapper) {
-      final var form = wrapper.getAst().get();
+    private final Map<String, RevisionWrapper> revsById = new HashMap<>();
+    private final Map<String, ReleaseWrapper> relsById = new HashMap<>();
+    
+    public Builder add(RevisionWrapper wrapper) {
+      revsById.put(wrapper.getDocument().getId(), wrapper);
+      return this;
+    }
+    public Builder add(ProgramEnvirValue<?> wrapper) {
+      if(wrapper instanceof RevisionWrapper) {
+        this.add((RevisionWrapper) wrapper);
+      } else if(wrapper instanceof ProgramWrapper) {
+        this.add((ProgramWrapper) wrapper);
+      } else {
+        relsById.put(wrapper.getDocument().getId(), (ReleaseWrapper) wrapper); 
+      }
       
-      final var revs = Optional.ofNullable(byFormId.get(form.getValue().getId())).orElseGet(() -> {
+      return this;
+    }   
+    public Builder add(ProgramWrapper wrapper) {
+      final var form = wrapper.getDocument();
+      
+      final var revs = Optional.ofNullable(byFormId.get(form.getData().getId())).orElseGet(() -> {
         final var values = new ArrayList<ProgramWrapper>();
-        byFormId.put(form.getValue().getId(), values);
+        byFormId.put(form.getData().getId(), values);
         return values;
       });
       revs.add(wrapper);
@@ -97,7 +124,7 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     }
     
     public ProgramEnvir build() {
-      return new ImmutableProgramEnvir(Collections.unmodifiableMap(byFormId));
+      return new ImmutableProgramEnvir(Collections.unmodifiableMap(byFormId), Collections.unmodifiableMap(revsById));
     }
   }
   

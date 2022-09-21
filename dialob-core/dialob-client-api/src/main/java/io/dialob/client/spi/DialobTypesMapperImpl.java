@@ -2,20 +2,24 @@ package io.dialob.client.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dialob.api.form.Form;
+import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobClientException;
-import io.dialob.client.api.DialobComposerDocument.FormDocument;
-import io.dialob.client.api.DialobComposerDocument.FormRevision;
+import io.dialob.client.api.DialobDocument.FormDocument;
+import io.dialob.client.api.DialobDocument.FormReleaseDocument;
+import io.dialob.client.api.DialobDocument.FormRevisionDocument;
+import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableFormDocument;
+import io.dialob.client.api.ImmutableFormReleaseDocument;
+import io.dialob.client.api.ImmutableFormRevisionDocument;
 import lombok.RequiredArgsConstructor;
 
 
@@ -26,100 +30,116 @@ public class DialobTypesMapperImpl implements DialobClient.TypesMapper {
 
   @Override
   public String toJson(Object anyObject) {
-    try {
-      return objectMapper.writeValueAsString(anyObject);
-    } catch (IOException e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
-  }
-
-  @SuppressWarnings({ "unchecked" })
-  @Override
-  public Map<String, Serializable> toMap(Object entity) {
-    try {
-      if(entity instanceof String) {
-        return objectMapper.readValue((String) entity, Map.class);
-      }
-      
-      return objectMapper.convertValue(entity, Map.class);
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
-  }
-  
-  @SuppressWarnings({ "unchecked" })
-  @Override
-  public Map<String, Serializable> toMap(JsonNode entity) {
-    try {
-      return objectMapper.convertValue(entity, Map.class);
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
-  }
-  
-  @Override
-  public Object toType(Object value, Class<?> toType) {
-    try {
-      return objectMapper.convertValue(value, toType);
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
-  }
-
-  @Override
-  public FormDocument toForm(String entity) {
-    try {
-      return ImmutableFormDocument.builder().value(objectMapper.readValue(entity, Form.class)).build();
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
-  }
-
-  @Override
-  public FormRevision toFormRev(String entity) {
-    try {
-      return objectMapper.readValue(entity, FormRevision.class);
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
+    return doInMapper(om -> om.writeValueAsString(anyObject));
   }
   @Override
-  public FormDocument toForm(InputStream entity) {
-    try {
-      return ImmutableFormDocument.builder().value(objectMapper.readValue(entity, Form.class)).build();
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
+  public FormDocument readFormDoc(String entity) {
+    return doInMapper(om -> om.readValue(entity, FormDocument.class));
   }
-  
   @Override
-  public Questionnaire toQuestionnaire(InputStream entity) {
-    try {
-      return objectMapper.readValue(entity, Questionnaire.class);
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
-    }
+  public Questionnaire readQuestionnaire(InputStream entity) {
+    return doInMapper(om -> om.readValue(entity, Questionnaire.class));
   }
-  
   @Override
   public String toString(InputStream entity) {
+    return doInMapper(om -> new String(entity.readAllBytes(), StandardCharsets.UTF_8));
+  }
+  @Override
+  public String toStoreBody(FormRevisionDocument anyObject) {
+    return doInMapper(om -> om.writeValueAsString(
+        ImmutableFormRevisionDocument.builder()
+          .from(anyObject)
+          .version(null)
+          .id(null)
+          .build()));
+  }
+  @Override
+  public String toStoreBody(FormDocument anyObject) {
+    return doInMapper(om -> om.writeValueAsString(ImmutableForm.builder()
+          .from(anyObject.getData())
+          .rev(null).id(null)
+          .build()));
+  }
+  @Override
+  public String toStoreBody(FormReleaseDocument anyObject) {
+    return doInMapper(om -> om.writeValueAsString(ImmutableFormReleaseDocument.builder()
+          .from(anyObject)
+          .version(null).id(null)
+          .build()));
+  }
+  @Override
+  public Form readForm(String entity) {
+    return doInMapper(om -> om.readValue(entity, Form.class));
+  }
+  @Override
+  public FormReleaseDocument readReleaseDoc(String entity) {
+    return doInMapper(om -> om.readValue(entity, FormReleaseDocument.class));
+  }
+  @Override
+  public FormRevisionDocument readFormRevDoc(String entity) {
+    return doInMapper(om -> om.readValue(entity, FormRevisionDocument.class));
+  }
+  @Override
+  public FormReleaseDocument toFormReleaseDoc(StoreEntity store) {
+    return doInMapper(om -> {
+      final var from = om.readValue(store.getBody(), FormReleaseDocument.class);
+      return ImmutableFormReleaseDocument.builder().from(from)
+          .version(store.getId())
+          .id(store.getVersion())
+          .build();
+    });
+  }
+  @Override
+  public FormRevisionDocument toFormRevDoc(StoreEntity store) {
+    return doInMapper(om -> {
+      final var from = om.readValue(store.getBody(), FormRevisionDocument.class);
+      return ImmutableFormRevisionDocument.builder().from(from)
+          .version(store.getId())
+          .id(store.getVersion())
+          .build();
+    });
+  }
+  @Override
+  public FormDocument toFormDoc(StoreEntity store) {
+    return doInMapper(om -> {
+      final var data = ImmutableForm.builder()
+          .from(om.readValue(store.getBody(), Form.class))
+          .id(store.getId())
+          .rev(store.getVersion())
+          .build();
+      
+      return ImmutableFormDocument.builder()
+          .version(store.getId())
+          .id(store.getVersion())
+          .created(LocalDateTime.ofInstant(data.getMetadata().getCreated().toInstant(), ZoneId.systemDefault()))
+          .updated(LocalDateTime.ofInstant(data.getMetadata().getLastSaved().toInstant(), ZoneId.systemDefault()))
+          .data(data)
+          .build();
+    });
+  }
+  
+  public <T> T doInMapper(MapperFunction<T> input) {
     try {
-      return new String(entity.readAllBytes(), StandardCharsets.UTF_8);
-    } catch (Exception e) {
-      throw new DialobJsonException(e.getMessage(), e);
+      return input.apply(objectMapper);
+    } catch(IOException e) {
+      throw new DialobJsonException(e.getMessage(), e);      
     }
   }
   
+  @FunctionalInterface
+  private interface MapperFunction<T> {
+    T apply(ObjectMapper om) throws IOException;
+  }
+  
+  
   public static class DialobJsonException extends RuntimeException implements DialobClientException {
-
     private static final long serialVersionUID = -7154685569622201632L;
-
     public DialobJsonException(String message, Throwable cause) {
       super(message, cause);
     }
-
     public DialobJsonException(String message) {
       super(message);
     }
   }
+
 }

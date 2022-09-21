@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -24,6 +25,7 @@ import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClientConfig;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
+import io.dialob.client.api.ImmutableFormDocument;
 import io.dialob.client.spi.DialobClientImpl;
 import io.dialob.client.spi.DialobEhCache;
 import io.dialob.client.spi.DialobTypesMapperImpl;
@@ -39,11 +41,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-public class DialobClientTest extends DialobClientImpl {
+public class DialobClientImplWithAssertion extends DialobClientImpl {
 
-  private static DialobClientTest INSTANCE = DialobClientTest.builder().build();
+  private static DialobClientImplWithAssertion INSTANCE = DialobClientImplWithAssertion.builder().build();
   
-  public DialobClientTest(DialobClientConfig config) {
+  public DialobClientImplWithAssertion(DialobClientConfig config) {
     super(config);
   }
   
@@ -51,12 +53,12 @@ public class DialobClientTest extends DialobClientImpl {
     return new Builder();
   }
   
-  public DialobClientTest with(QuestionnaireEventPublisher publisher) {
-    final var newConfig = ImmutableDialobClientConfig.builder().from(this.config()).eventPublisher(publisher).build();
-    return new DialobClientTest(newConfig);
+  public DialobClientImplWithAssertion with(QuestionnaireEventPublisher publisher) {
+    final var newConfig = ImmutableDialobClientConfig.builder().from(this.getConfig()).eventPublisher(publisher).build();
+    return new DialobClientImplWithAssertion(newConfig);
   }
   
-  public static DialobClientTest get() {
+  public static DialobClientImplWithAssertion get() {
     return INSTANCE;
   }
   
@@ -66,7 +68,7 @@ public class DialobClientTest extends DialobClientImpl {
   public static class Builder extends DialobClientImpl.Builder {  
 
     
-    public DialobClientTest build() {
+    public DialobClientImplWithAssertion build() {
       DialobCache cache = this.cache();
       if(cache == null) {
         cache = DialobEhCache.builder().build("inmem");
@@ -109,7 +111,7 @@ public class DialobClientTest extends DialobClientImpl {
           .build();
       
 
-      return new DialobClientTest(config);
+      return new DialobClientImplWithAssertion(config);
     }
   }
 
@@ -170,15 +172,17 @@ public class DialobClientTest extends DialobClientImpl {
           .id(formFile)
           .form(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile)).build()
         .build();
-    final var formId = envir.findAll().stream().findFirst().get().getAst().get().getValue().getId();
+    final var formId = envir.findAll().stream().findFirst().get().getDocument().getData().getId();
     return new FillAssertionBuilder(formId, client, envir);
   }
 
   public static FillAssertionBuilder fillForm(String formFile, String questionnaireState) throws java.io.IOException {
     final var client = get();
-    final var formDocument = client.config().getMapper().toForm(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile));
-    final var questionnaire = client.config().getMapper().toQuestionnaire(Thread.currentThread().getContextClassLoader().getResourceAsStream(questionnaireState));
-    return fillForm(formDocument.getValue(), questionnaire);
+    final var bytes = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile).readAllBytes(), StandardCharsets.UTF_8);
+    final var formDocument = ImmutableFormDocument.builder().data(client.getConfig().getMapper().readForm(bytes)).build();
+    
+    final var questionnaire = client.getConfig().getMapper().readQuestionnaire(Thread.currentThread().getContextClassLoader().getResourceAsStream(questionnaireState));
+    return fillForm(formDocument.getData(), questionnaire);
   }
 
   public static FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) throws java.io.IOException {
@@ -189,7 +193,7 @@ public class DialobClientTest extends DialobClientImpl {
 
     final var client = get();
     final var envir = client.envir()
-        .addCommand().id(formId).form(client.config().getMapper().toJson(formDocument)).build()
+        .addCommand().id(formId).form(client.getConfig().getMapper().toJson(formDocument)).build()
         .build();
     return new FillAssertionBuilder(questionnaire, client, envir);
   }

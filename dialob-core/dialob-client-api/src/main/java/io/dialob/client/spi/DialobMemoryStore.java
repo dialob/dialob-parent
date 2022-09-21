@@ -37,8 +37,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.dialob.client.api.DialobComposer.StoreDump;
-import io.dialob.client.api.DialobComposer.StoreDumpValue;
+import io.dialob.client.api.DialobDocument.DocumentType;
+import io.dialob.client.api.DialobDocument.FormReleaseDocument;
+import io.dialob.client.api.DialobDocument.FormReleaseValueDocument;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.api.ImmutableStoreState;
@@ -116,14 +117,6 @@ public class DialobMemoryStore implements DialobStore {
         throw new RuntimeException("Failed to load asset from: " + location + "!" + e.getMessage(), e);
       }
     }
-
-    private StoreDump readDump(String json) {
-      try {
-        return objectMapper.readValue(json, StoreDump.class);
-      } catch (Exception e) {
-        throw new RuntimeException("Failed to load asset from: " + location + "!" + e.getMessage(), e);
-      }
-    }
     
     private ImmutableStoreEntity.Builder readStoreEntity(Resource resource) {
       final var content = readContents(resource);
@@ -146,9 +139,9 @@ public class DialobMemoryStore implements DialobStore {
       return this;
     }
     
-    private StoreRelease readRelease(String json) {
+    private FormReleaseDocument readRelease(String json) {
       try {
-        return objectMapper.readValue(json, StoreRelease.class);
+        return objectMapper.readValue(json, FormReleaseDocument.class);
       } catch (Exception e) {
         throw new RuntimeException("Failed to load asset from: " + location + "!" + e.getMessage(), e);
       }
@@ -161,14 +154,15 @@ public class DialobMemoryStore implements DialobStore {
       
       
       list(location.getMigrationRegex()).stream().forEach(r -> {
-        final Map<BodyType, Integer> order = Map.of(
-            BodyType.FORM_REV, 1,
-            BodyType.FORM, 2);
+        final Map<DocumentType, Integer> order = Map.of(
+            DocumentType.FORM_REV, 1,
+            DocumentType.FORM, 2);
         migLog
           .append("Loading assets from release: " + r.getFilename()).append(System.lineSeparator());
         
-        final var assets = new ArrayList<>(readRelease(readContents(r)).getValues());
-        assets.sort((StoreReleaseValue o1, StoreReleaseValue o2) -> 
+        final var assets = new ArrayList<FormReleaseValueDocument>(readRelease(readContents(r)).getValues());
+        
+        assets.sort((FormReleaseValueDocument o1, FormReleaseValueDocument o2) -> 
           Integer.compare(order.get(o1.getBodyType()), order.get(o2.getBodyType()))
         );
         for(final var asset : assets) {
@@ -187,43 +181,11 @@ public class DialobMemoryStore implements DialobStore {
         }
       });
       
-
-      list(location.getDumpRegex()).stream().forEach(r -> {
-        
-        
-        final Map<BodyType, Integer> order = Map.of(
-            BodyType.FORM_REV, 1,
-            BodyType.FORM, 2);
-        migLog
-          .append("Loading assets from dump: " + r.getFilename()).append(System.lineSeparator());
-        
-        final var assets = new ArrayList<>(readDump(readContents(r)).getValue());
-        assets.sort((StoreDumpValue o1, StoreDumpValue o2) -> 
-          Integer.compare(order.get(o1.getBodyType()), order.get(o2.getBodyType()))
-        );
-        for(final var asset : assets) {
-          migLog.append("  - ")
-            .append(asset.getId()).append("/").append(asset.getBodyType()).append("/").append(asset.getHash())
-            .append(System.lineSeparator());
-        
-          final var entity = ImmutableStoreEntity.builder()
-              .id(asset.getId())
-              .hash(asset.getHash())
-              .body(asset.getValue())
-              .bodyType(asset.getBodyType())
-              .build();
-          entities.put(entity.getId(), entity);
-        }
-        
-        
-      });
-      
-      
       migLog.append(System.lineSeparator());
 
       // form tags
       list(location.getFormTagRegex()).stream().forEach(r -> {
-        final var entity = readStoreEntity(r).bodyType(BodyType.FORM_REV).build();    
+        final var entity = readStoreEntity(r).bodyType(DocumentType.FORM_REV).build();    
         migLog.append("  - ")
           .append(entity.getId()).append("/").append(entity.getBodyType()).append("/").append(entity.getHash())
           .append(System.lineSeparator());
@@ -232,7 +194,7 @@ public class DialobMemoryStore implements DialobStore {
 
       // forms
       list(location.getFormRegex()).stream().forEach(r -> {
-        final var entity = readStoreEntity(r).bodyType(BodyType.FORM).build();    
+        final var entity = readStoreEntity(r).bodyType(DocumentType.FORM).build();    
         migLog.append("  - ")
           .append(entity.getId()).append("/").append(entity.getBodyType()).append("/").append(entity.getHash())
           .append(System.lineSeparator());

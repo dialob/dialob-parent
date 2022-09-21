@@ -8,15 +8,22 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClient.ProgramEnvir;
+import io.dialob.client.api.DialobClient.ProgramEnvirValue;
 import io.dialob.client.api.DialobClient.ProgramMessage;
 import io.dialob.client.api.DialobClient.ProgramStatus;
 import io.dialob.client.api.DialobClient.ProgramWrapper;
+import io.dialob.client.api.DialobClient.ReleaseWrapper;
+import io.dialob.client.api.DialobClient.RevisionWrapper;
 import io.dialob.client.api.DialobClient.TypesMapper;
 import io.dialob.client.api.DialobClientConfig;
-import io.dialob.client.api.DialobComposerDocument.FormDocument;
-import io.dialob.client.api.DialobComposerDocument.FormRevision;
+import io.dialob.client.api.DialobDocument.DocumentType;
+import io.dialob.client.api.DialobDocument.FormDocument;
+import io.dialob.client.api.DialobDocument.FormReleaseDocument;
+import io.dialob.client.api.DialobDocument.FormRevisionDocument;
 import io.dialob.client.api.ImmutableProgramMessage;
 import io.dialob.client.api.ImmutableProgramWrapper;
+import io.dialob.client.api.ImmutableReleaseWrapper;
+import io.dialob.client.api.ImmutableRevisionWrapper;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.program.ImmutableProgramEnvir;
 import io.dialob.client.spi.program.ProgramBuilderImpl;
@@ -35,7 +42,8 @@ public class DialobProgramEnvirFactory {
   private final List<String> visitedIds = new ArrayList<>();
   private final List<String> cachlessIds = new ArrayList<>();
   private final StringBuilder treelog = new StringBuilder();
-  private final List<ProgramWrapper> wrappers = new ArrayList<>();
+  private final List<ProgramWrapper> programs = new ArrayList<>();
+  private final List<ProgramEnvirValue<?>> envirValue = new ArrayList<>();
   
   private ProgramEnvir baseEnvir;
   
@@ -63,8 +71,14 @@ public class DialobProgramEnvirFactory {
       break;
     }
     case FORM_REV: {
-      visitRevision(entity); 
+      final var rev = visitRevision(entity); 
+      visitWrapper(rev);
       break;
+    }
+    case RELEASE: {
+      final var rel = visitRelease(entity); 
+      visitWrapper(rel);
+      break;      
     }
     default: throw new IllegalArgumentException("unknown command format type: '" + entity.getBodyType() + "'!");
     }
@@ -81,11 +95,14 @@ public class DialobProgramEnvirFactory {
         .forEach(wrapper -> visitWrapper(wrapper));    
     }
     
-    for(final var wrapper : wrappers) {
+    for(final var wrapper : programs) {
       visitTreeLog(wrapper);
       envir.add(wrapper);
     }
-    
+    for(final var wrapper : envirValue) {
+      visitTreeLog(wrapper);
+      envir.add(wrapper);
+    }    
 
     if(LOGGER.isDebugEnabled()) {
       LOGGER.debug(new StringBuilder()
@@ -96,13 +113,19 @@ public class DialobProgramEnvirFactory {
     return envir.build();
   }
   
-  private void visitWrapper(ProgramWrapper wrapper) {
-    this.wrappers.add(wrapper);
+  private void visitWrapper(ProgramEnvirValue<?> value) {
+    if(value instanceof ProgramWrapper) {
+      this.programs.add((ProgramWrapper) value);
+    } else {
+      this.envirValue.add(value);
+    }
   }
   
-  private void visitTreeLog(ProgramWrapper wrapper) {
-    if(LOGGER.isDebugEnabled()) {
-      final String name = wrapper.getAst().map(w -> w.getValue().getName()).orElseGet(() -> wrapper.getId());
+  private void visitTreeLog(ProgramEnvirValue<?> value) {
+    if(LOGGER.isDebugEnabled() && value.getSource().getBodyType() == DocumentType.FORM) {
+      final var wrapper = (ProgramWrapper) value;
+      final String name = wrapper.getDocument().getName();
+      
       treelog.append("  - ").append(name).append(": ").append(wrapper.getStatus()).append(System.lineSeparator());
       if(wrapper.getStatus() != ProgramStatus.UP) {
       
@@ -122,26 +145,19 @@ public class DialobProgramEnvirFactory {
     builder.status(ProgramStatus.UP);
     
     FormDocument ast = null;
-    try {
-      if(cachlessIds.contains(src.getId())) {
-        ast = mapper.toForm(src.getBody());
+    if(cachlessIds.contains(src.getId())) {
+      ast = mapper.toFormDoc(src);
+    } else {
+      final var cached = cache.getAst(src);
+      if(cached.isPresent()) {
+        ast = (FormDocument) cached.get();
       } else {
-        final var cached = cache.getAst(src);
-        if(cached.isPresent()) {
-          ast = (FormDocument) cached.get();
-        } else {
-          ast = mapper.toForm(src.getBody());
-          cache.setAst(ast, src);
-        }
+        ast = mapper.toFormDoc(src);
+        cache.setAst(ast, src);
       }
-      
-    } catch(Exception e) {
-      LOGGER.error(new StringBuilder()
-          .append(e.getMessage()).append(System.lineSeparator())
-          .append("  - form source: ").append(src.getBody())
-          .toString(), e);
-      builder.status(ProgramStatus.AST_ERROR).addAllErrors(visitException(e));
     }
+    
+    
     
     DialobProgram program = null;
     if(ast != null) {
@@ -168,34 +184,50 @@ public class DialobProgramEnvirFactory {
       }
     }
     return builder.id(src.getId())
-        .ast(Optional.ofNullable(ast)).program(Optional.ofNullable(program))
+        .document(ast)
+        .program(Optional.ofNullable(program))
         .source(src)
         .build(); 
   }
   
-  private void visitRevision(ImmutableStoreEntity src) {
+  private RevisionWrapper visitRevision(ImmutableStoreEntity src) {
     
-    FormRevision ast = null;
-    try {
-      if(cachlessIds.contains(src.getId())) {
-        ast = mapper.toFormRev(src.getBody());
+    FormRevisionDocument ast = null;
+    if(cachlessIds.contains(src.getId())) {
+      ast = mapper.toFormRevDoc(src);
+    } else {
+      final var cached = cache.getAst(src);
+      if(cached.isPresent()) {
+        ast = (FormRevisionDocument) cached.get();
       } else {
-        final var cached = cache.getAst(src);
-        if(cached.isPresent()) {
-          ast = (FormRevision) cached.get();
-        } else {
-          ast = mapper.toFormRev(src.getBody());
-          cache.setAst(ast, src);
-        }
+        ast = mapper.toFormRevDoc(src);
+        cache.setAst(ast, src);
       }
-      
-    } catch(Exception e) {
-      LOGGER.error(new StringBuilder()
-          .append(e.getMessage()).append(System.lineSeparator())
-          .append("  - form rev source: ").append(src.getBody())
-          .toString(), e);
     }
+    
+    return ImmutableRevisionWrapper.builder().document(ast).source(src).build();
+
   }
+  
+  private ReleaseWrapper visitRelease(ImmutableStoreEntity src) {
+    
+    FormReleaseDocument ast = null;
+    if(cachlessIds.contains(src.getId())) {
+      ast = mapper.toFormReleaseDoc(src);
+    } else {
+      final var cached = cache.getAst(src);
+      if(cached.isPresent()) {
+        ast = (FormReleaseDocument) cached.get();
+      } else {
+        ast = mapper.toFormReleaseDoc(src);
+        cache.setAst(ast, src);
+      }
+    }
+    
+    return ImmutableReleaseWrapper.builder().document(ast).source(src).build();
+  }
+  
+  
   
   private List<ProgramMessage> visitException(Exception e) {
     final var msgs = new ArrayList<ProgramMessage>(); 

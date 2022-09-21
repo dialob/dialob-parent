@@ -10,7 +10,7 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 
 import io.dialob.client.api.DialobCache;
-import io.dialob.client.api.DialobComposerDocument;
+import io.dialob.client.api.DialobDocument;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableCacheEntry;
 import io.dialob.program.DialobProgram;
@@ -38,7 +38,7 @@ public class DialobEhCache implements DialobCache {
         .map(e -> e.getProgram().orElse(null));
   }
   @Override
-  public Optional<DialobComposerDocument> getAst(StoreEntity src) {
+  public Optional<DialobDocument> getAst(StoreEntity src) {
     final var cache = getCache();
     return Optional.ofNullable(cache.get(src.getHash()))
         .or(() -> Optional.ofNullable(cache.get(src.getId())))
@@ -54,8 +54,8 @@ public class DialobEhCache implements DialobCache {
     return program;
   }
   @Override
-  public DialobComposerDocument setAst(DialobComposerDocument ast, StoreEntity src) {
-    final var entry = ImmutableCacheEntry.builder().id(src.getId()).source(src).ast(ast).build();
+  public DialobDocument setAst(DialobDocument ast, StoreEntity src) {
+    final var entry = ImmutableCacheEntry.builder().id(src.getId()).rev(ast.getVersion()).source(src).ast(ast).build();
     final var cache = getCache();
     cache.put(entry.getId(), entry);
     cache.put(src.getHash(), entry);

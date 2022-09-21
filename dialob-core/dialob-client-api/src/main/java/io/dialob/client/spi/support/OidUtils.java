@@ -62,7 +62,7 @@ public final class OidUtils {
     return Hex.encodeHexString(oid);
   }
   
-  public static String generateVersionOID() {
+  public static String gen() {
     return toString(generateOID());
   }
 

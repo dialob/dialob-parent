@@ -25,7 +25,7 @@ import static io.dialob.api.proto.Action.Type.REMOVE_ERROR;
 import static io.dialob.api.proto.Action.Type.REMOVE_ITEMS;
 import static io.dialob.api.proto.Action.Type.RESET;
 import static io.dialob.api.proto.Action.Type.VALUE_SET;
-import static io.dialob.client.tests.client.DialobClientTest.fillForm;
+import static io.dialob.client.tests.client.DialobClientImplWithAssertion.fillForm;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import io.dialob.client.api.DialobClient.EnvirBuilder;
 import io.dialob.client.api.DialobClient.EnvirCommandFormatBuilder;
 import io.dialob.client.api.DialobClient.ProgramEnvir;
-import io.dialob.client.api.DialobStore.BodyType;
+import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.support.DialobAssert;
@@ -23,7 +23,7 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
     final EnvirBuilder enviBuilder = this;
     return new EnvirCommandFormatBuilder() {
       private String id;
-      private BodyType type;
+      private DocumentType type;
       private String commandJson;
       private StoreEntity entity;
       private boolean cachless;
@@ -35,37 +35,43 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       }
       @Override
       public EnvirCommandFormatBuilder rev(String commandJson) {
-        this.type = BodyType.FORM_REV;
+        this.type = DocumentType.FORM_REV;
         this.commandJson = commandJson;
         return this;
       }
       @Override
       public EnvirCommandFormatBuilder form(String commandJson) {
-        this.type = BodyType.FORM;
+        this.type = DocumentType.FORM;
         this.commandJson = commandJson;
         return this;
       }
       @Override
       public EnvirCommandFormatBuilder form(InputStream commandJson) {
-        this.type = BodyType.FORM;
+        this.type = DocumentType.FORM;
         this.commandJson = factory.getConfig().getMapper().toString(commandJson);
         return this;
       }
       @Override
       public EnvirCommandFormatBuilder rev(StoreEntity entity) {
-        this.type = BodyType.FORM_REV;
+        this.type = DocumentType.FORM_REV;
         this.entity = entity;
         return this;
       }
       @Override
       public EnvirCommandFormatBuilder form(StoreEntity entity) {
-        this.type = BodyType.FORM;
+        this.type = DocumentType.FORM;
         this.entity = entity;
         return this;
       }
       @Override
       public EnvirCommandFormatBuilder cachless() {
         this.cachless = true;
+        return this;
+      }
+      @Override
+      public EnvirCommandFormatBuilder release(StoreEntity entity) {
+        this.type = DocumentType.RELEASE;
+        this.entity = entity;
         return this;
       }
       @Override
@@ -83,6 +89,8 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
             .build(), cachless);
         return enviBuilder;
       }
+
+
     };
   }
   @Override

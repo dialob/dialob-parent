@@ -22,7 +22,7 @@ package io.dialob.client.spi.store;
 
 import java.io.Serializable;
 
-import io.dialob.client.api.DialobStore.BodyType;
+import io.dialob.client.api.DialobDocument.DocumentType;
 
 public class StoreEntityLocation implements Serializable {
   private static final long serialVersionUID = -5312216893265396576L;
@@ -35,15 +35,15 @@ public class StoreEntityLocation implements Serializable {
   }
   
   //getResourceFullName
-  public String getAbsolutePath(BodyType type, String pointer) {
+  public String getAbsolutePath(DocumentType type, String pointer) {
     return value + getFileName(type, pointer);
   }
   //getResourceName
-  public String getFileName(BodyType type, String pointer) {
+  public String getFileName(DocumentType type, String pointer) {
     return getPath(type) + "/" + pointer + ".json";
   }
   //getResourceId
-  public String getBaseName(BodyType type, String filename) {
+  public String getBaseName(DocumentType type, String filename) {
     return filename.substring(0, filename.lastIndexOf("."));
   }
   public String getFormRegex() {
@@ -55,13 +55,10 @@ public class StoreEntityLocation implements Serializable {
   public String getMigrationRegex() {
     return withRegex("**/dialob_migration/**/*.json");
   }
-  public String getDumpRegex() {
-    return withRegex("**/dump/**/*.json");
-  }
   public String getValue() {
     return value;
   }
-  private String getPath(BodyType type) {
+  private String getPath(DocumentType type) {
     switch (type) {
     case FORM:
       return "form";

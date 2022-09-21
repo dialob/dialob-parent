@@ -13,10 +13,10 @@ public interface DialobCache {
   DialobCache withName(String name);
   
   Optional<DialobProgram> getProgram(StoreEntity src);
-  Optional<DialobComposerDocument> getAst(StoreEntity src);
+  Optional<DialobDocument> getAst(StoreEntity src);
   
   DialobProgram setProgram(DialobProgram program, StoreEntity src);
-  DialobComposerDocument setAst(DialobComposerDocument ast, StoreEntity src);
+  DialobDocument setAst(DialobDocument ast, StoreEntity src);
   
   void flush(String id);
   
@@ -25,7 +25,7 @@ public interface DialobCache {
     String getId();
     String getRev();
     StoreEntity getSource();
-    DialobComposerDocument getAst();
+    DialobDocument getAst();
     Optional<DialobProgram> getProgram();
   }
 

@@ -3,8 +3,8 @@ package io.dialob.client.spi;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,6 +15,7 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.api.ImmutableStoreExceptionMsg;
@@ -25,6 +26,7 @@ import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.client.spi.support.DocumentQueryBuilder;
 import io.dialob.client.spi.support.OidUtils;
 import io.dialob.client.spi.support.PersistenceCommands;
+import io.dialob.client.spi.support.Sha2;
 import io.resys.thena.docdb.api.DocDB;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
@@ -36,7 +38,10 @@ import io.vertx.sqlclient.PoolOptions;
 
 public class PgSqlDialobStore extends PersistenceCommands implements DialobStore {
   private static final Logger LOGGER = LoggerFactory.getLogger(PgSqlDialobStore.class);
-
+  private static final Comparator<StoreCommand> COMP = (a, b) -> {
+    return Sha2.blob(a.toString()).compareTo(Sha2.blob(b.toString()));
+  };
+  
   public PgSqlDialobStore(PgSqlConfig config) {
     super(config);
   }
@@ -113,7 +118,7 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
     final var gid = gid(newType.getBodyType());
     final var entity = (StoreEntity) ImmutableStoreEntity.builder()
         .id(gid)
-        .version(OidUtils.generateVersionOID())
+        .version(newType.getVersion() == null ? OidUtils.gen() : newType.getVersion())
         .hash("")
         .body(newType.getBody())
         .bodyType(newType.getBodyType())
@@ -136,7 +141,7 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
       
       final StoreEntity entity = ImmutableStoreEntity.builder()
           .from(state.getEntity())
-          .version(OidUtils.generateVersionOID())
+          .version(OidUtils.gen())
           .id(updateType.getId())
           .bodyType(state.getEntity().getBodyType())
           .body(updateType.getBody())
@@ -149,12 +154,15 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
 
     final var create = batchType.stream()
         .filter(e -> e instanceof CreateStoreEntity).map(e -> (CreateStoreEntity) e)
+        .sorted(COMP)
         .collect(Collectors.toList());
     final var update = batchType.stream()
         .filter(e -> e instanceof UpdateStoreEntity).map(e -> (UpdateStoreEntity) e)
+        .sorted(COMP)
         .collect(Collectors.toList());
     final var del = batchType.stream()
         .filter(e -> e instanceof DeleteStoreEntity).map(e -> (DeleteStoreEntity) e)
+        .sorted(COMP)
         .collect(Collectors.toList());
     
     final var commitBuilder = config.getClient().commit().head()
@@ -175,7 +183,7 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
         final var gid = gid(toBeSaved.getBodyType());
         final var entity = (StoreEntity) ImmutableStoreEntity.builder()
             .id(gid)
-            .version(OidUtils.generateVersionOID())
+            .version(toBeSaved.getVersion() == null ? OidUtils.gen() : toBeSaved.getVersion())
             .hash("")
             .body(toBeSaved.getBody())
             .bodyType(toBeSaved.getBodyType())
@@ -186,7 +194,7 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
       for(final var toBeSaved : update) {
         final var entity = (StoreEntity) ImmutableStoreEntity.builder()
             .id(toBeSaved.getId())
-            .version(OidUtils.generateVersionOID())
+            .version(OidUtils.gen())
             .hash("")
             .body(toBeSaved.getBody())
             .bodyType(toBeSaved.getBodyType())
@@ -248,7 +256,7 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
     return query.onItem().transformToUni(state -> delete(state.getEntity()));
   }
 
-  private String gid(BodyType type) {
+  private String gid(DocumentType type) {
     return config.getGidProvider().getNextId(type);
   }
   public static Builder builder() {
@@ -321,7 +329,7 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
     
     private PgSqlConfig.GidProvider getGidProvider() {
       return this.gidProvider == null ? type -> {
-        return UUID.randomUUID().toString();
+        return OidUtils.gen();
      } : this.gidProvider;
     }
     

@@ -1,15 +1,17 @@
 package io.dialob.client.api;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import org.immutables.value.Value;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import io.dialob.client.api.DialobDocument.DocumentType;
 import io.smallrye.mutiny.Uni;
 
 
@@ -37,40 +39,32 @@ public interface DialobStore {
     Uni<StoreState> get();
     Uni<StoreEntity> get(String id);
   }
-  
-  @Value.Immutable @JsonSerialize(as = ImmutableStoreRelease.class) @JsonDeserialize(as = ImmutableStoreRelease.class)
-  interface StoreRelease extends Serializable {
-    String getName();
-    LocalDateTime getCreated();
-    List<StoreReleaseValue> getValues();
-  }
-  
-  @Value.Immutable @JsonSerialize(as = ImmutableStoreReleaseValue.class) @JsonDeserialize(as = ImmutableStoreReleaseValue.class)
-  interface StoreReleaseValue {
-    String getHash();
-    BodyType getBodyType();
-    String getCommands();
-  } 
-  
 
   @Value.Immutable @JsonSerialize(as = ImmutableStoreState.class) @JsonDeserialize(as = ImmutableStoreState.class)
   interface StoreState {
     Map<String, StoreEntity> getRevs();
     Map<String, StoreEntity> getForms();
+    Map<String, StoreEntity> getTags();    
   }
   
   @Value.Immutable @JsonSerialize(as = ImmutableStoreEntity.class) @JsonDeserialize(as = ImmutableStoreEntity.class)
   interface StoreEntity extends Serializable {
     String getId();
     String getVersion();
-    BodyType getBodyType();
+    DocumentType getBodyType();
     String getHash();
     String getBody();
   }
   
   
   interface StoreCommand extends Serializable {
-    BodyType getBodyType();
+    DocumentType getBodyType();
+  }
+
+  @Value.Immutable @JsonSerialize(as = ImmutableUpdateStoreEntity.class) @JsonDeserialize(as = ImmutableUpdateStoreEntity.class)
+  interface EmptyCommand extends StoreCommand {
+    String getId();
+    String getDescription();
   }
   
   @Value.Immutable @JsonSerialize(as = ImmutableUpdateStoreEntity.class) @JsonDeserialize(as = ImmutableUpdateStoreEntity.class)
@@ -82,6 +76,8 @@ public interface DialobStore {
 
   @Value.Immutable @JsonSerialize(as = ImmutableCreateStoreEntity.class) @JsonDeserialize(as = ImmutableCreateStoreEntity.class)
   interface CreateStoreEntity extends StoreCommand {
+    @Nullable String getId(); // in case not provided, auto generated
+    @Nullable String getVersion(); // in case not provided, auto generated
     String getBody();
   }
   
@@ -90,8 +86,6 @@ public interface DialobStore {
     String getId();
     String getVersion();
   }
-
-  enum BodyType { FORM, FORM_REV }
   
   @Value.Immutable @JsonSerialize(as = ImmutableStoreExceptionMsg.class)
   interface StoreExceptionMsg {

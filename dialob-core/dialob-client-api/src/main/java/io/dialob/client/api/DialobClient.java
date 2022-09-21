@@ -12,16 +12,17 @@ import javax.annotation.Nullable;
 import org.immutables.value.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
 
+import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.client.api.DialobComposerDocument.FormDocument;
-import io.dialob.client.api.DialobComposerDocument.FormRevision;
+import io.dialob.client.api.DialobDocument.FormDocument;
+import io.dialob.client.api.DialobDocument.FormReleaseDocument;
+import io.dialob.client.api.DialobDocument.FormRevisionDocument;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.program.DialobProgram;
 import io.smallrye.mutiny.Uni;
@@ -33,7 +34,7 @@ public interface DialobClient {
   QuestionnaireExecutorBuilder executor(ProgramEnvir envir);   
   EnvirBuilder envir();
 
-  DialobClientConfig config();
+  DialobClientConfig getConfig();
   DialobStore store();
   RepoBuilder repo();
 
@@ -90,6 +91,7 @@ public interface DialobClient {
     
     EnvirCommandFormatBuilder rev(StoreEntity entity);
     EnvirCommandFormatBuilder form(StoreEntity entity);
+    EnvirCommandFormatBuilder release(StoreEntity entity);
     
     EnvirBuilder build();
   }
@@ -106,18 +108,28 @@ public interface DialobClient {
     ProgramWrapper findByFormId(String formId);
     ProgramWrapper findByFormIdAndRev(String formId, String formRev);
     List<ProgramWrapper> findAll();
+    
+    Map<String, ProgramEnvirValue<?>> getValues();
   }
   
+  interface ProgramEnvirValue<T extends DialobDocument> extends Serializable {
+    StoreEntity getSource();
+    @JsonIgnore
+    T getDocument();
+  }
+  
+  @Value.Immutable  
+  interface RevisionWrapper extends ProgramEnvirValue<FormRevisionDocument> { }
+  
+  @Value.Immutable  
+  interface ReleaseWrapper extends ProgramEnvirValue<FormReleaseDocument> { }
+  
   @Value.Immutable
-  interface ProgramWrapper {
+  interface ProgramWrapper extends ProgramEnvirValue<FormDocument> {
     String getId();
     ProgramStatus getStatus();
     
     List<ProgramMessage> getErrors();
-
-    StoreEntity getSource();
-    @JsonIgnore
-    Optional<FormDocument> getAst();
     @JsonIgnore
     Optional<DialobProgram> getProgram();
   } 
@@ -143,18 +155,22 @@ public interface DialobClient {
     DEPENDENCY_ERROR }
 
   interface TypesMapper {
-    Map<String, Serializable> toMap(Object entity);
-    Map<String, Serializable> toMap(JsonNode entity);
+    String toString(InputStream entity);                 // just read the data
+    Questionnaire readQuestionnaire(InputStream entity); // just read the data
+    Form readForm(String entity);                        // just read the data
+    FormReleaseDocument readReleaseDoc(String entity);   // just read the data
+    FormDocument readFormDoc(String entity);             // just read the data
+    FormRevisionDocument readFormRevDoc(String entity);  // just read the data
 
-    String toString(InputStream entity);
+    String toJson(Object anyObject); // writes object as a json string
     
     
-    Questionnaire toQuestionnaire(InputStream entity);
-    FormDocument toForm(InputStream entity);
-    FormDocument toForm(String entity);
-    FormRevision toFormRev(String entity);
+    FormReleaseDocument toFormReleaseDoc(StoreEntity store);
+    FormRevisionDocument toFormRevDoc(StoreEntity store);
+    FormDocument toFormDoc(StoreEntity store);
     
-    Object toType(Object value, Class<?> toType);
-    String toJson(Object anyObject);
+    String toStoreBody(FormReleaseDocument anyObject);    
+    String toStoreBody(FormRevisionDocument anyObject);
+    String toStoreBody(FormDocument anyObject);
   }
 }
