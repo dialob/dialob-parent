@@ -93,6 +93,8 @@ public interface DialobClient {
     EnvirCommandFormatBuilder form(StoreEntity entity);
     EnvirCommandFormatBuilder release(StoreEntity entity);
     
+    EnvirCommandFormatBuilder form(Form entity);    
+    
     EnvirBuilder build();
   }
 

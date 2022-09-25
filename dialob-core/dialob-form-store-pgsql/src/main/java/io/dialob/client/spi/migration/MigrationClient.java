@@ -21,7 +21,7 @@ import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobDocument.FormRevisionDocument;
 import io.dialob.client.spi.DialobTypesMapperImpl;
 import io.dialob.client.spi.migration.MigrationSupport.Migration;
-import io.resys.thena.docdb.spi.pgsql.sql.PgErrors;
+import io.resys.thena.docdb.spi.pgsql.PgErrors;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.sqlclient.Tuple;
 import lombok.Builder;
@@ -52,7 +52,7 @@ public class MigrationClient {
   
   
   @Data @Builder
-  public static class Sql {
+  private static class Sql {
     private String id;
     private String value;
   }
@@ -81,7 +81,7 @@ public class MigrationClient {
           pool.
           preparedQuery(sql.getValue()).execute()
               .onItem().transformToUni(data -> Uni.createFrom().voidItem())
-              .onFailure().invoke(e -> PgErrors.deadEnd("Can't migrate: " + sql.getId() + " sql:'" + sql.getValue() + "'!", e))
+              .onFailure().invoke(e -> new PgErrors().deadEnd("Can't migrate: " + sql.getId() + " sql:'" + sql.getValue() + "'!", e))
               .await().atMost(Duration.ofSeconds(5));
         }
       }

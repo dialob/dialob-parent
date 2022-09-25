@@ -17,7 +17,11 @@ import io.dialob.executor.model.DialobSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/* QuestionnaireSessionProcessingService#answerQuestion
+/*
+ * DialobQuestionnaireSessionBuilder
+ *  
+ *  
+ *  QuestionnaireSessionProcessingService#answerQuestion
 
         final QuestionnaireSession session = AbstractQuestionnaireSessionService.findOne(questionnaireId);
         {
@@ -53,7 +57,7 @@ public class QuestionnaireExecutorImpl implements DialobClient.QuestionnaireExec
   private final boolean newSession;
   private boolean createOnly;
   
-  
+  private QuestionnaireSessionImpl questionnaireSessionImpl;  
   private Actions actions;
   
   @Override
@@ -91,17 +95,22 @@ public class QuestionnaireExecutorImpl implements DialobClient.QuestionnaireExec
           .rev(state.getRevision())
           .build();      
     }
-    
-    // update answers    
-    final QuestionnaireSession.DispatchActionsResult response = state.dispatchActions(state.getRevision(), actions.getActions());
+
+    // update answers
+    final var rev = actions.getRev() == null ? state.getRev() : actions.getRev();
+    final QuestionnaireSession.DispatchActionsResult response = state.dispatchActions(rev, actions.getActions());
     if (response.isDidComplete()) {
-      state.getSessionId().ifPresent(sessionId -> config.getEventPublisher().completed(state.getTenantId(), sessionId));
+      state.getSessionId().ifPresent(sessionId -> config.getEventPublisher().completed(sessionId));
     }
+    
     return response.getActions();
   }
-
   
   protected QuestionnaireSessionImpl createQuestionnaireSession() {
+    if(this.questionnaireSessionImpl != null) {
+      return this.questionnaireSessionImpl;
+    }
+    
     QuestionnaireSessionImpl state = null;
     try {
       state = QuestionnaireSessionImpl.builder()
@@ -120,6 +129,7 @@ public class QuestionnaireExecutorImpl implements DialobClient.QuestionnaireExec
       }
       
       state.activate();
+      this.questionnaireSessionImpl = state;
       
       return state;
     } catch (Exception e) {

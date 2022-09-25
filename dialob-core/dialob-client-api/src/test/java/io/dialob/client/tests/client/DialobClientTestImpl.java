@@ -6,10 +6,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.UUID;
 
 import org.mockito.Mockito;
 
@@ -17,15 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClientConfig;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
-import io.dialob.client.api.ImmutableFormDocument;
 import io.dialob.client.spi.DialobClientImpl;
 import io.dialob.client.spi.DialobEhCache;
 import io.dialob.client.spi.DialobTypesMapperImpl;
@@ -41,11 +34,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-public class DialobClientImplWithAssertion extends DialobClientImpl {
+public class DialobClientTestImpl extends DialobClientImpl {
 
-  private static DialobClientImplWithAssertion INSTANCE = DialobClientImplWithAssertion.builder().build();
+  private static DialobClientTestImpl INSTANCE = DialobClientTestImpl.builder().build();
   
-  public DialobClientImplWithAssertion(DialobClientConfig config) {
+  public DialobClientTestImpl(DialobClientConfig config) {
     super(config);
   }
   
@@ -53,12 +46,12 @@ public class DialobClientImplWithAssertion extends DialobClientImpl {
     return new Builder();
   }
   
-  public DialobClientImplWithAssertion with(QuestionnaireEventPublisher publisher) {
+  public DialobClientTestImpl with(QuestionnaireEventPublisher publisher) {
     final var newConfig = ImmutableDialobClientConfig.builder().from(this.getConfig()).eventPublisher(publisher).build();
-    return new DialobClientImplWithAssertion(newConfig);
+    return new DialobClientTestImpl(newConfig);
   }
   
-  public static DialobClientImplWithAssertion get() {
+  public static DialobClientTestImpl get() {
     return INSTANCE;
   }
   
@@ -66,9 +59,9 @@ public class DialobClientImplWithAssertion extends DialobClientImpl {
   @Data
   @EqualsAndHashCode(callSuper = false)
   public static class Builder extends DialobClientImpl.Builder {  
-
+    public final static ObjectMapper MAPPER = new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
     
-    public DialobClientImplWithAssertion build() {
+    public DialobClientTestImpl build() {
       DialobCache cache = this.cache();
       if(cache == null) {
         cache = DialobEhCache.builder().build("inmem");
@@ -81,7 +74,7 @@ public class DialobClientImplWithAssertion extends DialobClientImpl {
 
       ObjectMapper objectMapper = this.objectMapper();
       if(objectMapper == null) {
-        objectMapper = new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
+        objectMapper = MAPPER;
       }
       
       QuestionnaireEventPublisher eventPublisher = this.eventPublisher();
@@ -93,11 +86,18 @@ public class DialobClientImplWithAssertion extends DialobClientImpl {
       if(store == null) {
         store = Mockito.mock(DialobStore.class);
       }
+            
+      AsyncFunctionInvoker asyncFunctionInvoker = asyncFunctionInvoker();
+      if(asyncFunctionInvoker == null) {
+        asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
+        final var visitor = mock(EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor.class);
+        when(asyncFunctionInvoker.createVisitor(Mockito.any())).thenReturn(visitor);        
+      }
       
-      final var visitor = mock(EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor.class);
-      final var asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
-      when(asyncFunctionInvoker.createVisitor(Mockito.any())).thenReturn(visitor);
-      final var functionRegistry = createFunctionRegistry();
+      FunctionRegistry functionRegistry = functionRegistry();
+      if(functionRegistry == null) {
+        functionRegistry = createFunctionRegistry();
+      } 
       
       
       final var config = ImmutableDialobClientConfig.builder()
@@ -111,7 +111,7 @@ public class DialobClientImplWithAssertion extends DialobClientImpl {
           .build();
       
 
-      return new DialobClientImplWithAssertion(config);
+      return new DialobClientTestImpl(config);
     }
   }
 
@@ -163,40 +163,4 @@ public class DialobClientImplWithAssertion extends DialobClientImpl {
       throw new RuntimeException(e.getMessage(), e);
     }
   }
-  
-  
-  public static FillAssertionBuilder fillForm(String formFile) {
-    final var client = get();
-    final var envir = client.envir()
-        .addCommand()
-          .id(formFile)
-          .form(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile)).build()
-        .build();
-    final var formId = envir.findAll().stream().findFirst().get().getDocument().getData().getId();
-    return new FillAssertionBuilder(formId, client, envir);
-  }
-
-  public static FillAssertionBuilder fillForm(String formFile, String questionnaireState) throws java.io.IOException {
-    final var client = get();
-    final var bytes = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile).readAllBytes(), StandardCharsets.UTF_8);
-    final var formDocument = ImmutableFormDocument.builder().data(client.getConfig().getMapper().readForm(bytes)).build();
-    
-    final var questionnaire = client.getConfig().getMapper().readQuestionnaire(Thread.currentThread().getContextClassLoader().getResourceAsStream(questionnaireState));
-    return fillForm(formDocument.getData(), questionnaire);
-  }
-
-  public static FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) throws java.io.IOException {
-    String docId = UUID.randomUUID().toString();
-    String formId = formDocument.getId();
-    questionnaire = ImmutableQuestionnaire.builder().from(questionnaire).id(docId)
-        .metadata(ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
-
-    final var client = get();
-    final var envir = client.envir()
-        .addCommand().id(formId).form(client.getConfig().getMapper().toJson(formDocument)).build()
-        .build();
-    return new FillAssertionBuilder(questionnaire, client, envir);
-  }
-
-
 }

@@ -94,6 +94,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+// DialobQuestionnaireSession
 @Slf4j
 @EqualsAndHashCode(exclude = {"eventPublisher", "state"})
 @ToString
@@ -355,7 +356,7 @@ public class QuestionnaireSessionImpl implements QuestionnaireSession, Serializa
           public void visitCompleted() {
             super.visitCompleted();
             result.isDidComplete(true);
-            getSessionId().ifPresent(sessionId -> eventPublisher.completed(getDialobSession().getTenantId(), sessionId));
+            getSessionId().ifPresent(sessionId -> eventPublisher.completed(sessionId));
           }
 
           @Override

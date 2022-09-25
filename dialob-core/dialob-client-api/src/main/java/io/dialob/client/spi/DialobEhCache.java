@@ -41,7 +41,7 @@ public class DialobEhCache implements DialobCache {
   public Optional<DialobDocument> getAst(StoreEntity src) {
     final var cache = getCache();
     return Optional.ofNullable(cache.get(src.getHash()))
-        .or(() -> Optional.ofNullable(cache.get(src.getId())))
+        .or(() -> Optional.ofNullable(cache.get(src.getId() + "/" + src.getVersion())))
         .map(e -> e.getAst());
   }
   @Override
@@ -57,7 +57,7 @@ public class DialobEhCache implements DialobCache {
   public DialobDocument setAst(DialobDocument ast, StoreEntity src) {
     final var entry = ImmutableCacheEntry.builder().id(src.getId()).rev(ast.getVersion()).source(src).ast(ast).build();
     final var cache = getCache();
-    cache.put(entry.getId(), entry);
+    cache.put(src.getId() + "/" + src.getVersion(), entry);
     cache.put(src.getHash(), entry);
     return ast;
   }

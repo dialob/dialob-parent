@@ -31,7 +31,8 @@ import io.resys.thena.docdb.api.DocDB;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
 import io.resys.thena.docdb.api.actions.RepoActions.RepoStatus;
-import io.resys.thena.docdb.spi.pgsql.DocDBFactory;
+import io.resys.thena.docdb.spi.pgsql.PgErrors;
+import io.resys.thena.docdb.sql.DocDBFactorySql;
 import io.smallrye.mutiny.Uni;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.sqlclient.PoolOptions;
@@ -394,9 +395,9 @@ public class PgSqlDialobStore extends PersistenceCommands implements DialobStore
         
         final io.vertx.mutiny.pgclient.PgPool pgPool = io.vertx.mutiny.pgclient.PgPool.pool(connectOptions, poolOptions);
         
-        thena = DocDBFactory.create().client(pgPool).db(repoName).build();
+        thena = DocDBFactorySql.create().client(pgPool).db(repoName).errorHandler(new PgErrors()).build();
       } else {
-        thena = DocDBFactory.create().client(pgPool).db(repoName).build();
+        thena = DocDBFactorySql.create().client(pgPool).db(repoName).errorHandler(new PgErrors()).build();
       }
       
       final ObjectMapper objectMapper = getObjectMapper();

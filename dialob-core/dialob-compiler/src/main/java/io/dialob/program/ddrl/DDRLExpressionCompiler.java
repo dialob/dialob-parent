@@ -125,6 +125,8 @@ public class DDRLExpressionCompiler {
       } catch (ProgramBuilderException e) {
         e.setNode(node);
         throw e;
+      } catch(Exception e) {
+        throw new RuntimeException("Failed to compile expression: " +node + " because: " + e.getMessage(), e);
       }
       builder = null;
       return node;

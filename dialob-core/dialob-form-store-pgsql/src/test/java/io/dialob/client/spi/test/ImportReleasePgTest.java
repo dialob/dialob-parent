@@ -56,13 +56,6 @@ public class ImportReleasePgTest extends PgTestTemplate {
       .onFailure().invoke(e -> e.printStackTrace()).onFailure().recoverWithNull()
       .await().atMost(Duration.ofMinutes(1));
 
-    
-//    importState.getForms().values().stream().forEach(e -> {
-//      
-//      e.get
-//    });
-    
-    // delete state
     final var expected = RepositoryToStaticData.toString(getClass(), "import_state.txt");
     final var actual = super.toRepoExport(store.getRepoName());
     Assertions.assertEquals(expected, actual);

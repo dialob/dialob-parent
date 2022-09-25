@@ -40,7 +40,7 @@ public class QuestionnaireEventPublisher {
       .build());
   }
 
-  public void completed(String tenantId, @Nonnull String questionnaireId) {
+  public void completed(@Nonnull String questionnaireId) {
     applicationEventPublisher.publish(ImmutableQuestionnaireCompletedEvent.builder()
       .questionnaireId(questionnaireId)
       .build());

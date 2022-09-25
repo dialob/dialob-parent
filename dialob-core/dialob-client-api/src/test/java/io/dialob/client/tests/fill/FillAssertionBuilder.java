@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.client.tests.client;
+package io.dialob.client.tests.fill;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,11 +48,12 @@ import io.dialob.client.api.QuestionnaireSession;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
 import io.dialob.client.spi.form.FormActions;
 import io.dialob.client.spi.form.FormActionsUpdatesCallback;
+import io.dialob.client.tests.client.DialobClientTestImpl;
 import lombok.Data;
 
 public class FillAssertionBuilder {
 
-  private final DialobClientImplWithAssertion client;
+  private final DialobClientTestImpl client;
   private final ProgramEnvir envir;
   private final Questionnaire questionnaire;
   private final String formId;
@@ -71,13 +72,13 @@ public class FillAssertionBuilder {
   }
 
 
-  public FillAssertionBuilder(String formId, DialobClientImplWithAssertion client, ProgramEnvir envir) {
+  public FillAssertionBuilder(String formId, DialobClientTestImpl client, ProgramEnvir envir) {
     this.formId = formId;
     this.questionnaire = null;
     this.client = client;
     this.envir = envir;
   }
-  public FillAssertionBuilder(Questionnaire questionnaire, DialobClientImplWithAssertion client, ProgramEnvir envir) {
+  public FillAssertionBuilder(Questionnaire questionnaire, DialobClientTestImpl client, ProgramEnvir envir) {
     this.questionnaire = questionnaire;
     this.formId = questionnaire.getMetadata().getFormId();
     this.client = client;
@@ -193,7 +194,7 @@ public class FillAssertionBuilder {
     }
     verify(applicationEventPublisher).opened(anyString());
     if (this.completed) {
-      verify(applicationEventPublisher).completed(anyString(), anyString());
+      verify(applicationEventPublisher).completed(anyString());
 
     }
     verify(applicationEventPublisher,times(expectedActionsEventCount)).actions(anyString(), any(Actions.class));
@@ -211,4 +212,5 @@ public class FillAssertionBuilder {
     }
     assertFalse(ai.hasNext());
   }
+  
 }

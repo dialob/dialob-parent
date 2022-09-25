@@ -41,7 +41,8 @@ import io.resys.thena.docdb.api.models.Repo;
 import io.resys.thena.docdb.spi.ClientCollections;
 import io.resys.thena.docdb.spi.ClientState;
 import io.resys.thena.docdb.spi.DocDBPrettyPrinter;
-import io.resys.thena.docdb.spi.pgsql.DocDBFactory;
+import io.resys.thena.docdb.spi.pgsql.PgErrors;
+import io.resys.thena.docdb.sql.DocDBFactorySql;
 
 public class PgTestTemplate {
   private PgSqlDialobStore store;
@@ -71,7 +72,7 @@ public class PgTestTemplate {
 
   private ClientState createState(String repoName) {
     final var ctx = ClientCollections.defaults(repoName);
-    return DocDBFactory.state(ctx, pgPool);
+    return DocDBFactorySql.state(ctx, pgPool, new PgErrors());
   }
   
   public void printRepo(Repo repo) {

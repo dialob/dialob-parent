@@ -109,10 +109,11 @@ public class DialobTypesMapperImpl implements DialobClient.TypesMapper {
           .build();
       
       return ImmutableFormDocument.builder()
-          .version(store.getId())
-          .id(store.getVersion())
-          .created(LocalDateTime.ofInstant(data.getMetadata().getCreated().toInstant(), ZoneId.systemDefault()))
-          .updated(LocalDateTime.ofInstant(data.getMetadata().getLastSaved().toInstant(), ZoneId.systemDefault()))
+          .version(store.getVersion())
+          .id(store.getId())
+          .name(data.getName() == null ? data.getId() : data.getName())
+          .created(data.getMetadata().getCreated() == null ?  LocalDateTime.now() : LocalDateTime.ofInstant(data.getMetadata().getCreated().toInstant(), ZoneId.systemDefault()))
+          .updated(data.getMetadata().getLastSaved() == null ?  LocalDateTime.now() : LocalDateTime.ofInstant(data.getMetadata().getLastSaved().toInstant(), ZoneId.systemDefault()))
           .data(data)
           .build();
     });

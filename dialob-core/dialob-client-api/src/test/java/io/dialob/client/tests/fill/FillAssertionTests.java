@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.client.tests;
+package io.dialob.client.tests.fill;
 
 import static io.dialob.api.proto.Action.Type.ANSWER;
 import static io.dialob.api.proto.Action.Type.COMPLETE;
@@ -25,7 +25,6 @@ import static io.dialob.api.proto.Action.Type.REMOVE_ERROR;
 import static io.dialob.api.proto.Action.Type.REMOVE_ITEMS;
 import static io.dialob.api.proto.Action.Type.RESET;
 import static io.dialob.api.proto.Action.Type.VALUE_SET;
-import static io.dialob.client.tests.client.DialobClientImplWithAssertion.fillForm;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,12 +33,14 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.assertj.core.api.AbstractAssert;
@@ -52,6 +53,7 @@ import com.google.common.collect.Sets;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 
+import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.form.ImmutableFormMetadata;
@@ -65,14 +67,57 @@ import io.dialob.api.proto.ImmutableValueSetEntry;
 import io.dialob.api.questionnaire.ImmutableContextValue;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.client.api.ImmutableFormDocument;
 import io.dialob.client.spi.executor.questionnaire.QuestionnaireSessionImpl;
-import io.dialob.client.tests.client.FillAssertionBuilder;
+import io.dialob.client.tests.client.DialobClientTestImpl;
 import io.dialob.executor.model.DialobSession;
 
 
 //DialobQuestionnaireSessionServiceTest
-public class DialobClientTests {
+public class FillAssertionTests {
 
+  public static DialobClientTestImpl get() {
+    return DialobClientTestImpl.get();
+  }
+
+  
+  public static FillAssertionBuilder fillForm(String formFile) {
+    final var client = get();
+    final var envir = client.envir()
+        .addCommand()
+          .id(formFile)
+          .form(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile)).build()
+        .build();
+    final var formId = envir.findAll().stream().findFirst().get().getDocument().getData().getId();
+    return new FillAssertionBuilder(formId, client, envir);
+  }
+
+  public static FillAssertionBuilder fillForm(String formFile, String questionnaireState) throws java.io.IOException {
+    final var client = get();
+    final var bytes = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile).readAllBytes(), StandardCharsets.UTF_8);
+    final var formDocument = ImmutableFormDocument.builder().data(client.getConfig().getMapper().readForm(bytes)).build();
+    
+    final var questionnaire = client.getConfig().getMapper().readQuestionnaire(Thread.currentThread().getContextClassLoader().getResourceAsStream(questionnaireState));
+    return fillForm(formDocument.getData(), questionnaire);
+  }
+
+  public static FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) throws java.io.IOException {
+    String docId = UUID.randomUUID().toString();
+    String formId = formDocument.getId();
+    questionnaire = ImmutableQuestionnaire.builder().from(questionnaire).id(docId)
+        .metadata(ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
+
+    final var client = get();
+    final var envir = client.envir()
+        .addCommand().id(formId).form(client.getConfig().getMapper().toJson(formDocument)).build()
+        .build();
+    return new FillAssertionBuilder(questionnaire, client, envir);
+  }
+
+
+  
+  
   @Test
   public void multichoiceQuestionTest() throws Exception {
     fillForm("test_cases/multichoice-question.json")
@@ -1552,6 +1597,7 @@ public class DialobClientTests {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   private <T> Set<T> asSet(T... items) {
     HashSet hashSet = new HashSet<T>();
     hashSet.addAll(asList(items));

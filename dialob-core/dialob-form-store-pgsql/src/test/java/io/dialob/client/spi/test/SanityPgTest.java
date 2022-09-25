@@ -38,7 +38,7 @@ import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
 @TestProfile(PgProfile.class)
-public class SimpleReadWritePgTest extends PgTestTemplate {
+public class SanityPgTest extends PgTestTemplate {
 
   @Test
   public void basicReadWriteDeleteTest() {
@@ -54,7 +54,7 @@ public class SimpleReadWritePgTest extends PgTestTemplate {
       .await().atMost(Duration.ofMinutes(1));
 
     // create state
-    var expected = RepositoryToStaticData.toString(SimpleReadWritePgTest.class, "create_state.txt");
+    var expected = RepositoryToStaticData.toString(SanityPgTest.class, "create_state.txt");
     var actual = super.toRepoExport(repo.getRepoName());
     Assertions.assertEquals(expected, actual);
     

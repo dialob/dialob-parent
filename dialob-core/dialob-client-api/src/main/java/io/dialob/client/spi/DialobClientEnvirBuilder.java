@@ -2,6 +2,7 @@ package io.dialob.client.spi;
 
 import java.io.InputStream;
 
+import io.dialob.api.form.Form;
 import io.dialob.client.api.DialobClient.EnvirBuilder;
 import io.dialob.client.api.DialobClient.EnvirCommandFormatBuilder;
 import io.dialob.client.api.DialobClient.ProgramEnvir;
@@ -27,6 +28,7 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       private String commandJson;
       private StoreEntity entity;
       private boolean cachless;
+      private String version = "";
       
       @Override
       public EnvirCommandFormatBuilder id(String externalId) {
@@ -75,6 +77,14 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
         return this;
       }
       @Override
+      public EnvirCommandFormatBuilder form(Form entity) {
+        this.type = DocumentType.FORM;
+        this.id = entity.getId();
+        this.version = entity.getRev();
+        this.commandJson = factory.getConfig().getMapper().toJson(entity);
+        return this;
+      }
+      @Override
       public EnvirBuilder build() {
         DialobAssert.notNull(id, () -> "id must be defined!");
         DialobAssert.isTrue(commandJson != null || entity != null, () -> "commandJson or entity must be defined!");
@@ -83,7 +93,7 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
         factory.add(ImmutableStoreEntity.builder()
             .id(id)
             .bodyType(type)
-            .version("")
+            .version(version)
             .hash(entity == null ? Sha2.blob(commandJson) : entity.getHash())
             .body(entity == null ? commandJson : entity.getBody())
             .build(), cachless);
