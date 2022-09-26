@@ -101,8 +101,8 @@ public class DialobComposerImpl implements DialobComposer {
     DialobAssert.notNull(copyToName, () -> "copyToName can't be null!");
     
     return client.store().query().get().onItem().transform(this::composerState)
-        .onItem().transform((ComposerState state) -> new CopyAsEntityVisitor(state, id, copyToName, client).visit())
-        .onItem().transformToUni(newEntity -> client.store().create(newEntity))
+        .onItem().transform((ComposerState state) -> new CopyAsEntityVisitor(state, id, client, copyToName).visit())
+        .onItem().transformToUni(newEntity -> client.store().batch(newEntity))
         .onItem().transform(this::documentState);
   }
 

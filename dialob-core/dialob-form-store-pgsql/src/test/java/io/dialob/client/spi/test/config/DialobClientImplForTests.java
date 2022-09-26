@@ -14,10 +14,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClientConfig;
+import io.dialob.client.api.DialobErrorHandler;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
 import io.dialob.client.spi.DialobClientImpl;
 import io.dialob.client.spi.DialobEhCache;
+import io.dialob.client.spi.DialobErrorHandlerImpl;
 import io.dialob.client.spi.DialobTypesMapperImpl;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
 import io.dialob.client.spi.function.AsyncFunctionInvoker;
@@ -83,6 +85,10 @@ public class DialobClientImplForTests extends DialobClientImpl {
       if(store == null) {
         store = Mockito.mock(DialobStore.class);
       }
+      DialobErrorHandler errorHandler = errorHandler();
+      if(errorHandler == null) {
+        errorHandler = new DialobErrorHandlerImpl(true);
+      }
       
       final var visitor = mock(EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor.class);
       final var asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
@@ -95,6 +101,7 @@ public class DialobClientImplForTests extends DialobClientImpl {
           .factory(new DialobSessionEvalContextFactory(functionRegistry, clock, dialobSessionUpdateHook()))
           .store(store)
           .cache(cache)
+          .errorHandler(errorHandler)
           .eventPublisher(eventPublisher)
           .mapper(new DialobTypesMapperImpl(objectMapper))
           .compiler(new DialobProgramFromFormCompiler(functionRegistry))

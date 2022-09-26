@@ -15,7 +15,8 @@
  */
 package io.dialob.client.spi.exceptions;
 
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DatabaseException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 
 public class DatabaseServiceDownException extends DatabaseException implements DialobClientException {
   private static final long serialVersionUID = 4697776682765279393L;

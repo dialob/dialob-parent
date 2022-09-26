@@ -3,14 +3,14 @@ package io.dialob.client.spi.composer;
 import java.util.Collections;
 import java.util.List;
 
-import io.dialob.client.api.DialobClientException;
 import io.dialob.client.api.DialobComposer.ComposerState;
 import io.dialob.client.api.DialobDocument;
 import io.dialob.client.api.DialobDocument.FormDocument;
 import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobDocument.FormRevisionDocument;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
 import io.dialob.client.api.DialobStore.StoreCommand;
-import io.dialob.client.spi.exceptions.DocumentNotFoundException;
 
 public class DeleteEntityVisitor {
 

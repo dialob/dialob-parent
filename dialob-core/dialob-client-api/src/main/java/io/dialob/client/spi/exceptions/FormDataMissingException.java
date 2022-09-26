@@ -17,7 +17,7 @@ package io.dialob.client.spi.exceptions;
 
 import javax.annotation.Nonnull;
 
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 
 public class FormDataMissingException extends RuntimeException implements DialobClientException {
   private static final long serialVersionUID = 688228784870254423L;

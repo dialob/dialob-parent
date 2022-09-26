@@ -13,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobClientConfig;
+import io.dialob.client.api.DialobErrorHandler;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
@@ -74,6 +75,7 @@ public class DialobClientImpl implements DialobClient {
     private @Nullable DialobSessionUpdateHook dialobSessionUpdateHook;
     private @Nullable DialobCache cache;
     private @Nullable Clock clock;
+    private @Nullable DialobErrorHandler errorHandler;
     
     
     public DialobClientImpl build() {
@@ -103,11 +105,17 @@ public class DialobClientImpl implements DialobClient {
         store = new DialobMemoryStore(new HashMap<>());
       }
       
+      DialobErrorHandler errorHandler = this.errorHandler;
+      if(errorHandler == null) {
+        errorHandler = new DialobErrorHandlerImpl(true);
+      }
+      
       final var config = ImmutableDialobClientConfig.builder()
           .asyncFunctionInvoker(asyncFunctionInvoker)
           .factory(new DialobSessionEvalContextFactory(functionRegistry, clock, dialobSessionUpdateHook))
           .store(store)
           .cache(cache)
+          .errorHandler(errorHandler)
           .eventPublisher(eventPublisher)
           .mapper(new DialobTypesMapperImpl(objectMapper))
           .compiler(new DialobProgramFromFormCompiler(functionRegistry))

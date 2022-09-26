@@ -15,11 +15,17 @@
  */
 package io.dialob.client.tests.steps;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
+
+import io.dialob.api.proto.Action;
 import io.dialob.client.tests.steps.support.AbstractWebSocketTests;
 
 
 public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
-/* Missing form cases
+
   @Test
   public void shouldGetQUESTIONNAIRE_NOT_FOUNDActionIfAskedQuestionnaireDoNotExists2() throws Exception {
     openSession("q-1")
@@ -45,5 +51,4 @@ public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
       })
       .execute();
   }
-  */
 }

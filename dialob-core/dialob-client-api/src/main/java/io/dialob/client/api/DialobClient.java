@@ -23,6 +23,7 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobDocument.FormDocument;
 import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobDocument.FormRevisionDocument;
+import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.program.DialobProgram;
 import io.smallrye.mutiny.Uni;
@@ -39,9 +40,9 @@ public interface DialobClient {
   RepoBuilder repo();
 
   interface QuestionnaireExecutorBuilder {
-    QuestionnaireExecutor create(String id, String rev, Consumer<QuestionnaireInit> initWith);
-    QuestionnaireExecutor create(String id, Consumer<QuestionnaireInit> initWith);
-    QuestionnaireExecutor restore(Questionnaire queestionnaire);
+    QuestionnaireExecutor create(String id, String rev, Consumer<QuestionnaireInit> initWith) throws DocumentNotFoundException ;
+    QuestionnaireExecutor create(String id, Consumer<QuestionnaireInit> initWith) throws DocumentNotFoundException ;
+    QuestionnaireExecutor restore(Questionnaire queestionnaire) throws DocumentNotFoundException ;
   }
   
   interface QuestionnaireInit {
@@ -107,8 +108,8 @@ public interface DialobClient {
   
   
   interface ProgramEnvir {
-    ProgramWrapper findByFormId(String formId);
-    ProgramWrapper findByFormIdAndRev(String formId, String formRev);
+    ProgramWrapper findByFormId(String formId)  throws DocumentNotFoundException; 
+    ProgramWrapper findByFormIdAndRev(String formId, String formRev)  throws DocumentNotFoundException;
     List<ProgramWrapper> findAll();
     
     Map<String, ProgramEnvirValue<?>> getValues();

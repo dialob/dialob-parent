@@ -17,10 +17,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.dialob.client.api.DialobCache;
 import io.dialob.client.api.DialobClientConfig;
+import io.dialob.client.api.DialobErrorHandler;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableDialobClientConfig;
 import io.dialob.client.spi.DialobClientImpl;
 import io.dialob.client.spi.DialobEhCache;
+import io.dialob.client.spi.DialobErrorHandlerImpl;
 import io.dialob.client.spi.DialobTypesMapperImpl;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
 import io.dialob.client.spi.function.AsyncFunctionInvoker;
@@ -99,12 +101,18 @@ public class DialobClientTestImpl extends DialobClientImpl {
         functionRegistry = createFunctionRegistry();
       } 
       
+      DialobErrorHandler errorHandler = errorHandler();
+      if(errorHandler == null) {
+        errorHandler = new DialobErrorHandlerImpl(true);
+      }
+      
       
       final var config = ImmutableDialobClientConfig.builder()
           .asyncFunctionInvoker(asyncFunctionInvoker)
           .factory(new DialobSessionEvalContextFactory(functionRegistry, clock, dialobSessionUpdateHook()))
           .store(store)
           .cache(cache)
+          .errorHandler(errorHandler)
           .eventPublisher(eventPublisher)
           .mapper(new DialobTypesMapperImpl(objectMapper))
           .compiler(new DialobProgramFromFormCompiler(functionRegistry))

@@ -17,4 +17,5 @@ public interface DialobClientConfig {
   QuestionnaireEventPublisher getEventPublisher();
   TypesMapper getMapper();
   DialobProgramFromFormCompiler getCompiler();
+  DialobErrorHandler getErrorHandler();
 }

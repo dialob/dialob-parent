@@ -13,7 +13,8 @@ import io.dialob.client.api.DialobClient.ProgramEnvirValue;
 import io.dialob.client.api.DialobClient.ProgramWrapper;
 import io.dialob.client.api.DialobClient.ReleaseWrapper;
 import io.dialob.client.api.DialobClient.RevisionWrapper;
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
 import io.dialob.spi.Constants;
 import lombok.RequiredArgsConstructor;
 
@@ -128,7 +129,7 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     }
   }
   
-  public static class ProgramNotFoundFromEnvir extends IllegalArgumentException implements DialobClientException {
+  public static class ProgramNotFoundFromEnvir extends DocumentNotFoundException implements DialobClientException {
     private static final long serialVersionUID = 6305063707279384796L;
     public ProgramNotFoundFromEnvir(String s) {
       super(s);
@@ -141,7 +142,7 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
       super(s);
     }
   }
-  public static class ProgramRevNotFound extends IllegalArgumentException implements DialobClientException {
+  public static class ProgramRevNotFound extends DocumentNotFoundException implements DialobClientException {
     private static final long serialVersionUID = 6305063707279384796L;
     public ProgramRevNotFound(String s) {
       super(s);

@@ -15,7 +15,8 @@
  */
 package io.dialob.client.spi.exceptions;
 
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DatabaseException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 
 public class DatabaseUnauthorizedException extends DatabaseException implements DialobClientException {
 

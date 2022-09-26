@@ -22,7 +22,7 @@ package io.dialob.client.spi.support;
 
 import java.util.function.Supplier;
 
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 
 
 public class DialobAssert {

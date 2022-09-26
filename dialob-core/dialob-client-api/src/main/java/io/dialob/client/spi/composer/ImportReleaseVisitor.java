@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.dialob.client.api.DialobClient;
-import io.dialob.client.api.DialobClientException;
 import io.dialob.client.api.DialobComposer.ComposerState;
 import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobDocument.FormReleaseValueDocument;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 import io.dialob.client.api.DialobStore.StoreCommand;
 import io.dialob.client.api.ImmutableCreateStoreEntity;
 import io.dialob.client.api.ImmutableEmptyCommand;

@@ -161,7 +161,7 @@ public class AbstractWebSocketTests {
     return steps().when(new WhenMessage("openSession(" + questionnaireId + ")") {
         @Override
         public void accept() throws Exception {
-          this.getExpectations().accept(ImmutableActions.builder().from(ctx.openSession()).build());
+          this.getExpectations().accept(ImmutableActions.builder().from(ctx.openSession(questionnaireId)).build());
         }
       });
   }

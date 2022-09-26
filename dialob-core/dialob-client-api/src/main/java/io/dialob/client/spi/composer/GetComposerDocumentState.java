@@ -4,8 +4,8 @@ import io.dialob.client.api.DialobComposer.ComposerDocumentState;
 import io.dialob.client.api.DialobComposer.ComposerState;
 import io.dialob.client.api.DialobDocument.FormRevisionDocument;
 import io.dialob.client.api.DialobDocument.FormRevisionEntryDocument;
+import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
 import io.dialob.client.api.ImmutableComposerDocumentState;
-import io.dialob.client.spi.exceptions.DocumentNotFoundException;
 import io.dialob.client.spi.exceptions.ErrorMsgBuilder;
 import io.dialob.spi.Constants;
 

@@ -15,7 +15,8 @@
  */
 package io.dialob.client.spi.exceptions;
 
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DatabaseException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 
 public class DocumentCorruptedException extends DatabaseException implements DialobClientException {
   private static final long serialVersionUID = -7596694023853046905L;

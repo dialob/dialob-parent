@@ -20,6 +20,7 @@ import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobClient;
+import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
 import io.dialob.client.spi.event.DistributedEvent.FormUpdatedEvent;
 import io.dialob.client.spi.event.EventPublisher;
 import io.dialob.client.spi.event.QuestionnaireEvent.QuestionnaireActionsEvent;
@@ -85,24 +86,33 @@ public class Context implements EventPublisher {
     return result;
   }
   
-  public Actions openSession() {
-    final var questionnaire = db_questionnaire.get(this.questionnaireId);
-    final var meta = ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).language("en").build();
-    final var restore = ImmutableQuestionnaire.builder().from(questionnaire).metadata(meta)
-        .id(UUID.randomUUID().toString())
-        .rev(UUID.randomUUID().toString())
-        .build();
-    
-    this.executor = client.executor(envir).restore(restore);
-    this.questionnaire = this.executor.toSession().getQuestionnaire();
-    final var actions = executor.execute();
+  public Actions openSession(String questionnaireId) {
     try {
-      final var text = DialobClientTestImpl.Builder.MAPPER.writeValueAsString(actions);
-      LOGGER.info("<-- " + text);
-    } catch(IOException e) {
-      throw new RuntimeException(e.getMessage(), e);
+      if(!db_questionnaire.containsKey(questionnaireId)) {
+        throw new DocumentNotFoundException("", questionnaireId);
+      }
+      final var questionnaire = db_questionnaire.get(this.questionnaireId);
+      final var meta = ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).language("en").build();
+      final var restore = ImmutableQuestionnaire.builder().from(questionnaire).metadata(meta)
+          .id(UUID.randomUUID().toString())
+          .rev(UUID.randomUUID().toString())
+          .build();
+      
+      this.executor = client.executor(envir).restore(restore);
+      this.questionnaire = this.executor.toSession().getQuestionnaire();
+      final var actions = executor.execute();
+      try {
+        final var text = DialobClientTestImpl.Builder.MAPPER.writeValueAsString(actions);
+        LOGGER.info("<-- " + text);
+      } catch(IOException e) {
+        throw new RuntimeException(e.getMessage(), e);
+      }
+      return actions;
+    } catch(Exception e) {
+      return client.getConfig().getErrorHandler().toActions(e);
     }
-    return actions;
+    
+
   }
   
   public boolean execute() throws Exception {

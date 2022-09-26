@@ -15,7 +15,7 @@
  */
 package io.dialob.client.spi.exceptions;
 
-import io.dialob.client.api.DialobClientException;
+import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 
 public class QuestionnaireException extends RuntimeException implements DialobClientException {
   private static final long serialVersionUID = -996997774734361503L;
