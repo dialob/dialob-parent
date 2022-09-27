@@ -27,7 +27,7 @@ public class ProgramBuilderImpl implements DialobClient.ProgramBuilder {
   public DialobProgram build() {
     DialobAssert.notNull(form, () -> "form can't be null!");
    
-    LOGGER.info("Compiling form document {} rev {}", form.getData().getId(), form.getData().getRev());
+    LOGGER.debug("Compiling form document {} rev {}", form.getData().getId(), form.getData().getRev());
     return compiler.compileForm(form.getData());
   }
 

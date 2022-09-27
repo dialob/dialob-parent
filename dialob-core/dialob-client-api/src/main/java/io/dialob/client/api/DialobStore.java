@@ -3,6 +3,7 @@ package io.dialob.client.api;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -52,7 +53,6 @@ public interface DialobStore {
     String getId();
     String getVersion();
     DocumentType getBodyType();
-    String getHash();
     String getBody();
   }
   
@@ -93,4 +93,13 @@ public interface DialobStore {
     String getValue();
     List<String> getArgs();
   }
+  
+  @FunctionalInterface
+  interface DialobCredsSupplier extends Supplier<DialobCreds> {}
+  
+  @Value.Immutable
+  interface DialobCreds {
+    String getUser();
+    String getEmail();
+  } 
 }

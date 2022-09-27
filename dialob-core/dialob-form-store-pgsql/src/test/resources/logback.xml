@@ -21,4 +21,5 @@
   <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
   <logger name="io.dialob" level="DEBUG"/>
+  <logger name="io.dialob.client.spi.program" level="OFF"/>
 </configuration>

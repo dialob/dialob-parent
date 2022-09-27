@@ -33,6 +33,12 @@
     <quarkus.version>2.1.3.Final</quarkus.version>
     <ehcache.version>3.8.1</ehcache.version>
     <spring.version>5.3.18</spring.version>
+    <spring-boot.version>2.7.0</spring-boot.version>
+    <micrometer.version>1.8.1</micrometer.version>
+    <eirslett.version>1.12.0</eirslett.version>
+
+    <node.version>v16.13.1</node.version>
+    <yarn.version>v1.22.5</yarn.version>
 
     <thirdparty.log.level>INFO</thirdparty.log.level>
     <antlr4.version>4.9.3</antlr4.version>
@@ -51,6 +57,7 @@
     <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
     <json-path.version>2.4.0</json-path.version>
     <jsoup.version>1.14.3</jsoup.version>
+    <eirslett.version>1.12.0</eirslett.version>
 
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
 
@@ -216,6 +223,43 @@
         <artifactId>spring-core</artifactId>
         <version>${spring.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-test</artifactId>
+        <version>${spring-boot.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+        <scope>test</scope>
+      </dependency>
 
       <dependency>
         <groupId>io.dialob</groupId>
@@ -246,6 +290,12 @@
         <version>${thena.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-core</artifactId>
+        <version>${micrometer.version}</version>
       </dependency>
 
       <dependency>
@@ -466,6 +516,16 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${eirslett.version}</version>
+          <configuration>
+            <installDirectory>target</installDirectory>
+            <nodeVersion>${node.version}</nodeVersion>
+            <yarnVersion>${yarn.version}</yarnVersion>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>

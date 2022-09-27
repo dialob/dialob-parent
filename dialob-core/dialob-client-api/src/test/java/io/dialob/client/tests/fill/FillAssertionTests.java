@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -87,6 +88,7 @@ public class FillAssertionTests {
     final var envir = client.envir()
         .addCommand()
           .id(formFile)
+          .cachless()
           .form(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile)).build()
         .build();
     final var formId = envir.findAll().stream().findFirst().get().getDocument().getData().getId();
@@ -96,7 +98,15 @@ public class FillAssertionTests {
   public static FillAssertionBuilder fillForm(String formFile, String questionnaireState) throws java.io.IOException {
     final var client = get();
     final var bytes = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile).readAllBytes(), StandardCharsets.UTF_8);
-    final var formDocument = ImmutableFormDocument.builder().data(client.getConfig().getMapper().readForm(bytes)).build();
+    final var form = client.getConfig().getMapper().readForm(bytes);
+    final var formDocument = ImmutableFormDocument.builder()
+        .name(formFile)
+        .id(formFile)
+        
+        .data(form)
+        .created(LocalDateTime.now())
+        .updated(LocalDateTime.now())
+        .build();
     
     final var questionnaire = client.getConfig().getMapper().readQuestionnaire(Thread.currentThread().getContextClassLoader().getResourceAsStream(questionnaireState));
     return fillForm(formDocument.getData(), questionnaire);
@@ -110,7 +120,7 @@ public class FillAssertionTests {
 
     final var client = get();
     final var envir = client.envir()
-        .addCommand().id(formId).form(client.getConfig().getMapper().toJson(formDocument)).build()
+        .addCommand().cachless().id(formId).form(client.getConfig().getMapper().toJson(formDocument)).build()
         .build();
     return new FillAssertionBuilder(questionnaire, client, envir);
   }

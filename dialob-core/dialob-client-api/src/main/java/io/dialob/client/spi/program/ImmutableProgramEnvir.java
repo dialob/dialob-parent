@@ -15,6 +15,7 @@ import io.dialob.client.api.DialobClient.ReleaseWrapper;
 import io.dialob.client.api.DialobClient.RevisionWrapper;
 import io.dialob.client.api.DialobErrorHandler.DialobClientException;
 import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
+import io.dialob.client.spi.support.DialobAssert;
 import io.dialob.spi.Constants;
 import lombok.RequiredArgsConstructor;
 
@@ -96,33 +97,28 @@ public class ImmutableProgramEnvir implements ProgramEnvir {
     private final Map<String, List<ProgramWrapper>> byFormId = new HashMap<>();
     private final Map<String, RevisionWrapper> revsById = new HashMap<>();
     private final Map<String, ReleaseWrapper> relsById = new HashMap<>();
-    
-    public Builder add(RevisionWrapper wrapper) {
-      revsById.put(wrapper.getDocument().getId(), wrapper);
-      return this;
-    }
+
     public Builder add(ProgramEnvirValue<?> wrapper) {
       if(wrapper instanceof RevisionWrapper) {
-        this.add((RevisionWrapper) wrapper);
+        DialobAssert.isTrue(!revsById.containsKey(wrapper.getDocument().getId()), () -> "Can't redfined revision document with id: '" + wrapper.getDocument().getId() + "'");
+        revsById.put(wrapper.getDocument().getId(), (RevisionWrapper) wrapper);
       } else if(wrapper instanceof ProgramWrapper) {
-        this.add((ProgramWrapper) wrapper);
+        
+        final var program = (ProgramWrapper) wrapper;
+        final var form = program.getDocument();
+        
+        final var revs = Optional.ofNullable(byFormId.get(form.getData().getId())).orElseGet(() -> {
+          final var values = new ArrayList<ProgramWrapper>();
+          byFormId.put(form.getData().getId(), values);
+          return values;
+        });
+        revs.add(program);
       } else {
         relsById.put(wrapper.getDocument().getId(), (ReleaseWrapper) wrapper); 
       }
       
       return this;
     }   
-    public Builder add(ProgramWrapper wrapper) {
-      final var form = wrapper.getDocument();
-      
-      final var revs = Optional.ofNullable(byFormId.get(form.getData().getId())).orElseGet(() -> {
-        final var values = new ArrayList<ProgramWrapper>();
-        byFormId.put(form.getData().getId(), values);
-        return values;
-      });
-      revs.add(wrapper);
-      return this;
-    }
     
     public ProgramEnvir build() {
       return new ImmutableProgramEnvir(Collections.unmodifiableMap(byFormId), Collections.unmodifiableMap(revsById));

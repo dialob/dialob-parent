@@ -10,11 +10,13 @@ import io.dialob.client.api.DialobDocument.FormDocument;
 import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.DialobStore.StoreState;
+import io.dialob.client.api.ImmutableComposerReleaseState;
 import io.dialob.client.api.ImmutableComposerState;
 import io.dialob.client.api.ImmutableUpdateStoreEntity;
 import io.dialob.client.spi.composer.ComposerEntityMapper;
 import io.dialob.client.spi.composer.CopyAsEntityVisitor;
 import io.dialob.client.spi.composer.CreateFormDocumentVisitor;
+import io.dialob.client.spi.composer.CreateReleaseVisitor;
 import io.dialob.client.spi.composer.DeleteEntityVisitor;
 import io.dialob.client.spi.composer.GetComposerDocumentState;
 import io.dialob.client.spi.composer.ImportReleaseVisitor;
@@ -45,6 +47,20 @@ public class DialobComposerImpl implements DialobComposer {
     return client.store().query().get().onItem().transform(this::composerState)
         .onItem().transformToUni(state -> client.store().batch(new CreateFormDocumentVisitor(state, asset, client).visit()))
         .onItem().transform(savedEntity -> this.documentState(savedEntity));
+  }
+
+  @Override
+  public Uni<ComposerReleaseState> create(CreateComposerRelease asset) {
+    return client.store().query().get().onItem().transform(this::composerState)
+        .onItem().transform(state -> new CreateReleaseVisitor(client.getConfig(), state).visit(asset))
+        .onItem().transformToUni(release -> client.store().create(release.getStoreEntity())
+          .onItem().transform(saved ->
+            ImmutableComposerReleaseState.builder()
+              .from(release.getReleaseState())
+              .id(saved.getId())
+              .build()
+          )
+        );
   }
 
   @Override
@@ -109,7 +125,6 @@ public class DialobComposerImpl implements DialobComposer {
   @Override
   public Uni<ComposerState> importRelease(FormReleaseDocument asset) {
     DialobAssert.notNull(asset, () -> "asset can't be null!");
-    
     return client.store().query().get().onItem().transform(this::composerState)
         .onItem().transform(state -> new ImportReleaseVisitor(state, asset, client).visit())
         .onItem().transformToUni(newEntity -> client.store().batch(newEntity))
@@ -145,7 +160,9 @@ public class DialobComposerImpl implements DialobComposer {
     // map envir
     final var builder = ImmutableComposerState.builder();
     envir.getValues().values().forEach(v -> ComposerEntityMapper.toComposer(builder, v));
-    return (ComposerState) builder.build(); 
+    final ComposerState result = builder.build();
+    
+    return result;
   }
 
 }

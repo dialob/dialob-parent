@@ -49,6 +49,26 @@
       </dependency>
       <dependency>
         <groupId>io.dialob</groupId>
+        <artifactId>dialob-form-store-pgsql</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dialob</groupId>
+        <artifactId>dialob-composer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dialob</groupId>
+        <artifactId>dialob-composer-ui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dialob</groupId>
+        <artifactId>dialob-composer-spring</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dialob</groupId>
         <artifactId>dialob-rule-parser</artifactId>
         <classifier>tests</classifier>
         <type>test-jar</type>

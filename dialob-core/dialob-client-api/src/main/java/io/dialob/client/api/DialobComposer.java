@@ -24,6 +24,7 @@ public interface DialobComposer {
   Uni<ComposerDocumentState> get(@Nonnull String idOrName);
   Uni<ComposerDocumentState> get(@Nonnull String id, String rev);
   Uni<ComposerState> importRelease(FormReleaseDocument asset);
+  Uni<ComposerReleaseState> create(@Nonnull CreateComposerRelease asset);
   Uni<ComposerDocumentState> create(@Nonnull FormDocument asset);
   Uni<ComposerDocumentState> update(@Nonnull FormDocument asset);
   Uni<ComposerDocumentState> update(@Nonnull UpdateFormRevisionEntry asset);
@@ -35,7 +36,21 @@ public interface DialobComposer {
   Uni<FormPutResponse> validate(@Nonnull FormDocument asset);
   Uni<FormDocument> apply(@Nonnull FormCommands asset);
 
-
+  
+  @Value.Immutable @JsonSerialize(as = ImmutableCreateComposerRelease.class) @JsonDeserialize(as = ImmutableCreateComposerRelease.class)
+  interface CreateComposerRelease extends Serializable {
+    String getName();
+    String getDescription();
+  }
+  @Value.Immutable @JsonSerialize(as = ImmutableComposerDocumentState.class) @JsonDeserialize(as = ImmutableComposerDocumentState.class)
+  interface ComposerReleaseState extends Serializable {
+    String getId();
+    String getName();
+    String getDescription();
+    String getHash();
+    String getContent(); //BASE 64 GZIP JSON
+  }
+  
   @Value.Immutable @JsonSerialize(as = ImmutableComposerDocumentState.class) @JsonDeserialize(as = ImmutableComposerDocumentState.class)
   interface UpdateFormRevisionEntry extends Serializable {
     String getId();

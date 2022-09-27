@@ -94,8 +94,8 @@ public class DialobTypesMapperImpl implements DialobClient.TypesMapper {
     return doInMapper(om -> {
       final var from = om.readValue(store.getBody(), FormRevisionDocument.class);
       return ImmutableFormRevisionDocument.builder().from(from)
-          .version(store.getId())
-          .id(store.getVersion())
+          .version(store.getVersion())
+          .id(store.getId())
           .build();
     });
   }

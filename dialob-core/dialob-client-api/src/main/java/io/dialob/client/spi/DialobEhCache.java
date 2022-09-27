@@ -1,6 +1,7 @@
 package io.dialob.client.spi;
 
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.ehcache.Cache;
@@ -14,8 +15,10 @@ import io.dialob.client.api.DialobDocument;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableCacheEntry;
 import io.dialob.program.DialobProgram;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 public class DialobEhCache implements DialobCache {
   
   private static final String CACHE_PREFIX = DialobCache.class.getCanonicalName();
@@ -32,34 +35,42 @@ public class DialobEhCache implements DialobCache {
   }
   @Override
   public Optional<DialobProgram> getProgram(StoreEntity src) {
+    final var id = toCacheId(src);
     final var cache = getCache();
-    return Optional.ofNullable(cache.get(src.getHash()))
-        .or(() -> Optional.ofNullable(cache.get(src.getId())))
-        .map(e -> e.getProgram().orElse(null));
+    final var result = Optional.ofNullable(cache.get(id)).map(e -> e.getProgram().orElse(null));
+    LOGGER.debug("Dialob, caching, program resolved: " + result.isPresent() + ", id: " + id);
+    return result;
   }
   @Override
   public Optional<DialobDocument> getAst(StoreEntity src) {
+    final var id = toCacheId(src);
+    LOGGER.debug("Dialob, caching, document resolved: " + id);
     final var cache = getCache();
-    return Optional.ofNullable(cache.get(src.getHash()))
-        .or(() -> Optional.ofNullable(cache.get(src.getId() + "/" + src.getVersion())))
-        .map(e -> e.getAst());
+    final var result = Optional.ofNullable(cache.get(id)).map(e -> e.getAst());
+    return result;
   }
   @Override
   public DialobProgram setProgram(DialobProgram program, StoreEntity src) {
+    final var id = toCacheId(src);
+    LOGGER.debug("Dialob, caching a program, id: " + id);
     final var cache = getCache();
-    final var previous = cache.get(src.getHash());
+    
+    final var previous = cache.get(id);
     final var entry = ImmutableCacheEntry.builder().from(previous).program(program).build();
     cache.put(entry.getId(), entry);
-    cache.put(src.getHash(), entry);
     return program;
   }
   @Override
   public DialobDocument setAst(DialobDocument ast, StoreEntity src) {
+    final var id = toCacheId(src);
+    LOGGER.debug("Dialob, caching a document, id: " + id);
     final var entry = ImmutableCacheEntry.builder().id(src.getId()).rev(ast.getVersion()).source(src).ast(ast).build();
     final var cache = getCache();
-    cache.put(src.getId() + "/" + src.getVersion(), entry);
-    cache.put(src.getHash(), entry);
+    cache.put(id, entry);
     return ast;
+  }
+  private String toCacheId(StoreEntity src) {
+    return src.getId() + "/" + src.getVersion();
   }
   
   @Override
@@ -106,7 +117,21 @@ public class DialobEhCache implements DialobCache {
     if(entity == null) {
       return;
     }
-    cache.remove(entity.getId());
-    cache.remove(entity.getSource().getHash());
+    final var flush = new ArrayList<String>();
+    flush.add(id);
+    
+    cache.forEach(e -> {
+      if(e.getKey().startsWith(id + "/")) {
+        flush.add(e.getKey());
+        return;
+      }
+      final var ast = e.getValue().getAst();
+      if(ast.getId().equals(id) || ast.getName().equals(id)) {
+        flush.add(e.getKey());
+      }
+    });
+    
+    flush.forEach(flushId -> cache.remove(flushId));
+    
   }
 }

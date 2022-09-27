@@ -53,7 +53,7 @@ public class StoreEntityLocation implements Serializable {
     return withRegex("**/formrev/**/*.json");
   }
   public String getMigrationRegex() {
-    return withRegex("**/dialob_migration/**/*.json");
+    return withRegex("**/dialob_migration/**/*.txt");
   }
   public String getValue() {
     return value;

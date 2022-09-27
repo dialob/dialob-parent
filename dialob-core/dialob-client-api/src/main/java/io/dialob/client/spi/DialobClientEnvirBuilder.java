@@ -10,7 +10,6 @@ import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.support.DialobAssert;
-import io.dialob.client.spi.support.Sha2;
 import lombok.RequiredArgsConstructor;
 
 
@@ -28,11 +27,16 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       private String commandJson;
       private StoreEntity entity;
       private boolean cachless;
-      private String version = "";
+      private String version;
       
       @Override
       public EnvirCommandFormatBuilder id(String externalId) {
         this.id = externalId;
+        return this;
+      }
+      @Override
+      public EnvirCommandFormatBuilder version(String version) {
+        this.version = version;
         return this;
       }
       @Override
@@ -55,12 +59,14 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       }
       @Override
       public EnvirCommandFormatBuilder rev(StoreEntity entity) {
+        DialobAssert.isTrue(entity.getBodyType() == DocumentType.FORM_REV, () -> "entity type must be FORM_REV!");
         this.type = DocumentType.FORM_REV;
         this.entity = entity;
         return this;
       }
       @Override
       public EnvirCommandFormatBuilder form(StoreEntity entity) {
+        DialobAssert.isTrue(entity.getBodyType() == DocumentType.FORM, () -> "entity type must be FORM!");
         this.type = DocumentType.FORM;
         this.entity = entity;
         return this;
@@ -72,7 +78,9 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       }
       @Override
       public EnvirCommandFormatBuilder release(StoreEntity entity) {
+        DialobAssert.isTrue(entity.getBodyType() == DocumentType.RELEASE, () -> "entity type must be RELEASE!");
         this.type = DocumentType.RELEASE;
+        
         this.entity = entity;
         return this;
       }
@@ -94,7 +102,6 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
             .id(id)
             .bodyType(type)
             .version(version)
-            .hash(entity == null ? Sha2.blob(commandJson) : entity.getHash())
             .body(entity == null ? commandJson : entity.getBody())
             .build(), cachless);
         return enviBuilder;

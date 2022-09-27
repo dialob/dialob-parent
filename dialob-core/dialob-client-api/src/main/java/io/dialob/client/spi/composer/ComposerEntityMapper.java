@@ -12,9 +12,9 @@ public class ComposerEntityMapper {
 
   
   public static EnvirBuilder toEnvir(EnvirBuilder envirBuilder, StoreState source) {
-    source.getRevs().values().forEach(v -> envirBuilder.addCommand().id(v.getId()).rev(v).build());
-    source.getForms().values().forEach(v -> envirBuilder.addCommand().id(v.getId()).form(v).build());
-    source.getTags().values().forEach(v -> envirBuilder.addCommand().id(v.getId()).release(v).build());
+    source.getRevs().values().forEach(v -> envirBuilder.addCommand().id(v.getId()).version(v.getVersion()).rev(v).build());
+    source.getForms().values().forEach(v -> envirBuilder.addCommand().id(v.getId()).version(v.getVersion()).form(v).build());
+    source.getTags().values().forEach(v -> envirBuilder.addCommand().id(v.getId()).version(v.getVersion()).release(v).build());
     
     return envirBuilder;
   }

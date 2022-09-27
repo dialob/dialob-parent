@@ -1,24 +1,5 @@
 package io.dialob.client.spi;
 
-/*-
- * #%L
- * hdes-client-api
- * %%
- * Copyright (C) 2020 - 2021 Copyright 2020 ReSys OÜ
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -26,11 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -38,18 +16,18 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dialob.client.api.DialobDocument.DocumentType;
-import io.dialob.client.api.DialobDocument.FormReleaseDocument;
-import io.dialob.client.api.DialobDocument.FormReleaseValueDocument;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.api.ImmutableStoreState;
+import io.dialob.client.spi.composer.ReleaseDumpToStoreEntityVisitor;
 import io.dialob.client.spi.store.StoreEntityLocation;
 import io.dialob.client.spi.support.DialobAssert;
-import io.dialob.client.spi.support.Sha2;
 import io.smallrye.mutiny.Uni;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DialobMemoryStore implements DialobStore {
-  private static final Logger LOGGER = LoggerFactory.getLogger(DialobMemoryStore.class);
+
   private final Map<String, StoreEntity> entities;
   private final StoreState state;
   
@@ -101,13 +79,13 @@ public class DialobMemoryStore implements DialobStore {
   
   public static class Builder {
     private ObjectMapper objectMapper;
+    private String path;
     private final ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    private final StoreEntityLocation location = new StoreEntityLocation("classpath*:assets/");
-  
+    private StoreEntityLocation location;
     private List<Resource> list(String location) {
       try {
 
-        LOGGER.debug("Loading assets from: " + location + "!");
+        LOGGER.info("Loading assets from: " + location + "!");
         List<Resource> files = new ArrayList<>();
         for (Resource resource : resolver.getResources(location)) {
           files.add(resource);
@@ -123,7 +101,6 @@ public class DialobMemoryStore implements DialobStore {
       return ImmutableStoreEntity.builder()
           .id(resource.getFilename())
           .version("static_location")
-          .hash(Sha2.blob(content))
           .body(content);
     }
     
@@ -138,47 +115,33 @@ public class DialobMemoryStore implements DialobStore {
       this.objectMapper = objectMapper;
       return this;
     }
-    
-    private FormReleaseDocument readRelease(String json) {
-      try {
-        return objectMapper.readValue(json, FormReleaseDocument.class);
-      } catch (Exception e) {
-        throw new RuntimeException("Failed to load asset from: " + location + "!" + e.getMessage(), e);
-      }
-    }
-    
+    public Builder path(String path) {
+      this.path = path;
+      return this;
+    } 
+
     public DialobMemoryStore build() {
       DialobAssert.notNull(objectMapper, () -> "objectMapper must be defined!");
+      this.location = new StoreEntityLocation(path == null ? "classpath*:assets/" : path);
+      LOGGER.info("Dialob, starting in memory read-only store from: '" + path + "'");
+      
       final var migLog = new StringBuilder();
       final var entities = new HashMap<String, StoreEntity>();
+      final var migration = list(location.getMigrationRegex());
+      DialobAssert.isTrue(migration.size() < 2, () -> "Only one migration dump can be defined in: '"+ location.getMigrationRegex() + "'!");
       
-      
-      list(location.getMigrationRegex()).stream().forEach(r -> {
-        final Map<DocumentType, Integer> order = Map.of(
-            DocumentType.FORM_REV, 1,
-            DocumentType.FORM, 2);
-        migLog
-          .append("Loading assets from release: " + r.getFilename()).append(System.lineSeparator());
+      migration.stream().forEach(r -> {
         
-        final var assets = new ArrayList<FormReleaseValueDocument>(readRelease(readContents(r)).getValues());
+        migLog.append("Loading assets from migration: " + r.getFilename()).append(System.lineSeparator());
         
-        assets.sort((FormReleaseValueDocument o1, FormReleaseValueDocument o2) -> 
-          Integer.compare(order.get(o1.getBodyType()), order.get(o2.getBodyType()))
-        );
-        for(final var asset : assets) {
+        new ReleaseDumpToStoreEntityVisitor(r, objectMapper).visit(entity -> {
           migLog.append("  - ")
-            .append(asset.getHash()).append("/").append(asset.getBodyType()).append("/").append(asset.getHash())
-            .append(System.lineSeparator());
+          .append(entity.getId()).append("/").append(entity.getBodyType())
+          .append(System.lineSeparator());
+          entities.put(entity.getId(), entity);  
+        });
         
-          final var id = UUID.randomUUID().toString();
-          final var entity = ImmutableStoreEntity.builder()
-              .id(id)
-              .hash(asset.getHash())
-              .body(asset.getCommands())
-              .bodyType(asset.getBodyType())
-              .build();
-          entities.put(id, entity);
-        }
+        
       });
       
       migLog.append(System.lineSeparator());
@@ -187,7 +150,7 @@ public class DialobMemoryStore implements DialobStore {
       list(location.getFormTagRegex()).stream().forEach(r -> {
         final var entity = readStoreEntity(r).bodyType(DocumentType.FORM_REV).build();    
         migLog.append("  - ")
-          .append(entity.getId()).append("/").append(entity.getBodyType()).append("/").append(entity.getHash())
+          .append(entity.getId()).append("/").append(entity.getBodyType()).append("/")
           .append(System.lineSeparator());
         entities.put(entity.getId(), entity);
       });
@@ -196,11 +159,11 @@ public class DialobMemoryStore implements DialobStore {
       list(location.getFormRegex()).stream().forEach(r -> {
         final var entity = readStoreEntity(r).bodyType(DocumentType.FORM).build();    
         migLog.append("  - ")
-          .append(entity.getId()).append("/").append(entity.getBodyType()).append("/").append(entity.getHash())
+          .append(entity.getId()).append("/").append(entity.getBodyType()).append("/")
           .append(System.lineSeparator());
         entities.put(entity.getId(), entity);
       });
-      LOGGER.debug(migLog.toString());
+      LOGGER.info(migLog.toString());
       return new DialobMemoryStore(entities);
     }
   }

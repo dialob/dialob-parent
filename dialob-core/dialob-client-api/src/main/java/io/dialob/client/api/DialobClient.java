@@ -84,6 +84,7 @@ public interface DialobClient {
   
   interface EnvirCommandFormatBuilder {
     EnvirCommandFormatBuilder id(String externalId);
+    EnvirCommandFormatBuilder version(String version);
     EnvirCommandFormatBuilder cachless();
 
     EnvirCommandFormatBuilder rev(String json);
