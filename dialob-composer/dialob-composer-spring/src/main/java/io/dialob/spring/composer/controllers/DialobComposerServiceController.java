@@ -21,7 +21,7 @@ package io.dialob.spring.composer.controllers;
  */
 
 import java.time.Duration;
-import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
@@ -32,7 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dialob.client.api.DialobComposer;
-import io.dialob.client.api.DialobDocument.FormRevisionDocument;
+import io.dialob.client.api.DialobComposer.ComposerState;
+import io.dialob.client.api.ImmutableComposerState;
 import io.dialob.spring.composer.config.UiConfigBean;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,19 +53,31 @@ public class DialobComposerServiceController {
     this.objectMapper = objectMapper;
     
     final var servicePath = ctx.getEnvironment().getProperty(UiConfigBean.REST_SPRING_CTX_PATH);
+    final var uiPath = ctx.getEnvironment().getProperty(UiConfigBean.UI_SPRING_CTX_PATH);    
+    final var uiEnabled = ctx.getEnvironment().getProperty(UiConfigBean.UI_ENABLED);
     
-    LOGGER.info(new StringBuilder()
-        .append("Dialob, Composer Service: UP").append(System.lineSeparator())
-        .append("service paths:").append(System.lineSeparator())
-        .append("  - ").append(servicePath).append("/models").append(": ").append("return all form revisions").append(System.lineSeparator())
-        .toString());
+    final var log = new StringBuilder()
+    .append("Dialob, Composer Service: UP").append(System.lineSeparator())
+    .append("service paths:").append(System.lineSeparator())
+    .append("  - ").append(uiPath).append(": ").append("dialob composer user interface, enabled: ").append(uiEnabled).append(System.lineSeparator())
+    .append("  - ").append(servicePath).append("/models").append(": ").append("return all form revisions").append(System.lineSeparator())
+    ;
+    
+    LOGGER.info(log.toString());
   }
 
   @GetMapping(path = "/models", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<FormRevisionDocument> models() {
-    return composer.get().onItem().transform(e -> e.getRevs().values()).await().atMost(timeout);
+  public ComposerState models() {
+    final var revs = composer.get().onItem().transform(e -> e.getRevs().values()).await().atMost(timeout);
+
+//    final var revs = composer.get().await().atMost(timeout);
+    
+    return ImmutableComposerState.builder()
+        .revs(revs.stream().collect(Collectors.toMap(e -> e.getId(), e -> e)))
+        .build();
   }
 
+  
   /*
 
   @GetMapping(path = "/" + HdesWebConfig.EXPORTS, produces = MediaType.APPLICATION_JSON_VALUE)

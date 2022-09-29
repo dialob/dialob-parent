@@ -1,5 +1,9 @@
 package io.dialob.spring.app;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 /*-
@@ -34,6 +38,7 @@ public class Application {
   public static void main(String[] args) throws Exception {
     try {
       SpringApplication.run(new Class<?>[] { Application.class }, args);
+      browse("http://localhost:8081/ide");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -49,5 +54,33 @@ public class Application {
 
     CorsConfigurationSource source = (req) -> config;
     return new CorsFilter(source);
+  }
+
+  public static void browse(String url) {
+    if (Desktop.isDesktopSupported()) {
+      Desktop desktop = Desktop.getDesktop();
+      try {
+        desktop.browse(new URI(url));
+        return;
+      } catch (IOException | URISyntaxException e) {
+        e.printStackTrace();
+      }
+      return;
+    }
+
+    Runtime runtime = Runtime.getRuntime();
+    try {
+      runtime.exec("xdg-open " + url);
+      return;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try {
+      runtime.exec("rundll32 url.dll,FileProtocolHandler " + url);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
   }
 }

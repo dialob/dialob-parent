@@ -20,7 +20,7 @@
 <configuration>
   <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-  
+  <logger name="io.dialob.spi.VisitableForm" level="OFF"/>
   <logger name="io.dialob.spring.composer" level="INFO"/>
   <logger name="io.dialob.spring.app" level="INFO"/>
   <logger name="io.dialob.client" level="INFO"/>

@@ -22,12 +22,12 @@ management:
 dialob.enabled: true
 
 #
-dialob.composer.ui.enabled: false
+dialob.composer.ui.enabled: true
 dialob.composer.ui.redirect: false
 dialob.composer.ui.https: false 
 dialob.composer.ui.oidc-path:  ''
 dialob.composer.ui.status-path: ''
-dialob.composer.ui.service-path: ''
+dialob.composer.ui.service-path: /ide
 
 dialob.composer.service.enabled: true
 dialob.composer.service.service-path: /assets

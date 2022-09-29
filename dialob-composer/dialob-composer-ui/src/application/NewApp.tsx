@@ -4,7 +4,7 @@ import { IntlProvider } from 'react-intl';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import Burger, { siteTheme } from '@the-wrench-io/react-burger';
-import Client, { messages, Main, Secondary, Toolbar, Composer } from '@the-wrench-io/hdes-ide';
+import Client, { messages, Main, Secondary, Toolbar, Composer } from '../core';
 
 
 declare global {
@@ -55,7 +55,7 @@ const CreateApps: React.FC<{}> = () => {
   // eslint-disable-next-line 
   const backend = React.useMemo(() => new Client.ServiceImpl(store), [store]);
   const wrenchComposer: Burger.App<Composer.ContextType> = {
-    id: "wrench-composer",
+    id: "dialob-composer",
     components: { primary: Main, secondary: Secondary, toolbar: Toolbar },
     state: [
       (children: React.ReactNode, restorePoint?: Burger.AppState<Composer.ContextType>) => (<>{children}</>),

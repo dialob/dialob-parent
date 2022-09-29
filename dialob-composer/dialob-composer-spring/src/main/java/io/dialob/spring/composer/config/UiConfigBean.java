@@ -34,7 +34,9 @@ import lombok.Data;
 public class UiConfigBean {
   public static final String REST_SPRING_CTX_PATH = "dialob.composer.service.service-path";
   public static final String REST_SPRING_CTX_PATH_EXP = "${" + REST_SPRING_CTX_PATH + ":/assets}";
-  public static final String UI_SPRING_CTX_PATH_EXP = "${dialob.composer.ui.service-path:/ide}";
+  public static final String UI_SPRING_CTX_PATH = "dialob.composer.ui.service-path";
+  public static final String UI_SPRING_CTX_PATH_EXP = "${" + UI_SPRING_CTX_PATH + ":/ide}";
+  public static final String UI_ENABLED = "dialob.composer.ui.enabled";
   
   // is the whole component enabled
   @Value("${enabled:true}")
