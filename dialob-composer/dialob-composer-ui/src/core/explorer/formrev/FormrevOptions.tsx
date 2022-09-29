@@ -118,29 +118,25 @@ const FormrevOptions: React.FC<{ formrev: Client.FormRev }> = ({ formrev }) => {
         color='article'
         icon={EditIcon}
         onClick={() => nav.handleInTab({ article: formrev })}
-        labelText={<FormattedMessage id="formrevs.edit.title" />}>
-      </Burger.TreeItemOption>
+        labelText={<FormattedMessage id="formrevs.edit.title" />}/>
 
       <Burger.TreeItemOption nodeId={formrev.id + 'simulate-nested'}
         color='article'
-        icon={ScienceOutlinedIcon}
+        icon={ScienceOutlinedIcon }
         onClick={() => {}}
-        labelText={<FormattedMessage id="formrevs.simulate.title" />}>
-      </Burger.TreeItemOption>
+        labelText={<FormattedMessage id="formrevs.simulate.title" />}/>
 
       <Burger.TreeItemOption nodeId={formrev.id + 'delete-nested'}
         color='article'
         icon={DeleteOutlineOutlinedIcon}
         onClick={() => setDialogOpen('FormrevDelete')}
-        labelText={<FormattedMessage id="formrevs.delete.title" />}>
-      </Burger.TreeItemOption>
+        labelText={<FormattedMessage id="formrevs.delete.title" />}/>
 
       <Burger.TreeItemOption nodeId={formrev.id + 'copyas-nested'}
         color='article'
         icon={EditIcon}
         onClick={() => setDialogOpen('FlowCopy')}
-        labelText={<FormattedMessage id="formrevs.copyas.title" />}>
-      </Burger.TreeItemOption>
+        labelText={<FormattedMessage id="formrevs.copyas.title" />}/>
 
       {dialogOpen === 'FlowCopy' ? 
       <Burger.Dialog open={true}
