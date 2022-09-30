@@ -89,13 +89,21 @@ export interface DeleteBuilder {
 }
 
 export interface Service {
+  config: StoreConfig;
   delete(): DeleteBuilder;
   create(): CreateBuilder;
   getSite(): Promise<Site>
   releaseDump(id: ReleaseId): Promise<ReleaseDump>
   copy(id: string, name: string): Promise<Site>
 }
+export interface StoreConfig {
+  url: string;
+  oidc?: string;
+  status?: string;
+  csrf?: { key: string, value: string }
+}
 export interface Store {
+  config: StoreConfig;
   fetch<T>(path: string, init?: RequestInit): Promise<T>;
 }
 

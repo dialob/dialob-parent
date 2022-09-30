@@ -104,12 +104,12 @@ public class DialobProgramEnvirFactory {
       envir.add(wrapper);
     }    
 
-
+    /*
     LOGGER.info(new StringBuilder()
         .append("Envir status: " + treelog.length()).append(System.lineSeparator())
         .append(treelog.toString())
         .toString());
-
+*/
     return envir.build();
   }
   

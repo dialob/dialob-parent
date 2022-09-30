@@ -60,6 +60,11 @@ public class ComposerAutoConfiguration {
   @org.springframework.beans.factory.annotation.Value("${server.servlet.context-path:}")
   private String contextPath;
   
+//@Bean
+//public AssetExceptionMapping assetExceptionMapping() {
+//  return new AssetExceptionMapping();
+//}
+
   @Bean
   @ConditionalOnProperty(name = "dialob.formdb.inmemory.enabled", havingValue = "true")
   public DialobStore dialobStore(ObjectMapper objectMapper) {
@@ -85,17 +90,13 @@ public class ComposerAutoConfiguration {
       DialobClient client, ObjectMapper objectMapper, ApplicationContext ctx) {
     return new DialobComposerServiceController(new DialobComposerImpl(client), objectMapper, ctx);
   }
-
-//  @Bean
-//  public AssetExceptionMapping assetExceptionMapping() {
-//    return new AssetExceptionMapping();
-//  }
-  
   @Bean
   public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
     LOGGER.info("Dialob, Composer Jackson Modules: UP");
     return builder -> builder.modules(new GuavaModule(), new JavaTimeModule(), new Jdk8Module());
   }
+  
+  
   @Bean
   public DialobClient dialobClient(
       ApplicationEventPublisher springAppEventPublisher,
@@ -137,8 +138,6 @@ public class ComposerAutoConfiguration {
       taskExecutor.execute(() -> delegate.publishEvent(event));
     }
   }
-
-  
   @FunctionalInterface
   public interface SpringIdeTokenSupplier {
     Optional<IdeToken> get(HttpServletRequest request);
@@ -153,7 +152,6 @@ public class ComposerAutoConfiguration {
   public String getInmemoryPath() {
     return inmemoryPath;
   }
-
   public void setInmemoryPath(String inmemoryPath) {
     this.inmemoryPath = inmemoryPath;
   }

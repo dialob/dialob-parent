@@ -32,10 +32,13 @@ namespace DialobClient {
     constructor(store: DialobClient.Store) {
       this._store = store;
     }
+    get config() {
+      return this._store.config;
+    }
     releaseDump(id: string): Promise<ReleaseDump> {
         throw new Error("Method not implemented.");
     }
-
+  
     create(): DialobClient.CreateBuilder {
       const form = (name: string) => this.createAsset(name, undefined, "FORM");
       const release = (props: {name: string, desc: string}) => this.createAsset(props.name, props.desc, "RELEASE");

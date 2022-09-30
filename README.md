@@ -1,7 +1,15 @@
+# Clone the repo
+```
+git clone git@github.com:dialob/dialob-parent.git
+```
+or
+
+```
+git clone https://github.com/dialob/dialob-parent.git
+```
 
 # install and run locally
 ```
-git clone git@github.com:dialob/dialob-parent.git
 cd dialob-parent
 git checkout digiexpress
 mvn clean install -DskipTests=true

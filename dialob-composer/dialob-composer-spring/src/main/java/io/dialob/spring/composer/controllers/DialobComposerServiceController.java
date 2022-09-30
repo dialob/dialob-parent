@@ -26,11 +26,13 @@ import java.util.stream.Collectors;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.dialob.api.form.Form;
 import io.dialob.client.api.DialobComposer;
 import io.dialob.client.api.DialobComposer.ComposerState;
 import io.dialob.client.api.ImmutableComposerState;
@@ -75,6 +77,20 @@ public class DialobComposerServiceController {
     return ImmutableComposerState.builder()
         .revs(revs.stream().collect(Collectors.toMap(e -> e.getId(), e -> e)))
         .build();
+  }
+  
+  @GetMapping(path = "/forms/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Form forms(@PathVariable String id) {
+    final var form = composer.get().onItem()
+        .transform(e -> e.getForms().values().stream()
+            .filter(a -> a.getId().equals(id)).findFirst())
+        .await().atMost(timeout);
+
+    if(form.isEmpty()) {
+      // throw 404
+    }
+    
+    return form.get().getData();
   }
 
   

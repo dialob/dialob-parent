@@ -54,17 +54,16 @@ public class DialobEhCache implements DialobCache {
     final var id = toCacheId(src);
     LOGGER.debug("Dialob, caching a program, id: " + id);
     final var cache = getCache();
-    
     final var previous = cache.get(id);
     final var entry = ImmutableCacheEntry.builder().from(previous).program(program).build();
-    cache.put(entry.getId(), entry);
+    cache.put(id, entry);
     return program;
   }
   @Override
   public DialobDocument setAst(DialobDocument ast, StoreEntity src) {
     final var id = toCacheId(src);
     LOGGER.debug("Dialob, caching a document, id: " + id);
-    final var entry = ImmutableCacheEntry.builder().id(src.getId()).rev(ast.getVersion()).source(src).ast(ast).build();
+    final var entry = ImmutableCacheEntry.builder().id(id).rev(ast.getVersion()).source(src).ast(ast).build();
     final var cache = getCache();
     cache.put(id, entry);
     return ast;
@@ -94,7 +93,7 @@ public class DialobEhCache implements DialobCache {
   public static class Builder {
     public DialobEhCache build(String name) {
       final var cacheName = createName(name);
-      final var cacheHeap = 500;
+      final var cacheHeap = 10000;
       final var cacheManager = CacheManagerBuilder.newCacheManagerBuilder() 
           .withCache(cacheName,
               CacheConfigurationBuilder.newCacheConfigurationBuilder(

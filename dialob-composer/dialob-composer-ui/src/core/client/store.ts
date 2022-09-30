@@ -1,12 +1,5 @@
 import { StoreErrorImpl } from './error';
-import { Store } from './api';
-
-interface StoreConfig {
-  url: string;
-  oidc?: string;
-  status?: string;
-  csrf?: { key: string, value: string }
-}
+import { Store, StoreConfig } from './api';
 
 
 
@@ -30,6 +23,9 @@ class DefaultStore implements Store {
       const headers: Record<string, string> = this._defRef.headers as any;
       headers[this._config.csrf.key] = this._config.csrf.value;
     }
+  }
+  get config() {
+    return this._config;
   }
 
   iapRefresh(): Promise<void> {
