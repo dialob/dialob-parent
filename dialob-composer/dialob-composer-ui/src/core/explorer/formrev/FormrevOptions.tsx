@@ -123,7 +123,10 @@ const FormrevOptions: React.FC<{ formrev: Client.FormRev }> = ({ formrev }) => {
       <Burger.TreeItemOption nodeId={formrev.id + 'simulate-nested'}
         color='article'
         icon={ScienceOutlinedIcon }
-        onClick={() => {}}
+        onClick={() => {
+          nav.handleInTab({ article: formrev, id: `debug-fill/${formrev.id}` })
+          
+        }}
         labelText={<FormattedMessage id="formrevs.simulate.title" />}/>
 
       <Burger.TreeItemOption nodeId={formrev.id + 'delete-nested'}

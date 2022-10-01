@@ -5,9 +5,11 @@ import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableActions;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.client.api.DialobClient;
+import io.dialob.client.api.DialobClient.ExecutorBody;
 import io.dialob.client.api.DialobClient.ProgramWrapper;
 import io.dialob.client.api.DialobClient.QuestionnaireExecutor;
 import io.dialob.client.api.DialobClientConfig;
+import io.dialob.client.api.ImmutableExecutorBody;
 import io.dialob.client.api.QuestionnaireSession;
 import io.dialob.client.spi.executor.questionnaire.QuestionnaireSessionImpl;
 import io.dialob.client.spi.form.FormActions;
@@ -72,38 +74,7 @@ public class QuestionnaireExecutorImpl implements DialobClient.QuestionnaireExec
   }
   @Override
   public Actions execute() {
-    DialobAssert.notEmpty(questionnaire.getId(), () -> "questionnaire.id must be defined!");
-    DialobAssert.notEmpty(questionnaire.getRev(), () -> "questionnaire.rev must be defined!");
-    
-    if (questionnaire.getMetadata().getStatus() == Questionnaire.Metadata.Status.COMPLETED) {
-      dialobSession.complete();
-    }
-
-    // create execution state for questionnaire 
-    final var state = createQuestionnaireSession();
-
-    if (state.isCompleted()) {
-      return ImmutableActions.builder().rev(state.getRev()).build();
-    }
-
-    // build all actions from scratch no answers update
-    if(actions == null || actions.getActions().isEmpty()) {
-      final var formActions = new FormActions();
-      state.buildFullForm(new FormActionsUpdatesCallback(formActions));
-      return ImmutableActions.builder()
-          .actions(formActions.getActions())
-          .rev(state.getRevision())
-          .build();      
-    }
-
-    // update answers
-    final var rev = actions.getRev() == null ? state.getRev() : actions.getRev();
-    final QuestionnaireSession.DispatchActionsResult response = state.dispatchActions(rev, actions.getActions());
-    if (response.isDidComplete()) {
-      state.getSessionId().ifPresent(sessionId -> config.getEventPublisher().completed(sessionId));
-    }
-    
-    return response.getActions();
+    return this.executeAndGetBody().getActions(); 
   }
   
   protected QuestionnaireSessionImpl createQuestionnaireSession() {
@@ -177,5 +148,50 @@ public class QuestionnaireExecutorImpl implements DialobClient.QuestionnaireExec
     }
     // create execution state for questionnaire 
     return createQuestionnaireSession();
+  }
+  @Override
+  public ExecutorBody executeAndGetBody() {
+    DialobAssert.notEmpty(questionnaire.getId(), () -> "questionnaire.id must be defined!");
+    DialobAssert.notEmpty(questionnaire.getRev(), () -> "questionnaire.rev must be defined!");
+    
+    if (questionnaire.getMetadata().getStatus() == Questionnaire.Metadata.Status.COMPLETED) {
+      dialobSession.complete();
+    }
+
+    // create execution state for questionnaire 
+    final var state = createQuestionnaireSession();
+
+    if (state.isCompleted()) {
+      return ImmutableExecutorBody.builder()
+          .questionnaire(state.getQuestionnaire())
+          .actions(ImmutableActions.builder().rev(state.getRev()).build())
+          .build();
+    }
+
+    // build all actions from scratch no answers update
+    if(actions == null || actions.getActions().isEmpty()) {
+      final var formActions = new FormActions();
+      state.buildFullForm(new FormActionsUpdatesCallback(formActions));
+      return ImmutableExecutorBody.builder()
+          .questionnaire(state.getQuestionnaire())
+          .actions(ImmutableActions.builder()
+              .actions(formActions.getActions())
+              .rev(state.getRevision())
+              .build())
+          .build();      
+    }
+
+    // update answers
+    final var rev = actions.getRev() == null ? state.getRev() : actions.getRev();
+    final QuestionnaireSession.DispatchActionsResult response = state.dispatchActions(rev, actions.getActions());
+    if (response.isDidComplete()) {
+      state.getSessionId().ifPresent(sessionId -> config.getEventPublisher().completed(sessionId));
+    }
+    
+    
+    return ImmutableExecutorBody.builder()
+        .questionnaire(state.getQuestionnaire())
+        .actions(response.getActions())
+        .build();      
   }
 }

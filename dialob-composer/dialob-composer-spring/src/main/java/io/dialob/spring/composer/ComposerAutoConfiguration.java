@@ -24,7 +24,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.client.api.DialobClient;
 import io.dialob.client.api.DialobStore;
 import io.dialob.client.spi.DialobClientImpl;
-import io.dialob.client.spi.DialobComposerImpl;
 import io.dialob.client.spi.DialobMemoryStore;
 import io.dialob.client.spi.event.EventPublisher;
 import io.dialob.client.spi.event.QuestionnaireEventPublisher;
@@ -88,7 +87,7 @@ public class ComposerAutoConfiguration {
   @Bean
   public DialobComposerServiceController dialobComposerServiceController(
       DialobClient client, ObjectMapper objectMapper, ApplicationContext ctx) {
-    return new DialobComposerServiceController(new DialobComposerImpl(client), objectMapper, ctx);
+    return new DialobComposerServiceController(client, objectMapper, ctx);
   }
   @Bean
   public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {

@@ -3,7 +3,7 @@ import {
   Site, Entity, EntityId, DocumentType,
   FormId, ReleaseId, FormrevId, 
   FormRev, Form, Release, FormRevisionEntryDocument, 
-  CreateBuilder, AstCommand,
+  CreateBuilder, AstCommand, InitSession,
   ServiceErrorMsg, ServiceErrorProps, Service, Store, DeleteBuilder, ReleaseDump,
 } from "./api";
 
@@ -17,7 +17,7 @@ declare namespace DialobClient {
     FormrevId, FormId, ReleaseId, 
     FormRev, Form, Release, FormRevisionEntryDocument,
     AstCommand,
-    CreateBuilder, DeleteBuilder,
+    CreateBuilder, DeleteBuilder, InitSession,
     ServiceErrorMsg, ServiceErrorProps, Service, Store, StoreError, StoreConfig,
   };
 }
@@ -43,12 +43,13 @@ namespace DialobClient {
       const form = (name: string) => this.createAsset(name, undefined, "FORM");
       const release = (props: {name: string, desc: string}) => this.createAsset(props.name, props.desc, "RELEASE");
       const site = () => this.createAsset("repo", undefined, "SITE");
-      
+      const fill = (props: DialobClient.InitSession): Promise<{id: string}> => this._store.fetch("/sessions", { method: "POST", body: JSON.stringify(props) });
+       
       const importData = (tagContentAsString: string): Promise<DialobClient.Site> => {
         return this._store.fetch("/importTag", { method: "POST", body: tagContentAsString });
       }
       
-      return { form, site, release, importData };
+      return { form, site, release, importData, fill };
     }
     delete(): DialobClient.DeleteBuilder {
       const deleteMethod = (id: string): Promise<DialobClient.Site> => this._store.fetch(`/resources/${id}`, { method: "DELETE" });

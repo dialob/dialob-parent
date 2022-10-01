@@ -40,6 +40,9 @@ class SiteCache {
   }
 
   getEntity(entityId: Client.EntityId): Client.Entity {
+    if(entityId.startsWith("debug-fill/")) {
+      entityId = entityId.substring(11);
+    }
     let entity: Client.Entity = this._site.forms[entityId];
     if (!entity) {
       entity = this._site.revs[entityId];
@@ -47,6 +50,7 @@ class SiteCache {
     if (!entity) {
       entity = this._site.releases[entityId];
     }
+    console.log("Entity in session", entityId, entity);
     return entity;
   }
   getForm(decisionName: string): undefined | Client.Form {

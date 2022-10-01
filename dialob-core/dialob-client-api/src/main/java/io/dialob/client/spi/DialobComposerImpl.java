@@ -151,9 +151,12 @@ public class DialobComposerImpl implements DialobComposer {
   private ComposerDocumentState documentState(List<StoreEntity> newEntity) {
    return null; 
   }
-  
-  
+
   private ComposerState composerState(StoreState source) {
+    return DialobComposerImpl.composerState(this.client, source);
+  }
+  
+  public static ComposerState composerState(DialobClient client, StoreState source) {
     // create envir
     final var envir = ComposerEntityMapper.toEnvir(client.envir(), source).build();
     

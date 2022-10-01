@@ -15,21 +15,18 @@ import io.dialob.client.api.DialobDocument;
 import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableCacheEntry;
 import io.dialob.program.DialobProgram;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
+@RequiredArgsConstructor
 public class DialobEhCache implements DialobCache {
   
   private static final String CACHE_PREFIX = DialobCache.class.getCanonicalName();
   private final CacheManager cacheManager;
   private final String cacheName;
   
-  private DialobEhCache(CacheManager cacheManager, String cacheName) {
-    super();
-    this.cacheManager = cacheManager;
-    this.cacheName = cacheName;
-  }
   private Cache<String, CacheEntry> getCache() {
     return cacheManager.getCache(cacheName, String.class, CacheEntry.class);
   }

@@ -20,11 +20,11 @@ import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobDocument.FormDocument;
 import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobDocument.FormRevisionDocument;
+import io.dialob.client.api.DialobStore.StoreEntity;
 import io.dialob.client.api.ImmutableProgramMessage;
 import io.dialob.client.api.ImmutableProgramWrapper;
 import io.dialob.client.api.ImmutableReleaseWrapper;
 import io.dialob.client.api.ImmutableRevisionWrapper;
-import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.program.ImmutableProgramEnvir;
 import io.dialob.client.spi.program.ProgramBuilderImpl;
 import io.dialob.compiler.DialobProgramErrorsException;
@@ -59,7 +59,7 @@ public class DialobProgramEnvirFactory {
     this.baseEnvir = envir;
     return this;
   }
-  public DialobProgramEnvirFactory add(ImmutableStoreEntity entity, boolean cachless) {
+  public DialobProgramEnvirFactory add(StoreEntity entity, boolean cachless) {
     if(cachless) {
       cachlessIds.add(entity.getId());
     }
@@ -144,7 +144,7 @@ public class DialobProgramEnvirFactory {
 
   }
   
-  private ProgramWrapper visitForm(ImmutableStoreEntity src) {
+  private ProgramWrapper visitForm(StoreEntity src) {
     final var builder = ImmutableProgramWrapper.builder();
     builder.status(ProgramStatus.UP);
     
@@ -194,7 +194,7 @@ public class DialobProgramEnvirFactory {
         .build(); 
   }
   
-  private RevisionWrapper visitRevision(ImmutableStoreEntity src) {
+  private RevisionWrapper visitRevision(StoreEntity src) {
     
     FormRevisionDocument ast = null;
     if(cachlessIds.contains(src.getId())) {
@@ -213,7 +213,7 @@ public class DialobProgramEnvirFactory {
 
   }
   
-  private ReleaseWrapper visitRelease(ImmutableStoreEntity src) {
+  private ReleaseWrapper visitRelease(StoreEntity src) {
     
     FormReleaseDocument ast = null;
     if(cachlessIds.contains(src.getId())) {

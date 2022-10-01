@@ -35,7 +35,7 @@ declare namespace Composer {
 
     getRelease(decisionName: string): undefined | DialobClient.Entity;
     getFormRev(decisionName: string): undefined | DialobClient.Entity;
-    getForm(flowName: string): undefined | DialobClient.Entity;
+    getForm(flowName: string): undefined | DialobClient.Form;
     getEntity(id: DialobClient.EntityId): undefined | DialobClient.Entity;
 
     withPage(page: DialobClient.EntityId): Session;
@@ -103,12 +103,12 @@ namespace Composer {
     const layout = Burger.useTabs();
 
 
-    const handleInTab = (props: { article: DialobClient.Entity }) => {
+    const handleInTab = (props: { article: DialobClient.Entity, id?: string }) => {
       const nav = { value: props.article.id };
 
       const icon = <ArticleTabIndicator entity={props.article} />;
       const tab: Composer.Tab = {
-        id: props.article.id,
+        id: props.id ? props.id : props.article.id,
         label: props.article.name ? props.article.name : props.article.id,
         icon,
         data: Composer.createTab({ nav })

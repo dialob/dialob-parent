@@ -36,7 +36,22 @@ export interface Entity {
 }
 
 export interface Form extends Entity {
+  data: FormBody
 }
+
+interface FormBody {
+  variables: Variable[];
+}
+
+export interface Variable {
+  name: string;
+  expression?: string;
+  defaultValue?: string;
+  context?: boolean;
+  published?: boolean;
+  contextType?: string;
+}
+
 
 export interface FormRev extends Entity {
   head: string; //latest form id
@@ -80,6 +95,13 @@ export interface CreateBuilder {
   importData(init: string): Promise<Site>;
   release(props: {name: string, desc: string}): Promise<Site>;
   form(name: string): Promise<Site>;
+  fill(init: InitSession): Promise<{id: string}>;
+}
+
+export interface InitSession {
+  formId: string;
+  language: string;
+  contextValues: Record<string, string>;
 }
 
 export interface DeleteBuilder {

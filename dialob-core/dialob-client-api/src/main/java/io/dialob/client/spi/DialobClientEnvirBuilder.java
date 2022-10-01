@@ -8,6 +8,7 @@ import io.dialob.client.api.DialobClient.EnvirCommandFormatBuilder;
 import io.dialob.client.api.DialobClient.ProgramEnvir;
 import io.dialob.client.api.DialobDocument.DocumentType;
 import io.dialob.client.api.DialobStore.StoreEntity;
+import io.dialob.client.api.DialobStore.StoreState;
 import io.dialob.client.api.ImmutableStoreEntity;
 import io.dialob.client.spi.support.DialobAssert;
 import lombok.RequiredArgsConstructor;
@@ -119,5 +120,9 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
   public ProgramEnvir build() {
     return factory.add(envir).build();
   }
-
+  @Override
+  public EnvirBuilder from(StoreState envir) {
+    envir.getForms().values().forEach(e -> factory.add(e, false));
+    return this;
+  }
 }

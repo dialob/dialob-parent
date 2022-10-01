@@ -8,6 +8,7 @@ import Activities from './activities';
 import { Composer } from './context';
 import { ReleasesView } from './release';
 import { FormEdit } from './form-composer';
+import { FormFill } from './form-fill';
 
 import { Client } from './context';
 
@@ -15,10 +16,6 @@ import { Client } from './context';
 
 const root: SxProps = { height: `100%`, backgroundColor: "mainContent.main" };
 
-const EntityEditor: React.FC<{ entity: Client.Entity }> = ({ entity }) => {
-  
-  return <Box><FormEdit {...entity}/></Box>;
-}
 
 const Main: React.FC<{}> = () => {
   const layout = Burger.useTabs();
@@ -42,10 +39,15 @@ const Main: React.FC<{}> = () => {
       return (<Box sx={root}><ReleasesView /></Box>);
     } else if (active.id === 'templates') {
       return (<Box sx={root}>templates</Box>);
-    }
+    } 
+    
     if (entity) {
-      console.log(entity);
-      return <Box sx={root}><EntityEditor entity={entity} /></Box>
+      console.log("entity",entity);
+      
+      if(active.id.startsWith("debug-fill/")) {
+        return <Box sx={root}><FormFill {...entity}/></Box>      
+      }
+      return <Box sx={root}><FormEdit {...entity}/></Box>
     }
     throw new Error("unknown view: " + JSON.stringify(active, null, 2));
 

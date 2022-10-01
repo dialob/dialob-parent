@@ -25,6 +25,7 @@ import io.dialob.client.api.DialobDocument.FormReleaseDocument;
 import io.dialob.client.api.DialobDocument.FormRevisionDocument;
 import io.dialob.client.api.DialobErrorHandler.DocumentNotFoundException;
 import io.dialob.client.api.DialobStore.StoreEntity;
+import io.dialob.client.api.DialobStore.StoreState;
 import io.dialob.program.DialobProgram;
 import io.smallrye.mutiny.Uni;
 
@@ -67,7 +68,14 @@ public interface DialobClient {
     QuestionnaireExecutor createOnly(boolean createOnly);
     QuestionnaireExecutor actions(Actions actions);
     Actions execute();
+    ExecutorBody executeAndGetBody();
     QuestionnaireSession toSession();
+  }
+  
+  @Value.Immutable
+  interface ExecutorBody {
+    Actions getActions();
+    Questionnaire getQuestionnaire();
   }
   
   interface ProgramBuilder {
@@ -77,6 +85,7 @@ public interface DialobClient {
   
   interface EnvirBuilder {
     EnvirBuilder from(ProgramEnvir envir);
+    EnvirBuilder from(StoreState envir);
     EnvirCommandFormatBuilder addCommand();
     ProgramEnvir build();
   }
