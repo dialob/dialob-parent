@@ -50,7 +50,7 @@ class SiteCache {
     if (!entity) {
       entity = this._site.releases[entityId];
     }
-    console.log("Entity in session", entityId, entity);
+    console.log("Retrieving entity from session", entityId, entity);
     return entity;
   }
   getForm(decisionName: string): undefined | Client.Form {

@@ -124,7 +124,7 @@ const FormrevOptions: React.FC<{ formrev: Client.FormRev }> = ({ formrev }) => {
         color='article'
         icon={ScienceOutlinedIcon }
         onClick={() => {
-          nav.handleInTab({ article: formrev, id: `debug-fill/${formrev.id}` })
+          nav.handleInTab({ article: formrev, id: `debug-fill/${formrev.head}` })
           
         }}
         labelText={<FormattedMessage id="formrevs.simulate.title" />}/>

@@ -11,8 +11,8 @@ import View from './view/FormFill';
 const FormFill: React.FC<Client.Entity> = (props) => {
   const { session, actions, service } = Composer.useComposer();
   const { site } = session;
-  const revision = props as Client.FormRev
-  const formId = revision.head;
+  const form = props as Client.Form
+  const formId = form.id;
   const [start, setStart] = React.useState(false);
   const [fill, setFill] = React.useState<{id: string, url: string}>();
   const [ctx, setCtx] = React.useState<Record<string, string>>({})

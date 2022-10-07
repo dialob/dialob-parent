@@ -96,6 +96,7 @@ public class DialobClientEnvirBuilder implements EnvirBuilder {
       @Override
       public EnvirBuilder build() {
         DialobAssert.notNull(id, () -> "id must be defined!");
+        DialobAssert.notNull(version, () -> "version must be defined!");
         DialobAssert.isTrue(commandJson != null || entity != null, () -> "commandJson or entity must be defined!");
         DialobAssert.isTrue(commandJson == null || entity == null, () -> "commandJson and entity can't be both defined!");
 

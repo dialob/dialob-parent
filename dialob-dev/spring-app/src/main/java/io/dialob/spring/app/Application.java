@@ -38,7 +38,7 @@ public class Application {
   public static void main(String[] args) throws Exception {
     try {
       SpringApplication.run(new Class<?>[] { Application.class }, args);
-      browse("http://localhost:8081/ide");
+      //browse("http://localhost:8081/ide");
     } catch (Exception e) {
       e.printStackTrace();
     }

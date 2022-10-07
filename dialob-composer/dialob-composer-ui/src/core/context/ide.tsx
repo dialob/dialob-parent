@@ -104,19 +104,20 @@ namespace Composer {
 
 
     const handleInTab = (props: { article: DialobClient.Entity, id?: string }) => {
-      const nav = { value: props.article.id };
+      console.log("Route Into Tab", props.article.id, props.id)
+      const id = props.id ? props.id : props.article.id
+      const nav = { value: id };
 
       const icon = <ArticleTabIndicator entity={props.article} />;
       const tab: Composer.Tab = {
-        id: props.id ? props.id : props.article.id,
+        id, icon,
         label: props.article.name ? props.article.name : props.article.id,
-        icon,
         data: Composer.createTab({ nav })
       };
 
-      const oldTab = layout.session.findTab(props.article.id);
+      const oldTab = layout.session.findTab(id);
       if (oldTab !== undefined) {
-        layout.actions.handleTabData(props.article.id, (oldData: Composer.TabData) => oldData.withNav(nav));
+        layout.actions.handleTabData(id, (oldData: Composer.TabData) => oldData.withNav(nav));
       } else {
         // open or add the tab
         layout.actions.handleTabAdd(tab);

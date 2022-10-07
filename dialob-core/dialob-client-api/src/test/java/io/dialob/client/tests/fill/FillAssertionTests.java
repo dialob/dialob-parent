@@ -89,6 +89,7 @@ public class FillAssertionTests {
         .addCommand()
           .id(formFile)
           .cachless()
+          .version("")
           .form(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile)).build()
         .build();
     final var formId = envir.findAll().stream().findFirst().get().getDocument().getData().getId();
@@ -120,7 +121,7 @@ public class FillAssertionTests {
 
     final var client = get();
     final var envir = client.envir()
-        .addCommand().cachless().id(formId).form(client.getConfig().getMapper().toJson(formDocument)).build()
+        .addCommand().cachless().id(formId).version("1").form(client.getConfig().getMapper().toJson(formDocument)).build()
         .build();
     return new FillAssertionBuilder(questionnaire, client, envir);
   }

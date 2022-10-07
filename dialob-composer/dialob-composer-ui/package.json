@@ -15,7 +15,6 @@
     "@mui/styles": "^5.0.1",
     "@mui/system": "^5.0.1",
     "@mui/x-date-pickers": "^5.0.3",
-    "@resys/dialob-review-material": "^0.2.5",
     "@the-wrench-io/react-burger": "^1.0.32",
     "classnames": "2.2.6",
     "codemirror": "5.58.1",

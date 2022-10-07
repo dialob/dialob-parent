@@ -32,8 +32,8 @@
         <artifactId>frontend-maven-plugin</artifactId>
         <configuration>
           <installDirectory>target</installDirectory>
-          <nodeVersion>${node.version}</nodeVersion>
-          <yarnVersion>${yarn.version}</yarnVersion>
+          <nodeVersion>${eirslett-node.version}</nodeVersion>
+          <yarnVersion>${eirslett-yarn.version}</yarnVersion>
         </configuration>
         <executions>
           <execution>

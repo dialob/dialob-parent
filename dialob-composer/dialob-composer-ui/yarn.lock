@@ -2849,19 +2849,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@resys/dialob-review-material@npm:^0.2.5":
-  version: 0.2.5
-  resolution: "@resys/dialob-review-material@npm:0.2.5"
-  peerDependencies:
-    "@material-ui/core": ^4.11.*
-    "@material-ui/icons": ^4.9.*
-    moment: ^2.24.*
-    react-intl: ^5.3.*
-    react-markdown: ^4.3.*
-  checksum: 1beaf561004711a6e4b43c7d4497fdb87ffdf73c73765f3d26c97d98dbd02690178652fe030a13e1f005a83d7524bc7bd1f23163026bf0ee7259267994bc37be
-  languageName: node
-  linkType: hard
-
 "@rollup/plugin-babel@npm:^5.2.0":
   version: 5.3.1
   resolution: "@rollup/plugin-babel@npm:5.3.1"
@@ -7677,7 +7664,6 @@ __metadata:
     "@mui/styles": ^5.0.1
     "@mui/system": ^5.0.1
     "@mui/x-date-pickers": ^5.0.3
-    "@resys/dialob-review-material": ^0.2.5
     "@the-wrench-io/react-burger": ^1.0.32
     "@types/lodash.camelcase": ^4.3.7
     "@types/node": ^12.19.9

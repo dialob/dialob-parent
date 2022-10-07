@@ -23,7 +23,8 @@ const Main: React.FC<{}> = () => {
   const tabs = layout.session.tabs;
   const active = tabs.length ? tabs[layout.session.history.open] : undefined;
   const entity = active ? session.getEntity(active.id) : undefined;
-
+  console.log("Opening Route", active?.id);
+      
   //composers which are NOT linked directly with an article
 
   return React.useMemo(() => {
@@ -42,7 +43,7 @@ const Main: React.FC<{}> = () => {
     } 
     
     if (entity) {
-      console.log("entity",entity);
+
       
       if(active.id.startsWith("debug-fill/")) {
         return <Box sx={root}><FormFill {...entity}/></Box>      
