@@ -7,7 +7,7 @@ function findPageForItem(formData, rootItemId, itemId) {
     if (!item.get('items')) {
       return false;
     }
-    for (let childId of item.get('items')) {
+    for (let childId of item.get('items').toJS()) {
       if (childId === itemId) {
         return true;
       } else {
@@ -24,7 +24,7 @@ function findPageForItem(formData, rootItemId, itemId) {
     return itemId; // Active item is a page
   }
 
-  for (let pageId of pages) {
+  for (let pageId of pages.toJS()) {
     const page = formData.getIn(['data', pageId]);
     if (containsItem(page, itemId)) {
       return pageId;
