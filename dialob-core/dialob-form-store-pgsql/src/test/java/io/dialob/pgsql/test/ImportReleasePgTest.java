@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
  */
 
 import java.time.Duration;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,8 @@ import lombok.extern.slf4j.Slf4j;
 @TestProfile(PgProfile.class)
 @Slf4j
 public class ImportReleasePgTest extends PgTestTemplate {
-  private final boolean write_out = true;
+  private final boolean write_out = false;
+  private final boolean log_out = true;
   
   @Test
   public void importIntoPGSQLTest() throws IOException {
@@ -67,6 +69,18 @@ public class ImportReleasePgTest extends PgTestTemplate {
     final var actual = super.toRepoExport(store.getRepoName());
     Assertions.assertEquals(expected, actual);
     
+    
+    if(log_out) {
+      final var data = composer.get().await().atMost(Duration.ofMinutes(1));
+          
+      for(final var value : data.getRevs().values().stream().sorted((a, b) -> a.getName().compareTo(b.getName())).collect(Collectors.toList())) {
+        if(value.getName().equals("Yleinen viesti")) {
+          final var generalMsg = data.getForms().get(value.getHead());
+          LOGGER.error(objectMapper.writeValueAsString(generalMsg.getData()));
+        }
+        LOGGER.error(value.getName());
+      }
+    }
     
     if(write_out) {
       final var releaseFromImportedForms = composer.create(ImmutableCreateComposerRelease.builder()

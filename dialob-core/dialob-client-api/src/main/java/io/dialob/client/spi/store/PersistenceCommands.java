@@ -182,11 +182,15 @@ public class PersistenceCommands implements DialobStoreConfig.Commands {
 
   protected StoreExceptionMsg convertMessages1(ObjectsResult<BlobObject> state) {
     return ImmutableStoreExceptionMsg.builder()
+        .id("RUNTIME_ERROR")
+        .value("") //TODO
         .addAllArgs(state.getMessages().stream().map(message->message.getText()).collect(Collectors.toList()))
         .build();
   }
   protected StoreExceptionMsg convertMessages2(ObjectsResult<BlobObjects> state) {
     return ImmutableStoreExceptionMsg.builder()
+        .id("RUNTIME_ERROR")
+        .value("") //TODO
         .addAllArgs(state.getMessages().stream().map(message->message.getText()).collect(Collectors.toList()))
         .build();
   }
