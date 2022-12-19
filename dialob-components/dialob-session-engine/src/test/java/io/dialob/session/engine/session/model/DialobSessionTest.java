@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.model;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.SessionUpdateCommand;
@@ -23,7 +24,6 @@ import io.dialob.session.engine.session.command.Trigger;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collections;
 import java.util.List;
 

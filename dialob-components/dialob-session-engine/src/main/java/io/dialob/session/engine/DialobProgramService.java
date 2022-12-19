@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine;
 
-import io.dialob.session.engine.program.DialobProgram;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.session.engine.program.DialobProgram;
 
 public interface DialobProgramService {
 

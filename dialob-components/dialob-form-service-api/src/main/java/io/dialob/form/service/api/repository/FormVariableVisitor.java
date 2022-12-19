@@ -15,9 +15,8 @@
  */
 package io.dialob.form.service.api.repository;
 
-import io.dialob.api.form.Variable;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.form.Variable;
 
 public interface FormVariableVisitor extends Visitor {
 

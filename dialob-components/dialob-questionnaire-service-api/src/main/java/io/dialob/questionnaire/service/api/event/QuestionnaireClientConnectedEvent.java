@@ -15,9 +15,9 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.net.InetAddress;
 
 @Value.Immutable

@@ -19,6 +19,8 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.DebugUtil;
@@ -28,8 +30,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.Instant;

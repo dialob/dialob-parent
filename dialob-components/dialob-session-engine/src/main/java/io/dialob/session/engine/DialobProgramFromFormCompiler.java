@@ -17,6 +17,7 @@ package io.dialob.session.engine;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.form.service.api.repository.*;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -29,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

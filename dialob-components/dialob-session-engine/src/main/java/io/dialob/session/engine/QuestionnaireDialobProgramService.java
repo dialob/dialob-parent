@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.db.spi.exceptions.DatabaseException;
 import io.dialob.questionnaire.service.api.FormDataMissingException;
@@ -23,8 +24,6 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.session.engine.program.DialobProgram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class QuestionnaireDialobProgramService implements DialobProgramService {
 

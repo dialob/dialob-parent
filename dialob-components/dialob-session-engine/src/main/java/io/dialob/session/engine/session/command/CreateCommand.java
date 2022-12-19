@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.SessionObject;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.stream.Stream;
 
 public interface CreateCommand<T extends SessionObject> extends Command {

@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
 import io.dialob.session.engine.program.model.*;
@@ -27,7 +28,6 @@ import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

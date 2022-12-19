@@ -18,10 +18,10 @@ package io.dialob.session.engine.session.model;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;

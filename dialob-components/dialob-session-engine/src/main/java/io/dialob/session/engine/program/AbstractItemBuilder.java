@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.api.ValueType;
@@ -30,7 +31,6 @@ import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 

@@ -15,12 +15,12 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ImmutableAction;
 import io.dialob.api.questionnaire.Error;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

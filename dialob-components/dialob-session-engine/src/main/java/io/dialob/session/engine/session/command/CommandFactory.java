@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
@@ -25,7 +26,6 @@ import io.dialob.session.engine.session.command.event.ImmutableRowItemsRemovedEv
 import io.dialob.session.engine.session.command.event.ImmutableValueSetUpdatedEvent;
 import io.dialob.session.engine.session.model.*;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

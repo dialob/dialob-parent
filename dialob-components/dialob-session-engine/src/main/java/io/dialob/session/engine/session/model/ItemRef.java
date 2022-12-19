@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine.session.model;
 
-import org.immutables.value.Value;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import org.immutables.value.Value;
 
 @Value.Immutable
 public interface ItemRef extends ItemId {

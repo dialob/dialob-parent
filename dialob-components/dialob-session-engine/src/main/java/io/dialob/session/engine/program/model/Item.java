@@ -16,11 +16,11 @@
 package io.dialob.session.engine.program.model;
 
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.ItemId;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Optional;
 
 public interface Item extends StructuralNode {

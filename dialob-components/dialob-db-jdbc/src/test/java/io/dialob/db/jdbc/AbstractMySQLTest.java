@@ -15,12 +15,13 @@
  */
 package io.dialob.db.jdbc;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Optional;
-
-import javax.sql.DataSource;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dialob.form.service.api.FormVersionControlDatabase;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.ResysSecurityConstants;
+import io.dialob.security.tenant.Tenant;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterAll;
@@ -31,14 +32,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.security.tenant.ResysSecurityConstants;
-import io.dialob.security.tenant.Tenant;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Optional;
 
 
 public interface AbstractMySQLTest extends JdbcBackendTest {

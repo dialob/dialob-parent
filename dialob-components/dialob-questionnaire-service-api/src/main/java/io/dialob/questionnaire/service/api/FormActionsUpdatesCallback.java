@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Error;
@@ -22,7 +23,6 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Locale;
 
 

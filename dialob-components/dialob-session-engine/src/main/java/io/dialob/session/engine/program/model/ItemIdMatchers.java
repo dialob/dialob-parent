@@ -15,9 +15,9 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.model.ItemId;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Predicate;
 
 public class ItemIdMatchers {

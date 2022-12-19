@@ -15,15 +15,7 @@
  */
 package io.dialob.form.service.rest;
 
-import java.time.Clock;
-import java.util.Optional;
-
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.form.service.api.validation.FormIdRenamer;
@@ -32,6 +24,12 @@ import io.dialob.integration.api.NodeId;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Clock;
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 public class DialobFormServiceRestAutoConfiguration {

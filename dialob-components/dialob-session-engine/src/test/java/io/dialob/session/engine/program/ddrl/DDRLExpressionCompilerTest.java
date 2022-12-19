@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program.ddrl;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
@@ -27,7 +28,6 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import org.junit.jupiter.api.Test;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.time.*;
 import java.util.Map;
 import java.util.Optional;

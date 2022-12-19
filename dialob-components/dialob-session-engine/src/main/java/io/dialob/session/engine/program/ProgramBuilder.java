@@ -16,11 +16,15 @@
 package io.dialob.session.engine.program;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.common.Constants;
 import io.dialob.rule.parser.ParserUtil;
-import io.dialob.rule.parser.api.*;
+import io.dialob.rule.parser.api.RuleExpressionCompilerError;
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.rule.parser.api.VariableFinder;
+import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobProgramBuildException;
 import io.dialob.session.engine.program.ddrl.DDRLExpressionCompiler;
@@ -38,7 +42,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;

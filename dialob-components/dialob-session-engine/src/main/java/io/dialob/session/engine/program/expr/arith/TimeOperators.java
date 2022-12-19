@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.OperatorSymbol;
 import io.dialob.session.engine.program.model.Expression;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.time.LocalTime;
 
 public class TimeOperators  extends ComparableTypeOperators<LocalTime> {

@@ -15,10 +15,9 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import io.dialob.rule.parser.api.ValueType;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.dialob.rule.parser.api.ValueType;
 
 public interface Reducer<T> {
 

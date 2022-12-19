@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program;
 
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
@@ -26,7 +27,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import lombok.extern.slf4j.Slf4j;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

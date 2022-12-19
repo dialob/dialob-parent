@@ -15,17 +15,16 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
-import java.net.InetAddress;
-import java.util.Optional;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
-
 import io.dialob.api.proto.Actions;
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
+
+import java.net.InetAddress;
+import java.util.Optional;
 
 public class QuestionnaireEventPublisher {
 

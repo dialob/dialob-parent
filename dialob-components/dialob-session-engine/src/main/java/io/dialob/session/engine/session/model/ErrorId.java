@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session.model;
 
-import org.immutables.value.Value;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import org.immutables.value.Value;
+
 import java.util.Optional;
 
 @Value.Immutable

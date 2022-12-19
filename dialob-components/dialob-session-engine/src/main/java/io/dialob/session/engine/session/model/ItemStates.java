@@ -15,9 +15,9 @@
  */
 package io.dialob.session.engine.session.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 
 @Value.Immutable

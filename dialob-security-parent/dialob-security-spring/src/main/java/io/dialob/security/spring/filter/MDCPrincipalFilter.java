@@ -15,19 +15,13 @@
  */
 package io.dialob.security.spring.filter;
 
-import java.io.IOException;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
+import io.dialob.security.tenant.LoggingContextKeys;
+import jakarta.servlet.*;
 import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import io.dialob.security.tenant.LoggingContextKeys;
+import java.io.IOException;
 
 
 public class MDCPrincipalFilter implements Filter {

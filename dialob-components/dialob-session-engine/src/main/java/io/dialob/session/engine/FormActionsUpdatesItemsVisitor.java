@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.ImmutableError;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.session.engine.session.model.*;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;

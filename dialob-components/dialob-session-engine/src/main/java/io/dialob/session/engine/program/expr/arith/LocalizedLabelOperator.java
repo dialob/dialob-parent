@@ -17,6 +17,7 @@ package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
@@ -29,7 +30,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 import org.immutables.value.Value;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.program.expr.OutputFormatter;
@@ -24,7 +25,6 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.time.Clock;
 import java.util.*;
 import java.util.function.Consumer;

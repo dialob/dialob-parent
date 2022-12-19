@@ -17,9 +17,8 @@ package io.dialob.questionnaire.service.api.event;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.dialob.integration.api.event.TenantScopedEvent;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.integration.api.event.TenantScopedEvent;
 
 /**
  * Common type for all questionnaire related events

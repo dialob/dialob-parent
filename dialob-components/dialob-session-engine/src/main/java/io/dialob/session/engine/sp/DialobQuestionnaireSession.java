@@ -17,6 +17,8 @@ package io.dialob.session.engine.sp;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.*;
 import io.dialob.api.questionnaire.Error;
 import io.dialob.api.questionnaire.*;
@@ -42,8 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.Instant;

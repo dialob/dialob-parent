@@ -15,12 +15,12 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.Map;
 

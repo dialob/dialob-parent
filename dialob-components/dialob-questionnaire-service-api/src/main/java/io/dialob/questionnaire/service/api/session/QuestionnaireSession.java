@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.Actions;
@@ -25,7 +26,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.api.questionnaire.VariableValue;
 import org.immutables.value.Value;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;

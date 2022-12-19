@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.*;
@@ -22,7 +23,6 @@ import io.dialob.questionnaire.service.api.FormDataMissingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;

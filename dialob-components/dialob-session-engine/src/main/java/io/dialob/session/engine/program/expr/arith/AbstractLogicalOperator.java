@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import io.dialob.rule.parser.api.ValueType;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.api.ValueType;
 
 public interface AbstractLogicalOperator extends InfixOperator<Boolean> {
 

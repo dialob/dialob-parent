@@ -90,7 +90,7 @@
     <aws-java-sdk.version>2.17.100</aws-java-sdk.version>
     <spring-cloud-starter-parent.version>2021.0.1</spring-cloud-starter-parent.version>
     <micrometer-registry-prometheus.version>1.9.0</micrometer-registry-prometheus.version>
-    <s3mock-junit5.version>3.0.0-SNAPSHOT</s3mock-junit5.version>
+    <s3mock-junit5.version>3.1.0</s3mock-junit5.version>
     <groovy.version>3.0.9</groovy.version>
     <bcpkix-jdk18on.version>1.77</bcpkix-jdk18on.version>
     <spring-cloud-gcp.version>2.0.6</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
@@ -100,7 +100,10 @@
 
 
   <dependencies>
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.github.spotbugs</groupId>
       <artifactId>spotbugs-annotations</artifactId>

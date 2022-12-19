@@ -30,6 +30,7 @@ import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Consumer;
 
 public interface DialobSessionUpdater {

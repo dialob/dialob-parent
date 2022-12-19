@@ -16,18 +16,13 @@
 package io.dialob.session.engine.program.expr;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.Utils;
-import io.dialob.session.engine.program.ProgramBuilderException;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemState;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BinaryOperator;

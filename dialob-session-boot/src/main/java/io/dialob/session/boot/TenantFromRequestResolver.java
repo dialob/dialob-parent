@@ -15,11 +15,10 @@
  */
 package io.dialob.session.boot;
 
-import java.util.Optional;
-
+import io.dialob.security.tenant.Tenant;
 import jakarta.servlet.http.HttpServletRequest;
 
-import io.dialob.security.tenant.Tenant;
+import java.util.Optional;
 
 public interface TenantFromRequestResolver {
 

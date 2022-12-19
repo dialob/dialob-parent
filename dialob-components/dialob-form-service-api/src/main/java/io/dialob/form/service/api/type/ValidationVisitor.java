@@ -15,10 +15,9 @@
  */
 package io.dialob.form.service.api.type;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Validation;
 import io.dialob.form.service.api.repository.Visitor;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface ValidationVisitor extends Visitor {
   void visitValidation(@NonNull Validation validationBean);

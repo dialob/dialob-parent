@@ -15,19 +15,12 @@
  */
 package io.dialob.security.spring.filter;
 
-import java.io.IOException;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import io.dialob.security.tenant.LoggingContextKeys;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.slf4j.MDC;
 
-import io.dialob.security.tenant.LoggingContextKeys;
+import java.io.IOException;
 
 public class MDCRequestIdFilter implements Filter {
 

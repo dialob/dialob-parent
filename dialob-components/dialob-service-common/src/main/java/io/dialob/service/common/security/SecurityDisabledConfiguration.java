@@ -59,8 +59,8 @@ public class SecurityDisabledConfiguration {
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     LOGGER.warn("Security disabled!");
-    http.antMatcher("/**")
-        .authorizeRequests().anyRequest().permitAll()
+    http.securityMatcher("/**")
+        .authorizeHttpRequests().anyRequest().permitAll()
       .and()
         .csrf().disable()
         .cors().configurationSource(request -> PERMIT_ALL_CORS)

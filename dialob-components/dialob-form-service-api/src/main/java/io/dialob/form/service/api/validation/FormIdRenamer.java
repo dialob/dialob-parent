@@ -15,12 +15,12 @@
  */
 package io.dialob.form.service.api.validation;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.FormValidationError;
 import org.apache.commons.lang3.tuple.Pair;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.function.UnaryOperator;
 

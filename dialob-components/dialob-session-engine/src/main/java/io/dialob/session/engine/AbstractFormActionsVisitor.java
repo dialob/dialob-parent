@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine;
 
-import io.dialob.questionnaire.service.api.FormActions;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.questionnaire.service.api.FormActions;
 
 public abstract class AbstractFormActionsVisitor {
 

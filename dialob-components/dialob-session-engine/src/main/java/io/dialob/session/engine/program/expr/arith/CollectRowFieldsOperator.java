@@ -15,26 +15,22 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.command.EventMatchers;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemIdPartial;
-import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 import static java.util.stream.Collectors.toList;
 
 @Value.Immutable

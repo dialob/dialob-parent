@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.Optional;
 
 public interface DialobSessionVisitor {

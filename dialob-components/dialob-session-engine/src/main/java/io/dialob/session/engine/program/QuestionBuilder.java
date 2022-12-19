@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.common.Constants;
 import io.dialob.rule.parser.api.ValueType;
@@ -31,7 +32,6 @@ import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;

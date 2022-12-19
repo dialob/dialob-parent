@@ -15,11 +15,11 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.math.BigDecimal;
 
 @Value.Immutable

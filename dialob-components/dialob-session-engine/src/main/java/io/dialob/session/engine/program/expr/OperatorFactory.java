@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.program.expr;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.model.Expression;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 
 public interface OperatorFactory {

@@ -15,10 +15,9 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import io.dialob.session.engine.program.EvalContext;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.dialob.session.engine.program.EvalContext;
 
 public interface AbstractRelationOperator<T> extends AbstractLogicalOperator {
 

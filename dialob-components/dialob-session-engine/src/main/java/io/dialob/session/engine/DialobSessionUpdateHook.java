@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.model.DialobSession;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Consumer;
 
 public interface DialobSessionUpdateHook {

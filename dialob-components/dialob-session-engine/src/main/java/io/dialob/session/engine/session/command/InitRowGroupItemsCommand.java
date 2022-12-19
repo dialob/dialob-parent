@@ -16,18 +16,17 @@
 package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ImmutableItemIndex;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
- import java.util.Collections;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;

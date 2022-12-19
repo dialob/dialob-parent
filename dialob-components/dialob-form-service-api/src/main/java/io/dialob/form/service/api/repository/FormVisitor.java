@@ -15,9 +15,9 @@
  */
 package io.dialob.form.service.api.repository;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Optional;
 
 public interface FormVisitor extends Visitor {

@@ -17,7 +17,6 @@ package io.dialob.questionnaire.service.api.session;
 
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;

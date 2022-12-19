@@ -15,10 +15,10 @@
  */
 package io.dialob.form.service.api.repository;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormItem;
 import io.dialob.form.service.api.type.ValidationVisitor;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Optional;
 
 public abstract class AbstractExpressionsVisitor implements FormVisitor {

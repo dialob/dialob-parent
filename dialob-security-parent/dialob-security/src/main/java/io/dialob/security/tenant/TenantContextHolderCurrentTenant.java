@@ -15,11 +15,10 @@
  */
 package io.dialob.security.tenant;
 
-import java.util.Objects;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
-
 import org.slf4j.MDC;
+
+import java.util.Objects;
 
 public class TenantContextHolderCurrentTenant implements CurrentTenant {
 

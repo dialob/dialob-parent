@@ -18,6 +18,7 @@ package io.dialob.session.engine.program;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.session.engine.DebugUtil;
@@ -31,7 +32,6 @@ import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
 import lombok.extern.slf4j.Slf4j;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

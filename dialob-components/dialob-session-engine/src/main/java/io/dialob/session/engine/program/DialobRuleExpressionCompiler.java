@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.Expression;
 import io.dialob.rule.parser.analyze.ValidateExpressionVisitor;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import io.dialob.rule.parser.api.RuleExpressionCompilerCallback;
 import io.dialob.rule.parser.api.VariableFinder;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.HashMap;
 import java.util.function.UnaryOperator;
 

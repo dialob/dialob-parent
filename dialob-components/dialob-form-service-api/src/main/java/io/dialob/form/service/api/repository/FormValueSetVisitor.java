@@ -15,9 +15,8 @@
  */
 package io.dialob.form.service.api.repository;
 
-import io.dialob.api.form.FormValueSet;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.form.FormValueSet;
 
 public interface FormValueSetVisitor extends Visitor {
 

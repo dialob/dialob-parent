@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.sp;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
@@ -35,7 +36,6 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ValueSetState;
 import lombok.extern.slf4j.Slf4j;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collections;
 import java.util.Optional;
 

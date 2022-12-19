@@ -15,10 +15,10 @@
  */
 package io.dialob.form.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import org.immutables.value.Value;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Consumer;
 
 public interface FormDatabase {

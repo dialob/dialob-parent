@@ -15,12 +15,11 @@
  */
 package io.dialob.questionnaire.service;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.integration.api.event.Event;
 import io.dialob.integration.api.event.EventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.task.TaskExecutor;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class QuestionnaireSessionEventPublisher implements EventPublisher {
 

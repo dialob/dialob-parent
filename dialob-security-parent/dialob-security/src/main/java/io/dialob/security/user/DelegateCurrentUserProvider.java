@@ -16,6 +16,7 @@
 package io.dialob.security.user;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

@@ -16,11 +16,12 @@
 package io.dialob.session.engine.program;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.model.Item;
 import io.dialob.session.engine.program.model.Program;
-import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
+import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.command.*;
 import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.DialobSession;
@@ -29,7 +30,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;

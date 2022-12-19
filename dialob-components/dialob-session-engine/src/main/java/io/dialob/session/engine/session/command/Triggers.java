@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ItemId;
@@ -22,7 +23,6 @@ import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetId;
 import org.immutables.value.Value;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.Serializable;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
