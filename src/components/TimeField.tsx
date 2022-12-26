@@ -1,7 +1,7 @@
 import React from 'react';
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
-import TimePicker from '@mui/lab/TimePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import TextField from '@mui/material/TextField';
 import {format, parse} from 'date-fns';
 import { RenderErrors } from './helpers';

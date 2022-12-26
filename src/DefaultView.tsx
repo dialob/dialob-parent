@@ -2,8 +2,10 @@ import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@dia
 import { Session } from '@dialob/fill-api';
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
+
 
 import svLocale from 'date-fns/locale/sv';
 import fiLocale from 'date-fns/locale/fi';
