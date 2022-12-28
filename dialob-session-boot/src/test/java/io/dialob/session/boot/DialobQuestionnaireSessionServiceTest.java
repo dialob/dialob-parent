@@ -54,6 +54,7 @@ import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -1783,7 +1784,10 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void ghIssue15() throws Exception {
+  @Tag("github-15")
+  @Tag("github-17")
+  @Tag("BUG")
+  public void  ghIssue15and17() throws Exception {
     fillForm("io/dialob/session/engine/gh-issue-15.json")
       .assertState(assertion -> {
         assertion
@@ -1817,8 +1821,40 @@ public class DialobQuestionnaireSessionServiceTest {
           tuple(REMOVE_ERROR, null, null, null, "rowgroup1.0.text1", null),
           tuple(ITEM, null, "questionnaire", "Multirow", null, Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE))
         ))
+      .addRow("rowgroup1")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rowgroup1.1", null, asList("rowgroup1.1.text1"), null, null),
+          tuple(ITEM, null, "rowgroup1.1.text1", "Anna syöte", null, null, null),
+          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0", "rowgroup1.1"), null, null),
+          tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER), null),
+          tuple(ERROR, null, null, null, null, null, "rowgroup1.1.text1")
+        ))
+      .deleteRow("rowgroup1.1") // issue https://github.com/dialob/dialob-parent/issues/15
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), null, null),
+          tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
+          tuple(REMOVE_ITEMS, asList("rowgroup1.1.text1", "rowgroup1.1"), null, null, null, null, null),
+          tuple(REMOVE_ERROR, null, null, null, null, null, "rowgroup1.1.text1")
+        ))
+      .answer("rowgroup1.0.text1", null)
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ERROR, null, null, null, "rowgroup1.0.text1", null),
+          tuple(ITEM, null, "questionnaire", "Multirow", null, Set.of(Action.Type.ANSWER))
+        ))
+      .deleteRow("rowgroup1.0") // issue https://github.com/dialob/dialob-parent/issues/17
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
+          tuple(ITEM, null, "rowgroup1", null, null, null, null),
+          tuple(REMOVE_ITEMS, asList("rowgroup1.0", "rowgroup1.0.text1"), null, null, null, null, null),
+          tuple(REMOVE_ERROR, null, null, null, null, null, "rowgroup1.0.text1")
+        ))
       .apply();
   }
+
 
   protected AbstractListAssert<?, List<?>, ?, ? extends AbstractAssert<?, ?>> questionnaire(AbstractListAssert<?, ? extends List<? extends Action>, Action, ? extends AbstractAssert<?, Action>> assertion) {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));
