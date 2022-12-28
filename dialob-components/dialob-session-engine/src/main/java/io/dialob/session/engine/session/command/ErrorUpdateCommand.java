@@ -16,13 +16,14 @@
 package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ErrorState;
+import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.Set;
 
 public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
@@ -35,10 +36,20 @@ public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
     if (getTargetId().isPartial()) {
-      return Sets.union(eventMatchers, ImmutableSet.of(EventMatchers.whenItemAdded(getTargetId().getItemId())));
+      ImmutableSet.Builder<EventMatcher> builder = ImmutableSet.<EventMatcher>builder();
+      builder.addAll(eventMatchers);
+      builder.add(EventMatchers.whenItemAdded(getTargetId().getItemId()));
+      findConcreteItem(getTargetId()).map(EventMatchers::whenItemsChanged).ifPresent(builder::add);
+      return builder.build();
     }
     return eventMatchers;
   }
 
+  static Optional<ItemId> findConcreteItem(ItemId id) {
+    if (id.isPartial()) {
+      return id.getParent().flatMap(ErrorUpdateCommand::findConcreteItem);
+    }
+    return Optional.of(id);
+  }
 
 }

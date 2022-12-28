@@ -32,6 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -118,10 +119,10 @@ public class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .answerQuestion("g1.1.q2","wrong answer")
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
-          .extracting("type","item.id","error.id").
+          .extracting("type","item.id","error.id", "item.allowedActions").
           containsOnly(
-            tuple(Action.Type.ITEM,"questionnaire",null),
-            tuple(Action.Type.ERROR,null,"g1.1.q2")
+            tuple(Action.Type.ITEM,"questionnaire",null, Set.of(Action.Type.ANSWER)),
+            tuple(Action.Type.ERROR,null,"g1.1.q2", null)
           );
       }).next()
       .addRow("g1")
@@ -138,11 +139,12 @@ public class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .deleteRow("g1.1")
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
-          .extracting("type", "ids", "item.id", "item.items", "error.id", "error.code")
+          .extracting("type", "ids", "item.id", "item.items", "error.id", "error.code", "item.allowedActions")
           .containsOnly(
-            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.1","g1.1.q2","g1.1.q1"), null, null, null, null),
-            tuple(Action.Type.REMOVE_ERROR,     null,                                      null, null, "g1.1.q2", "q2_error1"),
-            tuple(Action.Type.ITEM,         null,                                      "g1", asList("g1.2"), null, null)
+            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.1","g1.1.q2","g1.1.q1"), null, null, null, null, null),
+            tuple(Action.Type.REMOVE_ERROR,     null,                                      null, null, "g1.1.q2", "q2_error1", null),
+            tuple(Action.Type.ITEM,             null,"questionnaire", asList("p1"), null, null, Set.of(Action.Type.ANSWER, Action.Type.COMPLETE)),
+            tuple(Action.Type.ITEM,         null,                                      "g1", asList("g1.2"), null, null, null)
           );
       }).next()
       .addRow("g1")
