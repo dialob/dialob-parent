@@ -1782,6 +1782,44 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
 
+  @Test
+  public void ghIssue15() throws Exception {
+    fillForm("io/dialob/session/engine/gh-issue-15.json")
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(RESET, null, null, null, null, null),
+            tuple(ITEM, null, "group1", "Test", null, null),
+            tuple(ITEM, null, "text2", "Dang", null, null),
+            tuple(ITEM, null, "questionnaire", "Multirow", null, Set.of(Action.Type.ANSWER)),
+            tuple(ITEM, null, "page1", null, null, null),
+            tuple(ITEM, null, "rowgroup1", null, null, null),
+            tuple(ERROR, null, null, null, "text2", null)
+          );
+      })
+      .addRow("rowgroup1")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rowgroup1.0", null, asList("rowgroup1.0.text1"), null),
+          tuple(ITEM, null, "rowgroup1.0.text1", "Anna syöte", null, null),
+          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), null),
+          tuple(ERROR, null, null, null, null, null)
+        ))
+      .answer("text2", "hello")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(REMOVE_ERROR, null, null, null, "text2", null)
+        ))
+      .answer("rowgroup1.0.text1", "hello")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(REMOVE_ERROR, null, null, null, "rowgroup1.0.text1", null),
+          tuple(ITEM, null, "questionnaire", "Multirow", null, Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE))
+        ))
+      .apply();
+  }
+
   protected AbstractListAssert<?, List<?>, ?, ? extends AbstractAssert<?, ?>> questionnaire(AbstractListAssert<?, ? extends List<? extends Action>, Action, ? extends AbstractAssert<?, Action>> assertion) {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));
   }
