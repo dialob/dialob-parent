@@ -3,6 +3,7 @@ import { altTheme } from './altTheme';
 import { appTheme } from './appTheme';
 import { hbTheme } from './hbTheme';
 import { pintTheme } from './pintTheme';
+import { popTheme } from './popTheme';
 
 export {appTheme} from './appTheme';
 export {altTheme} from './altTheme';
@@ -27,5 +28,9 @@ export const THEMES = [
  {
   name: 'PINT',
   theme: pintTheme
+ },
+ {
+  name: 'POP',
+  theme: popTheme
  }
 ];
