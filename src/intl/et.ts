@@ -4,7 +4,9 @@ const et = {
   'locale.fi': 'Suomi',
   'locale.sv': 'Svenska',
   'locale.en': 'English',
-  'locale.et': 'Eesti'
+  'locale.et': 'Eesti',
+
+  'theme': 'Teema'
 };
 
 export default et;

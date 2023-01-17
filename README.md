@@ -1,7 +1,5 @@
 # Dialob Material UI Fill: Generic App
 
-Set REACT_APP_MAPBOX_TOKEN environment variable with Mapbox API access token to enable Address item type.
-
 ---
 
 ## Contents: Material UI theming for Dialob
@@ -167,10 +165,10 @@ This project has localizations for two elements: language selector and feedback 
 Use a Material UI theme generator for initial color scheme and to preview colors and components.
 
 * Material UI theming documentation:  
-https://material-ui.com/customization/theming/
+https://mui.com/material-ui/customization/theming/
 
 * Material UI theme generator:  
-https://bareynol.github.io/mui-theme-creator/
+https://zenoo.github.io/mui-theme-creator/
 
 ---
 

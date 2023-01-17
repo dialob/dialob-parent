@@ -1,13 +1,6 @@
 import { useFillItem } from '@dialob/fill-react';
-import React, { useContext } from 'react';
-import { 
-  Page, Group, Text, Number, TextBox, BooleanCheckbox, 
-  BooleanRadio, Choice, MultiChoiceAC, MultiChoice, Note, 
-  DateField, TimeField, RowGroup, Row, SurveyGroup 
-} from '@dialob/fill-material';
-
-//import { Address } from '@resys/dialob-fill-material-item-address';
-import { MapboxContext } from '@resys/mapbox-connector';
+import React from 'react';
+import { Page, Group, Text, Number, TextBox, BooleanCheckbox, BooleanRadio, Choice, ChoiceAC, MultiChoiceAC, MultiChoice, Note, DateField, TimeField, RowGroup, Row, SurveyGroup } from '@dialob/fill-material';
 
 export interface ItemProps {
   id: string;
@@ -15,8 +8,6 @@ export interface ItemProps {
 };
 export const Item: React.FC<ItemProps> = ({ id, forcePage }) => {
   const { item, errors, availableItems } = useFillItem(id);
-  const mapboxContext = useContext(MapboxContext);
-  
   if(!item) return null;
 
   const withChildren = () => availableItems.map(itemId => <Item key={itemId} id={itemId} />)
@@ -27,14 +18,6 @@ export const Item: React.FC<ItemProps> = ({ id, forcePage }) => {
     return <Group group={item}>{withChildren()}</Group>;
   } else if (item.type === 'text' && item.view === 'textBox') {
     return <TextBox text={item} errors={errors} />;
-  } else if (item.type === 'text' && item.view === 'address') {
-    if (mapboxContext.token) {
-      //return <Address address={item} errors={errors} />;
-      return <Text text={item} errors={errors} />
-    } else {
-      console.warn(`Mapbox API access token is not set, Address item ${id} falls back to Text`)
-      return <Text text={item} errors={errors} />
-    }
   } else if(item.type === 'text') {
     return <Text text={item} errors={errors}/>;
   } else if(item.type === 'boolean') {
@@ -45,8 +28,12 @@ export const Item: React.FC<ItemProps> = ({ id, forcePage }) => {
       }
     }
     return <BooleanRadio boolean={item} errors={errors}/>;
-  } else if(item.type === 'number' || item.type === 'decimal') {
-    return <Number number={item} errors={errors} />;
+  } else if (item.type === 'decimal') {
+    return <Number number={item} errors={errors} integer={false} />;
+  } else if(item.type === 'number') {
+    return <Number number={item} errors={errors} integer={true} />;
+  } else if (item.type === 'list' && (item.props?.autocomplete === 'true' || item.props?.autocomplete === true)) {
+    return <ChoiceAC choice={item} errors={errors} />;
   } else if (item.type === 'list') {
     return <Choice choice={item} errors={errors} />;
   } else if (item.type === 'multichoice' && (item.props?.autocomplete === 'true' || item.props?.autocomplete === true)) {

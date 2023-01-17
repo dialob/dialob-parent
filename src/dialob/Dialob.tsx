@@ -1,17 +1,8 @@
 import React from 'react';
-import { Session as DialobSession } from '@dialob/fill-api';
-import { MaterialDialob, DefaultView } from '@dialob/fill-material';
-import { Item } from './Item';
-import { Theme, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-
-const useStyles = makeStyles((theme: Theme) => (
-  {
-    dialobContainer: {
-      marginTop: theme.spacing(1)
-    },
-  }
-));
+import {Session as DialobSession } from '@dialob/fill-api';
+import {MaterialDialob, DefaultView} from '@dialob/fill-material';
+import {Item} from './Item';
+import { Box } from '@mui/material';
 
 export interface DialobProps {
   session: DialobSession | null;
@@ -19,14 +10,13 @@ export interface DialobProps {
   onComplete?: (session: DialobSession) => void;
 }
 
-export const Dialob: React.FC<DialobProps> = ({ session, locale, onComplete }) => {
-  const classes = useStyles();
+export const Dialob: React.FC<DialobProps> = ({session, locale, onComplete}) => {
   return (
     session &&
-    <Box className={classes.dialobContainer}>
+    <Box sx={{mt: 1}}>
       <MaterialDialob session={session} locale={locale}>
         <DefaultView onComplete={onComplete}>
-          {items => items.map(id => (<Item id={id} key={id} />))}
+          { items => items.map(id => (<Item id={id} key={id} />))}
         </DefaultView>
       </MaterialDialob>
     </Box>
