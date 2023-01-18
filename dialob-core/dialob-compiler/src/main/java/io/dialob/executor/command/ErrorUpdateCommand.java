@@ -15,17 +15,19 @@
  */
 package io.dialob.executor.command;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import java.util.Optional;
+import java.util.Set;
 
-import io.dialob.executor.model.ErrorId;
-import io.dialob.executor.model.ErrorState;
-import io.dialob.program.model.Expression;
+import javax.annotation.Nonnull;
 
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+
+import io.dialob.executor.model.ErrorId;
+import io.dialob.executor.model.ErrorState;
+import io.dialob.executor.model.ItemId;
+import io.dialob.program.model.Expression;
 
 public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
 
@@ -37,10 +39,20 @@ public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
     if (getTargetId().isPartial()) {
-      return Sets.union(eventMatchers, ImmutableSet.of(EventMatchers.whenItemAdded(getTargetId().getItemId())));
+      ImmutableSet.Builder<EventMatcher> builder = ImmutableSet.<EventMatcher>builder();
+      builder.addAll(eventMatchers);
+      builder.add(EventMatchers.whenItemAdded(getTargetId().getItemId()));
+      findConcreteItem(getTargetId()).map(EventMatchers::whenItemsChanged).ifPresent(builder::add);
+      return builder.build();
     }
     return eventMatchers;
   }
 
+  static Optional<ItemId> findConcreteItem(ItemId id) {
+    if (id.isPartial()) {
+      return id.getParent().flatMap(ErrorUpdateCommand::findConcreteItem);
+    }
+    return Optional.of(id);
+  }
 
 }

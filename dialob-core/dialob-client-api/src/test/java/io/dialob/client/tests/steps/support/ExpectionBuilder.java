@@ -75,6 +75,10 @@ public class ExpectionBuilder {
   public StepsBuilder next() {
     return stepsBuilder;
   }
+  
+  public ExpectionBuilder finallyAssert(Consumer<String> msg) {
+    return this;
+  }
 
   public boolean execute() throws Exception {
     return next().execute();

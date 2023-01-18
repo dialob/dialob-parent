@@ -15,9 +15,21 @@
  */
 package io.dialob.program.expr.arith;
 
+import static io.dialob.executor.command.EventMatchers.anyError;
+import static io.dialob.executor.command.EventMatchers.errorActivity;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+
+import org.immutables.value.Value;
+
 import com.google.common.collect.ImmutableSet;
 
-import io.dialob.compiler.Utils;
 import io.dialob.executor.command.EventMatcher;
 import io.dialob.executor.model.ErrorState;
 import io.dialob.executor.model.ItemId;
@@ -25,20 +37,6 @@ import io.dialob.executor.model.ItemState;
 import io.dialob.program.EvalContext;
 import io.dialob.program.model.Expression;
 import io.dialob.rule.parser.api.ValueType;
-
-import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
-
-import static io.dialob.executor.command.EventMatchers.anyError;
-import static io.dialob.executor.command.EventMatchers.errorActivity;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Value.Immutable
 public interface IsInvalidAnswersOnActivePage extends Expression {
@@ -58,27 +56,27 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
       return false;
     }
 
-    final List<ItemId> pageItemIds = context.getItemState(getPageContainerId())
+    var pageItemIds = context.getItemState(getPageContainerId())
       .flatMap(ItemState::getActivePage)
       .flatMap(context::getItemState)
       .map(ItemState::getItems)
-      .orElse(Collections.emptyList());
+      .stream()
+      .flatMap(Collection::stream);
 
     return findQuestionItems(context, pageItemIds)
       .map(ItemState::getId)
       .anyMatch(questionsWithErrors::contains);
   }
 
-  default Stream<? extends ItemState> findQuestionItems(@Nonnull EvalContext context, List<ItemId> items) {
-    return items.stream()
+  default Stream<? extends ItemState> findQuestionItems(@Nonnull EvalContext context, Stream<ItemId> items) {
+    return items
       .map(context::getItemState)
-      .filter(Optional::isPresent)
-      .map(Optional::get)
+      .flatMap(Optional::stream)
       .flatMap(item -> {
-        if (Utils.isQuestionType(item)) {
+        if (item.getItems().isEmpty()) {
           return Stream.of(item);
         }
-        return findQuestionItems(context, item.getItems());
+        return Stream.concat(Stream.of(item), findQuestionItems(context, item.getItems().stream()));
       });
   }
 

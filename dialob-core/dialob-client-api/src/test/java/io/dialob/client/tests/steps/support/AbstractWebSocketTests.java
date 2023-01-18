@@ -64,6 +64,10 @@ public class AbstractWebSocketTests {
   public DialobClient getClient() { return ctx.getClient(); }
   public FunctionRegistryImpl getRegistry() { return registry; }
 
+  public Form shouldFindForm(ImmutableForm form) {
+    return save(form);
+  }
+  
   public Form save(ImmutableForm form) {
     final var envir = ctx.getClient().envir()
       .addCommand().id(form.getId()).form(form).build()
