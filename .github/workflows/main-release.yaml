@@ -18,7 +18,13 @@ jobs:
       with:
         java-version: '11'
 
-    - name: tag - release - upload
+    - name: Docker Hub login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ DOCKER_HUB_USER }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: tag - release - upload - docker
       run: ./dialob-build-parent/release.sh
       env:
         CI: false
