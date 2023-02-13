@@ -63,14 +63,4 @@ git commit -am "Release: ${RELEASE_VERSION}"
 git push
 git push origin ${RELEASE_VERSION}
 
-# Push docker images
-echo "Build and push docker images"
-git checkout ${RELEASE_VERSION}
-mvn clean -Pjib package jib:docker -pl dialob-session-boot -Djib.to.image=docker.io/resys/dialob-session-boot:${RELEASE_VERSION}
-mvn clean -Pjib package jib:docker -pl dialob-boot -Djib.to.image=docker.io/resys/dialob-boot:${RELEASE_VERSION}
-docker tag docker.io/resys/dialob-session-boot:${RELEASE_VERSION} docker.io/resys/dialob-session-boot:latest
-docker tag docker.io/resys/dialob-boot:${RELEASE_VERSION} docker.io/resys/dialob-boot:latest
-docker push docker.io/resys/dialob-session-boot:latest
-docker push docker.io/resys/dialob-boot:latest
-
 
