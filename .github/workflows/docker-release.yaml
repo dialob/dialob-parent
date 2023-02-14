@@ -1,9 +1,7 @@
 on:
   push:
-    branches:
-      - main
     tags:
-      - '**'
+      - '2.**'
 
 name: docker - build - deploy
 
