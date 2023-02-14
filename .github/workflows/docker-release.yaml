@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main
         with:
-          ref: ${ GITHUB_REF_NAME }
+          ref: ${{ env.GITHUB_REF_NAME }}
 
       - uses: actions/setup-java@v3
         with:
@@ -23,11 +23,11 @@ jobs:
       - name: Docker Hub login
         uses: docker/login-action@v2
         with:
-          username: ${ DOCKER_HUB_USER }
+          username: ${{ env.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: tag - release - upload - docker
         run: ./dialob-build-parent/docker.sh
         env:
-          RELEASE_VERSION: ${ GITHUB_REF_NAME }
+          RELEASE_VERSION: ${{ env.GITHUB_REF_NAME }}
         
