@@ -39,8 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.db.assets.AssetFormDatabase;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
-import io.dialob.db.gcdatastore.database.DatastoreFormDatabase;
-import io.dialob.db.gcdatastore.database.DatastoreQuestionnaireDatabase;
 import io.dialob.db.jdbc.JdbcQuestionnaireDatabase;
 import io.dialob.db.mongo.database.MongoDbFormDatabase;
 import io.dialob.db.mongo.database.MongoDbQuestionnaireDatabase;
@@ -164,21 +162,6 @@ class DialobDbJdbcAutoConfigurationTest {
           .hasSingleBean(QuestionnaireDatabase.class);
         Assertions.assertThat(context).getBean(FormDatabase.class).isInstanceOf(FormFileDatabase.class);
         Assertions.assertThat(context).getBean(QuestionnaireDatabase.class).isInstanceOf(QuestionnaireFileDatabase.class);
-      });
-  }
-
-  @Test
-  public void testDialobDbJdbcAutoConfigurationTypeGCDATASTORE() {
-    new ApplicationContextRunner()
-      .withPropertyValues("dialob.db.database-type=GCDATASTORE")
-      .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
-      .run(context -> {
-        Assertions.assertThat(context)
-          .hasSingleBean(FormDatabase.class)
-          .hasSingleBean(QuestionnaireDatabase.class);
-        Assertions.assertThat(context).getBean(FormDatabase.class).isInstanceOf(DatastoreFormDatabase.class);
-        Assertions.assertThat(context).getBean(QuestionnaireDatabase.class).isInstanceOf(DatastoreQuestionnaireDatabase.class);
       });
   }
 

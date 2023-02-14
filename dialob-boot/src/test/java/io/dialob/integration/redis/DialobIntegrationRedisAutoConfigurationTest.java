@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.integration.redis.channel.SubscribableRedisChannel;
 
-class DialobIntegrationRedisAutoConfigurationTest {
+class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
 
   @Test
   public void shouldSetupRedisChannelWhenRedisIsAvailable() {
@@ -34,10 +34,10 @@ class DialobIntegrationRedisAutoConfigurationTest {
         DialobIntegrationRedisAutoConfiguration.class
        ))
       .withBean(ObjectMapper.class)
-      .run(context -> {
-        Assertions.assertThat(context)
-          .getBean(Constants.DIALOB_NODE_STATUS_CHANNEL_BEAN).isInstanceOf(SubscribableRedisChannel.class);
-      });
+      .withPropertyValues("spring.redis.port=" + redis.getMappedPort(6379))
+      .withPropertyValues("spring.redis.host=" + redis.getHost())
+      .run(context -> Assertions.assertThat(context)
+        .getBean(Constants.DIALOB_NODE_STATUS_CHANNEL_BEAN).isInstanceOf(SubscribableRedisChannel.class));
   }
 
   @Test
@@ -47,10 +47,10 @@ class DialobIntegrationRedisAutoConfigurationTest {
         DialobIntegrationRedisAutoConfiguration.class
       ))
       .withBean(ObjectMapper.class)
-      .run(context -> {
-        Assertions.assertThat(context)
-          .doesNotHaveBean(Constants.DIALOB_NODE_STATUS_CHANNEL_BEAN);
-      });
+      .withPropertyValues("spring.redis.port=" + redis.getMappedPort(6379))
+      .withPropertyValues("spring.redis.host=" + redis.getHost())
+      .run(context -> Assertions.assertThat(context)
+        .doesNotHaveBean(Constants.DIALOB_NODE_STATUS_CHANNEL_BEAN));
   }
 
 }

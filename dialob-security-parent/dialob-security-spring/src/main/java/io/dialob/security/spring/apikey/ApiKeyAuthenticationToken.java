@@ -29,7 +29,7 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
   /**
    * Creates a token with the supplied array of authorities.
    *
-   * @param authorities the collection of <tt>GrantedAuthority</tt>s for the principal
+   * @param authorities the collection of GrantedAuthority-s for the principal
    *                    represented by this authentication object.
    */
   public ApiKeyAuthenticationToken(@NonNull Collection<? extends GrantedAuthority> authorities,

@@ -36,10 +36,6 @@
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-gcdatastore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-db-jdbc</artifactId>
     </dependency>
     <dependency>

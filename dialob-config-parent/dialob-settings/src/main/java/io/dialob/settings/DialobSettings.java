@@ -34,7 +34,6 @@ public class DialobSettings {
     MONGODB,
     FILEDB,
     DIALOBAPIDB,
-    GCDATASTORE,
     JDBC,
     ASSETS,
     S3

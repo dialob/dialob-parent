@@ -43,8 +43,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
 
 import io.dialob.db.assets.AssetFormDatabase;
 import io.dialob.db.assets.repository.AssetRepository;
@@ -58,10 +56,6 @@ import io.dialob.db.dialob.api.DialobApiQuestionnaireDatabase;
 import io.dialob.db.dialob.api.DialobApiTemplate;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
-import io.dialob.db.gcdatastore.database.DatastoreFormDatabase;
-import io.dialob.db.gcdatastore.database.DatastoreQuestionnaireDatabase;
-import io.dialob.db.gcdatastore.repository.spi.DatastoreFormRepository;
-import io.dialob.db.gcdatastore.repository.spi.DatastoreQuestionnaireRepository;
 import io.dialob.db.jdbc.DatabaseHelper;
 import io.dialob.db.jdbc.JdbcFormDatabase;
 import io.dialob.db.jdbc.JdbcQuestionnaireDatabase;
@@ -79,7 +73,6 @@ import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -207,27 +200,6 @@ public class DialobDbSpAutoConfiguration {
     @Bean
     public QuestionnaireDatabase questionnaireDatabase() {
       return this.jdbcQuestionnaireDatabase;
-    }
-  }
-
-
-  @Configuration(proxyBeanMethods = false)
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.GCDATASTORE)
-  public static class DialobDbGCDatastoreAutoConfiguration {
-
-    private Datastore datastore = DatastoreOptions.newBuilder().setProjectId("dummy").build().getService();
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "GCDATASTORE", matchIfMissing = true)
-    public FormDatabase formDatabase(ObjectMapper mapper, CurrentTenant currentTenant) {
-      return new DatastoreFormDatabase(new DatastoreFormRepository(datastore, mapper, currentTenant.getId(), "forms"));
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaireDatabase", name = "database-type", havingValue = "GCDATASTORE", matchIfMissing = true)
-    public QuestionnaireDatabase questionnaireDatabase(ObjectMapper mapper, CurrentTenant currentTenant) {
-      return new DatastoreQuestionnaireDatabase(
-        new DatastoreQuestionnaireRepository(datastore, mapper, currentTenant.getId(), "questionnaires"));
     }
   }
 

@@ -58,39 +58,37 @@
     <hibernate-validator.version>6.0.22.Final</hibernate-validator.version>
     <immutables.version>2.8.8</immutables.version>
     <jackson.version>2.13.0</jackson.version>
-    <jackson-databind.version>2.13.0</jackson-databind.version>
+    <jackson-databind.version>2.13.4.1</jackson-databind.version>
     <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
     <json-path.version>2.4.0</json-path.version>
-    <jsoup.version>1.14.3</jsoup.version>
+    <jsoup.version>1.15.3</jsoup.version>
     <feign.version>11.8</feign.version>
 
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
 
-    <logback.version>1.2.10</logback.version>
+    <logback.version>1.2.11</logback.version>
     <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
     <mockito.version>3.7.7</mockito.version>
     <okhttp3.version>4.9.3</okhttp3.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.6.3</spring-boot.version>
-    <spring-integration.version>5.5.6</spring-integration.version>
-    <spring-security.version>5.5.5</spring-security.version>
-    <springframework.version>5.3.16</springframework.version>
-    <spring-session.version>2.5.5</spring-session.version>
+    <spring-boot.version>2.7.0</spring-boot.version>
+    <spring-integration.version>5.5.12</spring-integration.version>
+    <spring-security.version>5.7.5</spring-security.version>
+    <spring-session.version>2.6.3</spring-session.version>
     <swagger.version>2.1.11</swagger.version>
     <validation-api.version>2.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <caffeine.version>2.9.2</caffeine.version>
     <nosqlunit.version>1.0.0</nosqlunit.version>
-    <protobuf-java.version>3.19.4</protobuf-java.version>
+    <protobuf-java.version>3.19.6</protobuf-java.version>
     <lombok.version>1.18.22</lombok.version>
-    <commons-text.version>1.9</commons-text.version>
+    <commons-text.version>1.10.0</commons-text.version>
     <commons-csv.version>1.9.0</commons-csv.version>
     <commons-validator.version>1.7</commons-validator.version>
     <aws-java-sdk.version>2.17.100</aws-java-sdk.version>
-    <google-cloud-datastore.version>2.2.1</google-cloud-datastore.version>
     <spring-cloud-starter-parent.version>2021.0.1</spring-cloud-starter-parent.version>
-    <micrometer-registry-prometheus.version>1.8.3</micrometer-registry-prometheus.version>
+    <micrometer-registry-prometheus.version>1.9.0</micrometer-registry-prometheus.version>
     <s3mock-junit5.version>2.2.3</s3mock-junit5.version>
     <groovy.version>3.0.9</groovy.version>
     <bcpkix-jdk15on.version>1.70</bcpkix-jdk15on.version>
@@ -193,11 +191,6 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.el</artifactId>
-      <version>3.0.3</version>
     </dependency>
   </dependencies>
 
@@ -438,11 +431,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-aop</artifactId>
-        <version>${springframework.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.session</groupId>
         <artifactId>spring-session-core</artifactId>
         <version>${spring-session.version}</version>
@@ -469,11 +457,6 @@
         <groupId>com.ibm.db2.jcc</groupId>
         <artifactId>db2jcc4</artifactId>
         <version>${db2jcc4.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-jdbc</artifactId>
-        <version>${springframework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.immutables</groupId>
@@ -542,11 +525,6 @@
         <groupId>io.github.openfeign</groupId>
         <artifactId>feign-slf4j</artifactId>
         <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>google-cloud-datastore</artifactId>
-        <version>${google-cloud-datastore.version}</version>
       </dependency>
       <dependency>
         <groupId>io.micrometer</groupId>
