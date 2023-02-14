@@ -7,7 +7,7 @@ name: docker - build - deploy
 
 jobs:
   build:
-    name: Dockerizing - main - ${{ GITHUB_REF_NAME }}
+    name: Dockerizing - main
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
