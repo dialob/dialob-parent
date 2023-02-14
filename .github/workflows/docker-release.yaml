@@ -23,11 +23,11 @@ jobs:
       - name: Docker Hub login
         uses: docker/login-action@v2
         with:
-          username: ${{ DOCKER_HUB_USER }}
+          username: ${ DOCKER_HUB_USER }
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: tag - release - upload - docker
         run: ./dialob-build-parent/docker.sh
         env:
-          RELEASE_VERSION: ${{ GITHUB_REF_NAME }}
-          
+          RELEASE_VERSION: ${ GITHUB_REF_NAME }
+        
