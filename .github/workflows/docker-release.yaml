@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main
         with:
-          ref: ${{ GITHUB_REF_NAME }}
+          ref: ${ GITHUB_REF_NAME }
 
       - uses: actions/setup-java@v3
         with:
