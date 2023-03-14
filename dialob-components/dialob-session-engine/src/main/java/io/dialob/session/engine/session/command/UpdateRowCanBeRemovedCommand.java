@@ -15,41 +15,36 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ImmutableItemIndex;
-import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
- import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
 @Value.Immutable
-public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
+public interface UpdateRowCanBeRemovedCommand extends AbstractUpdateBooleanAttributeCommand {
+
+
+//  @NotNull
+//  @Override
+//  default Set<EventMatcher> getEventMatchers() {
+//
+//    Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
+//    if (getTargetId().isPartial()) {
+//      return Sets.union(eventMatchers, ImmutableSet.of(
+//        EventMatchers.whenItemAdded(getTargetId()),
+//        EventMatchers.whenItemsChanged(getTargetId().getParent().get())
+//      ));
+//    }
+//    return eventMatchers;
+//
+//  }
 
   @Nonnull
   @Override
   default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
-    List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
-    if (rowNumbers == null) {
-      rowNumbers = Collections.emptyList();
-    }
-    List<ItemId> newItems = rowNumbers.stream().map(row -> ImmutableItemIndex.of(row, Optional.of(getTargetId()))).collect(Collectors.toList());
     return itemState.update()
-      .setItems(newItems)
-      .get();
+      .setRowCanBeRemoved(evalExpression(context)).get();
   }
 
-  @Nonnull
-  @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return ImmutableSet.of(whenValueUpdated(getTargetId()));
-  }
 }

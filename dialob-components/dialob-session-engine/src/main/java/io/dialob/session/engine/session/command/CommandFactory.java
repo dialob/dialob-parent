@@ -81,6 +81,18 @@ public final class CommandFactory {
         return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive());
       }
     },
+    ROWS_CAN_BE_ADDED_CHANGED {
+      @Override
+      public boolean test(ItemState itemState, ItemState updateState) {
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRowsCanBeAdded() != itemState.isRowsCanBeAdded());
+      }
+    },
+    ROWS_CAN_BE_REMOVED_CHANGED {
+      @Override
+      public boolean test(ItemState itemState, ItemState updateState) {
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRowCanBeRemoved() != itemState.isRowCanBeRemoved());
+      }
+    },
     ITEM_LABEL_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
@@ -227,6 +239,18 @@ public final class CommandFactory {
       Triggers.<ItemState>trigger(Triggers.activityUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.validityUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.answeredUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED)
+    ));
+  }
+
+  public static UpdateRowsCanBeAddedCommand rowsCanBeAddedUpdate(ItemId targetId, Expression expression) {
+    return ImmutableUpdateRowsCanBeAddedCommand.of(targetId, expression, ImmutableList.of(
+      Triggers.<ItemState>trigger(rowsCanBeAddedUpdatedEvent(onTarget(targetId))).when(ROWS_CAN_BE_ADDED_CHANGED)
+    ));
+  }
+
+  public static UpdateRowCanBeRemovedCommand rowCanBeRemovedUpdate(ItemId targetId, Expression expression) {
+    return ImmutableUpdateRowCanBeRemovedCommand.of(targetId, expression, ImmutableList.of(
+      Triggers.<ItemState>trigger(rowCanBeRemovedUpdatedEvent(onTarget(targetId))).when(ROWS_CAN_BE_REMOVED_CHANGED)
     ));
   }
 

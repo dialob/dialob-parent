@@ -63,6 +63,14 @@ public final class EventMatchers {
     return ImmutableEventMatchers.IsDisabledTargetEventMatcher.of(itemId);
   }
 
+  public static EventMatcher whenRowsCanBeAddedUpdatedEvent(@Nonnull ItemId itemId) {
+    return ImmutableEventMatchers.RowsCanBeAddedUpdatedEventMatcher.builder().build();
+  }
+
+  public static EventMatcher whenRowCanBeRemovedUpdatedEvent(@Nonnull ItemId itemId) {
+    return ImmutableEventMatchers.RowCanBeRemovedUpdatedEventMatcher.builder().build();
+  }
+
   public static EventMatcher whenValidUpdated(@Nonnull ItemId itemId) {
     return ImmutableEventMatchers.IsValidTargetEventMatcher.of(itemId);
   }
@@ -214,6 +222,24 @@ public final class EventMatchers {
     @Override
     default boolean matches(Event event) {
       return event instanceof RowGroupItemsInitEvent && ((RowGroupItemsInitEvent)event).getPrototypeId().equals(getPrototypeId());
+    }
+  }
+
+  @Value.Immutable
+  interface RowsCanBeAddedUpdatedEventMatcher extends EventMatcher {
+
+    @Override
+    default boolean matches(Event event) {
+      return event instanceof RowsCanBeAddedUpdatedEvent;
+    }
+  }
+
+  @Value.Immutable
+  interface RowCanBeRemovedUpdatedEventMatcher extends EventMatcher {
+
+    @Override
+    default boolean matches(Event event) {
+      return event instanceof RowCanBeRemovedUpdatedEvent;
     }
   }
 

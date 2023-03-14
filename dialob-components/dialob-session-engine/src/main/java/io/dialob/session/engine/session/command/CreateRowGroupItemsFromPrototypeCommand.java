@@ -27,7 +27,6 @@ import org.immutables.value.Value;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenItemRemoved;
 import static io.dialob.session.engine.session.command.EventMatchers.whenRowGroupItemsInit;
@@ -59,7 +58,7 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
 
     // add new items states
     newItems.stream()
-      .flatMap(itemId -> context.findPrototype(itemId).map(prototype -> prototype.withId(itemId)).map(Stream::of).orElse(Stream.empty()))
+      .flatMap(itemId -> context.findPrototype(itemId).map(prototype -> prototype.withId(itemId)).stream())
       .forEach(itemState -> builder.putItemStates(itemState.getId(), itemState));
 
     // add error states
