@@ -56,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApplicationAutoConfiguration {
 
   @Order(50)
+  @Configuration(proxyBeanMethods = false)
   @EnableWebSecurity
   public static class RestApiSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -74,13 +75,13 @@ public class ApplicationAutoConfiguration {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
       http = http
-        .requestMatcher(AnyRequestMatcher.INSTANCE);
+        .securityMatcher(AnyRequestMatcher.INSTANCE);
       if (authenticationStrategy.isPresent()) {
         authenticationStrategy.get().configureAuthentication(http, authenticationManager());
 
       }
       if (this.sessionSettings.getRest().isRequireAuthenticated()) {
-        http = http.authorizeRequests().anyRequest().authenticated().and();
+        http = http.authorizeHttpRequests().anyRequest().authenticated().and();
       }
       http
         .cors().configurationSource(corsConfigurationSource()).and()

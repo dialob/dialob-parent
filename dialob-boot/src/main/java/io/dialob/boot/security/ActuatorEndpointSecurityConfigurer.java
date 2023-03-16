@@ -33,8 +33,8 @@ public class ActuatorEndpointSecurityConfigurer extends WebSecurityConfigurerAda
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.requestMatcher(EndpointRequest.toAnyEndpoint())
-      .authorizeRequests()
+    http.securityMatcher(EndpointRequest.toAnyEndpoint())
+      .authorizeHttpRequests()
       .requestMatchers(new AndRequestMatcher(
         EndpointRequest.to(HealthEndpoint.class),
         GET_REQUEST)).permitAll()

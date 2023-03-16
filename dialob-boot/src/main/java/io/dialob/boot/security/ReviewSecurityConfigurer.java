@@ -32,8 +32,8 @@ public class ReviewSecurityConfigurer extends WebUISecurityConfigurer {
   protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
     // @formatter:off
     return http
-      .requestMatcher(requestMatcher())
-      .authorizeRequests()
+      .securityMatcher(requestMatcher())
+      .authorizeHttpRequests()
         .anyRequest().permitAll()
         .and();
     // @formatter:on

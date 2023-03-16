@@ -23,6 +23,7 @@ import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
 
@@ -35,9 +36,9 @@ public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
   protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
     // @formatter:off
     return http
-      .requestMatcher(requestMatcher())
-      .authorizeRequests()
-        .antMatchers(HttpMethod.GET,getContextPath() + "/**").hasAuthority(Permissions.COMPOSER_VIEW)
+      .securityMatcher(requestMatcher())
+      .authorizeHttpRequests()
+        .requestMatchers(antMatcher(HttpMethod.GET,getContextPath() + "/**")).hasAuthority(Permissions.COMPOSER_VIEW)
         .anyRequest().denyAll()
         .and();
     // @formatter:on

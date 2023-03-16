@@ -27,6 +27,8 @@ import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 public class AdminSecurityConfigurer extends WebUISecurityConfigurer {
 
   private final ApplicationEventPublisher applicationEventPublisher;
@@ -44,18 +46,17 @@ public class AdminSecurityConfigurer extends WebUISecurityConfigurer {
     String contextPath = getContextPath();
     contextPath = StringUtils.removeEnd(contextPath, "/");
     return http
-      .requestMatcher(requestMatcher())
-      .authorizeRequests()
-        .antMatchers(HttpMethod.GET,
-          contextPath + "/swagger/**",
-          contextPath + "/swagger-resources",
-          contextPath + "/swagger-resources/**",
-          contextPath + "/swagger-ui/**",
-          contextPath + "/webjars/**").permitAll()
-        .antMatchers(HttpMethod.GET,  "/_uuids").hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
-        .antMatchers(HttpMethod.GET,contextPath + "**").hasAuthority(Permissions.MANAGER_VIEW)
-        .anyRequest().denyAll()
-        .and();
+      .securityMatcher(requestMatcher())
+      .authorizeHttpRequests()
+      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger/**")).permitAll()
+      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources")).permitAll()
+      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources/**")).permitAll()
+      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-ui/**")).permitAll()
+      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/webjars/**")).permitAll()
+      .requestMatchers(antMatcher(HttpMethod.GET,  "/_uuids")).hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
+      .requestMatchers(antMatcher(HttpMethod.GET,contextPath + "**")).hasAuthority(Permissions.MANAGER_VIEW)
+      .anyRequest().denyAll()
+      .and();
     // @formatter:on
   }
 
