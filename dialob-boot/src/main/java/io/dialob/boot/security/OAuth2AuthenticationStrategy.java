@@ -61,11 +61,4 @@ public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
     // @formatter:on
   }
 
-  @Override
-  public CurrentUserProvider currentUserProviderBean() {
-    return new DelegateCurrentUserProvider(
-      new OAuth2SpringSecurityCurrentUserProvider(),
-      new ApiKeyCurrentUserProvider()
-    );
-  }
 }

@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
+import io.dialob.security.spring.ApiKeyCurrentUserProvider;
+import io.dialob.security.spring.OAuth2SpringSecurityCurrentUserProvider;
+import io.dialob.security.user.DelegateCurrentUserProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
@@ -132,9 +136,21 @@ public class SecurityConfiguration {
 
 
     @Bean
-    @ConditionalOnBean(AuthenticationStrategy.class)
-    public CurrentUserProvider currentUserProvider(AuthenticationStrategy authenticationStrategy) {
-      return authenticationStrategy.currentUserProviderBean();
+    @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "OAUTH2", matchIfMissing = true)
+    public CurrentUserProvider currentUserProviderO2() {
+      return new DelegateCurrentUserProvider(
+        new OAuth2SpringSecurityCurrentUserProvider(),
+        new ApiKeyCurrentUserProvider()
+      );
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "AWSELB")
+    public CurrentUserProvider currentUserProviderELB(AuthenticationStrategy authenticationStrategy) {
+      return new DelegateCurrentUserProvider(
+        new PreAuthenticatedCurrentUserProvider(),
+        new ApiKeyCurrentUserProvider()
+      );
     }
 
     @Bean

@@ -17,6 +17,9 @@ package io.dialob.session.boot;
 
 import java.util.Optional;
 
+import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
+import io.dialob.security.spring.ApiKeyCurrentUserProvider;
+import io.dialob.security.user.DelegateCurrentUserProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -114,17 +117,20 @@ public class ApplicationAutoConfiguration {
     }
 
     @Bean
+    public CurrentUserProvider currentUserProvider() {
+      return new DelegateCurrentUserProvider(
+        new PreAuthenticatedCurrentUserProvider(),
+        new ApiKeyCurrentUserProvider()
+      );
+    }
+
+    @Bean
     public SessionPermissionEvaluator onlyOwnerCanAccessSessionPermissionEvaluator(QuestionnaireSessionService questionnaireSessionService) {
       return new OnlyOwnerCanAccessSessionPermissionEvaluator(questionnaireSessionService);
     }
 
   }
 
-  @Bean
-  @ConditionalOnBean(AuthenticationStrategy.class)
-  public CurrentUserProvider currentUserProvider(AuthenticationStrategy authenticationStrategy) {
-    return authenticationStrategy.currentUserProviderBean();
-  }
 
   @Configuration(proxyBeanMethods = false)
   @EnableWebSocket

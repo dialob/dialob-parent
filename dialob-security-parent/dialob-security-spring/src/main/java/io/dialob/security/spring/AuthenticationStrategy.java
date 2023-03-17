@@ -32,8 +32,5 @@ public interface AuthenticationStrategy {
     return false;
   }
 
-  default CurrentUserProvider currentUserProviderBean() {
-    return UnauthenticatedCurrentUserProvider.INSTANCE;
-  }
 
 }

@@ -118,12 +118,5 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
     return true;
   }
 
-  @Override
-  public CurrentUserProvider currentUserProviderBean() {
-    return new DelegateCurrentUserProvider(
-      new PreAuthenticatedCurrentUserProvider(),
-      new ApiKeyCurrentUserProvider()
-    );
-  }
 
 }
