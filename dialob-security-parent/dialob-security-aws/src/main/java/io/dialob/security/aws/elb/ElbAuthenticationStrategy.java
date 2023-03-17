@@ -15,24 +15,21 @@
  */
 package io.dialob.security.aws.elb;
 
+import com.nimbusds.jwt.proc.JWTProcessor;
+import io.dialob.security.spring.AuthenticationStrategy;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 
-import com.nimbusds.jwt.proc.JWTProcessor;
-
-import io.dialob.security.spring.ApiKeyCurrentUserProvider;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.DelegateCurrentUserProvider;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
 
 @Slf4j
 public class ElbAuthenticationStrategy implements AuthenticationStrategy {
@@ -107,15 +104,6 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
     elbBasedPreAuthenticatedWebAuthenticationDetailsSource.setCredentialsRequestHeader(credentialsRequestHeader);
     elbBasedPreAuthenticatedWebAuthenticationDetailsSource.setGroupsClaim(groupsClaim);
     return elbBasedPreAuthenticatedWebAuthenticationDetailsSource;
-  }
-
-  @Override
-  public boolean configure(AuthenticationManagerBuilder auth) throws Exception {
-    PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
-    authenticationProvider.setThrowExceptionWhenTokenRejected(true);
-    authenticationProvider.setPreAuthenticatedUserDetailsService(new ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService());
-    auth.authenticationProvider(authenticationProvider);
-    return true;
   }
 
 

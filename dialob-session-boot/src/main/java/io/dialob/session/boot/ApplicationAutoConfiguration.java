@@ -17,6 +17,7 @@ package io.dialob.session.boot;
 
 import java.util.Optional;
 
+import io.dialob.security.aws.elb.ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
 import io.dialob.security.spring.ApiKeyCurrentUserProvider;
 import io.dialob.security.user.DelegateCurrentUserProvider;
@@ -28,11 +29,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.socket.WebSocketHandler;
@@ -96,12 +99,6 @@ public class ApplicationAutoConfiguration {
       return new TenantBasedCorsConfigurationSource(sessionSettings.getRest().getCors()::get, tenantFromRequestResolver);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-      if (!authenticationStrategy.isPresent() || !authenticationStrategy.get().configure(auth)) {
-          super.configure(auth);
-      }
-    }
   }
 
   @Configuration(proxyBeanMethods = false)
@@ -114,6 +111,14 @@ public class ApplicationAutoConfiguration {
       dialobSettings.getAws().getElb().getPrincipalRequestHeader().ifPresent(elbAuthenticationStrategy::setPrincipalRequestHeader);
       dialobSettings.getAws().getElb().getCredentialsRequestHeader().ifPresent(elbAuthenticationStrategy::setCredentialsRequestHeader);
       return elbAuthenticationStrategy;
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+      PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
+      authenticationProvider.setThrowExceptionWhenTokenRejected(true);
+      authenticationProvider.setPreAuthenticatedUserDetailsService(new ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService());
+      return authenticationProvider;
     }
 
     @Bean

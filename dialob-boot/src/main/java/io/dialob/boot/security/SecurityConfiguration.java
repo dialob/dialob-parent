@@ -15,16 +15,24 @@
  */
 package io.dialob.boot.security;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.nimbusds.jwt.proc.JWTProcessor;
+import io.dialob.boot.settings.AdminApplicationSettings;
+import io.dialob.boot.settings.ComposerApplicationSettings;
+import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
+import io.dialob.security.aws.elb.ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
+import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.ApiKeyCurrentUserProvider;
+import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.OAuth2SpringSecurityCurrentUserProvider;
+import io.dialob.security.spring.apikey.*;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.DelegateCurrentUserProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import io.dialob.settings.DialobSettings;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -33,31 +41,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
-import com.nimbusds.jwt.proc.JWTProcessor;
-
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
-import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
-import io.dialob.security.key.ServletRequestApiKeyExtractor;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.apikey.ApiKeyAuthoritiesProvider;
-import io.dialob.security.spring.apikey.ApiKeyValidator;
-import io.dialob.security.spring.apikey.ClientApiKeyService;
-import io.dialob.security.spring.apikey.FixedClientApiKeyService;
-import io.dialob.security.spring.apikey.HmacSHA256ApiKeyValidator;
-import io.dialob.security.spring.apikey.RequestHeaderApiKeyExtractor;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.settings.DialobSettings;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "dialob.security.enabled", havingValue = "true")
@@ -134,6 +126,13 @@ public class SecurityConfiguration {
       return elbAuthenticationStrategy;
     }
 
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+      PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
+      authenticationProvider.setThrowExceptionWhenTokenRejected(true);
+      authenticationProvider.setPreAuthenticatedUserDetailsService(new ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService());
+      return authenticationProvider;
+    }
 
     @Bean
     @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "OAUTH2", matchIfMissing = true)
@@ -146,7 +145,7 @@ public class SecurityConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "AWSELB")
-    public CurrentUserProvider currentUserProviderELB(AuthenticationStrategy authenticationStrategy) {
+    public CurrentUserProvider currentUserProviderELB() {
       return new DelegateCurrentUserProvider(
         new PreAuthenticatedCurrentUserProvider(),
         new ApiKeyCurrentUserProvider()

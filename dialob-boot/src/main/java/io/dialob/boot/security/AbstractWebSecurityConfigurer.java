@@ -77,13 +77,6 @@ public abstract class AbstractWebSecurityConfigurer extends WebSecurityConfigure
     return http;
   }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    if (!authenticationStrategy.configure(auth)) {
-      super.configure(auth);
-    }
-  }
-
   protected abstract HttpSecurity configurePermissions(HttpSecurity http) throws Exception;
 
   protected RequestMatcher requestMatcher() {
