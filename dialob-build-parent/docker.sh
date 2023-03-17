@@ -26,7 +26,7 @@ RELEASE_VERSION=$(cat dialob-build-parent/release.version)
 echo " docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
 echo " docker.io/resys/dialob-boot:${RELEASE_VERSION}"
 
-mvn -Dmaven.test.skip=true clean package
+mvn clean package
 
 docker image build -t ${DIALOB_BOOT_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
 docker image build -t ${DIALOB_SESSION_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
