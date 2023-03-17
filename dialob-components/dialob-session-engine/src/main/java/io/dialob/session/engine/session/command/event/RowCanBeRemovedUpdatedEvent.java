@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.program.model;
+package io.dialob.session.engine.session.command.event;
 
 import org.immutables.value.Value;
 
-import java.util.Optional;
-
 @Value.Immutable
-@Value.Style(jdkOnly = true)
-public interface Group extends DisplayItem {
-
-  Expression getItemsExpression();
-
-  Optional<Expression> getAvailableItemsExpression();
-
-  Optional<Expression> getIsInvalidAnswersExpression();
-
-  Optional<Expression> getAllowedActionsExpression();
-
-  Optional<Expression> getCanAddRowWhenExpression();
-
-  Optional<Expression> getCanRemoveRowWhenExpression();
+public interface RowCanBeRemovedUpdatedEvent extends AttributeEvent {
 
 }

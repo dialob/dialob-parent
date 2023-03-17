@@ -15,59 +15,6 @@
  */
 package io.dialob.session.boot;
 
-import static io.dialob.api.proto.Action.Type.ANSWER;
-import static io.dialob.api.proto.Action.Type.COMPLETE;
-import static io.dialob.api.proto.Action.Type.ERROR;
-import static io.dialob.api.proto.Action.Type.ITEM;
-import static io.dialob.api.proto.Action.Type.LOCALE;
-import static io.dialob.api.proto.Action.Type.NEXT;
-import static io.dialob.api.proto.Action.Type.REMOVE_ERROR;
-import static io.dialob.api.proto.Action.Type.REMOVE_ITEMS;
-import static io.dialob.api.proto.Action.Type.RESET;
-import static io.dialob.api.proto.Action.Type.VALUE_SET;
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.time.Clock;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.AbstractIterableAssert;
-import org.assertj.core.api.AbstractListAssert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.lang.NonNull;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.SerializationUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -75,15 +22,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
-
-import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableFormValueSet;
-import io.dialob.api.form.ImmutableFormValueSetEntry;
-import io.dialob.api.form.ImmutableValidation;
-import io.dialob.api.form.ImmutableVariable;
+import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ImmutableValueSetEntry;
@@ -111,6 +50,37 @@ import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionSaveService;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AbstractIterableAssert;
+import org.assertj.core.api.AbstractListAssert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.lang.NonNull;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.SerializationUtils;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.util.*;
+
+import static io.dialob.api.proto.Action.Type.*;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DialobQuestionnaireSessionServiceTest.TestConfiguration.class})
@@ -1798,16 +1768,16 @@ public class DialobQuestionnaireSessionServiceTest {
             tuple(ITEM, null, "text2", "Dang", null, null),
             tuple(ITEM, null, "questionnaire", "Multirow", null, Set.of(Action.Type.ANSWER)),
             tuple(ITEM, null, "page1", null, null, null),
-            tuple(ITEM, null, "rowgroup1", null, null, null),
+            tuple(ITEM, null, "rowgroup1", null, null, Set.of(ADD_ROW)),
             tuple(ERROR, null, null, null, "text2", null)
           );
       })
       .addRow("rowgroup1")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "rowgroup1.0", null, asList("rowgroup1.0.text1"), null),
+          tuple(ITEM, null, "rowgroup1.0", null, asList("rowgroup1.0.text1"), Set.of(DELETE_ROW)),
           tuple(ITEM, null, "rowgroup1.0.text1", "Anna syöte", null, null),
-          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), null),
+          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), Set.of(ADD_ROW)),
           tuple(ERROR, null, null, null, null, null)
         ))
       .answer("text2", "hello")
@@ -1824,16 +1794,16 @@ public class DialobQuestionnaireSessionServiceTest {
       .addRow("rowgroup1")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "rowgroup1.1", null, asList("rowgroup1.1.text1"), null, null),
+          tuple(ITEM, null, "rowgroup1.1", null, asList("rowgroup1.1.text1"), Set.of(DELETE_ROW), null),
           tuple(ITEM, null, "rowgroup1.1.text1", "Anna syöte", null, null, null),
-          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0", "rowgroup1.1"), null, null),
+          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0", "rowgroup1.1"), Set.of(ADD_ROW), null),
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER), null),
           tuple(ERROR, null, null, null, null, null, "rowgroup1.1.text1")
         ))
       .deleteRow("rowgroup1.1") // issue https://github.com/dialob/dialob-parent/issues/15
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), null, null),
+          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), Set.of(ADD_ROW), null),
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.1.text1", "rowgroup1.1"), null, null, null, null, null),
           tuple(REMOVE_ERROR, null, null, null, null, null, "rowgroup1.1.text1")
@@ -1848,12 +1818,119 @@ public class DialobQuestionnaireSessionServiceTest {
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
-          tuple(ITEM, null, "rowgroup1", null, null, null, null),
+          tuple(ITEM, null, "rowgroup1", null, null, Set.of(ADD_ROW), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.0", "rowgroup1.0.text1"), null, null, null, null, null),
           tuple(REMOVE_ERROR, null, null, null, null, null, "rowgroup1.0.text1")
         ))
       .apply();
   }
+
+  @Test
+  @Tag("github-29")
+  public void  ghIssue29ConditionalsOnRowGroupActions() throws Exception {
+    fillForm(ImmutableForm.builder()
+        .id("test")
+        .metadata(ImmutableFormMetadata.builder()
+          .label("test")
+          .build())
+        .putData("questionnaire", ImmutableFormItem.builder()
+          .id("questionnaire")
+          .type("questionnaire")
+          .addItems("g")
+          .build())
+        .putData("g", ImmutableFormItem.builder()
+          .id("g")
+          .type("group")
+          .addItems("q","q2","rg")
+          .build())
+        .putData("q", ImmutableFormItem.builder()
+          .id("q")
+          .required("false")
+          .type("text")
+          .build())
+        .putData("q2", ImmutableFormItem.builder()
+          .id("q2")
+          .required("false")
+          .type("text")
+          .build())
+        .putData("rg", ImmutableFormItem.builder()
+          .id("rg")
+          .type("rowgroup")
+          .addItems("qq")
+          .canAddRowWhen("q != 'ok'")
+          .canRemoveRowWhen("q2 != 'ok'")
+          .build())
+        .addVariables(ImmutableVariable.of("rc", "count(rg)"))
+        .build(),
+      ImmutableQuestionnaire.builder()
+        .metadata(ImmutableQuestionnaireMetadata.builder()
+          .formId("test")
+          .build())
+        .build())
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", null, Set.of(ANSWER, COMPLETE)),
+            tuple(ITEM, null, "rg", null, null, Set.of(ADD_ROW)),
+            tuple(ITEM, null, "g", null, null, null),
+            tuple(ITEM, null, "q", null, null, null),
+            tuple(ITEM, null, "q2", null, null, null)
+          );
+      })
+      .answer("q", "ok")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rg", null, null, null)
+        ))
+      .addRow("rg")
+      .assertThat(AbstractIterableAssert::isEmpty)  // No rows added
+      .answer("q", "off")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rg", null, null, Set.of(ADD_ROW))
+        ))
+      .addRow("rg")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rg.0", null, null, Set.of(DELETE_ROW)),
+          tuple(ITEM, null, "rg", null, null, Set.of(ADD_ROW))
+        ))
+      .answer("q2", "ok")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rg.0", null, null, null)
+        ))
+      .deleteRow("rg.0")
+      .assertThat(AbstractIterableAssert::isEmpty)  // No rows deleted
+      .answer("q2", "xx")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "rg.0", null, null, Set.of(DELETE_ROW))
+        ))
+      .deleteRow("rg.0")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+          tuple(REMOVE_ITEMS, Arrays.asList("rg.0"), null, null, null, null),
+          tuple(ITEM, null, "rg", null, null, Set.of(ADD_ROW))
+        ))
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", null, Set.of(ANSWER, COMPLETE)),
+            tuple(ITEM, null, "rg", null, null, Set.of(ADD_ROW)),
+            tuple(ITEM, null, "g", null, null, null),
+            tuple(ITEM, null, "q", null, null, null),
+            tuple(ITEM, null, "q2", null, null, null)
+          );
+      })
+
+      .apply();
+  }
+
 
 
   protected AbstractListAssert<?, List<?>, ?, ? extends AbstractAssert<?, ?>> questionnaire(AbstractListAssert<?, ? extends List<? extends Action>, Action, ? extends AbstractAssert<?, Action>> assertion) {

@@ -23,11 +23,22 @@ import org.immutables.value.Value;
 import javax.annotation.Nonnull;
 import java.util.Set;
 
+/**
+ * Represents operator between two expressions.
+
+ * @param <T> expressions evaluates value type
+ */
 public interface InfixOperator<T> extends Expression {
 
+  /**
+   * @return left hand side expression of operator
+   */
   @Value.Parameter
   Expression getLhs();
 
+  /**
+   * @return right hand side expression of operator
+   */
   @Value.Parameter
   Expression getRhs();
 

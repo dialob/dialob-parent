@@ -15,48 +15,30 @@
  */
 package io.dialob.session.engine.session.model;
 
-import static io.dialob.session.engine.Utils.readNullableDate;
-import static io.dialob.session.engine.Utils.readNullableString;
-import static io.dialob.session.engine.Utils.writeNullableDate;
-import static io.dialob.session.engine.Utils.writeNullableString;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
-
 import io.dialob.common.Constants;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.command.Command;
-import io.dialob.session.engine.session.command.ErrorUpdateCommand;
-import io.dialob.session.engine.session.command.ItemUpdateCommand;
-import io.dialob.session.engine.session.command.SessionUpdateCommand;
-import io.dialob.session.engine.session.command.SetAnswer;
-import io.dialob.session.engine.session.command.UpdateValueSetCommand;
+import io.dialob.session.engine.session.command.*;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+
+import static io.dialob.session.engine.Utils.*;
 
 @EqualsAndHashCode
 @ToString
@@ -339,7 +321,10 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   public EvalContext createScope(@Nonnull EvalContext evalContext, ItemId itemId) {
-    Set<ItemId> scopeItems =  evalContext.getItemState(itemId).map(itemState -> (Set<ItemId>) Sets.newHashSet(itemState.getItems())).orElse(Collections.emptySet());
+    var scopeItems = new ArrayList<>(evalContext
+      .getItemState(itemId)
+      .map(ItemState::getItems).orElseGet(Collections::emptyList));
+    scopeItems.add(itemId);
     return evalContext.withScope(ImmutableScope.of(itemId, scopeItems));
   }
 
@@ -410,6 +395,7 @@ public class DialobSession implements ItemStates, Serializable {
 
   private void applyItemUpdateCommand(EvalContext evalContext, ItemUpdateCommand updateCommand) {
     itemStates.computeIfPresent(updateCommand.getTargetId(), (key,state) -> {
+//      LOGGER.debug("Execute command: {}", updateCommand);
       final ItemState updatedState = updateCommand.update(evalContext, state);
       updateCommand.getTriggers().stream()
         .flatMap(trigger -> trigger.apply(state, updatedState))
@@ -431,7 +417,7 @@ public class DialobSession implements ItemStates, Serializable {
       opened = lastUpdate;
     }
     revision = Integer.toString(ThreadLocalRandom.current().nextInt());
-    LOGGER.debug("{} updated to rev {}", getId(), revision);
+    LOGGER.trace("{} updated to rev {}", getId(), revision);
   }
 
   public ErrorState findErrorState(ErrorId id) {

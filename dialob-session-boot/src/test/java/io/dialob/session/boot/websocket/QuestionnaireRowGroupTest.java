@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static io.dialob.api.proto.Action.Type.ADD_ROW;
 import static java.util.Arrays.asList;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -144,7 +145,7 @@ public class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
             tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.1","g1.1.q2","g1.1.q1"), null, null, null, null, null),
             tuple(Action.Type.REMOVE_ERROR,     null,                                      null, null, "g1.1.q2", "q2_error1", null),
             tuple(Action.Type.ITEM,             null,"questionnaire", asList("p1"), null, null, Set.of(Action.Type.ANSWER, Action.Type.COMPLETE)),
-            tuple(Action.Type.ITEM,         null,                                      "g1", asList("g1.2"), null, null, null)
+            tuple(Action.Type.ITEM,         null,                                      "g1", asList("g1.2"), null, null, Set.of(ADD_ROW))
           );
       }).next()
       .addRow("g1")

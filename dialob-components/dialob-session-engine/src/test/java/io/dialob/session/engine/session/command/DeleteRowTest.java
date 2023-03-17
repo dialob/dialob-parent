@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,14 +31,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DeleteRowTest {
 
   @Test
-  public void deleteRowShouldcChangeRowStatusToBeRemoved() throws Exception {
+  public void deleteRowShouldChangeRowStatusToBeRemoved() throws Exception {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
-      .setRowsCanBeRemoved(true)
+      .setRowCanBeRemoved(true)
       .setValue(Arrays.asList(1))
       .get();
 
@@ -54,7 +55,7 @@ class DeleteRowTest {
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
-      .setRowsCanBeRemoved(true)
+      .setRowCanBeRemoved(true)
       .setValue(Arrays.asList(2))
       .get();
 
@@ -63,16 +64,21 @@ class DeleteRowTest {
     assertEquals(Arrays.asList(2), ((List<Integer>)itemState.getValue()));
 
   }
+
   @Test
   public void deleteRowCannotRemoveRowWhenRowsMayNotBeRemoved() throws Exception {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
+    final ItemState toBeRemoved = Mockito.mock(ItemState.class);
+    Mockito.when(toBeRemoved.isRowCanBeRemoved()).thenReturn(false);
+
+    Mockito.when(context.getItemState(Mockito.any())).thenReturn(Optional.of(toBeRemoved));
 
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setValue(Arrays.asList(1))
-      .setRowsCanBeRemoved(false)
+      .setRowCanBeRemoved(false)
       .get();
 
     itemState = deleteRow.update(context, itemState);
