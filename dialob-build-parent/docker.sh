@@ -21,12 +21,18 @@ echo "Build and push docker images"
 
 DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
 DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
+RELEASE_VERSION=$(cat dialob-build-parent/release.version)
 
 echo " docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
 echo " docker.io/resys/dialob-boot:${RELEASE_VERSION}"
-mvn clean -Pjib package jib:docker -pl dialob-session-boot -Djib.to.image=${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION}
-mvn clean -Pjib package jib:docker -pl dialob-boot -Djib.to.image=${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION}
+
+mvn -Dmaven.test.skip=true clean package
+
+docker image build -t ${DIALOB_BOOT_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
+docker image build -t ${DIALOB_SESSION_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
+
 docker tag ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} ${DIALOB_SESSION_IMAGE}:latest
 docker tag ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} ${DIALOB_BOOT_IMAGE}:latest
 docker push ${DIALOB_SESSION_IMAGE}:latest
 docker push ${DIALOB_BOOT_IMAGE}:latest
+
