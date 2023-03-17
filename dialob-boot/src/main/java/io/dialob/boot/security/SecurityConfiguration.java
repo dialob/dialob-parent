@@ -112,39 +112,24 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationStrategy authenticationStrategy(DialobSettings dialobSettings,
-                                                         Optional<GrantedAuthoritiesMapper> grantedAuthoritiesMapper,
-                                                         Optional<OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>> accessTokenResponseClient,
-                                                         Optional<JWTProcessor> jwtProcessor) {
-      List<String> missingBeans = new ArrayList<>();
-      if (!grantedAuthoritiesMapper.isPresent()) {
-        LOGGER.error("grantedAuthoritiesMapper bean not present.");
-        missingBeans.add("grantedAuthoritiesMapper");
-      }
-      if (missingBeans.isEmpty() && dialobSettings.getSecurity().getAuthenticationMethod() == DialobSettings.SecuritySettings.AuthenticationMethod.OAUTH2) {
-        if (!accessTokenResponseClient.isPresent()) {
-          LOGGER.error("accessTokenResponseClient bean not present.");
-          missingBeans.add("accessTokenResponseClient");
-        } else {
-          return new OAuth2AuthenticationStrategy(grantedAuthoritiesMapper.get(), accessTokenResponseClient.get());
-        }
-      }
-      if (missingBeans.isEmpty() && dialobSettings.getSecurity().getAuthenticationMethod() == DialobSettings.SecuritySettings.AuthenticationMethod.AWSELB) {
-        if (!jwtProcessor.isPresent()) {
-          LOGGER.error("jwtProcessor bean not present.");
-          missingBeans.add("jwtProcessor");
-        } else {
-          ElbAuthenticationStrategy elbAuthenticationStrategy = new ElbAuthenticationStrategy(grantedAuthoritiesMapper.get(), jwtProcessor.get());
-          dialobSettings.getAws().getElb().getPrincipalRequestHeader().ifPresent(elbAuthenticationStrategy::setPrincipalRequestHeader);
-          dialobSettings.getAws().getElb().getCredentialsRequestHeader().ifPresent(elbAuthenticationStrategy::setCredentialsRequestHeader);
-          return elbAuthenticationStrategy;
-        }
-      }
-      if (!missingBeans.isEmpty()) {
-        throw new RuntimeException("Cannot create bean 'authenticationStrategy' due missing beans: " + missingBeans.stream().collect(Collectors.joining(",")));
-      }
-      return (http, authenticationManager) -> http;
+    @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "OAUTH2", matchIfMissing = true)
+    public AuthenticationStrategy authenticationStrategyOauth2(
+                                                         GrantedAuthoritiesMapper grantedAuthoritiesMapper,
+                                                         OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient) {
+      return new OAuth2AuthenticationStrategy(grantedAuthoritiesMapper, accessTokenResponseClient);
     }
+
+    @Bean
+    @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "AWSELB")
+    public AuthenticationStrategy authenticationStrategyElb(DialobSettings dialobSettings,
+                                                         GrantedAuthoritiesMapper grantedAuthoritiesMapper,
+                                                         JWTProcessor jwtProcessor) {
+      var elbAuthenticationStrategy = new ElbAuthenticationStrategy(grantedAuthoritiesMapper, jwtProcessor);
+      dialobSettings.getAws().getElb().getPrincipalRequestHeader().ifPresent(elbAuthenticationStrategy::setPrincipalRequestHeader);
+      dialobSettings.getAws().getElb().getCredentialsRequestHeader().ifPresent(elbAuthenticationStrategy::setCredentialsRequestHeader);
+      return elbAuthenticationStrategy;
+    }
+
 
     @Bean
     @ConditionalOnBean(AuthenticationStrategy.class)
