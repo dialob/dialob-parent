@@ -15,32 +15,27 @@
  */
 package io.dialob.boot.security;
 
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.Ordered;
-import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
 import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.filter.MDCPrincipalFilter;
 import io.dialob.security.spring.tenant.DefaultTenantGrantedAuthorityProvider;
 import io.dialob.security.spring.tenant.RequestParameterTenantScopeFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
-public abstract class AbstractWebSecurityConfigurer extends WebSecurityConfigurerAdapter implements Ordered {
+import java.util.Optional;
+
+public abstract class AbstractWebSecurityConfigurer {
 
   private static final MDCPrincipalFilter MDC_PRINCIPAL_FILTER = new MDCPrincipalFilter();
-
-  private int order = Ordered.LOWEST_PRECEDENCE;
 
   private final String contextPath;
 
@@ -58,9 +53,7 @@ public abstract class AbstractWebSecurityConfigurer extends WebSecurityConfigure
     this.authenticationStrategy = authenticationStrategy;
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    // @formatter:off
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http = configurePermissions(http);
     http = configureLogout(http);
     http = configureFrameOptions(http);
@@ -70,7 +63,7 @@ public abstract class AbstractWebSecurityConfigurer extends WebSecurityConfigure
     http = configureCors(http);
     http = configureRequestParameterTenantScopeFilter(http);
     http = configureMDCPrincipalFilter(http);
-    // @formatter:on
+    return http.build();
   }
 
   protected HttpSecurity configureAuthenticationManager(HttpSecurity http) {
@@ -120,7 +113,7 @@ public abstract class AbstractWebSecurityConfigurer extends WebSecurityConfigure
   }
 
   protected HttpSecurity configureAuthentication(HttpSecurity http) throws Exception {
-    return this.authenticationStrategy.configureAuthentication(http, authenticationManager());
+    return this.authenticationStrategy.configureAuthentication(http);
   }
 
   protected HttpSecurity configureFrameOptions(HttpSecurity http) throws Exception {
@@ -146,17 +139,6 @@ public abstract class AbstractWebSecurityConfigurer extends WebSecurityConfigure
   protected final String getContextPath() {
     return contextPath;
   }
-
-  @Override
-  public int getOrder() {
-    return order;
-  }
-
-  public <T extends AbstractWebSecurityConfigurer> T withOrder(int order) {
-    this.order = order;
-    return (T) this;
-  }
-
 
   @NonNull
   protected Optional<RequestParameterTenantScopeFilter> getRequestParameterTenantScopeFilter() {

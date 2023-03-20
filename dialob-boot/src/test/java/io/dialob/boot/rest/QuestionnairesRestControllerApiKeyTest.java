@@ -46,6 +46,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.ParameterizedTypeReference;
@@ -93,6 +94,7 @@ public class QuestionnairesRestControllerApiKeyTest implements ProvideTestRedis 
     void onFormUpdatedEvent(FormUpdatedEvent event);
   }
 
+  @Configuration
   public static class TestConfiguration {
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
@@ -218,7 +220,8 @@ public class QuestionnairesRestControllerApiKeyTest implements ProvideTestRedis 
     HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {
-        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<FormListItem>>() {});
+        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+        });
       } catch (HttpClientErrorException e) {
         assertEquals(403, e.getRawStatusCode());
         throw e;

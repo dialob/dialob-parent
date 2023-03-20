@@ -22,20 +22,17 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
-
-import java.util.Optional;
 
 @Slf4j
 public class ElbAuthenticationStrategy implements AuthenticationStrategy {
 
   private final GrantedAuthoritiesMapper grantedAuthoritiesMapper;
   private final JWTProcessor jwtProcessor;
+  private final AuthenticationManager authenticationManager;
 
   // idtoken = x-amzn-oidc-data = ELB + userinfo provided
   // accesstoken = x-amzn-oidc-accesstoken = IDP provided
@@ -53,12 +50,13 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
   @Getter
   private String groupsClaim = "cognito:groups";
 
-  public ElbAuthenticationStrategy(@NonNull GrantedAuthoritiesMapper grantedAuthoritiesMapper, @NonNull JWTProcessor jwtProcessor) {
+  public ElbAuthenticationStrategy(@NonNull GrantedAuthoritiesMapper grantedAuthoritiesMapper, @NonNull JWTProcessor jwtProcessor, AuthenticationManager authenticationManager) {
     this.grantedAuthoritiesMapper = grantedAuthoritiesMapper;
     this.jwtProcessor = jwtProcessor;
+    this.authenticationManager = authenticationManager;
   }
 
-  public HttpSecurity configureAuthentication(@NonNull HttpSecurity http, @NonNull AuthenticationManager authenticationManager) throws Exception {
+  public HttpSecurity configureAuthentication(@NonNull HttpSecurity http) throws Exception {
 
     final RequestHeaderAuthenticationFilter filter = createAuthenticationFilter(authenticationManager);
     http.addFilter(filter);
@@ -68,7 +66,7 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
   }
 
   @NonNull
-  protected RequestHeaderAuthenticationFilter createAuthenticationFilter(@NonNull AuthenticationManager authenticationManager) {
+  RequestHeaderAuthenticationFilter createAuthenticationFilter(@NonNull AuthenticationManager authenticationManager) {
     final RequestHeaderAuthenticationFilter filter = new RequestHeaderAuthenticationFilter();
 
 
@@ -90,16 +88,16 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
     return filter;
   }
 
-  public GrantedAuthoritiesMapper getGrantedAuthoritiesMapper() {
+  GrantedAuthoritiesMapper getGrantedAuthoritiesMapper() {
     return grantedAuthoritiesMapper;
   }
 
-  public JWTProcessor getJwtProcessor() {
+  JWTProcessor getJwtProcessor() {
     return jwtProcessor;
   }
 
   @NonNull
-  protected ElbBasedPreAuthenticatedWebAuthenticationDetailsSource createAuthenticationDetailsSource() {
+  ElbBasedPreAuthenticatedWebAuthenticationDetailsSource createAuthenticationDetailsSource() {
     ElbBasedPreAuthenticatedWebAuthenticationDetailsSource elbBasedPreAuthenticatedWebAuthenticationDetailsSource = new ElbBasedPreAuthenticatedWebAuthenticationDetailsSource(getGrantedAuthoritiesMapper(), getJwtProcessor());
     elbBasedPreAuthenticatedWebAuthenticationDetailsSource.setCredentialsRequestHeader(credentialsRequestHeader);
     elbBasedPreAuthenticatedWebAuthenticationDetailsSource.setGroupsClaim(groupsClaim);

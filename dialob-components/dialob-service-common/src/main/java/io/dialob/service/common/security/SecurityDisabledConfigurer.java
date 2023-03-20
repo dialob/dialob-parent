@@ -15,19 +15,6 @@
  */
 package io.dialob.service.common.security;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-
 import io.dialob.security.spring.tenant.DefaultTenantSupplier;
 import io.dialob.security.spring.tenant.RequestParameterTenantScopeFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
@@ -35,8 +22,23 @@ import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.DialobSettings.TenantSettings;
 import io.dialob.settings.DialobSettings.TenantSettings.Mode;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
 
-public class SecurityDisabledConfigurer extends WebSecurityConfigurerAdapter {
+import java.util.Arrays;
+import java.util.Optional;
+
+@Configuration
+public class SecurityDisabledConfigurer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityDisabledConfigurer.class);
 
@@ -49,13 +51,13 @@ public class SecurityDisabledConfigurer extends WebSecurityConfigurerAdapter {
   }
 
   private TenantSettings tenantSettings;
-  
+
   public SecurityDisabledConfigurer(DialobSettings dialobSettings) {
     this.tenantSettings = dialobSettings.getTenant();
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     LOGGER.warn("Security disabled!");
     http.antMatcher("/**")
         .authorizeRequests().anyRequest().permitAll()
@@ -65,8 +67,9 @@ public class SecurityDisabledConfigurer extends WebSecurityConfigurerAdapter {
       .and().headers()
         .frameOptions().disable();
     configureRequestParameterTenantScopeFilter(http);
+    return http.build();
   }
-  
+
   protected HttpSecurity configureRequestParameterTenantScopeFilter(HttpSecurity http) {
     // @formatter:off
     getRequestParameterTenantScopeFilter()
@@ -74,7 +77,7 @@ public class SecurityDisabledConfigurer extends WebSecurityConfigurerAdapter {
     return http;
     // @formatter:on
   }
-  
+
   @NonNull
   protected Optional<RequestParameterTenantScopeFilter> getRequestParameterTenantScopeFilter() {
     final RequestParameterTenantScopeFilter requestParameterTenantScopeFilter = new RequestParameterTenantScopeFilter(
@@ -85,7 +88,7 @@ public class SecurityDisabledConfigurer extends WebSecurityConfigurerAdapter {
     requestParameterTenantScopeFilter.setParameterName(tenantSettings.getUrlParameter());
     return Optional.of(requestParameterTenantScopeFilter);
   }
-  
+
   private DefaultTenantSupplier getDefaultTenantSupplier() {
     if (StringUtils.isEmpty(tenantSettings.getFixedId())) {
       return () -> Optional.empty();

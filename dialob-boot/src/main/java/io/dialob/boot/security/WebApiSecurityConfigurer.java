@@ -15,13 +15,19 @@
  */
 package io.dialob.boot.security;
 
-import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.lang.NonNull;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
+@Configuration
+@Profile("ui")
 public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
 
   private final DialobSettings settings;
@@ -41,6 +47,12 @@ public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
         throw new RuntimeException(e);
       }
     }).orElse(http);
+  }
+
+  @Bean
+  @Order(125)
+  SecurityFilterChain webApiFilterChain(HttpSecurity http) throws Exception {
+    return super.filterChain(http);
   }
 
 }

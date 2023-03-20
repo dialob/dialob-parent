@@ -15,26 +15,35 @@
  */
 package io.dialob.session.boot;
 
-import java.util.Optional;
-
+import com.nimbusds.jwt.proc.JWTProcessor;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.questionnaire.service.sockjs.ExtractURITemplateVariablesToAttributesInterceptor;
+import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
 import io.dialob.security.aws.elb.ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
 import io.dialob.security.spring.ApiKeyCurrentUserProvider;
+import io.dialob.security.spring.AuthenticationStrategy;
+import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.DelegateCurrentUserProvider;
+import io.dialob.session.rest.OnlyOwnerCanAccessSessionPermissionEvaluator;
+import io.dialob.session.rest.SessionPermissionEvaluator;
+import io.dialob.settings.DialobSettings;
+import io.dialob.settings.SessionSettings;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -44,18 +53,8 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
-import com.nimbusds.jwt.proc.JWTProcessor;
-
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.questionnaire.service.sockjs.ExtractURITemplateVariablesToAttributesInterceptor;
-import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.session.rest.OnlyOwnerCanAccessSessionPermissionEvaluator;
-import io.dialob.session.rest.SessionPermissionEvaluator;
-import io.dialob.settings.DialobSettings;
-import io.dialob.settings.SessionSettings;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 @Slf4j
@@ -64,7 +63,7 @@ public class ApplicationAutoConfiguration {
   @Order(50)
   @Configuration(proxyBeanMethods = false)
   @EnableWebSecurity
-  public static class RestApiSecurityConfigurer extends WebSecurityConfigurerAdapter {
+  public static class RestApiSecurityConfigurer {
 
     private final SessionSettings sessionSettings;
     private final QuestionnaireSessionService questionnaireSessionService;
@@ -78,12 +77,12 @@ public class ApplicationAutoConfiguration {
       this.authenticationStrategy = authenticationStrategy;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
       http = http
         .securityMatcher(AnyRequestMatcher.INSTANCE);
       if (authenticationStrategy.isPresent()) {
-        authenticationStrategy.get().configureAuthentication(http, authenticationManager());
+        authenticationStrategy.get().configureAuthentication(http);
 
       }
       if (this.sessionSettings.getRest().isRequireAuthenticated()) {
@@ -92,6 +91,7 @@ public class ApplicationAutoConfiguration {
       http
         .cors().configurationSource(corsConfigurationSource()).and()
         .csrf().disable();
+      return http.build();
     }
 
     CorsConfigurationSource corsConfigurationSource() {
@@ -106,8 +106,8 @@ public class ApplicationAutoConfiguration {
   public static class AwsSecurityConfiguration {
 
     @Bean
-    public AuthenticationStrategy authenticationStrategy(DialobSettings dialobSettings, GrantedAuthoritiesMapper grantedAuthoritiesMapper, JWTProcessor jwtProcessor) {
-      ElbAuthenticationStrategy elbAuthenticationStrategy = new ElbAuthenticationStrategy(grantedAuthoritiesMapper, jwtProcessor);
+    public AuthenticationStrategy authenticationStrategy(DialobSettings dialobSettings, GrantedAuthoritiesMapper grantedAuthoritiesMapper, JWTProcessor jwtProcessor, AuthenticationManager authenticationManager) {
+      ElbAuthenticationStrategy elbAuthenticationStrategy = new ElbAuthenticationStrategy(grantedAuthoritiesMapper, jwtProcessor, authenticationManager);
       dialobSettings.getAws().getElb().getPrincipalRequestHeader().ifPresent(elbAuthenticationStrategy::setPrincipalRequestHeader);
       dialobSettings.getAws().getElb().getCredentialsRequestHeader().ifPresent(elbAuthenticationStrategy::setCredentialsRequestHeader);
       return elbAuthenticationStrategy;
@@ -183,6 +183,14 @@ public class ApplicationAutoConfiguration {
     }
 
 
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(List<AuthenticationProvider> providerList) {
+    if (providerList.isEmpty()) {
+      return authentication -> authentication;
+    }
+    return new ProviderManager(providerList);
   }
 
 }

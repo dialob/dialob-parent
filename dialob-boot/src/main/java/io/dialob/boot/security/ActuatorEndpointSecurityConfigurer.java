@@ -15,39 +15,34 @@
  */
 package io.dialob.boot.security;
 
+import io.dialob.common.Permissions;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.health.HealthEndpoint;
-import org.springframework.core.Ordered;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import io.dialob.common.Permissions;
-
-public class ActuatorEndpointSecurityConfigurer extends WebSecurityConfigurerAdapter implements Ordered {
+@Configuration
+public class ActuatorEndpointSecurityConfigurer {
 
   private int order;
 
   private final RequestMatcher GET_REQUEST = request -> "GET".equals(request.getMethod());
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  @Order(0)
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(EndpointRequest.toAnyEndpoint())
       .authorizeHttpRequests()
       .requestMatchers(new AndRequestMatcher(
         EndpointRequest.to(HealthEndpoint.class),
         GET_REQUEST)).permitAll()
       .anyRequest().hasAuthority(Permissions.AUDIT);
+    return http.build();
   }
 
-  @Override
-  public int getOrder() {
-    return order;
-  }
-
-  public ActuatorEndpointSecurityConfigurer withOrder(int order) {
-    this.order = order;
-    return this;
-  }
 }

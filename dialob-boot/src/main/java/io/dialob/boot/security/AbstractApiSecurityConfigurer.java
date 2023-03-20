@@ -15,7 +15,9 @@
  */
 package io.dialob.boot.security;
 
-import org.springframework.core.Ordered;
+import io.dialob.common.Permissions;
+import io.dialob.security.spring.AuthenticationStrategy;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,14 +25,10 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
-import io.dialob.common.Permissions;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
-public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityConfigurer implements Ordered {
+public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityConfigurer {
 
   public static final CorsConfiguration PERMIT_ALL = new CorsConfiguration().applyPermitDefaultValues();
 

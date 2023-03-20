@@ -15,23 +15,8 @@
  */
 package io.dialob.boot.security;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.apikey.ApiKeyAuthenticationProvider;
 import io.dialob.security.spring.apikey.ApiKeyAuthoritiesProvider;
 import io.dialob.security.spring.apikey.ApiKeyRequestMatcher;
 import io.dialob.security.spring.apikey.ApiKeyValidator;
@@ -39,8 +24,29 @@ import io.dialob.security.spring.apikey.ClientApiKeyService;
 import io.dialob.security.spring.filter.ApiKeyAuthenticationFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
+@Configuration
 public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer {
 
   public static final RequestMatcher SESSION_NOT_EXISTS_MATCHER = request -> request.getSession(false) == null;
@@ -52,6 +58,8 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
   private final ServletRequestApiKeyExtractor keyRequestExtractor;
 
   private final ApiKeyValidator apiKeyValidator;
+
+  private final AuthenticationManager authenticationManager;
 
   private final boolean allRequests;
 
@@ -66,13 +74,15 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
                                       @NonNull ServletRequestApiKeyExtractor keyRequestExtractor,
                                       @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                       @NonNull AuthenticationStrategy authenticationStrategy,
-                                      @NonNull boolean allRequests) {
+                                      @NonNull AuthenticationManager authenticationManager,
+                                      @NonNull Environment env) {
     super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
     this.apiKeyService = apiKeyService;
     this.apiKeyAuthoritiesProvider = apiKeyAuthoritiesProvider;
     this.keyRequestExtractor = keyRequestExtractor;
     this.apiKeyValidator = apiKeyValidator;
-    this.allRequests = allRequests;
+    this.authenticationManager = authenticationManager;
+    this.allRequests = env.acceptsProfiles(Profiles.of("!ui"));
   }
 
   protected RequestMatcher apiKeyRequestMatcher() {
@@ -110,9 +120,9 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
     // Disable authentication
     return http
       .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       .and()
-        .logout().disable();
+      .logout().disable();
   }
 
   @Override
@@ -125,28 +135,20 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
     return http.headers().frameOptions().disable().and();
   }
 
-
-  protected ApiKeyAuthenticationProvider apiKeyAuthenticationProvider(@NonNull ClientApiKeyService apiKeyService,
-                                                                      @NonNull ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider,
-                                                                      @NonNull ApiKeyValidator apiRequestValidator) {
-    return new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiRequestValidator);
-  }
-
-
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(
-      apiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator));
-  }
-
   @Override
   protected HttpSecurity configureMDCPrincipalFilter(HttpSecurity http) throws Exception {
     return super.configureMDCPrincipalFilter(http)
       .addFilterBefore(new ApiKeyAuthenticationFilter(
-          authenticationManager(),
+          authenticationManager,
           keyRequestExtractor,
           apiKeyRequestMatcher()),
         AnonymousAuthenticationFilter.class);
+  }
+
+  @Bean
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+    return super.filterChain(http);
   }
 
 }

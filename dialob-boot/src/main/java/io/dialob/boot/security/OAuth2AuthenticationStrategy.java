@@ -17,8 +17,6 @@ package io.dialob.boot.security;
 
 import io.dialob.security.spring.AuthenticationStrategy;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -39,7 +37,7 @@ public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
   }
 
   @Override
-  public HttpSecurity configureAuthentication(@NonNull HttpSecurity http, @Nullable AuthenticationManager authenticationManager) throws Exception {
+  public HttpSecurity configureAuthentication(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
     http = http
       .oauth2Login()
