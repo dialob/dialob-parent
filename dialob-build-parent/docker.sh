@@ -18,8 +18,11 @@ set -e
 echo "github sha: ${GITHUB_SHA}"
 echo "github ref: ${GITHUB_REF}"
 readonly local last_release_commit_hash=$(git log --author="$BOT_NAME" --pretty=format:"%H" -1)
+readonly local log_status=$(git status)
 echo "Last commit:    ${last_release_commit_hash} by $BOT_NAME"
 echo "Current commit: ${GITHUB_SHA}"
+echo "Git status: ${log_status}"
+
 
 echo "Build and push docker images"
 
