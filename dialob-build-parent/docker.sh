@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 set -e
-
+echo "github sha: ${GITHUB_SHA}"
+echo "github ref: ${GITHUB_REF}"
 echo "Build and push docker images"
 
 DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
