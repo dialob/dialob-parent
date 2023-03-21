@@ -17,6 +17,10 @@
 set -e
 echo "github sha: ${GITHUB_SHA}"
 echo "github ref: ${GITHUB_REF}"
+readonly local last_release_commit_hash=$(git log --author="$BOT_NAME" --pretty=format:"%H" -1)
+echo "Last commit:    ${last_release_commit_hash} by $BOT_NAME"
+echo "Current commit: ${GITHUB_SHA}"
+
 echo "Build and push docker images"
 
 DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
