@@ -25,15 +25,17 @@ echo "Git status: ${log_status}"
 
 
 echo "Build and push docker images"
+readonly local DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
+readonly local DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
+readonly local RELEASE_VERSION=$(cat dialob-build-parent/release.version)
 
-DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
-DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
-RELEASE_VERSION=$(cat dialob-build-parent/release.version)
-
-echo " docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
-echo " docker.io/resys/dialob-boot:${RELEASE_VERSION}"
+echo "Will build docker image: docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
+echo "Will build docker image: docker.io/resys/dialob-boot:${RELEASE_VERSION}"
 
 mvn clean package
+
+echo "Starting build docker image: docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
+echo "Starting build docker image: docker.io/resys/dialob-boot:${RELEASE_VERSION}"
 
 docker image build -t ${DIALOB_BOOT_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
 docker image build -t ${DIALOB_SESSION_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
