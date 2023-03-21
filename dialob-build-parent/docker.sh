@@ -31,7 +31,8 @@ echo "Git status: ${log_status}"
 echo "Build and push docker images"
 readonly local DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
 readonly local DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
-readonly local RELEASE_VERSION=$(cat dialob-build-parent/release.version)
+# readonly local RELEASE_VERSION=$(cat dialob-build-parent/release.version)
+readonly local RELEASE_VERSION=999-SNAPSHOT
 
 echo "Will build docker image: docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
 echo "Will build docker image: docker.io/resys/dialob-boot:${RELEASE_VERSION}"
@@ -41,8 +42,8 @@ mvn clean package
 echo "Starting build docker image: docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
 echo "Starting build docker image: docker.io/resys/dialob-boot:${RELEASE_VERSION}"
 
-docker image build -t ${DIALOB_BOOT_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
-docker image build -t ${DIALOB_SESSION_IMAGE} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
+docker image build -t ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
+docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
 
 docker tag ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} ${DIALOB_SESSION_IMAGE}:latest
 docker tag ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} ${DIALOB_BOOT_IMAGE}:latest
