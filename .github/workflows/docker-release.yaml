@@ -31,5 +31,5 @@ jobs:
         env:
           GITHUB_SHA: ${GITHUB_SHA}
           GITHUB_REF: ${GITHUB_REF}
-          RELEASE_VERSION: ${{ env.GITHUB_REF_NAME }}
+          GITHUB_REF_NAME: ${{ env.GITHUB_REF_NAME }}
         
