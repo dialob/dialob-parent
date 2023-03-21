@@ -29,5 +29,7 @@ jobs:
       - name: tag - release - upload - docker
         run: ./dialob-build-parent/docker.sh
         env:
+          GITHUB_SHA: ${GITHUB_SHA}
+          GITHUB_REF: ${GITHUB_REF}
           RELEASE_VERSION: ${{ env.GITHUB_REF_NAME }}
         
