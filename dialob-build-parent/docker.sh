@@ -47,6 +47,8 @@ docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg REL
 
 docker tag ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} ${DIALOB_SESSION_IMAGE}:latest
 docker tag ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} ${DIALOB_BOOT_IMAGE}:latest
+docker push ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION}
+docker push ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION}
 docker push ${DIALOB_SESSION_IMAGE}:latest
 docker push ${DIALOB_BOOT_IMAGE}:latest
 
