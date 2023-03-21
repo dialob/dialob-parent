@@ -23,5 +23,5 @@ RUN echo "java:x:2000:2000:Java:/java:/sbin/nologin:" >> /etc/passwd && \
 RUN chown -R java:java /java
 WORKDIR /java
 USER java
-ADD target/dialob-boot-${RELEASE_VERSION}.jar /java/dialob-boot.jar
+ADD target/dialob-boot-$RELEASE_VERSION.jar /java/dialob-boot.jar
 ENTRYPOINT ["java", "-jar", "dialob-boot.jar"]
