@@ -89,6 +89,14 @@ public class Triggers {
     return ImmutableActiveUpdatedEvent.of(targetEvent);
   }
 
+  public static Event rowsCanBeAddedUpdatedEvent(TargetEvent targetEvent) {
+    return ImmutableRowsCanBeAddedUpdatedEvent.of(targetEvent);
+  }
+
+  public static Event rowCanBeRemovedUpdatedEvent(TargetEvent targetEvent) {
+    return ImmutableRowCanBeRemovedUpdatedEvent.of(targetEvent);
+  }
+
   public static Event labelUpdatedEvent(TargetEvent targetEvent) {
     return ImmutableLabelUpdatedEvent.of(targetEvent);
   }
@@ -128,7 +136,7 @@ public class Triggers {
   }
 
 
-    public static EventsProvider<ItemState> rowGroupItemsInitEvent(ItemId prototypeId) {
+  public static EventsProvider<ItemState> rowGroupItemsInitEvent(ItemId prototypeId) {
     return ImmutableTriggers.RowGroupItemsInitEventsProvider.of(prototypeId);
   }
 

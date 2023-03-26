@@ -13,43 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.command;
+package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ImmutableItemIndex;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
- import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
+import static io.dialob.session.engine.session.command.EventMatchers.whenRowCanBeRemovedUpdatedEvent;
 
 @Value.Immutable
-public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
+public interface CanRemoveRowOperator extends Expression {
 
-  @Nonnull
+  @Value.Parameter
+  ItemId getItemId();
+
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
-    List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
-    if (rowNumbers == null) {
-      rowNumbers = Collections.emptyList();
-    }
-    List<ItemId> newItems = rowNumbers.stream().map(row -> ImmutableItemIndex.of(row, Optional.of(getTargetId()))).collect(Collectors.toList());
-    return itemState.update()
-      .setItems(newItems)
-      .get();
+  default Boolean eval(@Nonnull EvalContext evalContext) {
+    return evalContext.getItemState(this.getItemId()).map(ItemState::isRowCanBeRemoved).orElse(false);
   }
 
   @Nonnull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return ImmutableSet.of(whenValueUpdated(getTargetId()));
+  default ValueType getValueType() {
+    return ValueType.BOOLEAN;
   }
+
+  @Nonnull
+  @Override
+  default Set<EventMatcher> getEvalRequiredConditions() {
+    return ImmutableSet.of(whenRowCanBeRemovedUpdatedEvent(getItemId()));
+  }
+
 }
