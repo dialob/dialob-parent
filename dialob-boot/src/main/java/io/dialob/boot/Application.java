@@ -27,7 +27,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration(proxyBeanMethods = false)
 @EnableAutoConfiguration
 @EnableScheduling
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @EnableCaching
 public class Application extends SpringBootServletInitializer {
 

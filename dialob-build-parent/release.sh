@@ -45,10 +45,16 @@ MAJOR_VERSION=${LAST_RELEASE_VERSION:0:`expr ${#LAST_RELEASE_VERSION} - ${#MINOR
 NEW_MINOR_VERSION=`expr ${MINOR_VERSION} + 1`
 RELEASE_VERSION=${MAJOR_VERSION}${NEW_MINOR_VERSION}
 
-echo ${RELEASE_VERSION} > dialob-build-parent/release.version
+# docker image
+readonly local DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
+readonly local DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
 
+
+echo ${RELEASE_VERSION} > dialob-build-parent/release.version
 PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
+echo "Docker image: docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
+echo "Docker image: docker.io/resys/dialob-boot:${RELEASE_VERSION}"
 echo "Git checkout refname: '${refname}' branch: '${branch}' commit: '${GITHUB_SHA}'"
 echo "Dev version: '${PROJECT_VERSION}' release version: '${RELEASE_VERSION}'"
 echo "Releasing: '${RELEASE_VERSION}', previous: '${LAST_RELEASE_VERSION}'"
@@ -64,3 +70,11 @@ git push
 git push origin ${RELEASE_VERSION}
 
 
+docker image build -t ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
+docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
+docker tag ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} ${DIALOB_SESSION_IMAGE}:latest
+docker tag ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} ${DIALOB_BOOT_IMAGE}:latest
+docker push ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION}
+docker push ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION}
+docker push ${DIALOB_SESSION_IMAGE}:latest
+docker push ${DIALOB_BOOT_IMAGE}:latest

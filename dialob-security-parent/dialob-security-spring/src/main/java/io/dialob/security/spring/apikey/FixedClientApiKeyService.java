@@ -72,7 +72,7 @@ public class FixedClientApiKeyService implements ClientApiKeyService, ApiKeyAuth
     return new FixedClientApiKeyServiceBuilder();
   }
 
-  private FixedClientApiKeyService(Map<String, ApiKeyEntry> apiKeyEntries) {
+  public FixedClientApiKeyService(Map<String, ApiKeyEntry> apiKeyEntries) {
     this.apiKeyEntries = apiKeyEntries;
   }
 
