@@ -15,3 +15,12 @@ mvn clean install -DskipTests=true
 dialob-dev/spring-app
 mvn spring-boot:run
 ```
+
+# run frontend
+```
+cd dialob-parent/dialob-composer/dialob-composer-ui
+yarn install
+yarn start
+
+```
+view on http://localhost:3000/portal
