@@ -44,9 +44,9 @@ pipeline {
           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
         ]]) {
           withAWS(region:'eu-central-1') {
-            s3Upload(bucket:'cdn.resys.io', path:"$PROJECT_NAME/$BRANCH_NAME/", workingDir:'dist', includePathPattern:'**/*.js', contentType: 'application/javascript', cacheControl:'public,max-age=3600',acl:'PublicRead')
-            s3Upload(bucket:'cdn.resys.io', path:"$PROJECT_NAME/$BRANCH_NAME/", workingDir:'dist', includePathPattern:'**/*.css', contentType: 'text/css', cacheControl:'public,max-age=3600',acl:'PublicRead')
-            s3Upload(bucket:'cdn.resys.io', path:"$PROJECT_NAME/$BRANCH_NAME/", workingDir:'dist', includePathPattern:'**/*.html', contentType: 'text/html', cacheControl:'public,max-age=3600',acl:'PublicRead')
+            s3Upload(bucket:'cdn.resys.io', path:"$PROJECT_NAME/$BRANCH_NAME/", workingDir:'build', includePathPattern:'**/*.js', contentType: 'application/javascript', cacheControl:'public,max-age=3600',acl:'PublicRead')
+            s3Upload(bucket:'cdn.resys.io', path:"$PROJECT_NAME/$BRANCH_NAME/", workingDir:'build', includePathPattern:'**/*.css', contentType: 'text/css', cacheControl:'public,max-age=3600',acl:'PublicRead')
+            s3Upload(bucket:'cdn.resys.io', path:"$PROJECT_NAME/$BRANCH_NAME/", workingDir:'build', includePathPattern:'**/*.html', contentType: 'text/html', cacheControl:'public,max-age=3600',acl:'PublicRead')
           }
         }
       }
