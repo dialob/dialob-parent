@@ -41,8 +41,10 @@
   </body>
    <!-- htmlmin:ignore -->
   <script th:if="${appConfig}" th:inline="javascript">
-    window.COMPOSER_CONFIG = /*[[${appConfig}]]*/ {};
-    window.renderDialobComposer(document.getElementById("app"));
+    var appConfig = /*[[${appConfig}]]*/ {};
+    window.renderDialobComposer(document.getElementById("app"), appConfig);
+  </script>
+
   </script>
    <!-- htmlmin:ignore -->
 </html>
