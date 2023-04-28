@@ -5,23 +5,24 @@ import {combineReducers, applyMiddleware, createStore} from 'redux';
 import {Provider} from 'react-redux';
 import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '@resys/dialob-composer';
 
-console.log('XYZ');
+const renderDialobComposer = (target, appConfig) => {
+  console.log('Render', appConfig);
 
-const FORM_ID = window.COMPOSER_CONFIG.formId;
+  const FORM_ID = appConfig.formId;
 
-const DIALOB_COMPOSER_CONFIG = {
+  const DIALOB_COMPOSER_CONFIG = {
   transport: {
     csrf: {
-      headerName: window.COMPOSER_CONFIG.csrfHeader,
-      token: window.COMPOSER_CONFIG.csrf
+      headerName: appConfig.csrfHeader,
+      token: appConfig.csrf
     },
-    apiUrl: window.COMPOSER_CONFIG.backend_api_url,
-    previewUrl: window.COMPOSER_CONFIG.filling_app_url,
-    tenantId: window.COMPOSER_CONFIG.tenantId,
+    apiUrl: appConfig.backend_api_url,
+    previewUrl: appConfig.filling_app_url,
+    tenantId: appConfig.tenantId,
   },
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
-  closeHandler : () => window.location.href = window.COMPOSER_CONFIG.adminAppUrl
+  closeHandler : () => window.location.href = window.appConfig.adminAppUrl
 };
 
 const reducers = {
@@ -32,10 +33,6 @@ const reducer = combineReducers(reducers);
 
 const store = createStore(reducer, applyMiddleware(...createDialobComposerMiddleware()));
 
-console.log('PReRender');
-
-
-const renderDialobComposer = (target) => {
   ReactDOM.render(
     <DndProvider backend={HTML5Backend}>
         <Provider store={store}>
@@ -47,6 +44,3 @@ const renderDialobComposer = (target) => {
 
 // @ts-ignore
 window.renderDialobComposer = renderDialobComposer;
-
-
-const root = ReactDOM.createRoot(document.getElementById('app'));
