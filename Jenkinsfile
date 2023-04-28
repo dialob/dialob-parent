@@ -18,6 +18,7 @@ pipeline {
   environment {
     DOCKER_TAG = "$BRANCH_NAME"
     PROJECT_NAME = "dialob-composer-generic-app"
+    PUBLIC_URL = "//cdn.resys.io/$PROJECT_NAME/$BRANCH_NAME/"
   }
 
   stages {
