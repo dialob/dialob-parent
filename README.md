@@ -2,6 +2,38 @@
 
 Reference implementation of an application for Dialob Composer
 
+Dialob backend requirement **2.x**
+
+Uses `@resys/dialob-composer` as implementation. ( https://git.resys.io/dialob/dialob-composer-v2 )
+
+## CI Build
+
+Builds automatically on push and deploys to S3, controlled by `Jenkinsfile`
+
+https://ci.resys.io/job/dialob/job/dialob-composer-generic-app/
+
+## Deployment 
+
+CI Build deploys runtime artifacts to S3 bucket `https://s3.eu-central-1.amazonaws.com/cdn.resys.io/dialob-composer-generic-app/master` 
+
+Backend condfiguratoin for S3 CDN UI:
+
+```yaml
+dialob:
+  tenantuis:
+    composer:
+      tenants:
+        xxx: -- or default:
+          template: "https://s3.eu-central-1.amazonaws.com/cdn.resys.io/dialob-composer-generic-app/master/index.html"
+```
+
+## Build and Run
+
+This is CRA application.
+
+Build: `yarn build` \
+Run: `yarn start` 
+
 ## Configuration
 
 ```javascript
