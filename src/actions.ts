@@ -29,7 +29,7 @@ interface GenericItemAction<Type extends ItemType, Value, Props extends {}> {
     items?: string[];
     activeItem?: string;
     availableItems?: string[];
-    allowedActions?: Array<'ANSWER' | 'NEXT' | 'PREVIOUS' | 'COMPLETE'>;
+    allowedActions?: Array<'ANSWER' | 'NEXT' | 'PREVIOUS' | 'COMPLETE' | 'ADD_ROW' | 'DELETE_ROW'>;
     answered?: boolean;
     valueSetId?: string;
     props?: Props;
