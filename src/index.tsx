@@ -21,8 +21,6 @@ const AppRoot: React.FC<AppRootProps> = ({ session }) => {
     console.log('Session completed callback:', session.id);
   }
 
-  console.log('Session', session);
-
   return (
     <>
       <CssBaseline />
