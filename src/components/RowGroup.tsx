@@ -19,7 +19,7 @@ export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
         <Typography variant='h3'>
           {rowGroup.label || <span>&nbsp;</span>}
           <Description title={rowGroup.label} text={rowGroup.description} />
-          <Button size='small' color='primary' variant='contained' sx={{float: 'right'}} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }}><FormattedMessage id='row.add.button' /></Button>
+          <Button size='small' color='primary' variant='contained' sx={{float: 'right'}} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }} disabled={!(rowGroup.allowedActions && rowGroup.allowedActions.includes('ADD_ROW'))}><FormattedMessage id='row.add.button' /></Button>
         </Typography>
       </Grid>
       <RowGroupContext.Provider value={{rowGroup}}>

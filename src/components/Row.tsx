@@ -64,7 +64,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
         </Grid>
         <Grid container spacing={1} justifyContent='center'>
           <Grid item xs={1} sx={{mt: 1, textAlign: 'center'}} >
-            <Button size='small' color='primary' variant='contained' startIcon={<Remove />} onClick={() => setConfirmationOpen(true)}><FormattedMessage id='row.remove.button' /></Button>
+            <Button size='small' color='primary' variant='contained' startIcon={<Remove />} onClick={() => setConfirmationOpen(true)} disabled={!(row.allowedActions && row.allowedActions.includes('DELETE_ROW'))}><FormattedMessage id='row.remove.button' /></Button>
           </Grid>
         </Grid>
       </Paper>

@@ -62,9 +62,9 @@
     "@date-io/core" "^2.16.0"
 
 "@dialob/fill-api@^1.4.6":
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/@dialob/fill-api/-/fill-api-1.4.6.tgz#a6344fd411b0265e23be8b3b6390d61247dbdd8f"
-  integrity sha512-kHzDHJBmNrZZYAbvK94G2ECsIpREHCFFtvVNB/2LPhKXXJSzRQoV0O+/XnntUGUcI/PZR5YRRujXELOoNMOPxQ==
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@dialob/fill-api/-/fill-api-1.4.7.tgz#138946daf0abac2c10947d869ad0c7b760ff3722"
+  integrity sha512-IVHMVwhWrfRKg3mNUgMK9D9VBM6QSnM+0tQkOmGQY78UXtk3AORnc/UZhxiF3xkIhNk7kbS837W6ZmEjIun2vQ==
   dependencies:
     immer "^9.0.1"
 
@@ -468,9 +468,9 @@ hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
     react-is "^16.7.0"
 
 immer@^9.0.1:
-  version "9.0.5"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.5.tgz#a7154f34fe7064f15f00554cc94c66cc0bf453ec"
-  integrity sha512-2WuIehr2y4lmYz9gaQzetPR2ECniCifk4ORaQbU3g5EalLt+0IVTosEPJ5BoYl/75ky2mivzdRzV8wWgQGOSYQ==
+  version "9.0.21"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.21.tgz#1e025ea31a40f24fb064f1fef23e931496330176"
+  integrity sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==
 
 inline-style-parser@0.1.1:
   version "0.1.1"
