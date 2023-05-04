@@ -49,6 +49,20 @@ class RuleEditor extends Component {
         });
       }
 
+      if (item.get('type') === 'rowgroup') {
+        const canAddRowErrors = errors.filter(e => e.get('type') === 'CANADDROW');
+        panes.push( {
+          menuItem: {key: 'canAddRowWhen', icon: 'add circle', content: 'Add row when', color: canAddRowErrors.size > 0 ? 'red' : 'black'},
+          render: () => <Tab.Pane><CodeEditor active={true} styleClass='dialob-window-codeedit' value={item.get('canAddRowWhen') || ''} onChange={value => this.setAttribute('canAddRowWhen', value)} placeholder='Can add row when' errors={canAddRowErrors}/></Tab.Pane>
+        });
+
+        const canRemoveRowErrors = errors.filter(e => e.get('type') === 'CANREMOVEROW');
+        panes.push( {
+          menuItem: {key: 'canRemoveRowWhen', icon: 'remove circle', content: 'Remove row when', color: canRemoveRowErrors.size > 0 ? 'red' : 'black'},
+          render: () => <Tab.Pane><CodeEditor active={true} styleClass='dialob-window-codeedit' value={item.get('canRemoveRowWhen') || ''} onChange={value => this.setAttribute('canRemoveRowWhen', value)} placeholder='Can remove row when' errors={canRemoveRowErrors}/></Tab.Pane>
+        });
+      }
+
       return (
         <React.Fragment>
           <Header as='h5' style={{marginBottom: '5px'}}>Rules for <em>{activeItemId}</em></Header>

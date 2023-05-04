@@ -1,3 +1,7 @@
+# 2.9.2
+
+*  Added 'Can add new row' and 'Can remove row' rule editing for rowgroup
+
 # 2.9.1
 
 * Dropped nwb build and introduced typescript

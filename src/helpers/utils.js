@@ -30,7 +30,11 @@ export function translateErrorType(error) {
     case 'VALUESET':
       return 'List';
     case 'VALUESET_ENTRY':
-      return 'Liet entry';
+      return 'List entry';
+    case 'CANADDROW':
+      return 'Add row';
+    case 'CANREMOVEROW':
+      return 'Remove row';
     default:
       return error.get('type');
   };
