@@ -1,3 +1,7 @@
+# 1.3.2
+
+ * Rowgroup's Add row & Remove row buttons are disabled when not allowed by form rule
+
 # 1.2.0
 
 * MaterialDialob translation messages can be overridden by embmedding application
