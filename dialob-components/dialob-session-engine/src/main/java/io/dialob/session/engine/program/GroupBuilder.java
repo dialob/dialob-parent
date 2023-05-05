@@ -133,7 +133,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   public GroupBuilder setCanAddRowWhen(String canAddRowWhen) {
     if (StringUtils.isNotBlank(canAddRowWhen)) {
-      compileExpression(canAddRowWhen, this::setCanAddRowWhen, FormValidationError.Type.VISIBILITY, getIndex());
+      compileExpression(canAddRowWhen, this::setCanAddRowWhen, FormValidationError.Type.CANADDROW, getIndex());
     }
     return this;
   }
@@ -146,7 +146,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   public GroupBuilder setCanRemoveRowWhen(String canRemoveRowWhen) {
     if (StringUtils.isNotBlank(canRemoveRowWhen)) {
-      compileExpression(canRemoveRowWhen, this::setCanRemoveRowWhen, FormValidationError.Type.VISIBILITY, getIndex());
+      compileExpression(canRemoveRowWhen, this::setCanRemoveRowWhen, FormValidationError.Type.CANREMOVEROW, getIndex());
     }
     return this;
   }
