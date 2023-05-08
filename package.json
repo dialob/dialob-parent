@@ -6,7 +6,7 @@
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
     "@dialob/fill-api": "^1.4.7",
-    "@dialob/fill-material": "^1.3.2",
+    "@dialob/fill-material": "^1.4.0",
     "@dialob/fill-react": "^3.1.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
