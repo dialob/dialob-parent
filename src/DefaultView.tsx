@@ -95,7 +95,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
           {
              questionnaire.items && questionnaire.activeItem ?
               <Questionnaire>
-                {questionnaire.items && children(questionnaire.items)}
+                {questionnaire.items && children([questionnaire.activeItem])}
               </Questionnaire>
               : null
           }

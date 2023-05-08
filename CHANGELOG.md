@@ -1,3 +1,8 @@
+# 1.4.0
+
+ * Fix "show inactive items" rendering
+ * Add breadcrumb navigation
+
 # 1.3.2
 
  * Rowgroup's Add row & Remove row buttons are disabled when not allowed by form rule
