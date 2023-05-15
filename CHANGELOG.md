@@ -1,3 +1,7 @@
+# 2.9.3
+
+*  Added download and upload CSV features to TranslationDialog.js
+
 # 2.9.2
 
 *  Added 'Can add new row' and 'Can remove row' rule editing for rowgroup
