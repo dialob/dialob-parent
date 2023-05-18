@@ -93,7 +93,8 @@ function connectItem(component) {
         editable: !state.dialobComposer.form.get('_tag'),
         treeCollapsed: state.dialobComposer.editor && state.dialobComposer.editor.get('treeCollapse') && state.dialobComposer.editor.get('treeCollapse').findIndex(id => id === props.itemId) > -1,
         rootItemId: state.dialobComposer.editor.get('rootItemId'),
-        validations: item && item.get('validations')
+        validations: item && item.get('validations'),
+        globalValueSets: state.dialobComposer.form && state.dialobComposer.form.getIn(['metadata', 'composer', 'globalValueSets']),
       });
     }
     ,

@@ -6,13 +6,13 @@ import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
 import Scrolltarget from './Scrolltarget';
 import ConvertItem from '../components/ConvertItem';
+import { ListLabel } from '../components/ListLabel';
 
 class Group extends Item {
 
   render() {
     const {treeCollapsed, item, itemId, editable} = this.props;
     const itemTypeFilter = i => item.get('type') !== 'surveygroup' ? i.config.type !== 'survey' : true;
-
     return (
       <Scrolltarget itemId={this.props.itemId} className='composer-scrolltarget'>
         <Table attached={treeCollapsed ? null :'top'} onClick={(e) => {e.stopPropagation(); this.setActive(true);}} color={this.getBorderColor()}>
@@ -27,6 +27,7 @@ class Group extends Item {
               <Table.Cell>
                 <Input transparent fluid placeholder={this.props.placeholder} value={item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
+              <ListLabel item = {this.props.item} globalValueSets={this.props.globalValueSets} />
               <Table.Cell collapsing>
                 <ConvertItem itemType={this.props.item.get('type')} viewType={this.props.item.get('view')} itemId={this.props.itemId}/>
               </Table.Cell>
