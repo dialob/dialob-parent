@@ -5,6 +5,9 @@ import ItemMenu from '../components/ItemMenu';
 import Validations from '../components/Validations';
 import Scrolltarget from './Scrolltarget';
 import ConvertItem from '../components/ConvertItem';
+import { ListLabel } from '../components/ListLabel';
+
+
 
 class SimpleField extends Item {
   render() {
@@ -19,6 +22,7 @@ class SimpleField extends Item {
               <Table.Cell>
                 <Input transparent fluid placeholder={this.props.placeholder} value={this.props.item.getIn(['label', this.props.language]) || ''} onChange={(e) => this.setAttribute('label', e.target.value, this.props.language)}/>
               </Table.Cell>
+              <ListLabel item = {this.props.item} globalValueSets={this.props.globalValueSets} />
               <Table.Cell collapsing>
                 <ConvertItem itemType={this.props.item.get('type')} viewType={this.props.item.get('view')} itemId={this.props.itemId}/>
               </Table.Cell>

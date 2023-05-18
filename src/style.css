@@ -292,3 +292,9 @@
 .composer-segment-nopadding {
   padding: 0px !important;
 }
+
+.labeled-icon{
+  margin-left: 3px;
+  margin-right: 2px;
+}
+

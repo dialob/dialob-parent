@@ -1,3 +1,7 @@
+
+# 2.9.4
+
+*  Added new component "ListLabel" for displaying different types of list (Global, Empty, Local)
 # 2.9.3
 
 *  Added download and upload CSV features to TranslationDialog.js
