@@ -232,11 +232,6 @@ public class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")));
-      /*
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n"));
-
-       */
   }
 
   @Test
