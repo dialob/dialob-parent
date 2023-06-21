@@ -129,6 +129,7 @@ public class CSVSerializerTest {
     Questionnaire q1 = loadQuestionnaire("/csvTestQuestionnaire1.json");
     Questionnaire q2 = loadQuestionnaire("/csvTestQuestionnaire2.json");
     Questionnaire q3 = loadQuestionnaire("/csvTestQuestionnaire3.json");
+    Questionnaire q4 = loadQuestionnaire("/csvTestQuestionnaire4.json");
     Questionnaire qSurvey = loadQuestionnaire("/csvTestQuestionnaireSurvey.json");
 
     mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -143,6 +144,8 @@ public class CSVSerializerTest {
       return null;
     }).when(questionnaireDatabase).findAllMetadata(eq("t-123"), isNull(), eq(FORM_ID), isNull(), isNull(), eq(Questionnaire.Metadata.Status.COMPLETED), any(Consumer.class));
 
+    when(formDatabase.findOne("t-123", "2d6298231cde7d107b3f015a43d6b8d8")).thenReturn(loadForm("/csvTestForm2.json"));
+
     when(formDatabase.findOne("t-123", SURVEY_FORM_ID)).thenReturn(loadForm("/csvTestFormSurvey.json"));
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = (Consumer<QuestionnaireDatabase.MetadataRow>) invocation.getArguments()[6];
@@ -153,11 +156,13 @@ public class CSVSerializerTest {
     when(questionnaireDatabase.findMetadata("t-123", "1")).thenReturn(getQuestionnaireMetadataRow(q1));
     when(questionnaireDatabase.findMetadata("t-123", "2")).thenReturn(getQuestionnaireMetadataRow(q2));
     when(questionnaireDatabase.findMetadata("t-123", "3")).thenReturn(getQuestionnaireMetadataRow(q3));
+    when(questionnaireDatabase.findMetadata("t-123", "715d10726ca9d9348e2d29eff33267bc")).thenReturn(getQuestionnaireMetadataRow(q4));
     when(questionnaireDatabase.findMetadata("t-123", "survey")).thenReturn(getQuestionnaireMetadataRow(qSurvey));
 
     when(questionnaireDatabase.findOne("t-123", "1")).thenReturn(q1);
     when(questionnaireDatabase.findOne("t-123", "2")).thenReturn(q2);
     when(questionnaireDatabase.findOne("t-123", "3")).thenReturn(q3);
+    when(questionnaireDatabase.findOne("t-123", "715d10726ca9d9348e2d29eff33267bc")).thenReturn(q4);
     when(questionnaireDatabase.findOne("t-123", "survey")).thenReturn(qSurvey);
   }
 
@@ -220,6 +225,18 @@ public class CSVSerializerTest {
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
       .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
         "TextAnswer,,Yes,true\r\n"));
+  }
+
+  @Test
+  public void getByQuestionnaireId2() throws Exception {
+    mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc").accept(MediaType.parseMediaType("text/csv")))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")));
+      /*
+      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
+        "TextAnswer,,Yes,true\r\n"));
+
+       */
   }
 
   @Test
