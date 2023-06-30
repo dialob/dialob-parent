@@ -134,7 +134,7 @@ public class CSVSerializer {
       } else {
         // Booleans translated
         if ("BOOLEAN".equals(a.get().getType())) {
-          realValue = serializeBoolean(Boolean.valueOf((String) a.get().getValue()), language);
+          realValue = serializeBoolean(Boolean.valueOf(a.get().getValue().toString()), language);
           valueKey = a.get().getValue().toString();
         } else {
           // "Normal" values
