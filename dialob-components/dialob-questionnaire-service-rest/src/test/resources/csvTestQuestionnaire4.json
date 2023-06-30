@@ -1,0 +1,303 @@
+{
+  "_id": "715d10726ca9d9348e2d29eff33267bc",
+  "_rev": "31",
+  "answers": [
+    {
+      "id": "VisitingPostalCode",
+      "value": "28100",
+      "type": "STRING"
+    },
+    {
+      "id": "BO_information.0.BO_citizenship",
+      "value": [
+        "NL"
+      ],
+      "type": "[STRING]"
+    },
+    {
+      "id": "Financial_supervisory_Q",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "Main_customership_in_HB",
+      "value": "true",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "TransactionsType",
+      "value": "none",
+      "type": "STRING"
+    },
+    {
+      "id": "ContactPerson_Email",
+      "value": "asoy@asoy.fi",
+      "type": "STRING"
+    },
+    {
+      "id": "BO_information.0",
+      "value": null
+    },
+    {
+      "id": "BO_information.0.BO_role_AsOy",
+      "value": "boardmember",
+      "type": "STRING"
+    },
+    {
+      "id": "All_UBO_check",
+      "value": true,
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "ContactPerson_Phonenumber",
+      "value": "+358123456",
+      "type": "STRING"
+    },
+    {
+      "id": "BO_information.0.BO_surname",
+      "value": "dddl",
+      "type": "STRING"
+    },
+    {
+      "id": "VisitingAddress",
+      "value": "Niementie",
+      "type": "STRING"
+    },
+    {
+      "id": "State_or_Municipality_owned",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "BO_information.0.PEPperson",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "Tax_abroad",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "BO_information",
+      "value": [
+        0
+      ],
+      "type": "[INTEGER]"
+    },
+    {
+      "id": "Onwership_Q",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "BO_information.0.BO_country_of_Residence",
+      "value": "NL",
+      "type": "STRING"
+    },
+    {
+      "id": "Description_of_Operations",
+      "value": "djfkfldl",
+      "type": "STRING"
+    },
+    {
+      "id": "companyID_Q",
+      "value": "true",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "BO_information.0.BO_birthday",
+      "value": "2023-04-03",
+      "type": "DATE"
+    },
+    {
+      "id": "Cryptocurrency_Q",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "CompanyJuridictForm",
+      "value": "comLegalForm_2",
+      "type": "STRING"
+    },
+    {
+      "id": "Customerships_in_other_banks",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "companyID",
+      "value": "0176436-0",
+      "type": "STRING"
+    },
+    {
+      "id": "CompanyTaxStatus_Fina",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "AddressQ",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "companyTradingName_Q",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "Confirmation",
+      "value": true,
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "BO_information.0.BO_firstname",
+      "value": "djtdks",
+      "type": "STRING"
+    },
+    {
+      "id": "companyName",
+      "value": "acme",
+      "type": "STRING"
+    },
+    {
+      "id": "CompanyTaxStatus_PNFE_or_ANFE",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "Wealth_in_HB",
+      "value": "false",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": "Security_transfer_Q",
+      "value": "false",
+      "type": "BOOLEAN"
+    }
+  ],
+  "context": [
+    {
+      "id": "lastName",
+      "value": "Testaaja"
+    },
+    {
+      "id": "firstName",
+      "value": "Testi"
+    },
+    {
+      "id": "userID",
+      "value": "fghfhjgfgh"
+    }
+  ],
+  "activeItem": "page4",
+  "variableValues": [
+    {
+      "id": "countNumberOfOwners",
+      "value": "1"
+    },
+    {
+      "id": "sumOfTotalOwnerShip",
+      "value": null
+    }
+  ],
+  "valueSets": [
+    {
+      "id": "vs91"
+    },
+    {
+      "id": "vs92"
+    },
+    {
+      "id": "vs9"
+    },
+    {
+      "id": "vs81"
+    },
+    {
+      "id": "vs41"
+    },
+    {
+      "id": "vs3111"
+    },
+    {
+      "id": "vs311"
+    },
+    {
+      "id": "vs111"
+    },
+    {
+      "id": "vs17"
+    },
+    {
+      "id": "vs18"
+    },
+    {
+      "id": "vs921"
+    },
+    {
+      "id": "vs4"
+    },
+    {
+      "id": "vs11"
+    },
+    {
+      "id": "vs33"
+    },
+    {
+      "id": "vs5"
+    },
+    {
+      "id": "vs12"
+    },
+    {
+      "id": "vs34"
+    },
+    {
+      "id": "vs6"
+    },
+    {
+      "id": "vs31"
+    },
+    {
+      "id": "vs7"
+    },
+    {
+      "id": "vs10"
+    },
+    {
+      "id": "vs32"
+    },
+    {
+      "id": "vs1"
+    },
+    {
+      "id": "vs16"
+    },
+    {
+      "id": "vs2"
+    },
+    {
+      "id": "vs13"
+    },
+    {
+      "id": "vs3"
+    },
+    {
+      "id": "vs14"
+    }
+  ],
+  "metadata": {
+    "formId": "2d6298231cde7d107b3f015a43d6b8d8",
+    "status": "COMPLETED",
+    "tenantId": "472df5f8-61b2-4f0e-987e-74cf5bf6bbe0",
+    "created": "2023-03-15T05:45:02.880+00:00",
+    "lastAnswer": "2023-04-19T05:17:29.679+00:00",
+    "opened": "2023-04-19T05:17:27.725+00:00",
+    "completed": "2023-04-19T05:17:27.795+00:00",
+    "label": "KYCF - Know Your Customer information for corporate customers NETS",
+    "language": "fi",
+    "owner": "c636fae7-9a16-4a43-bd5d-fd79ab5dfe43",
+    "creator": "c636fae7-9a16-4a43-bd5d-fd79ab5dfe43"
+  }
+}
