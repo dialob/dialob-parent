@@ -51,7 +51,7 @@ public class HmacSHA256ApiKeyValidator implements ApiKeyValidator {
           throw new BadCredentialsException("Could not validate API key");
         }
       } catch (IllegalStateException | IllegalArgumentException e) {
-        throw new BadCredentialsException("Invalid API key");
+        throw new BadCredentialsException("Could not decode API key");
       }
     } else {
       throw new BadCredentialsException("Could not validate API key");
