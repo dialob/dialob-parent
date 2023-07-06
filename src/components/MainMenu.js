@@ -61,7 +61,7 @@ class MainMenu extends Component {
           </Menu.Item>
           <Menu.Menu position='right'>
               <SearchMenu />
-              <Menu.Item onClick={this.props.downloadForm}>
+              <Menu.Item onClick={()=>this.props.downloadForm(null)}>
                 <Popup
                   trigger={<Icon name='download' />}
                   content='Download dialog as JSON'
