@@ -1,6 +1,6 @@
 {
   "name": "@resys/dialob-composer",
-  "version": "2.9.4-2",
+  "version": "2.9.4-3",
   "description": "dialob-composer React component",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
