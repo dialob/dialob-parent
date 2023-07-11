@@ -161,6 +161,14 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
           config: {
             type: 'note'
           }
+        },
+        {
+          title: 'Validation message',
+          config: {
+            type: 'note',
+            view: 'validation',
+            required: 'true'
+          }
         }
       ]
     }

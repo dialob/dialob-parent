@@ -110,11 +110,19 @@ export const DEFAULT_ITEM_CONFIG = {
       }
     },
     {
+      matcher: item => item.get('type') === 'note' && item.get('view') === 'validation',
+      component: Note,
+      props: {
+        icon: 'warning circle',
+        placeholder: 'Validation message text'
+      }
+    },
+    {
       matcher: item => item.get('type') === 'note',
       component: Note,
       props: {
         icon: 'file outline',
-        placeholder: 'List field label'
+        placeholder: 'Note text'
       }
     }
   ]
