@@ -28,6 +28,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +49,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   class Attrs {
     GenericContainer<?> container = new GenericContainer<>(DockerImageName.parse("postgres:13"))
       .withExposedPorts(PORT)
+      .waitingFor(Wait.forListeningPort())
       .withEnv("POSTGRES_USER", "postgres")
       .withEnv("POSTGRES_PASSWORD", "postgres")
       ;
