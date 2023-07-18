@@ -87,7 +87,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
   }
 
   @NonNull
-  public Questionnaire findOne(String tenantId, @NonNull String id, String rev) {
+  public Questionnaire findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     Integer revision = Utils.validateRevValue(rev);
     byte[] oid = Utils.toOID(id);
     return doTransaction(template -> {
@@ -99,7 +99,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         String status = resultSet.getString(4);
         Timestamp created = resultSet.getTimestamp(5);
         Timestamp updated = resultSet.getTimestamp(6);
-        InputStream inputStream = resultSet.getBinaryStream(7);
+        InputStream inputStream = getDatabaseHelper().extractStream(resultSet, 7);
         return toObject(oid, objectRev, rsTenantId, formId, status.trim(), created, updated, inputStream);
       };
       final StringBuilder sql = new StringBuilder("select rev, tenant_id, form_document_id, status, created, updated, data from " + tableName + " where id = ?");
@@ -159,7 +159,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
           where = " and tenant_id = ?";
           sqlParameters.add(tenantId);
         }
-        updated = template.update("update " + tableName + " set rev = ?, status = ?, updated = ?, data = ?, owner = ? where id = ? and rev = ?" + where, sqlParameters.toArray());
+        updated = template.update("update " + tableName + " set rev = ?, status = ?, updated = ?, data = " + getDatabaseHelper().jsonToBson("?") + ", owner = ? where id = ? and rev = ?" + where, sqlParameters.toArray());
       } else {
         revision = 1;
         if (oid == null) {
@@ -167,7 +167,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         }
         LOGGER.debug("{} - persisting new document {} to rev {}", tenantId, dId, revision);
         documentNew = updatedDocument(documentNew, oid, revision, timestamp, tenantId);
-        updated = template.update("insert into " + tableName + " (id,rev,tenant_id,form_document_id,status,created,updated,owner,data) values (?,?,?,?,?,?,?,?,?)", toJdbcId(oid), revision, tenantId, toJdbcId(formId), status, timestamp, timestamp, owner, getDatabaseHelper().jsonObject(objectMapper, documentNew));
+        updated = template.update("insert into " + tableName + " (id,rev,tenant_id,form_document_id,status,created,updated,owner,data) values (?,?,?,?,?,?,?,?," + getDatabaseHelper().jsonToBson("?") + ")", toJdbcId(oid), revision, tenantId, toJdbcId(formId), status, timestamp, timestamp, owner, getDatabaseHelper().jsonObject(objectMapper, documentNew));
       }
       if (updated == 0) {
         throw new DocumentConflictException("concurrent document update");

@@ -21,6 +21,7 @@ import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.form.service.api.FormDatabase;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
+@Tag("postgresql")
+@Tag("container")
 class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionControlDatabaseTest implements AbstractPostgreSQLTest {
 
 

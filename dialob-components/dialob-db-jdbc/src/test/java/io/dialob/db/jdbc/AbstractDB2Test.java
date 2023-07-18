@@ -15,45 +15,63 @@
  */
 package io.dialob.db.jdbc;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Optional;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.utility.DockerImageName;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.testcontainers.containers.Db2Container;
+import org.testcontainers.junit.jupiter.Container;
 
-public interface AbstractPostgreSQLTest extends JdbcBackendTest {
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Optional;
 
-  int PORT = 5432;
 
-  String SCHEMA = null;
+public interface AbstractDB2Test extends JdbcBackendTest {
+
+  String SCHEMA = "db2inst1";
+  String DATABASE = "dialob";
+  String PASSWORD = "db2inst1";
+  String USERNAME = "db2inst1";
+
+  //"icr.io/db2_community/db2"
+/*
+docker run -h db2server --name db2server --restart=always --detach --privileged=true
+-p 50000:50000 --env-file .env_list -v /Docker:/database icr.io/db2_community/db2
+ */
+
+  @Container
+  Db2Container container = new Db2Container()
+    .acceptLicense()
+    .withDatabaseName(DATABASE)
+    .withUsername(USERNAME)
+    .withPassword(PASSWORD)
+//      .withEnv("BLU", "false")
+//      .withEnv("ENABLE_ORACLE_COMPATIBILITY", "false")
+//      .withEnv("UPDATEAVAIL", "NO")
+//      .withEnv("TO_CREATE_SAMPLEDB", "false")
+//      .withEnv("REPODB", "false")
+//      .withEnv("IS_OSXFS", "false")
+//      .withEnv("PERSISTENT_HOME", "true")
+//      .withEnv("HADR_ENABLED", "false")
+//      .withEnv("ETCD_ENDPOINT","")
+//      .withEnv("ETCD_USERNAME","")
+//      .withEnv("ETCD_PASSWORD","")
+//      .withFileSystemBind("/tmp/db2","/database")
+    .withStartupTimeout(Duration.ofMinutes(15))
+    ;
 
   class Attrs {
-    PostgreSQLContainer container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:13"))
-      .withExposedPorts(PORT)
-      .withStartupTimeout(Duration.ofMinutes(15))
-      .withUsername("postgres")
-      .withPassword("postgres");
 
     BasicDataSource dataSource;
 
@@ -74,27 +92,30 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   Attrs ATTRS = new Attrs();
 
   static BasicDataSource createEmbeddedDatabase() throws IOException {
-    ATTRS.container.start();
-    String jdbcUrl = "jdbc:postgresql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/postgres";
-    System.out.println("Embedded Postgresql jdbc url: " + jdbcUrl);
+
+    String jdbcUrl = container.getJdbcUrl();
+    System.out.println("DB2 jdbc url: " + jdbcUrl);
+
+    // Point it to the database
     ATTRS.dataSource = new BasicDataSource();
-    ATTRS.dataSource.setUsername("postgres");
-    ATTRS.dataSource.setPassword("postgres");
+    ATTRS.dataSource.setUsername(USERNAME);
+    ATTRS.dataSource.setPassword(PASSWORD);
     ATTRS.dataSource.setUrl(jdbcUrl);
+
     return ATTRS.dataSource;
   }
 
+
   @BeforeAll
-  static void startPostgreSQL() throws Exception {
+  static void startDb() throws Exception {
     ATTRS.dataSource = createEmbeddedDatabase();
 
-    // Point it to the database
+
     Flyway flyway = Flyway.configure()
-      .locations("db/migration_postgresql","db/migration")
+      .locations("db/migration_db2","db/migration")
       .dataSource(ATTRS.dataSource)
       .load();
-
-    // Start the migration_postgresql
+    // Start the migration_db2
     flyway.migrate();
 
     ATTRS.activeTenant = ResysSecurityConstants.DEFAULT_TENANT;
@@ -113,10 +134,8 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
         return true;
       }
     };
-    ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new PostgreSQLDatabaseHelper(SCHEMA), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
+    ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new DB2DatabaseHelper(SCHEMA), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
   }
-
-
 
   default DataSource getDataSource() {
     return ATTRS.dataSource;
@@ -134,17 +153,13 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     return ATTRS.transactionTemplate;
   }
 
-  @AfterAll
-  static void stopMySQL() {
-    ATTRS.container.stop();
-  }
 
   default FormVersionControlDatabase getJdbcFormVersionControlDatabase() {
-    return new JdbcVersionControlledFormDatabase(getJdbcTemplate(), null, new PostgreSQLDatabaseHelper(SCHEMA), getTransactionTemplate(), getJdbcFormDatabase(), IS_ANY_TENANT_PREDICATE, objectMapper);
+    return new JdbcVersionControlledFormDatabase(getJdbcTemplate(), SCHEMA, new DB2DatabaseHelper(SCHEMA), getTransactionTemplate(), getJdbcFormDatabase(), IS_ANY_TENANT_PREDICATE, objectMapper);
   }
 
   default QuestionnaireDatabase getQuestionnaireDatabase() {
-    return new JdbcQuestionnaireDatabase(getJdbcTemplate(), new PostgreSQLDatabaseHelper(SCHEMA), getTransactionTemplate(), objectMapper, SCHEMA, Optional.of(getJdbcFormVersionControlDatabase()), IS_ANY_TENANT_PREDICATE);
+    return new JdbcQuestionnaireDatabase(getJdbcTemplate(), new DB2DatabaseHelper(SCHEMA), getTransactionTemplate(), objectMapper, SCHEMA, Optional.of(getJdbcFormVersionControlDatabase()), IS_ANY_TENANT_PREDICATE);
   }
 
   default CurrentTenant getCurrentTenant() {

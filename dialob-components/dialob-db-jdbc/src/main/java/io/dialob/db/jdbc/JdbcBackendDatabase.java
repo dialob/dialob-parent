@@ -16,20 +16,14 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.db.spi.spring.AbstractDocumentDatabase;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Nonnull;
 import java.sql.Timestamp;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -72,6 +66,14 @@ public abstract class JdbcBackendDatabase<T,M> extends AbstractDocumentDatabase<
   public DatabaseHelper getDatabaseHelper() {
     return databaseHelper;
   }
+
+  String bsonToJson(String attr) {
+    return getDatabaseHelper().bsonToJson(attr);
+  }
+  String jsonToBson(String attr) {
+    return getDatabaseHelper().jsonToBson(attr);
+  }
+
 
   public abstract T findOne(@NonNull String tenantId, @NonNull String id, String rev);
 
