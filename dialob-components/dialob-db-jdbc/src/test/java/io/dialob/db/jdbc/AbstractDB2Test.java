@@ -44,32 +44,13 @@ public interface AbstractDB2Test extends JdbcBackendTest {
   String PASSWORD = "db2inst1";
   String USERNAME = "db2inst1";
 
-  //"icr.io/db2_community/db2"
-/*
-docker run -h db2server --name db2server --restart=always --detach --privileged=true
--p 50000:50000 --env-file .env_list -v /Docker:/database icr.io/db2_community/db2
- */
-
   @Container
   Db2Container container = new Db2Container()
     .acceptLicense()
     .withDatabaseName(DATABASE)
     .withUsername(USERNAME)
     .withPassword(PASSWORD)
-//      .withEnv("BLU", "false")
-//      .withEnv("ENABLE_ORACLE_COMPATIBILITY", "false")
-//      .withEnv("UPDATEAVAIL", "NO")
-//      .withEnv("TO_CREATE_SAMPLEDB", "false")
-//      .withEnv("REPODB", "false")
-//      .withEnv("IS_OSXFS", "false")
-//      .withEnv("PERSISTENT_HOME", "true")
-//      .withEnv("HADR_ENABLED", "false")
-//      .withEnv("ETCD_ENDPOINT","")
-//      .withEnv("ETCD_USERNAME","")
-//      .withEnv("ETCD_PASSWORD","")
-//      .withFileSystemBind("/tmp/db2","/database")
-    .withStartupTimeout(Duration.ofMinutes(15))
-    ;
+    .withStartupTimeout(Duration.ofMinutes(15));
 
   class Attrs {
 
