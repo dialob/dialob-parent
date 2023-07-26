@@ -23,6 +23,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public interface DatabaseHelper {
 
@@ -45,6 +48,17 @@ public interface DatabaseHelper {
   @NonNull
   default String tableName(@Nullable String schema, @NonNull String tableName) {
     return StringUtils.isNotBlank(schema) ? schema + "." + tableName : tableName;
+  }
+
+  default String bsonToJson(String attr) {
+    return attr;
+  }
+  default String jsonToBson(String attr) {
+    return attr;
+  }
+
+  default InputStream extractStream(ResultSet rs, int i) throws SQLException {
+    return rs.getBinaryStream(i);
   }
 
   String getSchema();

@@ -15,6 +15,10 @@
  */
 package io.dialob.db.jdbc;
 
+import org.junit.jupiter.api.Tag;
+
+@Tag("mysql")
+@Tag("container")
 public class MySQLCRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractMySQLTest {
 
 }

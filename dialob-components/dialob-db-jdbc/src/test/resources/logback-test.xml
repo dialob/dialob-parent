@@ -3,6 +3,7 @@
   <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
   <logger name="io.dialob.db.jdbc" level="INFO"/>
   <logger name="org.flywaydb" level="INFO"/>
+  <logger name="org.testcontainers" level="INFO"/>
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
   </root>

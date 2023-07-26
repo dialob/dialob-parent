@@ -16,9 +16,11 @@
 package io.dialob.db.jdbc;
 
 import org.junit.jupiter.api.Tag;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Tag("postgresql")
+@Testcontainers
+@Tag("db2")
 @Tag("container")
-public class PostgreSQLCRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractPostgreSQLTest {
+class DB2FormVersionControlDatabaseTest extends AbstractFormVersionControlDatabaseTest implements AbstractDB2Test {
 
 }
