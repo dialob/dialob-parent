@@ -23,7 +23,7 @@ readonly local RELEASE_VERSION=latest
 readonly local DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
 readonly local DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
 
-docker image build -t ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-boot/
-docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} dialob-session-boot/
+docker image build -t ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=999-SNAPSHOT dialob-boot/
+docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=999-SNAPSHOT dialob-session-boot/
 docker push ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION}
 docker push ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION}
