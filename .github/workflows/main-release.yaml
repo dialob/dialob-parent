@@ -8,6 +8,11 @@ jobs:
   build:
     name: Releasing branch - main
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
     - name: Checkout code
       uses: actions/checkout@main
@@ -19,7 +24,7 @@ jobs:
       with:
         distribution: 'corretto'
         java-version: '11'
-        
+
     - name: Docker Hub login
       uses: docker/login-action@v2
       with:
@@ -41,5 +46,5 @@ jobs:
         GPG_KEY_SEC:  ${{ secrets.DIALOB_GPG_SEC }}
         OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
         OSSRH_USER: ${{ secrets.OSSRH_USER }}
-        
-        
+
+
