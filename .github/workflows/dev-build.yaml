@@ -36,6 +36,6 @@ jobs:
         run: ./dialob-build-parent/build.sh
         env:
           CI: false
-          $DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}
+          DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}
 
 
