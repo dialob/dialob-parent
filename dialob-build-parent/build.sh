@@ -20,8 +20,8 @@ set -e
 mvn clean install -Pdialob-build --settings dialob-build-parent/ci-maven-settings.xml -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
 readonly local RELEASE_VERSION=latest
-readonly local DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
-readonly local DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
+readonly local DIALOB_BOOT_IMAGE=$DOCKER_REGISTRY/dialob/dialob-boot
+readonly local DIALOB_SESSION_IMAGE=$DOCKER_REGISTRY/dialob/dialob-session-boot
 
 docker image build -t ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=999-SNAPSHOT dialob-boot/
 docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=999-SNAPSHOT dialob-session-boot/
