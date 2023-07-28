@@ -218,8 +218,9 @@
         </plugins>
       </build>
     </profile>
-
-
+    <profile>
+      <id>dialob-build</id>
+    </profile>
     <profile>
       <id>dialob-release</id>
       <build>
