@@ -56,11 +56,32 @@ var convertBranch = (branch) => {
       }
     }
 
+    // Fix broken descriptions
+    if (item.description && item.description['language']) {
+      delete item.description.language;
+    }
   }
 
 }
 
+var convertValueSets = (valueSets) => {
+  for (let valueSet of valueSets) {
+    for (let entry of valueSet.entries) {
+      // Remove empty language keys from entry labels
+      delete entry.label[""];
+
+      if (!entry.id) {
+        console.error("Missing valueset entry ID for", valueSet.id, entry);
+      }
+    }
+
+    // Delete valueset entries that do not have Id
+    valueSet.entries = valueSet.entries.filter(e => !!e.id);
+  }
+}
+
 // Convert main form items
 convertBranch(json.data);
+convertValueSets(json.valueSets);
 
 console.log(JSON.stringify(json, null, 2));
