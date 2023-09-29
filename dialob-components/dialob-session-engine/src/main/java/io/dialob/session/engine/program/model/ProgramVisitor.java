@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.program.model;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Optional;
 
 public interface ProgramVisitor {
@@ -23,7 +23,7 @@ public interface ProgramVisitor {
   @FunctionalInterface
   interface ItemVisitor {
 
-    void visitItem(@Nonnull Item item);
+    void visitItem(@NonNull Item item);
 
     default void end() {
     }
@@ -31,7 +31,7 @@ public interface ProgramVisitor {
 
   @FunctionalInterface
   interface ValueSetVisitor {
-    void visitValueSet(@Nonnull ValueSet valueSet);
+    void visitValueSet(@NonNull ValueSet valueSet);
 
     default void end() {
     }
@@ -39,13 +39,13 @@ public interface ProgramVisitor {
 
   @FunctionalInterface
   interface ErrorVisitor {
-    void visitError(@Nonnull Error error);
+    void visitError(@NonNull Error error);
 
     default void end() {
     }
   }
 
-  default void startProgram(@Nonnull Program program) {
+  default void startProgram(@NonNull Program program) {
   }
 
   default Optional<ItemVisitor> visitItems() {

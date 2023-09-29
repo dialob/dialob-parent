@@ -26,7 +26,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +46,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
   private static final DurationOperators DURATION_OPERATORS = new DurationOperators();
   private static final BooleanOperators BOOLEAN_OPERATORS = new BooleanOperators();
 
-  @Nonnull
+  @NonNull
   private Operators operatorsOf(ValueType valueType) {
     if (valueType == ValueType.STRING) {
       return STRING_OPERATORS;
@@ -76,8 +76,8 @@ public class DDRLOperatorFactory implements OperatorFactory {
   }
 
   @Override
-  @Nonnull
-  public Expression createOperator(@Nonnull ValueType nodeValueType, @Nonnull String operator, @Nonnull List<Expression> arguments) {
+  @NonNull
+  public Expression createOperator(@NonNull ValueType nodeValueType, @NonNull String operator, @NonNull List<Expression> arguments) {
     Expression expr;
     final OperatorSymbol operatorSymbol = OperatorSymbol.mapOp(operator);
     if (operatorSymbol == null) {
@@ -222,8 +222,8 @@ public class DDRLOperatorFactory implements OperatorFactory {
     return patternExpr;
   }
 
-  @Nonnull
-  private Expression createFunctionInvocation(@Nonnull ValueType nodeValueType, @Nonnull String operator, @Nonnull List<Expression> arguments) {
+  @NonNull
+  private Expression createFunctionInvocation(@NonNull ValueType nodeValueType, @NonNull String operator, @NonNull List<Expression> arguments) {
     return ImmutableFunctionCallOperator.builder()
       .valueType(nodeValueType)
       .addAllArgs(arguments)
@@ -288,7 +288,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
     throw new RuntimeException("Unknown operator " + operator);
   }
 
-  @Nonnull
+  @NonNull
   private ValueType resolveCoersionTarget(ValueType leftValueType, ValueType rightValueType) {
     if (leftValueType.canOrderWith(rightValueType)) {
       return leftValueType.minusType(rightValueType);

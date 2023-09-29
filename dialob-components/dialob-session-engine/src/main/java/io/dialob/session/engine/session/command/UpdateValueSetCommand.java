@@ -22,7 +22,7 @@ import io.dialob.session.engine.program.model.ValueSet;
 import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -35,7 +35,7 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
   @org.immutables.value.Value.Parameter(order = 1)
   List<Value<ValueSet.Entry>> getEntries();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return getEntries().stream().flatMap(entryValue -> {
@@ -49,9 +49,9 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
     }).collect(Collectors.toSet());
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  default ValueSetState update(@Nonnull EvalContext context, @Nonnull ValueSetState state) {
+  default ValueSetState update(@NonNull EvalContext context, @NonNull ValueSetState state) {
     final List<ValueSetState.Entry> entries =
       Stream.concat(
           this.getEntries().stream()

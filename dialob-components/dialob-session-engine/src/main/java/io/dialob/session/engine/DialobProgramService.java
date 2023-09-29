@@ -17,14 +17,14 @@ package io.dialob.session.engine;
 
 import io.dialob.session.engine.program.DialobProgram;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface DialobProgramService {
 
-  @Nonnull
-  DialobProgram findByFormId(@Nonnull String formId);
+  @NonNull
+  DialobProgram findByFormId(@NonNull String formId);
 
-  @Nonnull
-  DialobProgram findByFormIdAndRev(@Nonnull String formId, String formRev);
+  @NonNull
+  DialobProgram findByFormIdAndRev(@NonNull String formId, String formRev);
 
 }

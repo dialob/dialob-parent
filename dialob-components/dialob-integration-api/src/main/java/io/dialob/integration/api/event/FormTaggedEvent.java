@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 
 @Value.Immutable
@@ -30,10 +30,10 @@ import javax.annotation.Nullable;
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface FormTaggedEvent extends FormEvent, DistributedEvent {
 
-  @Nonnull
+  @NonNull
   String getFormName();
 
-  @Nonnull
+  @NonNull
   String getTagName();
 
   @Nullable

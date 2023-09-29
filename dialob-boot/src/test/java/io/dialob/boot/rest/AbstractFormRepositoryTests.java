@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.dialob.integration.redis.ProvideTestRedis;
 import org.apache.commons.lang3.SerializationUtils;

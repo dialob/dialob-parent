@@ -26,7 +26,7 @@ import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 @Value.Immutable
@@ -36,7 +36,7 @@ public interface IsValidOperator extends Expression {
   ItemId getItemId();
 
   @Override
-  default Boolean eval(@Nonnull EvalContext context) {
+  default Boolean eval(@NonNull EvalContext context) {
     ItemId itemId = context.mapTo(getItemId(), false);
     return context.getItemState(itemId).map(itemState -> {
       if (Utils.isQuestionType(itemState)) {
@@ -49,13 +49,13 @@ public interface IsValidOperator extends Expression {
     }).orElse(true);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(EventMatchers.errorActivity(EventMatchers.targetError(getItemId())));

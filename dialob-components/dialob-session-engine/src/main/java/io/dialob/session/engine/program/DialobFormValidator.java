@@ -22,7 +22,7 @@ import io.dialob.session.engine.DialobProgramErrorsException;
 import io.dialob.session.engine.DialobProgramFromFormCompiler;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,13 +32,13 @@ public class DialobFormValidator implements FormValidator {
 
   private final DialobProgramFromFormCompiler programFromFormCompiler;
 
-  public DialobFormValidator(@Nonnull DialobProgramFromFormCompiler programFromFormCompiler) {
+  public DialobFormValidator(@NonNull DialobProgramFromFormCompiler programFromFormCompiler) {
     this.programFromFormCompiler = programFromFormCompiler;
   }
 
   @Override
-  @Nonnull
-  public List<FormValidationError> validate(@Nonnull Form form) {
+  @NonNull
+  public List<FormValidationError> validate(@NonNull Form form) {
     final List<FormValidationError> result = new ArrayList<>();
     try {
       programFromFormCompiler.compileForm(form);

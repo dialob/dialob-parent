@@ -23,7 +23,7 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenActiveUpdated;
@@ -35,18 +35,18 @@ public interface IsAnsweredOperator extends Expression {
   ItemId getQuestionId();
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     ItemId itemId = evalContext.mapTo(getQuestionId(), false);
     return evalContext.getItemState(itemId).map(itemState -> itemState.isAnswered() && itemState.isActive()).orElse(false);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(

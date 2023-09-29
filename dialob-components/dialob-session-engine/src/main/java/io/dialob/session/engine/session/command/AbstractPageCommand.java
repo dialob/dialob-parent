@@ -22,11 +22,11 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 interface AbstractPageCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
-  @Nonnull
+  @NonNull
   @Value.Default
   default ItemId getTargetId() {
     return DialobSession.QUESTIONNAIRE_REF;

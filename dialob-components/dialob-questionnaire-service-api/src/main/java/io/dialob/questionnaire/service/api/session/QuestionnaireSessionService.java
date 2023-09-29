@@ -16,18 +16,18 @@
 package io.dialob.questionnaire.service.api.session;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 
 public interface QuestionnaireSessionService {
 
   @Nullable
-  default QuestionnaireSession findOne(@Nonnull String questionnaireId) {
+  default QuestionnaireSession findOne(@NonNull String questionnaireId) {
     return findOne(questionnaireId, true);
   }
 
   @Nullable
-  QuestionnaireSession findOne(@Nonnull String questionnaireId, boolean openIfClosed);
+  QuestionnaireSession findOne(@NonNull String questionnaireId, boolean openIfClosed);
 
 }

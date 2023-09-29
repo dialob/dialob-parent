@@ -32,7 +32,7 @@ import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.Assertions;
 import org.mockito.ArgumentCaptor;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

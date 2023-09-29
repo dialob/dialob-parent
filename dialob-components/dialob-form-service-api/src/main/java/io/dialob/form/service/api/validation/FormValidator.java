@@ -18,12 +18,12 @@ package io.dialob.form.service.api.validation;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 
 public interface FormValidator {
 
-  @Nonnull
-  List<FormValidationError> validate(@Nonnull Form form);
+  @NonNull
+  List<FormValidationError> validate(@NonNull Form form);
 
 }

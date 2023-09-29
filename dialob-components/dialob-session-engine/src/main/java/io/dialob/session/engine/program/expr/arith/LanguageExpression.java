@@ -22,7 +22,7 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenSessionLocaleUpdated;
@@ -30,17 +30,17 @@ import static io.dialob.session.engine.session.command.EventMatchers.whenSession
 @Value.Immutable
 public interface LanguageExpression extends Expression {
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     return evalContext.getLanguage();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.STRING;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenSessionLocaleUpdated());

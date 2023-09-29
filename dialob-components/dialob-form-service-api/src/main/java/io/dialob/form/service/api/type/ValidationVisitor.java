@@ -18,8 +18,8 @@ package io.dialob.form.service.api.type;
 import io.dialob.api.form.Validation;
 import io.dialob.form.service.api.repository.Visitor;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface ValidationVisitor extends Visitor {
-  void visitValidation(@Nonnull Validation validationBean);
+  void visitValidation(@NonNull Validation validationBean);
 }

@@ -17,7 +17,7 @@ package io.dialob.session.boot;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.dialob.security.tenant.Tenant;
 

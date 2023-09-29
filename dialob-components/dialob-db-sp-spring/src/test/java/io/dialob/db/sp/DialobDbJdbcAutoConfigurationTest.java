@@ -134,7 +134,7 @@ class DialobDbJdbcAutoConfigurationTest {
           .hasSingleBean(QuestionnaireDatabase.class);
       });
   }
-  
+
   @Test
   public void testDialobDbJdbcAutoConfigurationTypeASSETS() {
     new ApplicationContextRunner()

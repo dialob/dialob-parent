@@ -21,7 +21,7 @@ import com.google.protobuf.CodedOutputStream;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -118,27 +118,27 @@ public class ValueSetState implements SessionObject {
     return new ValueSetState.UpdateBuilder();
   }
 
-  public ValueSetState(@Nonnull ValueSetId id) {
+  public ValueSetState(@NonNull ValueSetId id) {
     this.id = id;
   }
 
-  public ValueSetState(@Nonnull String id) {
+  public ValueSetState(@NonNull String id) {
     this.id = ImmutableValueSetId.of(id);
   }
 
-  public ValueSetState(@Nonnull ValueSetState valueSetState) {
+  public ValueSetState(@NonNull ValueSetState valueSetState) {
     this.id = valueSetState.id;
     if (valueSetState.entries != null) {
       this.entries = new ArrayList<>(valueSetState.entries);
     }
   }
 
-  @Nonnull
+  @NonNull
   public ValueSetId getId() {
     return id;
   }
 
-  @Nonnull
+  @NonNull
   public List<Entry> getEntries() {
     if (entries == null) {
       return Collections.emptyList();

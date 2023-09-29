@@ -17,11 +17,9 @@ package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.rule.parser.api.ValueType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
-@Immutable
 public interface Reducer<T> {
 
   @Nullable
@@ -35,6 +33,6 @@ public interface Reducer<T> {
   @Nullable
   T reduce(T t, T t2);
 
-  @Nonnull
+  @NonNull
   ValueType getValueType();
 }

@@ -18,7 +18,7 @@ package io.dialob.session.engine.session.command;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  *
@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
  */
 public interface UpdateCommand<I extends ItemId,T> extends Command<T> {
 
-  @Nonnull
+  @NonNull
   @Value.Parameter(order = 0)
   I getTargetId();
 

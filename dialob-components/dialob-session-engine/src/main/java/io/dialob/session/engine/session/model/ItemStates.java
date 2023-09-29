@@ -17,19 +17,19 @@ package io.dialob.session.engine.session.model;
 
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 
 @Value.Immutable
 public interface ItemStates {
 
-  @Nonnull
+  @NonNull
   Map<ItemId,ItemState> getItemStates();
 
-  @Nonnull
+  @NonNull
   Map<ValueSetId,ValueSetState> getValueSetStates();
 
-  @Nonnull
+  @NonNull
   Map<ErrorId,ErrorState> getErrorStates();
 
 }

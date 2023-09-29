@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -97,7 +97,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   private List<AbstractItemBuilder<?,ProgramBuilder>> builders = new ArrayList<>();
 
-  public ProgramBuilder(@Nonnull FunctionRegistry functionRegistry) {
+  public ProgramBuilder(@NonNull FunctionRegistry functionRegistry) {
     this.functionRegistry = functionRegistry;
     this.operatorFactory = new DDRLOperatorFactory();
   }
@@ -125,13 +125,13 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     return this;
   }
 
-  @Nonnull
-  private <T extends AbstractItemBuilder<?,ProgramBuilder>> T queue(@Nonnull T itemBuilder) {
+  @NonNull
+  private <T extends AbstractItemBuilder<?,ProgramBuilder>> T queue(@NonNull T itemBuilder) {
     builders.add(itemBuilder);
     return itemBuilder;
   }
 
-  public Optional<String> findValueSetIdForItem(@Nonnull ItemId itemId) {
+  public Optional<String> findValueSetIdForItem(@NonNull ItemId itemId) {
     return findItemById(itemId).flatMap(abstractItemBuilder -> {
       if (abstractItemBuilder instanceof QuestionBuilder) {
         return ((QuestionBuilder) abstractItemBuilder).getValueSetId();
@@ -140,7 +140,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     });
   }
 
-  public Optional<Object> findDefaultValueForItem(@Nonnull ItemId itemId) {
+  public Optional<Object> findDefaultValueForItem(@NonNull ItemId itemId) {
     return findItemById(itemId).flatMap(abstractItemBuilder -> {
       if (abstractItemBuilder instanceof HasDefaultValue) {
         return ((HasDefaultValue) abstractItemBuilder).getDefaultValue();
@@ -149,7 +149,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     });
   }
 
-  public Optional<AbstractItemBuilder<?,?>> findItemById(@Nonnull ItemId itemId) {
+  public Optional<AbstractItemBuilder<?,?>> findItemById(@NonNull ItemId itemId) {
     for (AbstractItemBuilder<?,?> item : builders) {
       if (itemId.equals(item.getId())) {
         return Optional.of(item);
@@ -191,11 +191,11 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
   }
 
   @Override
-  public boolean compile(@Nonnull ItemId itemId,
-                         @Nonnull String expression,
-                         @Nonnull AliasesProvider aliasesProvider,
-                         @Nonnull Consumer<Expression> expressionConsumer,
-                         @Nonnull FormValidationError.Type type,
+  public boolean compile(@NonNull ItemId itemId,
+                         @NonNull String expression,
+                         @NonNull AliasesProvider aliasesProvider,
+                         @NonNull Consumer<Expression> expressionConsumer,
+                         @NonNull FormValidationError.Type type,
                          Optional<Integer> index) {
     if (isBlank(expression)) {
       return false;
@@ -257,10 +257,10 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     return new DDRLExpressionCompiler(operatorFactory);
   }
 
-  private Optional<Expression> compileExpression(@Nonnull String scope,
-                                                 @Nonnull DDRLExpressionCompiler ddrlExpressionCompiler,
-                                                 @Nonnull CompilableExpression compilableExpression,
-                                                 @Nonnull Consumer<RuleExpressionCompilerError> errorConsumer) {
+  private Optional<Expression> compileExpression(@NonNull String scope,
+                                                 @NonNull DDRLExpressionCompiler ddrlExpressionCompiler,
+                                                 @NonNull CompilableExpression compilableExpression,
+                                                 @NonNull Consumer<RuleExpressionCompilerError> errorConsumer) {
       // TODO maybe compiling 2 phases is more reliable
     try {
       ProgramVariableFinder variableFinder = new ProgramVariableFinder(compilableExpression.getAliasesProvider().getAliases(), scope);
@@ -319,7 +319,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     return Optional.empty();
   }
 
-  public Optional<AbstractItemBuilder<?,ProgramBuilder>> findItemBuilder(@Nonnull String id) {
+  public Optional<AbstractItemBuilder<?,ProgramBuilder>> findItemBuilder(@NonNull String id) {
     for (AbstractItemBuilder<?, ProgramBuilder> builder : builders) {
       if(id.equals(builder.getIdStr())) {
         return Optional.of(builder);
@@ -383,7 +383,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public String mapAlias(String aliasName) {
       if (aliases.containsKey(aliasName)) {
         return IdUtils.toString(aliases.get(aliasName));

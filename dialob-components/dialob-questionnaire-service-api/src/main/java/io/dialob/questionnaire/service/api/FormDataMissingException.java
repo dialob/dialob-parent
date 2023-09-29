@@ -15,20 +15,20 @@
  */
 package io.dialob.questionnaire.service.api;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class FormDataMissingException extends RuntimeException {
 
   private final String formId;
   private final String formRev;
 
-  public FormDataMissingException(@Nonnull String formId, String formRev) {
+  public FormDataMissingException(@NonNull String formId, String formRev) {
     super("Form '" + formId + (formRev != null ? "' rev '" + formRev : "'") + "' cannot be loaded.");
     this.formId = formId;
     this.formRev = formRev;
   }
 
-  @Nonnull
+  @NonNull
   public String getFormId() {
     return formId;
   }

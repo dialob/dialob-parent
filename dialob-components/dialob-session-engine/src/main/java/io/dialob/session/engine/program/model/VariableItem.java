@@ -18,13 +18,13 @@ package io.dialob.session.engine.program.model;
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
 
 @Value.Immutable
 public interface VariableItem extends Item {
 
-  @Nonnull
+  @NonNull
   Expression getValueExpression();
 
   @Value.Default
@@ -38,7 +38,7 @@ public interface VariableItem extends Item {
   }
 
   @Override
-  @Nonnull
+  @NonNull
   default ValueType getValueType() {
     return Objects.requireNonNull(getValueExpression().getValueType());
   }

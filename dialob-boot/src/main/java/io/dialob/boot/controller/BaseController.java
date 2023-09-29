@@ -17,7 +17,7 @@ package io.dialob.boot.controller;
 
 import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public abstract class BaseController {
 

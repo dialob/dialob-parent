@@ -28,7 +28,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;

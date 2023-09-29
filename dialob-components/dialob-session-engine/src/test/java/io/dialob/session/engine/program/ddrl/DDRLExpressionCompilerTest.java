@@ -27,7 +27,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.time.*;
 import java.util.Map;
 import java.util.Optional;
@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class DDRLExpressionCompilerTest {
-  @Nonnull
+  @NonNull
   private DDRLExpressionCompiler createDdrlExpressionCompiler() {
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     when(functionRegistry.isAsyncFunction(anyString())).thenReturn(false);

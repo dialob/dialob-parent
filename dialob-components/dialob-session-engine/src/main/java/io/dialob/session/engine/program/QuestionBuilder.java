@@ -31,7 +31,7 @@ import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -204,7 +204,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   }
 
   @Override
-  public boolean compile(@Nonnull ItemId itemId, @Nonnull String expression, @Nonnull AliasesProvider aliasesProvider, @Nonnull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
+  public boolean compile(@NonNull ItemId itemId, @NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
     return compileExpression(expression, aliasesProvider, expressionConsumer, type, index);
   }
 

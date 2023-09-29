@@ -21,7 +21,7 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collections;
 import java.util.Set;
 
@@ -29,18 +29,18 @@ import java.util.Set;
 public interface ContextVariableReference<T> extends Expression {
 
   @Value.Parameter
-  @Nonnull
+  @NonNull
   ItemId getItemId();
 
   // Context variables are assumed to be constant and no updates expected.
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return Collections.emptySet();
   }
 
   @Override
-  default T eval(@Nonnull EvalContext evalContext) {
+  default T eval(@NonNull EvalContext evalContext) {
     return (T) evalContext.getItemValue(getItemId());
   }
 

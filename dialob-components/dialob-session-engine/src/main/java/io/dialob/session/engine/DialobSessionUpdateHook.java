@@ -18,7 +18,7 @@ package io.dialob.session.engine;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.model.DialobSession;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Consumer;
 
 public interface DialobSessionUpdateHook {
@@ -31,7 +31,7 @@ public interface DialobSessionUpdateHook {
    * @param update update to check
    * @param delegate delegates update for actual evaluation
    */
-  void hookAction(@Nonnull DialobSession dialobSession,
-                  @Nonnull Command<?> update,
+  void hookAction(@NonNull DialobSession dialobSession,
+                  @NonNull Command<?> update,
                   Consumer<Command<?>> delegate);
 }

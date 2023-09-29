@@ -22,7 +22,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.Set;
 
@@ -32,15 +32,15 @@ public interface InitGroupItems extends AbstractUpdateCommand<ItemId, ItemState>
   @Value.Parameter(order = 1)
   Expression getExpression();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return ImmutableSet.of(EventMatchers.whenItemAdded(getTargetId()));
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     List<ItemId> newItems = (List<ItemId>) getExpression().eval(context);
     return itemState.update().setItems(newItems).get();
   }

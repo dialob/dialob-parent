@@ -22,7 +22,7 @@ import io.dialob.api.form.Validation;
 import io.dialob.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 
 @Slf4j
@@ -30,15 +30,15 @@ public class VisitableForm {
 
   private final Form form;
 
-  private VisitableForm(@Nonnull Form form) {
+  private VisitableForm(@NonNull Form form) {
     this.form = form;
   }
 
-  public static VisitableForm makeVisitableForm(@Nonnull Form form) {
+  public static VisitableForm makeVisitableForm(@NonNull Form form) {
     return new VisitableForm(form);
   }
 
-  public void accept(@Nonnull final FormVisitor visitor) {
+  public void accept(@NonNull final FormVisitor visitor) {
     visitor.start();
     visitor.visitForm(form);
     visitor.visitFormMetadata(form.getMetadata());
@@ -128,7 +128,7 @@ public class VisitableForm {
     visitor.end();
   }
 
-  public Set<String> findAllPages(@Nonnull Map<String, FormItem> items) {
+  public Set<String> findAllPages(@NonNull Map<String, FormItem> items) {
     final Set<String> pages = new HashSet<>();
     for (FormItem formItem : items.values()) {
       if ("questionnaire".equals(formItem.getType())) {

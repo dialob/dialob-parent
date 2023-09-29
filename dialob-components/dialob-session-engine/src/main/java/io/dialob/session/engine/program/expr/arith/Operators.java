@@ -20,7 +20,7 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface Operators {
 
@@ -36,11 +36,11 @@ public interface Operators {
 
   InfixOperator<Boolean> gt(Expression lhs, Expression rhs);
 
-  static Expression and(@Nonnull Expression ...expressions) {
+  static Expression and(@NonNull Expression ...expressions) {
     return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.AND).build();
   }
 
-  static Expression or(@Nonnull Expression ...expressions) {
+  static Expression or(@NonNull Expression ...expressions) {
     return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.OR).build();
   }
 
@@ -77,10 +77,10 @@ public interface Operators {
     return IdUtils.toId(id);
   }
 
-  static VariableReference<?> var(@Nonnull ItemId id, @Nonnull ValueType valueType) {
+  static VariableReference<?> var(@NonNull ItemId id, @NonNull ValueType valueType) {
     return ImmutableVariableReference.builder().itemId(id).valueType(valueType).build();
   }
-  static VariableReference<?> var(@Nonnull String id, @Nonnull ValueType valueType) {
+  static VariableReference<?> var(@NonNull String id, @NonNull ValueType valueType) {
     return var(ref(id), valueType);
   }
 }

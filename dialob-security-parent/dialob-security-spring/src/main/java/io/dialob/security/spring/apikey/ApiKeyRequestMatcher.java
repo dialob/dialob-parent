@@ -15,7 +15,7 @@
  */
 package io.dialob.security.spring.apikey;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.web.util.matcher.RequestMatcher;
 

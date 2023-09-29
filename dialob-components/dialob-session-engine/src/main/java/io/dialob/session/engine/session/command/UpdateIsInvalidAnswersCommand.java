@@ -19,14 +19,14 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 @Value.Immutable
 public interface UpdateIsInvalidAnswersCommand extends AbstractUpdateBooleanAttributeCommand {
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setInvalidAnswers(evalExpression(context)).get();
   }

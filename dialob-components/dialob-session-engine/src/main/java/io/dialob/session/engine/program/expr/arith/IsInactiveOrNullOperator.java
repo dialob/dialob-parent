@@ -23,7 +23,7 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenActiveUpdated;
@@ -36,17 +36,17 @@ public interface IsInactiveOrNullOperator extends Expression {
   ItemId getItemId();
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     return evalContext.getItemState(this.getItemId()).map(itemState -> !itemState.isActive() || itemState.getValue() == null).orElse(true);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenValueUpdated(getItemId()), whenActiveUpdated(getItemId()));

@@ -23,7 +23,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 public interface AbstractUpdateAttributeCommand<T> extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
@@ -31,7 +31,7 @@ public interface AbstractUpdateAttributeCommand<T> extends AbstractUpdateCommand
   @Value.Parameter(order = 1)
   Expression getExpression();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();

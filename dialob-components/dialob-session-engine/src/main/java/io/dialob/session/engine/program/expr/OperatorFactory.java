@@ -18,12 +18,12 @@ package io.dialob.session.engine.program.expr;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.model.Expression;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 
 public interface OperatorFactory {
 
-  @Nonnull
-  Expression createOperator(@Nonnull ValueType nodeValueType, @Nonnull String operator, @Nonnull List<Expression> arguments);
+  @NonNull
+  Expression createOperator(@NonNull ValueType nodeValueType, @NonNull String operator, @NonNull List<Expression> arguments);
 
 }

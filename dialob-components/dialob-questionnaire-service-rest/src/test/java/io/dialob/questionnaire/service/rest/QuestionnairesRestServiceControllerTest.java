@@ -112,7 +112,6 @@ import io.dialob.security.user.CurrentUserProvider;
   QuestionnairesRestServiceControllerTest.TestConfiguration.class,
   QuestionnairesRestServiceController.class,
   DialobRestAutoConfiguration.class})
-@SpringBootTest()
 @EnableWebMvc
 @WebAppConfiguration
 public class QuestionnairesRestServiceControllerTest {

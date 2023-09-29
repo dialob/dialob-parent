@@ -24,7 +24,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenRequiredUpdated;
@@ -36,17 +36,17 @@ public interface IsRequiredOperator extends Expression {
   ItemId getItemId();
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     return evalContext.getItemState(this.getItemId()).map(ItemState::isRequired).orElse(false);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenRequiredUpdated(getItemId()));

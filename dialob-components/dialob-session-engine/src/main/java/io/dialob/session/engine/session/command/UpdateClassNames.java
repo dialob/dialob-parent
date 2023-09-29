@@ -24,7 +24,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +37,7 @@ public interface UpdateClassNames extends AbstractUpdateCommand<ItemId,ItemState
   @Value.Parameter(order = 1)
   Expression getExpression();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
@@ -47,9 +47,9 @@ public interface UpdateClassNames extends AbstractUpdateCommand<ItemId,ItemState
     return eventMatchers;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     // classnames do not trigger dependencies
     return itemState.update().setClassNames(evalExpression(context)).get();
   }

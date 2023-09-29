@@ -27,7 +27,7 @@ import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageDeliveryException;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 public class DistributedEventBridge {
 

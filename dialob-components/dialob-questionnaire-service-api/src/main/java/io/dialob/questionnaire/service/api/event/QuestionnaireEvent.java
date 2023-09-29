@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.dialob.integration.api.event.TenantScopedEvent;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Common type for all questionnaire related events
@@ -38,7 +38,7 @@ public interface QuestionnaireEvent extends TenantScopedEvent {
   /**
    * @return questionnaire id of event
    */
-  @Nonnull
+  @NonNull
   String getQuestionnaireId();
 
 }

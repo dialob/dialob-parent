@@ -28,7 +28,7 @@ import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -151,7 +151,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     return this;
   }
 
-  @Nonnull
+  @NonNull
   public Collection<ItemId> getItemIds() {
     return Collections.unmodifiableList(itemIds);
   }

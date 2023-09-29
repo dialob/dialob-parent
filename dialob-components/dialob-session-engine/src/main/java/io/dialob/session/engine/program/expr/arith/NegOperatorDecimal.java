@@ -19,7 +19,7 @@ import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.math.BigDecimal;
 
 @Value.Immutable
@@ -28,7 +28,7 @@ public interface NegOperatorDecimal extends NegOperator {
     return ((BigDecimal)value).negate();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.DECIMAL;

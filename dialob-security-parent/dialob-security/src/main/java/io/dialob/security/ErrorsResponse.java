@@ -18,7 +18,7 @@ package io.dialob.security;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import org.immutables.value.Value;
 

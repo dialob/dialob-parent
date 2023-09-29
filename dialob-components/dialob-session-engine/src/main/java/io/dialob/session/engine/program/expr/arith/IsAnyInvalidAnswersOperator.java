@@ -23,7 +23,7 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ErrorState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.anyError;
@@ -35,17 +35,17 @@ public interface IsAnyInvalidAnswersOperator extends Expression {
   Set<EventMatcher> ANY_ERROR = ImmutableSet.of(errorActivity(anyError()));
 
   @Override
-  default Boolean eval(@Nonnull EvalContext context) {
+  default Boolean eval(@NonNull EvalContext context) {
     return context.getErrorStates().stream().anyMatch(ErrorState::isActive);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ANY_ERROR;

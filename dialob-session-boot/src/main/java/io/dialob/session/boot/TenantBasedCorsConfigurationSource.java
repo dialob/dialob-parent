@@ -18,7 +18,7 @@ package io.dialob.session.boot;
 import java.util.Optional;
 import java.util.function.Function;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;

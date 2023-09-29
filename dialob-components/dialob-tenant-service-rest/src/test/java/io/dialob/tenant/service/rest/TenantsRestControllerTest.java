@@ -49,7 +49,7 @@ import io.dialob.security.tenant.ImmutableTenant;
 
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest
 @ContextConfiguration(classes = {
   TenantsRestController.class,
   DelegatingWebMvcConfiguration.class})

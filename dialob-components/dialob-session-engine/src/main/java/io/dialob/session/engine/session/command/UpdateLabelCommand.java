@@ -20,22 +20,22 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Set;
 
 
 @Value.Immutable
 public interface UpdateLabelCommand extends AbstractUpdateAttributeCommand<String> {
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     // label update will not trigger additional expressions
     return itemState.update()
       .setLabel(evalExpression(context)).get();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> parent = AbstractUpdateAttributeCommand.super.getEventMatchers();

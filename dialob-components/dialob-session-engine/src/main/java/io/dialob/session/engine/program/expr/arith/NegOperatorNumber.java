@@ -19,7 +19,7 @@ import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 @Value.Immutable
 public interface NegOperatorNumber extends NegOperator {
@@ -28,7 +28,7 @@ public interface NegOperatorNumber extends NegOperator {
     return -((Integer)value);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.INTEGER;

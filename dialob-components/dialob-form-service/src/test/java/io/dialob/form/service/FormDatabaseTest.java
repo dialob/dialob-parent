@@ -44,7 +44,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
 @EnableCaching
 public class FormDatabaseTest {
 

@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;

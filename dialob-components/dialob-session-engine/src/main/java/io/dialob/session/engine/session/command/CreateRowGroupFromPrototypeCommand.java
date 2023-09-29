@@ -24,7 +24,7 @@ import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,9 +37,9 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
   @Value.Parameter
   ItemId getItemPrototypeId();
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemStates update(@Nonnull final EvalContext context, @Nonnull final ItemStates itemStates) {
+  default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     return getItemPrototypeId().getParent().flatMap(groupId -> {
       Set<ItemId> currentItems = Sets.newHashSet(itemStates.getItemStates().get(groupId).getItems());
       Set<ItemId> originalItems = context.getOriginalItemState(groupId).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(ImmutableSet.of());
@@ -54,7 +54,7 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
     }).orElse(itemStates);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return getItemPrototypeId().getParent()

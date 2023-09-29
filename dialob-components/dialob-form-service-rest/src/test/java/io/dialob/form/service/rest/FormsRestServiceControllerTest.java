@@ -39,7 +39,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,7 +83,6 @@ import io.dialob.session.engine.program.FormValidatorExecutor;
   DialobFormServiceRestAutoConfiguration.class,
   DialobRestAutoConfiguration.class,
   FormsRestServiceControllerTest.TestConfiguration.class})
-@SpringBootTest()
 @EnableWebMvc
 @WebAppConfiguration
 class FormsRestServiceControllerTest {

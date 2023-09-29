@@ -17,7 +17,7 @@ package io.dialob.questionnaire.service.api;
 
 import io.dialob.api.questionnaire.Questionnaire;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 
 public interface AnswerSubmitHandler {
@@ -30,5 +30,5 @@ public interface AnswerSubmitHandler {
 
   }
 
-  void submit(@Nonnull Settings submitHandlerSettings, @Nonnull Questionnaire document);
+  void submit(@NonNull Settings submitHandlerSettings, @NonNull Questionnaire document);
 }

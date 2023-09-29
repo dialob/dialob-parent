@@ -17,12 +17,12 @@ package io.dialob.questionnaire.service.api.event;
 
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.net.InetAddress;
 
 @Value.Immutable
 public interface QuestionnaireClientConnectedEvent extends QuestionnaireEvent {
 
-  @Nonnull
+  @NonNull
   InetAddress getClient();
 }

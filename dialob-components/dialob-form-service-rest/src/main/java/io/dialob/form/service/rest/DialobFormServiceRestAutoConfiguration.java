@@ -37,6 +37,7 @@ import io.dialob.session.engine.program.FormValidatorExecutor;
 public class DialobFormServiceRestAutoConfiguration {
 
   private final FormsRestServiceController formsRestServiceController;
+  private final FormTagsRestService formTagsRestService;
 
   public DialobFormServiceRestAutoConfiguration(
     ApplicationEventPublisher eventPublisher,
@@ -51,7 +52,8 @@ public class DialobFormServiceRestAutoConfiguration {
     CurrentUserProvider currentUserProvider,
     Optional<Clock> clock)
   {
-    formsRestServiceController = new FormsRestServiceController(eventPublisher, formDatabase, formVersionControlDatabase, validator, renamer, objectMapper, nodeId, formItemCopier, currentTenant, currentUserProvider, clock.orElse(Clock.systemDefaultZone()));
+    this.formsRestServiceController = new FormsRestServiceController(eventPublisher, formDatabase, formVersionControlDatabase, validator, renamer, objectMapper, nodeId, formItemCopier, currentTenant, currentUserProvider, clock.orElse(Clock.systemDefaultZone()));
+    this.formTagsRestService = new FormTagsRestServiceController(formVersionControlDatabase, currentTenant);
   }
 
   @Bean
@@ -61,7 +63,7 @@ public class DialobFormServiceRestAutoConfiguration {
 
   @Bean
   public FormTagsRestService formTagsRestService() {
-    return formsRestServiceController;
+    return formTagsRestService;
   }
 
   @Bean

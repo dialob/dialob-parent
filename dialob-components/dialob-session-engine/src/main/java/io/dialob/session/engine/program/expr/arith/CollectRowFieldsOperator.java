@@ -29,7 +29,7 @@ import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,7 +54,7 @@ public interface CollectRowFieldsOperator extends Expression {
     .map(evalContext::getItemValue).collect(toList());
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     Set<EventMatcher> matchers = new HashSet<>();
@@ -71,7 +71,7 @@ public interface CollectRowFieldsOperator extends Expression {
     return Collections.unmodifiableSet(matchers);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.arrayOf(getType());

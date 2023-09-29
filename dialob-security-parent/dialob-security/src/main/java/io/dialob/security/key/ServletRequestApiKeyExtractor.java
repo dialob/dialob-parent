@@ -15,16 +15,16 @@
  */
 package io.dialob.security.key;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.ServletRequest;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import jakarta.servlet.ServletRequest;
 
 public interface ServletRequestApiKeyExtractor {
 
   @Nullable
   ApiKey extract(ServletRequest servletRequest);
 
-  @Nonnull
+  @NonNull
   String getHeader();
 
 }

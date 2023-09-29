@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.dialob.integration.redis.ProvideTestRedis;
 import org.junit.jupiter.api.Assertions;

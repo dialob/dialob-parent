@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -70,7 +70,7 @@ import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 
 @RestController
-public class FormsRestServiceController implements FormsRestService, FormTagsRestService {
+public class FormsRestServiceController implements FormsRestService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FormsRestServiceController.class);
 
@@ -381,10 +381,4 @@ public class FormsRestServiceController implements FormsRestService, FormTagsRes
     return nodeId;
   }
 
-  @Override
-  public ResponseEntity<List<FormTag>> getTags(String formName, String formId, String name) {
-    return formVersionControlDatabase.map(
-      versionControlDatabase -> ResponseEntity.ok(versionControlDatabase.queryTags(currentTenant.getId(), formName, formId, name, FormTag.Type.NORMAL)))
-      .orElse(ResponseEntity.notFound().build());
-  }
 }

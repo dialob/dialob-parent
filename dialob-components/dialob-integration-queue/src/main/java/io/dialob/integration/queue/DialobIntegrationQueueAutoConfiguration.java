@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;

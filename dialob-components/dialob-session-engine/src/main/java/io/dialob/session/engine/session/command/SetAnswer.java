@@ -21,8 +21,8 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 @Value.Immutable
 public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
@@ -31,8 +31,8 @@ public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, Ite
   @Nullable
   Object getAnswer();
 
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (canUpdate(context, itemState)) {
       return itemState.update()
         .setAnswer(getAnswer())
@@ -41,7 +41,7 @@ public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, Ite
     return itemState;
   }
 
-  default boolean canUpdate(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default boolean canUpdate(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return ( context.isActivating() || !itemState.isDisabled() && itemState.isActive() ) && Utils.isQuestionType(itemState);
   }
 

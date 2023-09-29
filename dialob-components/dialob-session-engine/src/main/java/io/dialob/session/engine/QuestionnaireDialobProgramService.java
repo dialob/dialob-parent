@@ -24,7 +24,7 @@ import io.dialob.session.engine.program.DialobProgram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class QuestionnaireDialobProgramService implements DialobProgramService {
 
@@ -38,20 +38,20 @@ public class QuestionnaireDialobProgramService implements DialobProgramService {
     return new Builder();
   }
 
-  QuestionnaireDialobProgramService(@Nonnull FormFinder formDatabase, @Nonnull DialobProgramFromFormCompiler programFromFormCompiler) {
+  QuestionnaireDialobProgramService(@NonNull FormFinder formDatabase, @NonNull DialobProgramFromFormCompiler programFromFormCompiler) {
     this.formFinder = formDatabase;
     this.programFromFormCompiler = programFromFormCompiler;
   }
 
   @Override
-  @Nonnull
-  public DialobProgram findByFormId(@Nonnull String formId) {
+  @NonNull
+  public DialobProgram findByFormId(@NonNull String formId) {
     return findByFormIdAndRev(formId, null);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public DialobProgram findByFormIdAndRev(@Nonnull String formId, String formRev) {
+  public DialobProgram findByFormIdAndRev(@NonNull String formId, String formRev) {
     Form formDocument;
     try {
       formDocument = formFinder.findForm(formId, formRev);

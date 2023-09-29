@@ -18,7 +18,7 @@ package io.dialob.demo.functions;
 import com.google.common.collect.HashBasedTable;
 import io.dialob.rule.parser.function.FunctionRegistry;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 
 public class UWFunctions {

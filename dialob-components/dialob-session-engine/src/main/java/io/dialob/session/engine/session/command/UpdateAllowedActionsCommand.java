@@ -23,7 +23,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -33,15 +33,15 @@ public interface UpdateAllowedActionsCommand extends AbstractUpdateCommand<ItemI
   @Value.Parameter(order = 1)
   Expression getExpression();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return getExpression().getEvalRequiredConditions();
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setAllowedActions(evalExpression(context)).get();
   }

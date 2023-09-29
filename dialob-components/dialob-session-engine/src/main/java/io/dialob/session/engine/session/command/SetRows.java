@@ -20,7 +20,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 
 @Value.Immutable
@@ -29,9 +29,9 @@ public interface SetRows extends AbstractUpdateCommand<ItemId,ItemState>, ItemUp
   @Value.Parameter(order = 1)
   List<Integer> getIds();
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update().setValue(getIds()).get();
   }
 }

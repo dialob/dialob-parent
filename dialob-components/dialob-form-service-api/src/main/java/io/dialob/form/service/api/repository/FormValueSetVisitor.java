@@ -17,10 +17,10 @@ package io.dialob.form.service.api.repository;
 
 import io.dialob.api.form.FormValueSet;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface FormValueSetVisitor extends Visitor {
 
-  void visitValueSet(@Nonnull FormValueSet valueSet);
+  void visitValueSet(@NonNull FormValueSet valueSet);
 
 }
