@@ -29,6 +29,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -50,7 +52,7 @@ public class SecurityDisabledConfiguration {
     PERMIT_ALL_CORS.applyPermitDefaultValues();
   }
 
-  private TenantSettings tenantSettings;
+  private final TenantSettings tenantSettings;
 
   public SecurityDisabledConfiguration(DialobSettings dialobSettings) {
     this.tenantSettings = dialobSettings.getTenant();
@@ -60,14 +62,11 @@ public class SecurityDisabledConfiguration {
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     LOGGER.warn("Security disabled!");
     http.securityMatcher("/**")
-        .authorizeHttpRequests().anyRequest().permitAll()
-      .and()
-        .csrf().disable()
-        .cors().configurationSource(request -> PERMIT_ALL_CORS)
-      .and().headers()
-        .frameOptions().disable();
-    configureRequestParameterTenantScopeFilter(http);
-    return http.build();
+        .authorizeHttpRequests(customizer -> customizer.anyRequest().permitAll())
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(customizer -> customizer.configurationSource(request -> PERMIT_ALL_CORS))
+        .headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+    return configureRequestParameterTenantScopeFilter(http).build();
   }
 
   protected HttpSecurity configureRequestParameterTenantScopeFilter(HttpSecurity http) {
@@ -91,7 +90,7 @@ public class SecurityDisabledConfiguration {
 
   private DefaultTenantSupplier getDefaultTenantSupplier() {
     if (StringUtils.isEmpty(tenantSettings.getFixedId())) {
-      return () -> Optional.empty();
+      return Optional::empty;
     }
     return () -> Optional.of(ImmutableTenant.of(tenantSettings.getFixedId(), Optional.empty()));
   }

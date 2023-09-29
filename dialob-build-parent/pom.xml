@@ -31,6 +31,7 @@
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.encoding>${project.build.sourceEncoding}</maven.compiler.encoding>
     <maven.resources.encoding>${project.build.sourceEncoding}</maven.resources.encoding>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
@@ -42,13 +43,14 @@
     <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
     <maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>
     <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-    <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
+    <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
     <maven-site-plugin.version>3.11.0</maven-site-plugin.version>
-    <cyclonedx-maven-plugin.version>2.5.3</cyclonedx-maven-plugin.version>
+    <jib-maven-plugin.version>3.4.0</jib-maven-plugin.version>
+    <cyclonedx-maven-plugin.version>2.7.9</cyclonedx-maven-plugin.version>
 
 
     <thirdparty.log.level>INFO</thirdparty.log.level>
-    <antlr4.version>4.9.3</antlr4.version>
+    <antlr4.version>4.13.1</antlr4.version>
     <assertj-core.version>3.21.0</assertj-core.version>
     <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
     <cobertura.halt-on-failure>false</cobertura.halt-on-failure>
@@ -96,6 +98,7 @@
     <spring-cloud-gcp.version>2.0.6</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
     <springdoc.version>1.6.1</springdoc.version>
     <testcontainers.version>1.19.6</testcontainers.version>
+    <tomcat-embed-el.version>10.1.1</tomcat-embed-el.version>
   </properties>
 
 
@@ -593,6 +596,11 @@
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-ui</artifactId>
         <version>${springdoc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-el</artifactId>
+        <version>${tomcat-embed-el.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

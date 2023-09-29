@@ -80,8 +80,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   "spring.security.oauth2.client.provider[own].tokenUri=http://localhost:880",
   "spring.security.oauth2.client.provider[own].jwkSetUri=http://localhost:880",
   "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
-  "spring.autoconfigure.exclude[1]=io.dialob.db.sp.DialobDbSpAutoConfiguration",
-  "spring.autoconfigure.exclude[2]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+  "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
   "spring.data.redis.repositories.enabled=false",
   "management.health.db.enabled=false"
 })
