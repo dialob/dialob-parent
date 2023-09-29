@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.model;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public abstract class AbstractItemVisitor implements ProgramVisitor.ItemVisitor {
 
   @Override
-  public void visitItem(@Nonnull Item item) {
+  public void visitItem(@NonNull Item item) {
     if (item instanceof VariableItem) {
       visitVariableItem((VariableItem) item);
     } else if (item instanceof Group) {
@@ -30,13 +30,13 @@ public abstract class AbstractItemVisitor implements ProgramVisitor.ItemVisitor 
     }
   }
 
-  public void visitVariableItem(@Nonnull VariableItem variableItem) {
+  public void visitVariableItem(@NonNull VariableItem variableItem) {
   }
 
-  public void visitGroup(@Nonnull Group group) {
+  public void visitGroup(@NonNull Group group) {
   }
 
-  public void visitDisplayItem(@Nonnull DisplayItem displayItem) {
+  public void visitDisplayItem(@NonNull DisplayItem displayItem) {
   }
 
 }

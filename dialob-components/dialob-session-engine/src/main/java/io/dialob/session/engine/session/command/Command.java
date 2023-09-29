@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -29,13 +29,13 @@ public interface Command<T> extends Serializable {
   @Value.Parameter(order = 1000)
   List<Trigger<T>> getTriggers();
 
-  @Nonnull
+  @NonNull
   default Set<EventMatcher> getEventMatchers() {
     return Collections.emptySet();
   }
 
-  @Nonnull
-  T update(@Nonnull EvalContext context, @Nonnull T target);
+  @NonNull
+  T update(@NonNull EvalContext context, @NonNull T target);
 
 
 }

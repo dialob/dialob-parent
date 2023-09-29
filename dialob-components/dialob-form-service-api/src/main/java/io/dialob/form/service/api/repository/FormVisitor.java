@@ -15,16 +15,16 @@
  */
 package io.dialob.form.service.api.repository;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public interface FormVisitor extends Visitor {
 
-  default void visitForm(@Nonnull Form formDocument) { }
+  default void visitForm(@NonNull Form formDocument) { }
 
-  default void visitFormMetadata(@Nonnull Form.Metadata metadata) { }
+  default void visitFormMetadata(@NonNull Form.Metadata metadata) { }
 
   default Optional<FormItemVisitor> startFormItems() {
     return Optional.empty();

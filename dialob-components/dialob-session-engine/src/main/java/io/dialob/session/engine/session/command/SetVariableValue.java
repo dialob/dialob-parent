@@ -15,13 +15,12 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @Value.Immutable
 public interface SetVariableValue extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
@@ -30,8 +29,8 @@ public interface SetVariableValue extends AbstractUpdateCommand<ItemId, ItemStat
   @Nullable
   Object getValue();
 
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     // TODO validate matching type??
     return itemState.update()
       .setValue(getValue())

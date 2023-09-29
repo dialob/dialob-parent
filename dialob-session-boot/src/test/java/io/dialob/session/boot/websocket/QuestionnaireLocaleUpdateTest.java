@@ -19,6 +19,7 @@ import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ValueSetEntry;
 import io.dialob.session.boot.Application;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;

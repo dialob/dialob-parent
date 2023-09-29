@@ -15,11 +15,11 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ActionsFactory;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
 @Deprecated
 public interface QuestionnaireActionsService {
 
-  default Actions handleAction(@Nonnull String questionnaireId, @Nonnull Action action, String revision) {
+  default Actions handleAction(@NonNull String questionnaireId, @NonNull Action action, String revision) {
     if (isAcceptableAction(action)) {
       return answerQuestion(questionnaireId, revision, Collections.singletonList(action));
     }
@@ -38,7 +38,7 @@ public interface QuestionnaireActionsService {
     return action.getType().isClientAction();
   }
 
-  @Nonnull
-  Actions answerQuestion(@Nonnull String questionnaireId, String revision, @Nonnull List<Action> actions);
+  @NonNull
+  Actions answerQuestion(@NonNull String questionnaireId, String revision, @NonNull List<Action> actions);
 
 }

@@ -16,13 +16,13 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +34,7 @@ public interface BinaryOperator<T> extends Expression {
   Reducer<T> getReducer();
 
   @Override
-  default T eval(@Nonnull EvalContext evalContext) {
+  default T eval(@NonNull EvalContext evalContext) {
     T result = null;
     for (final Expression node : getNodes()) {
       T value = (T) node.eval(evalContext);
@@ -50,13 +50,13 @@ public interface BinaryOperator<T> extends Expression {
     return result;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return getReducer().getValueType();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     final Set<EventMatcher> deps = Sets.newHashSet();

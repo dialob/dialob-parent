@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.api.ValueType;
@@ -30,7 +31,6 @@ import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -60,7 +60,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   protected Map<String, ? extends Object> props = null;
 
-  public AbstractItemBuilder(ProgramBuilder programBuilder, P parent, GroupBuilder hoistingGroupBuilder, @Nonnull String id) {
+  public AbstractItemBuilder(ProgramBuilder programBuilder, P parent, GroupBuilder hoistingGroupBuilder, @NonNull String id) {
     this.programBuilder = programBuilder;
     this.parent = parent;
     this.hoistingGroupBuilder = hoistingGroupBuilder;
@@ -76,19 +76,19 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     return parent;
   }
 
-  boolean compileExpression(@Nonnull String expression, @Nonnull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
+  boolean compileExpression(@NonNull String expression, @NonNull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
     return compileExpression(expression, this, expressionConsumer, type, index);
   }
 
-  boolean compileExpression(@Nonnull String expression, @Nonnull AliasesProvider aliasesProvider, @Nonnull Consumer<Expression> expressionConsumer, @Nonnull FormValidationError.Type type, Optional<Integer> index) {
+  boolean compileExpression(@NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> expressionConsumer, @NonNull FormValidationError.Type type, Optional<Integer> index) {
     return getParent().compile(getId(), expression, aliasesProvider, expressionConsumer, type, index);
   }
 
-  public T addClassname(@Nonnull String className) {
+  public T addClassname(@NonNull String className) {
     return (T) addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
   }
 
-  public T addClassname(String when, @Nonnull String className) {
+  public T addClassname(String when, @NonNull String className) {
     if (!compileExpression(when, expression -> addClassname(ImmutableConditionalValue.<String>builder().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, Optional.empty())) {
       addClassname(className);
     }
@@ -185,7 +185,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     requireBooleanExpression(activeWhen, getActiveWhenExpressionErrorType(), errorConsumer);
   }
 
-  @Nonnull
+  @NonNull
   public ItemId getId() {
     if (itemId == null) {
       setupId();

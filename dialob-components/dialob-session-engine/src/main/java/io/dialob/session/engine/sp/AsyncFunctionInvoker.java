@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.sp;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionsFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -22,7 +23,6 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 
 public class AsyncFunctionInvoker {
@@ -31,8 +31,8 @@ public class AsyncFunctionInvoker {
 
   private final QuestionnaireSessionService service;
 
-  public AsyncFunctionInvoker(@Nonnull FunctionRegistry registry,
-                              @Nonnull QuestionnaireSessionService service) {
+  public AsyncFunctionInvoker(@NonNull FunctionRegistry registry,
+                              @NonNull QuestionnaireSessionService service) {
     this.registry = registry;
     this.service = service;
   }
@@ -66,7 +66,7 @@ public class AsyncFunctionInvoker {
     }
 
     @Override
-    public void failed(@Nonnull String error) {
+    public void failed(@NonNull String error) {
       QuestionnaireSession questionnaireSession = service.findOne(sessionId, true);
       questionnaireSession.dispatchActions(Collections.singletonList(ActionsFactory.setFailed(
           targetId,

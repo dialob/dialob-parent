@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import io.dialob.api.rest.Errors;
 import io.dialob.api.rest.ImmutableErrors;
 import io.dialob.db.spi.exceptions.*;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class DatabaseExceptionMapper {

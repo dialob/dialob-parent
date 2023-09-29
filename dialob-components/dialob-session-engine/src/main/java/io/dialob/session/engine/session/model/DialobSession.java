@@ -19,6 +19,8 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.DebugUtil;
@@ -28,8 +30,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.Instant;
@@ -57,7 +57,7 @@ public class DialobSession implements ItemStates, Serializable {
 
   private String revision;
 
-  @Nonnull
+  @NonNull
   private Date lastUpdate = new Date();
 
   private Date completed;
@@ -239,13 +239,13 @@ public class DialobSession implements ItemStates, Serializable {
     return tenantId;
   }
 
-  @Nonnull
+  @NonNull
   public ItemState getRootItem() {
     return getItemState(QUESTIONNAIRE_REF)
       .orElseThrow(() -> new IllegalStateException("Could not find questionnaire from " + getId()));
   }
 
-  public Optional<ItemState> getItemState(@Nonnull ItemId id) {
+  public Optional<ItemState> getItemState(@NonNull ItemId id) {
     return Optional.ofNullable(itemStates.get(id));
   }
 
@@ -279,7 +279,7 @@ public class DialobSession implements ItemStates, Serializable {
    * @param evalContext execution context
    * @param command object to execute within context
    */
-  public void applyUpdate(@Nonnull EvalContext evalContext, @Nonnull Command<?> command) {
+  public void applyUpdate(@NonNull EvalContext evalContext, @NonNull Command<?> command) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
@@ -309,7 +309,7 @@ public class DialobSession implements ItemStates, Serializable {
     }
   }
 
-  public EvalContext createScopedEvalContext(@Nonnull EvalContext evalContext, ItemId itemId) {
+  public EvalContext createScopedEvalContext(@NonNull EvalContext evalContext, ItemId itemId) {
     return itemId instanceof ItemIndex ?
       createScope(evalContext, itemId) :
       itemId.getParent().map(parentId -> {
@@ -320,7 +320,7 @@ public class DialobSession implements ItemStates, Serializable {
       }).orElse(evalContext);
   }
 
-  public EvalContext createScope(@Nonnull EvalContext evalContext, ItemId itemId) {
+  public EvalContext createScope(@NonNull EvalContext evalContext, ItemId itemId) {
     var scopeItems = new ArrayList<>(evalContext
       .getItemState(itemId)
       .map(ItemState::getItems).orElseGet(Collections::emptyList));
@@ -432,7 +432,7 @@ public class DialobSession implements ItemStates, Serializable {
     return revision;
   }
 
-  @Nonnull
+  @NonNull
   public Instant getLastUpdate() {
     return lastUpdate.toInstant();
   }
@@ -481,25 +481,25 @@ public class DialobSession implements ItemStates, Serializable {
     this.language = language;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Map<ItemId, ItemState> getItemStates() {
     return Collections.unmodifiableMap(itemStates);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Map<ValueSetId, ValueSetState> getValueSetStates() {
     return Collections.unmodifiableMap(valueSetStates);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Map<ErrorId, ErrorState> getErrorStates() {
     return Collections.unmodifiableMap(errorStates);
   }
 
-  @Nonnull
+  @NonNull
   public Optional<ValueSetState> getValueSetState(ValueSetId id) {
     return Optional.of(valueSetStates.get(id));
   }
@@ -517,7 +517,7 @@ public class DialobSession implements ItemStates, Serializable {
       .findFirst();
   }
 
-  @Nonnull
+  @NonNull
   private Stream<Map.Entry<ItemId,ItemState>> findMatchingItemsEntries(ItemId partialItemId) {
     return itemStates
       .entrySet()
@@ -525,7 +525,7 @@ public class DialobSession implements ItemStates, Serializable {
       .filter(item -> IdUtils.matches(partialItemId, item.getKey()));
   }
 
-  @Nonnull
+  @NonNull
   private Stream<Map.Entry<ErrorId,ErrorState>> findMatchingErrorEntries(ErrorId partialErrorId) {
     return errorStates
       .entrySet()
@@ -533,7 +533,7 @@ public class DialobSession implements ItemStates, Serializable {
       .filter(item -> IdUtils.matches(partialErrorId, item.getKey()));
   }
 
-  @Nonnull
+  @NonNull
   public Stream<ItemId> findMatchingItemIds(ItemId partialItemId) {
     final UnaryOperator<Map.Entry<? extends ItemId, ?>> logger = LOGGER.isDebugEnabled() ?
       itemEntry -> {
@@ -552,7 +552,7 @@ public class DialobSession implements ItemStates, Serializable {
       .map(Map.Entry::getKey);
   }
 
-  @Nonnull
+  @NonNull
   public Stream<ErrorState> findErrorPrototypes(ItemId itemId) {
     if (itemId.isPartial()) {
       return errorPrototypes.values().stream().filter(errorPrototype -> errorPrototype.getItemId().equals(itemId));

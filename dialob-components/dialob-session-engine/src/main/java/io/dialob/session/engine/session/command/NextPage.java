@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
@@ -22,15 +23,14 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 @Value.Immutable
 public interface NextPage extends AbstractPageCommand {
 
   @Override
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     ItemId page = null;
     if (!context.getItemState(IdUtils.QUESTIONNAIRE_ID).map(questionnaire -> questionnaire.getAllowedActions().contains(Action.Type.NEXT)).orElse(false)) {
       return itemState;

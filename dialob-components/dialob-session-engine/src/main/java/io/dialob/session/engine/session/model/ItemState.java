@@ -19,6 +19,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
 import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
@@ -27,8 +29,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 
@@ -264,7 +264,7 @@ public class ItemState implements SessionObject {
 
 
 
-  public ItemState(@Nonnull ItemId id, ItemId prototypeId, @Nonnull String type, String view, String valueSetId) {
+  public ItemState(@NonNull ItemId id, ItemId prototypeId, @NonNull String type, String view, String valueSetId) {
     this.id = id;
     this.prototypeId = prototypeId;
     this.type = type;
@@ -273,7 +273,7 @@ public class ItemState implements SessionObject {
     resetBits(DISPLAY_ITEM_BIT);
   }
 
-  public ItemState(@Nonnull ItemId id, ItemId prototypeId, @Nonnull String type, String view, boolean displayItem, String valueSetId, Object answer, Object value, Object defaultValue, ItemId activePage) {
+  public ItemState(@NonNull ItemId id, ItemId prototypeId, @NonNull String type, String view, boolean displayItem, String valueSetId, Object answer, Object value, Object defaultValue, ItemId activePage) {
     this.valueSetId = valueSetId;
     this.id = id;
     this.prototypeId = prototypeId;
@@ -286,11 +286,11 @@ public class ItemState implements SessionObject {
     this.activePage = activePage;
   }
 
-  ItemState(@Nonnull ItemState itemState) {
+  ItemState(@NonNull ItemState itemState) {
     this(itemState.getId(), itemState);
   }
 
-  ItemState(@Nonnull ItemId id, @Nonnull ItemState itemState) {
+  ItemState(@NonNull ItemId id, @NonNull ItemState itemState) {
     this.id = id;
     this.prototypeId = itemState.prototypeId;
     this.type = itemState.type;
@@ -311,7 +311,7 @@ public class ItemState implements SessionObject {
     this.activePage = itemState.activePage;
   }
 
-  @Nonnull
+  @NonNull
   public ItemId getId() {
     return id;
   }
@@ -321,7 +321,7 @@ public class ItemState implements SessionObject {
     return prototypeId;
   }
 
-  @Nonnull
+  @NonNull
   public String getType() {
     return type;
   }
@@ -413,7 +413,7 @@ public class ItemState implements SessionObject {
     return classNames;
   }
 
-  @Nonnull
+  @NonNull
   public List<ItemId> getItems() {
     return items;
   }
@@ -430,8 +430,8 @@ public class ItemState implements SessionObject {
     return allowedActions;
   }
 
-  @Nonnull
-  public ItemState withId(@Nonnull ItemId newId) {
+  @NonNull
+  public ItemState withId(@NonNull ItemId newId) {
     return new ItemState(newId, this);
   }
 

@@ -15,14 +15,13 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Enclosing
 public final class EventMatchers {
@@ -40,39 +39,39 @@ public final class EventMatchers {
     return ANY_ERROR_EVENT_MATCHER;
   }
 
-  public static ErrorEventMatcher error(@Nonnull ErrorId errorId) {
+  public static ErrorEventMatcher error(@NonNull ErrorId errorId) {
     return ImmutableEventMatchers.ErrorIdEventMatcher.of(errorId);
   }
 
-  public static ErrorEventMatcher targetError(@Nonnull ItemId itemId) {
+  public static ErrorEventMatcher targetError(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.TargetErrorEventMatcher.of(itemId);
   }
 
-  public static EventMatcher whenActiveUpdated(@Nonnull ItemId itemId) {
+  public static EventMatcher whenActiveUpdated(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.IsActiveTargetEventMatcher.of(itemId);
   }
 
-  public static EventMatcher whenValueUpdated(@Nonnull ItemId itemId) {
+  public static EventMatcher whenValueUpdated(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.TargetIdEventMatcher.of(itemId);
   }
 
-  public static EventMatcher whenRequiredUpdated(@Nonnull ItemId itemId) {
+  public static EventMatcher whenRequiredUpdated(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.IsRequiredTargetEventMatcher.of(itemId);
   }
 
-  public static EventMatcher whenDisabledUpdatedEvent(@Nonnull ItemId itemId) {
+  public static EventMatcher whenDisabledUpdatedEvent(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.IsDisabledTargetEventMatcher.of(itemId);
   }
 
-  public static EventMatcher whenRowsCanBeAddedUpdatedEvent(@Nonnull ItemId itemId) {
+  public static EventMatcher whenRowsCanBeAddedUpdatedEvent(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.RowsCanBeAddedUpdatedEventMatcher.builder().build();
   }
 
-  public static EventMatcher whenRowCanBeRemovedUpdatedEvent(@Nonnull ItemId itemId) {
+  public static EventMatcher whenRowCanBeRemovedUpdatedEvent(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.RowCanBeRemovedUpdatedEventMatcher.builder().build();
   }
 
-  public static EventMatcher whenValidUpdated(@Nonnull ItemId itemId) {
+  public static EventMatcher whenValidUpdated(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.IsValidTargetEventMatcher.of(itemId);
   }
 
@@ -88,25 +87,25 @@ public final class EventMatchers {
     return AVAILABLE_ITEMS_EVENT_MATCHER;
   }
 
-  public static EventMatcher whenAnsweredUpdated(@Nonnull ItemId itemId) {
+  public static EventMatcher whenAnsweredUpdated(@NonNull ItemId itemId) {
     return ImmutableEventMatchers.AnsweredTargetEventMatcher.of(itemId);
   }
 
-  public static EventMatcher whenItemsChanged(@Nonnull ItemId groupId) {
+  public static EventMatcher whenItemsChanged(@NonNull ItemId groupId) {
     return ImmutableEventMatchers.ItemsChangedEventMatcher.of(groupId);
   }
 
-  public static EventMatcher whenItemAdded(@Nonnull ItemId prototypeId) {
+  public static EventMatcher whenItemAdded(@NonNull ItemId prototypeId) {
     return ImmutableEventMatchers.ItemAddedEventMatcher.of(prototypeId);
   }
-  public static EventMatcher whenItemRemoved(@Nonnull ItemId prototypeId) {
+  public static EventMatcher whenItemRemoved(@NonNull ItemId prototypeId) {
     return ImmutableEventMatchers.ItemRemovedEventMatcher.of(prototypeId);
   }
-  public static EventMatcher whenRowGroupItemsInit(@Nonnull ItemId prototypeId) {
+  public static EventMatcher whenRowGroupItemsInit(@NonNull ItemId prototypeId) {
     return ImmutableEventMatchers.RowGroupItemsInitEventMatcher.of(prototypeId);
   }
 
-  public static EventMatcher errorActivity(@Nonnull ErrorEventMatcher errorEventMatcher) {
+  public static EventMatcher errorActivity(@NonNull ErrorEventMatcher errorEventMatcher) {
     return ImmutableEventMatchers.ErrorActivityEventMatcher.of(errorEventMatcher);
   }
 

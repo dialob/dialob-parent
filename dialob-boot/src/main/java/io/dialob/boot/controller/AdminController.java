@@ -16,6 +16,7 @@
 package io.dialob.boot.controller;
 
 import io.dialob.boot.settings.AdminApplicationSettings;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -26,8 +27,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("${admin.context-path:/}")

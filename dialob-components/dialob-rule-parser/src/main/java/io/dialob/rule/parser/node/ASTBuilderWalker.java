@@ -4,7 +4,10 @@ import com.google.common.base.CaseFormat;
 import io.dialob.rule.parser.DialobRuleBaseListener;
 import io.dialob.rule.parser.DialobRuleParser;
 import io.dialob.rule.parser.ParserUtil;
-import io.dialob.rule.parser.api.*;
+import io.dialob.rule.parser.api.CompilerErrorCode;
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.rule.parser.api.VariableFinder;
+import io.dialob.rule.parser.api.VariableNotDefinedException;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -14,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j

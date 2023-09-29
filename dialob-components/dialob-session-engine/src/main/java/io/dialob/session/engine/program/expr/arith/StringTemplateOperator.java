@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 @Value.Immutable
@@ -29,16 +29,16 @@ public interface StringTemplateOperator extends Expression {
 
   String getTemplate();
 
-  @Nonnull
+  @NonNull
   @Override
   Set<EventMatcher> getEvalRequiredConditions();
 
   @Override
-  default String eval(@Nonnull EvalContext evalContext) {
+  default String eval(@NonNull EvalContext evalContext) {
     return getTemplate();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.STRING;

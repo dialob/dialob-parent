@@ -15,11 +15,11 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.LocalTime;
 
@@ -27,7 +27,7 @@ import java.time.LocalTime;
 public interface TimeMinusTimeOperator extends InfixOperator<Duration> {
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     LocalTime localTime = (LocalTime) getLhs().eval(evalContext);
     LocalTime localTime2 = (LocalTime) getRhs().eval(evalContext);
     if (localTime == null || localTime2 == null) {
@@ -36,7 +36,7 @@ public interface TimeMinusTimeOperator extends InfixOperator<Duration> {
     return Duration.between(localTime2, localTime);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.DURATION;

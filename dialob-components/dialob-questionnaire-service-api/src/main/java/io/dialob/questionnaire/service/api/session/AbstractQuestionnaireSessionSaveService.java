@@ -16,8 +16,7 @@
 package io.dialob.questionnaire.service.api.session;
 
 
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -30,14 +29,14 @@ public abstract class AbstractQuestionnaireSessionSaveService implements Questio
 
   private final CurrentTenant currentTenant;
 
-  protected AbstractQuestionnaireSessionSaveService(@Nonnull QuestionnaireDatabase questionnaireDatabase, CurrentTenant currentTenant) {
+  protected AbstractQuestionnaireSessionSaveService(@NonNull QuestionnaireDatabase questionnaireDatabase, CurrentTenant currentTenant) {
     this.questionnaireDatabase = questionnaireDatabase;
     this.currentTenant = currentTenant;
   }
 
   @Override
-  @Nonnull
-  public QuestionnaireSession save(@Nonnull QuestionnaireSession questionnaireSession) {
+  @NonNull
+  public QuestionnaireSession save(@NonNull QuestionnaireSession questionnaireSession) {
     final Questionnaire questionnaire = questionnaireDatabase.save(currentTenant.getId(), questionnaireSession.getQuestionnaire());
     return questionnaireSession.withIdAndRev(questionnaire.getId(), questionnaire.getRev());
   }

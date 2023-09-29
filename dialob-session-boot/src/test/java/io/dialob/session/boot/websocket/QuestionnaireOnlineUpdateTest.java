@@ -15,16 +15,12 @@
  */
 package io.dialob.session.boot.websocket;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.tuple;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.inject.Inject;
-
+import io.dialob.api.form.*;
+import io.dialob.api.proto.Action;
+import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.session.boot.Application;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,15 +29,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.proto.Action;
-import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.session.boot.Application;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.tuple;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 //
 // NOTE! This tests fails randomly, due race condition between actions sent over websocket.

@@ -15,17 +15,18 @@
  */
 package io.dialob.session.engine.program.model;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.List;
 
 @org.immutables.value.Value.Immutable
 @org.immutables.value.Value.Enclosing
 public interface ValueSet extends ProgramNode {
 
-  @Nonnull
+  @NonNull
   String getId();
 
-  @Nonnull
+  @NonNull
   List<Value<Entry>> getEntries();
 
   @org.immutables.value.Value.Immutable

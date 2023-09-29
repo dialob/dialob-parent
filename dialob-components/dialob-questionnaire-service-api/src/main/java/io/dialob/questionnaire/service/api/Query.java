@@ -15,7 +15,8 @@
  */
 package io.dialob.questionnaire.service.api;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -23,7 +24,7 @@ import java.util.stream.StreamSupport;
 
 public interface Query<T> extends Iterable<T> {
 
-  @Nonnull
+  @NonNull
   default List<T> list() {
     final List<T> list = new ArrayList<>();
     forEach(list::add);

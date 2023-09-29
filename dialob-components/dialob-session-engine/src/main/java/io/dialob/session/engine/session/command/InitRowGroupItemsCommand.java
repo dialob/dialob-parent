@@ -16,14 +16,14 @@
 package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ImmutableItemIndex;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
- import java.util.Collections;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -34,9 +34,9 @@ import static io.dialob.session.engine.session.command.EventMatchers.whenValueUp
 @Value.Immutable
 public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
@@ -47,7 +47,7 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
       .get();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return ImmutableSet.of(whenValueUpdated(getTargetId()));

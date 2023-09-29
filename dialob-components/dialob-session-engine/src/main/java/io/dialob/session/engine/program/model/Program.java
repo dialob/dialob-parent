@@ -16,11 +16,11 @@
 package io.dialob.session.engine.program.model;
 
 import com.google.common.collect.Streams;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +31,10 @@ import java.util.stream.Stream;
 @Value.Immutable
 public interface Program extends ProgramNode {
 
-  @Nonnull
+  @NonNull
   String getId();
 
-  @Nonnull
+  @NonNull
   Item getRootItem();
 
   List<Item> getItems();

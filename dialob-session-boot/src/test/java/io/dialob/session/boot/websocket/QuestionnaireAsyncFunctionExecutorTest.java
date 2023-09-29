@@ -23,6 +23,7 @@ import io.dialob.api.proto.Action;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.boot.Application;
+import jakarta.inject.Inject;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 
 import static org.assertj.core.groups.Tuple.tuple;

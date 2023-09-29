@@ -42,7 +42,7 @@ public class ExtractURITemplateVariablesToAttributesInterceptor implements Hands
   public boolean beforeHandshake(@NonNull final ServerHttpRequest request, @NonNull final ServerHttpResponse response, @NonNull final WebSocketHandler wsHandler, @NonNull final Map<String, Object> attributes) throws Exception {
     if (request instanceof ServletServerHttpRequest) {
       final ServletServerHttpRequest serverRequest = (ServletServerHttpRequest) request;
-      javax.servlet.http.HttpServletRequest servletRequest = serverRequest.getServletRequest();
+      jakarta.servlet.http.HttpServletRequest servletRequest = serverRequest.getServletRequest();
       final Map<String, String> variables = (Map<String, String>) servletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
       LOGGER.debug("variables {}", variables);
       if (variables != null) {

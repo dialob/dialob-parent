@@ -79,7 +79,7 @@ class DialobSessionEvalContextTest {
     verify(dialobSession).getValueSetStates();
     verify(dialobSession).getItemState(any());
 
-    verifyZeroInteractions(originalState, dialobSession);
+    verifyNoMoreInteractions(originalState, dialobSession);
 
   }
 
@@ -124,7 +124,7 @@ class DialobSessionEvalContextTest {
     verify(dialobSession).getValueSetStates();
     verify(dialobSession).getItemState(any());
 
-    verifyZeroInteractions(dialobSession);
+    verifyNoMoreInteractions(dialobSession);
 
   }
 
@@ -174,7 +174,7 @@ class DialobSessionEvalContextTest {
     verify(dialobSession).getValueSetStates();
     verify(dialobSession).getItemState(any());
 
-    verifyZeroInteractions(originalState, dialobSession);
+    verifyNoMoreInteractions(originalState, dialobSession);
 
   }
 

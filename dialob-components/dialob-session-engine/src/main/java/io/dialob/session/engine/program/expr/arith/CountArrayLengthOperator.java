@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -23,7 +24,6 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -35,7 +35,7 @@ public interface CountArrayLengthOperator extends Expression {
   ItemId getItemId();
 
   @Override
-  default Integer eval(@Nonnull EvalContext evalContext) {
+  default Integer eval(@NonNull EvalContext evalContext) {
     return evalContext.getItemState(this.getItemId()).map(itemState -> {
       Object value = itemState.getValue();
       if (value == null) {
@@ -51,13 +51,13 @@ public interface CountArrayLengthOperator extends Expression {
     }).orElse(0);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.INTEGER;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenValueUpdated(getItemId()));

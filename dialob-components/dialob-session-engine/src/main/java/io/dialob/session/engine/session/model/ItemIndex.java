@@ -15,15 +15,14 @@
  */
 package io.dialob.session.engine.session.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface ItemIndex extends ItemId {
 
   @Value.Parameter(order = 0)
-  @Nonnull
+  @NonNull
   Integer getIndex();
 
   default String getValue() {
