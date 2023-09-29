@@ -26,6 +26,7 @@ import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public interface ValueSetEntryToStringOperator extends Expression {
           }
         }
         return (String) eval;
-      } else if (eval instanceof List) { // For multichoice (answer is a list)
+      } else if (eval instanceof List<?>) { // For multichoice (answer is a list)
         return valueSetState1.getEntries().stream().filter(entry -> ((List<?>) eval).contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
       }
       return null;

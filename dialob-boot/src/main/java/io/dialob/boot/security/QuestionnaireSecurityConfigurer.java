@@ -43,9 +43,7 @@ public class QuestionnaireSecurityConfigurer extends WebUISecurityConfigurer {
     // @formatter:off
     return http
       .securityMatcher(requestMatcher())
-      .authorizeHttpRequests()
-        .anyRequest().permitAll()
-        .and();
+      .authorizeHttpRequests(customizer -> customizer.anyRequest().permitAll());
     // @formatter:on
   }
 

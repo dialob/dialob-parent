@@ -94,7 +94,7 @@ class ElbAuthenticationStrategyTest  extends TestBase {
     verify(request).getHeader("X-Amzn-Oidc-Identity");
     verify(request, times(2)).getHeader("X-Amzn-Oidc-Data");
     verify(request).getRemoteAddr();
-    verify(request, times(3)).getSession(false);
+    verify(request, times(2)).getSession(false);
     verify(chain).doFilter(request, response);
 
     Mockito.verifyNoMoreInteractions(request, response, chain, jwtProcessor);

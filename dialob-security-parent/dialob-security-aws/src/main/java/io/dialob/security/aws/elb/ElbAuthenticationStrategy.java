@@ -26,6 +26,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 @Slf4j
 public class ElbAuthenticationStrategy implements AuthenticationStrategy {
@@ -69,6 +70,9 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
   RequestHeaderAuthenticationFilter createAuthenticationFilter(@NonNull AuthenticationManager authenticationManager) {
     final RequestHeaderAuthenticationFilter filter = new RequestHeaderAuthenticationFilter();
 
+    HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    securityContextRepository.setAllowSessionCreation(false);
+    filter.setSecurityContextRepository(securityContextRepository);
 
     LOGGER.debug("principalRequestHeader = {}, credentialsRequestHeader = {}", principalRequestHeader, credentialsRequestHeader);
     filter.setPrincipalRequestHeader(principalRequestHeader);
