@@ -15,15 +15,14 @@
  */
 package io.dialob.security.spring.tenant;
 
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.ResysSecurityConstants;
+import io.dialob.security.tenant.Tenant;
+import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -32,10 +31,9 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.security.tenant.ResysSecurityConstants;
-import io.dialob.security.tenant.Tenant;
-import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
 
 public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {
 

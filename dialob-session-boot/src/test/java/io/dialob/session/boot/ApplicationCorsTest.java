@@ -25,6 +25,7 @@ import io.dialob.session.rest.DialobSessionRestAutoConfiguration;
 import io.dialob.settings.CorsSettings;
 import io.dialob.settings.DialobSettings;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -44,7 +45,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.util.Optional;
 

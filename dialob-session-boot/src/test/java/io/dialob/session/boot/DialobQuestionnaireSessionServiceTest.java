@@ -50,6 +50,7 @@ import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionSaveService;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
+import jakarta.inject.Inject;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.assertj.core.api.AbstractListAssert;
@@ -68,7 +69,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.SerializationUtils;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Clock;

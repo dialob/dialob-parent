@@ -15,16 +15,15 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.program.EvalContext;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface AbstractRelationOperator<T> extends AbstractLogicalOperator {
 
   @Nullable
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     T lhsResult = (T) getLhs().eval(evalContext);
     T rhsResult = (T) getRhs().eval(evalContext);
     if (lhsResult == null || rhsResult == null) {

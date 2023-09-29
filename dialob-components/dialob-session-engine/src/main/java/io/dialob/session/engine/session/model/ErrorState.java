@@ -17,11 +17,11 @@ package io.dialob.session.engine.session.model;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -84,27 +84,27 @@ public class ErrorState implements SessionObject {
     return new ErrorState.UpdateBuilder();
   }
 
-  public ErrorState(@Nonnull ItemId itemId, String code, String label) {
+  public ErrorState(@NonNull ItemId itemId, String code, String label) {
     this(ImmutableErrorId.of(itemId, code), label);
   }
 
-  public ErrorState(@Nonnull ErrorId targetId, String label) {
+  public ErrorState(@NonNull ErrorId targetId, String label) {
     this.targetId = targetId;
     this.label = label;
   }
 
-  public ErrorState(@Nonnull ErrorState errorState) {
+  public ErrorState(@NonNull ErrorState errorState) {
     this(errorState.targetId, errorState);
   }
 
-  public ErrorState(@Nonnull ErrorId targetId, @Nonnull ErrorState errorState) {
+  public ErrorState(@NonNull ErrorId targetId, @NonNull ErrorState errorState) {
     this.targetId = targetId;
     this.label = errorState.label;
     this.active = errorState.active;
     this.disabled = errorState.disabled;
   }
 
-  public ErrorState withErrorId(@Nonnull ErrorId targetId) {
+  public ErrorState withErrorId(@NonNull ErrorId targetId) {
     return new ErrorState(targetId, this);
   }
 

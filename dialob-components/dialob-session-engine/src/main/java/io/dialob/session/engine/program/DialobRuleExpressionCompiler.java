@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.Expression;
 import io.dialob.rule.parser.analyze.ValidateExpressionVisitor;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import io.dialob.rule.parser.api.RuleExpressionCompilerCallback;
 import io.dialob.rule.parser.api.VariableFinder;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.function.UnaryOperator;
 
@@ -31,7 +31,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class DialobRuleExpressionCompiler implements RuleExpressionCompiler {
 
   @Override
-  public boolean compile(@Nonnull String expression, @Nonnull VariableFinder variableFinder, @Nonnull RuleExpressionCompilerCallback compilationResultListener) {
+  public boolean compile(@NonNull String expression, @NonNull VariableFinder variableFinder, @NonNull RuleExpressionCompilerCallback compilationResultListener) {
     requireNonNull(expression, "expression may not be null");
     requireNonNull(variableFinder, "variableFinder may not be null");
     requireNonNull(compilationResultListener, "compilationResultListener may not be null");
@@ -52,7 +52,7 @@ public class DialobRuleExpressionCompiler implements RuleExpressionCompiler {
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public UnaryOperator<String> createIdRenamer(final String oldId, final String newId) {
     if (isBlank(oldId) || isBlank(newId)) {
       throw new IllegalArgumentException("old or newid may not be empty");

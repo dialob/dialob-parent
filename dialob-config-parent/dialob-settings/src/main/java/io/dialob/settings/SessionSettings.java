@@ -15,9 +15,9 @@
  */
 package io.dialob.settings;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

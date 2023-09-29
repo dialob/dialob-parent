@@ -16,6 +16,7 @@
 package io.dialob.boot.controller;
 
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller

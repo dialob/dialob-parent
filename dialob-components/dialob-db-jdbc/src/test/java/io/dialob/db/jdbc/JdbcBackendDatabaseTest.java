@@ -35,6 +35,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.sql.Connection;

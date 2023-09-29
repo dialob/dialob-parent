@@ -16,7 +16,7 @@
 package io.dialob.questionnaire.service.api.session;
 
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface QuestionnaireSessionSaveService {
 
@@ -25,8 +25,8 @@ public interface QuestionnaireSessionSaveService {
    * @param questionnaireSession
    * @return
    */
-  @Nonnull
-  QuestionnaireSession save(@Nonnull QuestionnaireSession questionnaireSession);
+  @NonNull
+  QuestionnaireSession save(@NonNull QuestionnaireSession questionnaireSession);
 
 
 }

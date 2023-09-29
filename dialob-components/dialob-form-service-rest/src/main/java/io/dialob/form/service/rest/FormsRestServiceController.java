@@ -15,43 +15,9 @@
  */
 package io.dialob.form.service.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormPutResponse;
-import io.dialob.api.form.FormTag;
-import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableFormPutResponse;
-import io.dialob.api.form.ImmutableFormTag;
+import io.dialob.api.form.*;
 import io.dialob.api.rest.ImmutableResponse;
 import io.dialob.api.rest.Response;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
@@ -68,9 +34,33 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-public class FormsRestServiceController implements FormsRestService, FormTagsRestService {
+public class FormsRestServiceController implements FormsRestService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FormsRestServiceController.class);
 
@@ -381,10 +371,4 @@ public class FormsRestServiceController implements FormsRestService, FormTagsRes
     return nodeId;
   }
 
-  @Override
-  public ResponseEntity<List<FormTag>> getTags(String formName, String formId, String name) {
-    return formVersionControlDatabase.map(
-      versionControlDatabase -> ResponseEntity.ok(versionControlDatabase.queryTags(currentTenant.getId(), formName, formId, name, FormTag.Type.NORMAL)))
-      .orElse(ResponseEntity.notFound().build());
-  }
 }

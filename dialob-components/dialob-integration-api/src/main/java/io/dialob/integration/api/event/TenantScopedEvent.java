@@ -15,13 +15,12 @@
  */
 package io.dialob.integration.api.event;
 
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.Tenant;
 
 public interface TenantScopedEvent extends Event {
 
-  @Nonnull
+  @NonNull
   Tenant getTenant();
 
 }

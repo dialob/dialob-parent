@@ -15,17 +15,14 @@
  */
 package io.dialob.groovy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
+import io.dialob.function.DialobFunctionAutoConfiguration;
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.rule.parser.api.VariableNotDefinedException;
+import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -35,13 +32,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.function.DialobFunctionAutoConfiguration;
-import io.dialob.rule.parser.api.ValueType;
-import io.dialob.rule.parser.api.VariableNotDefinedException;
-import io.dialob.rule.parser.function.FunctionRegistry;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {

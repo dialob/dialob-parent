@@ -21,6 +21,7 @@ import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.boot.settings.ReviewApplicationSettings;
 import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,8 +37,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
-
-import javax.servlet.http.Cookie;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;

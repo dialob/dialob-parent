@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableActions;
@@ -32,9 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -119,9 +118,9 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
     });
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public QuestionnaireSession computeSessionUpdate(@Nonnull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession, QuestionnaireSession> updateFunction) {
+  public QuestionnaireSession computeSessionUpdate(@NonNull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession, QuestionnaireSession> updateFunction) {
     return this.updateTime.record(() -> {
       try {
         final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);

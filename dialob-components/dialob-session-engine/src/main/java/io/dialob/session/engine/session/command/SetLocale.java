@@ -15,19 +15,18 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 @Value.Immutable
 public interface SetLocale extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
-  @Nonnull
+  @NonNull
   @Value.Default
   default ItemId getTargetId() {
     return DialobSession.QUESTIONNAIRE_REF;
@@ -37,8 +36,8 @@ public interface SetLocale extends AbstractUpdateCommand<ItemId,ItemState>, Item
   @Nullable
   String getLocale();
 
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     context.setLanguage(getLocale());
     return itemState;
   }

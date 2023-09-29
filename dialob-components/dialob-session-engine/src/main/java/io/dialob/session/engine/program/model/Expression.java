@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
@@ -29,14 +29,14 @@ import java.util.Set;
 public interface Expression extends Serializable {
 
   @Value.Parameter(order = 100)
-  @Nonnull
+  @NonNull
   ValueType getValueType();
 
-  @Nonnull
+  @NonNull
   default Set<EventMatcher> getEvalRequiredConditions() {
     return Collections.emptySet();
   }
 
   @Nullable
-  Object eval(@Nonnull EvalContext evalContext);
+  Object eval(@NonNull EvalContext evalContext);
 }

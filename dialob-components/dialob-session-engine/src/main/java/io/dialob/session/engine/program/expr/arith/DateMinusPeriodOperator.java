@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.PeriodUtil;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -28,7 +28,7 @@ import java.time.Period;
 public interface DateMinusPeriodOperator extends InfixOperator<LocalDate> {
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     LocalDate localDate = (LocalDate) getLhs().eval(evalContext);
     Period period = (Period) getRhs().eval(evalContext);
     if (period == null || localDate == null) {
@@ -37,7 +37,7 @@ public interface DateMinusPeriodOperator extends InfixOperator<LocalDate> {
     return PeriodUtil.dateMinusPeriod(localDate, period);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.DATE;

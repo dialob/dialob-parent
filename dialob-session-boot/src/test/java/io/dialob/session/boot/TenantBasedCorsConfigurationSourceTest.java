@@ -19,11 +19,10 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.settings.CorsSettings;
 import io.dialob.settings.SessionSettings;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.cors.CorsConfiguration;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;

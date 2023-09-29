@@ -15,9 +15,9 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +42,7 @@ public interface DisplayItem extends Item {
 
   Optional<Expression> getDescriptionExpression();
 
-  @Nonnull
+  @NonNull
   List<Error> getErrors();
 
 }

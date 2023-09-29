@@ -18,12 +18,12 @@ package io.dialob.groovy;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 import io.dialob.rule.parser.function.FunctionRegistry;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.lang.NonNull;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;

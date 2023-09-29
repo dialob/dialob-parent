@@ -18,6 +18,7 @@ package io.dialob.questionnaire.service.session;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNull;

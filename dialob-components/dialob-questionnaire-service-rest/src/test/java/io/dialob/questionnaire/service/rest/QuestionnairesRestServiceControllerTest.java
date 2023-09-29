@@ -15,42 +15,21 @@
  */
 package io.dialob.questionnaire.service.rest;
 
-import static io.dialob.api.questionnaire.QuestionnaireFactory.questionnaire;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.function.Consumer;
-
+import com.google.common.collect.Lists;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.proto.*;
+import io.dialob.api.questionnaire.*;
+import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.db.spi.spring.DatabaseExceptionMapper;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.questionnaire.csvserializer.CSVSerializer;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.questionnaire.service.api.session.*;
+import io.dialob.rest.DialobRestAutoConfiguration;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.user.CurrentUserProvider;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.jupiter.api.Assertions;
@@ -60,7 +39,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,46 +51,28 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.google.common.collect.Lists;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Consumer;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.proto.Action;
-import io.dialob.api.proto.ActionItem;
-import io.dialob.api.proto.ActionsFactory;
-import io.dialob.api.proto.ImmutableAction;
-import io.dialob.api.proto.ImmutableActionItem;
-import io.dialob.api.proto.ImmutableActions;
-import io.dialob.api.proto.ImmutableValueSet;
-import io.dialob.api.proto.ImmutableValueSetEntry;
-import io.dialob.api.questionnaire.ImmutableAnswer;
-import io.dialob.api.questionnaire.ImmutableError;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.api.questionnaire.QuestionnaireFactory;
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.db.spi.spring.DatabaseExceptionMapper;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.csvserializer.CSVSerializer;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.questionnaire.service.api.session.ImmutableQuestionnaireSession;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilder;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.rest.DialobRestAutoConfiguration;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.user.CurrentUserProvider;
+import static io.dialob.api.questionnaire.QuestionnaireFactory.questionnaire;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatabaseExceptionMapper.class,
   QuestionnairesRestServiceControllerTest.TestConfiguration.class,
   QuestionnairesRestServiceController.class,
   DialobRestAutoConfiguration.class})
-@SpringBootTest()
 @EnableWebMvc
 @WebAppConfiguration
 public class QuestionnairesRestServiceControllerTest {

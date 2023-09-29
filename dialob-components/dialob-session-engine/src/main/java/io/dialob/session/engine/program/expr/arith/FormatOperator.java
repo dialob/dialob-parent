@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.expr.OutputFormatter;
@@ -22,7 +23,6 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 @Value.Immutable
@@ -35,7 +35,7 @@ public interface FormatOperator extends Expression {
   String getFormat();
 
   @Override
-  default String eval(@Nonnull EvalContext context) {
+  default String eval(@NonNull EvalContext context) {
     Object eval = getExpression().eval(context);
     if (eval == null) {
       return null;
@@ -44,13 +44,13 @@ public interface FormatOperator extends Expression {
     return outputFormatter.format(eval, getFormat());
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.STRING;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getExpression().getEvalRequiredConditions();

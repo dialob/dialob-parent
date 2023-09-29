@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -166,6 +167,11 @@ public class MongoDbQuestionnaireDatabaseTest {
 
     verify(mongoTemplate).findById(eq("1230"),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"));
     verify(mongoTemplate, atLeast(0)).getConverter();
+    verify(mongoTemplate).setApplicationContext(any(ApplicationContext.class));
+
+    verify(mongoTemplate, times(2)).query(any(Class.class));
+    verify(mongoTemplate, times(2)).update(any(Class.class));
+
     verifyNoMoreInteractions(mongoTemplate);
   }
 

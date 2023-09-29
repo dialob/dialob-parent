@@ -15,10 +15,9 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface NeOperator<T> extends EqOperator<T> {

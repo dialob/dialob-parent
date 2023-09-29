@@ -15,18 +15,16 @@
  */
 package io.dialob.session.boot;
 
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.NonNull;
-
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
 
 public class SessionRestTenantFromRequestResolver implements TenantFromRequestResolver {
 

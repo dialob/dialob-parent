@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
@@ -22,7 +23,6 @@ import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.DialobSession;
 
-import javax.annotation.Nonnull;
 import java.time.Clock;
 import java.util.function.Consumer;
 
@@ -40,15 +40,15 @@ public class DialobSessionEvalContextFactory {
     this.dialobSessionUpdateHook = dialobSessionUpdateHook;
   }
 
-  @Nonnull
-  public DialobSessionEvalContext createDialobSessionEvalContext(@Nonnull DialobSession dialobSession,
-                                                                 @Nonnull Consumer<Event> updatesConsumer,
+  @NonNull
+  public DialobSessionEvalContext createDialobSessionEvalContext(@NonNull DialobSession dialobSession,
+                                                                 @NonNull Consumer<Event> updatesConsumer,
                                                                  boolean activating) {
     return new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, clock, activating, dialobSessionUpdateHook);
   }
 
 
-  public DialobSessionUpdater createSessionUpdater(@Nonnull DialobProgram dialobProgram, @Nonnull DialobSession dialobSession) {
+  public DialobSessionUpdater createSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession) {
     if (dialobSession.isCompleted()) {
       return DialobSessionUpdater.NOOP_UPDATER;
     }

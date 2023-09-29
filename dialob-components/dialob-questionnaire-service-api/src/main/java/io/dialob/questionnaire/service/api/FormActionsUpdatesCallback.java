@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Error;
@@ -22,7 +23,6 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.Locale;
 
 
@@ -32,75 +32,75 @@ public class FormActionsUpdatesCallback implements QuestionnaireSession.UpdatesC
 
   private final FormActions formActions;
 
-  public FormActionsUpdatesCallback(@Nonnull FormActions formActions) {
+  public FormActionsUpdatesCallback(@NonNull FormActions formActions) {
     this.formActions = formActions;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback questionAdded(@Nonnull ActionItem question) {
+  public FormActionsUpdatesCallback questionAdded(@NonNull ActionItem question) {
     LOGGER.debug("newQuestion({})", question);
     formActions.newQuestion(question);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback questionUpdated(@Nonnull ActionItem question) {
+  public FormActionsUpdatesCallback questionUpdated(@NonNull ActionItem question) {
     LOGGER.debug("updateQuestion({})", question);
     formActions.updateQuestion(question);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback questionRemoved(@Nonnull String itemId) {
+  public FormActionsUpdatesCallback questionRemoved(@NonNull String itemId) {
     LOGGER.debug("removeQuestion({})", itemId);
     formActions.removeQuestion(itemId);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback valueSetAdded(@Nonnull ValueSet valueSet) {
+  public FormActionsUpdatesCallback valueSetAdded(@NonNull ValueSet valueSet) {
     LOGGER.debug("valueSetAdded({})", valueSet);
     formActions.newValueSet(valueSet);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback valueSetUpdated(@Nonnull ValueSet valueSet) {
+  public FormActionsUpdatesCallback valueSetUpdated(@NonNull ValueSet valueSet) {
     LOGGER.debug("valueSetUpdated({})", valueSet);
     formActions.updateValueSet(valueSet);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback valueSetRemoved(@Nonnull String valueSetId) {
+  public FormActionsUpdatesCallback valueSetRemoved(@NonNull String valueSetId) {
     LOGGER.debug("valueSetRemoved({})", valueSetId);
     formActions.removeValueSet(valueSetId);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback errorAdded(@Nonnull Error error) {
+  public FormActionsUpdatesCallback errorAdded(@NonNull Error error) {
     LOGGER.debug("addError({})", error);
     formActions.addError(error);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public FormActionsUpdatesCallback errorRemoved(@Nonnull Error error) {
+  public FormActionsUpdatesCallback errorRemoved(@NonNull Error error) {
     LOGGER.debug("removeError({})", error);
     formActions.removeError(error);
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public FormActionsUpdatesCallback removeAll() {
     LOGGER.debug("removeAll()");
@@ -108,7 +108,7 @@ public class FormActionsUpdatesCallback implements QuestionnaireSession.UpdatesC
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public FormActionsUpdatesCallback locale(Locale locale) {
     LOGGER.debug("locale({})", locale);
@@ -116,7 +116,7 @@ public class FormActionsUpdatesCallback implements QuestionnaireSession.UpdatesC
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public FormActionsUpdatesCallback completed() {
     LOGGER.debug("completed()");

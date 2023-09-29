@@ -15,15 +15,7 @@
  */
 package io.dialob.form.service.rest;
 
-import java.time.Clock;
-import java.util.Optional;
-
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.form.service.api.validation.FormIdRenamer;
@@ -32,11 +24,18 @@ import io.dialob.integration.api.NodeId;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Clock;
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 public class DialobFormServiceRestAutoConfiguration {
 
   private final FormsRestServiceController formsRestServiceController;
+  private final FormTagsRestService formTagsRestService;
 
   public DialobFormServiceRestAutoConfiguration(
     ApplicationEventPublisher eventPublisher,
@@ -51,7 +50,8 @@ public class DialobFormServiceRestAutoConfiguration {
     CurrentUserProvider currentUserProvider,
     Optional<Clock> clock)
   {
-    formsRestServiceController = new FormsRestServiceController(eventPublisher, formDatabase, formVersionControlDatabase, validator, renamer, objectMapper, nodeId, formItemCopier, currentTenant, currentUserProvider, clock.orElse(Clock.systemDefaultZone()));
+    this.formsRestServiceController = new FormsRestServiceController(eventPublisher, formDatabase, formVersionControlDatabase, validator, renamer, objectMapper, nodeId, formItemCopier, currentTenant, currentUserProvider, clock.orElse(Clock.systemDefaultZone()));
+    this.formTagsRestService = new FormTagsRestServiceController(formVersionControlDatabase, currentTenant);
   }
 
   @Bean
@@ -61,7 +61,7 @@ public class DialobFormServiceRestAutoConfiguration {
 
   @Bean
   public FormTagsRestService formTagsRestService() {
-    return formsRestServiceController;
+    return formTagsRestService;
   }
 
   @Bean

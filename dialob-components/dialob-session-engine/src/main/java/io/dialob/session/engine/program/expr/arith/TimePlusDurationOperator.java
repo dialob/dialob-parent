@@ -15,19 +15,19 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.PeriodUtil;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.LocalTime;
 
 @Value.Immutable
 public interface TimePlusDurationOperator extends InfixOperator<LocalTime> {
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     LocalTime localTime = (LocalTime) getLhs().eval(evalContext);
     Duration duration = (Duration) getRhs().eval(evalContext);
     if (duration == null || localTime == null) {
@@ -36,7 +36,7 @@ public interface TimePlusDurationOperator extends InfixOperator<LocalTime> {
     return PeriodUtil.timePlusDuration(localTime, duration);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.TIME;

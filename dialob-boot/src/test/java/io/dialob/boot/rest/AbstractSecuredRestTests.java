@@ -15,13 +15,12 @@
  */
 package io.dialob.boot.rest;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-
-import java.util.Arrays;
-
-import javax.inject.Inject;
-
+import io.dialob.db.spi.spring.DatabaseExceptionMapper;
+import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.user.CurrentUser;
+import io.dialob.security.user.CurrentUserProvider;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
@@ -36,11 +35,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.dialob.db.spi.spring.DatabaseExceptionMapper;
-import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.user.CurrentUser;
-import io.dialob.security.user.CurrentUserProvider;
+import java.util.Arrays;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
 

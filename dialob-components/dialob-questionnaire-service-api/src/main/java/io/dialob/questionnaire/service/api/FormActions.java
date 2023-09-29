@@ -15,12 +15,12 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ImmutableAction;
 import io.dialob.api.questionnaire.Error;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,45 +67,45 @@ public class FormActions implements Serializable {
     }
   }
 
-  public void newQuestion(@Nonnull ActionItem question) {
+  public void newQuestion(@NonNull ActionItem question) {
     added.add(ImmutableAction.builder()
       .type(Action.Type.ITEM)
       .item(question).build());
   }
 
-  public void updateQuestion(@Nonnull ActionItem question) {
+  public void updateQuestion(@NonNull ActionItem question) {
     updated.add(ImmutableAction.builder()
       .type(Action.Type.ITEM)
       .item(question).build());
   }
 
-  public void removeQuestion(@Nonnull String questionId) {
+  public void removeQuestion(@NonNull String questionId) {
     removedQuestions.add(questionId);
   }
 
-  public void newValueSet(@Nonnull io.dialob.api.proto.ValueSet valueSet) {
+  public void newValueSet(@NonNull io.dialob.api.proto.ValueSet valueSet) {
     added.add(ImmutableAction.builder()
       .type(Action.Type.VALUE_SET)
       .valueSet(valueSet).build());
   }
 
-  public void updateValueSet(@Nonnull io.dialob.api.proto.ValueSet valueSet) {
+  public void updateValueSet(@NonNull io.dialob.api.proto.ValueSet valueSet) {
     updated.add(ImmutableAction.builder()
       .type(Action.Type.VALUE_SET)
       .valueSet(valueSet).build());
   }
 
-  public void removeValueSet(@Nonnull String valueSetId) {
+  public void removeValueSet(@NonNull String valueSetId) {
     removedValueSets.add(valueSetId);
   }
 
-  public void addError(@Nonnull Error error) {
+  public void addError(@NonNull Error error) {
     addedErrors.add(ImmutableAction.builder()
       .type(Action.Type.ERROR)
       .error(error).build());
   }
 
-  public void removeError(@Nonnull Error error) {
+  public void removeError(@NonNull Error error) {
     removedErrors.add(ImmutableAction.builder()
       .type(Action.Type.REMOVE_ERROR)
       .error(error).build());
@@ -124,7 +124,7 @@ public class FormActions implements Serializable {
     );
   }
 
-  @Nonnull
+  @NonNull
   public List<Action> getActions() {
 
     List<Action> actions = new ArrayList<>();

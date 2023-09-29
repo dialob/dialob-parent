@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program;
 
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
@@ -26,7 +27,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -52,69 +52,69 @@ class UpdateCommandFactory {
     return Collections.unmodifiableSet(allCommands);
   }
 
-  public VariableUpdateCommand createUpdateVariable(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public VariableUpdateCommand createUpdateVariable(@NonNull ItemId id, @NonNull Expression expression) {
     return add(variableUpdateCommand(id, expression));
   }
 
-  public UpdateClassNames createUpdateClass(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateClassNames createUpdateClass(@NonNull ItemId id, @NonNull Expression expression) {
     return add(updateClassNames(id, expression));
   }
 
-  public UpdateLabelCommand createUpdateLabel(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateLabelCommand createUpdateLabel(@NonNull ItemId id, @NonNull Expression expression) {
     return add(labelUpdate(id, expression));
   }
 
-  public UpdateDescriptionCommand createUpdateDescription(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateDescriptionCommand createUpdateDescription(@NonNull ItemId id, @NonNull Expression expression) {
     return add(descriptionUpdate(id, expression));
   }
 
-  public UpdateDisabledCommand createUpdateDisabled(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateDisabledCommand createUpdateDisabled(@NonNull ItemId id, @NonNull Expression expression) {
     return add(updateDisabled(id, expression));
   }
 
-  public UpdateActivityCommand createUpdateActivity(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateActivityCommand createUpdateActivity(@NonNull ItemId id, @NonNull Expression expression) {
     return add(activityUpdate(id, expression));
   }
 
-  public UpdateRowsCanBeAddedCommand createUpdateRowsCanBeAddedCommand(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateRowsCanBeAddedCommand createUpdateRowsCanBeAddedCommand(@NonNull ItemId id, @NonNull Expression expression) {
     return add(rowsCanBeAddedUpdate(id, expression));
   }
 
-  public UpdateRowCanBeRemovedCommand createUpdateRowCanBeRemovedCommand(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateRowCanBeRemovedCommand createUpdateRowCanBeRemovedCommand(@NonNull ItemId id, @NonNull Expression expression) {
     return add(rowCanBeRemovedUpdate(id, expression));
   }
 
-  public UpdateRequiredCommand createUpdateRequired(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateRequiredCommand createUpdateRequired(@NonNull ItemId id, @NonNull Expression expression) {
     return add(requiredUpdate(id, expression));
   }
 
-  public UpdateAllowedActionsCommand createUpdateAllowedActions(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateAllowedActionsCommand createUpdateAllowedActions(@NonNull ItemId id, @NonNull Expression expression) {
     return add(allowedActionsUpdate(id, expression));
   }
 
-  public UpdateIsInvalidAnswersCommand createUpdateIsInvalidAnswersCommand(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateIsInvalidAnswersCommand createUpdateIsInvalidAnswersCommand(@NonNull ItemId id, @NonNull Expression expression) {
     return add(updateIsInvalidAnswers(id, expression));
   }
 
-  public UpdateAvailableItemsCommand createUpdateAvailableItems(@Nonnull ItemId id, @Nonnull Expression expression) {
+  public UpdateAvailableItemsCommand createUpdateAvailableItems(@NonNull ItemId id, @NonNull Expression expression) {
     return add(availableItemsUpdate(id, expression));
   }
 
-  public ItemUpdateCommand createUpdateGroupItems(@Nonnull ItemId groupId, @Nonnull Expression expression) {
+  public ItemUpdateCommand createUpdateGroupItems(@NonNull ItemId groupId, @NonNull Expression expression) {
     return add(updateGroupItems(groupId, expression));
   }
 
-  public ValidationDisabledUpdateCommand createUpdateValidationDisabled(@Nonnull ErrorId targetId, @Nonnull Expression expression) {
+  public ValidationDisabledUpdateCommand createUpdateValidationDisabled(@NonNull ErrorId targetId, @NonNull Expression expression) {
     return add(validationDisabledUpdate(targetId, expression));
   }
 
-  public UpdateValidationCommand createUpdateValidationCommand(@Nonnull ErrorId targetId, @Nonnull Expression expression) {
+  public UpdateValidationCommand createUpdateValidationCommand(@NonNull ErrorId targetId, @NonNull Expression expression) {
     assert !targetIds.contains(targetId);
     targetIds.add(targetId);
     return add(updateValidationCommand(targetId, expression));
   }
 
-  public ErrorLabelUpdateCommand createErrorLabelUpdateCommand(@Nonnull ErrorId targetId, @Nonnull Expression expression) {
+  public ErrorLabelUpdateCommand createErrorLabelUpdateCommand(@NonNull ErrorId targetId, @NonNull Expression expression) {
     return add(errorLabelUpdateCommand(targetId, expression));
   }
 
