@@ -16,24 +16,10 @@
 package io.dialob.security.spring;
 
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 
 public interface AuthenticationStrategy {
 
-  HttpSecurity configureAuthentication(@NonNull HttpSecurity http,
-                                       @NonNull AuthenticationManager authenticationManager) throws Exception;
-
-  default boolean configure(AuthenticationManagerBuilder auth) throws Exception {
-    return false;
-  }
-
-  default CurrentUserProvider currentUserProviderBean() {
-    return UnauthenticatedCurrentUserProvider.INSTANCE;
-  }
+  HttpSecurity configureAuthentication(@NonNull HttpSecurity http) throws Exception;
 
 }

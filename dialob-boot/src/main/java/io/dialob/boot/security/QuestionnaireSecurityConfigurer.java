@@ -15,28 +15,35 @@
  */
 package io.dialob.boot.security;
 
-import java.util.Optional;
-
-import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
+import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.RequestParameterTenantScopeFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.lang.NonNull;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.Optional;
+
+@Configuration
+@Profile("ui")
 public class QuestionnaireSecurityConfigurer extends WebUISecurityConfigurer {
 
-  public QuestionnaireSecurityConfigurer(@NonNull String contextPath,
+  public QuestionnaireSecurityConfigurer(@NonNull QuestionnaireApplicationSettings settings,
                                          @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                          @NonNull AuthenticationStrategy authenticationStrategy) {
-    super(contextPath, tenantPermissionEvaluator, authenticationStrategy);
+    super(settings.getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
   }
 
   protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
     // @formatter:off
     return http
-      .requestMatcher(requestMatcher())
-      .authorizeRequests()
+      .securityMatcher(requestMatcher())
+      .authorizeHttpRequests()
         .anyRequest().permitAll()
         .and();
     // @formatter:on
@@ -47,4 +54,11 @@ public class QuestionnaireSecurityConfigurer extends WebUISecurityConfigurer {
   protected Optional<RequestParameterTenantScopeFilter> getRequestParameterTenantScopeFilter() {
     return Optional.empty();
   }
+
+  @Bean
+  @Order(140)
+  SecurityFilterChain questionnaireFilterChain(HttpSecurity http) throws Exception {
+    return super.filterChain(http);
+  }
+
 }

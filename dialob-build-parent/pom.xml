@@ -72,9 +72,9 @@
     <mockito.version>3.7.7</mockito.version>
     <okhttp3.version>4.9.3</okhttp3.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.7.0</spring-boot.version>
-    <spring-integration.version>5.5.12</spring-integration.version>
-    <spring-security.version>5.7.5</spring-security.version>
+    <spring-boot.version>2.7.16</spring-boot.version>
+    <spring-integration.version>5.5.19</spring-integration.version>
+    <spring-security.version>5.8.7</spring-security.version>
     <spring-session.version>2.6.3</spring-session.version>
     <swagger.version>2.1.11</swagger.version>
     <validation-api.version>2.0.2</validation-api.version>
@@ -401,7 +401,38 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-test</artifactId>
+        <version>${spring-security.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-oauth2-core</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-oauth2-jose</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-oauth2-client</artifactId>
         <version>${spring-security.version}</version>
       </dependency>
       <dependency>

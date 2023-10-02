@@ -15,32 +15,46 @@
  */
 package io.dialob.boot.security;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
+import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
+@Configuration
+@Profile("ui")
 public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
 
-  public ComposerSecurityConfigurer(@NonNull String contextPath,
+  public ComposerSecurityConfigurer(@NonNull ComposerApplicationSettings settings,
                                     @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                     @NonNull AuthenticationStrategy authenticationStrategy) {
-    super(contextPath, tenantPermissionEvaluator, authenticationStrategy);
+    super(settings.getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
   }
 
   protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
     // @formatter:off
     return http
-      .requestMatcher(requestMatcher())
-      .authorizeRequests()
-        .antMatchers(HttpMethod.GET,getContextPath() + "/**").hasAuthority(Permissions.COMPOSER_VIEW)
+      .securityMatcher(requestMatcher())
+      .authorizeHttpRequests()
+        .requestMatchers(antMatcher(HttpMethod.GET,getContextPath() + "/**")).hasAuthority(Permissions.COMPOSER_VIEW)
         .anyRequest().denyAll()
         .and();
     // @formatter:on
+  }
+
+  @Bean
+  @Order(130)
+  SecurityFilterChain composerFilterChain(HttpSecurity http) throws Exception {
+    return super.filterChain(http);
   }
 
 }

@@ -38,6 +38,7 @@ import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.ApiKeyRequestMatcher;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 class SecurityConfigurationTest {
 

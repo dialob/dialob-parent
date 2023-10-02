@@ -15,22 +15,16 @@
  */
 package io.dialob.boot.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Collections;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
+import io.dialob.boot.security.WebApiSecurityConfigurer;
+import io.dialob.common.Permissions;
+import io.dialob.form.service.rest.FormsRestService;
+import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
+import io.dialob.security.spring.AuthenticationStrategy;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.settings.DialobSettings;
+import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
+import io.dialob.tenant.service.rest.TenantsRestController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,16 +42,17 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.boot.security.WebApiSecurityConfigurer;
-import io.dialob.common.Permissions;
-import io.dialob.form.service.rest.FormsRestService;
-import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.settings.DialobSettings;
-import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
-import io.dialob.tenant.service.rest.TenantsRestController;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {
@@ -82,7 +77,7 @@ public class ApiControllerTest extends AbstractControllerTest {
     @Bean
     public AuthenticationStrategy authenticationStrategy() throws Exception {
       AuthenticationStrategy authenticationStrategy = Mockito.mock(AuthenticationStrategy.class);
-      Mockito.doAnswer(AdditionalAnswers.returnsFirstArg()).when(authenticationStrategy).configureAuthentication(any(), any());
+      Mockito.doAnswer(AdditionalAnswers.returnsFirstArg()).when(authenticationStrategy).configureAuthentication(any());
       return authenticationStrategy;
     }
 

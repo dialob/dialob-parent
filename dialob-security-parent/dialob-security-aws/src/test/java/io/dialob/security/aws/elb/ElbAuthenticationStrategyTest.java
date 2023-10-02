@@ -15,23 +15,13 @@
  */
 package io.dialob.security.aws.elb;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.security.KeyPair;
-import java.time.Instant;
-import java.util.Arrays;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.proc.JWTProcessor;
+import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,10 +30,16 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.proc.JWTProcessor;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.KeyPair;
+import java.time.Instant;
+import java.util.Arrays;
 
-import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.*;
 
 class ElbAuthenticationStrategyTest  extends TestBase {
 
@@ -57,11 +53,12 @@ class ElbAuthenticationStrategyTest  extends TestBase {
     String idToken = idToken(now,kp);
 
     JWTProcessor jwtProcessor = Mockito.mock(JWTProcessor.class);
+    AuthenticationManager authenticationManager = Mockito.mock(AuthenticationManager.class);
     JWTClaimsSet claimSet = new JWTClaimsSet.Builder().claim("cognito:groups",Arrays.asList("admin")).build();
     when(jwtProcessor.process(anyString(),isNull())).thenReturn(claimSet);
 
     GrantedAuthoritiesMapper grantedAuthoritiesMapper = authorities -> authorities;
-    ElbAuthenticationStrategy elbAuthenticationStrategy = new ElbAuthenticationStrategy(grantedAuthoritiesMapper, jwtProcessor);
+    ElbAuthenticationStrategy elbAuthenticationStrategy = new ElbAuthenticationStrategy(grantedAuthoritiesMapper, jwtProcessor, authenticationManager);
 
     PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
     authenticationProvider.setThrowExceptionWhenTokenRejected(true);
