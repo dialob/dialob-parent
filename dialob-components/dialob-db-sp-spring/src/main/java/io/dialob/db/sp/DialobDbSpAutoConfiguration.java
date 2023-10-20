@@ -79,13 +79,13 @@ public class DialobDbSpAutoConfiguration {
   public static class DialobDbMongoAutoConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
     public FormDatabase formDatabase(FormRepository repository) {
       return new MongoDbFormDatabase(repository);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaireDatabase", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
     public QuestionnaireDatabase questionnaireDatabase(QuestionnaireRepository repository, MongoQuestionnaireIdObfuscator mongoQuestionnaireIdObfuscator) {
       return new MongoDbQuestionnaireDatabase(repository, mongoQuestionnaireIdObfuscator);
     }
@@ -170,7 +170,7 @@ public class DialobDbSpAutoConfiguration {
 
     // Spring bug here: Spring should not think this as FormDatabase, because return type do not implement type. So, we wrap implementation with proxy
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "JDBC", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "JDBC", matchIfMissing = true)
     public FormVersionControlDatabase formVersionControlDatabase() {
       return (FormVersionControlDatabase) Proxy.newProxyInstance(
         this.getClass().getClassLoader(),
@@ -188,7 +188,7 @@ public class DialobDbSpAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "JDBC", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "JDBC", matchIfMissing = true)
     public FormDatabase formDatabase() {
       return (FormDatabase) Proxy.newProxyInstance(
         this.getClass().getClassLoader(),
@@ -223,13 +223,13 @@ public class DialobDbSpAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "FILEDB", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "FILEDB", matchIfMissing = true)
     public FormDatabase formDatabase(ObjectMapper objectMapper, DialobSettings dialobSettings) {
       return new FormFileDatabase(directory(dialobSettings.getDb().getFile().getDirectory(), "forms"), objectMapper);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaireDatabase", name = "database-type", havingValue = "FILEDB", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "FILEDB", matchIfMissing = true)
     public QuestionnaireDatabase questionnaireDatabase(ObjectMapper objectMapper, DialobSettings dialobSettings) {
       return new QuestionnaireFileDatabase(directory(dialobSettings.getDb().getFile().getDirectory(), "questionnaires"), objectMapper);
     }
@@ -240,7 +240,7 @@ public class DialobDbSpAutoConfiguration {
   public static class DialobDbS3AutoConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "S3", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "S3", matchIfMissing = true)
     public FormDatabase formDatabase(S3Client s3Client, ObjectMapper objectMapper, DialobSettings settings) {
       return new FormS3Database(s3Client, objectMapper,
         Objects.requireNonNull(settings.getFormDatabase().getS3().getBucket(), "Define S3 bucket for forms"),
@@ -249,7 +249,7 @@ public class DialobDbSpAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaireDatabase", name = "database-type", havingValue = "S3", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "S3", matchIfMissing = true)
     public QuestionnaireDatabase questionnaireDatabase(S3Client s3Client, ObjectMapper objectMapper, DialobSettings settings) {
       return new QuestionnaireS3Database(s3Client, objectMapper,
         Objects.requireNonNull(settings.getFormDatabase().getS3().getBucket(), "Define S3 bucket for questionnaires"),
@@ -271,13 +271,13 @@ public class DialobDbSpAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.formDatabase", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
     public FormDatabase formDatabase(DialobApiTemplate dialobApiTemplate) {
       return new DialobApiFormDatabase(dialobApiTemplate);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaireDatabase", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
     public QuestionnaireDatabase questionnaireDatabase(DialobApiTemplate dialobApiTemplate) {
       return new DialobApiQuestionnaireDatabase(dialobApiTemplate);
     }
