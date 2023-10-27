@@ -74,6 +74,7 @@ import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.settings.DialobSettings;
+import io.dialob.settings.DialobSettings.DatabaseType;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration(proxyBeanMethods = false)
@@ -119,16 +120,26 @@ public class DialobDbSpAutoConfiguration {
                                          ObjectMapper objectMapper,
                                          DialobSettings settings) {
 
-      DatabaseHelper databaseHelper = databaseHandler(jdbcTemplate.getDataSource(), settings.getDb().getJdbc().getSchema());
-
       this.schema = settings.getDb().getJdbc().getSchema();
+
+      DatabaseHelper databaseHelper = databaseHandler(jdbcTemplate.getDataSource(), this.schema);
 
       Predicate<String> isAnyTenantPredicate = tenantId -> false;
       if (settings.getTenant().getMode() == DialobSettings.TenantSettings.Mode.FIXED) {
         isAnyTenantPredicate = tenantId -> settings.getTenant().getFixedId().equals(tenantId);
       }
       this.versionControlledFormDatabase = new JdbcVersionControlledFormDatabase(jdbcTemplate, this.schema, databaseHelper, transactionTemplate, new JdbcFormDatabase(jdbcTemplate, databaseHelper, transactionTemplate, objectMapper, schema, isAnyTenantPredicate), isAnyTenantPredicate, objectMapper);
-      this.jdbcQuestionnaireDatabase = new JdbcQuestionnaireDatabase(jdbcTemplate, databaseHelper, transactionTemplate, objectMapper, this.schema, Optional.of(versionControlledFormDatabase), isAnyTenantPredicate);
+      
+      Optional<FormVersionControlDatabase> formVersionControl = Optional.empty();
+      /* Version controlled database currently supported only for JDBC type,
+       * verify that form database belongs to that.
+       */
+      if (settings.getDb().getDatabaseType() == DatabaseType.JDBC || 
+          settings.getFormDatabase().getDatabaseType() == DatabaseType.JDBC) {
+        formVersionControl = Optional.of(versionControlledFormDatabase);
+      }
+      
+      this.jdbcQuestionnaireDatabase = new JdbcQuestionnaireDatabase(jdbcTemplate, databaseHelper, transactionTemplate, objectMapper, this.schema, formVersionControl, isAnyTenantPredicate);
     }
 
 
