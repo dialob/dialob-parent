@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Typography, Link, Divider } from '@mui/material';
+import { Typography, Link, Divider, Box } from '@mui/material';
 
 const components:object = {
   /* @ts-ignore */
@@ -19,7 +19,8 @@ const components:object = {
   /* @ts-ignore */
   p: ({children}) => <Typography variant='body1' paragraph>{children}</Typography>,
   /* @ts-ignore */
-  'a': (props) => <Link href={props.href}>{props.children}</Link>
+  'a': (props) => <Link href={props.href}>{props.children}</Link>,
+  'img': (props) => <Box component="img" alt={props.alt} src={props.src} maxWidth={600} width="100%" padding="8px 0px"/>  
 }
 export interface MarkdownViewProps {
   text?: string;

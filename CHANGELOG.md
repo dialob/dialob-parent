@@ -1,3 +1,8 @@
+# 1.4.1
+
+ * Added description for note item type
+ * Added responsive image implementation for MarkdownView
+
 # 1.4.0
 
  * Fix "show inactive items" rendering
