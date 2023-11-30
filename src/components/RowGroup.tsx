@@ -1,18 +1,22 @@
 import { ItemAction } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
-import React from 'react';
-import { Typography, Grid, Button, } from '@mui/material';
+import React, { ReactNode } from 'react';
+import { Typography, Grid, Button, Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { Description } from './Description';
 import { RowGroupContext } from '../context/RowGroupContext';
+import { getIndent } from '../util/helperFunctions';
 
 export interface RowGroupProps {
   rowGroup: ItemAction<'rowgroup'>['item'];
+  children: ReactNode;
 };
 
 export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
   const {addRowToGroup} = useFillActions();
+  const indent = getIndent(parseInt(rowGroup.props?.indent || 0));
+  
   return (
     <>
       <Grid item xs={12} style={{ marginBottom: '5px' }}>
@@ -22,9 +26,11 @@ export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
           <Button size='small' color='primary' variant='contained' sx={{float: 'right'}} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }} disabled={!(rowGroup.allowedActions && rowGroup.allowedActions.includes('ADD_ROW'))}><FormattedMessage id='row.add.button' /></Button>
         </Typography>
       </Grid>
-      <RowGroupContext.Provider value={{rowGroup}}>
-        {children}
-      </RowGroupContext.Provider>
+      <Box pl={indent}>
+        <RowGroupContext.Provider value={{rowGroup}}>
+          {children}
+        </RowGroupContext.Provider>
+      </Box>
     </>
   );
 };

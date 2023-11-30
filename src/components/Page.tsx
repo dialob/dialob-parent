@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { ItemAction } from '@dialob/fill-api';
 import { Typography, Grid } from '@mui/material';
 
 export interface PageProps {
   page: ItemAction<'group'>['item'];
+  children: ReactNode;
 };
+
 export const Page: React.FC<PageProps> = ({ page, children }) => {
   return (
     <Grid container spacing={1}>

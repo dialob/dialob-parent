@@ -1,9 +1,10 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
-import { TextField } from '@mui/material';
+import { TextField, Box } from '@mui/material';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
+import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 export interface TextProps {
   text: ItemAction<any, any, string>['item'];
@@ -11,18 +12,25 @@ export interface TextProps {
 };
 export const Text: React.FC<TextProps> = ({ text, errors }) => {
   const {setAnswer} = useFillActions();
+  const indent = getIndent(parseInt(text.props?.indent || 0));
+  const spacesTop = parseInt(text.props?.spacesTop || 0);
+  const spacesBottom = parseInt(text.props?.spacesBottom || 0);
+  const marginTop = calculateMargin(spacesTop);
+  const marginBottom = calculateMargin(spacesBottom);
 
   return (
     <DescriptionWrapper text={text.description} title={text.label}>
-      <TextField
-        fullWidth
-        label={text.label}
-        required={text.required}
-        error={errors.length > 0}
-        value={text.value || ''}
-        onChange={e => setAnswer(text.id, e.currentTarget.value)}
-        helperText={<RenderErrors errors={errors} />}
-      />
+      <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+        <TextField
+          fullWidth
+          label={text.label}
+          required={text.required}
+          error={errors.length > 0}
+          value={text.value || ''}
+          onChange={e => setAnswer(text.id, e.currentTarget.value)}
+          helperText={<RenderErrors errors={errors} />}
+        />
+      </Box>
     </DescriptionWrapper>
   );
 };

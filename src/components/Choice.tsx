@@ -4,6 +4,7 @@ import React, {useMemo} from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { ErrorHelperText } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
+import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 export interface ChoiceProps {
   choice: ItemAction<'list'>['item'];
@@ -15,6 +16,12 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
   const {setAnswer} = useFillActions();
   const valueSet = useFillValueSet(choice.valueSetId);
   const itemId = `item_${session.id}_${choice.id}`;
+  const indent = getIndent(parseInt(choice.props?.indent || 0));
+  const spacesTop = parseInt(choice.props?.spacesTop || 0);
+  const spacesBottom = parseInt(choice.props?.spacesBottom || 0);
+  const marginTop = calculateMargin(spacesTop);
+  const marginBottom = calculateMargin(spacesBottom);
+  
   const options = useMemo(() => {
     const options: JSX.Element[] = [];
     if (!valueSet) {
@@ -28,7 +35,7 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
 
   return (
     <DescriptionWrapper text={choice.description} title={choice.label}>
-    <FormControl fullWidth={true} required={choice.required} error={errors.length > 0} sx={{minWidth: 120}}>
+    <FormControl fullWidth={true} required={choice.required} error={errors.length > 0} sx={{minWidth: 120, pl: indent, mt: marginTop, mb: marginBottom}}>
       <InputLabel id={`${itemId}_label`} shrink>{choice.label}</InputLabel>
       <Select labelId={`${itemId}_label`}
         label={choice.label}

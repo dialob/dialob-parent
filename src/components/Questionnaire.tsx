@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { Grid } from '@mui/material';
 import { ConfigContext } from '../';
 import { useFillItem } from '@dialob/fill-react';
 
-export interface QuestionnaireProps {};
+export interface QuestionnaireProps {
+  children: ReactNode;
+};
 
 export const Questionnaire: React.FC<QuestionnaireProps> = ({children}) => {
   const { item: questionnaire } = useFillItem('questionnaire');

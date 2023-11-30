@@ -5,6 +5,7 @@ import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@mui/ma
 import { Remove } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { RowGroupContext } from '../context/RowGroupContext';
+import { calculateMargin } from '../util/helperFunctions';
 
 interface ConfirmationProps {
   isOpen: boolean;
@@ -39,6 +40,10 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
     deleteRow(row.id);
   };
   let responsiveProps = {};
+  const spacesTop = parseInt(rowGroupContext.rowGroup?.props?.spacesTop || 0);
+  const spacesBottom = parseInt(rowGroupContext.rowGroup?.props?.spacesBottom || 0);
+  const marginTop = calculateMargin(spacesTop);
+  const marginBottom = calculateMargin(spacesBottom);
 
   const itemIds = row?.items ? row.items.filter(itemId => session.getItem(itemId)) : [];
 
@@ -54,7 +59,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
 
   return (
     <>
-      <Paper variant='outlined' sx={{p: 1, mt: 1}}>
+      <Paper variant='outlined' sx={{p: 1, mt: marginTop + 1, mb: marginBottom}}>
         <Grid container spacing={1} justifyContent='center'>
           {children && itemIds.map(itemId => (
             <Grid item {...responsiveProps} key={itemId}>

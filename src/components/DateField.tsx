@@ -1,7 +1,7 @@
 import React from 'react';
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
-import { TextField } from '@mui/material';
+import { TextField, Box } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {format} from 'date-fns';
 import { RenderErrors } from './helpers';
@@ -11,6 +11,7 @@ import enUS from 'date-fns/locale/en-US';
 import fi from 'date-fns/locale/fi';
 import sv from 'date-fns/locale/sv';
 import et from 'date-fns/locale/et';
+import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 const DATE_FORMAT_MAPPING: { [key: string]: string } = {
   'en': enGB.formatLong?.date({width: 'short'}),
@@ -37,6 +38,12 @@ const formatToWire = (value: any): string => {
 export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   const { setAnswer } = useFillActions();
   const locale = useFillLocale();
+  const indent = getIndent(parseInt(datefield.props?.indent || 0));
+  const spacesTop = parseInt(datefield.props?.spacesTop || 0);
+  const spacesBottom = parseInt(datefield.props?.spacesBottom || 0);
+  const marginTop = calculateMargin(spacesTop);
+  const marginBottom = calculateMargin(spacesBottom);
+
   const handleChange = (value: any) => {
     setAnswer(datefield.id, formatToWire(value) /*  format(value, 'yyyy-MM-dd') */);
   }
@@ -46,25 +53,27 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
-      <DatePicker
-        label={datefield.label}
-        value={value}
-        onChange={handleChange}
-        inputFormat={DATE_FORMAT_MAPPING[locale]}
-        renderInput={(props) => {
-          /*
-          if (props.inputProps && props.inputProps.placeholder) {
-            props.inputProps.placeholder = format.substring(2, format.length);
-          }*/
-          return (<TextField {...props}
-            fullWidth
-            required={datefield.required}
-            error={errors.length > 0}
-            helperText={<RenderErrors errors={errors} />}
-          />)
-        }
-        }
-      />
+      <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+        <DatePicker
+          label={datefield.label}
+          value={value}
+          onChange={handleChange}
+          inputFormat={DATE_FORMAT_MAPPING[locale]}
+          renderInput={(props) => {
+            /*
+            if (props.inputProps && props.inputProps.placeholder) {
+              props.inputProps.placeholder = format.substring(2, format.length);
+            }*/
+            return (<TextField {...props}
+              fullWidth
+              required={datefield.required}
+              error={errors.length > 0}
+              helperText={<RenderErrors errors={errors} />}
+            />)
+          }
+          }
+        />
+      </Box>
     </DescriptionWrapper>
   );
 }
