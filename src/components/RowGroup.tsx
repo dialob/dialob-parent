@@ -6,7 +6,6 @@ import { Add } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { Description } from './Description';
 import { RowGroupContext } from '../context/RowGroupContext';
-import { getIndent } from '../util/helperFunctions';
 
 export interface RowGroupProps {
   rowGroup: ItemAction<'rowgroup'>['item'];
@@ -15,7 +14,7 @@ export interface RowGroupProps {
 
 export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
   const {addRowToGroup} = useFillActions();
-  const indent = getIndent(parseInt(rowGroup.props?.indent || 0));
+  const indent = parseInt(rowGroup.props?.indent || 0);
   
   return (
     <>
@@ -26,7 +25,7 @@ export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
           <Button size='small' color='primary' variant='contained' sx={{float: 'right'}} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }} disabled={!(rowGroup.allowedActions && rowGroup.allowedActions.includes('ADD_ROW'))}><FormattedMessage id='row.add.button' /></Button>
         </Typography>
       </Grid>
-      <Box pl={indent}>
+      <Box sx={{pl: (theme) => theme.spacing(indent)}}>
         <RowGroupContext.Provider value={{rowGroup}}>
           {children}
         </RowGroupContext.Provider>

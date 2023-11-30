@@ -4,7 +4,6 @@ import React from 'react';
 import { FormControl, Checkbox, FormLabel, FormGroup, FormControlLabel, Paper } from '@mui/material';
 import { ErrorHelperText } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 export interface MultiChoiceProps {
   multichoice: ItemAction<'multichoice'>['item'];
@@ -14,11 +13,9 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
   const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const currentValue: string[] = multichoice.value || [];
-  const indent = getIndent(parseInt(multichoice.props?.indent || 0));
+  const indent = parseInt(multichoice.props?.indent || 0);
   const spacesTop = parseInt(multichoice.props?.spacesTop || 0);
   const spacesBottom = parseInt(multichoice.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
   const border = multichoice.props?.border;
 
   const options: JSX.Element[] = [];
@@ -41,7 +38,14 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
     }
   }
 
-  const multiChoiceContent = (<FormControl component='fieldset' fullWidth={true} required={multichoice.required} error={errors.length > 0} sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+  const multiChoiceContent = (
+    <FormControl 
+      component='fieldset' 
+      fullWidth={true} 
+      required={multichoice.required} 
+      error={errors.length > 0} 
+      sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+    >
       <FormLabel component='legend'>{multichoice.label}</FormLabel>
       <FormGroup>
         {options}

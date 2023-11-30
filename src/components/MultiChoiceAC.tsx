@@ -5,7 +5,6 @@ import { TextField, Autocomplete, Box } from '@mui/material';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import { useIntl } from 'react-intl';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 export interface MultiChoiceACProps {
   multichoice: ItemAction<'multichoice'>['item'];
@@ -22,15 +21,13 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
   const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const entries: ValueSetEntry[] = valueSet?.entries ? valueSet.entries : [];
-  const indent = getIndent(parseInt(multichoice.props?.indent || 0));
+  const indent = parseInt(multichoice.props?.indent || 0);
   const spacesTop = parseInt(multichoice.props?.spacesTop || 0);
   const spacesBottom = parseInt(multichoice.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
 
   return (
     <DescriptionWrapper text={multichoice.description} title={multichoice.label}>
-      <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <Autocomplete
           multiple
           noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}

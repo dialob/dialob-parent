@@ -6,7 +6,6 @@ import { TextField, Box } from '@mui/material';
 import {format, parse} from 'date-fns';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 const timeFormat = 'HH:mm';
 
@@ -25,11 +24,9 @@ const formatToWire = (value: any): string => {
 
 export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
   const { setAnswer } = useFillActions();
-  const indent = getIndent(parseInt(timefield.props?.indent || 0));
+  const indent = parseInt(timefield.props?.indent || 0);
   const spacesTop = parseInt(timefield.props?.spacesTop || 0);
   const spacesBottom = parseInt(timefield.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
 
   const handleChange = (value: any) => {
     setAnswer(timefield.id, formatToWire(value));
@@ -38,7 +35,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
 
   return (
     <DescriptionWrapper text={timefield.description} title={timefield.label}>
-      <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <TimePicker
           ampm={false}
           label={timefield.label}

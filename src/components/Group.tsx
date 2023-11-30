@@ -1,7 +1,6 @@
 import { ItemAction } from '@dialob/fill-api';
 import React, {ReactNode, useContext} from 'react';
 import { Paper, Typography, Grid, Fade, Box } from '@mui/material';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 import { GroupContext } from '../context/GroupContext';
 import { Description } from './Description';
 
@@ -19,17 +18,15 @@ export const Group: React.FC<GroupProps> = ({ group, children }) => {
   columns = columns > 4 ? 4 : columns;
   const lg: ColumnType = columns > 1 ? Math.floor(12 / columns) : undefined;
   const border = props?.border;
-  const indent = getIndent(parseInt(props?.indent || 0) + 2);
   const invisible = props?.invisible;
+  const indent = parseInt(props?.indent || 0);
   const spacesTop = parseInt(props?.spacesTop || 0);
   const spacesBottom = parseInt(props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
 
   const childItems = React.Children.map( children, i => <Grid item xs={12} lg={lg}>{i}</Grid>);
 
   const groupContent: any = invisible ? (
-    <Grid container spacing={2} sx={{pl: indent}}>{ childItems }</Grid>
+    <Grid container spacing={2} sx={{pl: (theme) => theme.spacing(indent)}}>{ childItems }</Grid>
   ) : (
     <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -38,7 +35,7 @@ export const Group: React.FC<GroupProps> = ({ group, children }) => {
             </Typography>
             <Description title={label} text={description} />
         </Grid>
-        <Grid container spacing={2} sx={{pl: indent}}>{ childItems }</Grid>
+        <Grid container spacing={2} sx={{pl: (theme) => theme.spacing(indent)}}>{ childItems }</Grid>
     </Grid>
   );
 
@@ -49,11 +46,11 @@ export const Group: React.FC<GroupProps> = ({ group, children }) => {
     <GroupContext.Provider value={{level: groupCtx.level < 6 ? groupCtx.level + 1 : groupCtx.level}}>
       <Fade in={true}>
         { border && !invisible ? (
-          <Paper elevation={groupCtx.level} sx={{p: 2, mb: marginBottom, mt: marginTop}}>
+          <Paper elevation={groupCtx.level} sx={{p: 2, marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
               { groupContent }
           </Paper>
         ) : (
-          <Box sx={{p: 2, mb: spacesBottom, mt: spacesTop}}>
+          <Box sx={{p: 2, marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
               { groupContent }
           </Box>
         )}

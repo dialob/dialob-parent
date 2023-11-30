@@ -5,7 +5,6 @@ import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mu
 import { ErrorHelperText } from './helpers';
 import { useIntl } from 'react-intl';
 import { DescriptionWrapper } from './DescriptionWrapper';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 export interface BooleanRadioProps {
   boolean: ItemAction<'boolean'>['item'];
@@ -14,11 +13,9 @@ export interface BooleanRadioProps {
 export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) => {
   const {setAnswer} = useFillActions();
   const intl = useIntl();
-  const indent = getIndent(parseInt(boolean.props?.indent || 0));
+  const indent = parseInt(boolean.props?.indent || 0);
   const spacesTop = parseInt(boolean.props?.spacesTop || 0);
   const spacesBottom = parseInt(boolean.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
 
   const setValue = (value:string) => {
     // convert text from radio button value to boolean
@@ -37,7 +34,13 @@ export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) =
   }
   return (
     <DescriptionWrapper text={boolean.description} title={boolean.label}>
-      <FormControl component='fieldset' required={boolean.required} fullWidth={true} error={errors.length > 0} sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+      <FormControl 
+        component='fieldset' 
+        required={boolean.required} 
+        fullWidth={true} 
+        error={errors.length > 0} 
+        sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+      >
         <FormLabel component="legend">{boolean.label}</FormLabel>
         <RadioGroup value={getValue(boolean.value)} onChange={e => {setAnswer(boolean.id, setValue(e.target.value));}} row={true}>
           <FormControlLabel

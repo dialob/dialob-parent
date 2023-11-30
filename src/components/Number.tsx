@@ -5,7 +5,6 @@ import { TextField, Box } from '@mui/material';
 import { RenderErrors } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import NumberFormat from 'react-number-format';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 interface FormattedNumberFieldProps {
   onChange: (event: {target: {name: string; value: string}}) => void;
@@ -46,15 +45,13 @@ export interface NumberProps {
 export const Number: React.FC<NumberProps> = ({number, errors, integer}) => {
   const {setAnswer} = useFillActions();
   const locale = useFillLocale();
-  const indent = getIndent(parseInt(number.props?.indent || 0));
+  const indent = parseInt(number.props?.indent || 0);
   const spacesTop = parseInt(number.props?.spacesTop || 0);
   const spacesBottom = parseInt(number.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
   
   return (
     <DescriptionWrapper text={number.description} title={number.label}>
-      <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <TextField
           fullWidth
           label={number.label}

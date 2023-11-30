@@ -11,7 +11,6 @@ import enUS from 'date-fns/locale/en-US';
 import fi from 'date-fns/locale/fi';
 import sv from 'date-fns/locale/sv';
 import et from 'date-fns/locale/et';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 
 const DATE_FORMAT_MAPPING: { [key: string]: string } = {
   'en': enGB.formatLong?.date({width: 'short'}),
@@ -38,11 +37,9 @@ const formatToWire = (value: any): string => {
 export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   const { setAnswer } = useFillActions();
   const locale = useFillLocale();
-  const indent = getIndent(parseInt(datefield.props?.indent || 0));
+  const indent = parseInt(datefield.props?.indent || 0);
   const spacesTop = parseInt(datefield.props?.spacesTop || 0);
   const spacesBottom = parseInt(datefield.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
 
   const handleChange = (value: any) => {
     setAnswer(datefield.id, formatToWire(value) /*  format(value, 'yyyy-MM-dd') */);
@@ -53,7 +50,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
-      <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <DatePicker
           label={datefield.label}
           value={value}
@@ -69,8 +66,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
               required={datefield.required}
               error={errors.length > 0}
               helperText={<RenderErrors errors={errors} />}
-            />)
-          }
+            />)}
           }
         />
       </Box>

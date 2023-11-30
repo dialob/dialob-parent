@@ -1,7 +1,6 @@
 import React from 'react';
 import { ItemAction } from '@dialob/fill-api';
 import { MarkdownView } from './MarkdownView';
-import { calculateMargin, getIndent } from '../util/helperFunctions';
 import { Box } from '@mui/material';
 
 export interface NoteProps {
@@ -9,14 +8,12 @@ export interface NoteProps {
 };
 
 export const Note: React.FC<NoteProps> = ({ note }) => {
-  const indent = getIndent(parseInt(note.props?.indent || 0));
+  const indent = parseInt(note.props?.indent || 0);
   const spacesTop = parseInt(note.props?.spacesTop || 0);
   const spacesBottom = parseInt(note.props?.spacesBottom || 0);
-  const marginTop = calculateMargin(spacesTop);
-  const marginBottom = calculateMargin(spacesBottom);
 
   return (
-    <Box sx={{pl: indent, mt: marginTop, mb: marginBottom}}>
+    <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
       <MarkdownView text={note.label} />
     </Box>
     );
