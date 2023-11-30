@@ -39,7 +39,7 @@ export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) =
         required={boolean.required} 
         fullWidth={true} 
         error={errors.length > 0} 
-        sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+        sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
       >
         <FormLabel component="legend">{boolean.label}</FormLabel>
         <RadioGroup value={getValue(boolean.value)} onChange={e => {setAnswer(boolean.id, setValue(e.target.value));}} row={true}>

@@ -27,7 +27,7 @@ export const ChoiceAC: React.FC<ChoiceACProps> = ({ choice, errors }) => {
 
   return (
     <DescriptionWrapper text={choice.description} title={choice.label}>
-      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <Autocomplete
           options={entries}
           noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}

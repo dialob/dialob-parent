@@ -25,7 +25,7 @@ export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
           <Button size='small' color='primary' variant='contained' sx={{float: 'right'}} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }} disabled={!(rowGroup.allowedActions && rowGroup.allowedActions.includes('ADD_ROW'))}><FormattedMessage id='row.add.button' /></Button>
         </Typography>
       </Grid>
-      <Box sx={{pl: (theme) => theme.spacing(indent)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent)}}>
         <RowGroupContext.Provider value={{rowGroup}}>
           {children}
         </RowGroupContext.Provider>

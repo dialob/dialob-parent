@@ -51,7 +51,7 @@ export const Number: React.FC<NumberProps> = ({number, errors, integer}) => {
   
   return (
     <DescriptionWrapper text={number.description} title={number.label}>
-      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <TextField
           fullWidth
           label={number.label}

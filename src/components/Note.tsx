@@ -13,7 +13,7 @@ export const Note: React.FC<NoteProps> = ({ note }) => {
   const spacesBottom = parseInt(note.props?.spacesBottom || 0);
 
   return (
-    <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+    <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
       <MarkdownView text={note.label} />
     </Box>
     );

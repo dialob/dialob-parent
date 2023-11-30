@@ -22,7 +22,7 @@ export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, error
         fullWidth={true} 
         required={boolean.required} 
         error={errors.length > 0} 
-        sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+        sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
       >
         <FormControlLabel
           label={boolean.label ? boolean.label : ""}

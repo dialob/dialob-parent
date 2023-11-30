@@ -50,7 +50,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
-      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <DatePicker
           label={datefield.label}
           value={value}

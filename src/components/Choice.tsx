@@ -36,7 +36,7 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
       fullWidth={true} 
       required={choice.required} 
       error={errors.length > 0} 
-      sx={{minWidth: 120, pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+      sx={{minWidth: 120, paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
     >
       <InputLabel id={`${itemId}_label`} shrink>{choice.label}</InputLabel>
       <Select labelId={`${itemId}_label`}

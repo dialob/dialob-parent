@@ -26,7 +26,7 @@ export const Group: React.FC<GroupProps> = ({ group, children }) => {
   const childItems = React.Children.map( children, i => <Grid item xs={12} lg={lg}>{i}</Grid>);
 
   const groupContent: any = invisible ? (
-    <Grid container spacing={2} sx={{pl: (theme) => theme.spacing(indent)}}>{ childItems }</Grid>
+    <Grid container spacing={2} sx={{paddingLeft: (theme) => theme.spacing(indent + 2)}}>{ childItems }</Grid>
   ) : (
     <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -35,7 +35,7 @@ export const Group: React.FC<GroupProps> = ({ group, children }) => {
             </Typography>
             <Description title={label} text={description} />
         </Grid>
-        <Grid container spacing={2} sx={{pl: (theme) => theme.spacing(indent)}}>{ childItems }</Grid>
+        <Grid container spacing={2} sx={{paddingLeft: (theme) => theme.spacing(indent + 2)}}>{ childItems }</Grid>
     </Grid>
   );
 

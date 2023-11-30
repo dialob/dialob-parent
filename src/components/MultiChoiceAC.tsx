@@ -27,7 +27,7 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
 
   return (
     <DescriptionWrapper text={multichoice.description} title={multichoice.label}>
-      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <Autocomplete
           multiple
           noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}

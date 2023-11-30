@@ -17,7 +17,7 @@ export const TextBox: React.FC<TextBoxProps> = ({ text, errors }) => {
 
   return (
     <DescriptionWrapper text={text.description} title={text.label}>
-      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <TextField
           fullWidth={true}
           label={text.label}

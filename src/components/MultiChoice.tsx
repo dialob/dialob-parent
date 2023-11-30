@@ -44,7 +44,7 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
       fullWidth={true} 
       required={multichoice.required} 
       error={errors.length > 0} 
-      sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+      sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
     >
       <FormLabel component='legend'>{multichoice.label}</FormLabel>
       <FormGroup>

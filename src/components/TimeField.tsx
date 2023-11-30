@@ -35,7 +35,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
 
   return (
     <DescriptionWrapper text={timefield.description} title={timefield.label}>
-      <Box sx={{pl: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
         <TimePicker
           ampm={false}
           label={timefield.label}
