@@ -39,8 +39,13 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
     deleteRow(row.id);
   };
   let responsiveProps = {};
-  const spacesTop = parseInt(row.props?.spacesTop || 0);
-  const spacesBottom = parseInt(row.props?.spacesBottom || 0);
+  const spacesTop = parseInt(row.props?.spacesTop ?? undefined);
+  const spacesBottom = parseInt(row.props?.spacesBottom ?? undefined);
+  const paperSx = {
+    p: 1,
+    ...(spacesTop && { marginTop: spacesTop }),
+    ...(spacesBottom && { marginBottom: spacesBottom })
+  }
 
   const itemIds = row?.items ? row.items.filter(itemId => session.getItem(itemId)) : [];
 
@@ -56,7 +61,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
 
   return (
     <>
-      <Paper variant='outlined' sx={{p: 1, marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Paper variant='outlined' sx={paperSx}>
         <Grid container spacing={1} justifyContent='center'>
           {children && itemIds.map(itemId => (
             <Grid item {...responsiveProps} key={itemId}>

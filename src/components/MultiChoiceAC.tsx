@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { TextField, Autocomplete, Box } from '@mui/material';
-import { RenderErrors } from './helpers';
+import { RenderErrors, buildSxFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import { useIntl } from 'react-intl';
 
@@ -21,13 +21,10 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
   const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const entries: ValueSetEntry[] = valueSet?.entries ? valueSet.entries : [];
-  const indent = parseInt(multichoice.props?.indent || 0);
-  const spacesTop = parseInt(multichoice.props?.spacesTop || 0);
-  const spacesBottom = parseInt(multichoice.props?.spacesBottom || 0);
 
   return (
     <DescriptionWrapper text={multichoice.description} title={multichoice.label}>
-      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={buildSxFromProps(multichoice.props)}>
         <Autocomplete
           multiple
           noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}

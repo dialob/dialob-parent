@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { FormControl, Checkbox, FormLabel, FormGroup, FormControlLabel, Paper } from '@mui/material';
-import { ErrorHelperText } from './helpers';
+import { ErrorHelperText, buildSxFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface MultiChoiceProps {
@@ -13,9 +13,6 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
   const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(multichoice.valueSetId);
   const currentValue: string[] = multichoice.value || [];
-  const indent = parseInt(multichoice.props?.indent || 0);
-  const spacesTop = parseInt(multichoice.props?.spacesTop || 0);
-  const spacesBottom = parseInt(multichoice.props?.spacesBottom || 0);
   const border = multichoice.props?.border;
 
   const options: JSX.Element[] = [];
@@ -44,7 +41,7 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
       fullWidth={true} 
       required={multichoice.required} 
       error={errors.length > 0} 
-      sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+      sx={buildSxFromProps(multichoice.props)}
     >
       <FormLabel component='legend'>{multichoice.label}</FormLabel>
       <FormGroup>

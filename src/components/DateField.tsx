@@ -4,7 +4,7 @@ import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import { TextField, Box } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {format} from 'date-fns';
-import { RenderErrors } from './helpers';
+import { RenderErrors, buildSxFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import enGB from 'date-fns/locale/en-GB';
 import enUS from 'date-fns/locale/en-US';
@@ -37,9 +37,6 @@ const formatToWire = (value: any): string => {
 export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   const { setAnswer } = useFillActions();
   const locale = useFillLocale();
-  const indent = parseInt(datefield.props?.indent || 0);
-  const spacesTop = parseInt(datefield.props?.spacesTop || 0);
-  const spacesBottom = parseInt(datefield.props?.spacesBottom || 0);
 
   const handleChange = (value: any) => {
     setAnswer(datefield.id, formatToWire(value) /*  format(value, 'yyyy-MM-dd') */);
@@ -50,7 +47,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
-      <Box sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}>
+      <Box sx={buildSxFromProps(datefield.props)}>
         <DatePicker
           label={datefield.label}
           value={value}

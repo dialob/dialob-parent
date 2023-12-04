@@ -14,7 +14,7 @@ export interface RowGroupProps {
 
 export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
   const {addRowToGroup} = useFillActions();
-  const indent = parseInt(rowGroup.props?.indent || 0);
+  const indent = parseInt(rowGroup.props?.indent ?? undefined);
   
   return (
     <>
@@ -25,7 +25,7 @@ export const RowGroup: React.FC<RowGroupProps> = ({ rowGroup, children }) => {
           <Button size='small' color='primary' variant='contained' sx={{float: 'right'}} onClick={() => addRowToGroup(rowGroup.id)} startIcon={<Add />} style={{ marginBottom: '3px' }} disabled={!(rowGroup.allowedActions && rowGroup.allowedActions.includes('ADD_ROW'))}><FormattedMessage id='row.add.button' /></Button>
         </Typography>
       </Grid>
-      <Box sx={{paddingLeft: (theme) => theme.spacing(indent)}}>
+      <Box sx={indent ? { paddingLeft: indent } : undefined}>
         <RowGroupContext.Provider value={{rowGroup}}>
           {children}
         </RowGroupContext.Provider>

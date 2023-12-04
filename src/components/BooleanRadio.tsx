@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
-import { ErrorHelperText } from './helpers';
+import { ErrorHelperText, buildSxFromProps } from './helpers';
 import { useIntl } from 'react-intl';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
@@ -13,9 +13,6 @@ export interface BooleanRadioProps {
 export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) => {
   const {setAnswer} = useFillActions();
   const intl = useIntl();
-  const indent = parseInt(boolean.props?.indent || 0);
-  const spacesTop = parseInt(boolean.props?.spacesTop || 0);
-  const spacesBottom = parseInt(boolean.props?.spacesBottom || 0);
 
   const setValue = (value:string) => {
     // convert text from radio button value to boolean
@@ -39,7 +36,7 @@ export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) =
         required={boolean.required} 
         fullWidth={true} 
         error={errors.length > 0} 
-        sx={{paddingLeft: (theme) => theme.spacing(indent), marginTop: (theme) => theme.spacing(spacesTop), marginBottom: (theme) => theme.spacing(spacesBottom)}}
+        sx={buildSxFromProps(boolean.props)}
       >
         <FormLabel component="legend">{boolean.label}</FormLabel>
         <RadioGroup value={getValue(boolean.value)} onChange={e => {setAnswer(boolean.id, setValue(e.target.value));}} row={true}>
