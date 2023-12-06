@@ -1,0 +1,200 @@
+{
+  "rev": "700387841",
+  "actions": [
+    {
+      "type": "RESET"
+    },
+    {
+      "type": "LOCALE",
+      "value": "en"
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "group1",
+        "type": "group",
+        "label": "Favourite foods",
+        "items": [
+          "text1",
+          "boolean1",
+          "text4"
+        ],
+        "answered": false,
+        "props": {
+          "columns": 1
+        }
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "date1",
+        "type": "date",
+        "label": "Select the date when you last ate a salad",
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "questionnaire",
+        "type": "questionnaire",
+        "label": "Foods Survey Test",
+        "items": [
+          "page1"
+        ],
+        "activeItem": "page1",
+        "availableItems": [
+          "page1"
+        ],
+        "allowedActions": [
+          "ANSWER",
+          "COMPLETE"
+        ],
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "text1",
+        "type": "text",
+        "view": "text",
+        "label": "Enter your favourite food",
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "time1",
+        "type": "time",
+        "label": "What time do you eat dinner?",
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "list1",
+        "type": "list",
+        "label": "Which of these healthy foods is the most delicious?",
+        "answered": false,
+        "valueSetId": "vs2"
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "boolean1",
+        "type": "boolean",
+        "label": "Do you have more than one favourite food?",
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "page1",
+        "type": "group",
+        "view": "page",
+        "label": "Page 1: Food Preferences",
+        "items": [
+          "group1",
+          "rowgroup1",
+          "date1",
+          "time1",
+          "group3"
+        ],
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "multichoice1",
+        "type": "multichoice",
+        "label": "Select the most unhealthy foods from this list",
+        "answered": false,
+        "valueSetId": "vs1"
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "rowgroup1",
+        "type": "rowgroup",
+        "label": "Frequently consumed foods",
+        "answered": false
+      }
+    },
+    {
+      "type": "ITEM",
+      "item": {
+        "id": "group3",
+        "type": "group",
+        "label": "Selecting healthy and unhealthy foods",
+        "items": [
+          "multichoice1",
+          "list1"
+        ],
+        "answered": false,
+        "props": {
+          "columns": 1
+        }
+      }
+    },
+    {
+      "type": "VALUE_SET",
+      "valueSet": {
+        "id": "vs1",
+        "entries": [
+          {
+            "key": "pizza",
+            "value": "Pizza"
+          },
+          {
+            "key": "apples",
+            "value": "Apples"
+          },
+          {
+            "key": "cake",
+            "value": "Cake"
+          },
+          {
+            "key": "iceCream",
+            "value": "Ice cream"
+          },
+          {
+            "key": "salad",
+            "value": "Salad"
+          }
+        ]
+      }
+    },
+    {
+      "type": "VALUE_SET",
+      "valueSet": {
+        "id": "vs2",
+        "entries": [
+          {
+            "key": "grapes",
+            "value": "Grapes"
+          },
+          {
+            "key": "celery",
+            "value": "Celery"
+          },
+          {
+            "key": "chickenBreast",
+            "value": "Chicken breast"
+          },
+          {
+            "key": "tinnedFish",
+            "value": "Tinned fish"
+          }
+        ]
+      }
+    }
+  ]
+}
