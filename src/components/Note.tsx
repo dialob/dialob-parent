@@ -12,8 +12,10 @@ export interface NoteProps {
 export const Note: React.FC<NoteProps> = ({ note }) => {
 
   return (
-    <Box sx={getLayoutStyleFromProps(note.props)}>
-      <MarkdownView text={note.label} />
-    </Box>
+    <DescriptionWrapper text={note.description} title={note.label}>
+      <Box sx={getLayoutStyleFromProps(note.props)}>
+        <MarkdownView text={note.label} />
+      </Box>
+    </DescriptionWrapper>
     );
 };
