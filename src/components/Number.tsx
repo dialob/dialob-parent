@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import * as React from 'react';
 import { TextField, Box } from '@mui/material';
-import { RenderErrors, buildSxFromProps } from './helpers';
+import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import NumberFormat from 'react-number-format';
 
@@ -48,7 +48,7 @@ export const Number: React.FC<NumberProps> = ({number, errors, integer}) => {
   
   return (
     <DescriptionWrapper text={number.description} title={number.label}>
-      <Box sx={buildSxFromProps(number.props)}>
+      <Box sx={getLayoutStyleFromProps(number.props)}>
         <TextField
           fullWidth
           label={number.label}

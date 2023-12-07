@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { TextField, Autocomplete, Box } from '@mui/material';
-import { RenderErrors, buildSxFromProps } from './helpers';
+import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import { useIntl } from 'react-intl';
 
@@ -24,7 +24,7 @@ export const ChoiceAC: React.FC<ChoiceACProps> = ({ choice, errors }) => {
 
   return (
     <DescriptionWrapper text={choice.description} title={choice.label}>
-      <Box sx={buildSxFromProps(choice.props)}>
+      <Box sx={getLayoutStyleFromProps(choice.props)}>
         <Autocomplete
           options={entries}
           noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}

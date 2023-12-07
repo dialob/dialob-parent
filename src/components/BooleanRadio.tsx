@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
-import { ErrorHelperText, buildSxFromProps } from './helpers';
+import { ErrorHelperText, getLayoutStyleFromProps } from './helpers';
 import { useIntl } from 'react-intl';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
@@ -36,7 +36,7 @@ export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) =
         required={boolean.required} 
         fullWidth={true} 
         error={errors.length > 0} 
-        sx={buildSxFromProps(boolean.props)}
+        sx={getLayoutStyleFromProps(boolean.props)}
       >
         <FormLabel component="legend">{boolean.label}</FormLabel>
         <RadioGroup value={getValue(boolean.value)} onChange={e => {setAnswer(boolean.id, setValue(e.target.value));}} row={true}>

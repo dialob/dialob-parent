@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet } from '@dialob/fill-react';
 import React from 'react';
 import { FormControl, Checkbox, FormLabel, FormGroup, FormControlLabel, Paper } from '@mui/material';
-import { ErrorHelperText, buildSxFromProps } from './helpers';
+import { ErrorHelperText, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface MultiChoiceProps {
@@ -41,7 +41,7 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
       fullWidth={true} 
       required={multichoice.required} 
       error={errors.length > 0} 
-      sx={buildSxFromProps(multichoice.props)}
+      sx={getLayoutStyleFromProps(multichoice.props)}
     >
       <FormLabel component='legend'>{multichoice.label}</FormLabel>
       <FormGroup>

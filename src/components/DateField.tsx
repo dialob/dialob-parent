@@ -4,7 +4,7 @@ import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import { TextField, Box } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {format} from 'date-fns';
-import { RenderErrors, buildSxFromProps } from './helpers';
+import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import enGB from 'date-fns/locale/en-GB';
 import enUS from 'date-fns/locale/en-US';
@@ -47,7 +47,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
-      <Box sx={buildSxFromProps(datefield.props)}>
+      <Box sx={getLayoutStyleFromProps(datefield.props)}>
         <DatePicker
           label={datefield.label}
           value={value}

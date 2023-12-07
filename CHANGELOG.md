@@ -1,4 +1,4 @@
-# 1.4.2
+# 1.5.0
 
  * Added implementation for these props: spacesTop, spacesBottom, invisible, indent and border
  * Added few swedish translations: Multirow: Add - Remove, Page control at bottom: Previous - Next
