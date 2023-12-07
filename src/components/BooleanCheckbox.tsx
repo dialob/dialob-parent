@@ -2,7 +2,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import React from 'react';
 import { FormControlLabel, Checkbox, FormControl } from '@mui/material';
-import { ErrorHelperText } from './helpers';
+import { ErrorHelperText, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
 export interface BooleanCheckboxProps {
@@ -12,9 +12,15 @@ export interface BooleanCheckboxProps {
 
 export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, errors }) => {
   const {setAnswer} = useFillActions();
+  
   return (
     <DescriptionWrapper text={boolean.description} title={boolean.label}>
-      <FormControl fullWidth={true} required={boolean.required} error={errors.length > 0}>
+      <FormControl 
+        fullWidth={true} 
+        required={boolean.required} 
+        error={errors.length > 0} 
+        sx={getLayoutStyleFromProps(boolean.props)}
+      >
         <FormControlLabel
           label={boolean.label ? boolean.label : ""}
           control={

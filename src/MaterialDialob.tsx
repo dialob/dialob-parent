@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Session as DialobSession, FillError } from '@dialob/fill-api';
 import { Session } from '@dialob/fill-react';
 import { IntlProvider } from 'react-intl';
@@ -16,6 +16,7 @@ export interface MaterialDialobProps {
     description?: (text: string) => React.ReactElement;
     breadCrumbs?: (items: string[], canNavigate: boolean, activeItem?: string) => React.ReactElement;
   };
+  children: ReactNode;
 };
 
 export const MaterialDialob: React.FC<MaterialDialobProps> = ({ session, locale, children, components, messages }) => {
@@ -25,6 +26,7 @@ export const MaterialDialob: React.FC<MaterialDialobProps> = ({ session, locale,
         
   return (
     <ConfigContext.Provider value={{errors, description, breadCrumbs}} >
+      {/*@ts-ignore*/}
       <Session key={session.id} session={session} locale={locale}>
         <IntlProvider locale={session.getLocale() || locale} messages={messages === undefined ? builtInMessages[locale]: messages}>
           {children}

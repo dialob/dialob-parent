@@ -1,10 +1,10 @@
 import React from 'react';
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
-import { TextField } from '@mui/material';
+import { TextField, Box } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {format} from 'date-fns';
-import { RenderErrors } from './helpers';
+import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import enGB from 'date-fns/locale/en-GB';
 import enUS from 'date-fns/locale/en-US';
@@ -37,6 +37,7 @@ const formatToWire = (value: any): string => {
 export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   const { setAnswer } = useFillActions();
   const locale = useFillLocale();
+
   const handleChange = (value: any) => {
     setAnswer(datefield.id, formatToWire(value) /*  format(value, 'yyyy-MM-dd') */);
   }
@@ -46,25 +47,26 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
-      <DatePicker
-        label={datefield.label}
-        value={value}
-        onChange={handleChange}
-        inputFormat={DATE_FORMAT_MAPPING[locale]}
-        renderInput={(props) => {
-          /*
-          if (props.inputProps && props.inputProps.placeholder) {
-            props.inputProps.placeholder = format.substring(2, format.length);
-          }*/
-          return (<TextField {...props}
-            fullWidth
-            required={datefield.required}
-            error={errors.length > 0}
-            helperText={<RenderErrors errors={errors} />}
-          />)
-        }
-        }
-      />
+      <Box sx={getLayoutStyleFromProps(datefield.props)}>
+        <DatePicker
+          label={datefield.label}
+          value={value}
+          onChange={handleChange}
+          inputFormat={DATE_FORMAT_MAPPING[locale]}
+          renderInput={(props) => {
+            /*
+            if (props.inputProps && props.inputProps.placeholder) {
+              props.inputProps.placeholder = format.substring(2, format.length);
+            }*/
+            return (<TextField {...props}
+              fullWidth
+              required={datefield.required}
+              error={errors.length > 0}
+              helperText={<RenderErrors errors={errors} />}
+            />)}
+          }
+        />
+      </Box>
     </DescriptionWrapper>
   );
 }

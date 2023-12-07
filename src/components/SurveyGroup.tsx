@@ -3,11 +3,12 @@ import { ItemAction } from '@dialob/fill-api';
 import { Description } from './Description';
 import { GroupContext } from '../context/GroupContext';
 import { useFillSession, useFillValueSet } from '@dialob/fill-react';
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { Survey } from './Survey';
 
 export interface SurveyGroupProps {
   surveyGroup: ItemAction<'surveygroup'>['item'];
+  children: ReactNode;
 };
 
 export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children }) => {

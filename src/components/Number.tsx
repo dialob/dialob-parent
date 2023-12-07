@@ -1,11 +1,10 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import * as React from 'react';
-import { TextField } from '@mui/material';
-import { RenderErrors } from './helpers';
+import { TextField, Box } from '@mui/material';
+import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 import NumberFormat from 'react-number-format';
-
 
 interface FormattedNumberFieldProps {
   onChange: (event: {target: {name: string; value: string}}) => void;
@@ -14,6 +13,7 @@ interface FormattedNumberFieldProps {
   integer: boolean;
 }
 
+//@ts-ignore
 const FormattedNumberField = React.forwardRef<NumberFormat, FormattedNumberFieldProps>(
   function FormattedNumberField(props: FormattedNumberFieldProps, ref) {
     const { onChange, name, integer, decimalSeparator, ...other } = props;
@@ -45,24 +45,27 @@ export interface NumberProps {
 export const Number: React.FC<NumberProps> = ({number, errors, integer}) => {
   const {setAnswer} = useFillActions();
   const locale = useFillLocale();
+  
   return (
     <DescriptionWrapper text={number.description} title={number.label}>
-      <TextField
-         fullWidth
-         label={number.label}
-         required={number.required}
-         error={errors.length > 0}
-         value={number.value || ''}
-         onChange={e => setAnswer(number.id, e.target.value)}
-         helperText={<RenderErrors errors={errors} />}
-         InputProps={{
-           inputComponent: FormattedNumberField as any,
-           inputProps: {
-             decimalSeparator: (locale === 'en' ? '.' : ','),
-             integer
-           }
-         }}
-      />
+      <Box sx={getLayoutStyleFromProps(number.props)}>
+        <TextField
+          fullWidth
+          label={number.label}
+          required={number.required}
+          error={errors.length > 0}
+          value={number.value || ''}
+          onChange={e => setAnswer(number.id, e.target.value)}
+          helperText={<RenderErrors errors={errors} />}
+          InputProps={{
+            inputComponent: FormattedNumberField as any,
+            inputProps: {
+              decimalSeparator: (locale === 'en' ? '.' : ','),
+              integer
+            }
+          }}
+        />
+      </Box>
     </DescriptionWrapper>
   );
 
