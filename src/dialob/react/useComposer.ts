@@ -130,7 +130,8 @@ export const useComposer = () => {
     updateExpressionVariable,
     deleteVariable,
     addLanguage,
-    deleteLanguage
+    deleteLanguage,
+    form: state
   };
 
 }

@@ -15,7 +15,7 @@ export type ContextVariable = {
   published?: boolean;
   defaultValue ?: any;
   context: boolean;
-  contextType: string; // TODO: ContextVariableType
+  contextType: string; // TODO: ContextVariableType -- contextType is valid only when context === true, how to define this type in TS?
 };
 
 export const isContextVariable = (variable: ContextVariable | Variable): variable is ContextVariable => (variable as ContextVariable).context === true;

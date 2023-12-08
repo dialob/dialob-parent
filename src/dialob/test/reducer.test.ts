@@ -4,6 +4,8 @@ import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
 import { DialobItem, ComposerCallbacks, ComposerState } from '../types';
 
+console.log('testform', testForm);
+
 test('find next item identifier existing', () => {
   const itemTemplate: DialobItem = {
     id: '',
@@ -113,16 +115,16 @@ test('Add new item, callback', () => {
   };
 
   const callbacks: ComposerCallbacks = {
-    onAddItem: (state: ComposerState, item: DialobItem) => {
+    onAddItem: (_state: ComposerState, item: DialobItem) => {
       console.log('Called!', item);
     }
   }
 
-  spyOn(callbacks, 'onAddItem').and.callThrough();
+  jest.spyOn(callbacks, 'onAddItem'); //.and.callThrough();
 
   const newState = formReducer(testForm, action, callbacks);
   expect(newState.data.text1).toBeDefined();
-  expect(callbacks.onAddItem).toBeCalled();
+  expect(callbacks.onAddItem).toHaveBeenCalled();
 });
 
 test('Update item, normal existing value', () => {

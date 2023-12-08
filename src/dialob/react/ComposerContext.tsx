@@ -18,12 +18,13 @@ export const ComposerContext = React.createContext<{state: ComposerState, dispat
 });
 
 export interface ComposerProviderProps {
-  formId: string;
+  children: React.ReactNode;
+  formData: ComposerState;
   callbacks ?: ComposerCallbacks;
 }
 
-export const ComposerProvider: React.FC<ComposerProviderProps> = ({children, formId, callbacks}) => {
-  const [state, dispatch] = useReducer(formReducer, INITIAL_FORM);
+export const ComposerProvider: React.FC<ComposerProviderProps> = ({children, formData, callbacks}) => {
+  const [state, dispatch] = useReducer(formReducer, formData);
 
   return (
     <ComposerContext.Provider value={{state, dispatch, callbacks}}>

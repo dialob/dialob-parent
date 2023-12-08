@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
 import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule } from './types';
@@ -32,7 +32,11 @@ export const generateValueSetId = (state: ComposerState, prefix = 'vs'): string 
 
 const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks ?: ComposerCallbacks): void => {
   const id = generateItemId(state, itemTemplate);
-  state.data[id] = Object.assign(itemTemplate, {id});
+  const newItem = {
+    ...itemTemplate,
+    id: generateItemId(state, itemTemplate),
+  }
+  state.data[id] = Object.assign(newItem, {id});
   // TODO: Sanity check if parentItemId exists in form
   const newIndex = state.data[parentItemId].items?.findIndex(i => i === afterItemId);
   if (newIndex === undefined) {
