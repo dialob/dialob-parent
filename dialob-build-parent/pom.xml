@@ -57,7 +57,7 @@
     <cobertura.total-line-rate>1</cobertura.total-line-rate>
     <commons-lang3.version>3.12.0</commons-lang3.version>
     
-    <guava.version>31.0.1-jre</guava.version>
+    <guava.version>32.1.3-jre</guava.version>
     <hibernate-validator.version>6.0.22.Final</hibernate-validator.version>
     <immutables.version>2.8.8</immutables.version>
     <jackson.version>2.13.0</jackson.version>
