@@ -35,6 +35,9 @@
     <maven.resources.encoding>${project.build.sourceEncoding}</maven.resources.encoding>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
 
+    <!-- Skip DB2 integration tests by default (Really slow!) -->
+    <excludedGroups>db2</excludedGroups>
+
     <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
     <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
     <maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>
@@ -54,11 +57,11 @@
     <cobertura.total-line-rate>1</cobertura.total-line-rate>
     <commons-lang3.version>3.12.0</commons-lang3.version>
     
-    <guava.version>31.0.1-jre</guava.version>
+    <guava.version>32.1.3-jre</guava.version>
     <hibernate-validator.version>6.0.22.Final</hibernate-validator.version>
     <immutables.version>2.8.8</immutables.version>
     <jackson.version>2.13.0</jackson.version>
-    <jackson-databind.version>2.13.4.1</jackson-databind.version>
+    <jackson-databind.version>2.13.4.2</jackson-databind.version>
     <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
     <json-path.version>2.4.0</json-path.version>
     <jsoup.version>1.15.3</jsoup.version>
@@ -67,15 +70,15 @@
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
 
-    <logback.version>1.2.11</logback.version>
+    <logback.version>1.2.13</logback.version>
     <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
     <mockito.version>3.7.7</mockito.version>
     <okhttp3.version>4.9.3</okhttp3.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.7.16</spring-boot.version>
-    <spring-integration.version>5.5.19</spring-integration.version>
-    <spring-security.version>5.8.7</spring-security.version>
-    <spring-session.version>2.6.3</spring-session.version>
+    <spring-boot.version>2.7.18</spring-boot.version>
+    <spring-integration.version>5.5.20</spring-integration.version>
+    <spring-security.version>5.8.8</spring-security.version>
+    <spring-session.version>2.6.4</spring-session.version>
     <swagger.version>2.1.11</swagger.version>
     <validation-api.version>2.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>

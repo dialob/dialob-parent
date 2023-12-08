@@ -62,7 +62,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
   {
     super(transactionTemplate, jdbcTemplate, databaseHelper, objectMapper, schema, Constants.QUESTIONNAIRE, Questionnaire.class, isAnyTenantPredicate);
     this.versionControlDatabase = versionControlDatabase.orElse(null);
-    this.formIdToNameView = databaseHelper.tableName(schema, "form_id_to_name");
+    this.formIdToNameView = databaseHelper.viewName(schema, "form_id_to_name");
   }
 
   protected Questionnaire toObject(byte[] oid, int objectRev, String tenantId, byte[] formId, @NonNull String status, Timestamp created, Timestamp updated, InputStream inputStream) {

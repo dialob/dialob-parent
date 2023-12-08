@@ -115,7 +115,7 @@ public interface AbstractDB2Test extends JdbcBackendTest {
         return true;
       }
     };
-    ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new DB2DatabaseHelper(SCHEMA), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
+    ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new DB2DatabaseHelper(SCHEMA, null), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
   }
 
   default DataSource getDataSource() {
@@ -136,11 +136,11 @@ public interface AbstractDB2Test extends JdbcBackendTest {
 
 
   default FormVersionControlDatabase getJdbcFormVersionControlDatabase() {
-    return new JdbcVersionControlledFormDatabase(getJdbcTemplate(), SCHEMA, new DB2DatabaseHelper(SCHEMA), getTransactionTemplate(), getJdbcFormDatabase(), IS_ANY_TENANT_PREDICATE, objectMapper);
+    return new JdbcVersionControlledFormDatabase(getJdbcTemplate(), SCHEMA, new DB2DatabaseHelper(SCHEMA, null), getTransactionTemplate(), getJdbcFormDatabase(), IS_ANY_TENANT_PREDICATE, objectMapper);
   }
 
   default QuestionnaireDatabase getQuestionnaireDatabase() {
-    return new JdbcQuestionnaireDatabase(getJdbcTemplate(), new DB2DatabaseHelper(SCHEMA), getTransactionTemplate(), objectMapper, SCHEMA, Optional.of(getJdbcFormVersionControlDatabase()), IS_ANY_TENANT_PREDICATE);
+    return new JdbcQuestionnaireDatabase(getJdbcTemplate(), new DB2DatabaseHelper(SCHEMA, null), getTransactionTemplate(), objectMapper, SCHEMA, Optional.of(getJdbcFormVersionControlDatabase()), IS_ANY_TENANT_PREDICATE);
   }
 
   default CurrentTenant getCurrentTenant() {

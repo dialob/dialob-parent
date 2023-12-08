@@ -45,14 +45,24 @@ public interface DatabaseHelper {
     return (byte[]) oid;
   }
 
+  default String remap(String name) {
+    return name;
+  }
+
   @NonNull
   default String tableName(@Nullable String schema, @NonNull String tableName) {
-    return StringUtils.isNotBlank(schema) ? schema + "." + tableName : tableName;
+    return StringUtils.isNotBlank(schema) ? schema + "." + remap(tableName) : remap(tableName);
+  }
+
+  @NonNull
+  default String viewName(@Nullable String schema, @NonNull String viewName) {
+    return StringUtils.isNotBlank(schema) ? schema + "." + remap(viewName) : remap(viewName);
   }
 
   default String bsonToJson(String attr) {
     return attr;
   }
+
   default String jsonToBson(String attr) {
     return attr;
   }
