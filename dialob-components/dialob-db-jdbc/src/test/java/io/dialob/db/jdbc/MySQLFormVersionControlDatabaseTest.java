@@ -16,8 +16,11 @@
 package io.dialob.db.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Tag;
 
 @Slf4j
+@Tag("mysql")
+@Tag("container")
 class MySQLFormVersionControlDatabaseTest extends AbstractFormVersionControlDatabaseTest implements AbstractMySQLTest {
 
 }

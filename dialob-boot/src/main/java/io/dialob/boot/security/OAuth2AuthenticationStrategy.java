@@ -15,21 +15,14 @@
  */
 package io.dialob.boot.security;
 
+import io.dialob.security.spring.AuthenticationStrategy;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
-
-import io.dialob.security.spring.ApiKeyCurrentUserProvider;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.OAuth2SpringSecurityCurrentUserProvider;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.DelegateCurrentUserProvider;
 
 public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
 
@@ -44,7 +37,7 @@ public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
   }
 
   @Override
-  public HttpSecurity configureAuthentication(@NonNull HttpSecurity http, @Nullable AuthenticationManager authenticationManager) throws Exception {
+  public HttpSecurity configureAuthentication(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
     http = http
       .oauth2Login()
@@ -61,11 +54,4 @@ public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
     // @formatter:on
   }
 
-  @Override
-  public CurrentUserProvider currentUserProviderBean() {
-    return new DelegateCurrentUserProvider(
-      new OAuth2SpringSecurityCurrentUserProvider(),
-      new ApiKeyCurrentUserProvider()
-    );
-  }
 }

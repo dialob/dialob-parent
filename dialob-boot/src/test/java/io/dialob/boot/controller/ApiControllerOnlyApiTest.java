@@ -15,25 +15,21 @@
  */
 package io.dialob.boot.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
+import io.dialob.boot.security.ApiServiceSecurityConfigurer;
+import io.dialob.common.Permissions;
+import io.dialob.form.service.rest.FormsRestService;
+import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
+import io.dialob.security.key.ApiKey;
+import io.dialob.security.key.ImmutableApiKey;
+import io.dialob.security.key.ServletRequestApiKeyExtractor;
+import io.dialob.security.spring.AuthenticationStrategy;
+import io.dialob.security.spring.apikey.*;
+import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
+import io.dialob.settings.DialobSettings;
+import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,35 +41,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.boot.security.ApiServiceSecurityConfigurer;
-import io.dialob.common.Permissions;
-import io.dialob.form.service.rest.FormsRestService;
-import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
-import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
-import io.dialob.security.key.ServletRequestApiKeyExtractor;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.apikey.ApiKeyAuthoritiesProvider;
-import io.dialob.security.spring.apikey.ApiKeyValidator;
-import io.dialob.security.spring.apikey.ClientApiKeyService;
-import io.dialob.security.spring.apikey.RequestHeaderApiKeyExtractor;
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.security.tenant.Tenant;
-import io.dialob.settings.DialobSettings;
-import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {
@@ -87,7 +79,8 @@ import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
 })
 @ContextConfiguration(classes = {
   DialobTenantServiceAutoConfiguration.class,
-  ApiControllerOnlyApiTest.TestConfiguration.class
+  ApiControllerOnlyApiTest.TestConfiguration.class,
+  ApiServiceSecurityConfigurer.class
 })
 @EnableConfigurationProperties(DialobSettings.class)
 public class ApiControllerOnlyApiTest extends AbstractControllerTest {
@@ -96,36 +89,30 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   public static class TestConfiguration {
 
     @Bean
-    public static WebSecurityConfigurerAdapter apiServiceSecurityConfigurer(@NonNull Environment env,
-                                                                            @NonNull ClientApiKeyService apiKeyService,
-                                                                            @NonNull ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider,
-                                                                            @NonNull ApiKeyValidator apiRequestValidator,
-                                                                            @NonNull DialobSettings settings,
-                                                                            @NonNull ServletRequestApiKeyExtractor keyRequestExtractor,
-                                                                            @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
-                                                                            @NonNull AuthenticationStrategy authenticationStrategy) {
-      return new ApiServiceSecurityConfigurer(
-        apiKeyService,
-        apiKeyAuthoritiesProvider,
-        apiRequestValidator,
-        settings,
-        keyRequestExtractor,
-        tenantPermissionEvaluator,
-        authenticationStrategy,
-        env.acceptsProfiles(Profiles.of("!ui"))) // when ui is disabled apply filter to all requests
-        .withOrder(120);
+    public AuthenticationStrategy authenticationStrategy() throws Exception {
+      AuthenticationStrategy authenticationStrategy = Mockito.mock(AuthenticationStrategy.class);
+      Mockito.doAnswer(AdditionalAnswers.returnsFirstArg()).when(authenticationStrategy).configureAuthentication(any());
+      return authenticationStrategy;
     }
 
     @Bean
-    public AuthenticationStrategy authenticationStrategy() throws Exception {
-      AuthenticationStrategy authenticationStrategy = Mockito.mock(AuthenticationStrategy.class);
-      Mockito.doAnswer(AdditionalAnswers.returnsFirstArg()).when(authenticationStrategy).configureAuthentication(any(), any());
-      return authenticationStrategy;
+    public AuthenticationManager authenticationManager(List<AuthenticationProvider> providerList) {
+      if (providerList.isEmpty()) {
+        return authentication -> authentication;
+      }
+      return new ProviderManager(providerList);
     }
 
     @Bean
     public ServletRequestApiKeyExtractor servletRequestApiKeyExtractor() {
       return new RequestHeaderApiKeyExtractor();
+    }
+
+    @Bean
+    AuthenticationProvider apiKeyAuthenticationProvider(@NonNull ClientApiKeyService apiKeyService,
+                                                        @NonNull ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider,
+                                                        @NonNull ApiKeyValidator apiKeyValidator) {
+      return new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
     }
 
   }

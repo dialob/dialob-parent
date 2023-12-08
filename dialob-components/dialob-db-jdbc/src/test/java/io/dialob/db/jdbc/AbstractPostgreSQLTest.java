@@ -15,29 +15,29 @@
  */
 package io.dialob.db.jdbc;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.util.Optional;
 
 public interface AbstractPostgreSQLTest extends JdbcBackendTest {
 
@@ -46,11 +46,11 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   String SCHEMA = null;
 
   class Attrs {
-    GenericContainer<?> container = new GenericContainer<>(DockerImageName.parse("postgres:13"))
+    PostgreSQLContainer container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:13"))
       .withExposedPorts(PORT)
-      .withEnv("POSTGRES_USER", "postgres")
-      .withEnv("POSTGRES_PASSWORD", "postgres")
-      ;
+      .withStartupTimeout(Duration.ofMinutes(15))
+      .withUsername("postgres")
+      .withPassword("postgres");
 
     BasicDataSource dataSource;
 
@@ -70,7 +70,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
 
   Attrs ATTRS = new Attrs();
 
-  static BasicDataSource createEmbeddedDatabase() throws IOException {
+  static BasicDataSource createEmbeddedDatabase() throws Exception {
     ATTRS.container.start();
     String jdbcUrl = "jdbc:postgresql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/postgres";
     System.out.println("Embedded Postgresql jdbc url: " + jdbcUrl);
@@ -78,6 +78,18 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     ATTRS.dataSource.setUsername("postgres");
     ATTRS.dataSource.setPassword("postgres");
     ATTRS.dataSource.setUrl(jdbcUrl);
+
+    Logger log = LoggerFactory.getLogger(AbstractPostgreSQLTest.class);
+
+    for (int t = 0; t < 100; ++t) {
+      try (var c = ATTRS.dataSource.getConnection()) {
+        log.info("Connect succeeded after {} tries", t);
+        break;
+      } catch (SQLException e) {
+        Thread.sleep(100L);
+      }
+    }
+
     return ATTRS.dataSource;
   }
 

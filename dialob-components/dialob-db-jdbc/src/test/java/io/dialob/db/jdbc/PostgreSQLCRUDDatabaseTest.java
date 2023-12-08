@@ -15,6 +15,10 @@
  */
 package io.dialob.db.jdbc;
 
+import org.junit.jupiter.api.Tag;
+
+@Tag("postgresql")
+@Tag("container")
 public class PostgreSQLCRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractPostgreSQLTest {
 
 }

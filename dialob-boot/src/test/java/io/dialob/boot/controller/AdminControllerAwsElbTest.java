@@ -29,9 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
@@ -76,12 +74,6 @@ class AdminControllerAwsElbTest extends AbstractUIControllerTest {
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {
 
-    @Bean
-    public AuthenticationProvider preAuthenticatedAuthenticationProvider() {
-      PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
-      preAuthenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(authenticationUserDetailsService());
-      return preAuthenticatedAuthenticationProvider;
-    }
 
 
     @Bean

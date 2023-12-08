@@ -97,6 +97,9 @@ public class DialobSettings {
     @Data
     public static class JdbcSettings {
       private String schema;
+
+      private Map<String,String> remap;
+
     }
 
     @Data

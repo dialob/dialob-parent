@@ -15,10 +15,11 @@
  */
 package io.dialob.boot;
 
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-
+import io.dialob.boot.controller.*;
+import io.dialob.boot.security.SecurityConfiguration;
+import io.dialob.boot.settings.*;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.security.tenant.CurrentTenant;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,22 +34,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.UrlTemplateResolver;
 
-import io.dialob.boot.controller.AdminController;
-import io.dialob.boot.controller.ComposerController;
-import io.dialob.boot.controller.FillController;
-import io.dialob.boot.controller.GlobalModelAttributesInjector;
-import io.dialob.boot.controller.LandingController;
-import io.dialob.boot.controller.PageSettingsProvider;
-import io.dialob.boot.controller.ReviewController;
-import io.dialob.boot.security.SecurityConfiguration;
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.LandingApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
-import io.dialob.boot.settings.SettingsPageSettingsProvider;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.security.tenant.CurrentTenant;
+import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 @Import(SecurityConfiguration.class)

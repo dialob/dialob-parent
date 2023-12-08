@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -48,6 +49,7 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
   class Attrs {
     GenericContainer container = new GenericContainer(DockerImageName.parse("mysql:8"))
       .withExposedPorts(3306)
+      .withStartupTimeout(Duration.ofMinutes(15))
       .withEnv("MYSQL_ROOT_PASSWORD", "s3cret")
       .withEnv("MYSQL_USER", "dialob")
       .withEnv("MYSQL_PASSWORD", "dialob")

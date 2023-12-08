@@ -81,7 +81,11 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
       SecurityContextHolder.getContext().setAuthentication(authentication);
       filterChain.doFilter(request, response);
     } catch (AuthenticationException failed) {
-      LOGGER.warn("apikey access denied");
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Apikey access denied", failed);
+      } else {
+        LOGGER.warn("Apikey access denied");
+      }
       authenticationEntryPoint.commence(request, response, failed);
     } finally {
       SecurityContextHolder.clearContext();
