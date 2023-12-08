@@ -35,6 +35,9 @@
     <maven.resources.encoding>${project.build.sourceEncoding}</maven.resources.encoding>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
 
+    <!-- Skip DB2 integration tests by default (Really slow!) -->
+    <excludedGroups>db2</excludedGroups>
+
     <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
     <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
     <maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>

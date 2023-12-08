@@ -118,3 +118,9 @@ See [Dockerfile](dialob-session-boot/Dockerfile)
 ---
 
 https://dialob.io
+
+### Running DB2 tests
+
+```shell
+mvn clean test -D"groups=db2" -D"excludedGroups=postgresql,mysql"
+```

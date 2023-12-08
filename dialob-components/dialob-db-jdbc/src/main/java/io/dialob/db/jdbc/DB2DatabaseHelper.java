@@ -25,12 +25,18 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Collections;
+import java.util.Map;
 
 public class DB2DatabaseHelper implements DatabaseHelper {
   private final String schema;
 
-  public DB2DatabaseHelper(String schema) {
+  private final Map<String,String> remap;
+
+
+  public DB2DatabaseHelper(String schema, Map<String,String> remap) {
     this.schema = schema;
+    this.remap = remap != null ? remap : Collections.emptyMap();
   }
 
   @Override
@@ -60,6 +66,10 @@ public class DB2DatabaseHelper implements DatabaseHelper {
     } catch (JsonProcessingException e) {
       throw new DocumentCorruptedException("Could not write JSON object");
     }
+  }
+
+  public String remap(String name) {
+    return remap.getOrDefault(name, name);
   }
 
   @Override
