@@ -70,7 +70,7 @@
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
 
-    <logback.version>1.2.11</logback.version>
+    <logback.version>1.2.13</logback.version>
     <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
     <mockito.version>3.7.7</mockito.version>
     <okhttp3.version>4.9.3</okhttp3.version>
