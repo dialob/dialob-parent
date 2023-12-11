@@ -40,8 +40,8 @@ public class OnDatabaseTypeCondition extends SpringBootCondition {
     }
     Set<DialobSettings.DatabaseType> requiredTypes = new HashSet<>();
     addType(context, requiredTypes, "dialob.db.database-type");
-    addType(context, requiredTypes, "dialob.form-database.database-type");
-    addType(context, requiredTypes, "dialob.questionnaire-database.database-type");
+    addType(context, requiredTypes, "dialob.formDatabase.database-type");
+    addType(context, requiredTypes, "dialob.questionnaireDatabase.database-type");
 
     if (requiredTypes.contains(databaseType)) {
       return ConditionOutcome.match();
