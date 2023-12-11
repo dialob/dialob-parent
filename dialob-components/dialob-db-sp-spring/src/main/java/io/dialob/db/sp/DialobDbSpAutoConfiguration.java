@@ -145,14 +145,17 @@ public class DialobDbSpAutoConfiguration {
 
     DatabaseHelper databaseHandler(DataSource dataSource, String schema) {
       try (Connection connection = dataSource.getConnection()) {
-        final String databaseProductName = connection.getMetaData().getDatabaseProductName();
+        String databaseProductName = connection.getMetaData().getDatabaseProductName();
+        if (databaseProductName.startsWith("DB2/")) {
+          databaseProductName = "DB2";
+        }
         switch (databaseProductName) {
           case "PostgreSQL":
             return new PostgreSQLDatabaseHelper(schema);
           case "MySQL":
             return new MySQLDatabaseHelper(schema);
           default:
-            throw new IllegalStateException("Unsupported database " + databaseProductName);
+            throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
         }
       } catch (SQLException e) {
         throw new IllegalStateException(e);

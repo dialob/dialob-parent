@@ -54,7 +54,16 @@ Dialob backend services
 * **docs** - Additional documentation
 * **utils** - utility scripts
   * **apikeygen.js** -- API key generation script
-  * **upgradeForn.js** -- Form document upgrade script from Dialob 0.x to 2.x
+  * **upgradeForm.js** -- Form document upgrade script from Dialob 0.x to 2.x
+* **frontend** - Frontend (filling, composer) libraries and applications
+  * **dialob-fill-api** - Dialob filling API (typings and state management for filling) **Published to npmjs.com as @dialob/fill-api**
+  * **dialob-fill-react** - React hooks and context for Dialob filling **Published to npmjs.com as @dialob/fill-react**
+  * **dialob-fill-demo-material** - Demo Dialob filling application on MUI 5 (used in demo.dialob.io)
+  * **dialob-fill-material** - Dialob filling component library implementation on top of MUI 5  **Published to npmjs.com as @dialob/fill-material**
+  * **dialob-review-material** - Dialob filled form review renderer on MUI 5 **Published internally as @resys/dialob-review-material**
+  * **dialob-composer-semantic** - Dialob Composer component library on Semantic UI **Published internally as @resys/dialob-composer**
+  * **dialob-composer-semantic-app** - Dialob Composer reference application on Semantic UI (used in demo.dialob.io)
+  * **dialob-composer-material** - Dialob Composer component library on Material UI
 
 ## Supported spring profiles
 
@@ -114,6 +123,17 @@ See [Dockerfile](dialob-session-boot/Dockerfile)
 
 - [Using S3 data storage](docs/S3.md)
 - [CSV data query api](docs/csv-api.md)
+
+
+### Migrated repositories for monorepo
+
+* https://gitlab.com/dialob/dialob-fill-api (master) migrated to frontend/dialob-fill-api
+* https://gitlab.com/dialob/dialob-fill-react (master) migrated to frontend/dialob-fill-react
+* https://gitlab.com/dialob/dialob-fill-demo-material (main) migrated to frontend/dialob-fill-demo-material
+* https://git.resys.io/dialob/dialob-fill-material (mui-next5) migrated to frontend/dialob-fill-material
+* https://git.resys.io/dialob/dialob-review-material (master) migrated to frontend/dialob-review-material
+* https://git.resys.io/dialob/dialob-composer-v2 (master) migrated to frontend/dialob-composer-semantic
+* https://git.resys.io/dialob/dialob-composer-generic-app (master) migrated to frontend/dialob-composer-semantic-app
 
 ---
 
