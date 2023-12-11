@@ -137,9 +137,6 @@ public class DialobSettings {
   @Data
   public static class ApiSettings {
 
-    @NotNull
-    private URL host;
-
     private String contextPath = "/api";
 
     private String apiKeySalt = "secret";

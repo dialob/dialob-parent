@@ -78,7 +78,6 @@ management:
 dialob:
   api:
     context-path: "/api"
-    host: "http://localhost:${server.port}"
     apiKeySalt: "secret"
     apiKeys:
     - tenantId: "${dialob.tenant.fixedId:00000000-0000-0000-0000-000000000000}"
