@@ -137,7 +137,10 @@ public class DialobDbSpAutoConfiguration {
 
     DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
       try (Connection connection = dataSource.getConnection()) {
-        final String databaseProductName = connection.getMetaData().getDatabaseProductName();
+        String databaseProductName = connection.getMetaData().getDatabaseProductName();
+        if (databaseProductName.startsWith("DB2/")) {
+          databaseProductName = "DB2";
+        }
         switch (databaseProductName) {
           case "PostgreSQL":
             return new PostgreSQLDatabaseHelper(settings.getSchema());
@@ -146,7 +149,7 @@ public class DialobDbSpAutoConfiguration {
           case "DB2":
             return new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
           default:
-            throw new IllegalStateException("Unsupported database " + databaseProductName);
+            throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
         }
       } catch (SQLException e) {
         throw new IllegalStateException(e);
