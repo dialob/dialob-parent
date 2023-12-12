@@ -23,7 +23,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -67,8 +67,12 @@ public interface DatabaseHelper {
     return attr;
   }
 
-  default InputStream extractStream(ResultSet rs, int i) throws SQLException {
-    return rs.getBinaryStream(i);
+  default String serializeJson(ObjectMapper objectMapper, Object document) throws JsonProcessingException {
+    return objectMapper.writeValueAsString(document);
+  }
+
+  default Reader extractStream(ResultSet rs, int i) throws SQLException {
+    return rs.getCharacterStream(i);
   }
 
   String getSchema();

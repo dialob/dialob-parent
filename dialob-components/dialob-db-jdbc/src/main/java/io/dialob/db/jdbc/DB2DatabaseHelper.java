@@ -21,27 +21,19 @@ import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.support.SqlLobValue;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.Map;
 
-public class DB2DatabaseHelper implements DatabaseHelper {
-  private final String schema;
+public class DB2DatabaseHelper extends AbstractDatabaseHelper {
+  private final Map<String, String> remap;
 
-  private final Map<String,String> remap;
-
-
-  public DB2DatabaseHelper(String schema, Map<String,String> remap) {
-    this.schema = schema;
+  public DB2DatabaseHelper(String schema, Map<String, String> remap) {
+    super(schema);
     this.remap = remap != null ? remap : Collections.emptyMap();
-  }
-
-  @Override
-  public String getSchema() {
-    return schema;
   }
 
   @Override
@@ -51,29 +43,30 @@ public class DB2DatabaseHelper implements DatabaseHelper {
 
   @Override
   public String jsonToBson(String attr) {
-    return "SYSTOOLS.JSON2BSON(" + attr +")";
+    return "SYSTOOLS.JSON2BSON(" + attr + ")";
   }
 
   @Override
   public String bsonToJson(String attr) {
-    return "SYSTOOLS.BSON2JSON(" + attr +")";
+    return "SYSTOOLS.BSON2JSON(" + attr + ")";
   }
 
   @Override
   public Object jsonObject(ObjectMapper objectMapper, Object document) {
     try {
-      return new SqlParameterValue(Types.CLOB, new SqlLobValue(objectMapper.writeValueAsString(document)));
+      return new SqlParameterValue(Types.CLOB, new SqlLobValue(serializeJson(objectMapper, document)));
     } catch (JsonProcessingException e) {
       throw new DocumentCorruptedException("Could not write JSON object");
     }
   }
+
 
   public String remap(String name) {
     return remap.getOrDefault(name, name);
   }
 
   @Override
-  public InputStream extractStream(ResultSet rs, int i) throws SQLException {
-    return rs.getClob(i).getAsciiStream();
+  public Reader extractStream(ResultSet rs, int i) throws SQLException {
+    return rs.getClob(i).getCharacterStream();
   }
 }

@@ -15,24 +15,14 @@
  */
 package io.dialob.db.jdbc;
 
-import static io.dialob.api.questionnaire.QuestionnaireFactory.questionnaire;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-
-import javax.sql.DataSource;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dialob.api.questionnaire.ImmutableQuestionnaire;
+import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
+import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.FixedCurrentTenant;
 import org.apache.commons.codec.binary.Hex;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,15 +34,16 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.db.spi.exceptions.DocumentConflictException;
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.FixedCurrentTenant;
+import static io.dialob.api.questionnaire.QuestionnaireFactory.questionnaire;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 public abstract class JdbcBackendDatabaseTest {
 
@@ -118,7 +109,7 @@ public abstract class JdbcBackendDatabaseTest {
     when(resultSet.getString(4)).thenReturn("NEW");
     when(resultSet.getTimestamp(5)).thenReturn(timestamp);
     when(resultSet.getTimestamp(6)).thenReturn(timestamp);
-    when(resultSet.getBinaryStream(7)).thenReturn(new ByteArrayInputStream("{\"_id\":\"1230\",\"_rev\":\"2\",\"metadata\":{\"formId\":\"shouldReturnFoundObject\"}}".getBytes()));
+    when(resultSet.getCharacterStream(7)).thenReturn(new StringReader("{\"_id\":\"1230\",\"_rev\":\"2\",\"metadata\":{\"formId\":\"shouldReturnFoundObject\"}}"));
 
     doAnswer(invocation -> {
       RowMapper rowMapper = invocation.getArgument(2);

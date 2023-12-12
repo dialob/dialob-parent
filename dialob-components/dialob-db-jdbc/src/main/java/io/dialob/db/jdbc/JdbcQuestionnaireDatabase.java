@@ -38,7 +38,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,9 +65,9 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
     this.formIdToNameView = databaseHelper.viewName(schema, "form_id_to_name");
   }
 
-  protected Questionnaire toObject(byte[] oid, int objectRev, String tenantId, byte[] formId, @NonNull String status, Timestamp created, Timestamp updated, InputStream inputStream) {
+  protected Questionnaire toObject(byte[] oid, int objectRev, String tenantId, byte[] formId, @NonNull String status, Timestamp created, Timestamp updated, Reader reader) {
     try {
-      final Questionnaire questionnaire = objectMapper.readValue(inputStream, Questionnaire.class);
+      final Questionnaire questionnaire = objectMapper.readValue(reader, Questionnaire.class);
       ImmutableQuestionnaire.Builder builder = ImmutableQuestionnaire.builder()
         .from(questionnaire)
         .id(toId(oid))
@@ -99,8 +99,8 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         String status = resultSet.getString(4);
         Timestamp created = resultSet.getTimestamp(5);
         Timestamp updated = resultSet.getTimestamp(6);
-        InputStream inputStream = getDatabaseHelper().extractStream(resultSet, 7);
-        return toObject(oid, objectRev, rsTenantId, formId, status.trim(), created, updated, inputStream);
+        Reader reader = getDatabaseHelper().extractStream(resultSet, 7);
+        return toObject(oid, objectRev, rsTenantId, formId, status.trim(), created, updated, reader);
       };
       final StringBuilder sql = new StringBuilder("select rev, tenant_id, form_document_id, status, created, updated, data from " + tableName + " where id = ?");
       final List<Object> sqlParameters = new ArrayList<>();

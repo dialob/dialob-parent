@@ -15,11 +15,10 @@
  */
 package io.dialob.db.jdbc;
 
-import java.io.ByteArrayInputStream;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.form.service.api.FormVersionControlDatabase;
+import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,11 +26,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.security.tenant.CurrentTenant;
+import java.io.StringReader;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Optional;
 
 public class JdbcQuestionnaireDatabaseTest extends JdbcBackendDatabaseTest {
 
@@ -62,7 +60,7 @@ public class JdbcQuestionnaireDatabaseTest extends JdbcBackendDatabaseTest {
       "NEW       ",
       Timestamp.from(Instant.now()),
       Timestamp.from(Instant.now()),
-      new ByteArrayInputStream(json.getBytes())
+      new StringReader(json)
       );
     Assertions.assertEquals(Questionnaire.Metadata.Status.NEW, questionnaire.getMetadata().getStatus());
   }

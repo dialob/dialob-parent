@@ -15,25 +15,16 @@
  */
 package io.dialob.db.jdbc;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+public abstract class AbstractDatabaseHelper implements DatabaseHelper {
 
-public class MySQLDatabaseHelper extends AbstractDatabaseHelper {
-  public MySQLDatabaseHelper(String schema) {
-    super(schema);
+  private final String schema;
+
+  public AbstractDatabaseHelper(String schema) {
+    this.schema = schema;
   }
 
   @Override
-  public String jsonContains(String path) {
-    return "JSON_CONTAINS(data, ?, '$." + path + "')";
+  public String getSchema() {
+    return schema;
   }
-
-  @Override
-  public Reader extractStream(ResultSet rs, int i) throws SQLException {
-    return new InputStreamReader(rs.getBinaryStream(i), StandardCharsets.UTF_8);
-  }
-
 }

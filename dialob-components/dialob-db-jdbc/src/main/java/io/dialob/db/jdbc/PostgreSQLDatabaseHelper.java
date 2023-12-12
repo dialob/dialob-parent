@@ -27,12 +27,10 @@ import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class PostgreSQLDatabaseHelper implements DatabaseHelper {
-
-  private final String schema;
+public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
 
   public PostgreSQLDatabaseHelper(String schema) {
-    this.schema = schema;
+    super(schema);
   }
 
   @Override
@@ -52,7 +50,7 @@ public class PostgreSQLDatabaseHelper implements DatabaseHelper {
     try {
       PGobject jsonObject = new PGobject();
       jsonObject.setType("jsonb");
-      jsonObject.setValue(objectMapper.writeValueAsString(document));
+      jsonObject.setValue(serializeJson(objectMapper, document));
       return jsonObject;
     } catch (JsonProcessingException | SQLException e) {
       throw new DocumentCorruptedException("Could not write questionnaire");
@@ -83,11 +81,6 @@ public class PostgreSQLDatabaseHelper implements DatabaseHelper {
   @NonNull
   public String tableName(@Nullable String schema, @NonNull String tableName) {
     return "\"" + (StringUtils.isNotBlank(schema) ? schema + "\".\"" + tableName : tableName) + "\"";
-  }
-
-  @Override
-  public String getSchema() {
-    return schema;
   }
 
   @Override

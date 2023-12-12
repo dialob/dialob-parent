@@ -33,7 +33,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,8 +65,8 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
         String rsTenantId = StringUtils.trim(resultSet.getString(2));
         Timestamp created = resultSet.getTimestamp(3);
         Timestamp updated = resultSet.getTimestamp(4);
-        InputStream inputStream = getDatabaseHelper().extractStream(resultSet, 5);
-        return toObject(oid, objectRev, rsTenantId, created, updated, inputStream);
+        Reader reader = getDatabaseHelper().extractStream(resultSet, 5);
+        return toObject(oid, objectRev, rsTenantId, created, updated, reader);
       };
 
       final StringBuilder sql = new StringBuilder("select rev, tenant_id, created, updated, " + bsonToJson("data") + " from " + tableName + " where id = ?");
@@ -124,9 +124,9 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
       return document.getMetadata().getLabel();
   }
 
-  protected Form toObject(byte[] oid, int objectRev, String tenantId, Timestamp created, Timestamp updated, InputStream inputStream) {
+  protected Form toObject(byte[] oid, int objectRev, String tenantId, Timestamp created, Timestamp updated, Reader reader) {
     try {
-      final Form form = objectMapper.readValue(inputStream, Form.class);
+      final Form form = objectMapper.readValue(reader, Form.class);
       return ImmutableForm.builder().from(form)
         .id(toId(oid))
         .rev(Integer.toString(objectRev))
