@@ -15,18 +15,6 @@
  */
 package io.dialob.db.jdbc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
@@ -38,6 +26,13 @@ import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.ResysSecurityConstants;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
@@ -50,13 +45,14 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   public void saveAndLoadAndDeleteForm() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form öä").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
     assertNotNull(form2.getId());
     assertNotNull(form2.getRev());
     Form form3 = getJdbcFormDatabase().findOne(getCurrentTenant().getId(), form2.getId());
     assertEquals(form2.getId(), form3.getId());
     assertEquals(form2.getRev(), form3.getRev());
+    assertEquals(form2.getMetadata().getLabel(), form3.getMetadata().getLabel());
     getJdbcFormDatabase().delete(getCurrentTenant().getId(), form2.getId());
     assertFalse(getJdbcFormDatabase().exists(getCurrentTenant().getId(), form2.getId()));
     resetTenant();
