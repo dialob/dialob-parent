@@ -21,7 +21,7 @@
   <parent>
     <artifactId>dialob-components</artifactId>
     <groupId>io.dialob</groupId>
-    <version>999-SNAPSHOT</version>
+    <version>2.1.16</version>
   </parent>
   <packaging>jar</packaging>
   <artifactId>dialob-tenant</artifactId>
