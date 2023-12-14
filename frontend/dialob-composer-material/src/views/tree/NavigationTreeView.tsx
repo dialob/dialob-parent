@@ -28,6 +28,15 @@ const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): bo
   return false;
 }
 
+const isEmptyParentNode = (tree: TreeData, destination?: TreeDestinationPosition): boolean => {
+  const isParent = isParentNode(tree, destination);
+  if (!isParent) {
+    return false;
+  }
+  const destinationItem = tree.items[destination!.parentId];
+  return destinationItem.children.length === 0;
+}
+
 const renderItem = ({ item, onExpand, onCollapse, provided }: RenderItemParams) => {
   return (
     <NavigationTreeItem item={item} onExpand={onExpand} onCollapse={onCollapse} provided={provided} />
@@ -70,9 +79,10 @@ const NavigationTreeView: React.FC = () => {
     if (!isParentNode(tree, destination)) {
       return;
     }
+    if (isEmptyParentNode(tree, destination)) {
+      destination.index = 0;
+    }
     const newTree = moveItemOnTree(tree, source, destination);
-    setTree(newTree);
-
     console.log('newTree', newTree)
 
     const item = newTree.items[destination.parentId].children[destination.index!];
