@@ -1,20 +1,20 @@
-import { Container, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { ComposerProvider } from './dialob'
-import { DebugFormView } from './views/DebugFormView';
-
-// TODO: Use built-in test form here
+import DebugFormView from './views/DebugFormView';
+import NavigationTreeView from './views/tree/NavigationTreeView';
 import testForm from './dialob/test/testForm.json';
 
 function App() {
- 
   return (
     <ComposerProvider formData={testForm}>
-      <Container>
-        <Typography variant='h4'>Dialob Composer</Typography>
+      <Box sx={{ display: 'flex', p: 2 }}>
+        <Box sx={{ mt: 2 }}>
+          <NavigationTreeView />
+        </Box>
         <DebugFormView />
-      </Container>
+      </Box>
     </ComposerProvider>
   )
 }
 
-export default App
+export default App;
