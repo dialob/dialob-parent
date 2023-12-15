@@ -14,6 +14,11 @@ import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
 
 
+const INIT_TREE: TreeData = {
+  rootId: 'root',
+  items: {},
+};
+
 const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): boolean => {
   if (!destination) {
     return false;
@@ -46,12 +51,10 @@ const renderItem = ({ item, onExpand, onCollapse, provided }: RenderItemParams) 
 const NavigationTreeView: React.FC = () => {
   const theme = useTheme();
   const { form, moveItem } = useComposer();
-  const treeData: TreeData = buildTreeFromForm(form.data);
-  const [tree, setTree] = useState<TreeData>(treeData);
+  const [tree, setTree] = useState<TreeData>(INIT_TREE);
 
   React.useEffect(() => {
     setTree(buildTreeFromForm(form.data));
-
   }, [form]);
 
   const onExpand = (itemId: ItemId) => {
