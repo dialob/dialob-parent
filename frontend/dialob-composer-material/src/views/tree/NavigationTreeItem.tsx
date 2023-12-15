@@ -51,7 +51,7 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
     >
       {getIcon(item, onExpand, onCollapse)}
       {getTypeIcon(item.data.type)}
-      <ListItemText sx={{ cursor: 'pointer' }} onClick={() => { console.log('navigate to item', item.id) }}>{item.data ? item.data.title : ''}</ListItemText>
+      <ListItemText sx={{ cursor: 'pointer' }}>{item.data ? item.data.title : ''}</ListItemText>
     </ListItem>
   );
 };

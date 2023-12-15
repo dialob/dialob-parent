@@ -54,9 +54,6 @@ const NavigationTreeView: React.FC = () => {
 
   }, [form]);
 
-  console.log('treeData', treeData)
-  console.log('formData', form.data)
-
   const onExpand = (itemId: ItemId) => {
     setTree((prevTree) => mutateTree(prevTree, itemId, { isExpanded: true }));
   };
@@ -69,10 +66,6 @@ const NavigationTreeView: React.FC = () => {
     source: TreeSourcePosition,
     destination?: TreeDestinationPosition,
   ) => {
-    console.log('source', source)
-    console.log('destination', destination)
-    console.log('tree', tree)
-
     if (!destination) {
       return;
     }
@@ -83,11 +76,8 @@ const NavigationTreeView: React.FC = () => {
       destination.index = 0;
     }
     const newTree = moveItemOnTree(tree, source, destination);
-    console.log('newTree', newTree)
-
     const item = newTree.items[destination.parentId].children[destination.index!];
     moveItem(item.toString(), source.index, destination.index!, source.parentId.toString(), destination.parentId.toString());
-    console.log('new state', form.data)
   };
 
   return (
