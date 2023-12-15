@@ -300,10 +300,10 @@ const siteTheme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         root: {
-          width: 240,
+          width: 300,
         },
         paper: {
-          width: 240,
+          width: 300,
         },
       }
     },
