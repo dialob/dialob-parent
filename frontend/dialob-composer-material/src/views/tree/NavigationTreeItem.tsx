@@ -14,7 +14,7 @@ interface TreeItemProps {
 }
 
 const PreTextIcon = styled('span')({
-  width: '24px',
+  width: '1.5em',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
