@@ -288,6 +288,26 @@ const siteTheme = createTheme({
         }
       },
     },
+
+    MuiStack: {
+      styleOverrides: {
+        root: {
+          height: 50,
+        }
+      }
+    },
+
+    MuiDrawer: {
+      styleOverrides: {
+        root: {
+          width: 240,
+        },
+        paper: {
+          width: 240,
+        },
+      }
+    },
+
   },
 
 });
