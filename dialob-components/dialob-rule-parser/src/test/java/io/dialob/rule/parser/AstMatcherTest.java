@@ -260,6 +260,8 @@ public class AstMatcherTest {
     public void divide() {
         // given
         assertMinify("0.50", "1 / 2");
+        assertMinify("0.33", "1 / 3");
+        assertMinify("0.67", "2 / 3");
         assertMinify("(/ (* 0.50 a) 6)", "1 / 2 * a / 6");
     }
 
