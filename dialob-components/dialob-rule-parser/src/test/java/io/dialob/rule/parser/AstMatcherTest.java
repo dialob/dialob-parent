@@ -259,8 +259,8 @@ public class AstMatcherTest {
     @Test
     public void divide() {
         // given
-        assertMinify("0.5", "1 / 2");
-        assertMinify("(/ (* 0.5 a) 6)", "1 / 2 * a / 6");
+        assertMinify("0.50", "1 / 2");
+        assertMinify("(/ (* 0.50 a) 6)", "1 / 2 * a / 6");
     }
 
     @Test

@@ -21,6 +21,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
             } else if (callNode.getNodeOperator().isMultOp()) {
                 op = (decimal, decimal2) -> decimal != null && decimal2 != null ? decimal.multiply(decimal2) : null;
             } else if (callNode.getNodeOperator().isDivOp()) {
-                op = (decimal, decimal2) -> decimal != null && decimal2 != null ? decimal.divide(decimal2) : null;
+                op = (decimal, decimal2) -> decimal != null && decimal2 != null ? decimal.divide(decimal2, 2, RoundingMode.HALF_UP) : null;
             }
 
             for (NodeBase arg : arguments) {
