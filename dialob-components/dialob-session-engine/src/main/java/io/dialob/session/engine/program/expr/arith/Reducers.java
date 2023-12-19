@@ -20,6 +20,7 @@ import io.dialob.session.engine.program.expr.CannotReduceTypeException;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Period;
 
@@ -196,7 +197,7 @@ public class Reducers {
     DIV {
       @Override
       public BigDecimal reduce(BigDecimal a, BigDecimal t2) {
-        return a.divide(t2);
+        return a.divide(t2, 2, RoundingMode.HALF_UP);
       }
     },
     MULT {
