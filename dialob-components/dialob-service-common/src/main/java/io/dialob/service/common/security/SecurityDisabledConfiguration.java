@@ -22,9 +22,9 @@ import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.DialobSettings.TenantSettings;
 import io.dialob.settings.DialobSettings.TenantSettings.Mode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -37,10 +37,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Arrays;
 import java.util.Optional;
 
-@Configuration
-public class SecurityDisabledConfigurer {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(SecurityDisabledConfigurer.class);
+@Configuration(proxyBeanMethods = false)
+@Slf4j
+@ConditionalOnProperty(prefix = "dialob.security", name = "enabled", havingValue = "false")
+public class SecurityDisabledConfiguration {
 
   private static final CorsConfiguration PERMIT_ALL_CORS;
 
@@ -52,7 +52,7 @@ public class SecurityDisabledConfigurer {
 
   private TenantSettings tenantSettings;
 
-  public SecurityDisabledConfigurer(DialobSettings dialobSettings) {
+  public SecurityDisabledConfiguration(DialobSettings dialobSettings) {
     this.tenantSettings = dialobSettings.getTenant();
   }
 
