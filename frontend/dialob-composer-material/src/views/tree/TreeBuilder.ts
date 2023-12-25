@@ -30,13 +30,13 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }): Tre
 
   const addChild = (item: DialobItem, parentId: ItemId) => {
     const id = item.id;
-    const type = item.type === 'group' && parentId === 'root' ? 'page' : item.type;
     tree.items[id] = {
       id,
       children: [],
       data: {
         title: id,
-        type
+        isPage: item.type === 'group' && parentId === 'root',
+        item,
       },
       isExpanded: true,
       hasChildren: item.items?.length ? true : false,
