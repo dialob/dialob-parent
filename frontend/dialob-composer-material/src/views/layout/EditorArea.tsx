@@ -1,11 +1,11 @@
 import React from 'react';
-import DebugFormView from '../DebugFormView';
 import { Box } from '@mui/material';
+import Editor from '../../components/Editor';
 
 const EditorArea: React.FC = () => {
   return (
     <Box sx={{ pt: 2 }}>
-      <DebugFormView />
+      <Editor />
     </Box>
   );
 };
