@@ -6,12 +6,15 @@ import { useComposer } from '../../dialob';
 
 
 const HeaderButton: React.FC<{
-  label: string, startIcon?: React.ReactElement,
+  label: string,
+  startIcon?: React.ReactElement,
   endIcon?: React.ReactElement
 }> = ({ label, startIcon, endIcon }) => {
+  const intl = useIntl();
+  const stringExists = !!intl.messages[label];
   return (
     <Button variant='text' color='inherit' sx={{ px: 1 }} startIcon={startIcon} endIcon={endIcon}>
-      <FormattedMessage id={label} />
+      {stringExists ? <FormattedMessage id={label} /> : label}
     </Button>
   );
 };
@@ -45,7 +48,7 @@ const MenuBar: React.FC = () => {
         <HeaderButton label='variables' />
         <HeaderButton label='lists' />
         <HeaderButton label='options' />
-        <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'latest' })} endIcon={<ArrowDropDown />} />
+        <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'version.latest' })} endIcon={<ArrowDropDown />} />
         <HeaderIconButton icon={<Support fontSize='small' />} />
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>

@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, MenuItem, Button, IconButton, Box, TextField, Table, TableRow, styled, Tab, TableBody, TableContainer, CircularProgress, Typography } from '@mui/material';
 import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune, Visibility } from '@mui/icons-material';
 import { DialobItem, DialobItems, useEditor } from "../dialob";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -26,28 +26,32 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
   return (
     <TableContainer sx={{ borderRadius: 2, borderTopLeftRadius: 0, border: 1, borderColor: 'divider' }}>
       <Table>
-        <TableRow sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TextField
-            placeholder={intl.formatMessage({ id: 'page.label' })}
-            variant='standard'
-            fullWidth
-            InputProps={{ disableUnderline: true }}
-            sx={{ p: 1 }}
-          />
-        </TableRow>
-        <TableRow>
-          <Button
-            variant='text'
-            fullWidth
-            color='inherit'
-            endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
-            sx={{ p: 1, justifyContent: 'space-between' }}
-          >
-            <Typography color='text.hint'>
-              Visibility
-            </Typography>
-          </Button>
-        </TableRow>
+        <TableBody>
+          <TableRow sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TextField
+              component='td'
+              placeholder={intl.formatMessage({ id: 'page.label' })}
+              variant='standard'
+              fullWidth
+              InputProps={{ disableUnderline: true }}
+              sx={{ p: 1 }}
+            />
+          </TableRow>
+          <TableRow>
+            <Button
+              variant='text'
+              fullWidth
+              color='inherit'
+              component='td'
+              endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
+              sx={{ p: 1, justifyContent: 'space-between' }}
+            >
+              <Typography color='text.hint'>
+                <FormattedMessage id='visibility' />
+              </Typography>
+            </Button>
+          </TableRow>
+        </TableBody>
       </Table>
     </TableContainer>
   );
