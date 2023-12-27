@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import camelCase from 'lodash.camelcase';
-import { ComposerAction } from './actions';
-import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule } from './types';
+import { ComposerAction, EditorAction } from './actions';
+import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule, EditorState, DialobItem } from './types';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -505,5 +505,24 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     }
   });
   // Extension point in procude...
+  return newState;
+}
+
+const setActivePage = (state: EditorState, page: DialobItem): void => {
+  state.activePage = page;
+}
+
+const setActiveFormLanguage = (state: EditorState, language: string): void => {
+  state.activeFormLanguage = language;
+}
+
+export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
+  const newState = produce(state, state => {
+    if (action.type === 'setActivePage') {
+      setActivePage(state, action.page);
+    } else if (action.type === 'setActiveFormLanguage') {
+      setActiveFormLanguage(state, action.language);
+    }
+  });
   return newState;
 }
