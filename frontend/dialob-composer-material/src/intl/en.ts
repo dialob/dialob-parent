@@ -11,6 +11,7 @@ const en = {
   'preview': 'Preview',
 
   'page.label': 'Page label',
+  'visibility': 'Visibility',
 
 };
 
