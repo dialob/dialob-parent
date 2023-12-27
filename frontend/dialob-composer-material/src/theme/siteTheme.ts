@@ -270,6 +270,7 @@ const siteTheme = createTheme({
         root: {
           fontVariant: 'body2',
           borderRadius: 0,
+          borderColor: palette.text.hint,
           textTransform: 'capitalize',
           borderWidth: '2px solid !important',
         }

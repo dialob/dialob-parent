@@ -1,4 +1,9 @@
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule } from "./types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, DialobItem } from "./types";
+
+export type EditorAction =
+  | { type: 'setActivePage', page: DialobItem }
+  | { type: 'setActiveFormLanguage', language: string }
+
 
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string}

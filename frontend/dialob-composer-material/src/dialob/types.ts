@@ -66,6 +66,8 @@ export type DialobItem = DialobItemTemplate & {
   id: string;
 }
 
+export type DialobItems = { [key: string]: DialobItem };
+
 export type ComposerState = {
   _id: string;
   _rev: string;
@@ -93,6 +95,11 @@ export type ComposerState = {
     },
     [prop: string]: any;
   }
+};
+
+export type EditorState = {
+  activePage?: DialobItem;
+  activeFormLanguage: string;
 };
 
 export type ComposerCallbacks = {

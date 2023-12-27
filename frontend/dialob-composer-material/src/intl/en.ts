@@ -10,6 +10,8 @@ const en = {
   'search': 'Search',
   'preview': 'Preview',
 
+  'page.label': 'Page label',
+
 };
 
 export default en;
