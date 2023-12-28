@@ -2,10 +2,11 @@ import React from "react";
 import Items from "../items";
 import { DialobItem } from "../dialob";
 import { SvgIconProps } from "@mui/material";
-import { BlurLinear, CalendarMonth, CheckBox, CropSquare, ErrorOutline, Euro, KeyboardArrowDown, List, MoreHoriz, Note, Place, Schedule, TableRows, Tag, TextFormat } from "@mui/icons-material";
+import { BlurLinear, CalendarMonth, CheckBox, Circle, CropSquare, ErrorOutline, Euro, KeyboardArrowDown, List, MoreHoriz, Note, Place, Schedule, TableRows, Tag, TextFormat } from "@mui/icons-material";
 
 
 interface ItemConfig {
+  defaultIcon: React.ComponentType<SvgIconProps>,
   items: {
     matcher: (item: DialobItem) => boolean,
     component: React.FC,
@@ -18,6 +19,7 @@ interface ItemConfig {
 }
 
 export const DEFAULT_ITEM_CONFIG: ItemConfig = {
+  defaultIcon: Circle,
   items: [
     {
       matcher: item => item.type === 'group',

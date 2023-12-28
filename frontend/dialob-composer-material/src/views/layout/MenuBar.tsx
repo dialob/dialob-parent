@@ -78,7 +78,6 @@ const MenuBar: React.FC = () => {
             .filter((language) => language.code !== editor.activeFormLanguage)
             .map((language) => (
               <MenuItem key={language.code} onClick={() => handleLanguageSelect(language.code)}>
-
                 {intl.formatMessage({ id: 'locales.' + language.code })}
               </MenuItem>
             ))}

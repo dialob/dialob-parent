@@ -8,7 +8,7 @@ export type Variable = {
   expression: string;
 };
 
-export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'date' | 'time';
+export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'date' | 'time';
 
 export type ContextVariable = {
   name: string;

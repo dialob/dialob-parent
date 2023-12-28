@@ -6,6 +6,7 @@ export const useEditor = () => {
   const { state, dispatch } = useContext(EditorContext);
 
   const setActivePage = (page: DialobItem): void => {
+    console.log('setActivePage', page);
     dispatch({ type: 'setActivePage', page });
   };
 
