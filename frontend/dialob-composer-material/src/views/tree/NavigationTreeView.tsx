@@ -9,7 +9,7 @@ import Tree, {
   TreeDestinationPosition,
   RenderItemParams,
 } from '@atlaskit/tree';
-import { useComposer } from '../../dialob';
+import { useComposer, useEditor } from '../../dialob';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
 
@@ -51,11 +51,12 @@ const renderItem = ({ item, onExpand, onCollapse, provided }: RenderItemParams) 
 const NavigationTreeView: React.FC = () => {
   const theme = useTheme();
   const { form, moveItem } = useComposer();
+  const { editor } = useEditor();
   const [tree, setTree] = useState<TreeData>(INIT_TREE);
 
   React.useEffect(() => {
-    setTree(buildTreeFromForm(form.data));
-  }, [form]);
+    setTree(buildTreeFromForm(form.data, editor.activeFormLanguage));
+  }, [form, editor.activeFormLanguage]);
 
   const onExpand = (itemId: ItemId) => {
     setTree((prevTree) => mutateTree(prevTree, itemId, { isExpanded: true }));

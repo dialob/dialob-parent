@@ -1,5 +1,8 @@
 const en = {
-  'locales.english': 'English',
+  'locales.en': 'English',
+  'locales.fi': 'Finnish',
+  'locales.sv': 'Swedish',
+  'locales.et': 'Estonian',
 
   'translations': 'Translations',
   'variables': 'Variables',
