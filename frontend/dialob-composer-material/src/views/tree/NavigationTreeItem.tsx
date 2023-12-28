@@ -3,7 +3,7 @@ import { ListItem, ListItemText, styled } from '@mui/material';
 import { TreeItem, ItemId } from '@atlaskit/tree';
 import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
-import { DialobItem, DialobItemType } from '../../dialob';
+import { DialobItem } from '../../dialob';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
 
 
@@ -41,8 +41,8 @@ const getTypeIcon = (item: DialobItem, isPage: boolean) => {
   if (isPage) {
     return <PreTextIcon><PAGE_CONFIG.icon fontSize='small' /></PreTextIcon>;
   }
-  let itemConfig = DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(item));
-  const Icon = itemConfig?.props.icon!;
+  const itemConfig = DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(item));
+  const Icon = itemConfig?.props.icon || DEFAULT_ITEM_CONFIG.defaultIcon;
   return <PreTextIcon><Icon fontSize='small' /></PreTextIcon>;
 }
 

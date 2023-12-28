@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, MenuItem, Button, IconButton, Box, TextField, Table, TableRow, styled, Tab, TableBody, TableContainer, CircularProgress, Typography } from '@mui/material';
+import { Menu, MenuItem, Button, IconButton, Box, TextField, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography } from '@mui/material';
 import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune, Visibility } from '@mui/icons-material';
 import { DialobItem, DialobItems, useEditor } from "../dialob";
 import { FormattedMessage, useIntl } from "react-intl";
