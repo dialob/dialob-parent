@@ -41,14 +41,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = MOCK)
+@SpringBootTest(webEnvironment = MOCK, properties = {
+  "dialob.security.enabled=false"
+})
 @ContextConfiguration(classes = {
-  SecurityDisabledConfigurer.class
+  SecurityDisabledConfiguration.class
 })
 @EnableWebSecurity
 @EnableWebMvc
 @EnableConfigurationProperties(DialobSettings.class)
-class SecurityDisabledConfigurerTest {
+class SecurityDisabledConfigurationTest {
 
   public MockMvc mockMvc;
 

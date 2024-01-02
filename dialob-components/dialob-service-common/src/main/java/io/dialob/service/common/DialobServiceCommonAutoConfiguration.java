@@ -18,30 +18,25 @@ package io.dialob.service.common;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.service.common.rest.ServiceExceptionMapper;
-import io.dialob.service.common.security.SecurityDisabledConfigurer;
-import io.dialob.settings.DialobSettings;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import io.dialob.service.common.security.SecurityDisabledConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 
 @Configuration(proxyBeanMethods = false)
-@Import(ServiceExceptionMapper.class)
+@Import({ServiceExceptionMapper.class, SecurityDisabledConfiguration.class})
+@Slf4j
 public class DialobServiceCommonAutoConfiguration {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DialobServiceCommonAutoConfiguration.class);
 
   @Bean
   public StringHttpMessageConverter stringEncodingConverter() {
     LOGGER.debug("Constructing bean stringEncodingConverter");
-    return new StringHttpMessageConverter(Charset.forName("UTF-8"));
+    return new StringHttpMessageConverter(StandardCharsets.UTF_8);
   }
 
   @Bean
@@ -59,9 +54,4 @@ public class DialobServiceCommonAutoConfiguration {
     return new Jdk8Module();
   }
 
-  @Bean
-  @ConditionalOnProperty(name = "dialob.security.enabled", havingValue = "false")
-  public SecurityDisabledConfigurer securityDisabledConfigurer(DialobSettings dialobSettings) {
-    return new SecurityDisabledConfigurer(dialobSettings);
-  }
 }
