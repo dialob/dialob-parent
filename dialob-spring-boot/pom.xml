@@ -20,7 +20,7 @@
   <parent>
     <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
-    <version>999-SNAPSHOT</version>
+    <version>2.1.18</version>
     <relativePath>../dialob-build-parent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
