@@ -1,11 +1,29 @@
 import React from "react";
-import { Menu, MenuItem, Button, IconButton, Box, TextField, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography } from '@mui/material';
+import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, SxProps, styled, Paper, TableCell } from '@mui/material';
 import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune, Visibility } from '@mui/icons-material';
 import { DialobItem, DialobItems, useEditor } from "../dialob";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
+const MAX_LABEL_LENGTH = 60;
+const MAX_RULE_LENGTH = 80;
+
+const LabelButton = styled(Button)(({ theme }) => ({
+  padding: theme.spacing(1),
+  paddingLeft: theme.spacing(2),
+  justifyContent: 'flex-start',
+  textTransform: 'none',
+  width: '100%',
+}));
+
+const VisibilityButton = styled(Button)(({ theme }) => ({
+  padding: theme.spacing(1),
+  paddingLeft: theme.spacing(2),
+  justifyContent: 'space-between',
+  textTransform: 'none',
+  width: '100%',
+}));
 
 const getPageTabTitle = (item: DialobItem, language: string): string => {
   const rawLabel = item.label ? item.label[language] : null;
@@ -18,38 +36,72 @@ const getPageTabTitle = (item: DialobItem, language: string): string => {
   }
 };
 
+const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
+  const { editor } = useEditor();
+  const [label, setLabel] = React.useState<string>('');
+
+  React.useEffect(() => {
+    const localizedLabel = item && item.label && item.label[editor.activeFormLanguage];
+    const formattedLabel = localizedLabel && localizedLabel.length > MAX_LABEL_LENGTH ?
+      localizedLabel.substring(0, MAX_LABEL_LENGTH) + '...' :
+      localizedLabel;
+    setLabel(formattedLabel || '');
+  }, [item, editor.activeFormLanguage]);
+
+  return (
+    <LabelButton variant='text' color='inherit'>
+      {label ?
+        <Typography>
+          {label}
+        </Typography> :
+        <Typography color='text.hint'>
+          <FormattedMessage id={`${item.type}.label`} />
+        </Typography>
+      }
+    </LabelButton>
+  );
+}
+
+export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
+  return (
+    <VisibilityButton
+      variant='text'
+      color='inherit'
+      endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
+    >
+      {item.activeWhen ?
+        <Typography fontFamily='monospace'>
+          {item.activeWhen.length > MAX_RULE_LENGTH ?
+            item.activeWhen.substring(0, MAX_RULE_LENGTH) + '...' :
+            item.activeWhen
+          }
+        </Typography> :
+        <Typography color='text.hint'>
+          <FormattedMessage id='visibility' />
+        </Typography>
+      }
+    </VisibilityButton>
+  );
+}
+
 const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
-  const intl = useIntl();
   if (!item) {
     return null;
   }
+
   return (
-    <TableContainer sx={{ borderRadius: 2, borderTopLeftRadius: 0, border: 1, borderColor: 'divider' }}>
+    <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          <TableRow sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TextField
-              component='td'
-              placeholder={intl.formatMessage({ id: 'page.label' })}
-              variant='standard'
-              fullWidth
-              InputProps={{ disableUnderline: true }}
-              sx={{ p: 1 }}
-            />
+          <TableRow>
+            <TableCell>
+              <LabelField item={item} />
+            </TableCell>
           </TableRow>
           <TableRow>
-            <Button
-              variant='text'
-              fullWidth
-              color='inherit'
-              component='td'
-              endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
-              sx={{ p: 1, justifyContent: 'space-between' }}
-            >
-              <Typography color='text.hint'>
-                <FormattedMessage id='visibility' />
-              </Typography>
-            </Button>
+            <TableCell>
+              <VisibilityField item={item} />
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -77,7 +129,7 @@ const PageMenuButton: React.FC = () => {
       <IconButton onClick={handleClick} component='span' sx={{ ml: 1 }}>
         <MenuIcon />
       </IconButton>
-      <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+      <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={handleItemClick}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
           Options
@@ -122,14 +174,12 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     rootItem.items.map((itemId: string, index: number) => {
       const item = items[itemId];
       const isActive = item === editor.activePage;
-      const variant = isActive ? 'outlined' : 'text';
-      const activeSx = isActive ? { marginBottom: -0.1, borderBottom: 2, borderBottomColor: 'mainContent.light' } : {};
+      const variant = isActive ? 'contained' : 'text';
       return (
         <Button
           onClick={(e) => handlePageClick(e, itemId)}
           variant={variant}
           color='inherit'
-          sx={{ borderColor: 'divider', ...activeSx }}
           key={index}
         >
           {getPageTabTitle(item, editor.activeFormLanguage)}

@@ -309,6 +309,14 @@ const siteTheme = createTheme({
       }
     },
 
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+        },
+      }
+    }
+
   },
 
 });
