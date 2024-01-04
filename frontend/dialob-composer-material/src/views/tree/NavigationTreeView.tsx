@@ -9,7 +9,8 @@ import Tree, {
   TreeDestinationPosition,
   RenderItemParams,
 } from '@atlaskit/tree';
-import { useComposer, useEditor } from '../../dialob';
+import { DialobItem, useComposer } from '../../dialob';
+import { useEditor } from '../../editor';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
 
@@ -26,8 +27,8 @@ const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): bo
   if (destination.parentId.toString().includes('root')) {
     return true;
   }
-  const destinationItem = tree.items[destination.parentId];
-  if (destinationItem.data.type === 'group' || destinationItem.data.type === 'surveygroup' || destinationItem.data.type === 'rowgroup') {
+  const destinationItem: DialobItem = tree.items[destination.parentId].data.item;
+  if (destinationItem.type === 'group' || destinationItem.type === 'surveygroup' || destinationItem.type === 'rowgroup') {
     return true;
   }
   return false;

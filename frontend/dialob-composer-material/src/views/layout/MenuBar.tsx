@@ -2,7 +2,8 @@ import React from 'react';
 import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem } from '@mui/material';
 import { ArrowDropDown, Check, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useComposer, useEditor } from '../../dialob';
+import { useComposer } from '../../dialob';
+import { useEditor } from '../../editor';
 
 
 const HeaderButton: React.FC<{

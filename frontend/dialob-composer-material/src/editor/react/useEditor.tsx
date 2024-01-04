@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import { DialobItem } from "../types";
 import { EditorContext } from "./EditorContext";
+import { DialobItem } from "../../dialob";
 
 export const useEditor = () => {
   const { state, dispatch } = useContext(EditorContext);

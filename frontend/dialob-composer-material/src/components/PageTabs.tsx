@@ -1,8 +1,9 @@
 import React from "react";
-import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, SxProps, styled, Paper, TableCell } from '@mui/material';
-import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune, Visibility } from '@mui/icons-material';
-import { DialobItem, DialobItems, useEditor } from "../dialob";
 import { FormattedMessage } from "react-intl";
+import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, styled, Paper, TableCell } from '@mui/material';
+import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune, Visibility } from '@mui/icons-material';
+import { DialobItem, DialobItems } from "../dialob";
+import { useEditor } from "../editor";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { DialobItem, DialobItems, useComposer, useEditor } from '../dialob';
+import { DialobItem, DialobItems, useComposer } from '../dialob';
+import { useEditor } from '../editor';
 import Items from '../items';
 import PageTabs from './PageTabs';
 

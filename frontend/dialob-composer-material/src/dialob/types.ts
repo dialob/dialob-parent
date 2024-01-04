@@ -97,11 +97,6 @@ export type ComposerState = {
   }
 };
 
-export type EditorState = {
-  activePage?: DialobItem;
-  activeFormLanguage: string;
-};
-
 export type ComposerCallbacks = {
   onAddItem?: (state: ComposerState, item: DialobItem) => void;
 }
