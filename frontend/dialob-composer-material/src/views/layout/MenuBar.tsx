@@ -2,7 +2,6 @@ import React from 'react';
 import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem } from '@mui/material';
 import { ArrowDropDown, Check, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import * as Defaults from '../../defaults';
 import { useComposer, useEditor } from '../../dialob';
 
 
@@ -35,6 +34,7 @@ const MenuBar: React.FC = () => {
   const { form } = useComposer();
   const { editor, setActiveFormLanguage } = useEditor();
   const headerPaddingSx = { px: theme.spacing(1) };
+  const formLanguages = form.metadata.languages || ['en'];
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const languageMenuOpen = Boolean(anchorEl);
@@ -73,12 +73,12 @@ const MenuBar: React.FC = () => {
         <HeaderIconButton icon={<Download />} />
         <HeaderIconButton icon={<Check color='success' />} />
         <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
-        <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}>
-          {Defaults.DEFAULT_LANGUAGE_CONFIG
-            .filter((language) => language.code !== editor.activeFormLanguage)
+        <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>
+          {formLanguages
+            .filter((language) => language !== editor.activeFormLanguage)
             .map((language) => (
-              <MenuItem key={language.code} onClick={() => handleLanguageSelect(language.code)}>
-                {intl.formatMessage({ id: 'locales.' + language.code })}
+              <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
+                {intl.formatMessage({ id: 'locales.' + language })}
               </MenuItem>
             ))}
         </Menu>
