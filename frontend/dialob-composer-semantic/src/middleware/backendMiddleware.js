@@ -12,7 +12,7 @@ export const backendMiddleware = store => {
     if (store.getState().dialobComposer.config.transport) {
       let config = store.getState().dialobComposer.config.transport;
 
-      formService = new FormService(config.apiUrl, config.csrf, config.tenantId);
+      formService = new FormService(config.apiUrl, config.csrf, config.tenantId, config.credentialMode);
     } else {
       return next(action);
     }

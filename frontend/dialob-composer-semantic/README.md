@@ -13,6 +13,7 @@ export {
   Item,                             // Base class for item editor React components
   SimpleField,                      // "Simple field"-type dialob component editor
   Group,                            // "Group"-type dialob component editor
+  Note,                             // "Note"-type dialob component editor
   connectItem,                      // Function that connects React component to Composer's Redux store
   ItemMenu,
   DialobActions,                    // Action API for modifying Dialob form
@@ -51,6 +52,7 @@ const DIALOB_COMPOSER_CONFIG = {
     apiUrl: window.COMPOSER_CONFIG.backend_api_url,
     previewUrl: window.COMPOSER_CONFIG.filling_app_url,
     tenantId: window.COMPOSER_CONFIG.tenantId,
+    credentialMode: "include" // Optional, defaults to "include"
   },
   documentationUrl: '',
   itemEditors: DEFAULT_ITEM_CONFIG,
