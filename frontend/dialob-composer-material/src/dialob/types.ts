@@ -8,7 +8,7 @@ export type Variable = {
   expression: string;
 };
 
-export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'date' | 'time';
+export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'date' | 'time';
 
 export type ContextVariable = {
   name: string;
@@ -32,7 +32,13 @@ export type ValueSet = {
   entries: ValueSetEntry[];
 };
 
-export type DialobItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup';
+export type DialobItemType = 
+'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 
+'multichoice' | 'survey' | 'surveygroup' | 'list' 
+| 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup' |
+'verticalSurveygroup' | 'address' | 'textBox' | 'page';
+
+export type DialobCategoryType = 'structure' | 'input' | 'output';
 
 export type ValidationRule = {
   message?: LocalizedString;
@@ -40,7 +46,7 @@ export type ValidationRule = {
 };
 
 export type DialobItemTemplate = {
-  type: string; // TODO: DialobItemType
+  type: DialobItemType;
   view?: string;
   label?: LocalizedString;
   description?: LocalizedString;
@@ -59,6 +65,8 @@ export type DialobItemTemplate = {
 export type DialobItem = DialobItemTemplate & {
   id: string;
 }
+
+export type DialobItems = { [key: string]: DialobItem };
 
 export type ComposerState = {
   _id: string;

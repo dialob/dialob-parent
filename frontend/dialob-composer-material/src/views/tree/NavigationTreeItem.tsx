@@ -2,8 +2,9 @@ import React from 'react';
 import { ListItem, ListItemText, styled } from '@mui/material';
 import { TreeItem, ItemId } from '@atlaskit/tree';
 import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
-import { DEFAULT_ICON_CONFIG } from '../../defaults/IconConfig';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
+import { DialobItem } from '../../dialob';
+import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
 
 
 interface TreeItemProps {
@@ -36,11 +37,14 @@ const getIcon = (
   return <PreTextIcon />;
 };
 
-const getTypeIcon = (type: string) => {
-  const Icon = DEFAULT_ICON_CONFIG[type];
+const getTypeIcon = (item: DialobItem, isPage: boolean) => {
+  if (isPage) {
+    return <PreTextIcon><PAGE_CONFIG.icon fontSize='small' /></PreTextIcon>;
+  }
+  const itemConfig = DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(item));
+  const Icon = itemConfig?.props.icon || DEFAULT_ITEM_CONFIG.defaultIcon;
   return <PreTextIcon><Icon fontSize='small' /></PreTextIcon>;
 }
-
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
   return (
@@ -50,8 +54,8 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
       {...provided.dragHandleProps}
     >
       {getIcon(item, onExpand, onCollapse)}
-      {getTypeIcon(item.data.type)}
-      <ListItemText sx={{ cursor: 'pointer' }}>{item.data ? item.data.title : ''}</ListItemText>
+      {getTypeIcon(item.data.item, item.data.isPage)}
+      <ListItemText sx={{ cursor: 'pointer', '.MuiListItemText-primary:hover': { fontWeight: 'inherit' } }}>{item.data ? item.data.title : ''}</ListItemText>
     </ListItem>
   );
 };

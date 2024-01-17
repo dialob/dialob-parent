@@ -1,15 +1,18 @@
 import { ComposerProvider } from './dialob'
-import testForm from './dialob/test/testForm.json';
-import ComposerLayoutView from './views/layout/ComposerLayoutView';
+import { EditorProvider } from './editor';
 import { IntlProvider } from 'react-intl';
 import messages from './intl';
+import multiPageForm from './dialob/test/multiPageForm.json';
+import ComposerLayoutView from './views/layout/ComposerLayoutView';
 
 function App() {
   return (
-    <ComposerProvider formData={testForm}>
-      <IntlProvider locale='en' messages={messages['en']}>
-        <ComposerLayoutView />
-      </IntlProvider>
+    <ComposerProvider formData={multiPageForm}>
+      <EditorProvider>
+        <IntlProvider locale='en' messages={messages['en']}>
+          <ComposerLayoutView />
+        </IntlProvider>
+      </EditorProvider>
     </ComposerProvider>
   )
 }
