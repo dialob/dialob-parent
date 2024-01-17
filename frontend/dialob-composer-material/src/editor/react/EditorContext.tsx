@@ -1,10 +1,32 @@
 import React, { useReducer, Dispatch } from 'react';
 import { editorReducer } from '../reducer';
 import { EditorAction } from '../actions';
-import { EditorState } from '../types';
+import { EditorState, ErrorSeverity } from '../types';
+
+const DEMO_ERRORS = [
+  {
+    severity: 'WARNING' as ErrorSeverity,
+    message: 'UNKNOWN_FUNCTION',
+    type: 'VISIBILITY',
+    itemId: 'annualSurvey',
+  },
+  {
+    severity: 'ERROR' as ErrorSeverity,
+    message: 'UNKNOWN_FUNCTION',
+    type: 'VISIBILITY',
+    itemId: 'group9',
+  },
+  {
+    severity: 'INFO' as ErrorSeverity,
+    message: 'UNKNOWN_FUNCTION',
+    type: 'VISIBILITY',
+    itemId: 'group4',
+  }
+];
 
 const INITIAL_EDITOR: EditorState = {
-  activeFormLanguage: 'en'
+  activeFormLanguage: 'en',
+  errors: DEMO_ERRORS,
 };
 
 export const EditorContext = React.createContext<{ state: EditorState, dispatch: Dispatch<EditorAction> }>({

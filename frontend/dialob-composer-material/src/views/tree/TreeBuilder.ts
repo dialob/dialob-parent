@@ -1,5 +1,6 @@
 import { ItemId, TreeData } from "@atlaskit/tree";
 import { DialobItem } from "../../dialob";
+import { EditorError } from "../../editor";
 
 
 export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string): TreeData => {

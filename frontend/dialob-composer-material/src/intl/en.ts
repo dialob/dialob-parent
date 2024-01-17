@@ -13,8 +13,9 @@ const en = {
   'search': 'Search',
   'preview': 'Preview',
 
-  'page.label': 'Page label',
   'visibility': 'Visibility',
+  'page.label': 'Page label',
+  'conversions.hint': 'Convert to:',
 
 };
 

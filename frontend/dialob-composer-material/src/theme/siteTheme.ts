@@ -1,4 +1,4 @@
-import { createTheme, PaletteOptions } from "@mui/material/styles";
+import { createTheme, PaletteOptions, SxProps } from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -35,6 +35,27 @@ declare module '@mui/material/styles' {
 
   }
 }
+
+export const MENU_HEIGHT = 50;
+export const SCROLLBAR_WIDTH = '0.7em';
+export const DRAWER_WIDTH = 300;
+
+export const SCROLL_SX: SxProps = {
+  overflowY: 'auto',
+  overflowX: 'auto',
+  '&::-webkit-scrollbar': {
+    width: SCROLLBAR_WIDTH,
+    height: SCROLLBAR_WIDTH,
+  },
+  '&::-webkit-scrollbar-track': {
+    borderRadius: 1,
+    backgroundColor: 'uiElements.dark',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    borderRadius: 1,
+    backgroundColor: 'explorerItem.main',
+  },
+};
 
 const palette = {
   mode: 'light',
@@ -222,6 +243,25 @@ const siteTheme = createTheme({
 
 
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          overflowY: 'auto',
+          overflowX: 'auto',
+          '&::-webkit-scrollbar': {
+            width: SCROLLBAR_WIDTH,
+          },
+          '&::-webkit-scrollbar-track': {
+            borderRadius: 4,
+            backgroundColor: palette.uiElements.dark,
+          },
+          '&::-webkit-scrollbar-thumb': {
+            borderRadius: 4,
+            backgroundColor: palette.explorerItem.main,
+          },
+        },
+      },
+    },
     MuiCardActions: {
       styleOverrides: {
         root: {
@@ -293,7 +333,7 @@ const siteTheme = createTheme({
     MuiStack: {
       styleOverrides: {
         root: {
-          height: 50,
+          height: MENU_HEIGHT,
         }
       }
     },
@@ -301,10 +341,10 @@ const siteTheme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         root: {
-          width: 300,
+          width: DRAWER_WIDTH,
         },
         paper: {
-          width: 300,
+          width: DRAWER_WIDTH,
         },
       }
     },

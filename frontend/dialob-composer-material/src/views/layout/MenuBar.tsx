@@ -3,8 +3,8 @@ import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, M
 import { ArrowDropDown, Check, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useComposer } from '../../dialob';
-import { useEditor } from '../../editor';
-
+import { getStatusIcon, useEditor } from '../../editor';
+import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
 
 const HeaderButton: React.FC<{
   label: string,
@@ -21,9 +21,9 @@ const HeaderButton: React.FC<{
   );
 };
 
-const HeaderIconButton: React.FC<{ icon: React.ReactElement }> = ({ icon }) => {
+const HeaderIconButton: React.FC<{ icon: React.ReactElement, disabled?: boolean }> = ({ icon, disabled }) => {
   return (
-    <Button variant='text' color='inherit' sx={{ px: 1 }}>
+    <Button variant='text' color='inherit' disabled={disabled} sx={{ px: 1 }}>
       {icon}
     </Button>
   );
@@ -50,7 +50,7 @@ const MenuBar: React.FC = () => {
   }
 
   return (
-    <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+    <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
       <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
         <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
           <Typography sx={{ fontWeight: 'bold' }}>
@@ -72,7 +72,7 @@ const MenuBar: React.FC = () => {
           <Search />
         </Box>
         <HeaderIconButton icon={<Download />} />
-        <HeaderIconButton icon={<Check color='success' />} />
+        <HeaderIconButton disabled icon={getStatusIcon(editor.errors)} />
         <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
         <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>
           {formLanguages

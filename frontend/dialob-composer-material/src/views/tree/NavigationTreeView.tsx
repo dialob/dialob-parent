@@ -13,6 +13,7 @@ import { DialobItem, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
+import { DEFAULT_ITEM_CONFIG } from '../../defaults';
 
 
 const INIT_TREE: TreeData = {
@@ -28,7 +29,7 @@ const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): bo
     return true;
   }
   const destinationItem: DialobItem = tree.items[destination.parentId].data.item;
-  if (destinationItem.type === 'group' || destinationItem.type === 'surveygroup' || destinationItem.type === 'rowgroup') {
+  if (DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(destinationItem))?.props.treeCollapsible) {
     return true;
   }
   return false;

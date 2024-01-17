@@ -12,6 +12,10 @@
       "activeWhen": "makeFoodOk = true and 'phone' = usedChannel or makeFoodOk = true and usedChannel = 'backOffice'",
       "opRecommendation": {
         "fi": ""
+      },
+      "description": {
+        "fi": "Note description",
+        "en": "English description"
       }
     },
     "list13": {

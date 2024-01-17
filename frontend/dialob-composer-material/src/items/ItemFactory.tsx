@@ -11,7 +11,7 @@ const itemFactory = (item: DialobItem, props?: any) => {
     return null;
   }
   const Component = itemConfig.component;
-  return <Component key={item.id} itemType={item.type} itemId={item.id} {...itemConfig.props} {...props} />;
+  return <Component key={item.id} item={item} {...props} />;
 }
 
 export { itemFactory };

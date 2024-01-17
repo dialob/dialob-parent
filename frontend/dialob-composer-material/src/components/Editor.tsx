@@ -4,6 +4,7 @@ import { DialobItem, DialobItems, useComposer } from '../dialob';
 import { useEditor } from '../editor';
 import Items from '../items';
 import PageTabs from './PageTabs';
+import { AddItemMenu } from '../items/ItemComponents';
 
 
 const createChildren = (items: DialobItems, activePage?: DialobItem) => {
@@ -25,6 +26,7 @@ const Editor: React.FC = () => {
     <Box>
       <PageTabs items={form.data} />
       {createChildren(form.data, editor.activePage)}
+      {editor.activePage && <Box sx={{ mb: 2 }}><AddItemMenu item={editor.activePage} /></Box>}
     </Box>
   );
 };

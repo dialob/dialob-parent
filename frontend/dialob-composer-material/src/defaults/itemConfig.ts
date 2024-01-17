@@ -9,7 +9,7 @@ interface ItemConfig {
   defaultIcon: React.ComponentType<SvgIconProps>,
   items: {
     matcher: (item: DialobItem) => boolean,
-    component: React.FC,
+    component: React.FC<{ item: DialobItem, props?: any }>,
     props: {
       icon: React.ComponentType<SvgIconProps>,
       placeholder: string,

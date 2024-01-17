@@ -46,7 +46,7 @@ export type ValidationRule = {
 };
 
 export type DialobItemTemplate = {
-  type: DialobItemType;
+  type: DialobItemType | string;
   view?: string;
   label?: LocalizedString;
   description?: LocalizedString;

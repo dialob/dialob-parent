@@ -1,10 +1,11 @@
 import React from 'react';
-import { ListItem, ListItemText, styled } from '@mui/material';
+import { ListItem, ListItemText, Typography, styled } from '@mui/material';
 import { TreeItem, ItemId } from '@atlaskit/tree';
-import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
+import { ArrowDropDown, ArrowRight, Warning } from '@mui/icons-material';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
 import { DialobItem } from '../../dialob';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
+import { ErrorSeverity, getErrorColor, getErrorIcon, useEditor } from '../../editor';
 
 
 interface TreeItemProps {
@@ -47,6 +48,8 @@ const getTypeIcon = (item: DialobItem, isPage: boolean) => {
 }
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
+  const { editor } = useEditor();
+  const errorColor = getErrorColor(editor.errors, item.data.item);
   return (
     <ListItem
       ref={provided.innerRef}
@@ -54,8 +57,10 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
       {...provided.dragHandleProps}
     >
       {getIcon(item, onExpand, onCollapse)}
-      {getTypeIcon(item.data.item, item.data.isPage)}
-      <ListItemText sx={{ cursor: 'pointer', '.MuiListItemText-primary:hover': { fontWeight: 'inherit' } }}>{item.data ? item.data.title : ''}</ListItemText>
+      {errorColor ? getErrorIcon(editor.errors, item.data.item) : getTypeIcon(item.data.item, item.data.isPage)}
+      <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }}>
+        <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{item.data ? item.data.title : ''}</Typography>
+      </ListItemText>
     </ListItem>
   );
 };
