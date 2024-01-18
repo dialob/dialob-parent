@@ -109,9 +109,8 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
   const [label, setLabel] = React.useState<string>('');
   const hasIndicators = item.description || item.valueSetId || item.validations;
   const maxLabelLength = hasIndicators ? MAX_LABEL_LENGTH_WITH_INDICATORS : MAX_LABEL_LENGTH_WITHOUT_INDICATORS;
-  const placeholder = isPage(form.data, item) ?
-    intl.formatMessage({ id: 'page.label' }) :
-    Defaults.DEFAULT_ITEM_CONFIG.items.find(i => i.matcher(item))?.props.placeholder;
+  const placeholderId = isPage(form.data, item) ? 'page.label' : Defaults.DEFAULT_ITEM_CONFIG.items.find(i => i.matcher(item))?.props.placeholder;
+  const placeholder = intl.formatMessage({ id: placeholderId });
 
   React.useEffect(() => {
     const localizedLabel = item && item.label && item.label[editor.activeFormLanguage];
@@ -272,19 +271,19 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
       <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={(e) => handleClose(e, 1)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
-          Options
+          <FormattedMessage id='menus.options' />
         </MenuItem>
         <MenuItem onClick={(e) => handleDelete(e)}>
           <Close sx={{ mr: 1 }} fontSize='small' />
-          Delete
+          <FormattedMessage id='menus.delete' />
         </MenuItem>
         <MenuItem onClick={(e) => handleDuplicate(e)}>
           <ContentCopy sx={{ mr: 1 }} fontSize='small' />
-          Duplicate
+          <FormattedMessage id='menus.duplicate' />
         </MenuItem>
         <Divider />
         <MenuItem onClick={(e) => handleClick(e, 2)}>
-          Insert new
+          <FormattedMessage id='menus.insert.below' />
           <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
         </MenuItem>
         <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
@@ -342,7 +341,7 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   return (
     <>
       <Button onClick={handleClick} variant='contained' color='inherit' endIcon={<KeyboardArrowDown />}>
-        <Typography>Add item</Typography>
+        <Typography><FormattedMessage id='menus.add' /></Typography>
       </Button>
       <Menu open={categoriesOpen} onClose={handleClose} anchorEl={categoriesAnchorEl}
         disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>

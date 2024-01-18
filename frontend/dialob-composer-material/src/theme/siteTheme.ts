@@ -48,11 +48,10 @@ export const SCROLL_SX: SxProps = {
     height: SCROLLBAR_WIDTH,
   },
   '&::-webkit-scrollbar-track': {
-    borderRadius: 1,
     backgroundColor: 'uiElements.dark',
   },
   '&::-webkit-scrollbar-thumb': {
-    borderRadius: 1,
+    borderRadius: '6px',
     backgroundColor: 'explorerItem.main',
   },
 };
@@ -250,13 +249,13 @@ const siteTheme = createTheme({
           overflowX: 'auto',
           '&::-webkit-scrollbar': {
             width: SCROLLBAR_WIDTH,
+            height: SCROLLBAR_WIDTH,
           },
           '&::-webkit-scrollbar-track': {
-            borderRadius: 4,
             backgroundColor: palette.uiElements.dark,
           },
           '&::-webkit-scrollbar-thumb': {
-            borderRadius: 4,
+            borderRadius: '6px',
             backgroundColor: palette.explorerItem.main,
           },
         },

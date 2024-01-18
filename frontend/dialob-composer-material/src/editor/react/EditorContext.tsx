@@ -1,9 +1,9 @@
 import React, { useReducer, Dispatch } from 'react';
 import { editorReducer } from '../reducer';
 import { EditorAction } from '../actions';
-import { EditorState, ErrorSeverity } from '../types';
+import { EditorError, EditorState, ErrorSeverity } from '../types';
 
-const DEMO_ERRORS = [
+const DEMO_ERRORS: EditorError[] = [
   {
     severity: 'WARNING' as ErrorSeverity,
     message: 'UNKNOWN_FUNCTION',
@@ -18,9 +18,10 @@ const DEMO_ERRORS = [
   },
   {
     severity: 'INFO' as ErrorSeverity,
-    message: 'UNKNOWN_FUNCTION',
-    type: 'VISIBILITY',
-    itemId: 'group4',
+    message: 'VALUESET_DUPLICATE_KEY',
+    type: 'VALUESET',
+    itemId: 'usedChannel',
+    expression: 'phone',
   }
 ];
 

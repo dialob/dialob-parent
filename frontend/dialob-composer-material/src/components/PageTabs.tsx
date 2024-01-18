@@ -5,6 +5,7 @@ import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
 import { LabelField, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
+import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -82,19 +83,19 @@ const PageMenuButton: React.FC<{ item: DialobItem }> = ({ item }) => {
       <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={handleClose}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
-          Options
+          <FormattedMessage id='menus.options' />
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Key sx={{ mr: 1 }} fontSize='small' />
-          Change ID
+          <FormattedMessage id='menus.change.id' />
         </MenuItem>
         <MenuItem onClick={handleDelete}>
           <Close sx={{ mr: 1 }} fontSize='small' />
-          Delete
+          <FormattedMessage id='menus.delete' />
         </MenuItem>
         <MenuItem onClick={handleDuplicate}>
           <ContentCopy sx={{ mr: 1 }} fontSize='small' />
-          Duplicate
+          <FormattedMessage id='menus.duplicate' />
         </MenuItem>
       </Menu>
     </Box>
@@ -112,7 +113,7 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     if (defaultActivePage) {
       setActivePage(defaultActivePage);
     }
-  }, []); // TODO:: This will always reset to default page after an item is added, which is not correct
+  }, []);
 
   React.useEffect(() => {
     const activePage = editor.activePage;
@@ -137,7 +138,6 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     rootItem.items &&
     rootItem.items.map((itemId: string, index: number) => {
       const item = items[itemId];
-      console.log('item active page', item, editor.activePage)
       const isActive = item.id === editor.activePage?.id;
       const variant = isActive ? 'contained' : 'text';
       return (

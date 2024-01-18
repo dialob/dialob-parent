@@ -2,6 +2,7 @@ import React from 'react';
 import { useEditor } from '../editor';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useComposer } from '../dialob';
+import { FormattedMessage } from 'react-intl';
 
 const ConfirmationDialog: React.FC = () => {
   const { deleteItem } = useComposer();
@@ -29,8 +30,8 @@ const ConfirmationDialog: React.FC = () => {
   return (
     <Dialog open onClose={handleClose}>
       <DialogTitle>
-        {type === 'delete' && 'Delete item'}
-        {type === 'duplicate' && 'Duplicate item'}
+        {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.title' />}
+        {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.title' />}
       </DialogTitle>
       <DialogContent
         sx={{
@@ -41,12 +42,12 @@ const ConfirmationDialog: React.FC = () => {
           gap: 2,
         }}
       >
-        {type === 'delete' && `Are you sure you want to delete ${activeItem.id}? `}
-        {type === 'duplicate' && `Are you sure you want to duplicate ${activeItem.id}? `}
+        {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.text' values={{ itemId: activeItem.id }} />}
+        {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.text' values={{ itemId: activeItem.id }} />}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} variant='text' color='error'>Cancel</Button>
-        <Button onClick={handleClick} variant='contained'>Confirm</Button>
+        <Button onClick={handleClose} variant='text' color='error'><FormattedMessage id='buttons.cancel' /></Button>
+        <Button onClick={handleClick} variant='contained'><FormattedMessage id='buttons.confirm' /></Button>
       </DialogActions>
     </Dialog>
   );
