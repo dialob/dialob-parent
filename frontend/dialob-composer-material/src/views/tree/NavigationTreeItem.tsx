@@ -1,11 +1,12 @@
 import React from 'react';
 import { ListItem, ListItemText, Typography, styled } from '@mui/material';
 import { TreeItem, ItemId } from '@atlaskit/tree';
-import { ArrowDropDown, ArrowRight, Warning } from '@mui/icons-material';
+import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
 import { DialobItem } from '../../dialob';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
-import { ErrorSeverity, getErrorColor, getErrorIcon, useEditor } from '../../editor';
+import { useEditor } from '../../editor';
+import { getErrorIcon, useErrorColor } from '../../utils/ErrorUtils';
 
 
 interface TreeItemProps {
@@ -49,7 +50,7 @@ const getTypeIcon = (item: DialobItem, isPage: boolean) => {
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
   const { editor } = useEditor();
-  const errorColor = getErrorColor(editor.errors, item.data.item);
+  const errorColor = useErrorColor(editor.errors, item.data.item);
   return (
     <ListItem
       ref={provided.innerRef}

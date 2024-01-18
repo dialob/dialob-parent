@@ -2,13 +2,14 @@ import React from 'react';
 import { Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { DialobItem } from '../dialob';
 import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, VisibilityField, StyledTable } from './ItemComponents';
-import { useEditor, getErrorColor } from '../editor';
+import { useEditor } from '../editor';
+import { useErrorColor } from '../utils/ErrorUtils';
 
 
 const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
-  const errorBorderColor = getErrorColor(editor.errors, item);
+  const errorBorderColor = useErrorColor(editor.errors, item);
   const hasIndicators = item.description || item.valueSetId || item.validations;
 
   return (

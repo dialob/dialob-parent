@@ -118,7 +118,7 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
       localizedLabel.substring(0, maxLabelLength) + '...' :
       localizedLabel;
     setLabel(formattedLabel || '');
-  }, [item, editor.activeFormLanguage]);
+  }, [item, editor.activeFormLanguage, maxLabelLength]);
 
   return (
     <Typography textTransform='none' color={label ? 'text.primary' : 'text.hint'}>
@@ -379,7 +379,7 @@ export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
           }
         </Typography> :
         <Typography color='text.hint'>
-          <FormattedMessage id='visibility' />
+          <FormattedMessage id='buttons.visibility' />
         </Typography>
       }
     </FullWidthButton>

@@ -48,6 +48,7 @@ const en = {
   'dialogs.confirmation.duplicate.title': 'Duplicate item',
   'dialogs.confirmation.duplicate.text': 'Are you sure you want to duplicate {itemId}?',
 
+  'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
   'errors.type.VISIBILITY': 'Visibility',
   'errors.type.DEFAULT_VALUE': 'Default value',
@@ -57,7 +58,6 @@ const en = {
   'errors.type.VALUESET_ENTRY': 'List entry',
   'errors.type.CANADDROW': 'Add row',
   'errors.type.CANREMOVEROW': 'Remove row',
-  
   'errors.message.RB_VARIABLE_NEEDS_EXPRESSION': 'Missing expression',
   'errors.message.INVALID_DEFAULT_VALUE': 'Invalid value',
   'errors.message.UNKNOWN_VARIABLE': 'Unknown variable',

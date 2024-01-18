@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
-import { translateErrorMessage, translateErrorType, useEditor } from '../../editor';
+import { useEditor } from '../../editor';
+import { ErrorMessage, ErrorType } from '../../utils/ErrorUtils';
 
 
 const errorCardBorderColor = (severity: string) => {
@@ -21,8 +22,8 @@ const ErrorPane: React.FC = () => {
       {editor.errors.map(error => (
         <Card key={error.itemId} sx={{ mb: 2, cursor: 'pointer', ':hover': { backgroundColor: 'uiElements.dark' } }}>
           <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.severity) }}>
-            <Typography variant='subtitle1'>{translateErrorType(error)} error</Typography>
-            <Typography variant='subtitle2' component='span'>{translateErrorMessage(error)}</Typography>
+            <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
+            <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>
             {error.itemId && <Typography component='span' variant='subtitle2'> at <b>{error.itemId}</b></Typography>}
           </CardContent>
         </Card>

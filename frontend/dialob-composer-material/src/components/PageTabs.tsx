@@ -103,24 +103,20 @@ const PageMenuButton: React.FC<{ item: DialobItem }> = ({ item }) => {
 }
 
 const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
-  const { form, addItem } = useComposer();
+  const { addItem } = useComposer();
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
   const rootItem = rootItemId ? items[rootItemId] : undefined;
 
   React.useEffect(() => {
     const defaultActivePage = rootItem && rootItem.items ? items[rootItem.items[0]] : undefined;
-    if (defaultActivePage) {
-      setActivePage(defaultActivePage);
-    }
-  }, []);
-
-  React.useEffect(() => {
     const activePage = editor.activePage;
     if (activePage) {
       setActivePage(items[activePage.id]);
+    } else if (defaultActivePage) {
+      setActivePage(defaultActivePage);
     }
-  }, [form.data]);
+  }, [rootItem, items, editor.activePage, setActivePage]);
 
   const handlePageClick = (e: React.MouseEvent<HTMLElement>, id: string) => {
     setActivePage(items[id]);

@@ -1,9 +1,10 @@
 import React from 'react';
 import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem } from '@mui/material';
-import { ArrowDropDown, Check, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
+import { ArrowDropDown, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useComposer } from '../../dialob';
-import { getStatusIcon, useEditor } from '../../editor';
+import { getStatusIcon } from '../../utils/ErrorUtils';
+import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
 
 const HeaderButton: React.FC<{
