@@ -13,7 +13,7 @@ import { DialobItem, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
-import { DEFAULT_ITEM_CONFIG } from '../../defaults';
+import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
 
 
 const INIT_TREE: TreeData = {
@@ -75,7 +75,10 @@ const NavigationTreeView: React.FC = () => {
     if (!destination) {
       return;
     }
-    if (!isParentNode(tree, destination)) {
+    const sourceItemId = tree.items[source.parentId].children[source.index!];
+    const sourceItem = tree.items[sourceItemId].data.item.type;
+    const destinationItem = tree.items[destination.parentId].data.item.type;
+    if (!canContain(destinationItem, sourceItem)) {
       return;
     }
     if (isEmptyParentNode(tree, destination)) {
