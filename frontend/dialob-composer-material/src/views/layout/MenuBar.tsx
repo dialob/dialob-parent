@@ -1,11 +1,23 @@
 import React from 'react';
-import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem } from '@mui/material';
+import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem, styled } from '@mui/material';
 import { ArrowDropDown, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useComposer } from '../../dialob';
 import { getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
+
+const ResponsiveButton = styled(Button)(({ theme }) => ({
+  [theme.breakpoints.down('lg')]: {
+    minWidth: 'unset',
+    paddingLeft: theme.spacing(0.5),
+    paddingRight: theme.spacing(0.5),
+  },
+  [theme.breakpoints.up('lg')]: {
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+  },
+}));
 
 const HeaderButton: React.FC<{
   label: string,
@@ -16,17 +28,17 @@ const HeaderButton: React.FC<{
   const intl = useIntl();
   const stringExists = !!intl.messages[label];
   return (
-    <Button variant='text' color='inherit' sx={{ px: 1 }} startIcon={startIcon} endIcon={endIcon} onClick={onClick}>
+    <ResponsiveButton variant='text' color='inherit' startIcon={startIcon} endIcon={endIcon} onClick={onClick}>
       {stringExists ? <FormattedMessage id={label} /> : label}
-    </Button>
+    </ResponsiveButton>
   );
 };
 
 const HeaderIconButton: React.FC<{ icon: React.ReactElement, disabled?: boolean }> = ({ icon, disabled }) => {
   return (
-    <Button variant='text' color='inherit' disabled={disabled} sx={{ px: 1 }}>
+    <ResponsiveButton variant='text' color='inherit' disabled={disabled}>
       {icon}
-    </Button>
+    </ResponsiveButton>
   );
 };
 

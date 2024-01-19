@@ -38,7 +38,7 @@ declare module '@mui/material/styles' {
 
 export const MENU_HEIGHT = 50;
 export const SCROLLBAR_WIDTH = '0.7em';
-export const DRAWER_WIDTH = 300;
+export const DRAWER_WIDTH = '18vw';
 
 export const SCROLL_SX: SxProps = {
   overflowY: 'auto',

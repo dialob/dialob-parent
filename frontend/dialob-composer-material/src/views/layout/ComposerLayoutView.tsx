@@ -28,7 +28,7 @@ const ComposerLayoutView: React.FC = () => {
           </Box>
         </Container>
         {hasErrors && <Drawer variant="permanent" anchor="right">
-          <Box sx={{ mt: `${MENU_HEIGHT}px` }}>
+          <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }}>
             <ErrorPane />
           </Box>
         </Drawer>}
