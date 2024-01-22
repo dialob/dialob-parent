@@ -23,7 +23,7 @@ const Editor: React.FC = () => {
   const { editor } = useEditor();
 
   return (
-    <Box>
+    <Box id='scroll-container'>
       <PageTabs items={form.data} />
       {createChildren(form.data, editor.activePage)}
       {editor.activePage && <Box sx={{ mb: 2 }}><AddItemMenu item={editor.activePage} /></Box>}

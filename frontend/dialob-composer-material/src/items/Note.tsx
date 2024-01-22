@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Element } from 'react-scroll';
 import { DialobItem } from '../dialob';
 import { IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 
@@ -8,7 +9,7 @@ const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const hasIndicators = item.description || item.valueSetId || item.validations;
 
   return (
-    <>
+    <Element name={item.id}>
       <TableContainer component={Paper} sx={{ my: 2 }}>
         <Table>
           <TableBody>
@@ -31,7 +32,7 @@ const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Element>
   );
 };
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import { ListItem, ListItemText, Typography, styled } from '@mui/material';
-import { TreeItem, ItemId } from '@atlaskit/tree';
 import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
+import { TreeItem, ItemId } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
-import { DialobItem } from '../../dialob';
+import { DialobItem, useComposer } from '../../dialob';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
 import { useEditor } from '../../editor';
 import { getErrorIcon, useErrorColor } from '../../utils/ErrorUtils';
+import { scrollToItem } from '../../utils/ScrollUtils';
 
 
 interface TreeItemProps {
@@ -49,8 +50,16 @@ const getTypeIcon = (item: DialobItem, isPage: boolean) => {
 }
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
-  const { editor } = useEditor();
+  const { editor, setActivePage } = useEditor();
+  const { form } = useComposer();
   const errorColor = useErrorColor(editor.errors, item.data.item);
+  const itemId = item.data.item.id;
+
+  const handleScrollTo = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    scrollToItem(itemId, Object.values(form.data), editor.activePage, setActivePage);
+  }
+
   return (
     <ListItem
       ref={provided.innerRef}
@@ -59,7 +68,7 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
     >
       {getIcon(item, onExpand, onCollapse)}
       {errorColor ? getErrorIcon(editor.errors, item.data.item) : getTypeIcon(item.data.item, item.data.isPage)}
-      <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }}>
+      <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo}>
         <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{item.data ? item.data.title : ''}</Typography>
       </ListItemText>
     </ListItem>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Element } from 'react-scroll';
 import { DialobItem } from '../dialob';
 import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, VisibilityField, StyledTable } from './ItemComponents';
 import { useEditor } from '../editor';
@@ -13,7 +14,7 @@ const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props 
   const hasIndicators = item.description || item.valueSetId || item.validations;
 
   return (
-    <>
+    <Element name={item.id}>
       <TableContainer component={Paper} sx={{ my: 2 }}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
@@ -42,7 +43,7 @@ const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props 
           </TableBody>
         </StyledTable>
       </TableContainer>
-    </>
+    </Element>
   );
 };
 

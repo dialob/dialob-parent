@@ -1,6 +1,7 @@
 import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Element } from 'react-scroll';
 import { DialobItem, DialobItems, useComposer } from '../dialob';
 import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMenu, StyledTable, VisibilityField } from './ItemComponents';
 import { itemFactory } from './ItemFactory';
@@ -24,7 +25,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
   const hasIndicators = item.description || item.valueSetId || item.validations;
 
   return (
-    <>
+    <Element name={item.id}>
       <TableContainer component={Paper} sx={{ my: 2, }}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
@@ -70,7 +71,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
           </TableBody>
         </StyledTable>
       </TableContainer>
-    </>
+    </Element>
   );
 };
 
