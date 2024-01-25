@@ -1,12 +1,12 @@
 import { Session as DialobSession } from '@dialob/fill-api';
-import React, { useEffect, useMemo } from 'react';
+import React, { PropsWithChildren, useEffect, useMemo } from 'react';
 import { SessionContext } from './context/sessionContext';
 
 export interface SessionProps {
   session: DialobSession;
   locale?: string;
 };
-export const Session: React.FC<SessionProps> = ({ session, children, locale }) => {
+export const Session: React.FC<PropsWithChildren<SessionProps>> = ({ session, children, locale }) => {
   useEffect(() => {
     session.pull();
   }, [session]);
