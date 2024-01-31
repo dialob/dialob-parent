@@ -19,6 +19,7 @@ import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.session.boot.Application;
 import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -158,6 +159,73 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     }).execute();
   }
 
+
+  @Test
+  public void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
+    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
+      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+
+    addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
+    addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("selection1","note1"));
+    addItem(formBuilder, "selection1", builder -> builder.type("multichoice").valueSetId("vs1"));
+    addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your selection is {selection1}"));
+
+    FormValueSet formValueSetBean = ImmutableFormValueSet.builder().id("vs1").addEntries(
+      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selectino 1").build(),
+      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selectino 2").build(),
+      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selectino 3").build()
+    ).build();
+    formBuilder.addValueSets(formValueSetBean);
+
+    when(formDatabase.findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any())).thenReturn(formBuilder.build());
+    when(formDatabase.exists(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"))).thenReturn(true);
+
+    // -- doLogin();
+    createAndOpenSession("shouldInterpolateValueSetEntryyx")
+      .expectActivated()
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.items")
+          .containsOnly(
+            tuple(Action.Type.RESET,   null, null),
+            tuple(Action.Type.LOCALE,          null,            null),
+            tuple(Action.Type.ITEM, "selection1", null),
+            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "g1", asList("selection1","note1")),
+            tuple(Action.Type.VALUE_SET, null, null)
+          );
+      }).next()
+      .answerQuestion("selection1", asList("e2"))
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .containsOnly(
+            tuple(Action.Type.ITEM, "note1", "Your selection is Selectino 2")
+          );
+      }).next()
+      .answerQuestion("selection1", asList("e1", "e3"))
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .containsOnly(
+            tuple(Action.Type.ITEM, "note1", "Your selection is Selectino 1, Selectino 3")
+          );
+      }).next()
+      .answerQuestion("selection1",(String)null)
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "ids")
+          .containsOnly(
+            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("note1"))
+          );
+      })
+      .execute();
+
+    verify(formDatabase, times(2)).findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any());
+    verifyNoMoreInteractions(formDatabase);
+  }
+
+
   @Test
   public void shouldInterpolateValueSetEntryy() throws Exception {
 
@@ -210,7 +278,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.ITEM, "note1", "Your selection is selectino 1")
           );
       }).next()
-      .answerQuestion("selection1",null)
+      .answerQuestion("selection1", (String)null)
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids")
@@ -275,7 +343,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.ITEM, "note1", "Your value is 0.5")
           );
       }).next()
-      .answerQuestion("value1",null)
+      .answerQuestion("value1",(String)null)
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.label")

@@ -25,8 +25,10 @@ import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Value.Immutable
 public interface ValueSetEntryToStringOperator extends Expression {
@@ -46,10 +48,14 @@ public interface ValueSetEntryToStringOperator extends Expression {
     }
     Optional<ValueSetState> valueSetState = context.getValueSetState(getValueSetId());
     return valueSetState.map(valueSetState1 -> {
-      for (ValueSetState.Entry entry : valueSetState1.getEntries()) {
-        if (entry.getId().equals(eval)) {
-          return entry.getLabel();
+      if (eval instanceof String) { // For choice (answer is a scalar)
+        for (ValueSetState.Entry entry : valueSetState1.getEntries()) {
+          if (entry.getId().equals(eval)) {
+            return entry.getLabel();
+          }
         }
+      } else if (eval instanceof List) { // For multichocie (answer is a list)
+        return valueSetState1.getEntries().stream().filter(entry -> ((List<?>) eval).contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
       }
       return null;
     }).orElse(null);

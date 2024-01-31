@@ -29,6 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -211,4 +212,30 @@ class LocalizedLabelOperatorTest {
     verify(context).getOutputFormatter();
     verifyNoMoreInteractions(programBuilder, context);
   }
+
+  @Test
+  public void shouldInterpolateMultichoiceSelectionToValue() {
+    when(programBuilder.findValueSetIdForItem(IdUtils.toId("var1"))).thenReturn(Optional.of("vs1"));
+
+    LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));
+    when(context.getLanguage()).thenReturn("fi");
+    when(context.getItemValue(ref("var1"))).thenReturn(Arrays.asList("x1", "x2"));
+
+    ValueSetState valueSet = Mockito.mock(ValueSetState.class);
+    when(valueSet.getEntries()).thenReturn(ImmutableList.of(
+        ValueSetState.Entry.of("x1","Choice 1"),
+        ValueSetState.Entry.of("x2","Choice 2")
+      )
+    );
+    when(context.getValueSetState(ImmutableValueSetId.of("vs1"))).thenReturn(Optional.of(valueSet));
+
+    assertEquals("Otsikko Choice 1, Choice 2", operator.eval(context));
+    verify(context, atLeastOnce()).getLanguage();
+    verify(context).getItemValue(ref("var1"));
+    verify(context).getValueSetState(ImmutableValueSetId.of("vs1"));
+    verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
+    verify(valueSet).getEntries();
+    verifyNoMoreInteractions(programBuilder, context, valueSet);
+  }
+
 }
