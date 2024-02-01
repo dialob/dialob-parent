@@ -45,7 +45,19 @@ var convertBranch = (branch) => {
       item.className.splice(item.className.indexOf('survey'), 1);
     }
 
-    // Convert null descriptions
+    // Clean up notes with dangling rudiments
+    if (item.type === 'note') {
+      if (item.required) {
+        console.error("Required set for note", item.id);
+        delete item.required;
+      }
+      if (item.validations) {
+        console.error("Validations set for note", item.id);
+        delete item.validations;
+      }      
+    }
+
+    // Convert null descriptions and translations
     if (item.description === null) {
       delete item.description;
     } else {
@@ -54,11 +66,18 @@ var convertBranch = (branch) => {
           delete item.description[langKey];
         }
       }
-    }
+    }  
 
     // Fix broken descriptions
     if (item.description && item.description['language']) {
       delete item.description.language;
+    }
+
+    // Clean rest of null atributes
+    for (const prop in item) {
+      if (item[prop] === null) {
+        delete item[prop];
+      }
     }
   }
 

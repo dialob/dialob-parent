@@ -1,3 +1,6 @@
+## 4.0.0
+- React v18
+
 ## 3.1.0
 ### Enhancements
 - Add React v17 as peerDependency version

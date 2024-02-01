@@ -1,6 +1,6 @@
 {
   "name": "@dialob/fill-react",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -18,12 +18,12 @@
   },
   "devDependencies": {
     "@dialob/fill-api": "^1.4.1",
-    "@types/react": "^16.8.17",
+    "@types/react": "^18.2.0",
     "typescript": "~3.7.5"
   },
   "peerDependencies": {
     "@dialob/fill-api": "^1.4.1",
-    "react": "^16.8.0 || ^17.0.0"
+    "react": "^18.2.0"
   },
   "dependencies": {}
 }

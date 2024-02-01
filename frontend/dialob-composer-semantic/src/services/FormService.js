@@ -9,10 +9,11 @@ function checkResponse(response) {
 }
 
 export default class FormService {
-  constructor(baseUrl, csrf, tenantId) {
+  constructor(baseUrl, csrf, tenantId, credentialMode) {
     this.baseUrl = baseUrl;
     this.csrf = csrf;
     this.tenantId = tenantId;
+    this.credentialMode = credentialMode || 'include';
   }
 
   doFetch(url, method, body = undefined) {
@@ -25,7 +26,7 @@ export default class FormService {
     }
     let options = {
       method,
-      credentials: 'include',
+      credentials: this.credentialMode,
       headers
     };
     if (body) {

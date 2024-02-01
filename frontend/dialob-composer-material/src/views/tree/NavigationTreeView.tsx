@@ -9,7 +9,8 @@ import Tree, {
   TreeDestinationPosition,
   RenderItemParams,
 } from '@atlaskit/tree';
-import { useComposer } from '../../dialob';
+import { DialobItem, useComposer } from '../../dialob';
+import { useEditor } from '../../editor';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
 
@@ -26,8 +27,8 @@ const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): bo
   if (destination.parentId.toString().includes('root')) {
     return true;
   }
-  const destinationItem = tree.items[destination.parentId];
-  if (destinationItem.data.type === 'group' || destinationItem.data.type === 'surveygroup' || destinationItem.data.type === 'rowgroup') {
+  const destinationItem: DialobItem = tree.items[destination.parentId].data.item;
+  if (destinationItem.type === 'group' || destinationItem.type === 'surveygroup' || destinationItem.type === 'rowgroup') {
     return true;
   }
   return false;
@@ -51,11 +52,12 @@ const renderItem = ({ item, onExpand, onCollapse, provided }: RenderItemParams) 
 const NavigationTreeView: React.FC = () => {
   const theme = useTheme();
   const { form, moveItem } = useComposer();
+  const { editor } = useEditor();
   const [tree, setTree] = useState<TreeData>(INIT_TREE);
 
   React.useEffect(() => {
-    setTree(buildTreeFromForm(form.data));
-  }, [form]);
+    setTree(buildTreeFromForm(form.data, editor.activeFormLanguage));
+  }, [form, editor.activeFormLanguage]);
 
   const onExpand = (itemId: ItemId) => {
     setTree((prevTree) => mutateTree(prevTree, itemId, { isExpanded: true }));

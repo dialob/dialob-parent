@@ -32,4 +32,3 @@ export type ComposerAction =
 
   | { type: 'addLanguage', language: string, copyFrom?: string}
   | { type: 'deleteLanguage', language: string}
-

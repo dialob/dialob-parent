@@ -5,6 +5,7 @@ import {DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS} fr
 import Item, {connectItem} from './items/Item';
 import SimpleField from './items/SimpleField';
 import Group from './items/Group';
+import Note from './items/Note';
 import ItemMenu from './components/ItemMenu';
 import * as DialobActions from './actions/editor';
 import * as PropEditors from './components/propEditors/';
@@ -20,6 +21,7 @@ export {
   Item,
   SimpleField,
   Group,
+  Note,
   connectItem,
   ItemMenu,
   DialobActions,

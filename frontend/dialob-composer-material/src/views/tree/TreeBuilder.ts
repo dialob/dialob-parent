@@ -2,7 +2,7 @@ import { ItemId, TreeData } from "@atlaskit/tree";
 import { DialobItem } from "../../dialob";
 
 
-export const buildTreeFromForm = (formData: { [item: string]: DialobItem }): TreeData => {
+export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string): TreeData => {
   const tree: TreeData = {
     rootId: 'root',
     items: {
@@ -30,13 +30,14 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }): Tre
 
   const addChild = (item: DialobItem, parentId: ItemId) => {
     const id = item.id;
-    const type = item.type === 'group' && parentId === 'root' ? 'page' : item.type;
+    const title = item.label && item.label[language] ? item.label[language] : id;
     tree.items[id] = {
       id,
       children: [],
       data: {
-        title: id,
-        type
+        title,
+        isPage: item.type === 'group' && parentId === 'root',
+        item,
       },
       isExpanded: true,
       hasChildren: item.items?.length ? true : false,

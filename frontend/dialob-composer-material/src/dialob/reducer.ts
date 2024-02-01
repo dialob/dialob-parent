@@ -91,7 +91,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
 
   // Collect item and children to delete
   const collect = (target:string):string[] => {
-    let subItems = state.data[target].items;
+    const subItems = state.data[target].items;
     if (subItems) {
       return [target].concat(subItems.reduce((l, i) => l.concat(collect(i)), [] as string[]));
     } else {

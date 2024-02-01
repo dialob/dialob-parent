@@ -1,4 +1,8 @@
 
+# 2.10.0
+* Made fetch credential mode configurable (default: include)
+* Expose "Note" item type for extensions
+
 # 2.9.4
 
 *  Added new component "ListLabel" for displaying different types of list (Global, Empty, Local)
