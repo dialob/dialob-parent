@@ -4,7 +4,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { Dialog, DialogTitle, DialogContent, Typography, Box, TextField, Button, IconButton } from '@mui/material';
 import { Add, Close } from '@mui/icons-material';
 import { useEditor } from '../editor';
-import { DialobItem, ValidationRule, useComposer } from '../dialob';
+import { ValidationRule, useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
 
 interface IndexedRule {
@@ -25,10 +25,10 @@ const indexValidationRules = (existingRules: ValidationRule[]) => {
 }
 
 const ValidationRuleEditDialog: React.FC = () => {
-  const { form, createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
-  const item: DialobItem = Object.values(form.data).find((item) => item.id === 'workRelatedRiskAnalysis')!;
-  const existingRules = item.validations || [];
-  const { editor, setValidationRuleEditDialogOpen } = useEditor();
+  const { createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
+  const { editor, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
+  const item = editor.activeItem;
+  const existingRules = item?.validations || [];
   const open = editor.validationRuleEditDialogOpen || false;
   const [rules, setRules] = React.useState<IndexedRule[]>(() => indexValidationRules(existingRules));
   const [errors, setErrors] = React.useState<string[]>([]);
@@ -36,24 +36,27 @@ const ValidationRuleEditDialog: React.FC = () => {
 
   const handleClose = () => {
     setValidationRuleEditDialogOpen(false);
+    setActiveItem(undefined);
   }
 
   const handleClick = () => {
-    rules.forEach((r, index) => {
-      if (r.validationRule.rule && existingRules.length > 0 && existingRules[index] && r.validationRule.rule !== existingRules[index].rule) {
-        setValidationExpression(item.id, r.index, r.validationRule.rule);
-      }
-      if (r.validationRule.message && existingRules.length > 0 && existingRules[index] && existingRules[index].message &&
-        existingRules[index].message![activeLanguage] && r.validationRule.message[activeLanguage] !== existingRules[index].message![activeLanguage]) {
-        setValidationMessage(item.id, r.index, activeLanguage, r.validationRule.message[activeLanguage]);
-      }
-      if (existingRules.length === 0 || r.index >= existingRules.length) {
-        createValidation(item.id, r.validationRule);
-      }
-      if (index !== r.index) {
-        deleteValidation(item.id, r.index);
-      }
-    });
+    if (item) {
+      rules.forEach((r, index) => {
+        if (r.validationRule.rule && existingRules.length > 0 && existingRules[index] && r.validationRule.rule !== existingRules[index].rule) {
+          setValidationExpression(item.id, r.index, r.validationRule.rule);
+        }
+        if (r.validationRule.message && existingRules.length > 0 && existingRules[index] && existingRules[index].message &&
+          existingRules[index].message![activeLanguage] && r.validationRule.message[activeLanguage] !== existingRules[index].message![activeLanguage]) {
+          setValidationMessage(item.id, r.index, activeLanguage, r.validationRule.message[activeLanguage]);
+        }
+        if (existingRules.length === 0 || r.index >= existingRules.length) {
+          createValidation(item.id, r.validationRule);
+        }
+        if (index !== r.index) {
+          deleteValidation(item.id, r.index);
+        }
+      });
+    }
     handleClose();
   }
 
@@ -73,11 +76,17 @@ const ValidationRuleEditDialog: React.FC = () => {
           setErrors(ruleErrors);
         }, 3000);
         return () => clearTimeout(id);
+      } else {
+        setErrors([]);
       }
     } else {
       setErrors([]);
     }
   }, [rules]);
+
+  if (!item) {
+    return null;
+  }
 
   return (
     <Dialog open={open} maxWidth='md' fullWidth>

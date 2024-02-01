@@ -4,13 +4,13 @@ import { Dialog, DialogTitle, DialogContent, Button, Typography, Box, TextareaAu
 import { Visibility } from '@mui/icons-material';
 import { useEditor } from '../editor';
 import { FormattedMessage } from 'react-intl';
-import { DialobItem, useComposer } from '../dialob';
+import { useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
 
 const TextEditDialog: React.FC = () => {
-  const { form, updateItem } = useComposer();
-  const item: DialobItem = Object.values(form.data)[2];
-  const { editor, setTextEditDialogType } = useEditor();
+  const { updateItem } = useComposer();
+  const { editor, setTextEditDialogType, setActiveItem } = useEditor();
+  const item = editor.activeItem;
   const open = editor.textEditDialogType !== undefined;
   const [activeLanguage, setActiveLanguage] = React.useState(editor.activeFormLanguage);
   const [preview, setPreview] = React.useState(false);
@@ -18,20 +18,25 @@ const TextEditDialog: React.FC = () => {
 
   const handleClose = () => {
     setTextEditDialogType(undefined);
+    setActiveItem(undefined);
   }
 
   const handleClick = () => {
-    if (editor.textEditDialogType && localizedText) {
+    if (editor.textEditDialogType && item && localizedText) {
       updateItem(item.id, editor.textEditDialogType, localizedText, activeLanguage);
       handleClose();
     }
   }
 
   React.useEffect(() => {
-    if (editor.textEditDialogType) {
+    if (editor.textEditDialogType && item) {
       setLocalizedText(item[editor.textEditDialogType]?.[activeLanguage]);
     }
   }, [activeLanguage]);
+
+  if (!item) {
+    return null;
+  }
 
   return (
     <Dialog open={open} maxWidth='md' fullWidth>

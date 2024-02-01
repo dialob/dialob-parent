@@ -128,8 +128,15 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
 }
 
 export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
+  const { setActiveItem, setTextEditDialogType } = useEditor();
+
+  const handleClick = (): void => {
+    setActiveItem(item);
+    setTextEditDialogType('label');
+  }
+
   return (
-    <ItemHeaderButton variant='text' color='inherit'>
+    <ItemHeaderButton variant='text' color='inherit' onClick={handleClick}>
       <Label item={item} />
     </ItemHeaderButton>
   );
@@ -365,11 +372,19 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 }
 
 export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
+  const { setActiveItem, setRuleEditDialogType } = useEditor();
+
+  const handleClick = (): void => {
+    setActiveItem(item);
+    setRuleEditDialogType('visibility');
+  }
+
   return (
     <FullWidthButton
       variant='text'
       color='inherit'
       endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
+      onClick={handleClick}
     >
       {item.activeWhen ?
         <Typography fontFamily='monospace' textTransform='none'>

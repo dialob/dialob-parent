@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Typography, Box } from '@mui/material';
 import { RuleEditDialogType, useEditor } from '../editor';
-import { DialobItem, useComposer } from '../dialob';
+import { useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
@@ -16,33 +16,34 @@ const resolveRulePropName = (ruleType: RuleEditDialogType): string => {
 }
 
 const RuleEditDialog: React.FC = () => {
-  const { form, updateItem } = useComposer();
-  const item: DialobItem = form.data['workRelatedRiskAnalysis'];
-  const { editor, setRuleEditDialogType } = useEditor();
+  const { updateItem } = useComposer();
+  const { editor, setRuleEditDialogType, setActiveItem } = useEditor();
+  const item = editor.activeItem;
   const open = editor.ruleEditDialogType !== undefined;
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
   const [errors, setErrors] = React.useState<string[]>([]);
 
   const handleClose = () => {
     setRuleEditDialogType(undefined);
+    setActiveItem(undefined);
   }
 
   const handleClick = () => {
-    if (editor.ruleEditDialogType && ruleCode) {
+    if (editor.ruleEditDialogType && item && ruleCode) {
       updateItem(item.id, resolveRulePropName(editor.ruleEditDialogType), ruleCode);
       handleClose();
     }
   }
 
   React.useEffect(() => {
-    if (editor.ruleEditDialogType) {
+    if (editor.ruleEditDialogType && item) {
       setRuleCode(item[resolveRulePropName(editor.ruleEditDialogType)]);
     }
   }, [editor.ruleEditDialogType]);
 
   React.useEffect(() => {
     // 3 seconds after every code change, check if rule is valid and set error message
-    if (ruleCode !== '') {
+    if (ruleCode && ruleCode.length > 0) {
       // TODO add rule error check
       // random boolean for now
       const invalid = Math.random() < 0.5;
@@ -51,11 +52,17 @@ const RuleEditDialog: React.FC = () => {
           setErrors(['Invalid rule: ' + ruleCode]);
         }, 3000);
         return () => clearTimeout(id);
+      } else {
+        setErrors([]);
       }
     } else {
       setErrors([]);
     }
   }, [ruleCode]);
+
+  if (!item) {
+    return null;
+  }
 
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
