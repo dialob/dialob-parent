@@ -189,6 +189,13 @@ public class WebSocketRequestTestTemplate {
         .id(questionId).build());
     }
 
+    public ExpectionBuilder answerQuestion(String questionId, List<String> answer) {
+      return when("answerQuestion(\"" + questionId + "\",\"" + answer + "\")", ImmutableAction.builder()
+        .type(Action.Type.ANSWER)
+        .answer(answer)
+        .id(questionId).build());
+    }
+
     public ExpectionBuilder setLocale(String locale) {
       return when("setLocale(\"" + locale + "\")", ActionsFactory.setLocale(locale));
     }
