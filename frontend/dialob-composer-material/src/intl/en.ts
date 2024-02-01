@@ -84,6 +84,9 @@ const en = {
   'buttons.cancel': 'Cancel',
   'buttons.confirm': 'Confirm',
 
+  'buttons.cancel': 'Cancel',
+  'buttons.confirm': 'Confirm',
+
 };
 
 export default en;
