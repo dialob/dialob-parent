@@ -128,8 +128,15 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
 }
 
 export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
+  const { setActiveItem, setTextEditDialogType } = useEditor();
+
+  const handleClick = (): void => {
+    setActiveItem(item);
+    setTextEditDialogType('label');
+  }
+
   return (
-    <ItemHeaderButton variant='text' color='inherit'>
+    <ItemHeaderButton variant='text' color='inherit' onClick={handleClick}>
       <Label item={item} />
     </ItemHeaderButton>
   );
@@ -137,19 +144,28 @@ export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
+  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
   const valueSetName = isGlobalValueSet && isGlobalValueSet.label ? 'Global list: ' + isGlobalValueSet.label : 'Local list';
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation'): void => {
     e.stopPropagation();
+    if (dialogType === 'description') {
+      setTextEditDialogType('description');
+      setActiveItem(item);
+    }
+    if (dialogType === 'validation') {
+      setValidationRuleEditDialogOpen(true);
+      setActiveItem(item);
+    }
   }
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
-      {item.description && <IndicatorChip onClick={handleClick} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.description && <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
       {item.valueSetId && <IndicatorChip onClick={handleClick} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
-      {item.validations && <IndicatorChip onClick={handleClick} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.validations && <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
     </Box>
   );
 }
@@ -201,7 +217,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form, addItem } = useComposer();
-  const { setConfirmationDialogType, setActiveItem } = useEditor();
+  const { setConfirmationDialogType, setTextEditDialogType, setActiveItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -241,6 +257,13 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
     setChosenCategory(null);
   }
 
+  const handleDescription = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose(e, 1);
+    setActiveItem(item);
+    setTextEditDialogType('description');
+  }
+
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     handleClose(e, 1);
@@ -272,6 +295,10 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
         <MenuItem onClick={(e) => handleClose(e, 1)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.options' />
+        </MenuItem>
+        <MenuItem onClick={(e) => handleDescription(e)}>
+          <Description sx={{ mr: 1 }} fontSize='small' />
+          <FormattedMessage id='menus.description' />
         </MenuItem>
         <MenuItem onClick={(e) => handleDelete(e)}>
           <Close sx={{ mr: 1 }} fontSize='small' />
@@ -365,11 +392,19 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 }
 
 export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
+  const { setActiveItem, setRuleEditDialogType } = useEditor();
+
+  const handleClick = (): void => {
+    setActiveItem(item);
+    setRuleEditDialogType('visibility');
+  }
+
   return (
     <FullWidthButton
       variant='text'
       color='inherit'
       endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
+      onClick={handleClick}
     >
       {item.activeWhen ?
         <Typography fontFamily='monospace' textTransform='none'>
