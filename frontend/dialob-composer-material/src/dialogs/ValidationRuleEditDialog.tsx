@@ -16,7 +16,12 @@ const ValidationRuleEditDialog: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
   const { editor, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
   const item = editor.activeItem;
-  const existingRules = item?.validations || [];
+  const existingRules = React.useMemo(() => {
+    if (item && item.validations) {
+      return item.validations;
+    }
+    return [];
+  }, [item]);
   const open = editor.validationRuleEditDialogOpen || false;
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [errors, setErrors] = React.useState<string[]>([]);
@@ -56,7 +61,7 @@ const ValidationRuleEditDialog: React.FC = () => {
       });
       setRules(newRules);
     }
-  }, [item]);
+  }, [item, existingRules]);
 
   React.useEffect(() => {
     if (rules.length > 0) {

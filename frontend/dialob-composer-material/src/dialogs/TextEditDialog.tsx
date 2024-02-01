@@ -32,7 +32,7 @@ const TextEditDialog: React.FC = () => {
     if (editor.textEditDialogType && item) {
       setLocalizedText(item[editor.textEditDialogType]?.[activeLanguage]);
     }
-  }, [activeLanguage]);
+  }, [activeLanguage, editor.textEditDialogType, item]);
 
   if (!item) {
     return null;

@@ -39,7 +39,7 @@ const RuleEditDialog: React.FC = () => {
     if (editor.ruleEditDialogType && item) {
       setRuleCode(item[resolveRulePropName(editor.ruleEditDialogType)]);
     }
-  }, [editor.ruleEditDialogType]);
+  }, [editor.ruleEditDialogType, item]);
 
   React.useEffect(() => {
     // 3 seconds after every code change, check if rule is valid and set error message
