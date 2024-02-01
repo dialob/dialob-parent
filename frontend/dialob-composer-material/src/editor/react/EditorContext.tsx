@@ -28,6 +28,9 @@ const DEMO_ERRORS: EditorError[] = [
 const INITIAL_EDITOR: EditorState = {
   activeFormLanguage: 'en',
   errors: DEMO_ERRORS,
+  textEditDialogType: undefined,
+  ruleEditDialogType: undefined,
+  validationRuleEditDialogOpen: true
 };
 
 export const EditorContext = React.createContext<{ state: EditorState, dispatch: Dispatch<EditorAction> }>({

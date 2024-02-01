@@ -12,6 +12,7 @@ const en = {
   'version.latest': 'LATEST',
   'search': 'Search',
   'preview': 'Preview',
+  'help': 'Help',
 
   'page.label': 'Page label',
 
@@ -79,6 +80,9 @@ const en = {
   'errors.message.UNKNOWN_REDUCER_OPERATOR': 'Unknown multirow aggregate function',
   'errors.message.OPERATOR_CANNOT_REDUCE_TYPE': 'This aggregate function can\'t be used for this item type',
   'errors.message.UNKNOWN_FUNCTION': 'Undefined function',
+
+  'buttons.cancel': 'Cancel',
+  'buttons.confirm': 'Confirm',
 
 };
 

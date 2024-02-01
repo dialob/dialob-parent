@@ -1,0 +1,80 @@
+import React from 'react';
+import { Dialog, DialogTitle, DialogContent, Typography, Box } from '@mui/material';
+import { RuleEditDialogType, useEditor } from '../editor';
+import { DialobItem, useComposer } from '../dialob';
+import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+
+
+const resolveRulePropName = (ruleType: RuleEditDialogType): string => {
+  switch (ruleType) {
+    case 'visibility': return 'activeWhen';
+    case 'requirement': return 'required';
+    default: return '';
+  }
+}
+
+const RuleEditDialog: React.FC = () => {
+  const { form, updateItem } = useComposer();
+  const item: DialobItem = form.data['workRelatedRiskAnalysis'];
+  const { editor, setRuleEditDialogType } = useEditor();
+  const open = editor.ruleEditDialogType !== undefined;
+  const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
+  const [errors, setErrors] = React.useState<string[]>([]);
+
+  const handleClose = () => {
+    setRuleEditDialogType(undefined);
+  }
+
+  const handleClick = () => {
+    if (editor.ruleEditDialogType && ruleCode) {
+      updateItem(item.id, resolveRulePropName(editor.ruleEditDialogType), ruleCode);
+      handleClose();
+    }
+  }
+
+  React.useEffect(() => {
+    if (editor.ruleEditDialogType) {
+      setRuleCode(item[resolveRulePropName(editor.ruleEditDialogType)]);
+    }
+  }, [editor.ruleEditDialogType]);
+
+  React.useEffect(() => {
+    // 3 seconds after every code change, check if rule is valid and set error message
+    if (ruleCode !== '') {
+      // TODO add rule error check
+      // random boolean for now
+      const invalid = Math.random() < 0.5;
+      if (invalid) {
+        const id = setTimeout(() => {
+          setErrors(['Invalid rule: ' + ruleCode]);
+        }, 3000);
+        return () => clearTimeout(id);
+      }
+    } else {
+      setErrors([]);
+    }
+  }, [ruleCode]);
+
+  return (
+    <Dialog open={open} maxWidth='md' fullWidth>
+      <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Typography>{item.id}: {editor.ruleEditDialogType}</Typography>
+        <Box flexGrow={1} />
+        <DialogHelpButton helpUrl='https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del' />
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ mb: 2 }}>
+          <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true })]} />
+        </Box>
+        {errors.length > 0 && <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'error.main', p: 2 }}>
+          {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
+        </Box>}
+      </DialogContent>
+      <DialogActionButtons handleClose={handleClose} handleClick={handleClick} />
+    </Dialog>
+  );
+};
+
+export default RuleEditDialog;
