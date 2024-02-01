@@ -2,7 +2,7 @@ import Editor from "../components/Editor";
 import { DialobCategoryType, DialobItemTemplate, DialobItemType } from "../dialob";
 
 
-interface ItemTypeConfig {
+export interface ItemTypeConfig {
   categories: {
     title: string,
     type: DialobCategoryType,

@@ -13,6 +13,7 @@ import { DialobItem, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
+import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
 
 
 const INIT_TREE: TreeData = {
@@ -28,7 +29,7 @@ const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): bo
     return true;
   }
   const destinationItem: DialobItem = tree.items[destination.parentId].data.item;
-  if (destinationItem.type === 'group' || destinationItem.type === 'surveygroup' || destinationItem.type === 'rowgroup') {
+  if (DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(destinationItem))?.props.treeCollapsible) {
     return true;
   }
   return false;
@@ -74,7 +75,10 @@ const NavigationTreeView: React.FC = () => {
     if (!destination) {
       return;
     }
-    if (!isParentNode(tree, destination)) {
+    const sourceItemId = tree.items[source.parentId].children[source.index!];
+    const sourceItem = tree.items[sourceItemId].data.item.type;
+    const destinationItem = tree.items[destination.parentId].data.item.type;
+    if (!canContain(destinationItem, sourceItem)) {
       return;
     }
     if (isEmptyParentNode(tree, destination)) {

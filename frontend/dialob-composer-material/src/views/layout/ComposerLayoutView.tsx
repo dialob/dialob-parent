@@ -1,33 +1,39 @@
 import React from 'react';
-import { Drawer, Box, useTheme, CSSObject, Container } from '@mui/material';
+import { Drawer, Box, Container } from '@mui/material';
 import MenuBar from './MenuBar';
 import NavigationPane from './NavigationPane';
 import EditorArea from './EditorArea';
 import ErrorPane from './ErrorPane';
+import { useEditor } from '../../editor';
+import ConfirmationDialog from '../../dialogs/ConfirmationDialog';
+import { MENU_HEIGHT, SCROLL_SX } from '../../theme/siteTheme';
 
 const ComposerLayoutView: React.FC = () => {
-  const theme = useTheme();
-  const menuHeight = (theme.components?.MuiStack?.styleOverrides?.root as CSSObject)?.height;
+  const { editor } = useEditor();
+  const hasErrors = editor.errors.length > 0;
 
   return (
-    <Box display='flex'>
-      <MenuBar />
-      <Drawer variant="permanent">
-        <Box sx={{ mt: `${menuHeight}px` }}>
-          <NavigationPane />
-        </Box>
-      </Drawer>
-      <Container>
-        <Box sx={{ mt: `${menuHeight}px` }}>
-          <EditorArea />
-        </Box>
-      </Container>
-      <Drawer variant="permanent" anchor="right">
-        <Box sx={{ mt: `${menuHeight}px` }}>
-          <ErrorPane />
-        </Box>
-      </Drawer>
-    </Box>
+    <>
+      <ConfirmationDialog />
+      <Box display='flex'>
+        <MenuBar />
+        <Drawer variant="permanent">
+          <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }}>
+            <NavigationPane />
+          </Box>
+        </Drawer>
+        <Container>
+          <Box sx={{ mt: `${MENU_HEIGHT}px` }}>
+            <EditorArea />
+          </Box>
+        </Container>
+        {hasErrors && <Drawer variant="permanent" anchor="right">
+          <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }}>
+            <ErrorPane />
+          </Box>
+        </Drawer>}
+      </Box>
+    </>
   );
 };
 
