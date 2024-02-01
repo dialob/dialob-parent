@@ -1,4 +1,4 @@
-import { ConfirmationDialogType, EditorError } from "./types";
+import { ConfirmationDialogType, TextEditDialogType, RuleEditDialogType, EditorError } from "./types";
 import { DialobItem } from "../dialob";
 
 export type EditorAction =
@@ -6,5 +6,8 @@ export type EditorAction =
   | { type: 'setActiveFormLanguage', language: string }
   | { type: 'setErrors', errors: EditorError[] }
   | { type: 'clearErrors' }
-  | { type: 'setConfirmationDialogType', dialogType?: ConfirmationDialogType }
   | { type: 'setActiveItem', item?: DialobItem }
+  | { type: 'setConfirmationDialogType', dialogType?: ConfirmationDialogType }
+  | { type: 'setTextEditDialogType', dialogType?: TextEditDialogType }
+  | { type: 'setRuleEditDialogType', dialogType?: RuleEditDialogType }
+  | { type: 'setValidationRuleEditDialogOpen', open: boolean }
