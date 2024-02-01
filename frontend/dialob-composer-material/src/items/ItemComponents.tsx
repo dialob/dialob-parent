@@ -144,19 +144,28 @@ export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
+  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
   const valueSetName = isGlobalValueSet && isGlobalValueSet.label ? 'Global list: ' + isGlobalValueSet.label : 'Local list';
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation'): void => {
     e.stopPropagation();
+    if (dialogType === 'description') {
+      setTextEditDialogType('description');
+      setActiveItem(item);
+    }
+    if (dialogType === 'validation') {
+      setValidationRuleEditDialogOpen(true);
+      setActiveItem(item);
+    }
   }
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
-      {item.description && <IndicatorChip onClick={handleClick} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.description && <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
       {item.valueSetId && <IndicatorChip onClick={handleClick} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
-      {item.validations && <IndicatorChip onClick={handleClick} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.validations && <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
     </Box>
   );
 }

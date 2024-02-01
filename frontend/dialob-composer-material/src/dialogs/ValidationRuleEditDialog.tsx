@@ -12,25 +12,13 @@ interface IndexedRule {
   validationRule: ValidationRule;
 }
 
-const indexValidationRules = (existingRules: ValidationRule[]) => {
-  if (existingRules.length > 0) {
-    const newRules: IndexedRule[] = [];
-    existingRules.forEach((validation, index) => {
-      newRules.push({ index, validationRule: { ...validation } });
-    });
-    return newRules;
-  } else {
-    return [];
-  }
-}
-
 const ValidationRuleEditDialog: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
   const { editor, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const existingRules = item?.validations || [];
   const open = editor.validationRuleEditDialogOpen || false;
-  const [rules, setRules] = React.useState<IndexedRule[]>(() => indexValidationRules(existingRules));
+  const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [errors, setErrors] = React.useState<string[]>([]);
   const [activeLanguage, setActiveLanguage] = React.useState(editor.activeFormLanguage);
 
@@ -61,6 +49,16 @@ const ValidationRuleEditDialog: React.FC = () => {
   }
 
   React.useEffect(() => {
+    if (existingRules.length > 0) {
+      const newRules: IndexedRule[] = [];
+      existingRules.forEach((validation, index) => {
+        newRules.push({ index, validationRule: { ...validation } });
+      });
+      setRules(newRules);
+    }
+  }, [item]);
+
+  React.useEffect(() => {
     if (rules.length > 0) {
       const ruleErrors: string[] = [];
       rules.forEach((rule) => {
@@ -82,7 +80,7 @@ const ValidationRuleEditDialog: React.FC = () => {
     } else {
       setErrors([]);
     }
-  }, [rules]);
+  }, [rules, item]);
 
   if (!item) {
     return null;
