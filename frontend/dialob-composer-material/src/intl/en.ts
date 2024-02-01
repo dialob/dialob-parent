@@ -12,9 +12,13 @@ const en = {
   'version.latest': 'LATEST',
   'search': 'Search',
   'preview': 'Preview',
+  'help': 'Help',
 
   'page.label': 'Page label',
   'visibility': 'Visibility',
+
+  'buttons.cancel': 'Cancel',
+  'buttons.confirm': 'Confirm',
 
 };
 

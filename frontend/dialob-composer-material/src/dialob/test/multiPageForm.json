@@ -322,6 +322,13 @@
             "en": "English validation message"
           },
           "rule": "'analysis4' in workRelatedRiskAnalysis and count(workRelatedRiskAnalysis) > 1"
+        },
+        {
+          "message": {
+            "fi": "Finnish 2",
+            "en": "English validation message 2"
+          },
+          "rule": "'analysis10' in workRelatedRiskAnalysis and count(workRelatedRiskAnalysis) > 2"
         }
       ],
       "valueSetId": "vs39"

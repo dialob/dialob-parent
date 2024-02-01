@@ -4,7 +4,10 @@ import { EditorAction } from '../actions';
 import { EditorState } from '../types';
 
 const INITIAL_EDITOR: EditorState = {
-  activeFormLanguage: 'en'
+  activeFormLanguage: 'en',
+  textEditDialogType: undefined,
+  ruleEditDialogType: undefined,
+  validationRuleEditDialogOpen: true
 };
 
 export const EditorContext = React.createContext<{ state: EditorState, dispatch: Dispatch<EditorAction> }>({
