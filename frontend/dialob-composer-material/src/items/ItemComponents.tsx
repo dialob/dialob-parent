@@ -217,7 +217,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form, addItem } = useComposer();
-  const { setConfirmationDialogType, setActiveItem } = useEditor();
+  const { setConfirmationDialogType, setTextEditDialogType, setActiveItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -257,6 +257,13 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
     setChosenCategory(null);
   }
 
+  const handleDescription = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose(e, 1);
+    setActiveItem(item);
+    setTextEditDialogType('description');
+  }
+
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     handleClose(e, 1);
@@ -288,6 +295,10 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
         <MenuItem onClick={(e) => handleClose(e, 1)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.options' />
+        </MenuItem>
+        <MenuItem onClick={(e) => handleDescription(e)}>
+          <Description sx={{ mr: 1 }} fontSize='small' />
+          <FormattedMessage id='menus.description' />
         </MenuItem>
         <MenuItem onClick={(e) => handleDelete(e)}>
           <Close sx={{ mr: 1 }} fontSize='small' />

@@ -21,6 +21,7 @@ const en = {
   'buttons.confirm': 'Confirm',
 
   'menus.options': 'Options',
+  'menus.description': 'Description',
   'menus.change.id': 'Change ID',
   'menus.delete': 'Delete',
   'menus.duplicate': 'Duplicate',
