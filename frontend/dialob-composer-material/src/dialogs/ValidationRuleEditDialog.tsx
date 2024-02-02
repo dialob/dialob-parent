@@ -125,11 +125,12 @@ const ValidationRuleEditDialog: React.FC = () => {
                 }} extensions={[javascript({ jsx: true })]} />
               </Box>
               <Typography variant='caption'>Message</Typography>
-              <TextField fullWidth value={validationRule.message ? validationRule.message[activeLanguage] : ''} onChange={(e) => {
-                const newRules = [...rules];
-                newRules[index].validationRule.message = { ...newRules[index].validationRule.message, [activeLanguage]: e.target.value };
-                setRules(newRules);
-              }} />
+              <TextField fullWidth value={(validationRule.message && validationRule.message[activeLanguage]) ? validationRule.message[activeLanguage] : ''}
+                onChange={(e) => {
+                  const newRules = [...rules];
+                  newRules[index].validationRule.message = { ...newRules[index].validationRule.message, [activeLanguage]: e.target.value };
+                  setRules(newRules);
+                }} />
             </Box>
           )
         })}

@@ -14,7 +14,7 @@ const TextEditDialog: React.FC = () => {
   const open = item && editor.textEditDialogType !== undefined || false;
   const [activeLanguage, setActiveLanguage] = React.useState(editor.activeFormLanguage);
   const [preview, setPreview] = React.useState(false);
-  const [localizedText, setLocalizedText] = React.useState<string | undefined>(undefined);
+  const [localizedText, setLocalizedText] = React.useState<string>();
 
   const handleClose = () => {
     setTextEditDialogType(undefined);
@@ -30,7 +30,10 @@ const TextEditDialog: React.FC = () => {
 
   React.useEffect(() => {
     if (editor.textEditDialogType && item) {
-      setLocalizedText(item[editor.textEditDialogType]?.[activeLanguage]);
+      const localizedText = item[editor.textEditDialogType]?.[activeLanguage];
+      setLocalizedText(localizedText || '');
+    } else {
+      setLocalizedText('');
     }
   }, [activeLanguage, editor.textEditDialogType, item]);
 
