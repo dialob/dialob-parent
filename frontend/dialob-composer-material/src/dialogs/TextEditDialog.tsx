@@ -6,6 +6,7 @@ import { useEditor } from '../editor';
 import { FormattedMessage } from 'react-intl';
 import { useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
+import { markdownComponents } from '../defaults/markdown';
 
 const TextEditDialog: React.FC = () => {
   const { updateItem } = useComposer();
@@ -54,7 +55,9 @@ const TextEditDialog: React.FC = () => {
       </DialogTitle>
       <DialogContent>
         {preview ?
-          <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}><Markdown>{localizedText}</Markdown></Box> :
+          <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}>
+            <Markdown skipHtml components={markdownComponents}>{localizedText}</Markdown>
+          </Box> :
           <TextareaAutosize style={{ width: '100%' }} minRows={10} value={localizedText} onChange={(e) => setLocalizedText(e.target.value)} />
         }
       </DialogContent>
