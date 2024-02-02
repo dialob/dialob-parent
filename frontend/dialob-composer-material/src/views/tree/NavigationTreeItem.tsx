@@ -19,9 +19,10 @@ interface TreeItemProps {
 
 const MAX_TREE_ITEM_TITLE_LENGTH = 40;
 
-const PreTextIcon = styled(IconButton)(({ theme }) => ({
+export const PreTextIcon = styled(IconButton)(({ theme }) => ({
   padding: theme.spacing(0.5),
   color: 'inherit',
+  cursor: 'default',
 }));
 
 const ArrowIcon = styled(IconButton)(({ theme }) => ({
