@@ -1,7 +1,10 @@
 import React from "react";
 import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useComposer } from "../dialob";
 import { Box, Button, Chip, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
-import { Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight, ListAlt, Menu as MenuIcon, Note, Rule, Tune, Visibility } from "@mui/icons-material";
+import {
+  Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight, ListAlt,
+  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel
+} from "@mui/icons-material";
 import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useEditor } from "../editor";
@@ -144,12 +147,12 @@ export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
-  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
+  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
   const valueSetName = isGlobalValueSet && isGlobalValueSet.label ? 'Global list: ' + isGlobalValueSet.label : 'Local list';
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation'): void => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement'): void => {
     e.stopPropagation();
     if (dialogType === 'description') {
       setTextEditDialogType('description');
@@ -159,13 +162,22 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       setValidationRuleEditDialogOpen(true);
       setActiveItem(item);
     }
+    if (dialogType === 'requirement') {
+      setRuleEditDialogType('requirement');
+      setActiveItem(item);
+    }
   }
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
-      {item.description && <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
-      {item.valueSetId && <IndicatorChip onClick={handleClick} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
-      {item.validations && <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.description &&
+        <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.valueSetId &&
+        <IndicatorChip onClick={handleClick} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.validations &&
+        <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
+      {item.required &&
+        <IndicatorChip onClick={(e) => handleClick(e, 'requirement')} label='Required' icon={<Gavel sx={{ fontSize: 'caption.fontSize' }} />} />}
     </Box>
   );
 }
