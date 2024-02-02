@@ -19,7 +19,7 @@ const RuleEditDialog: React.FC = () => {
   const { updateItem } = useComposer();
   const { editor, setRuleEditDialogType, setActiveItem } = useEditor();
   const item = editor.activeItem;
-  const open = editor.ruleEditDialogType !== undefined;
+  const open = item && editor.ruleEditDialogType !== undefined || false;
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
   const [errors, setErrors] = React.useState<string[]>([]);
 
@@ -29,7 +29,7 @@ const RuleEditDialog: React.FC = () => {
   }
 
   const handleClick = () => {
-    if (editor.ruleEditDialogType && item && ruleCode) {
+    if (editor.ruleEditDialogType && item && ruleCode && ruleCode.length > 0) {
       updateItem(item.id, resolveRulePropName(editor.ruleEditDialogType), ruleCode);
       handleClose();
     }

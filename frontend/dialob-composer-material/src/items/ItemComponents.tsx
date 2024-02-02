@@ -203,7 +203,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
       </Button>
       <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem key='hint' onClick={handleClose} disabled>
-          <Typography><FormattedMessage id='conversions.hint' /></Typography>
+          <Typography><FormattedMessage id='menus.conversions.hint' /></Typography>
         </MenuItem>
         {conversions.length > 0 && conversions.map((c, index) => (
           <MenuItem key={index} onClick={(e) => handleConvert(e, c.value)}>
@@ -217,7 +217,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form, addItem } = useComposer();
-  const { setConfirmationDialogType, setTextEditDialogType, setActiveItem } = useEditor();
+  const { setConfirmationDialogType, setTextEditDialogType, setActiveItem, setItemOptionsDialogOpen } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -257,6 +257,13 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
     setChosenCategory(null);
   }
 
+  const handleOptions = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose(e, 1);
+    setActiveItem(item);
+    setItemOptionsDialogOpen(true);
+  }
+
   const handleDescription = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     handleClose(e, 1);
@@ -292,7 +299,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
         <MenuIcon color='inherit' />
       </IconButton>
       <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
-        <MenuItem onClick={(e) => handleClose(e, 1)}>
+        <MenuItem onClick={(e) => handleOptions(e)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.options' />
         </MenuItem>

@@ -16,13 +16,8 @@ const ValidationRuleEditDialog: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
   const { editor, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
   const item = editor.activeItem;
-  const existingRules = React.useMemo(() => {
-    if (item && item.validations) {
-      return item.validations;
-    }
-    return [];
-  }, [item]);
-  const open = editor.validationRuleEditDialogOpen || false;
+  const open = item && editor.validationRuleEditDialogOpen || false;
+  const existingRules = item?.validations || [];
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [errors, setErrors] = React.useState<string[]>([]);
   const [activeLanguage, setActiveLanguage] = React.useState(editor.activeFormLanguage);
@@ -35,22 +30,23 @@ const ValidationRuleEditDialog: React.FC = () => {
   const handleClick = () => {
     if (item) {
       rules.forEach((r, index) => {
-        if (r.validationRule.rule && existingRules.length > 0 && existingRules[index] && r.validationRule.rule !== existingRules[index].rule) {
+        if (r.validationRule.rule && r.validationRule.rule.length > 0 && existingRules.length > 0 && existingRules[index] && r.validationRule.rule !== existingRules[index].rule) {
           setValidationExpression(item.id, r.index, r.validationRule.rule);
         }
         if (r.validationRule.message && existingRules.length > 0 && existingRules[index] && existingRules[index].message &&
-          existingRules[index].message![activeLanguage] && r.validationRule.message[activeLanguage] !== existingRules[index].message![activeLanguage]) {
+          existingRules[index].message![activeLanguage] && existingRules[index].message![activeLanguage].length > 0 &&
+          r.validationRule.message[activeLanguage] !== existingRules[index].message![activeLanguage]) {
           setValidationMessage(item.id, r.index, activeLanguage, r.validationRule.message[activeLanguage]);
         }
-        if (existingRules.length === 0 || r.index >= existingRules.length) {
+        if ((existingRules.length === 0 || r.index >= existingRules.length) && r.validationRule.rule && r.validationRule.rule.length > 0) {
           createValidation(item.id, r.validationRule);
         }
         if (index !== r.index) {
           deleteValidation(item.id, r.index);
         }
       });
+      handleClose();
     }
-    handleClose();
   }
 
   React.useEffect(() => {

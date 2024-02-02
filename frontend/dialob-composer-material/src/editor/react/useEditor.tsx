@@ -42,6 +42,10 @@ export const useEditor = () => {
     dispatch({ type: 'setValidationRuleEditDialogOpen', open });
   }
 
+  const setItemOptionsDialogOpen = (open: boolean): void => {
+    dispatch({ type: 'setItemOptionsDialogOpen', open });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -53,5 +57,6 @@ export const useEditor = () => {
     setTextEditDialogType,
     setRuleEditDialogType,
     setValidationRuleEditDialogOpen,
+    setItemOptionsDialogOpen,
   };
 }
