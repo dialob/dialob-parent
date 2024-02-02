@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, Paper, TableCell } from '@mui/material';
+import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, Paper, TableCell, Grid } from '@mui/material';
 import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune } from '@mui/icons-material';
 import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
@@ -9,6 +9,7 @@ import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
+const MAX_PAGES_PER_ROW = 5;
 
 const getPageTabTitle = (item: DialobItem, language: string): string => {
   const rawLabel = item.label ? item.label[language] : null;
@@ -155,7 +156,13 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   return (
     <Box sx={{ mb: 1 }}>
       <Box sx={{ display: 'flex' }}>
-        {pages}
+        <Grid container>
+          {pages && pages.map((page, index) => (
+            <Grid item key={index}>
+              {page}
+            </Grid>
+          ))}
+        </Grid>
         <Box sx={{ flexGrow: 1 }} />
         <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
           <Add />
