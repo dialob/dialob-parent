@@ -1,4 +1,7 @@
 
+# 2.10.1
+* Show item type conversion menu for "note"
+
 # 2.10.0
 * Made fetch credential mode configurable (default: include)
 * Expose "Note" item type for extensions
