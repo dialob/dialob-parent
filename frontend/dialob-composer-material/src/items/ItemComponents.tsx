@@ -3,7 +3,7 @@ import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useCompose
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
-  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public
+  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, Edit
 } from "@mui/icons-material";
 import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -145,8 +145,11 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType, setItemOptionsDialogOpen } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
+  if (item.id === 'companyName') {
+    console.log(item)
+  }
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement' | 'options'): void => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement' | 'options' | 'default'): void => {
     e.stopPropagation();
     if (dialogType === 'description') {
       setTextEditDialogType('description');
@@ -164,6 +167,10 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       setItemOptionsDialogOpen(true);
       setActiveItem(item);
     }
+    if (dialogType === 'default') {
+      setItemOptionsDialogOpen(true);
+      setActiveItem(item);
+    }
   }
 
   return (
@@ -178,6 +185,8 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
         <IconButton onClick={(e) => handleClick(e, 'validation')}><Rule fontSize='small' /></IconButton>}
       {item.required &&
         <IconButton onClick={(e) => handleClick(e, 'requirement')}><Gavel fontSize='small' /></IconButton>}
+      {item.defaultValue &&
+        <IconButton onClick={(e) => handleClick(e, 'default')}><Edit fontSize='small' /></IconButton>}
     </Box>
   );
 }

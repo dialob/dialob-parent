@@ -1695,6 +1695,7 @@
     },
     "companyID": {
       "id": "companyID",
+      "defaultValue": "000000",
       "type": "text",
       "view": "text",
       "label": {

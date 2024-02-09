@@ -45,7 +45,7 @@ const TextEditDialog: React.FC = () => {
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography><FormattedMessage id={`dialogs.rules.${editor.textEditDialogType}.title`} values={{ itemId: item.id }} /></Typography>
+        <Typography><FormattedMessage id={`dialogs.text.${editor.textEditDialogType}.title`} values={{ itemId: item.id }} /></Typography>
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', width: 0.35, justifyContent: 'space-between' }}>
           <DialogLanguageMenu activeLanguage={activeLanguage} setActiveLanguage={setActiveLanguage} />

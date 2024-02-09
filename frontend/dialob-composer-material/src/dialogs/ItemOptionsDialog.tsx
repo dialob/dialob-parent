@@ -7,12 +7,14 @@ import ChoiceEditor from '../components/ChoiceEditor';
 import PropertiesEditor from '../components/PropertiesEditor';
 import { FormattedMessage } from 'react-intl';
 
+type OptionsTabType = 'choices' | 'properties' | 'styles' | 'defaults';
+
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsDialogOpen, setRuleEditDialogType, setValidationRuleEditDialogOpen } = useEditor();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsDialogOpen || false;
   const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice');
-  const [activeTab, setActiveTab] = React.useState<'choices' | 'properties' | 'styles' | 'defaults'>(canHaveChoices ? 'choices' : 'properties');
+  const [activeTab, setActiveTab] = React.useState<OptionsTabType>(canHaveChoices ? 'choices' : 'properties');
   const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
 
   const handleClose = () => {
@@ -31,8 +33,15 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   React.useEffect(() => {
-    setActiveTab(canHaveChoices ? 'choices' : 'properties');
-  }, [canHaveChoices]);
+    let newActiveTab: OptionsTabType = 'properties';
+    if (isInputType) {
+      newActiveTab = 'defaults';
+    }
+    if (canHaveChoices) {
+      newActiveTab = 'choices';
+    }
+    setActiveTab(newActiveTab);
+  }, [canHaveChoices, isInputType]);
 
   if (!item) {
     return null;
