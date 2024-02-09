@@ -4,6 +4,7 @@ import { Rule, Gavel } from "@mui/icons-material";
 import { useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import ChoiceEditor from '../components/ChoiceEditor';
+import PropertiesEditor from '../components/PropertiesEditor';
 
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsDialogOpen, setRuleEditDialogType, setValidationRuleEditDialogOpen } = useEditor();
@@ -56,7 +57,7 @@ const ItemOptionsDialog: React.FC = () => {
         </Box>
         <Box sx={{ mt: 2 }}>
           {activeTab === 'choices' && <ChoiceEditor />}
-          {activeTab === 'properties' && <>Properties</>}
+          {activeTab === 'properties' && <PropertiesEditor />}
           {activeTab === 'styles' && <>Styles</>}
         </Box>
       </DialogContent>

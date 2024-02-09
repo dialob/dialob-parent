@@ -9,21 +9,10 @@ import { ValueSet, ValueSetEntry, useComposer } from '../dialob';
 import ChoiceRuleEditDialog from '../dialogs/ChoiceRuleEditDialog';
 import ChoiceTextEditDialog from '../dialogs/ChoiceTextEditDialog';
 import { generateValueSetId } from '../dialob/reducer';
+import { StyledTable, StyledTextField } from './TableEditorComponents';
 
 
 const MAX_CHOICE_LABEL_LENGTH = 40;
-
-const StyledTable = styled(Table)(({ theme }) => ({
-  '& .MuiTableCell-root': {
-    border: `1px solid ${theme.palette.divider}`,
-  },
-}));
-
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  '& .MuiInputBase-root': {
-    padding: theme.spacing(1),
-  },
-}));
 
 const LabelButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1.5),
