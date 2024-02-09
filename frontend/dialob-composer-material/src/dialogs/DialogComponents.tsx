@@ -15,7 +15,7 @@ export const DialogActionButtons: React.FC<{ handleClose: () => void, handleClic
 
 export const DialogHelpButton: React.FC<{ helpUrl: string }> = ({ helpUrl }) => {
   return (
-    <Button color='inherit' endIcon={<Help />} onClick={() => window.open(helpUrl, "_blank")}>
+    <Button color='inherit' variant='contained' endIcon={<Help />} onClick={() => window.open(helpUrl, "_blank")}>
       <FormattedMessage id='help' />
     </Button>
   );
@@ -38,7 +38,7 @@ export const DialogLanguageMenu: React.FC<{ activeLanguage: string, setActiveLan
 
   return (
     <>
-      <Button endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} color='inherit'>
+      <Button endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} color='inherit' variant='contained'>
         <FormattedMessage id={'locales.' + activeLanguage} />
       </Button>
       <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>

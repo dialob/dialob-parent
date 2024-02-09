@@ -94,7 +94,7 @@ const ValidationRuleEditDialog: React.FC = () => {
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', width: 0.35, justifyContent: 'space-between' }}>
           <DialogLanguageMenu activeLanguage={activeLanguage} setActiveLanguage={setActiveLanguage} />
-          <Button color='inherit' endIcon={<Add />} onClick={() => {
+          <Button color='inherit' variant='contained' endIcon={<Add />} onClick={() => {
             const newRules = [...rules];
             newRules.push({ index: newRules.length, validationRule: { rule: '', message: { [activeLanguage]: '' } } });
             setRules(newRules);

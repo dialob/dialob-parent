@@ -147,12 +147,12 @@ export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
-  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType } = useEditor();
+  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType, setItemOptionsDialogOpen } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
   const valueSetName = isGlobalValueSet && isGlobalValueSet.label ? 'Global list: ' + isGlobalValueSet.label : 'Local list';
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement'): void => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement' | 'options'): void => {
     e.stopPropagation();
     if (dialogType === 'description') {
       setTextEditDialogType('description');
@@ -166,6 +166,10 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       setRuleEditDialogType('requirement');
       setActiveItem(item);
     }
+    if (dialogType === 'options') {
+      setItemOptionsDialogOpen(true);
+      setActiveItem(item);
+    }
   }
 
   return (
@@ -173,7 +177,7 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       {item.description &&
         <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
       {item.valueSetId &&
-        <IndicatorChip onClick={handleClick} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
+        <IndicatorChip onClick={(e) => handleClick(e, 'options')} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
       {item.validations &&
         <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
       {item.required &&

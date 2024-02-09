@@ -4409,8 +4409,10 @@
         {
           "id": "clientVisit",
           "label": {
-            "fi": "Asiakaskäynti"
-          }
+            "fi": "Asiakaskäynti",
+            "en": "Client visit"
+          },
+          "when": "lengthOf(usedChannel) > 5"
         },
         {
           "id": "backOffice",

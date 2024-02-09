@@ -1,9 +1,9 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab, DialogActions } from '@mui/material';
 import { Rule, Gavel } from "@mui/icons-material";
 import { useEditor } from '../editor';
-import { DialogActionButtons } from './DialogComponents';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
+import ChoiceEditor from '../components/ChoiceEditor';
 
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsDialogOpen, setRuleEditDialogType, setValidationRuleEditDialogOpen } = useEditor();
@@ -28,6 +28,10 @@ const ItemOptionsDialog: React.FC = () => {
     setItemOptionsDialogOpen(false);
   }
 
+  React.useEffect(() => {
+    setActiveTab(canHaveChoices ? 'choices' : 'properties');
+  }, [canHaveChoices]);
+
   if (!item) {
     return null;
   }
@@ -38,8 +42,8 @@ const ItemOptionsDialog: React.FC = () => {
         <Typography>Item options for <b>{item.id}</b></Typography>
         <Box flexGrow={1} />
         {canHaveRules && <Box sx={{ display: 'flex', width: 0.3, justifyContent: 'space-between' }}>
-          <Button color='inherit' endIcon={<Rule fontSize='small' />} onClick={handleValidationClick}>Validation</Button>
-          <Button color='inherit' endIcon={<Gavel fontSize='small' />} onClick={handleRequirementClick}>Requirement</Button>
+          <Button color='inherit' variant='contained' endIcon={<Rule fontSize='small' />} onClick={handleValidationClick}>Validation</Button>
+          <Button color='inherit' variant='contained' endIcon={<Gavel fontSize='small' />} onClick={handleRequirementClick}>Requirement</Button>
         </Box>}
       </DialogTitle>
       <DialogContent>
@@ -50,11 +54,15 @@ const ItemOptionsDialog: React.FC = () => {
             <Tab label="Style classes" value='styles' />
           </Tabs>
         </Box>
-        {activeTab === 'choices' && <Box sx={{ p: 2, mb: 10 }}>Choices</Box>}
-        {activeTab === 'properties' && <Box sx={{ p: 2, mb: 10 }}>Properties</Box>}
-        {activeTab === 'styles' && <Box sx={{ p: 2, mb: 10 }}>Styles</Box>}
+        <Box sx={{ mt: 2 }}>
+          {activeTab === 'choices' && <ChoiceEditor />}
+          {activeTab === 'properties' && <>Properties</>}
+          {activeTab === 'styles' && <>Styles</>}
+        </Box>
       </DialogContent>
-      <DialogActionButtons handleClose={handleClose} handleClick={handleClose} />
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">Close</Button>
+      </DialogActions>
     </Dialog>
   );
 };
