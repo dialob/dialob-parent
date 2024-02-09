@@ -42,7 +42,7 @@ const ChoiceTextEditDialog: React.FC<{
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography>{valueSetEntry.id}: label</Typography>
+        <Typography><FormattedMessage id='dialogs.text.label.title' values={{ itemId: valueSetEntry.id }} /></Typography>
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', width: 0.35, justifyContent: 'space-between' }}>
           <DialogLanguageMenu activeLanguage={activeLanguage} setActiveLanguage={setActiveLanguage} />

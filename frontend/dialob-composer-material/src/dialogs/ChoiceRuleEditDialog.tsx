@@ -4,6 +4,7 @@ import { ValueSetEntry } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
+import { FormattedMessage } from 'react-intl';
 
 
 const ChoiceRuleEditDialog: React.FC<{
@@ -56,7 +57,7 @@ const ChoiceRuleEditDialog: React.FC<{
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography>{valueSetEntry.id}: visibility</Typography>
+        <Typography><FormattedMessage id='dialogs.rules.visibility.title' values={{ itemId: valueSetEntry.id }} /></Typography>
         <Box flexGrow={1} />
         <DialogHelpButton helpUrl='https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del' />
       </DialogTitle>

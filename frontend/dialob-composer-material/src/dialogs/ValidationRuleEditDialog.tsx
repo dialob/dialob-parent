@@ -6,6 +6,7 @@ import { Add, Close } from '@mui/icons-material';
 import { useEditor } from '../editor';
 import { ValidationRule, useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
+import { FormattedMessage } from 'react-intl';
 
 interface IndexedRule {
   index: number;
@@ -90,7 +91,7 @@ const ValidationRuleEditDialog: React.FC = () => {
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography>{item.id}: validation</Typography>
+        <Typography><FormattedMessage id='dialogs.rules.validation.title' values={{ itemId: item.id }} /></Typography>
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', width: 0.35, justifyContent: 'space-between' }}>
           <DialogLanguageMenu activeLanguage={activeLanguage} setActiveLanguage={setActiveLanguage} />
@@ -108,7 +109,7 @@ const ValidationRuleEditDialog: React.FC = () => {
           return (
             <Box key={index} sx={{ display: 'flex', flexDirection: 'column', border: 1, borderRadius: 1, p: 2, mb: 2 }}>
               <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Typography variant='subtitle1'>Rule {index + 1}</Typography>
+                <Typography variant='subtitle1'><FormattedMessage id='dialogs.rules.validation.rule' values={{ index: index + 1 }} /></Typography>
                 <Box flexGrow={1} />
                 <IconButton onClick={() => {
                   const newRules = [...rules];
@@ -117,14 +118,14 @@ const ValidationRuleEditDialog: React.FC = () => {
                 }}><Close /></IconButton>
               </Box>
               <Box sx={{ my: 2 }}>
-                <Typography variant='caption'>Expression</Typography>
+                <Typography variant='caption'><FormattedMessage id='dialogs.rules.validation.expression' /></Typography>
                 <CodeMirror value={validationRule.rule} onChange={(value) => {
                   const newRules = [...rules];
                   newRules[index].validationRule.rule = value;
                   setRules(newRules);
                 }} extensions={[javascript({ jsx: true })]} />
               </Box>
-              <Typography variant='caption'>Message</Typography>
+              <Typography variant='caption'><FormattedMessage id='dialogs.rules.validation.message' /></Typography>
               <TextField fullWidth value={(validationRule.message && validationRule.message[activeLanguage]) ? validationRule.message[activeLanguage] : ''}
                 onChange={(e) => {
                   const newRules = [...rules];

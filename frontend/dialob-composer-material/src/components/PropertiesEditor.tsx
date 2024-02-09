@@ -7,6 +7,7 @@ import { useEditor } from '../editor';
 import { Close } from '@mui/icons-material';
 import { StyledTable, StyledTextField } from './TableEditorComponents';
 import { useComposer } from '../dialob';
+import { FormattedMessage } from 'react-intl';
 
 interface ItemProp {
   key: string;
@@ -67,8 +68,8 @@ const PropertiesEditor: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell width='10%' />
-              <TableCell width='45%' sx={{ p: 1 }}><Typography fontWeight='bold'>Key</Typography></TableCell>
-              <TableCell width='45%' sx={{ p: 1 }}><Typography fontWeight='bold'>Text</Typography></TableCell>
+              <TableCell width='45%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+              <TableCell width='45%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.value' /></Typography></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

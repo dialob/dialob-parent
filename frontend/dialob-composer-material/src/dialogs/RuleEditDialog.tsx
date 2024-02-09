@@ -5,6 +5,7 @@ import { useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
+import { FormattedMessage } from 'react-intl';
 
 
 const resolveRulePropName = (ruleType: RuleEditDialogType): string => {
@@ -67,7 +68,7 @@ const RuleEditDialog: React.FC = () => {
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography>{item.id}: {editor.ruleEditDialogType}</Typography>
+        <Typography><FormattedMessage id={`dialogs.rules.${editor.ruleEditDialogType}.title`} values={{ itemId: item.id }} /></Typography>
         <Box flexGrow={1} />
         <DialogHelpButton helpUrl='https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del' />
       </DialogTitle>

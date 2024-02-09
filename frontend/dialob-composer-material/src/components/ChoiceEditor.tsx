@@ -10,6 +10,7 @@ import ChoiceRuleEditDialog from '../dialogs/ChoiceRuleEditDialog';
 import ChoiceTextEditDialog from '../dialogs/ChoiceTextEditDialog';
 import { generateValueSetId } from '../dialob/reducer';
 import { StyledTable, StyledTextField } from './TableEditorComponents';
+import { FormattedMessage } from 'react-intl';
 
 
 const MAX_CHOICE_LABEL_LENGTH = 40;
@@ -174,8 +175,8 @@ const ChoiceEditor: React.FC = () => {
                   <IconButton><Upload /></IconButton>
                   <IconButton><Download /></IconButton>
                 </TableCell>
-                <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'>Key</Typography></TableCell>
-                <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'>Text</Typography></TableCell>
+                <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+                <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.text' /></Typography></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -199,21 +200,22 @@ const ChoiceEditor: React.FC = () => {
           </StyledTable>
         </TableContainer>
         <Button color='inherit' variant='contained' onClick={convertToGlobalList} sx={{ mt: 2 }}>
-          Convert to global list
+          <FormattedMessage id='dialogs.options.choices.convert.global' />
         </Button>
       </Box> : <Box>
-        <Typography>Select a global list</Typography>
+        <Typography><FormattedMessage id='dialogs.options.choices.select.global' /></Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Select sx={{ width: 0.75 }} value={currentValueSet?.id || ''} onChange={e => selectGlobalValueSet(e.target.value as string)}>
-            <MenuItem value='' disabled>Select a global list</MenuItem>
             {form.metadata.composer?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
           </Select>
           <Button color='inherit' variant='contained' onClick={convertToLocalList} disabled={currentValueSet?.id === ''}>
-            Convert to local list
+            <FormattedMessage id='dialogs.options.choices.convert.local' />
           </Button>
         </Box>
-        <Divider sx={{ my: 2 }}><Typography>OR</Typography></Divider>
-        <Button color='inherit' variant='contained' onClick={createLocalList}>Create local list</Button>
+        <Divider sx={{ my: 2 }}><Typography><FormattedMessage id='dialogs.options.choices.divider' /></Typography></Divider>
+        <Button color='inherit' variant='contained' onClick={createLocalList}>
+          <FormattedMessage id='dialogs.options.choices.create.local' />
+        </Button>
       </Box>}
     </>
   );
