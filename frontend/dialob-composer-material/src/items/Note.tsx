@@ -25,7 +25,7 @@ const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={5}>
+              <TableCell colSpan={hasIndicators ? 6 : 5}>
                 <NoteField item={item} />
               </TableCell>
             </TableRow>

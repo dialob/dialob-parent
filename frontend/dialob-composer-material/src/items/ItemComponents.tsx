@@ -1,9 +1,9 @@
 import React from "react";
 import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useComposer } from "../dialob";
-import { Box, Button, Chip, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
+import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
 import {
-  Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight, ListAlt,
-  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel
+  Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
+  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public
 } from "@mui/icons-material";
 import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -31,11 +31,6 @@ const FullWidthButton = styled(Button)(({ theme }) => ({
   width: '100%',
 }));
 
-const IndicatorChip = styled(Chip)(({ theme }) => ({
-  fontSize: theme.typography.caption.fontSize,
-  height: '100%',
-  marginBottom: theme.spacing(0.25),
-}));
 
 export const StyledTable = styled(Table, {
   shouldForwardProp: (prop) => prop !== 'errorBorderColor',
@@ -150,7 +145,6 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType, setItemOptionsDialogOpen } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
-  const valueSetName = isGlobalValueSet && isGlobalValueSet.label ? 'Global list: ' + isGlobalValueSet.label : 'Local list';
 
   const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement' | 'options'): void => {
     e.stopPropagation();
@@ -173,15 +167,17 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
       {item.description &&
-        <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
+        <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' /></IconButton>}
       {item.valueSetId &&
-        <IndicatorChip onClick={(e) => handleClick(e, 'options')} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
+        <IconButton onClick={(e) => handleClick(e, 'options')}>
+          {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
+        </IconButton>}
       {item.validations &&
-        <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
+        <IconButton onClick={(e) => handleClick(e, 'validation')}><Rule fontSize='small' /></IconButton>}
       {item.required &&
-        <IndicatorChip onClick={(e) => handleClick(e, 'requirement')} label='Required' icon={<Gavel sx={{ fontSize: 'caption.fontSize' }} />} />}
+        <IconButton onClick={(e) => handleClick(e, 'requirement')}><Gavel fontSize='small' /></IconButton>}
     </Box>
   );
 }
