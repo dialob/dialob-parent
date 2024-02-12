@@ -145,9 +145,6 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType, setItemOptionsDialogOpen } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
-  if (item.id === 'companyName') {
-    console.log(item)
-  }
 
   const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement' | 'options' | 'default'): void => {
     e.stopPropagation();

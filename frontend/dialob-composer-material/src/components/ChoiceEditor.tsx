@@ -1,46 +1,19 @@
-import { Add, Close, Download, Upload, Visibility } from '@mui/icons-material';
-import {
-  Box, Button, Divider, IconButton, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead,
-  TableRow, TextField, Typography, styled
-} from '@mui/material';
 import React from 'react';
-import { useEditor } from '../editor';
-import { ValueSet, ValueSetEntry, useComposer } from '../dialob';
-import ChoiceRuleEditDialog from '../dialogs/ChoiceRuleEditDialog';
-import ChoiceTextEditDialog from '../dialogs/ChoiceTextEditDialog';
-import { generateValueSetId } from '../dialob/reducer';
-import { StyledTable, StyledTextField } from './TableEditorComponents';
 import { FormattedMessage } from 'react-intl';
+import { Add, Download, Upload } from '@mui/icons-material';
+import { Box, Button, Divider, IconButton, MenuItem, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { useEditor } from '../editor';
+import { ValueSet, useComposer } from '../dialob';
+import { generateValueSetId } from '../dialob/reducer';
+import { StyledTable } from './TableEditorComponents';
+import ChoiceList from './ChoiceList';
 
-
-const MAX_CHOICE_LABEL_LENGTH = 40;
-
-const LabelButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(1.5),
-  width: '100%',
-  justifyContent: 'flex-start',
-  textTransform: 'none',
-}));
-
-const getLabel = (entry: ValueSetEntry, language: string) => {
-  const localizedLabel = entry.label[language] ? entry.label[language] : undefined;
-  if (!localizedLabel) {
-    return <Typography color='text.hint'>Label</Typography>;
-  }
-  if (localizedLabel.length > MAX_CHOICE_LABEL_LENGTH) {
-    return <Typography>{localizedLabel.substring(0, MAX_CHOICE_LABEL_LENGTH) + '...'}</Typography>;
-  }
-  return <Typography>{localizedLabel}</Typography>;
-}
 
 const ChoiceEditor: React.FC = () => {
-  const { form, createValueSet, addValueSetEntry, moveValueSetEntry,
-    deleteValueSetEntry, updateValueSetEntry, setGlobalValueSetName, updateItem } = useComposer();
+  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem } = useComposer();
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
-  const [activeValueSetEntry, setActiveValueSetEntry] = React.useState<ValueSetEntry | undefined>(undefined);
-  const [activeDialog, setActiveDialog] = React.useState<'rule' | 'text' | undefined>(undefined);
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
 
@@ -52,49 +25,9 @@ const ChoiceEditor: React.FC = () => {
     }
     const itemValueSet = form.valueSets?.find(v => v.id === item.valueSetId);
     const isGlobal = globalValueSets !== undefined && itemValueSet !== undefined && globalValueSets.some(gvs => gvs.valueSetId === itemValueSet.id);
-    console.log('isglobal', isGlobal, globalValueSets, form.valueSets, itemValueSet)
     setCurrentValueSet(itemValueSet);
     setChoiceType(isGlobal ? 'global' : 'local');
   }, [item?.valueSetId, globalValueSets, form.valueSets]);
-
-  const handleEditRule = (entry: ValueSetEntry) => {
-    setActiveValueSetEntry(entry);
-    setActiveDialog('rule');
-  }
-
-  const handleEditText = (entry: ValueSetEntry) => {
-    setActiveValueSetEntry(entry);
-    setActiveDialog('text');
-  }
-
-  const handleCloseChoiceDialog = () => {
-    setActiveValueSetEntry(undefined);
-    setActiveDialog(undefined);
-  }
-
-  const updateValueSetEntryId = (entry: ValueSetEntry, id: string) => {
-    if (currentValueSet) {
-      const newEntry = { ...entry, id };
-      const idx = currentValueSet.entries.findIndex(e => e.id === entry.id);
-      updateValueSetEntry(currentValueSet.id, idx, newEntry);
-    }
-  }
-
-  const updateValueSetEntryLabel = (entry: ValueSetEntry, label: string, language: string) => {
-    if (currentValueSet) {
-      const newEntry = { ...entry, label: { ...entry.label, [language]: label } };
-      const idx = currentValueSet.entries.findIndex(e => e.id === entry.id);
-      updateValueSetEntry(currentValueSet.id, idx, newEntry);
-    }
-  }
-
-  const updateValueSetEntryRule = (entry: ValueSetEntry, rule: string) => {
-    if (currentValueSet) {
-      const newEntry = { ...entry, when: rule };
-      const idx = currentValueSet.entries.findIndex(e => e.id === entry.id);
-      updateValueSetEntry(currentValueSet.id, idx, newEntry);
-    }
-  }
 
   const handleAddValueSetEntry = () => {
     if (currentValueSet) {
@@ -103,13 +36,7 @@ const ChoiceEditor: React.FC = () => {
         label: {},
       };
       addValueSetEntry(currentValueSet.id, newEntry);
-    }
-  }
-
-  const handleDeleteValueSetEntry = (entry: ValueSetEntry) => {
-    if (currentValueSet) {
-      const idx = currentValueSet.entries.findIndex(e => e.id !== entry.id);
-      deleteValueSetEntry(currentValueSet.id, idx);
+      setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
     }
   }
 
@@ -161,10 +88,6 @@ const ChoiceEditor: React.FC = () => {
 
   return (
     <>
-      <ChoiceRuleEditDialog open={activeDialog === 'rule'} valueSetEntry={activeValueSetEntry}
-        onUpdate={updateValueSetEntryRule} onClose={handleCloseChoiceDialog} />
-      <ChoiceTextEditDialog open={activeDialog === 'text'} valueSetEntry={activeValueSetEntry}
-        onUpdate={updateValueSetEntryLabel} onClose={handleCloseChoiceDialog} />
       {choiceType === 'local' ? <Box>
         <TableContainer>
           <StyledTable>
@@ -179,24 +102,7 @@ const ChoiceEditor: React.FC = () => {
                 <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.text' /></Typography></TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {currentValueSet?.entries.map(entry => <TableRow key={entry.id}>
-                <TableCell align='center'>
-                  <IconButton onClick={() => handleDeleteValueSetEntry(entry)}><Close color='error' /></IconButton>
-                  <IconButton onClick={() => handleEditRule(entry)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>
-                </TableCell>
-                <TableCell>
-                  <StyledTextField variant='standard' InputProps={{
-                    disableUnderline: true,
-                  }} value={entry.id} onChange={(e) => updateValueSetEntryId(entry, e.target.value)} />
-                </TableCell>
-                <TableCell>
-                  <LabelButton variant='text' color='inherit' onClick={() => handleEditText(entry)}>
-                    {getLabel(entry, editor.activeFormLanguage)}
-                  </LabelButton>
-                </TableCell>
-              </TableRow>)}
-            </TableBody>
+            <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
           </StyledTable>
         </TableContainer>
         <Button color='inherit' variant='contained' onClick={convertToGlobalList} sx={{ mt: 2 }}>
