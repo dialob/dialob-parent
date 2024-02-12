@@ -5,7 +5,7 @@ import { useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 
 const resolveRulePropName = (ruleType: RuleEditDialogType): string => {
@@ -19,6 +19,7 @@ const resolveRulePropName = (ruleType: RuleEditDialogType): string => {
 const RuleEditDialog: React.FC = () => {
   const { updateItem } = useComposer();
   const { editor, setRuleEditDialogType, setActiveItem } = useEditor();
+  const intl = useIntl();
   const item = editor.activeItem;
   const open = item && editor.ruleEditDialogType !== undefined || false;
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
@@ -50,7 +51,7 @@ const RuleEditDialog: React.FC = () => {
       const invalid = Math.random() < 0.5;
       if (invalid) {
         const id = setTimeout(() => {
-          setErrors(['Invalid rule: ' + ruleCode]);
+          setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: ruleCode })]);
         }, 3000);
         return () => clearTimeout(id);
       } else {

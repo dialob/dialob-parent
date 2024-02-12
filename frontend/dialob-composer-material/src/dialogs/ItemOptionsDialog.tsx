@@ -6,6 +6,7 @@ import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import ChoiceEditor from '../components/ChoiceEditor';
 import PropertiesEditor from '../components/PropertiesEditor';
 import { FormattedMessage } from 'react-intl';
+import DefaultValueEditor from '../components/DefaultValueEditor';
 
 type OptionsTabType = 'choices' | 'properties' | 'styles' | 'defaults';
 
@@ -72,7 +73,7 @@ const ItemOptionsDialog: React.FC = () => {
         </Box>
         <Box sx={{ mt: 2 }}>
           {activeTab === 'choices' && <ChoiceEditor />}
-          {activeTab === 'defaults' && <>Defaults</>}
+          {activeTab === 'defaults' && <DefaultValueEditor />}
           {activeTab === 'properties' && <PropertiesEditor />}
           {activeTab === 'styles' && <>Styles</>}
         </Box>

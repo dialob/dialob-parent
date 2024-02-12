@@ -67,6 +67,7 @@ const en = {
   'dialogs.options.choices.select.global': 'Select global list',
   'dialogs.options.choices.divider': 'OR',
   'dialogs.options.properties.add': 'Add property',
+  'dialogs.options.default.set': 'Set default value',
 
   'dialogs.rules.requirement.title': '{itemId}: requirement',
   'dialogs.rules.visibility.title': '{itemId}: visibility',

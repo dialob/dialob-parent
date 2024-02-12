@@ -6,7 +6,7 @@ import { Add, Close } from '@mui/icons-material';
 import { useEditor } from '../editor';
 import { ValidationRule, useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface IndexedRule {
   index: number;
@@ -16,6 +16,7 @@ interface IndexedRule {
 const ValidationRuleEditDialog: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
   const { editor, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
+  const intl = useIntl();
   const item = editor.activeItem;
   const open = item && editor.validationRuleEditDialogOpen || false;
   const existingRules = item?.validations || [];
@@ -68,7 +69,7 @@ const ValidationRuleEditDialog: React.FC = () => {
         // random boolean for now
         const invalid = Math.random() < 0.5;
         if (invalid) {
-          ruleErrors.push('Invalid rule: ' + rule.validationRule.rule);
+          ruleErrors.push(intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: rule.validationRule.rule }));
         }
       });
       if (ruleErrors.length > 0) {

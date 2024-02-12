@@ -4,7 +4,7 @@ import { ValueSetEntry } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 
 const ChoiceRuleEditDialog: React.FC<{
@@ -13,6 +13,7 @@ const ChoiceRuleEditDialog: React.FC<{
   onUpdate: (entry: ValueSetEntry, rule: string) => void,
   onClose: () => void
 }> = ({ open, valueSetEntry, onUpdate, onClose }) => {
+  const intl = useIntl();
   const [ruleCode, setRuleCode] = React.useState<string>(valueSetEntry?.when || '');
   const [errors, setErrors] = React.useState<string[]>([]);
 
@@ -39,7 +40,7 @@ const ChoiceRuleEditDialog: React.FC<{
       const invalid = Math.random() < 0.5;
       if (invalid) {
         const id = setTimeout(() => {
-          setErrors(['Invalid rule: ' + ruleCode]);
+          setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: ruleCode })]);
         }, 3000);
         return () => clearTimeout(id);
       } else {
