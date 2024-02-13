@@ -33,15 +33,7 @@ const ConfirmationDialog: React.FC = () => {
         {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.title' />}
         {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.title' />}
       </DialogTitle>
-      <DialogContent
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2,
-        }}
-      >
+      <DialogContent>
         {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.text' values={{ itemId: activeItem.id }} />}
         {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.text' values={{ itemId: activeItem.id }} />}
       </DialogContent>

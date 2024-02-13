@@ -7,6 +7,7 @@ import { ValueSet, useComposer } from '../dialob';
 import { generateValueSetId } from '../dialob/reducer';
 import { StyledTable } from './TableEditorComponents';
 import ChoiceList from './ChoiceList';
+import ConvertConfirmationDialog from '../dialogs/ConvertConfirmationDialog';
 
 
 const ChoiceEditor: React.FC = () => {
@@ -16,6 +17,7 @@ const ChoiceEditor: React.FC = () => {
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
+  const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
 
   React.useEffect(() => {
     const hasValueSet = item?.valueSetId !== undefined;
@@ -85,9 +87,12 @@ const ChoiceEditor: React.FC = () => {
     return null;
   }
 
-
   return (
     <>
+      <ConvertConfirmationDialog
+        type={dialogType}
+        onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
+        onClose={() => setDialogType(undefined)} />
       {choiceType === 'local' ? <Box>
         <TableContainer>
           <StyledTable>
@@ -105,7 +110,7 @@ const ChoiceEditor: React.FC = () => {
             <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
           </StyledTable>
         </TableContainer>
-        <Button color='inherit' variant='contained' onClick={convertToGlobalList} sx={{ mt: 2 }}>
+        <Button color='inherit' variant='contained' onClick={() => setDialogType('global')} sx={{ mt: 2 }}>
           <FormattedMessage id='dialogs.options.choices.convert.global' />
         </Button>
       </Box> : <Box>
@@ -114,7 +119,7 @@ const ChoiceEditor: React.FC = () => {
           <Select sx={{ width: 0.75 }} value={currentValueSet?.id || ''} onChange={e => selectGlobalValueSet(e.target.value as string)}>
             {form.metadata.composer?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
           </Select>
-          <Button color='inherit' variant='contained' onClick={convertToLocalList} disabled={currentValueSet?.id === ''}>
+          <Button color='inherit' variant='contained' onClick={() => setDialogType('local')} disabled={currentValueSet?.id === ''}>
             <FormattedMessage id='dialogs.options.choices.convert.local' />
           </Button>
         </Box>

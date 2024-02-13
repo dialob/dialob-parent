@@ -6,6 +6,8 @@ import { StyledTextField } from "./TableEditorComponents";
 import { useEditor } from "../editor";
 import { ValueSetEntry } from "../dialob";
 import { Close, Visibility } from "@mui/icons-material";
+import ChoiceConfirmationDialog from "../dialogs/ConvertConfirmationDialog";
+import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 
 
 interface ChoiceItemProps {
@@ -40,30 +42,34 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
 const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId }) => {
   const { editor } = useEditor();
   const entry = item.data;
+  const [open, setOpen] = React.useState(false);
 
   return (
-    <Table>
-      <TableBody>
-        <TableRow key={entry.id} ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}>
-          <TableCell align='center' width='5%'>
-            <IconButton onClick={() => onDelete(entry)}><Close color='error' /></IconButton>
-            <IconButton onClick={() => onRuleEdit(entry)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>
-          </TableCell>
-          <TableCell width='10%'>
-            <StyledTextField variant='standard' InputProps={{
-              disableUnderline: true,
-            }} value={entry.id} onChange={(e) => onUpdateId(entry, e.target.value)} />
-          </TableCell>
-          <TableCell width='10%'>
-            <LabelButton variant='text' color='inherit' onClick={() => onTextEdit(entry)}>
-              {getLabel(entry, editor.activeFormLanguage)}
-            </LabelButton>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <>
+      <ChoiceDeleteDialog open={open} itemId={entry.id} onClick={() => onDelete(entry)} onClose={() => setOpen(false)} />
+      <Table>
+        <TableBody>
+          <TableRow key={entry.id} ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}>
+            <TableCell align='center' width='5%'>
+              <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
+              <IconButton onClick={() => onRuleEdit(entry)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>
+            </TableCell>
+            <TableCell width='10%'>
+              <StyledTextField variant='standard' InputProps={{
+                disableUnderline: true,
+              }} value={entry.id} onChange={(e) => onUpdateId(entry, e.target.value)} />
+            </TableCell>
+            <TableCell width='10%'>
+              <LabelButton variant='text' color='inherit' onClick={() => onTextEdit(entry)}>
+                {getLabel(entry, editor.activeFormLanguage)}
+              </LabelButton>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </>
   );
 }
 

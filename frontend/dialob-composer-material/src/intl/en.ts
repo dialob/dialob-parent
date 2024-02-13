@@ -50,6 +50,11 @@ const en = {
   'dialogs.confirmation.delete.text': 'Are you sure you want to delete {itemId}?',
   'dialogs.confirmation.duplicate.title': 'Duplicate item',
   'dialogs.confirmation.duplicate.text': 'Are you sure you want to duplicate {itemId}?',
+  'dialogs.confirmation.convert.title': 'Convert list',
+  'dialogs.confirmation.convert.local.text': 'Are you sure you want to convert to a local list?',
+  'dialogs.confirmation.convert.global.text': 'Are you sure you want to convert to a global list?',
+  'dialogs.confirmation.delete.choice.title': 'Delete choice item',
+  'dialogs.confirmation.delete.choice.text': `Are you sure you want to delete "{itemId}" as a choice option?`,
 
   'dialogs.options.title': 'Item options for {itemId}',
   'dialogs.options.buttons.validation': 'Validation',
