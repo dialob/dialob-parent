@@ -73,7 +73,6 @@ const PropertiesEditor: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* @ts-ignore */}
             {props.map(prop => <TableRow key={prop.key}>
               <TableCell align='center'>
                 <IconButton onClick={() => handleDeleteProp(prop.key)}><Close color='error' /></IconButton>

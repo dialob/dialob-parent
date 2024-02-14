@@ -6,7 +6,6 @@ import { StyledTextField } from "./TableEditorComponents";
 import { useEditor } from "../editor";
 import { ValueSetEntry } from "../dialob";
 import { Close, Visibility } from "@mui/icons-material";
-import ChoiceConfirmationDialog from "../dialogs/ConvertConfirmationDialog";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 
 
@@ -52,16 +51,16 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
           <TableRow key={entry.id} ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}>
-            <TableCell align='center' width='5%'>
+            <TableCell align='center' width='20%'>
               <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
               <IconButton onClick={() => onRuleEdit(entry)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>
             </TableCell>
-            <TableCell width='10%'>
+            <TableCell width='40%'>
               <StyledTextField variant='standard' InputProps={{
                 disableUnderline: true,
               }} value={entry.id} onChange={(e) => onUpdateId(entry, e.target.value)} />
             </TableCell>
-            <TableCell width='10%'>
+            <TableCell width='40%'>
               <LabelButton variant='text' color='inherit' onClick={() => onTextEdit(entry)}>
                 {getLabel(entry, editor.activeFormLanguage)}
               </LabelButton>
