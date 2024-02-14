@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography, Box, Alert } from '@mui/material';
 import { RuleEditDialogType, useEditor } from '../editor';
 import { useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
@@ -52,7 +52,7 @@ const RuleEditDialog: React.FC = () => {
       if (invalid) {
         const id = setTimeout(() => {
           setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: ruleCode })]);
-        }, 3000);
+        }, 1000);
         return () => clearTimeout(id);
       } else {
         setErrors([]);
@@ -77,9 +77,9 @@ const RuleEditDialog: React.FC = () => {
         <Box sx={{ mb: 2 }}>
           <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true })]} />
         </Box>
-        {errors.length > 0 && <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'error.main', p: 2 }}>
+        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }}>
           {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
-        </Box>}
+        </Alert>}
       </DialogContent>
       <DialogActionButtons handleClose={handleClose} handleClick={handleClick} />
     </Dialog>

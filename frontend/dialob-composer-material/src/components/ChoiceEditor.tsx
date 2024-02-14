@@ -8,6 +8,7 @@ import { generateValueSetId } from '../dialob/reducer';
 import { StyledTable } from './TableEditorComponents';
 import ChoiceList from './ChoiceList';
 import ConvertConfirmationDialog from '../dialogs/ConvertConfirmationDialog';
+import UploadValuesetDialog from '../dialogs/UploadValuesetDialog';
 
 
 const ChoiceEditor: React.FC = () => {
@@ -18,6 +19,7 @@ const ChoiceEditor: React.FC = () => {
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
+  const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     const hasValueSet = item?.valueSetId !== undefined;
@@ -89,6 +91,7 @@ const ChoiceEditor: React.FC = () => {
 
   return (
     <>
+      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <ConvertConfirmationDialog
         type={dialogType}
         onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
@@ -100,7 +103,7 @@ const ChoiceEditor: React.FC = () => {
               <TableRow>
                 <TableCell width='20%' align='center'>
                   <IconButton onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
-                  <IconButton><Upload /></IconButton>
+                  <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
                   <IconButton><Download /></IconButton>
                 </TableCell>
                 <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>

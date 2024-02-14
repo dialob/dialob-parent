@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
+import { DialogActionButtons } from './DialogComponents';
 
 const ChoiceDeleteDialog: React.FC<{
   open: boolean, itemId: string,
@@ -20,10 +21,7 @@ const ChoiceDeleteDialog: React.FC<{
       <DialogContent>
         <FormattedMessage id={`dialogs.confirmation.delete.choice.text`} values={{ itemId }} />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} variant='text' color='error'><FormattedMessage id='buttons.cancel' /></Button>
-        <Button onClick={handleClick} variant='contained'><FormattedMessage id='buttons.confirm' /></Button>
-      </DialogActions>
+      <DialogActionButtons handleClose={onClose} handleClick={handleClick} />
     </Dialog>
   );
 };

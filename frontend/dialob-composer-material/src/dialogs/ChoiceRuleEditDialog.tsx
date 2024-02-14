@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography, Box, Alert } from '@mui/material';
 import { ValueSetEntry } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
@@ -33,7 +33,7 @@ const ChoiceRuleEditDialog: React.FC<{
   }, [valueSetEntry]);
 
   React.useEffect(() => {
-    // 3 seconds after every code change, check if rule is valid and set error message
+    // 1 second after every code change, check if rule is valid and set error message
     if (ruleCode && ruleCode.length > 0) {
       // TODO add rule error check
       // random boolean for now
@@ -41,7 +41,7 @@ const ChoiceRuleEditDialog: React.FC<{
       if (invalid) {
         const id = setTimeout(() => {
           setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: ruleCode })]);
-        }, 3000);
+        }, 1000);
         return () => clearTimeout(id);
       } else {
         setErrors([]);
@@ -66,9 +66,9 @@ const ChoiceRuleEditDialog: React.FC<{
         <Box sx={{ mb: 2 }}>
           <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true })]} />
         </Box>
-        {errors.length > 0 && <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'error.main', p: 2 }}>
+        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }}>
           {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
-        </Box>}
+        </Alert>}
       </DialogContent>
       <DialogActionButtons handleClose={onClose} handleClick={handleClick} />
     </Dialog>
