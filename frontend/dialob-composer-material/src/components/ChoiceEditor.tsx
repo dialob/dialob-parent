@@ -1,5 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import Papa from 'papaparse';
+import FileSaver from 'file-saver';
 import { Add, Download, Upload } from '@mui/icons-material';
 import { Box, Button, Divider, IconButton, MenuItem, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEditor } from '../editor';
@@ -85,6 +87,24 @@ const ChoiceEditor: React.FC = () => {
     }
   }
 
+  const downloadValueSet = () => {
+    if (!currentValueSet) {
+      return;
+    }
+    const entries = currentValueSet?.entries;
+    const result: { [key: string]: any }[] = [];
+    entries.forEach(e => {
+      let entry: { [key: string]: any } = { ID: e.id };
+      for (const lang in e.label) {
+        entry[lang] = e.label[lang];
+      }
+      result.push(entry);
+    });
+    const csv = Papa.unparse(result);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    FileSaver.saveAs(blob, `valueSet-${currentValueSet.id}.csv`);
+  }
+
   if (!item) {
     return null;
   }
@@ -104,7 +124,7 @@ const ChoiceEditor: React.FC = () => {
                 <TableCell width='20%' align='center'>
                   <IconButton onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
                   <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                  <IconButton><Download /></IconButton>
+                  <IconButton onClick={downloadValueSet}><Download /></IconButton>
                 </TableCell>
                 <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
                 <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.text' /></Typography></TableCell>

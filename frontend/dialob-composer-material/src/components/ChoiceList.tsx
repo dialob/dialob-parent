@@ -97,7 +97,7 @@ const ChoiceList: React.FC<{
 
   const onDeleteValueSetEntry = (entry: ValueSetEntry) => {
     if (valueSet) {
-      const idx = valueSet.entries.findIndex(e => e.id !== entry.id);
+      const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       deleteValueSetEntry(valueSet.id, idx);
       updateValueSet({ ...valueSet, entries: valueSet.entries.filter(e => e.id !== entry.id) });
     }
