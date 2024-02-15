@@ -85,6 +85,15 @@ const en = {
   'dialogs.text.description.title': '{itemId}: description',
   'dialogs.text.label.title': '{itemId}: label',
 
+  'dialogs.upload.valueset.title': 'Upload value set',
+  'dialogs.upload.valueset.file': 'Choose file',
+  'dialogs.upload.valueset.replace': 'Replace', 
+  'dialogs.upload.valueset.replace.desc': 'Replaces all valueset entries with values from file', 
+  'dialogs.upload.valueset.append': 'Append',
+  'dialogs.upload.valueset.append.desc': 'Appends values from file to existing valueset entries',
+  'dialogs.upload.valueset.update': 'Update',
+  'dialogs.upload.valueset.update.desc': 'Updates existing entries by ID and adds new entries from file',
+
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
   'errors.type.VISIBILITY': 'Visibility',

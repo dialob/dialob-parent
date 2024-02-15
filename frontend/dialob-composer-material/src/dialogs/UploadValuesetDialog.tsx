@@ -1,11 +1,13 @@
 import React from "react";
 import Papa from "papaparse";
 import { Dialog, DialogTitle, DialogContent, Button, CircularProgress, Typography, Select, MenuItem, Alert } from "@mui/material";
-import { Upload } from "@mui/icons-material";
+import { Upload, Warning } from "@mui/icons-material";
 import { DialogActionButtons } from "./DialogComponents";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
+import { FormattedMessage } from "react-intl";
 
 type UploadMode = 'replace' | 'append' | 'update';
+const UPLOAD_MODES: UploadMode[] = ['replace', 'append', 'update'];
 
 const UploadValuesetDialog: React.FC<{
   open: boolean,
@@ -129,11 +131,14 @@ const UploadValuesetDialog: React.FC<{
         <input type='file' hidden ref={ref} accept='text/csv' onChange={onFileChange} />
         {selectedFile && <Typography sx={{ mb: 2 }}>{selectedFile.name}</Typography>}
         <Select value={uploadMode} onChange={(e) => setUploadMode(e.target.value as UploadMode)} fullWidth>
-          <MenuItem value='replace'>Replace</MenuItem>
-          <MenuItem value='append'>Append</MenuItem>
-          <MenuItem value='update'>Update</MenuItem>
+          {UPLOAD_MODES.map(mode => <MenuItem key={mode} value={mode}><FormattedMessage id={`dialogs.upload.valueset.${mode}`} /></MenuItem>)}
         </Select>
-        {error && <Alert severity="error" sx={{ mt: 2 }}><Typography color='error'>{error}</Typography></Alert>}
+        <Alert severity="info" variant="outlined" sx={{ mt: 2 }}>
+          <Typography>
+            <FormattedMessage id={`dialogs.upload.valueset.${uploadMode}.desc`} />
+          </Typography>
+        </Alert>
+        {error && <Alert severity="error" sx={{ mt: 2 }} icon={<Warning />}><Typography color='error'>{error}</Typography></Alert>}
       </DialogContent>
       {loading ? <CircularProgress /> : <DialogActionButtons handleClick={handleUpload} handleClose={handleClose} />}
     </Dialog>

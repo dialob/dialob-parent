@@ -2,7 +2,7 @@ import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { Dialog, DialogTitle, DialogContent, Typography, Box, TextField, Button, IconButton, Alert } from '@mui/material';
-import { Add, Close } from '@mui/icons-material';
+import { Add, Close, Warning } from '@mui/icons-material';
 import { useEditor } from '../editor';
 import { ValidationRule, useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
@@ -136,7 +136,7 @@ const ValidationRuleEditDialog: React.FC = () => {
             </Box>
           )
         })}
-        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }}>
+        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }} icon={<Warning />}>
           {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
         </Alert>}
       </DialogContent>

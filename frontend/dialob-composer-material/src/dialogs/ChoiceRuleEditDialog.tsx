@@ -5,6 +5,7 @@ import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Warning } from '@mui/icons-material';
 
 
 const ChoiceRuleEditDialog: React.FC<{
@@ -66,7 +67,7 @@ const ChoiceRuleEditDialog: React.FC<{
         <Box sx={{ mb: 2 }}>
           <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true })]} />
         </Box>
-        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }}>
+        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }} icon={<Warning />}>
           {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
         </Alert>}
       </DialogContent>
