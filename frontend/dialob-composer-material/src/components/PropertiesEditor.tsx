@@ -1,15 +1,12 @@
 import React from 'react';
-import {
-  Box, Button, IconButton, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, TextField, Typography
-} from '@mui/material';
-import { useEditor } from '../editor';
-import { Close } from '@mui/icons-material';
-import { StyledTable, StyledTextField } from './TableEditorComponents';
+import { Box, Button, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { useEditor } from '../editor'
+import { StyledTable } from './TableEditorComponents';
 import { useComposer } from '../dialob';
 import { FormattedMessage } from 'react-intl';
+import PropItem from './PropItem';
 
-interface ItemProp {
+export interface ItemProp {
   key: string;
   value: string;
 }
@@ -73,19 +70,7 @@ const PropertiesEditor: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.map(prop => <TableRow key={prop.key}>
-              <TableCell align='center'>
-                <IconButton onClick={() => handleDeleteProp(prop.key)}><Close color='error' /></IconButton>
-              </TableCell>
-              <TableCell>
-                <Typography sx={{ p: 1 }}>{prop.key}</Typography>
-              </TableCell>
-              <TableCell>
-                <StyledTextField variant='standard' InputProps={{
-                  disableUnderline: true,
-                }} value={prop.value} onChange={(e) => handleEditProp(prop.key, e.target.value)} />
-              </TableCell>
-            </TableRow>)}
+            {props.map(prop => <PropItem key={prop.key} prop={prop} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
           </TableBody>
         </StyledTable>
       </TableContainer>

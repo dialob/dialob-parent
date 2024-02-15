@@ -42,6 +42,14 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
   const { editor } = useEditor();
   const entry = item.data;
   const [open, setOpen] = React.useState(false);
+  const [idValue, setIdValue] = React.useState(entry.id);
+
+  React.useEffect(() => {
+    const id = setTimeout(() => {
+      onUpdateId(entry, idValue);
+    }, 1000);
+    return () => clearTimeout(id);
+  }, [idValue]);
 
   return (
     <>
@@ -58,7 +66,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
             <TableCell width='40%'>
               <StyledTextField variant='standard' InputProps={{
                 disableUnderline: true,
-              }} value={entry.id} onChange={(e) => onUpdateId(entry, e.target.value)} />
+              }} value={idValue} onChange={(e) => setIdValue(e.target.value)} />
             </TableCell>
             <TableCell width='40%'>
               <LabelButton variant='text' color='inherit' onClick={() => onTextEdit(entry)}>

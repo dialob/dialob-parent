@@ -10,12 +10,14 @@ const DefaultValueEditor: React.FC = () => {
   const item = editor.activeItem;
   const [defaultValue, setDefaultValue] = React.useState<string>(item?.defaultValue || '');
 
-  const handleUpdateDefaultValue = (value: string) => {
-    setDefaultValue(value);
-    if (item && value !== '') {
-      updateItem(item.id, 'defaultValue', value);
+  React.useEffect(() => {
+    if (item && defaultValue !== '') {
+      const id = setTimeout(() => {
+        updateItem(item?.id, 'defaultValue', defaultValue);
+      }, 1000);
+      return () => clearTimeout(id);
     }
-  }
+  }, [defaultValue]);
 
   if (!item) {
     return null;
@@ -24,7 +26,7 @@ const DefaultValueEditor: React.FC = () => {
   return (
     <Box>
       <Typography><FormattedMessage id='dialogs.options.default.set' /></Typography>
-      <TextField variant='outlined' value={defaultValue} onChange={(e) => handleUpdateDefaultValue(e.target.value)} />
+      <TextField variant='outlined' value={defaultValue} onChange={(e) => setDefaultValue(e.target.value)} />
     </Box>
   );
 }
