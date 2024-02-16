@@ -4,6 +4,7 @@ import { EditorError, ErrorSeverity } from "../editor";
 import { DialobItem } from "../dialob";
 import { Check, Info, Warning } from "@mui/icons-material";
 import { useIntl } from "react-intl";
+import { PreTextIcon } from "../views/tree/NavigationTreeItem";
 
 export const ErrorType: React.FC<{ error: EditorError }> = ({ error }) => {
   const intl = useIntl();
@@ -83,13 +84,13 @@ export const getErrorIcon = (errors: EditorError[], item: DialobItem): React.Rea
   const itemErrorSeverity = getItemErrorSeverity(errors, item);
   switch (itemErrorSeverity) {
     case 'FATAL':
-      return <Warning color='error' fontSize='small' />;
+      return <PreTextIcon disableRipple><Warning color='error' fontSize='small' /></PreTextIcon>;
     case 'ERROR':
-      return <Warning color='error' fontSize='small' />;
+      return <PreTextIcon disableRipple><Warning color='error' fontSize='small' /></PreTextIcon>;
     case 'WARNING':
-      return <Warning color='warning' fontSize='small' />;
+      return <PreTextIcon disableRipple><Warning color='warning' fontSize='small' /></PreTextIcon>;
     case 'INFO':
-      return <Info color='info' fontSize='small' />;
+      return <PreTextIcon disableRipple><Info color='info' fontSize='small' /></PreTextIcon>;
     default:
       return undefined;
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItem, ListItemText, Typography, styled } from '@mui/material';
+import { ListItem, ListItemText, Typography, IconButton, styled } from '@mui/material';
 import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
 import { TreeItem, ItemId } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
@@ -17,13 +17,19 @@ interface TreeItemProps {
   provided: TreeDraggableProvided;
 }
 
-const PreTextIcon = styled('span')({
-  width: '1.5em',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-});
+const MAX_TREE_ITEM_TITLE_LENGTH = 40;
+
+export const PreTextIcon = styled(IconButton)(({ theme }) => ({
+  padding: theme.spacing(0.5),
+  color: 'inherit',
+  cursor: 'default',
+}));
+
+const ArrowIcon = styled(IconButton)(({ theme }) => ({
+  padding: 0,
+  marginLeft: theme.spacing(0.5),
+  color: 'inherit',
+}));
 
 const getIcon = (
   item: TreeItem,
@@ -32,21 +38,31 @@ const getIcon = (
 ) => {
   if (item.children && item.children.length > 0) {
     return item.isExpanded ? (
-      <PreTextIcon onClick={() => onCollapse(item.id)}><ArrowDropDown fontSize='small' /></PreTextIcon>
+      <ArrowIcon onClick={() => onCollapse(item.id)}><ArrowDropDown fontSize='small' /></ArrowIcon>
     ) : (
-      <PreTextIcon onClick={() => onExpand(item.id)}><ArrowRight fontSize='small' /></PreTextIcon>
+      <ArrowIcon onClick={() => onExpand(item.id)}><ArrowRight fontSize='small' /></ArrowIcon>
     );
   }
-  return <PreTextIcon />;
+  return <ArrowIcon sx={{ mr: 0.5 }} />;
 };
 
 const getTypeIcon = (item: DialobItem, isPage: boolean) => {
   if (isPage) {
-    return <PreTextIcon><PAGE_CONFIG.icon fontSize='small' /></PreTextIcon>;
+    return <PreTextIcon disableRipple><PAGE_CONFIG.icon fontSize='small' /></PreTextIcon>;
   }
   const itemConfig = DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(item));
   const Icon = itemConfig?.props.icon || DEFAULT_ITEM_CONFIG.defaultIcon;
-  return <PreTextIcon><Icon fontSize='small' /></PreTextIcon>;
+  return <PreTextIcon disableRipple sx={{ mr: 0.5 }}><Icon fontSize='small' /></PreTextIcon>;
+}
+
+const getTitle = (item: TreeItem) => {
+  if (!item.data) {
+    return '';
+  }
+  const rawTitle = item.data.title;
+  return rawTitle.length > MAX_TREE_ITEM_TITLE_LENGTH
+    ? rawTitle.substring(0, MAX_TREE_ITEM_TITLE_LENGTH) + '…'
+    : rawTitle;
 }
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
@@ -69,7 +85,7 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
       {getIcon(item, onExpand, onCollapse)}
       {errorColor ? getErrorIcon(editor.errors, item.data.item) : getTypeIcon(item.data.item, item.data.isPage)}
       <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo}>
-        <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{item.data ? item.data.title : ''}</Typography>
+        <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{getTitle(item)}</Typography>
       </ListItemText>
     </ListItem>
   );
