@@ -1,11 +1,12 @@
 import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { Dialog, DialogTitle, DialogContent, Typography, Box, TextField, Button, IconButton } from '@mui/material';
-import { Add, Close } from '@mui/icons-material';
+import { Dialog, DialogTitle, DialogContent, Typography, Box, TextField, Button, IconButton, Alert } from '@mui/material';
+import { Add, Close, Warning } from '@mui/icons-material';
 import { useEditor } from '../editor';
 import { ValidationRule, useComposer } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface IndexedRule {
   index: number;
@@ -15,14 +16,10 @@ interface IndexedRule {
 const ValidationRuleEditDialog: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression, setValidationMessage } = useComposer();
   const { editor, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
+  const intl = useIntl();
   const item = editor.activeItem;
-  const existingRules = React.useMemo(() => {
-    if (item && item.validations) {
-      return item.validations;
-    }
-    return [];
-  }, [item]);
-  const open = editor.validationRuleEditDialogOpen || false;
+  const open = item && editor.validationRuleEditDialogOpen || false;
+  const existingRules = item?.validations || [];
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [errors, setErrors] = React.useState<string[]>([]);
   const [activeLanguage, setActiveLanguage] = React.useState(editor.activeFormLanguage);
@@ -35,22 +32,23 @@ const ValidationRuleEditDialog: React.FC = () => {
   const handleClick = () => {
     if (item) {
       rules.forEach((r, index) => {
-        if (r.validationRule.rule && existingRules.length > 0 && existingRules[index] && r.validationRule.rule !== existingRules[index].rule) {
+        if (r.validationRule.rule && r.validationRule.rule.length > 0 && existingRules.length > 0 && existingRules[index] && r.validationRule.rule !== existingRules[index].rule) {
           setValidationExpression(item.id, r.index, r.validationRule.rule);
         }
         if (r.validationRule.message && existingRules.length > 0 && existingRules[index] && existingRules[index].message &&
-          existingRules[index].message![activeLanguage] && r.validationRule.message[activeLanguage] !== existingRules[index].message![activeLanguage]) {
+          existingRules[index].message![activeLanguage] && existingRules[index].message![activeLanguage].length > 0 &&
+          r.validationRule.message[activeLanguage] !== existingRules[index].message![activeLanguage]) {
           setValidationMessage(item.id, r.index, activeLanguage, r.validationRule.message[activeLanguage]);
         }
-        if (existingRules.length === 0 || r.index >= existingRules.length) {
+        if ((existingRules.length === 0 || r.index >= existingRules.length) && r.validationRule.rule && r.validationRule.rule.length > 0) {
           createValidation(item.id, r.validationRule);
         }
         if (index !== r.index) {
           deleteValidation(item.id, r.index);
         }
       });
+      handleClose();
     }
-    handleClose();
   }
 
   React.useEffect(() => {
@@ -71,13 +69,13 @@ const ValidationRuleEditDialog: React.FC = () => {
         // random boolean for now
         const invalid = Math.random() < 0.5;
         if (invalid) {
-          ruleErrors.push('Invalid rule: ' + rule.validationRule.rule);
+          ruleErrors.push(intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: rule.validationRule.rule }));
         }
       });
       if (ruleErrors.length > 0) {
         const id = setTimeout(() => {
           setErrors(ruleErrors);
-        }, 3000);
+        }, 1000);
         return () => clearTimeout(id);
       } else {
         setErrors([]);
@@ -94,11 +92,11 @@ const ValidationRuleEditDialog: React.FC = () => {
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography>{item.id}: validation</Typography>
+        <Typography><FormattedMessage id='dialogs.rules.validation.title' values={{ itemId: item.id }} /></Typography>
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', width: 0.35, justifyContent: 'space-between' }}>
           <DialogLanguageMenu activeLanguage={activeLanguage} setActiveLanguage={setActiveLanguage} />
-          <Button color='inherit' endIcon={<Add />} onClick={() => {
+          <Button color='inherit' variant='contained' endIcon={<Add />} onClick={() => {
             const newRules = [...rules];
             newRules.push({ index: newRules.length, validationRule: { rule: '', message: { [activeLanguage]: '' } } });
             setRules(newRules);
@@ -112,7 +110,7 @@ const ValidationRuleEditDialog: React.FC = () => {
           return (
             <Box key={index} sx={{ display: 'flex', flexDirection: 'column', border: 1, borderRadius: 1, p: 2, mb: 2 }}>
               <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Typography variant='subtitle1'>Rule {index + 1}</Typography>
+                <Typography variant='subtitle1'><FormattedMessage id='dialogs.rules.validation.rule' values={{ index: index + 1 }} /></Typography>
                 <Box flexGrow={1} />
                 <IconButton onClick={() => {
                   const newRules = [...rules];
@@ -121,25 +119,26 @@ const ValidationRuleEditDialog: React.FC = () => {
                 }}><Close /></IconButton>
               </Box>
               <Box sx={{ my: 2 }}>
-                <Typography variant='caption'>Expression</Typography>
+                <Typography variant='caption'><FormattedMessage id='dialogs.rules.validation.expression' /></Typography>
                 <CodeMirror value={validationRule.rule} onChange={(value) => {
                   const newRules = [...rules];
                   newRules[index].validationRule.rule = value;
                   setRules(newRules);
                 }} extensions={[javascript({ jsx: true })]} />
               </Box>
-              <Typography variant='caption'>Message</Typography>
-              <TextField fullWidth value={validationRule.message ? validationRule.message[activeLanguage] : ''} onChange={(e) => {
-                const newRules = [...rules];
-                newRules[index].validationRule.message = { ...newRules[index].validationRule.message, [activeLanguage]: e.target.value };
-                setRules(newRules);
-              }} />
+              <Typography variant='caption'><FormattedMessage id='dialogs.rules.validation.message' /></Typography>
+              <TextField fullWidth value={(validationRule.message && validationRule.message[activeLanguage]) ? validationRule.message[activeLanguage] : ''}
+                onChange={(e) => {
+                  const newRules = [...rules];
+                  newRules[index].validationRule.message = { ...newRules[index].validationRule.message, [activeLanguage]: e.target.value };
+                  setRules(newRules);
+                }} />
             </Box>
           )
         })}
-        {errors.length > 0 && <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'error.main', p: 2 }}>
+        {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }} icon={<Warning />}>
           {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
-        </Box>}
+        </Alert>}
       </DialogContent>
       <DialogActionButtons handleClose={handleClose} handleClick={handleClick} />
     </Dialog>

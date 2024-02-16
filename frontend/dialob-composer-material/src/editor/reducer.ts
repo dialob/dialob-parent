@@ -39,6 +39,10 @@ const setValidationRuleEditDialogOpen = (state: EditorState, open: boolean): voi
   state.validationRuleEditDialogOpen = open;
 }
 
+const setItemOptionsDialogOpen = (state: EditorState, open: boolean): void => {
+  state.itemOptionsDialogOpen = open;
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -59,6 +63,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setRuleEditDialogType(state, action.dialogType);
     } else if (action.type === 'setValidationRuleEditDialogOpen') {
       setValidationRuleEditDialogOpen(state, action.open);
+    } else if (action.type === 'setItemOptionsDialogOpen') {
+      setItemOptionsDialogOpen(state, action.open);
     }
   });
   return newState;

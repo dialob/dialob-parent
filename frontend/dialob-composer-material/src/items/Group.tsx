@@ -54,12 +54,12 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
             {expanded &&
               <>
                 <TableRow>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={hasIndicators ? 6 : 5}>
                     <VisibilityField item={item} />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={hasIndicators ? 6 : 5}>
                     <Box sx={{ m: 1 }}>
                       {children}
                       <AddItemMenu item={item} />

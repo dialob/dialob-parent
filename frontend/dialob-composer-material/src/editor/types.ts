@@ -22,4 +22,5 @@ export type EditorState = {
   textEditDialogType?: TextEditDialogType;
   ruleEditDialogType?: RuleEditDialogType;
   validationRuleEditDialogOpen?: boolean;
+  itemOptionsDialogOpen?: boolean;
 };

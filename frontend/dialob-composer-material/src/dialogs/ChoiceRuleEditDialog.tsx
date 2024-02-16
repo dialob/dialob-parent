@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Typography, Box, Alert } from '@mui/material';
-import { RuleEditDialogType, useEditor } from '../editor';
-import { useComposer } from '../dialob';
+import { ValueSetEntry } from '../dialob';
 import { DialogActionButtons, DialogHelpButton } from './DialogComponents';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
@@ -9,43 +8,33 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Warning } from '@mui/icons-material';
 
 
-const resolveRulePropName = (ruleType: RuleEditDialogType): string => {
-  switch (ruleType) {
-    case 'visibility': return 'activeWhen';
-    case 'requirement': return 'required';
-    default: return '';
-  }
-}
-
-const RuleEditDialog: React.FC = () => {
-  const { updateItem } = useComposer();
-  const { editor, setRuleEditDialogType, setActiveItem } = useEditor();
+const ChoiceRuleEditDialog: React.FC<{
+  open: boolean,
+  valueSetEntry?: ValueSetEntry,
+  onUpdate: (entry: ValueSetEntry, rule: string) => void,
+  onClose: () => void
+}> = ({ open, valueSetEntry, onUpdate, onClose }) => {
   const intl = useIntl();
-  const item = editor.activeItem;
-  const open = item && editor.ruleEditDialogType !== undefined || false;
-  const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
+  const [ruleCode, setRuleCode] = React.useState<string>(valueSetEntry?.when || '');
   const [errors, setErrors] = React.useState<string[]>([]);
 
-  const handleClose = () => {
-    setRuleEditDialogType(undefined);
-    setActiveItem(undefined);
-  }
-
   const handleClick = () => {
-    if (editor.ruleEditDialogType && item && ruleCode && ruleCode.length > 0) {
-      updateItem(item.id, resolveRulePropName(editor.ruleEditDialogType), ruleCode);
-      handleClose();
+    if (valueSetEntry && ruleCode && ruleCode.length > 0) {
+      onUpdate(valueSetEntry, ruleCode);
+      onClose();
     }
   }
 
   React.useEffect(() => {
-    if (editor.ruleEditDialogType && item) {
-      setRuleCode(item[resolveRulePropName(editor.ruleEditDialogType)]);
+    if (valueSetEntry && valueSetEntry.when) {
+      setRuleCode(valueSetEntry.when);
+    } else {
+      setRuleCode('');
     }
-  }, [editor.ruleEditDialogType, item]);
+  }, [valueSetEntry]);
 
   React.useEffect(() => {
-    // 3 seconds after every code change, check if rule is valid and set error message
+    // 1 second after every code change, check if rule is valid and set error message
     if (ruleCode && ruleCode.length > 0) {
       // TODO add rule error check
       // random boolean for now
@@ -63,14 +52,14 @@ const RuleEditDialog: React.FC = () => {
     }
   }, [ruleCode]);
 
-  if (!item) {
+  if (!valueSetEntry) {
     return null;
   }
 
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography><FormattedMessage id={`dialogs.rules.${editor.ruleEditDialogType}.title`} values={{ itemId: item.id }} /></Typography>
+        <Typography><FormattedMessage id='dialogs.rules.visibility.title' values={{ itemId: valueSetEntry.id }} /></Typography>
         <Box flexGrow={1} />
         <DialogHelpButton helpUrl='https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del' />
       </DialogTitle>
@@ -82,9 +71,9 @@ const RuleEditDialog: React.FC = () => {
           {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
         </Alert>}
       </DialogContent>
-      <DialogActionButtons handleClose={handleClose} handleClick={handleClick} />
+      <DialogActionButtons handleClose={onClose} handleClick={handleClick} />
     </Dialog>
   );
 };
 
-export default RuleEditDialog;
+export default ChoiceRuleEditDialog;

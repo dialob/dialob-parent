@@ -1,7 +1,10 @@
 import React from "react";
 import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useComposer } from "../dialob";
-import { Box, Button, Chip, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
-import { Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight, ListAlt, Menu as MenuIcon, Note, Rule, Tune, Visibility } from "@mui/icons-material";
+import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
+import {
+  Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
+  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, Edit
+} from "@mui/icons-material";
 import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useEditor } from "../editor";
@@ -28,11 +31,6 @@ const FullWidthButton = styled(Button)(({ theme }) => ({
   width: '100%',
 }));
 
-const IndicatorChip = styled(Chip)(({ theme }) => ({
-  fontSize: theme.typography.caption.fontSize,
-  height: '100%',
-  marginBottom: theme.spacing(0.25),
-}));
 
 export const StyledTable = styled(Table, {
   shouldForwardProp: (prop) => prop !== 'errorBorderColor',
@@ -144,12 +142,11 @@ export const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
-  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem } = useEditor();
+  const { setTextEditDialogType, setValidationRuleEditDialogOpen, setActiveItem, setRuleEditDialogType, setItemOptionsDialogOpen } = useEditor();
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
-  const valueSetName = isGlobalValueSet && isGlobalValueSet.label ? 'Global list: ' + isGlobalValueSet.label : 'Local list';
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation'): void => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: 'description' | 'validation' | 'requirement' | 'options' | 'default'): void => {
     e.stopPropagation();
     if (dialogType === 'description') {
       setTextEditDialogType('description');
@@ -159,13 +156,34 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       setValidationRuleEditDialogOpen(true);
       setActiveItem(item);
     }
+    if (dialogType === 'requirement') {
+      setRuleEditDialogType('requirement');
+      setActiveItem(item);
+    }
+    if (dialogType === 'options') {
+      setItemOptionsDialogOpen(true);
+      setActiveItem(item);
+    }
+    if (dialogType === 'default') {
+      setItemOptionsDialogOpen(true);
+      setActiveItem(item);
+    }
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
-      {item.description && <IndicatorChip onClick={(e) => handleClick(e, 'description')} label='Description' icon={<Description sx={{ fontSize: 'caption.fontSize' }} />} />}
-      {item.valueSetId && <IndicatorChip onClick={handleClick} label={valueSetName} icon={<ListAlt sx={{ fontSize: 'caption.fontSize' }} />} />}
-      {item.validations && <IndicatorChip onClick={(e) => handleClick(e, 'validation')} label='Validations' icon={<Rule sx={{ fontSize: 'caption.fontSize' }} />} />}
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
+      {item.description &&
+        <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' /></IconButton>}
+      {item.valueSetId &&
+        <IconButton onClick={(e) => handleClick(e, 'options')}>
+          {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
+        </IconButton>}
+      {item.validations &&
+        <IconButton onClick={(e) => handleClick(e, 'validation')}><Rule fontSize='small' /></IconButton>}
+      {item.required &&
+        <IconButton onClick={(e) => handleClick(e, 'requirement')}><Gavel fontSize='small' /></IconButton>}
+      {item.defaultValue &&
+        <IconButton onClick={(e) => handleClick(e, 'default')}><Edit fontSize='small' /></IconButton>}
     </Box>
   );
 }
@@ -203,7 +221,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
       </Button>
       <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem key='hint' onClick={handleClose} disabled>
-          <Typography><FormattedMessage id='conversions.hint' /></Typography>
+          <Typography><FormattedMessage id='menus.conversions.hint' /></Typography>
         </MenuItem>
         {conversions.length > 0 && conversions.map((c, index) => (
           <MenuItem key={index} onClick={(e) => handleConvert(e, c.value)}>
@@ -217,7 +235,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form, addItem } = useComposer();
-  const { setConfirmationDialogType, setTextEditDialogType, setActiveItem } = useEditor();
+  const { setConfirmationDialogType, setTextEditDialogType, setActiveItem, setItemOptionsDialogOpen } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -257,6 +275,13 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
     setChosenCategory(null);
   }
 
+  const handleOptions = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose(e, 1);
+    setActiveItem(item);
+    setItemOptionsDialogOpen(true);
+  }
+
   const handleDescription = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     handleClose(e, 1);
@@ -292,7 +317,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
         <MenuIcon color='inherit' />
       </IconButton>
       <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
-        <MenuItem onClick={(e) => handleClose(e, 1)}>
+        <MenuItem onClick={(e) => handleOptions(e)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.options' />
         </MenuItem>

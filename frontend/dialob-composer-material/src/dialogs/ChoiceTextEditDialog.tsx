@@ -4,48 +4,45 @@ import { Dialog, DialogTitle, DialogContent, Button, Typography, Box, TextareaAu
 import { Visibility } from '@mui/icons-material';
 import { useEditor } from '../editor';
 import { FormattedMessage } from 'react-intl';
-import { useComposer } from '../dialob';
+import { ValueSetEntry } from '../dialob';
 import { DialogActionButtons, DialogHelpButton, DialogLanguageMenu } from './DialogComponents';
 import { markdownComponents } from '../defaults/markdown';
 
-const TextEditDialog: React.FC = () => {
-  const { updateItem } = useComposer();
-  const { editor, setTextEditDialogType, setActiveItem } = useEditor();
-  const item = editor.activeItem;
-  const open = item && editor.textEditDialogType !== undefined || false;
+const ChoiceTextEditDialog: React.FC<{
+  open: boolean,
+  valueSetEntry?: ValueSetEntry,
+  onUpdate: (entry: ValueSetEntry, text: string, language: string) => void,
+  onClose: () => void
+}> = ({ open, valueSetEntry, onUpdate, onClose }) => {
+  const { editor } = useEditor();
   const [activeLanguage, setActiveLanguage] = React.useState(editor.activeFormLanguage);
   const [preview, setPreview] = React.useState(false);
   const [localizedText, setLocalizedText] = React.useState<string>();
 
-  const handleClose = () => {
-    setTextEditDialogType(undefined);
-    setActiveItem(undefined);
-  }
-
   const handleClick = () => {
-    if (editor.textEditDialogType && item && localizedText && localizedText.length > 0) {
-      updateItem(item.id, editor.textEditDialogType, localizedText, activeLanguage);
-      handleClose();
+    if (valueSetEntry && localizedText && localizedText.length > 0) {
+      onUpdate(valueSetEntry, localizedText, activeLanguage);
+      onClose();
     }
   }
 
   React.useEffect(() => {
-    if (editor.textEditDialogType && item) {
-      const localizedText = item[editor.textEditDialogType]?.[activeLanguage];
+    if (valueSetEntry && valueSetEntry.label) {
+      const localizedText = valueSetEntry.label[activeLanguage];
       setLocalizedText(localizedText || '');
     } else {
       setLocalizedText('');
     }
-  }, [activeLanguage, editor.textEditDialogType, item]);
+  }, [activeLanguage, valueSetEntry]);
 
-  if (!item) {
+  if (!valueSetEntry) {
     return null;
   }
 
   return (
     <Dialog open={open} maxWidth='md' fullWidth>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography><FormattedMessage id={`dialogs.text.${editor.textEditDialogType}.title`} values={{ itemId: item.id }} /></Typography>
+        <Typography><FormattedMessage id='dialogs.text.label.title' values={{ itemId: valueSetEntry.id }} /></Typography>
         <Box flexGrow={1} />
         <Box sx={{ display: 'flex', width: 0.35, justifyContent: 'space-between' }}>
           <DialogLanguageMenu activeLanguage={activeLanguage} setActiveLanguage={setActiveLanguage} />
@@ -61,9 +58,9 @@ const TextEditDialog: React.FC = () => {
           <TextareaAutosize style={{ width: '100%' }} minRows={10} value={localizedText} onChange={(e) => setLocalizedText(e.target.value)} />
         }
       </DialogContent>
-      <DialogActionButtons handleClose={handleClose} handleClick={handleClick} />
+      <DialogActionButtons handleClose={onClose} handleClick={handleClick} />
     </Dialog>
   );
 };
 
-export default TextEditDialog;
+export default ChoiceTextEditDialog;

@@ -1695,6 +1695,7 @@
     },
     "companyID": {
       "id": "companyID",
+      "defaultValue": "000000",
       "type": "text",
       "view": "text",
       "label": {
@@ -4409,8 +4410,10 @@
         {
           "id": "clientVisit",
           "label": {
-            "fi": "Asiakaskäynti"
-          }
+            "fi": "Asiakaskäynti",
+            "en": "Client visit"
+          },
+          "when": "lengthOf(usedChannel) > 5"
         },
         {
           "id": "backOffice",

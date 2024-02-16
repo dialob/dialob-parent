@@ -11,3 +11,4 @@ export type EditorAction =
   | { type: 'setTextEditDialogType', dialogType?: TextEditDialogType }
   | { type: 'setRuleEditDialogType', dialogType?: RuleEditDialogType }
   | { type: 'setValidationRuleEditDialogOpen', open: boolean }
+  | { type: 'setItemOptionsDialogOpen', open: boolean }
