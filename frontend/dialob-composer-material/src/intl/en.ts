@@ -66,6 +66,7 @@ const en = {
   'dialogs.options.key': 'Key',
   'dialogs.options.value': 'Value',
   'dialogs.options.text': 'Text',
+  'dialogs.options.rule': 'Rule',
   'dialogs.options.choices.convert.local': 'Convert to local list',
   'dialogs.options.choices.convert.global': 'Convert to global list',
   'dialogs.options.choices.create.local': 'Create local list',

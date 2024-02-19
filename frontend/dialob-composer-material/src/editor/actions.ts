@@ -12,3 +12,4 @@ export type EditorAction =
   | { type: 'setRuleEditDialogType', dialogType?: RuleEditDialogType }
   | { type: 'setValidationRuleEditDialogOpen', open: boolean }
   | { type: 'setItemOptionsDialogOpen', open: boolean }
+  | { type: 'setHighlightedItem', item?: DialobItem };

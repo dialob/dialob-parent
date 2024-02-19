@@ -66,13 +66,14 @@ const getTitle = (item: TreeItem) => {
 }
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
-  const { editor, setActivePage } = useEditor();
+  const { editor, setActivePage, setHighlightedItem } = useEditor();
   const { form } = useComposer();
   const errorColor = useErrorColor(editor.errors, item.data.item);
   const itemId = item.data.item.id;
 
   const handleScrollTo = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setHighlightedItem(item.data.item);
     scrollToItem(itemId, Object.values(form.data), editor.activePage, setActivePage);
   }
 

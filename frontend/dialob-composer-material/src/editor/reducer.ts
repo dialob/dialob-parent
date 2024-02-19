@@ -65,6 +65,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setValidationRuleEditDialogOpen(state, action.open);
     } else if (action.type === 'setItemOptionsDialogOpen') {
       setItemOptionsDialogOpen(state, action.open);
+    } else if (action.type === 'setHighlightedItem') {
+      state.highlightedItem = action.item;
     }
   });
   return newState;
