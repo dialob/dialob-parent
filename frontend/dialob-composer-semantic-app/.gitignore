@@ -1,8 +1,9 @@
 /coverage
 /dist
-/build
 /node_modules
 npm-debug.log*
 /target
 .project
 .settings/
+.DS_Store
+/build

@@ -1,0 +1,26 @@
+dialob:
+  api:
+    cors:
+      allowedOrigins:
+        - "http://localhost:3000"
+      allowedMethods:
+        - POST
+        - PUT
+        - OPTIONS
+        - GET
+      allowedHeaders:
+        - "*"
+      allowCredentials: true
+
+
+      allow-credentials: true
+#      allowed-headers:
+#      allowed-methods:
+#        - GET
+#        - HEAD
+#        - POST
+#        - PUT
+#        - OPTIONS
+#      allowed-origins:
+#        - "http://localhost:3000"
+#      exposed-headers:

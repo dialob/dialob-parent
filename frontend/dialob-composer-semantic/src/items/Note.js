@@ -4,6 +4,7 @@ import Item, {connectItem} from './Item';
 import ItemMenu from '../components/ItemMenu';
 import classnames from 'classnames';
 import Scrolltarget from './Scrolltarget';
+import ConvertItem from '../components/ConvertItem';
 import { MarkdownEditor } from '../components/MarkdownEditor';
 
 class Note extends Item {
@@ -16,6 +17,9 @@ class Note extends Item {
             <Table.Row>
               <Table.Cell selectable>
                 <a onClick={() => {if (this.props.editable) { this.changeId(); }}}>{this.props.itemId}</a>
+              </Table.Cell>
+              <Table.Cell collapsing>
+                <ConvertItem itemType={this.props.item.get('type')} viewType={this.props.item.get('view')} itemId={this.props.itemId}/>
               </Table.Cell>
               <Table.Cell collapsing>
                 <ItemMenu item={this.props.item} parentItemId={this.props.parentItemId} onDelete={this.deleteItem}/>

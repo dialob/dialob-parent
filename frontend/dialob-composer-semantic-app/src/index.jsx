@@ -5,9 +5,9 @@ import { DndProvider } from 'react-dnd';
 import {combineReducers, applyMiddleware, createStore} from 'redux';
 import {Provider} from 'react-redux';
 import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '@resys/dialob-composer';
+import 'semantic-ui-css/semantic.min.css';
 
 const renderDialobComposer = (target, appConfig) => {
-  console.log('Render', appConfig);
 
   const FORM_ID = appConfig.formId;
 
@@ -20,6 +20,7 @@ const renderDialobComposer = (target, appConfig) => {
     apiUrl: appConfig.backend_api_url,
     previewUrl: appConfig.filling_app_url,
     tenantId: appConfig.tenantId,
+    credentialMode: appConfig.credentialMode
   },
   itemEditors: DEFAULT_ITEM_CONFIG,
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
@@ -45,3 +46,4 @@ const store = createStore(reducer, applyMiddleware(...createDialobComposerMiddle
 
 // @ts-ignore
 window.renderDialobComposer = renderDialobComposer;
+

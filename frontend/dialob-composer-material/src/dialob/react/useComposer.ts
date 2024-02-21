@@ -1,11 +1,11 @@
 import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
-import { DialobItem, DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule } from "../types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule } from "../types";
 
 export const useComposer = () => {
   const { state, dispatch } = useContext(ComposerContext);
 
-  const addItem = (itemTemplate: DialobItem, parentItemId: string, afterItemId ?: string): void => {
+  const addItem = (itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId ?: string): void => {
     dispatch({type: 'addItem', config: itemTemplate, parentItemId, afterItemId});
   };
 

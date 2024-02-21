@@ -1,0 +1,82 @@
+services:
+
+  dialob-api:
+    image: resys/dialob-boot:2.1.19
+    ports:
+      - "8085:8081"
+    environment:
+      - SPRING_REDIS_HOST=redis
+      - SPRING_PROFILES_ACTIVE=ui,jdbc,cors,pim
+      - SPRING_SESSION_STORE_TYPE=redis
+      - SPRING_SESSION_REDIS_NAMESPACE=dialobServiceSession
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql/dialob
+      - SPRING_DATASOURCE_USERNAME=dialob
+      - SPRING_DATASOURCE_PASSWORD=dialob123
+      - ADMIN_VERSIONING=true
+      - DIALOB_SESSION_POSTSUBMITHANDLER_ENABLED=true
+      - DIALOB_SECURITY_ENABLED=false
+      - SERVER_SERVLET_CONTEXTPATH=/dialob
+      - LOGGING_LEVEL_IO_DIALOB=INFO
+      - QUESTIONNAIRE_REST_URL=http://localhost:8080/session/dialob
+      - QUESTIONNAIRE_TENANTS_DEFAULT_TEMPLATE=https://cdn.resys.io/op-wealthub/questionnaire-mngmnt-fill-ui/main/index.html
+      - COMPOSER_TENANTS_DEFAULT_TEMPLATE=https://cdn.resys.io/op-wealthub/questionnaire-mngmnt-composer/main/index.html
+    volumes:
+      - ./dialob-boot-config:/java/config/
+    networks:
+      - application
+      - backend
+    links:
+      - postgresql:postgresql
+      - redis:redis
+
+  dialob-session:
+    image: resys/dialob-session-boot:2.1.19
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_REDIS_HOST=redis
+      - SPRING_PROFILES_ACTIVE=jdbc,cors,pim
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql/dialob
+      - SPRING_DATASOURCE_USERNAME=dialob
+      - SPRING_DATASOURCE_PASSWORD=dialob123
+      - DIALOB_SESSION_POSTSUBMITHANDLER_ENABLED=true
+      - DIALOB_SECURITY_ENABLED=false
+    volumes:
+      - ./dialob-session-config:/java/config/
+    links:
+      - postgresql:postgresql
+      - redis:redis
+    networks:
+      - application
+      - backend
+
+  postgresql:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_USER=dbuser
+      - TZ=Europe/Helsinki
+    volumes:
+      - ./db_init/postgresql:/docker-entrypoint-initdb.d
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  redis:
+      image: redis:4.0-alpine
+      restart: always
+      ports:
+          - "6379:6379"
+      networks:
+          - backend
+
+networks:
+  backend:
+    external: true
+  application:
+    external: true
+

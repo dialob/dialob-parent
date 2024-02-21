@@ -1,30 +1,15 @@
 import React from "react";
-import { FormattedMessage } from "react-intl";
-import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, styled, Paper, TableCell } from '@mui/material';
-import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune, Visibility } from '@mui/icons-material';
-import { DialobItem, DialobItems } from "../dialob";
+import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, Paper, TableCell, Grid } from '@mui/material';
+import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune } from '@mui/icons-material';
+import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
+import { LabelField, VisibilityField } from "../items/ItemComponents";
+import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
+import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
-const MAX_LABEL_LENGTH = 60;
-const MAX_RULE_LENGTH = 80;
-
-const LabelButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(1),
-  paddingLeft: theme.spacing(2),
-  justifyContent: 'flex-start',
-  textTransform: 'none',
-  width: '100%',
-}));
-
-const VisibilityButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(1),
-  paddingLeft: theme.spacing(2),
-  justifyContent: 'space-between',
-  textTransform: 'none',
-  width: '100%',
-}));
+const MAX_PAGES_PER_ROW = 5;
 
 const getPageTabTitle = (item: DialobItem, language: string): string => {
   const rawLabel = item.label ? item.label[language] : null;
@@ -36,54 +21,6 @@ const getPageTabTitle = (item: DialobItem, language: string): string => {
       : rawLabel;
   }
 };
-
-const LabelField: React.FC<{ item: DialobItem }> = ({ item }) => {
-  const { editor } = useEditor();
-  const [label, setLabel] = React.useState<string>('');
-
-  React.useEffect(() => {
-    const localizedLabel = item && item.label && item.label[editor.activeFormLanguage];
-    const formattedLabel = localizedLabel && localizedLabel.length > MAX_LABEL_LENGTH ?
-      localizedLabel.substring(0, MAX_LABEL_LENGTH) + '...' :
-      localizedLabel;
-    setLabel(formattedLabel || '');
-  }, [item, editor.activeFormLanguage]);
-
-  return (
-    <LabelButton variant='text' color='inherit'>
-      {label ?
-        <Typography>
-          {label}
-        </Typography> :
-        <Typography color='text.hint'>
-          <FormattedMessage id={`${item.type}.label`} />
-        </Typography>
-      }
-    </LabelButton>
-  );
-}
-
-export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
-  return (
-    <VisibilityButton
-      variant='text'
-      color='inherit'
-      endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
-    >
-      {item.activeWhen ?
-        <Typography fontFamily='monospace'>
-          {item.activeWhen.length > MAX_RULE_LENGTH ?
-            item.activeWhen.substring(0, MAX_RULE_LENGTH) + '...' :
-            item.activeWhen
-          }
-        </Typography> :
-        <Typography color='text.hint'>
-          <FormattedMessage id='visibility' />
-        </Typography>
-      }
-    </VisibilityButton>
-  );
-}
 
 const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
   if (!item) {
@@ -110,19 +47,33 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
   );
 }
 
-const PageMenuButton: React.FC = () => {
+const PageMenuButton: React.FC<{ item: DialobItem }> = ({ item }) => {
+  const { setConfirmationDialogType, setActiveItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
     setAnchorEl(e.currentTarget);
-    e.stopPropagation();
   };
+
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(null);
     e.stopPropagation();
+    setAnchorEl(null);
   };
-  const handleItemClick = (e: React.MouseEvent<HTMLElement>) => {
+
+  const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
     handleClose(e);
+    setConfirmationDialogType('delete');
+    setActiveItem(item);
+  }
+
+  const handleDuplicate = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose(e);
+    setConfirmationDialogType('duplicate');
+    setActiveItem(item);
   }
 
   return (
@@ -131,21 +82,21 @@ const PageMenuButton: React.FC = () => {
         <MenuIcon />
       </IconButton>
       <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
-        <MenuItem onClick={handleItemClick}>
+        <MenuItem onClick={handleClose}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
-          Options
+          <FormattedMessage id='menus.options' />
         </MenuItem>
-        <MenuItem onClick={handleItemClick}>
+        <MenuItem onClick={handleClose}>
           <Key sx={{ mr: 1 }} fontSize='small' />
-          Change ID
+          <FormattedMessage id='menus.change.id' />
         </MenuItem>
-        <MenuItem onClick={handleItemClick}>
+        <MenuItem onClick={handleDelete}>
           <Close sx={{ mr: 1 }} fontSize='small' />
-          Delete
+          <FormattedMessage id='menus.delete' />
         </MenuItem>
-        <MenuItem onClick={handleItemClick}>
+        <MenuItem onClick={handleDuplicate}>
           <ContentCopy sx={{ mr: 1 }} fontSize='small' />
-          Duplicate
+          <FormattedMessage id='menus.duplicate' />
         </MenuItem>
       </Menu>
     </Box>
@@ -153,28 +104,38 @@ const PageMenuButton: React.FC = () => {
 }
 
 const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
+  const { addItem } = useComposer();
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
   const rootItem = rootItemId ? items[rootItemId] : undefined;
 
   React.useEffect(() => {
     const defaultActivePage = rootItem && rootItem.items ? items[rootItem.items[0]] : undefined;
-    if (defaultActivePage) {
+    const activePage = editor.activePage;
+    if (activePage) {
+      setActivePage(items[activePage.id]);
+    } else if (defaultActivePage) {
       setActivePage(defaultActivePage);
     }
-  }, []);
+  }, [rootItem, items, editor.activePage, setActivePage]);
 
   const handlePageClick = (e: React.MouseEvent<HTMLElement>, id: string) => {
     setActivePage(items[id]);
     e.stopPropagation();
   };
 
+  const handleCreate = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    const groupTemplate = DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'structure')!.items.find(i => i.config.type === 'group')!.config;
+    addItem(groupTemplate, 'questionnaire');
+  }
+
   const pages =
     rootItem &&
     rootItem.items &&
     rootItem.items.map((itemId: string, index: number) => {
       const item = items[itemId];
-      const isActive = item === editor.activePage;
+      const isActive = item.id === editor.activePage?.id;
       const variant = isActive ? 'contained' : 'text';
       return (
         <Button
@@ -183,8 +144,8 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
           color='inherit'
           key={index}
         >
-          {getPageTabTitle(item, editor.activeFormLanguage)}
-          < PageMenuButton />
+          <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+          < PageMenuButton item={item} />
         </Button >
       );
     });
@@ -195,15 +156,20 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   return (
     <Box sx={{ mb: 1 }}>
       <Box sx={{ display: 'flex' }}>
-        {pages}
+        <Grid container>
+          {pages && pages.map((page, index) => (
+            <Grid item key={index}>
+              {page}
+            </Grid>
+          ))}
+        </Grid>
         <Box sx={{ flexGrow: 1 }} />
-        <IconButton sx={{ alignSelf: 'center' }}>
+        <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
           <Add />
         </IconButton>
       </Box>
       <PageHeader item={editor.activePage} />
     </Box>
-
   )
 }
 

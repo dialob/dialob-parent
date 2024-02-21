@@ -9,7 +9,7 @@ interface ItemConfig {
   defaultIcon: React.ComponentType<SvgIconProps>,
   items: {
     matcher: (item: DialobItem) => boolean,
-    component: React.FC,
+    component: React.FC<{ item: DialobItem, props?: any }>,
     props: {
       icon: React.ComponentType<SvgIconProps>,
       placeholder: string,
@@ -26,7 +26,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.Group,
       props: {
         icon: CropSquare,
-        placeholder: 'Group label',
+        placeholder: 'placeholders.group',
         treeCollapsible: true,
       }
     },
@@ -35,7 +35,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.Group,
       props: {
         icon: BlurLinear,
-        placeholder: 'Survey group label',
+        placeholder: 'placeholders.surveygroup',
         treeCollapsible: true
       }
     },
@@ -44,7 +44,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.Group,
       props: {
         icon: TableRows,
-        placeholder: 'Multi-row group label',
+        placeholder: 'placeholders.rowgroup',
         treeCollapsible: true
       }
     },
@@ -53,7 +53,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: MoreHoriz,
-        placeholder: 'Survey field label'
+        placeholder: 'placeholders.survey'
       }
     },
     {
@@ -61,7 +61,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: Place,
-        placeholder: 'Address field label'
+        placeholder: 'placeholders.address'
       }
     },
     {
@@ -69,7 +69,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: TextFormat,
-        placeholder: 'Text field label'
+        placeholder: 'placeholders.text'
       }
     },
     {
@@ -77,7 +77,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: Schedule,
-        placeholder: 'Time field label'
+        placeholder: 'placeholders.time'
       }
     },
     {
@@ -85,7 +85,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: CalendarMonth,
-        placeholder: 'Date field label'
+        placeholder: 'placeholders.date'
       }
     },
     {
@@ -93,7 +93,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: Tag,
-        placeholder: 'Number field label'
+        placeholder: 'placeholders.number'
       }
     },
     {
@@ -101,7 +101,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: Euro,
-        placeholder: 'Decimal field label'
+        placeholder: 'placeholders.decimal'
       }
     },
     {
@@ -109,7 +109,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: CheckBox,
-        placeholder: 'Boolean field label'
+        placeholder: 'placeholders.boolean'
       }
     },
     {
@@ -117,7 +117,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: KeyboardArrowDown,
-        placeholder: 'List field label'
+        placeholder: 'placeholders.list'
       }
     },
     {
@@ -125,7 +125,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.SimpleField,
       props: {
         icon: List,
-        placeholder: 'Multi-choice field label'
+        placeholder: 'placeholders.multichoice'
       }
     },
     {
@@ -133,7 +133,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.Note,
       props: {
         icon: ErrorOutline,
-        placeholder: 'Validation message text'
+        placeholder: 'placeholders.validation'
       }
     },
     {
@@ -141,7 +141,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
       component: Items.Note,
       props: {
         icon: Note,
-        placeholder: 'Note text'
+        placeholder: 'placeholders.note'
       }
     }
   ]
