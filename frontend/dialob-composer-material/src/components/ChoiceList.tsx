@@ -110,7 +110,8 @@ const ChoiceList: React.FC<{
     if (!destination || !valueSet) {
       return;
     }
-    moveItemOnTree(tree, source, destination);
+    const newTree = moveItemOnTree(tree, source, destination);
+    setTree(newTree);
     moveValueSetEntry(valueSet.id, source.index, destination.index!);
   };
 

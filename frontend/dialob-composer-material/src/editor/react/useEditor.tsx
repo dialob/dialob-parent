@@ -46,6 +46,10 @@ export const useEditor = () => {
     dispatch({ type: 'setItemOptionsDialogOpen', open });
   }
 
+  const setHighlightedItem = (item?: DialobItem): void => {
+    dispatch({ type: 'setHighlightedItem', item });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -58,5 +62,6 @@ export const useEditor = () => {
     setRuleEditDialogType,
     setValidationRuleEditDialogOpen,
     setItemOptionsDialogOpen,
+    setHighlightedItem,
   };
 }
