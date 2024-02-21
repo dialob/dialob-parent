@@ -36,6 +36,7 @@ const TextEditDialog: React.FC = () => {
     } else {
       setLocalizedText('');
     }
+    setPreview(false);
   }, [activeLanguage, editor.textEditDialogType, item]);
 
   if (!item) {

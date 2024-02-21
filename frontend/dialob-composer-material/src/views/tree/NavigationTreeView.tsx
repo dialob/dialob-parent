@@ -85,6 +85,7 @@ const NavigationTreeView: React.FC = () => {
       destination.index = 0;
     }
     const newTree = moveItemOnTree(tree, source, destination);
+    setTree(newTree);
     const item = newTree.items[destination.parentId].children[destination.index!];
     moveItem(item.toString(), source.index, destination.index!, source.parentId.toString(), destination.parentId.toString());
   };

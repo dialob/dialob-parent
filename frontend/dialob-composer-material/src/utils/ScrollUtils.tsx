@@ -33,8 +33,9 @@ export const scrollToItem = (itemId: string, items: DialobItem[], activePage: Di
       setActivePage(parent);
     }
   }
+  const viewportOffset = window.innerHeight - MENU_HEIGHT;
   setTimeout(() => scroller.scrollTo(itemId, {
-    offset: -MENU_HEIGHT - 10,
+    offset: -(viewportOffset / 2),
     duration: 500,
     smooth: true,
   }), timeout);

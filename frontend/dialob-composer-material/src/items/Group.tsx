@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
-import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem, DialobItems, useComposer } from '../dialob';
 import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMenu, StyledTable, VisibilityField } from './ItemComponents';
@@ -16,6 +16,7 @@ const createChildren = (item: DialobItem, items: DialobItems) => {
 }
 
 const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+  const theme = useTheme();
   const { form } = useComposer();
   const { editor } = useEditor();
   const [expanded, setExpanded] = React.useState<boolean>(true);
@@ -23,10 +24,23 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColor(editor.errors, item);
   const hasIndicators = item.description || item.valueSetId || item.validations;
+  const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const highlightedSx = highlighted ?
+    { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
+
+  React.useEffect(() => {
+    if (editor?.highlightedItem?.id === item.id) {
+      setHighlighted(true);
+    }
+    const id = setTimeout(() => {
+      setHighlighted(false);
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [editor.highlightedItem])
 
   return (
     <Element name={item.id}>
-      <TableContainer component={Paper} sx={{ my: 2, }}>
+      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
             <TableRow>

@@ -11,6 +11,7 @@ import { StyledTable } from './TableEditorComponents';
 import ChoiceList from './ChoiceList';
 import ConvertConfirmationDialog from '../dialogs/ConvertConfirmationDialog';
 import UploadValuesetDialog from '../dialogs/UploadValuesetDialog';
+import GlobalList from './GlobalList';
 
 
 const ChoiceEditor: React.FC = () => {
@@ -146,6 +147,7 @@ const ChoiceEditor: React.FC = () => {
             <FormattedMessage id='dialogs.options.choices.convert.local' />
           </Button>
         </Box>
+        <GlobalList entries={currentValueSet?.entries} />
         <Divider sx={{ my: 2 }}><Typography><FormattedMessage id='dialogs.options.choices.divider' /></Typography></Divider>
         <Button color='inherit' variant='contained' onClick={createLocalList}>
           <FormattedMessage id='dialogs.options.choices.create.local' />

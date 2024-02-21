@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem } from '../dialob';
 import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, VisibilityField, StyledTable } from './ItemComponents';
@@ -8,14 +8,28 @@ import { useErrorColor } from '../utils/ErrorUtils';
 
 
 const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+  const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColor(editor.errors, item);
   const hasIndicators = item.description || item.valueSetId || item.validations;
+  const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const highlightedSx = highlighted ?
+    { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
+
+  React.useEffect(() => {
+    if (editor?.highlightedItem?.id === item.id) {
+      setHighlighted(true);
+    }
+    const id = setTimeout(() => {
+      setHighlighted(false);
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [editor.highlightedItem])
 
   return (
     <Element name={item.id}>
-      <TableContainer component={Paper} sx={{ my: 2 }}>
+      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
             <TableRow>
