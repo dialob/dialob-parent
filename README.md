@@ -145,3 +145,9 @@ https://dialob.io
 ```shell
 mvn clean test -D"groups=db2" -D"excludedGroups=postgresql,mysql"
 ```
+
+### Running locally
+
+```shell
+docker run --name dialob-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password123 postgres
+```

@@ -102,7 +102,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         Reader reader = getDatabaseHelper().extractStream(resultSet, 7);
         return toObject(oid, objectRev, rsTenantId, formId, status.trim(), created, updated, reader);
       };
-      final StringBuilder sql = new StringBuilder("select rev, tenant_id, form_document_id, status, created, updated, data from " + tableName + " where id = ?");
+      final StringBuilder sql = new StringBuilder("select rev, tenant_id, form_document_id, status, created, updated, " + getDatabaseHelper().bsonToJson("data") + " from " + tableName + " where id = ?");
       final List<Object> sqlParameters = new ArrayList<>();
 
       sqlParameters.add(toJdbcId(oid));
