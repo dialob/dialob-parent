@@ -1,0 +1,7 @@
+dialob:
+  api:
+    apiKeys:
+      - clientId: "79e3d1e8-cd17-4723-8081-b8c232dc4f59"
+        # token: eePR6M0XRyOAgbjCMtxPWedRsDpuOLynCnWZfkVV # demo/op.fi
+        hash: 5DKPu5+CCsLRANHxrdK/rUCAUKHuUsIHd1ypdN+3+28=
+        tenantId: "77b02c41-e438-40dd-9a79-a924674ec406"

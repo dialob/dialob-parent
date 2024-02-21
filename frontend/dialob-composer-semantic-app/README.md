@@ -6,12 +6,6 @@ Dialob backend requirement **2.x**
 
 Uses `@resys/dialob-composer` as implementation. ( https://git.resys.io/dialob/dialob-composer-v2 )
 
-## CI Build
-
-Builds automatically on push and deploys to S3, controlled by `Jenkinsfile`
-
-https://ci.resys.io/job/dialob/job/dialob-composer-generic-app/
-
 ## Deployment 
 
 CI Build deploys runtime artifacts to S3 bucket `https://s3.eu-central-1.amazonaws.com/cdn.resys.io/dialob-composer-generic-app/master` 
@@ -29,10 +23,10 @@ dialob:
 
 ## Build and Run
 
-This is CRA application.
+This is Vite application.
 
 Build: `yarn build` \
-Run: `yarn start` 
+Run: `yarn dev` 
 
 ## Configuration
 

@@ -3,6 +3,7 @@ Dialob backend services
 
 ## Where's what
 
+* **dev-env** - Local development docker-compose configuration for front end development 
 * **compose** - Local development docker-compose configuration (obsolete)
 * **dialob-bom** - Internal Maven dependency definitions
 * **dialob-boot** - Spring boot application for Dialob Backend API

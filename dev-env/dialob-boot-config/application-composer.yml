@@ -1,0 +1,11 @@
+composer:
+  context-path: "/composer"
+  fillingAppUrl: "${server.servlet.contextPath}/fill"
+  chatAppUrl: ""
+  backendApiUrl: "${server.servlet.contextPath}/api"
+  adminAppUrl: "${server.servlet.contextPath}/"
+  subApplicationName: Composer
+  documentationUrl: "${documentationUrl}"
+  tenants:
+    default:
+      template: "http://dialob-composer-dev:3000/index.html"
