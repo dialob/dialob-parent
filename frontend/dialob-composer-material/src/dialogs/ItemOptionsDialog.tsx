@@ -1,81 +1,104 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab, DialogActions } from '@mui/material';
-import { Rule, Gavel } from "@mui/icons-material";
-import { useEditor } from '../editor';
+import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab, DialogActions, Tooltip, styled, TextField, IconButton } from '@mui/material';
+import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close } from "@mui/icons-material";
+import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
-import ChoiceEditor from '../components/ChoiceEditor';
-import PropertiesEditor from '../components/PropertiesEditor';
+import ChoiceEditor from '../components/editors/ChoiceEditor';
+import PropertiesEditor from '../components/editors/PropertiesEditor';
 import { FormattedMessage } from 'react-intl';
-import DefaultValueEditor from '../components/DefaultValueEditor';
+import DefaultValueEditor from '../components/editors/DefaultValueEditor';
+import { ConversionMenu } from '../items/ItemComponents';
+import DescriptionEditor from '../components/editors/DescriptionEditor';
+import ValidationRuleEditor from '../components/editors/ValidationRuleEditor';
+import RuleEditor from '../components/editors/RuleEditor';
+import Editors from '../components/editors';
 
-type OptionsTabType = 'choices' | 'properties' | 'styles' | 'defaults';
+const StyledButtonContainer = styled(Box)(({ theme }) => ({
+  '& .MuiButton-root': {
+    border: '0.05rem solid',
+    borderRadius: theme.spacing(0.5),
+    marginLeft: theme.spacing(1),
+  },
+}));
 
 const ItemOptionsDialog: React.FC = () => {
-  const { editor, setActiveItem, setItemOptionsDialogOpen, setRuleEditDialogType, setValidationRuleEditDialogOpen } = useEditor();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType } = useEditor();
   const item = editor.activeItem;
-  const open = item && editor.itemOptionsDialogOpen || false;
+  const open = item && editor.itemOptionsActiveTab !== undefined || false;
   const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice');
-  const [activeTab, setActiveTab] = React.useState<OptionsTabType>(canHaveChoices ? 'choices' : 'properties');
+  const [activeTab, setActiveTab] = React.useState<OptionsTabType>('label');
+  const [editMode, setEditMode] = React.useState(false);
+  const [id, setId] = React.useState<string>(item?.id || '');
   const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
 
   const handleClose = () => {
-    setItemOptionsDialogOpen(false);
+    setItemOptionsActiveTab(undefined);
     setActiveItem(undefined);
   }
 
-  const handleRequirementClick = () => {
-    setRuleEditDialogType('requirement');
-    setItemOptionsDialogOpen(false);
-  }
-
-  const handleValidationClick = () => {
-    setValidationRuleEditDialogOpen(true);
-    setItemOptionsDialogOpen(false);
+  const handleDelete = () => {
+    setItemOptionsActiveTab(undefined);
+    setConfirmationDialogType('delete');
   }
 
   React.useEffect(() => {
-    let newActiveTab: OptionsTabType = 'properties';
-    if (isInputType) {
-      newActiveTab = 'defaults';
+    if (editor.itemOptionsActiveTab !== undefined) {
+      if (editor.itemOptionsActiveTab === 'id') {
+        setEditMode(true);
+      } else {
+        setActiveTab(editor.itemOptionsActiveTab);
+      }
+    } else {
+      setEditMode(false);
+      setActiveTab('label');
     }
-    if (canHaveChoices) {
-      newActiveTab = 'choices';
-    }
-    setActiveTab(newActiveTab);
-  }, [canHaveChoices, isInputType]);
+    setId(item?.id || '');
+  }, [editor.itemOptionsActiveTab, open]);
 
   if (!item) {
     return null;
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography><FormattedMessage id='dialogs.options.title' values={{ itemId: item.id }} /></Typography>
+        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} InputProps={{
+          endAdornment: (
+            <>
+              <IconButton onClick={() => setEditMode(false)}><Check color='success' /></IconButton>
+              <IconButton onClick={() => setEditMode(false)}><Close color='error' /></IconButton>
+            </>
+          )
+        }} /> :
+          <Button variant='text' sx={{ color: 'inherit', textTransform: 'none' }} endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
+            <Typography variant='h5' fontWeight='bold'>{id}</Typography>
+          </Button>}
         <Box flexGrow={1} />
-        {isInputType && <Box sx={{ display: 'flex', width: 0.3, justifyContent: 'space-between' }}>
-          <Button color='inherit' variant='contained' endIcon={<Rule fontSize='small' />} onClick={handleValidationClick}>
-            <FormattedMessage id='dialogs.options.buttons.validation' />
-          </Button>
-          <Button color='inherit' variant='contained' endIcon={<Gavel fontSize='small' />} onClick={handleRequirementClick}>
-            <FormattedMessage id='dialogs.options.buttons.requirement' />
-          </Button>
-        </Box>}
+        <StyledButtonContainer>
+          <ConversionMenu item={item} />
+          <Button color='error' endIcon={<Delete />} onClick={handleDelete}><FormattedMessage id='buttons.delete' /></Button>
+        </StyledButtonContainer>
       </DialogTitle>
-      <DialogContent>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={activeTab} onChange={(e, value) => setActiveTab(value)}>
-            {canHaveChoices && <Tab label={<FormattedMessage id='dialogs.options.tabs.choices' />} value='choices' />}
-            {isInputType && <Tab label={<FormattedMessage id='dialogs.options.tabs.default' />} value='defaults' />}
-            <Tab label={<FormattedMessage id='dialogs.options.tabs.properties' />} value='properties' />
-            <Tab label={<FormattedMessage id='dialogs.options.tabs.styles' />} value='styles' />
+      <DialogContent sx={{ padding: 0, borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ display: 'flex', height: '70vh' }}>
+          <Tabs value={activeTab} onChange={(e, value) => setActiveTab(value)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.label' />}><Label /></Tooltip>} value='label' />
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.description' />}><Description /></Tooltip>} value='description' />
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.rules' />}><Visibility /></Tooltip>} value='rules' />
+            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.validations' />}><Rule /></Tooltip>} value='validations' />}
+            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.default' />}><EditNote /></Tooltip>} value='defaults' />}
+            {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.choices' />}><List /></Tooltip>} value='choices' />}
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.properties' />}><Dns /></Tooltip>} value='properties' />
           </Tabs>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          {activeTab === 'choices' && <ChoiceEditor />}
-          {activeTab === 'defaults' && <DefaultValueEditor />}
-          {activeTab === 'properties' && <PropertiesEditor />}
-          {activeTab === 'styles' && <>Styles</>}
+          <Box sx={{ p: 2, width: 1 }}>
+            {activeTab === 'label' && <Editors.Label />}
+            {activeTab === 'description' && <DescriptionEditor />}
+            {activeTab === 'rules' && <RuleEditor />}
+            {activeTab === 'validations' && <ValidationRuleEditor />}
+            {activeTab === 'defaults' && <DefaultValueEditor />}
+            {activeTab === 'choices' && <ChoiceEditor />}
+            {activeTab === 'properties' && <PropertiesEditor />}
+          </Box>
         </Box>
       </DialogContent>
       <DialogActions>

@@ -1,4 +1,4 @@
-import { ConfirmationDialogType, TextEditDialogType, RuleEditDialogType, EditorError } from "./types";
+import { ConfirmationDialogType, TextEditDialogType, RuleEditDialogType, EditorError, OptionsTabType } from "./types";
 import { DialobItem } from "../dialob";
 
 export type EditorAction =
@@ -11,5 +11,5 @@ export type EditorAction =
   | { type: 'setTextEditDialogType', dialogType?: TextEditDialogType }
   | { type: 'setRuleEditDialogType', dialogType?: RuleEditDialogType }
   | { type: 'setValidationRuleEditDialogOpen', open: boolean }
-  | { type: 'setItemOptionsDialogOpen', open: boolean }
+  | { type: 'setItemOptionsActiveTab', tab?: OptionsTabType }
   | { type: 'setHighlightedItem', item?: DialobItem };

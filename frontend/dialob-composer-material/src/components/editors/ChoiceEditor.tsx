@@ -4,14 +4,14 @@ import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import { Add, Download, Upload } from '@mui/icons-material';
 import { Box, Button, Divider, IconButton, MenuItem, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { useEditor } from '../editor';
-import { ValueSet, useComposer } from '../dialob';
-import { generateValueSetId } from '../dialob/reducer';
-import { StyledTable } from './TableEditorComponents';
-import ChoiceList from './ChoiceList';
-import ConvertConfirmationDialog from '../dialogs/ConvertConfirmationDialog';
-import UploadValuesetDialog from '../dialogs/UploadValuesetDialog';
-import GlobalList from './GlobalList';
+import { useEditor } from '../../editor';
+import { ValueSet, useComposer } from '../../dialob';
+import { generateValueSetId } from '../../dialob/reducer';
+import { StyledTable } from '../TableEditorComponents';
+import ChoiceList from '../ChoiceList';
+import ConvertConfirmationDialog from '../../dialogs/ConvertConfirmationDialog';
+import UploadValuesetDialog from '../../dialogs/UploadValuesetDialog';
+import GlobalList from '../GlobalList';
 
 
 const ChoiceEditor: React.FC = () => {

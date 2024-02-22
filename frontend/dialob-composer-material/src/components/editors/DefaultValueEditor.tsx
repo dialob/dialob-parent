@@ -1,8 +1,8 @@
 import { Box, TextField, Typography } from "@mui/material";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { useEditor } from "../editor";
-import { useComposer } from "../dialob";
+import { useEditor } from "../../editor";
+import { useComposer } from "../../dialob";
 
 const DefaultValueEditor: React.FC = () => {
   const { editor } = useEditor();
