@@ -128,7 +128,7 @@ export function updateState(state: SessionState, actions: Action[]): SessionStat
           delete state.valueSets[id];
         }
       } else {
-        throw new DialobError('Unexpected action type!');
+        throw new DialobError(`Unexpected action type ${action.type} !`);
       }
     }
   });
