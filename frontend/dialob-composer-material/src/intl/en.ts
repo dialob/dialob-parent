@@ -67,6 +67,7 @@ const en = {
   'dialogs.options.tabs.choices': 'Choices',
   'dialogs.options.tabs.properties': 'Properties',
   'dialogs.options.tabs.default': 'Default value',
+  'dialogs.options.labels.add': 'Add label translation',
   'dialogs.options.key': 'Key',
   'dialogs.options.value': 'Value',
   'dialogs.options.text': 'Text',
