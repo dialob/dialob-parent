@@ -1,9 +1,8 @@
+import React from 'react';
+import LocalizedStringEditor from './LocalizedStringEditor';
+
 const DescriptionEditor: React.FC = () => {
-  return (
-    <div>
-      DescriptionEditor
-    </div>
-  );
+  return <LocalizedStringEditor type='description' />
 }
 
 export default DescriptionEditor;
