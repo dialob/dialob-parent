@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab, DialogActions, Tooltip, styled, TextField, IconButton } from '@mui/material';
-import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close } from "@mui/icons-material";
+import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import ChoiceEditor from '../components/editors/ChoiceEditor';
@@ -82,13 +82,21 @@ const ItemOptionsDialog: React.FC = () => {
       <DialogContent sx={{ padding: 0, borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
         <Box sx={{ display: 'flex', height: '70vh' }}>
           <Tabs value={activeTab} onChange={(e, value) => setActiveTab(value)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
-            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.label' />}><Label /></Tooltip>} value='label' />
-            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.description' />}><Description /></Tooltip>} value='description' />
-            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.rules' />}><Visibility /></Tooltip>} value='rules' />
-            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.validations' />}><Rule /></Tooltip>} value='validations' />}
-            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.default' />}><EditNote /></Tooltip>} value='defaults' />}
-            {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.choices' />}><List /></Tooltip>} value='choices' />}
-            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.options.tabs.properties' />}><Dns /></Tooltip>} value='properties' />
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.label' />}><Label /></Tooltip>} value='label' />
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.description' />}><Description /></Tooltip>} value='description' />
+            <Tab icon={
+              <Tooltip placement='right' title={<FormattedMessage id='tooltips.rules' />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', width: 1 }}>
+                  <Visibility />
+                  <Box flexGrow={1} />
+                  <Gavel />
+                </Box>
+              </Tooltip>
+            } value='rules' />
+            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.validations' />}><Rule /></Tooltip>} value='validations' />}
+            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.default' />}><EditNote /></Tooltip>} value='defaults' />}
+            {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.choices' />}><List /></Tooltip>} value='choices' />}
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.properties' />}><Dns /></Tooltip>} value='properties' />
           </Tabs>
           <Box sx={{ p: 2, width: 1 }}>
             {activeTab === 'label' && <Editors.Label />}

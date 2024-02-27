@@ -1,6 +1,6 @@
 import React from "react";
 import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useComposer } from "../dialob";
-import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Typography, styled } from "@mui/material";
+import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
   Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, Edit, EditNote
@@ -162,18 +162,28 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
       {item.description &&
-        <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' /></IconButton>}
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.description' />}>
+          <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' /></IconButton>
+        </Tooltip>}
       {item.valueSetId &&
-        <IconButton onClick={(e) => handleClick(e, 'choices')}>
-          {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
-        </IconButton>}
+        <Tooltip placement='top' title={<FormattedMessage id={`tooltips.${isGlobalValueSet ? 'global' : 'local'}`} />}>
+          <IconButton onClick={(e) => handleClick(e, 'choices')}>
+            {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
+          </IconButton>
+        </Tooltip>}
       {item.validations &&
-        <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' /></IconButton>}
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.validations' />}>
+          <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' /></IconButton>
+        </Tooltip>}
       {item.required &&
-        <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' /></IconButton>}
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.requirement' />}>
+          <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' /></IconButton>
+        </Tooltip>}
       {item.defaultValue &&
-        <IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' /></IconButton>}
-    </Box>
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
+          < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' /></IconButton>
+        </Tooltip>}
+    </Box >
   );
 }
 
