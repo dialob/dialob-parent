@@ -6,22 +6,40 @@ import { FormattedMessage } from 'react-intl';
 import { LocalizedString, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { markdownComponents } from '../../defaults/markdown';
+import { IndexedRule } from './ValidationRuleEditor';
 
 
-const LocalizedStringEditor: React.FC<{ type: 'label' | 'description' }> = ({ type }) => {
+const LocalizedStringEditor: React.FC<{
+  type: 'label' | 'description' | 'validations',
+  rule?: IndexedRule,
+  setRule?: React.Dispatch<React.SetStateAction<IndexedRule | undefined>>
+}> = ({ type, rule, setRule }) => {
   const { form, updateLocalizedString } = useComposer();
   const { editor } = useEditor();
   const item = editor.activeItem;
   const [preview, setPreview] = React.useState(false);
   const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const minRows = type === 'label' ? 5 : 10;
 
   React.useEffect(() => {
-    setLocalizedString(type === 'label' ? item?.label : item?.description);
-  }, [item]);
+    if (item) {
+      setLocalizedString(type === 'validations' ? rule?.validationRule.message : item[type]);
+    }
+  }, [item, rule]);
 
-  if (!item) {
+  React.useEffect(() => {
+    if (item && localizedString) {
+      const id = setTimeout(() => {
+        updateLocalizedString(item.id, type, localizedString, rule?.index);
+      }, 1000);
+      if (type === 'validations' && rule && setRule) {
+        setRule({ ...rule, validationRule: { ...rule.validationRule, message: localizedString } });
+      }
+      return () => clearTimeout(id);
+    }
+  }, [localizedString]);
+
+  if (!item || (type === 'validations' && rule === undefined)) {
     return null;
   }
 
@@ -32,15 +50,6 @@ const LocalizedStringEditor: React.FC<{ type: 'label' | 'description' }> = ({ ty
   const handleUpdate = (value: string, language: string) => {
     setLocalizedString({ ...localizedString, [language]: value });
   }
-
-  React.useEffect(() => {
-    if (localizedString) {
-      const id = setTimeout(() => {
-        updateLocalizedString(item.id, type, localizedString);
-      }, 300);
-      return () => clearTimeout(id);
-    }
-  }, [localizedString]);
 
   return (
     <>
@@ -59,7 +68,7 @@ const LocalizedStringEditor: React.FC<{ type: 'label' | 'description' }> = ({ ty
         >
           {form.metadata.languages?.filter((language) => !localizedString?.[language])
             .map((language) => (
-              <MenuItem onClick={() => {
+              <MenuItem key={language} onClick={() => {
                 handleAdd(language);
                 setAnchorEl(null);
               }}><FormattedMessage id={`locales.${language}`} /></MenuItem>
@@ -69,14 +78,14 @@ const LocalizedStringEditor: React.FC<{ type: 'label' | 'description' }> = ({ ty
       {localizedString && Object.keys(localizedString).map((language) => {
         const localizedText = localizedString[language];
         return (
-          <>
+          <Box key={language}>
             <Typography color='text.hint'><FormattedMessage id={`locales.${language}`} /></Typography>
             {preview ?
               <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}>
                 <Markdown skipHtml components={markdownComponents}>{localizedText}</Markdown>
               </Box > :
-              <TextareaAutosize style={{ width: '100%' }} minRows={minRows} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />}
-          </>
+              <TextareaAutosize style={{ width: '100%' }} minRows={5} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />}
+          </Box>
         );
       })}
     </>

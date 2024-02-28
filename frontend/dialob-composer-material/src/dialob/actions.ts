@@ -3,7 +3,7 @@ import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule,
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string}
   | { type: 'updateItem', itemId: string, attribute: string, value: any, language?: string}
-  | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString }
+  | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate}
   | { type: 'deleteItem', itemId: string}
   | { type: 'setItemProp', itemId: string, key: string, value: any}

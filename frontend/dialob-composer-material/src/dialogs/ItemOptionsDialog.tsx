@@ -10,7 +10,7 @@ import DefaultValueEditor from '../components/editors/DefaultValueEditor';
 import { ConversionMenu } from '../items/ItemComponents';
 import DescriptionEditor from '../components/editors/DescriptionEditor';
 import ValidationRuleEditor from '../components/editors/ValidationRuleEditor';
-import RuleEditor from '../components/editors/RuleEditor';
+import RulesEditor from '../components/editors/RulesEditor';
 import Editors from '../components/editors';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
@@ -101,7 +101,7 @@ const ItemOptionsDialog: React.FC = () => {
           <Box sx={{ p: 2, width: 1 }}>
             {activeTab === 'label' && <Editors.Label />}
             {activeTab === 'description' && <DescriptionEditor />}
-            {activeTab === 'rules' && <RuleEditor />}
+            {activeTab === 'rules' && <RulesEditor />}
             {activeTab === 'validations' && <ValidationRuleEditor />}
             {activeTab === 'defaults' && <DefaultValueEditor />}
             {activeTab === 'choices' && <ChoiceEditor />}
@@ -110,7 +110,7 @@ const ItemOptionsDialog: React.FC = () => {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary"><FormattedMessage id='buttons.close' /></Button>
+        <Button onClick={handleClose} color="primary" endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
       </DialogActions>
     </Dialog>
   );

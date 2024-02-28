@@ -13,8 +13,8 @@ export const useComposer = () => {
     dispatch({type: 'updateItem', itemId, attribute, value, language});
   };
 
-  const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString) => {
-    dispatch({type: 'updateLocalizedString', itemId, attribute, value});
+  const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
+    dispatch({type: 'updateLocalizedString', itemId, attribute, value, index});
   }
 
   const changeItemType = (itemId: string, config: DialobItemTemplate) => {
