@@ -525,8 +525,8 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>1.26</version>
+        <artifactId>c</artifactId>
+        <version>1.26.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.protobuf</groupId>
