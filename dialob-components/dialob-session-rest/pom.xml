@@ -21,7 +21,7 @@
   <parent>
     <artifactId>dialob-components</artifactId>
     <groupId>io.dialob</groupId>
-    <version>2.1.21</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>dialob-session-rest</artifactId>
   <dependencies>
