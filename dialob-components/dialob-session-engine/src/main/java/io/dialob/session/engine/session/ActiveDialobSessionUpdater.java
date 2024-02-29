@@ -173,8 +173,8 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("  + queued {}", DebugUtil.commandToString(updateCommand));
     }
-    if (LOGGER.isWarnEnabled() && updated.contains(updateCommand)) {
-      LOGGER.warn("Target {} already executed. Cyclic dependency?", DebugUtil.commandToString(updateCommand));
+    if (LOGGER.isDebugEnabled() && updated.contains(updateCommand)) {
+      LOGGER.debug("Target {} already executed. Cyclic dependency?", DebugUtil.commandToString(updateCommand));
     }
   }
 }

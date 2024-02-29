@@ -1,4 +1,6 @@
 # next
+* 1.4.8
+* Improves error message
 
 # 1.4.6
 * Fixes issue from Immer upgrade
