@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
-import { Add, Download, Upload } from '@mui/icons-material';
+import { Add, Download, Edit, Refresh, Upload } from '@mui/icons-material';
 import { Box, Button, Divider, IconButton, MenuItem, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEditor } from '../../editor';
 import { ValueSet, useComposer } from '../../dialob';
@@ -19,6 +19,7 @@ const ChoiceEditor: React.FC = () => {
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
+  const formLanguages = form.metadata.languages;
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
@@ -61,7 +62,9 @@ const ChoiceEditor: React.FC = () => {
       const newGvsIndex = form.metadata.composer?.globalValueSets?.length ?? 0;
       const newGvsName = 'untitled' + (newGvsIndex + 1);
       const newGvsId = generateValueSetId(form);
-      createValueSet(null, currentValueSet.entries);
+      // remove rules when converting to global list
+      const newEntries = currentValueSet.entries.map(entry => { return { id: entry.id, label: entry.label } });
+      createValueSet(null, newEntries);
       if (newGvsId) {
         setGlobalValueSetName(newGvsId, newGvsName);
         updateItem(item?.id, 'valueSetId', newGvsId);
@@ -117,7 +120,12 @@ const ChoiceEditor: React.FC = () => {
         type={dialogType}
         onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
         onClose={() => setDialogType(undefined)} />
-      {choiceType === 'local' ? <Box>
+      {choiceType === 'local' ? <>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', mb: 2 }}>
+          <Button onClick={() => setDialogType('global')} sx={{ mt: 2 }} endIcon={<Refresh />}>
+            <FormattedMessage id='dialogs.options.choices.convert.global' />
+          </Button>
+        </Box>
         <TableContainer>
           <StyledTable>
             <TableHead>
@@ -127,29 +135,36 @@ const ChoiceEditor: React.FC = () => {
                   <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
                   <IconButton onClick={downloadValueSet}><Download /></IconButton>
                 </TableCell>
-                <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
-                <TableCell width='40%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.text' /></Typography></TableCell>
+                <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+                {formLanguages?.map(lang => (
+                  <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+                    <Typography fontWeight='bold'>
+                      <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
+                    </Typography>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
           </StyledTable>
         </TableContainer>
-        <Button color='inherit' variant='contained' onClick={() => setDialogType('global')} sx={{ mt: 2 }}>
-          <FormattedMessage id='dialogs.options.choices.convert.global' />
-        </Button>
-      </Box> : <Box>
+      </> : <Box>
         <Typography><FormattedMessage id='dialogs.options.choices.select.global' /></Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Select sx={{ width: 0.75 }} value={currentValueSet?.id || ''} onChange={e => selectGlobalValueSet(e.target.value as string)}>
+          <Select sx={{ width: 0.7 }} value={currentValueSet?.id || ''} onChange={e => selectGlobalValueSet(e.target.value as string)}>
             {form.metadata.composer?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
           </Select>
-          <Button color='inherit' variant='contained' onClick={() => setDialogType('local')} disabled={currentValueSet?.id === ''}>
+          <Box flexGrow={1} />
+          <Button onClick={() => setDialogType('local')} disabled={currentValueSet?.id === ''} sx={{ mr: 2 }} endIcon={<Edit />}>
+            <FormattedMessage id='dialogs.options.choices.edit.global' />
+          </Button>
+          <Button onClick={() => setDialogType('local')} disabled={currentValueSet?.id === ''} endIcon={<Refresh />}>
             <FormattedMessage id='dialogs.options.choices.convert.local' />
           </Button>
         </Box>
         <GlobalList entries={currentValueSet?.entries} />
         <Divider sx={{ my: 2 }}><Typography><FormattedMessage id='dialogs.options.choices.divider' /></Typography></Divider>
-        <Button color='inherit' variant='contained' onClick={createLocalList}>
+        <Button onClick={createLocalList} endIcon={<Add />}>
           <FormattedMessage id='dialogs.options.choices.create.local' />
         </Button>
       </Box>}

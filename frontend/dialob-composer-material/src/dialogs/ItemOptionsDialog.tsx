@@ -1,16 +1,10 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab, DialogActions, Tooltip, styled, TextField, IconButton } from '@mui/material';
 import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
-import ChoiceEditor from '../components/editors/ChoiceEditor';
-import PropertiesEditor from '../components/editors/PropertiesEditor';
-import { FormattedMessage } from 'react-intl';
-import DefaultValueEditor from '../components/editors/DefaultValueEditor';
 import { ConversionMenu } from '../items/ItemComponents';
-import DescriptionEditor from '../components/editors/DescriptionEditor';
-import ValidationRuleEditor from '../components/editors/ValidationRuleEditor';
-import RulesEditor from '../components/editors/RulesEditor';
 import Editors from '../components/editors';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
@@ -100,12 +94,12 @@ const ItemOptionsDialog: React.FC = () => {
           </Tabs>
           <Box sx={{ p: 2, width: 1 }}>
             {activeTab === 'label' && <Editors.Label />}
-            {activeTab === 'description' && <DescriptionEditor />}
-            {activeTab === 'rules' && <RulesEditor />}
-            {activeTab === 'validations' && <ValidationRuleEditor />}
-            {activeTab === 'defaults' && <DefaultValueEditor />}
-            {activeTab === 'choices' && <ChoiceEditor />}
-            {activeTab === 'properties' && <PropertiesEditor />}
+            {activeTab === 'description' && <Editors.Description />}
+            {activeTab === 'rules' && <Editors.Rules />}
+            {activeTab === 'validations' && <Editors.Validations />}
+            {activeTab === 'defaults' && <Editors.DefaultValue />}
+            {activeTab === 'choices' && <Editors.Choice />}
+            {activeTab === 'properties' && <Editors.Properties />}
           </Box>
         </Box>
       </DialogContent>
