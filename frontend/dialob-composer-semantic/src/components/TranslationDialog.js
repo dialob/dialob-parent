@@ -8,6 +8,8 @@ import {MarkdownEditor} from './MarkdownEditor';
 import md_strip_tags from 'remove-markdown';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
+import { isGlobalValueSet, findValueset } from "../helpers/utils"
+import Immutable from 'immutable';
 
 const LanguageConfigurator = ({
   languages,
@@ -159,10 +161,11 @@ const TranslationDialog = (props) => {
   };
 
   const getValueSetTranslations = () => {
-    if (props.valueSets) {
+    let valueSets = props.form.get('valueSets');
+    if (valueSets) {
       let translations = {};
       let metadata = {key : {}};
-      props.valueSets.forEach((vs, k) => {
+      valueSets.forEach((vs, k) => {
         if (vs.get('entries')) {
           vs.get('entries').forEach((e, k) => {
             const key = `v:${vs.get('id')}:${k}:${e.get('id')}`;
@@ -182,7 +185,8 @@ const TranslationDialog = (props) => {
   const getItemTranslations = () => {
     let translations = {};
     let metadata = {key : {}};
-    props.items.forEach((v, k) => {
+    let items = props.form.get('data');
+    items.forEach((v, k) => {
       if (v.get('label')) {
         const key = `i:${v.get('id')}:l`;
         translations[key] = v.get('label').toJS();
@@ -206,103 +210,114 @@ const TranslationDialog = (props) => {
     return {translations, metadata};
   }
 
-  const getAllTranslations = () => {
+  const getAllItemTranslations = () => {
     let translations = {};
     let metadata = {key : {}};
-    let globalValueSetsTranslations = {};
-    let globalValueSetsMetadata = {key : {}};
-    let valueSets = props.valueSets.toJS();
-    let allGlobalValueSets = null;
-    if(props.globalValueSets){
-      allGlobalValueSets = props.globalValueSets.toJS();
-    }
+    let globalValueSets = props.form.getIn(['metadata', 'composer', 'globalValueSets']);
+    let allItems = props.form.get('data').toJS();
 
-    function visitItem(item, pageId) {
+    function visitItem(item, pageId, parent) {
       if (item.label) {
         const key = `i:${item.id}:l`;
         translations[key] = item.label;
-        metadata.key[key] = {description: 'Item label', richText: item.type === 'note', pageId: pageId};
+        metadata.key[key] = {description: 'Item label', richText: item.type === 'note', pageId: pageId, parent: `${parent.id} ${parent.type}`};
       }
       if (item.description) {
         const key = `i:${item.id}:d`;
         translations[key] = item.description;
-        metadata.key[key] = {description: 'Item description', richText: true, pageId: pageId};
+        metadata.key[key] = {description: 'Item description', richText: true, pageId: pageId, parent: `${parent.id} ${parent.type}`};
       }
       if (item.validations) {
         item.validations.forEach((val, idx) => {
           const key = `i:${item.id}:v:${idx}`;
           translations[key] = val.message;
-          metadata.key[key] = {description: 'Validation', pageId: pageId};
+          metadata.key[key] = {description: 'Validation', pageId: pageId, parent: `${parent.id} ${parent.type}`};
           return true;
         });
       }
 
-      // Checking for valueSetId
       if(item.valueSetId){
-        valueSets.forEach((valueSet) => {
-          if(valueSet.id === item.valueSetId && valueSet.entries){
-            if(!allGlobalValueSets?.some(globalValueSet => globalValueSet.valueSetId === item.valueSetId)){
-              valueSet.entries.forEach((entry, index) => {
-                const key = `v:${valueSet.id}:${index}:${entry.id}`;
-                translations[key] = entry.label;
-                metadata.key[key] = {description: 'Valueset entry', pageId: pageId};
-              })
-            }else{
-              valueSet.entries.forEach((entry, index) => {
-                const key = `v:${valueSet.id}:${index}:${entry.id}`;
-                globalValueSetsTranslations[key] = entry.label;
-                globalValueSetsMetadata.key[key] = {description: 'Valueset entry'};
-              })
-            }
+        let valueSet = null;
+        if(findValueset(props.form, item.valueSetId)){
+          valueSet = findValueset(props.form, item.valueSetId).toJS();
+        }
+        if(valueSet && valueSet.entries){
+          if(!isGlobalValueSet(globalValueSets, item.valueSetId)){
+            valueSet.entries.forEach((entry, index) => {
+              const key = `v:${valueSet.id}:${index}:${entry.id}`;
+              translations[key] = entry.label;
+              metadata.key[key] = {description: 'Valueset entry', pageId: pageId, parent: `${parent.id} ${parent.type}`};
+            })
           }
-        })
+        }
       }
 
-      // Recursion
       if (item.items instanceof Array) {
-        let allItems = props.items.toJS();
-
         item.items.forEach(childId => {
           let child = allItems[childId];
-          visitItem(child, pageId);
+          visitItem(child, pageId, item);
         });
       }
     }
 
-    let items = props.items.toJS();
-    let pageIds = items["questionnaire"].items;
+    let pageIds = allItems["questionnaire"].items;
     let pages = []
     pageIds.forEach((pageId) => {
-      pages.push(items[pageId])
+      pages.push(allItems[pageId])
     })
     pages.forEach((page) => {
-      visitItem(page, page.id)
+      visitItem(page, page.id, allItems["questionnaire"])
     })
 
-    return {translations, metadata, globalValueSetsMetadata, globalValueSetsTranslations};
+    return {translations, metadata};
   }
 
-  const createTranslationCSVformat = (allTranslations, result) => {
-    for(let [key, value] of Object.entries(allTranslations.metadata.key)){
-      let row = []
-      row.push(key)
-      row.push(`${value.description} for ${key.split(":")[1]}`)
-      row.push(value?.pageId);
-      props.formLanguages.forEach(l => {
-        const name = allTranslations.translations[key];
-        row.push(name[l])
+  const getGlobalValueSetTranslations = () => {
+    let globalValueSets = props.form.getIn(['metadata', 'composer', 'globalValueSets']);
+    if (globalValueSets.size > 0) {
+      let translations = {};
+      let metadata = {key : {}};
+
+      globalValueSets.forEach((globalValueSet, k) => {
+        let valueSet = null;
+        if(findValueset(props.form, globalValueSet.get("valueSetId"))){
+          valueSet = findValueset(props.form, globalValueSet.get("valueSetId")).toJS();
+        }
+        if(valueSet && valueSet.entries){
+          valueSet.entries.forEach((entry, index) => {
+            const key = `v:${valueSet.id}:${index}:${entry.id}`;
+            translations[key] = entry.label;
+            metadata.key[key] = {description: 'Valueset entry', pageId: "Root", parent: "Global list"};
+          })
+        }
       })
+      return {translations, metadata}
+    }else{
+      return null;
+    }
+  }
+
+  const createTranslationCSVRow = (value, key, translations) => {
+    let row = [];
+    row.push(key)
+    row.push(value?.pageId);
+    row.push(value?.parent);
+    row.push(`${value.description} for ${key.split(":")[1]}`)
+    props.formLanguages.forEach(l => {
+      let name = translations.translations[key];
+      row.push(name[l])
+    })
+    return row;
+  }
+
+  const createTranslationCSVformat = (allItemTranslations, globalValueSetTranslations, result) => {
+    for(let [key, value] of Object.entries(allItemTranslations.metadata.key)){
+      let row = createTranslationCSVRow(value, key, allItemTranslations);
       result.push(row)
     }
-    if(Object.keys(allTranslations.globalValueSetsTranslations).length > 0){
-      for(let [key, value] of Object.entries(allTranslations.globalValueSetsMetadata.key)){
-        let row = []
-        row.push(key)
-        row.push(`${value.description} for ${key.split(":")[1]}`)
-        props.formLanguages.forEach(l => {
-          const name = allTranslations.globalValueSetsTranslations[key];
-          row.push(name[l])
-        })
+    if(globalValueSetTranslations){
+      for(let [key, value] of Object.entries(globalValueSetTranslations.metadata.key)){
+        let row = createTranslationCSVRow(value, key, globalValueSetTranslations);
         result.push(row)
       }
     }
@@ -310,17 +325,18 @@ const TranslationDialog = (props) => {
   }
 
   const downloadFormData = () => {
-    let allTranslations = getAllTranslations();
+    let allItemTranslations = getAllItemTranslations();
+    let globalValueSetTranslations = getGlobalValueSetTranslations();
 
     let result = [];
     const firstRow = [props.formLabel]
     result.push(firstRow)
-    const secondRow = ["Item ID", "Description", "PageID"];
+    const secondRow = ["Item ID", "PageID", "ParentID ItemType", "Description"];
     props.formLanguages.forEach(l => {
       secondRow.push(l);
     })
     result.push(secondRow)
-    result = createTranslationCSVformat(allTranslations, result)
+    result = createTranslationCSVformat(allItemTranslations, globalValueSetTranslations, result)
 
     const csv = Papa.unparse(result);
     const blob = new Blob([csv], {type: 'text/csv'});
@@ -407,10 +423,8 @@ const TranslationDialogConnected = connect(
     translationOpen: state.dialobComposer.editor && state.dialobComposer.editor.get('translationOpen'),
     language: (state.dialobComposer.editor && state.dialobComposer.editor.get('activeLanguage')) || Defaults.FALLBACK_LANGUAGE,
     formLanguages: state.dialobComposer.form.getIn(['metadata', 'languages']),
-    items: state.dialobComposer.form && state.dialobComposer.form.get('data'),
     formLabel: state.dialobComposer.form.getIn(['metadata', 'label']),
-    valueSets: state.dialobComposer.form && state.dialobComposer.form.get('valueSets'),
-    globalValueSets: state.dialobComposer.form.getIn(['metadata', 'composer', 'globalValueSets'])
+    form: state.dialobComposer.form && state.dialobComposer.form
   }), {
     hideTranslation,
     updateItem,
