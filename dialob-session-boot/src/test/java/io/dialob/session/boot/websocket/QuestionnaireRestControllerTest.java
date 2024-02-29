@@ -17,6 +17,10 @@ package io.dialob.session.boot.websocket;
 
 import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
+import io.dialob.api.questionnaire.ImmutableAnswer;
+import io.dialob.api.questionnaire.ImmutableQuestionnaire;
+import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.session.boot.Application;
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
@@ -28,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 
 import static java.util.Arrays.asList;
@@ -219,6 +224,91 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("note1"))
           );
       })
+      .execute();
+
+    verify(formDatabase, times(2)).findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any());
+    verifyNoMoreInteractions(formDatabase);
+  }
+
+  @Test
+  public void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
+    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
+      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+
+    addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
+
+    addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("note1", "selection1", "selection2"));
+    addItem(formBuilder, "selection1", builder -> builder.type("list").valueSetId("vs1"));
+    addItem(formBuilder, "selection2", builder -> builder.type("list").valueSetId("vs2"));
+    addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your first selection is {selection1} and second selection is {selection2}"));
+
+    formBuilder.addValueSets(ImmutableFormValueSet.builder().id("vs1").addEntries(
+      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selection 1.1").build(),
+      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selection 1.2").build(),
+      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selection 1.3").build()
+    ).build());
+    formBuilder.addValueSets(ImmutableFormValueSet.builder().id("vs2").addEntries(
+      ImmutableFormValueSetEntry.builder().id("f1").putLabel("en", "Selection 2.1").build(),
+      ImmutableFormValueSetEntry.builder().id("f2").putLabel("en", "Selection 2.2").build(),
+      ImmutableFormValueSetEntry.builder().id("f3").putLabel("en", "Selection 2.3").build()
+    ).build());
+
+    when(formDatabase.findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any())).thenReturn(formBuilder.build());
+    when(formDatabase.exists(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"))).thenReturn(true);
+
+    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
+      .metadata(ImmutableQuestionnaireMetadata.builder()
+        .formId("shouldInterpolateValueSetEntryyx")
+        .created(new Date())
+        .language("en")
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .build())
+        .addAnswers(ImmutableAnswer.of("selection1", "e1"))
+        .addAnswers(ImmutableAnswer.of("selection2", "f1"))
+      .build();
+
+    // -- doLogin();
+    createAndOpenSession(questionnaire)
+      .expectActivated()
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .containsExactlyInAnyOrder(
+            tuple(Action.Type.RESET, null, null),
+            tuple(Action.Type.LOCALE, null, null),
+            tuple(Action.Type.ITEM, "questionnaire", "Kysely"),
+            tuple(Action.Type.ITEM, "selection2", null),
+            tuple(Action.Type.ITEM, "selection1", null),
+            tuple(Action.Type.ITEM, "g1", "Group1"),
+            tuple(Action.Type.ITEM, "note1", "Your first selection is Selection 1.1 and second selection is Selection 2.1"),
+            tuple(Action.Type.VALUE_SET, null, null),
+            tuple(Action.Type.VALUE_SET, null, null)
+          );
+      }).next()
+      .answerQuestion("selection1", "e2")
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .containsOnly(
+            tuple(Action.Type.ITEM, "note1", "Your first selection is Selection 1.2 and second selection is Selection 2.1")
+          );
+      }).next()
+      .answerQuestion("selection2", "f2")
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .containsOnly(
+            tuple(Action.Type.ITEM, "note1", "Your first selection is Selection 1.2 and second selection is Selection 2.2")
+          );
+      }).next()
+      .answerQuestion("selection1", (String) null)
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .containsOnly(
+            tuple(Action.Type.REMOVE_ITEMS, null, null)
+          );
+      }).next()
       .execute();
 
     verify(formDatabase, times(2)).findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any());
