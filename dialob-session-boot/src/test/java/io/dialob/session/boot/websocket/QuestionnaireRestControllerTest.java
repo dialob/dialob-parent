@@ -233,7 +233,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   @Tag("github-107")
   public void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
+    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
@@ -254,12 +254,12 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
       ImmutableFormValueSetEntry.builder().id("f3").putLabel("en", "Selection 2.3").build()
     ).build());
 
-    when(formDatabase.findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any())).thenReturn(formBuilder.build());
-    when(formDatabase.exists(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"))).thenReturn(true);
+    when(formDatabase.findOne(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"), any())).thenReturn(formBuilder.build());
+    when(formDatabase.exists(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"))).thenReturn(true);
 
     Questionnaire questionnaire = ImmutableQuestionnaire.builder()
       .metadata(ImmutableQuestionnaireMetadata.builder()
-        .formId("shouldInterpolateValueSetEntryyx")
+        .formId("shouldEvaluateValueSetsInCorrectOrder")
         .created(new Date())
         .language("en")
         .status(Questionnaire.Metadata.Status.OPEN)
