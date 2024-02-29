@@ -259,7 +259,7 @@
       <id>dialob-build</id>
     </profile>
     <profile>
-      <id>dialob-release</id>
+      <id>release</id>
       <build>
         <plugins>
           <plugin>

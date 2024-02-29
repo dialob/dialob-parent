@@ -26,10 +26,6 @@ if [[ "${last_release_commit_hash}" = "${GITHUB_SHA}" ]]; then
      #exit 0
 fi
 
-echo "Import GPG key"
-gpg --batch --import <(echo "$GPG_KEY")
-gpg --list-secret-keys --keyid-format=long
-
 echo "JAVA_HOME=$JAVA_HOME"
 
 # Config GIT
@@ -63,7 +59,7 @@ mvn versions:set -DnewVersion=${RELEASE_VERSION}
 git commit -am "Release: ${RELEASE_VERSION}"
 git tag -a ${RELEASE_VERSION} -m "release ${RELEASE_VERSION}"
 
-mvn clean deploy -Pdialob-release --settings dialob-build-parent/ci-maven-settings.xml -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+mvn clean deploy -Prelease -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 mvn versions:set -DnewVersion=${PROJECT_VERSION}
 git commit -am "Release: ${RELEASE_VERSION}"
 git push
