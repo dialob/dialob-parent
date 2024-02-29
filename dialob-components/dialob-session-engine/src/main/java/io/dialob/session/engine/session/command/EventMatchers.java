@@ -19,6 +19,7 @@ import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
@@ -107,6 +108,10 @@ public final class EventMatchers {
 
   public static EventMatcher errorActivity(@Nonnull ErrorEventMatcher errorEventMatcher) {
     return ImmutableEventMatchers.ErrorActivityEventMatcher.of(errorEventMatcher);
+  }
+
+  public static EventMatcher whenValueSetUpdated(@Nonnull ValueSetId valueSetId) {
+    return ImmutableEventMatchers.ValueSetUpdatedEventMatcher.of(valueSetId);
   }
 
   public static EventMatcher whenSessionLocaleUpdated() {
@@ -332,4 +337,24 @@ public final class EventMatchers {
     }
 
   }
+
+  interface ValueSetEventMatcher extends EventMatcher {
+
+    @Value.Parameter
+    ValueSetId getValueSetId();
+
+  }
+
+  @Value.Immutable
+  interface ValueSetUpdatedEventMatcher extends ValueSetEventMatcher {
+    @Override
+    default boolean matches(Event event) {
+      if (event instanceof ValueSetUpdatedEvent) {
+        ValueSetUpdatedEvent targetEvent = (ValueSetUpdatedEvent) event;
+        return getValueSetId().equals(targetEvent.getValueSetId());
+      }
+      return false;
+    }
+  }
+
 }

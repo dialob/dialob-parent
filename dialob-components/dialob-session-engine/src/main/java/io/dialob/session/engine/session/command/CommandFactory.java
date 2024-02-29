@@ -22,6 +22,7 @@ import io.dialob.session.engine.program.model.ValueSet;
 import io.dialob.session.engine.session.command.event.ImmutableProtoTypeItemsAddedEventsProvider;
 import io.dialob.session.engine.session.command.event.ImmutableRowItemsAddedEventsProvider;
 import io.dialob.session.engine.session.command.event.ImmutableRowItemsRemovedEventsProvider;
+import io.dialob.session.engine.session.command.event.ImmutableValueSetUpdatedEvent;
 import io.dialob.session.engine.session.model.*;
 
 import javax.annotation.Nonnull;
@@ -159,6 +160,15 @@ public final class CommandFactory {
       @Override
       public boolean test(ErrorState itemState, ErrorState updateState) {
         return isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive();
+      }
+    }
+  }
+
+  enum ValueStatePredicates implements BiPredicate<ValueSetState, ValueSetState> {
+    VALUE_SET_STATE_CHANGED {
+      @Override
+      public boolean test(ValueSetState state, ValueSetState updateState) {
+        return notSame(state, updateState) && (isNew(state, updateState) || state != updateState) && notRemoved(state, updateState);
       }
     }
   }
@@ -325,8 +335,11 @@ public final class CommandFactory {
     ));
   }
 
-  public static UpdateValueSetCommand updateValueSet(ValueSetId targetId, List<Value<ValueSet.Entry>> entries) {
-    return ImmutableUpdateValueSetCommand.of(targetId, entries, emptyList());
+  public static UpdateValueSetCommand updateValueSet(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
+    return ImmutableUpdateValueSetCommand.of(valueSetId, entries, ImmutableList.of(
+      Triggers.<ValueSetState>trigger(ImmutableValueSetUpdatedEvent.of(valueSetId))
+        .when(ValueStatePredicates.VALUE_SET_STATE_CHANGED)
+      ));
   }
 
   public static SessionUpdateCommand createRowGroupFromPrototypeCommand(ItemId rowProtoTypeId) {
