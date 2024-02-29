@@ -312,7 +312,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
       }).next()
       .execute();
 
-    verify(formDatabase, times(2)).findOne(eq(tenantId), eq("shouldInterpolateValueSetEntryyx"), any());
+    verify(formDatabase, times(2)).findOne(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"), any());
     verifyNoMoreInteractions(formDatabase);
   }
 
