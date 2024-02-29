@@ -28,7 +28,8 @@ fi
 
 echo "Import GPG key"
 gpg --batch --import <(echo "$GPG_KEY")
- 
+gpg --list-secret-keys --keyid-format=long
+
 echo "JAVA_HOME=$JAVA_HOME"
 
 # Config GIT
