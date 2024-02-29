@@ -93,10 +93,10 @@
     <micrometer-registry-prometheus.version>1.9.0</micrometer-registry-prometheus.version>
     <s3mock-junit5.version>2.2.3</s3mock-junit5.version>
     <groovy.version>3.0.9</groovy.version>
-    <bcpkix-jdk15on.version>1.70</bcpkix-jdk15on.version>
+    <bcpkix-jdk18on.version>1.77</bcpkix-jdk18on.version>
     <spring-cloud-gcp.version>2.0.6</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
     <springdoc.version>1.6.1</springdoc.version>
-    <testcontainers.version>1.18.3</testcontainers.version>
+    <testcontainers.version>1.19.6</testcontainers.version>
   </properties>
 
 
@@ -577,8 +577,8 @@
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcpkix-jdk15on</artifactId>
-        <version>${bcpkix-jdk15on.version}</version>
+        <artifactId>bcpkix-jdk18on</artifactId>
+        <version>${bcpkix-jdk18on.version}</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
