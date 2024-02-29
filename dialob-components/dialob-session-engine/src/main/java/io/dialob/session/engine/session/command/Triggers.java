@@ -19,6 +19,7 @@ import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.engine.session.model.ValueSetId;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
@@ -71,6 +72,10 @@ public class Triggers {
 
   public static TargetEvent onTarget(@Nonnull ItemId targetId) {
     return stateChangedEvent(targetId);
+  }
+
+  public static ValueSetEvent valueSetUpdatedEvent(@Nonnull ValueSetId valueSetId) {
+    return ImmutableValueSetUpdatedEvent.of(valueSetId);
   }
 
   public static TargetEvent stateChangedEvent(@Nonnull ItemId targetId) {

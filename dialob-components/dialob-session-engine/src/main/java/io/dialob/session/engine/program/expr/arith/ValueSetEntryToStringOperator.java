@@ -19,12 +19,14 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
+import io.dialob.session.engine.session.command.EventMatchers;
 import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,7 +56,8 @@ public interface ValueSetEntryToStringOperator extends Expression {
             return entry.getLabel();
           }
         }
-      } else if (eval instanceof List) { // For multichocie (answer is a list)
+        return (String) eval;
+      } else if (eval instanceof List) { // For multichoice (answer is a list)
         return valueSetState1.getEntries().stream().filter(entry -> ((List<?>) eval).contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
       }
       return null;
@@ -70,6 +73,9 @@ public interface ValueSetEntryToStringOperator extends Expression {
   @Override
   @Nonnull
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return getExpression().getEvalRequiredConditions();
+    final Set<EventMatcher> deps = new HashSet<>();
+    deps.addAll(getExpression().getEvalRequiredConditions());
+    deps.add(EventMatchers.whenValueSetUpdated(getValueSetId()));
+    return deps;
   }
 }
