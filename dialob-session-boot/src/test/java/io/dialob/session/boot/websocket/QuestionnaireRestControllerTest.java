@@ -23,7 +23,7 @@ import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.session.boot.Application;
 import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -231,6 +231,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   }
 
   @Test
+  @Tag("github-107")
   public void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
