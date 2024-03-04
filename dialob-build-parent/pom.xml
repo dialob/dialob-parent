@@ -525,7 +525,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>c</artifactId>
+        <artifactId>commons-compress</artifactId>
         <version>1.26.0</version>
       </dependency>
       <dependency>
