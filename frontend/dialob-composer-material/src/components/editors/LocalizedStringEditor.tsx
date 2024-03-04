@@ -15,7 +15,7 @@ const LocalizedStringEditor: React.FC<{
   setRule?: React.Dispatch<React.SetStateAction<IndexedRule | undefined>>
 }> = ({ type, rule, setRule }) => {
   const { form, updateLocalizedString } = useComposer();
-  const { editor } = useEditor();
+  const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const [preview, setPreview] = React.useState(false);
   const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
@@ -31,10 +31,15 @@ const LocalizedStringEditor: React.FC<{
     if (item && localizedString) {
       const id = setTimeout(() => {
         updateLocalizedString(item.id, type, localizedString, rule?.index);
+        if (type === 'validations' && rule && setRule && item) {
+          const newRule = { ...rule, validationRule: { ...rule.validationRule, message: localizedString } };
+          setRule(newRule);
+          const newValidations = item.validations?.map((r, index) => index === rule.index ? newRule.validationRule : r);
+          setActiveItem({ ...item, validations: newValidations });
+        } else {
+          setActiveItem({ ...item, [type]: localizedString });
+        }
       }, 1000);
-      if (type === 'validations' && rule && setRule) {
-        setRule({ ...rule, validationRule: { ...rule.validationRule, message: localizedString } });
-      }
       return () => clearTimeout(id);
     }
   }, [localizedString]);
