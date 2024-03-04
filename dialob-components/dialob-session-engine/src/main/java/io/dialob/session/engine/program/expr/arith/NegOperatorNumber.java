@@ -17,13 +17,14 @@ package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface NegOperatorNumber extends NegOperator {
 
-  default Object neg(Object value) {
+  default Object neg(@NotNull Object value) {
     return -((Integer)value);
   }
 

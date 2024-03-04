@@ -15,16 +15,15 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface NegOperator extends UnaryOperator {
 
-  default Object apply(Object value) {
-    if (value == null) {
-      return null;
-    }
+  default Object apply(@NotNull Object value) {
     return neg(value);
   }
 
-  Object neg(Object value) ;
+  Object neg(@NotNull Object value);
 
 
 }
