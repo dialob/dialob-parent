@@ -63,7 +63,7 @@ const ChoiceTextEditor: React.FC<{
         return (
           <Box key={language}>
             <Typography color='text.hint'><FormattedMessage id={`locales.${language}`} /></Typography>
-            <TextareaAutosize style={{ width: '100%' }} minRows={5} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />
+            <TextareaAutosize style={{ width: '100%' }} minRows={2} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />
           </Box>
         );
       })}
