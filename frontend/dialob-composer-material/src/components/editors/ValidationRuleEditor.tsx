@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Box, Button, IconButton, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
+import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
@@ -16,7 +16,7 @@ export interface IndexedRule {
 
 const ValidationRuleEditor: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression } = useComposer();
-  const { editor } = useEditor();
+  const { editor, setActiveItem } = useEditor();
   const intl = useIntl();
   const item = editor.activeItem;
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
@@ -29,7 +29,10 @@ const ValidationRuleEditor: React.FC = () => {
       validationRules.push({ index, validationRule: rule })
     });
     setRules(validationRules);
-    setActiveRule(validationRules.length > 0 ? validationRules[0] : undefined);
+    console.log('activeRule', validationRules, Object.values(activeRule?.validationRule || {}));
+    if (activeRule === undefined) {
+      setActiveRule(validationRules.length > 0 ? validationRules[0] : undefined);
+    }
   }, [item]);
 
 
@@ -56,6 +59,9 @@ const ValidationRuleEditor: React.FC = () => {
     if (item && activeRule && activeRule.validationRule.rule) {
       const expression = activeRule.validationRule.rule;
       const id = setTimeout(() => {
+        const validations = [...item.validations || []];
+        const newValidations = validations.map((rule, index) => index === activeRule.index ? { ...rule, rule: expression } : rule);
+        setActiveItem({ ...item, validations: newValidations });
         setValidationExpression(item.id, activeRule.index, expression);
       }, 300);
       return () => clearTimeout(id);
@@ -71,13 +77,20 @@ const ValidationRuleEditor: React.FC = () => {
     const newRules = [...rules];
     newRules.splice(rule.index, 1);
     setRules(newRules);
+    setActiveRule(newRules.length > 0 ? newRules[0] : undefined);
+    const validations: ValidationRule[] = [...item.validations || []];
+    validations.splice(rule.index, 1);
+    setActiveItem({ ...item, validations: validations });
     deleteValidation(item.id, rule.index);
   }
 
   const handleAdd = () => {
     const newRules = [...rules];
-    newRules.push({ index: newRules.length, validationRule: {} });
+    const newRule: IndexedRule = { index: newRules.length, validationRule: {} };
+    newRules.push(newRule);
     setRules(newRules);
+    const validations: ValidationRule[] = [...item.validations || [], newRule.validationRule];
+    setActiveItem({ ...item, validations: validations });
     setActiveRule(newRules[newRules.length - 1]);
     createValidation(item.id);
   }
@@ -85,9 +98,13 @@ const ValidationRuleEditor: React.FC = () => {
   const handleUpdate = (value: string) => {
     if (activeRule) {
       const newRules = [...rules];
-      newRules[activeRule.index] = { ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } };
+      const newRule = { ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } };
+      newRules[activeRule.index] = newRule;
       setRules(newRules);
       setActiveRule({ ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } });
+      /* const validations: ValidationRule[] = item.validations || [];
+      validations[activeRule.index] = newRule.validationRule;
+      setActiveItem({ ...item, validations: validations }); */
     }
   }
 

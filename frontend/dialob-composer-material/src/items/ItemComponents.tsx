@@ -171,7 +171,7 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
             {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
           </IconButton>
         </Tooltip>}
-      {item.validations &&
+      {item.validations && item.validations.length > 0 &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.validations' />}>
           <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' /></IconButton>
         </Tooltip>}
