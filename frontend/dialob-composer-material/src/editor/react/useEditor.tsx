@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { EditorContext } from "./EditorContext";
 import { DialobItem } from "../../dialob";
-import { ConfirmationDialogType, TextEditDialogType, RuleEditDialogType, EditorError } from "../types";
+import { ConfirmationDialogType, EditorError, OptionsTabType } from "../types";
 
 export const useEditor = () => {
   const { state, dispatch } = useContext(EditorContext);
@@ -30,20 +30,8 @@ export const useEditor = () => {
     dispatch({ type: 'setConfirmationDialogType', dialogType });
   }
 
-  const setTextEditDialogType = (dialogType?: TextEditDialogType): void => {
-    dispatch({ type: 'setTextEditDialogType', dialogType });
-  };
-
-  const setRuleEditDialogType = (dialogType?: RuleEditDialogType): void => {
-    dispatch({ type: 'setRuleEditDialogType', dialogType });
-  }
-
-  const setValidationRuleEditDialogOpen = (open: boolean): void => {
-    dispatch({ type: 'setValidationRuleEditDialogOpen', open });
-  }
-
-  const setItemOptionsDialogOpen = (open: boolean): void => {
-    dispatch({ type: 'setItemOptionsDialogOpen', open });
+  const setItemOptionsActiveTab = (tab?: OptionsTabType): void => {
+    dispatch({ type: 'setItemOptionsActiveTab', tab });
   }
 
   const setHighlightedItem = (item?: DialobItem): void => {
@@ -58,10 +46,7 @@ export const useEditor = () => {
     clearErrors,
     setActiveItem,
     setConfirmationDialogType,
-    setTextEditDialogType,
-    setRuleEditDialogType,
-    setValidationRuleEditDialogOpen,
-    setItemOptionsDialogOpen,
+    setItemOptionsActiveTab,
     setHighlightedItem,
   };
 }

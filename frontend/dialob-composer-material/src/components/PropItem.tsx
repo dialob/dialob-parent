@@ -1,5 +1,5 @@
 import React from 'react';
-import { ItemProp } from "./PropertiesEditor";
+import { ItemProp } from "./editors/PropertiesEditor";
 import { TableCell, TableRow, Typography, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { StyledTextField } from './TableEditorComponents';

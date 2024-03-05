@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule } from "../types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString } from "../types";
 
 export const useComposer = () => {
   const { state, dispatch } = useContext(ComposerContext);
@@ -12,6 +12,10 @@ export const useComposer = () => {
   const updateItem = (itemId: string, attribute: string, value: string, language?: string) => {
     dispatch({type: 'updateItem', itemId, attribute, value, language});
   };
+
+  const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
+    dispatch({type: 'updateLocalizedString', itemId, attribute, value, index});
+  }
 
   const changeItemType = (itemId: string, config: DialobItemTemplate) => {
     dispatch({type: 'changeItemType', itemId, config});
@@ -108,6 +112,7 @@ export const useComposer = () => {
   return {
     addItem,
     updateItem,
+    updateLocalizedString,
     changeItemType,
     deleteItem,
     setItemProp,
