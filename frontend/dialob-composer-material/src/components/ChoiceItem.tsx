@@ -17,6 +17,7 @@ export interface ChoiceItemProps {
   onTextEdit: (entry: ValueSetEntry, label: LocalizedString) => void,
   onDelete: (entry: ValueSetEntry) => void,
   onUpdateId: (entry: ValueSetEntry, id: string) => void,
+  isGlobal?: boolean
 }
 
 const MAX_CHOICE_LABEL_LENGTH = 40;
@@ -32,7 +33,7 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
   return <Typography>{localizedLabel}</Typography>;
 }
 
-const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId }) => {
+const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal }) => {
   const { form } = useComposer();
   const entry = item.data;
   const formLanguages = form.metadata.languages;
@@ -70,7 +71,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
             <TableCell align='center' width='20%'>
               <IconButton onClick={() => setExpanded(!expanded)}>{expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
               <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
-              <IconButton onClick={() => setExpanded(true)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>
+              {!isGlobal && <IconButton onClick={() => setExpanded(true)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
             </TableCell>
             <TableCell width='30%' sx={{ p: 1 }}>
               <Typography>{idValue}</Typography>
@@ -88,11 +89,13 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
                   <Typography color='text.hint' variant='caption'>Key</Typography>
                   <TextField value={idValue} onChange={(e) => setIdValue(e.target.value)} />
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', my: 1 }}>
+                {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
                   <Typography color='text.hint' variant='caption'>Visbility rule</Typography>
                   <CodeMirror value={rule || ''} onChange={(value) => setRule(value)} extensions={[javascript({ jsx: true })]} />
+                </Box>}
+                <Box sx={{ mt: 2 }}>
+                  <ChoiceTextEditor entry={entry} onUpdate={onTextEdit} />
                 </Box>
-                <ChoiceTextEditor entry={entry} onUpdate={onTextEdit} />
               </Box>
             </TableCell>
           </TableRow>}

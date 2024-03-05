@@ -11,10 +11,10 @@ const INIT_TREE: TreeData = {
 };
 
 const renderItem = (props: ChoiceItemProps) => {
-  const { item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId } = props;
+  const { item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal } = props;
   return (
     <ChoiceItem item={item} provided={provided} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
-      onDelete={onDelete} onUpdateId={onUpdateId} />
+      onDelete={onDelete} onUpdateId={onUpdateId} isGlobal={isGlobal} />
   );
 }
 
@@ -38,8 +38,9 @@ const buildTreeFromValueSet = (valueSet?: ValueSet): TreeData => {
 
 const ChoiceList: React.FC<{
   valueSet?: ValueSet,
-  updateValueSet: (value: React.SetStateAction<ValueSet | undefined>) => void
-}> = ({ valueSet, updateValueSet }) => {
+  updateValueSet: (value: React.SetStateAction<ValueSet | undefined>) => void,
+  isGlobal?: boolean
+}> = ({ valueSet, updateValueSet, isGlobal }) => {
   const { form, moveValueSetEntry, deleteValueSetEntry, updateValueSetEntry } = useComposer();
   const [tree, setTree] = React.useState<TreeData>(INIT_TREE);
   const languageNo = form.metadata.languages?.length || 0;
@@ -101,7 +102,10 @@ const ChoiceList: React.FC<{
         <TableCell colSpan={2 + languageNo}>
           <Tree
             tree={tree}
-            renderItem={(props) => renderItem({ ...props, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel, onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId })}
+            renderItem={(props) => renderItem({
+              ...props, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
+              onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId, isGlobal: isGlobal
+            })}
             onDragEnd={onDragEnd}
             isDragEnabled
           />
