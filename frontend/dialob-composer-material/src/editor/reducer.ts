@@ -35,6 +35,10 @@ const setHighlightedItem = (state: EditorState, item?: DialobItem): void => {
   state.highlightedItem = item;
 }
 
+const setActiveList = (state: EditorState, listId?: string): void => {
+  state.activeList = listId;
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -53,6 +57,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setItemOptionsActiveTab(state, action.tab);
     } else if (action.type === 'setHighlightedItem') {
       setHighlightedItem(state, action.item);
+    } else if (action.type === 'setActiveList') {
+      setActiveList(state, action.listId);
     }
   });
   return newState;

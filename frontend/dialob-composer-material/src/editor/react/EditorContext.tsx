@@ -17,6 +17,12 @@ const DEMO_ERRORS: EditorError[] = [
     itemId: 'group9',
   },
   {
+    severity: 'WARNING' as ErrorSeverity,
+    message: 'VALUESET_EMPTY',
+    type: 'VALUESET',
+    itemId: 'vs45',
+  },
+  {
     severity: 'INFO' as ErrorSeverity,
     message: 'VALUESET_DUPLICATE_KEY',
     type: 'VALUESET',

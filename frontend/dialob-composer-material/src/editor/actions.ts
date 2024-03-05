@@ -9,4 +9,5 @@ export type EditorAction =
   | { type: 'setActiveItem', item?: DialobItem }
   | { type: 'setConfirmationDialogType', dialogType?: ConfirmationDialogType }
   | { type: 'setItemOptionsActiveTab', tab?: OptionsTabType }
-  | { type: 'setHighlightedItem', item?: DialobItem };
+  | { type: 'setHighlightedItem', item?: DialobItem }
+  | { type: 'setActiveList', listId?: string }

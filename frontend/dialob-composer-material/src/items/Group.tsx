@@ -6,7 +6,7 @@ import { DialobItem, DialobItems, useComposer } from '../dialob';
 import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMenu, StyledTable, VisibilityField } from './ItemComponents';
 import { itemFactory } from './ItemFactory';
 import { useEditor } from '../editor';
-import { useErrorColor } from '../utils/ErrorUtils';
+import { useErrorColorSx } from '../utils/ErrorUtils';
 
 
 const createChildren = (item: DialobItem, items: DialobItems) => {
@@ -22,7 +22,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
   const [expanded, setExpanded] = React.useState<boolean>(true);
   const children = createChildren(item, form.data);
   const centeredCellSx = { textAlign: 'center' };
-  const errorBorderColor = useErrorColor(editor.errors, item);
+  const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
   const highlightedSx = highlighted ?
