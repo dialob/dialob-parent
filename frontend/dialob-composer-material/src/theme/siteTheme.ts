@@ -78,13 +78,13 @@ const palette = {
     main: '#554971',
     light: '#796AA0',
     dark: '#413857',
-    contrastText: 'rgba(0, 0, 0, 0.23)',
+    contrastText: '#fff',
   },
   warning: {
     main: '#ff9800',
     light: '#ffac33',
     dark: '#b26a00',
-    contrastText: '#000001',
+    contrastText: '#fff',
   },
   success: {
     main: '#4caf50',

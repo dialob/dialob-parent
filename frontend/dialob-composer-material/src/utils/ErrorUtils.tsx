@@ -58,14 +58,30 @@ const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined =
   return undefined;
 }
 
-const getItemErrorSeverity = (errors: EditorError[], item: DialobItem): ErrorSeverity | undefined => {
-  const itemErrors = errors.filter(error => error.itemId === item.id);
+const getItemErrorSeverity = (errors: EditorError[], itemId: string): ErrorSeverity | undefined => {
+  const itemErrors = errors.filter(error => error.itemId === itemId);
   return getDominantSeverity(itemErrors);
 }
 
-export const useErrorColor = (errors: EditorError[], item: DialobItem): string | undefined => {
+export const getErrorColor = (errors: EditorError[], itemId: string) => {
+  const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
+  switch (itemErrorSeverity) {
+    case 'FATAL':
+      return 'error';
+    case 'ERROR':
+      return 'error';
+    case 'WARNING':
+      return 'warning';
+    case 'INFO':
+      return 'info';
+    default:
+      return 'primary';
+  }
+}
+
+export const useErrorColorSx = (errors: EditorError[], itemId: string): string | undefined => {
   const theme = useTheme();
-  const itemErrorSeverity = getItemErrorSeverity(errors, item);
+  const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':
       return theme.palette.error.main;
@@ -80,8 +96,8 @@ export const useErrorColor = (errors: EditorError[], item: DialobItem): string |
   }
 }
 
-export const getErrorIcon = (errors: EditorError[], item: DialobItem): React.ReactNode | undefined => {
-  const itemErrorSeverity = getItemErrorSeverity(errors, item);
+export const getErrorIcon = (errors: EditorError[], itemId: string): React.ReactNode | undefined => {
+  const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':
       return <PreTextIcon disableRipple><Warning color='error' fontSize='small' /></PreTextIcon>;

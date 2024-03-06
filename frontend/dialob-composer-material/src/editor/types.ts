@@ -20,4 +20,5 @@ export type EditorState = {
   confirmationDialogType?: ConfirmationDialogType;
   itemOptionsActiveTab?: OptionsTabType;
   highlightedItem?: DialobItem;
+  activeList?: string;
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, Button, Paper, useTheme } from '@mui/material';
 import Tree, {
   mutateTree,
   moveItemOnTree,
@@ -14,6 +14,7 @@ import { useEditor } from '../../editor';
 import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
 import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
+import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 
 
 const INIT_TREE: TreeData = {
@@ -51,6 +52,7 @@ const renderItem = ({ item, onExpand, onCollapse, provided }: RenderItemParams) 
 }
 
 const NavigationTreeView: React.FC = () => {
+
   const theme = useTheme();
   const { form, moveItem } = useComposer();
   const { editor } = useEditor();
@@ -66,6 +68,26 @@ const NavigationTreeView: React.FC = () => {
 
   const onCollapse = (itemId: ItemId) => {
     setTree((prevTree) => mutateTree(prevTree, itemId, { isExpanded: false }));
+  };
+
+  const expandAll = () => {
+    setTree((prevTree) => {
+      const newTree = { ...prevTree };
+      Object.keys(newTree.items).forEach(key => {
+        newTree.items[key].isExpanded = true;
+      });
+      return newTree;
+    });
+  };
+
+  const collapseAll = () => {
+    setTree((prevTree) => {
+      const newTree = { ...prevTree };
+      Object.keys(newTree.items).forEach(key => {
+        newTree.items[key].isExpanded = false;
+      });
+      return newTree;
+    });
   };
 
   const onDragEnd = (
@@ -91,7 +113,11 @@ const NavigationTreeView: React.FC = () => {
   };
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box>
+      <Paper elevation={3} sx={{ my: 1, p: 1, display: 'flex', justifyContent: 'space-evenly' }}>
+        <Button variant='text' onClick={expandAll} endIcon={<KeyboardArrowDown />}>Expand All</Button>
+        <Button variant='text' onClick={collapseAll} endIcon={<KeyboardArrowRight />}>Collapse All</Button>
+      </Paper>
       <Tree
         tree={tree}
         renderItem={renderItem}

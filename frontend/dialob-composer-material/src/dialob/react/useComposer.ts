@@ -81,6 +81,10 @@ export const useComposer = () => {
     dispatch({type: 'setGlobalValueSetName', valueSetId, name});
   }
 
+  const deleteGlobalValueSet = (valueSetId: string) => {
+    dispatch({type: 'deleteGlobalValueSet', valueSetId});
+  }
+
   const setMetadataValue = (attr: string, value: any) => {
     dispatch({type: 'setMetadataValue', attr, value});
   }
@@ -129,6 +133,7 @@ export const useComposer = () => {
     deleteValueSetEntry,
     moveValueSetEntry,
     setGlobalValueSetName,
+    deleteGlobalValueSet,
     setMetadataValue,
     createVariable,
     updateContextVariable,

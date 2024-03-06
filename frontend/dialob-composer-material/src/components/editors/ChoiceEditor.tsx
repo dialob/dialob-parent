@@ -2,8 +2,8 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
-import { Add, Download, Edit, Refresh, Upload } from '@mui/icons-material';
-import { Box, Button, Divider, IconButton, MenuItem, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Add, Download, Edit, KeyboardArrowDown, Refresh, Upload, Warning } from '@mui/icons-material';
+import { Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem, Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEditor } from '../../editor';
 import { ValueSet, useComposer } from '../../dialob';
 import { generateValueSetId } from '../../dialob/reducer';
@@ -12,11 +12,12 @@ import ChoiceList from '../ChoiceList';
 import ConvertConfirmationDialog from '../../dialogs/ConvertConfirmationDialog';
 import UploadValuesetDialog from '../../dialogs/UploadValuesetDialog';
 import GlobalList from '../GlobalList';
+import { ErrorMessage } from '../../utils/ErrorUtils';
 
 
 const ChoiceEditor: React.FC = () => {
   const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem } = useComposer();
-  const { editor, setActiveItem } = useEditor();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setActiveList } = useEditor();
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const formLanguages = form.metadata.languages;
@@ -24,6 +25,8 @@ const ChoiceEditor: React.FC = () => {
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
+  const itemErrors = editor.errors.filter(e => e.itemId === item?.id);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
     const hasValueSet = item?.valueSetId !== undefined;
@@ -109,6 +112,18 @@ const ChoiceEditor: React.FC = () => {
     FileSaver.saveAs(blob, `valueSet-${currentValueSet.id}.csv`);
   }
 
+  const editGlobalList = (listId?: string) => {
+    setActiveItem(undefined);
+    setItemOptionsActiveTab(undefined);
+    if (listId) {
+      setActiveList(listId);
+    } else if (globalValueSets && globalValueSets.length > 0) {
+      setActiveList(globalValueSets[0].valueSetId);
+    } else {
+      setActiveList('list');
+    }
+  }
+
   if (!item) {
     return null;
   }
@@ -122,6 +137,37 @@ const ChoiceEditor: React.FC = () => {
         onClose={() => setDialogType(undefined)} />
       {choiceType === 'local' ? <>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', mb: 2 }}>
+          <Button onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ mt: 2, mr: 2 }} endIcon={<KeyboardArrowDown />}>
+            <FormattedMessage id='dialogs.options.choices.select.global' />
+          </Button>
+          <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}>
+            <List>
+              {globalValueSets && globalValueSets.length > 0 && <>
+                {globalValueSets.map(gvs => (
+                  <ListItemButton key={gvs.valueSetId}
+                    sx={{ justifyContent: 'flex-start', color: 'text.primary' }}
+                    onClick={() => {
+                      selectGlobalValueSet(gvs.valueSetId);
+                      setAnchorEl(null);
+                    }}
+                  >
+                    {gvs.label}
+                  </ListItemButton>
+                ))}
+                <Divider />
+              </>}
+              <ListItemButton onClick={() => {
+                editGlobalList();
+                setAnchorEl(null);
+              }}>
+                <Add fontSize='small' color='success' />
+                <Typography>Add new list</Typography>
+              </ListItemButton>
+            </List>
+          </Popover>
           <Button onClick={() => setDialogType('global')} sx={{ mt: 2 }} endIcon={<Refresh />}>
             <FormattedMessage id='dialogs.options.choices.convert.global' />
           </Button>
@@ -155,19 +201,25 @@ const ChoiceEditor: React.FC = () => {
             {form.metadata.composer?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
           </Select>
           <Box flexGrow={1} />
-          <Button onClick={() => setDialogType('local')} disabled={currentValueSet?.id === ''} sx={{ mr: 2 }} endIcon={<Edit />}>
+          {currentValueSet && <Button onClick={() => editGlobalList(currentValueSet.id)} sx={{ mr: 2 }} endIcon={<Edit />}>
             <FormattedMessage id='dialogs.options.choices.edit.global' />
-          </Button>
-          <Button onClick={() => setDialogType('local')} disabled={currentValueSet?.id === ''} endIcon={<Refresh />}>
+          </Button>}
+          {currentValueSet && <Button onClick={() => setDialogType('local')} endIcon={<Refresh />}>
             <FormattedMessage id='dialogs.options.choices.convert.local' />
-          </Button>
+          </Button>}
         </Box>
         <GlobalList entries={currentValueSet?.entries} />
         <Divider sx={{ my: 2 }}><Typography><FormattedMessage id='dialogs.options.choices.divider' /></Typography></Divider>
         <Button onClick={createLocalList} endIcon={<Add />}>
           <FormattedMessage id='dialogs.options.choices.create.local' />
         </Button>
-      </Box>}
+      </Box>
+      }
+      {
+        itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+          <Typography><ErrorMessage error={error} /></Typography>
+        </Alert>)
+      }
     </>
   );
 }

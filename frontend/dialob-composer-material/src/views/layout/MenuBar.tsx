@@ -6,6 +6,7 @@ import { useComposer } from '../../dialob';
 import { getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
+import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -49,7 +50,7 @@ const MenuBar: React.FC = () => {
   const { editor, setActiveFormLanguage } = useEditor();
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
-
+  const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const languageMenuOpen = Boolean(anchorEl);
 
@@ -63,43 +64,46 @@ const MenuBar: React.FC = () => {
   }
 
   return (
-    <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
-      <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
-        <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
-          <Typography sx={{ fontWeight: 'bold' }}>
-            Dialob Composer
-          </Typography>
-          <Typography sx={{ ml: 1 }}>
-            {form.metadata.label}
-          </Typography>
-        </Box>
-        <HeaderButton label='translations' />
-        <HeaderButton label='variables' />
-        <HeaderButton label='lists' />
-        <HeaderButton label='options' />
-        <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'version.latest' })} endIcon={<ArrowDropDown />} />
-        <HeaderIconButton icon={<Support fontSize='small' />} />
-        <Box flexGrow={1} />
-        <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
-          <InputBase placeholder={intl.formatMessage({ id: 'search' })} />
-          <Search />
-        </Box>
-        <HeaderIconButton icon={<Download />} />
-        <HeaderIconButton disabled icon={getStatusIcon(editor.errors)} />
-        <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
-        <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>
-          {formLanguages
-            .filter((language) => language !== editor.activeFormLanguage)
-            .map((language) => (
-              <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
-                {intl.formatMessage({ id: 'locales.' + language })}
-              </MenuItem>
-            ))}
-        </Menu>
-        <HeaderIconButton icon={<Visibility fontSize='small' />} />
-        <HeaderIconButton icon={<Close />} />
-      </Stack>
-    </AppBar>
+    <>
+      <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
+      <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
+        <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
+          <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
+            <Typography sx={{ fontWeight: 'bold' }}>
+              Dialob Composer
+            </Typography>
+            <Typography sx={{ ml: 1 }}>
+              {form.metadata.label}
+            </Typography>
+          </Box>
+          <HeaderButton label='translations' />
+          <HeaderButton label='variables' />
+          <HeaderButton label='lists' onClick={() => setListsDialogOpen(true)} />
+          <HeaderButton label='options' />
+          <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'version.latest' })} endIcon={<ArrowDropDown />} />
+          <HeaderIconButton icon={<Support fontSize='small' />} />
+          <Box flexGrow={1} />
+          <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
+            <InputBase placeholder={intl.formatMessage({ id: 'search' })} />
+            <Search />
+          </Box>
+          <HeaderIconButton icon={<Download />} />
+          <HeaderIconButton disabled icon={getStatusIcon(editor.errors)} />
+          <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
+          <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>
+            {formLanguages
+              .filter((language) => language !== editor.activeFormLanguage)
+              .map((language) => (
+                <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
+                  {intl.formatMessage({ id: 'locales.' + language })}
+                </MenuItem>
+              ))}
+          </Menu>
+          <HeaderIconButton icon={<Visibility fontSize='small' />} />
+          <HeaderIconButton icon={<Close />} />
+        </Stack>
+      </AppBar>
+    </>
   );
 };
 

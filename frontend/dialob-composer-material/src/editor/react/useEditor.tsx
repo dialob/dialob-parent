@@ -38,6 +38,10 @@ export const useEditor = () => {
     dispatch({ type: 'setHighlightedItem', item });
   }
 
+  const setActiveList = (listId?: string): void => {
+    dispatch({ type: 'setActiveList', listId });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -48,5 +52,6 @@ export const useEditor = () => {
     setConfirmationDialogType,
     setItemOptionsActiveTab,
     setHighlightedItem,
+    setActiveList,
   };
 }

@@ -6,7 +6,7 @@ import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/Tree
 import { DialobItem, useComposer } from '../../dialob';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
 import { useEditor } from '../../editor';
-import { getErrorIcon, useErrorColor } from '../../utils/ErrorUtils';
+import { getErrorIcon, useErrorColorSx } from '../../utils/ErrorUtils';
 import { scrollToItem } from '../../utils/ScrollUtils';
 
 
@@ -68,7 +68,7 @@ const getTitle = (item: TreeItem) => {
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
   const { editor, setActivePage, setHighlightedItem } = useEditor();
   const { form } = useComposer();
-  const errorColor = useErrorColor(editor.errors, item.data.item);
+  const errorColor = useErrorColorSx(editor.errors, item.data.item.id);
   const itemId = item.data.item.id;
 
   const handleScrollTo = (e: React.MouseEvent) => {
@@ -84,7 +84,7 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
       {...provided.dragHandleProps}
     >
       {getIcon(item, onExpand, onCollapse)}
-      {errorColor ? getErrorIcon(editor.errors, item.data.item) : getTypeIcon(item.data.item, item.data.isPage)}
+      {errorColor ? getErrorIcon(editor.errors, item.data.item.id) : getTypeIcon(item.data.item, item.data.isPage)}
       <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo}>
         <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{getTitle(item)}</Typography>
       </ListItemText>
