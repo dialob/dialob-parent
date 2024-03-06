@@ -329,6 +329,13 @@ const setGlobalValueSetName = (state: ComposerState, valueSetId: string, name: s
   }
 }
 
+const deleteGlobalValueSet = (state: ComposerState, valueSetId: string): void => {
+  if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined && state.metadata?.composer?.globalValueSets !== undefined) {
+    state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
+    state.metadata.composer.globalValueSets = state.metadata.composer.globalValueSets.filter(gvs => gvs.valueSetId !== valueSetId);
+  }
+}
+
 const setMetadataValue = (state: ComposerState, attr: string, value: any): void => {
   // TODO: Sanity: Prevent overwriting certain critical attributes
 
@@ -508,6 +515,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       moveValueSetEntry(state, action.valueSetId, action.from, action.to);
     } else if (action.type === 'setGlobalValueSetName') {
       setGlobalValueSetName(state, action.valueSetId, action.name);
+    } else if (action.type === 'deleteGlobalValueSet') {
+      deleteGlobalValueSet(state, action.valueSetId);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'createVariable') {

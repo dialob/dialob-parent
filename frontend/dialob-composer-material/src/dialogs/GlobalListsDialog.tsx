@@ -2,18 +2,21 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
-import { Add, Close, Delete, Download, Upload, Visibility } from '@mui/icons-material';
+import { Add, Close, Delete, Download, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
+  Alert,
+  AlertColor,
   Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from '@mui/material';
-import { ValueSet, ValueSetEntry, useComposer } from '../dialob';
+import { DialobItem, ValueSet, ValueSetEntry, useComposer } from '../dialob';
 import { generateValueSetId } from '../dialob/reducer';
 import { StyledTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
-import { getErrorColor } from '../utils/ErrorUtils';
+import { ErrorMessage, getErrorColor } from '../utils/ErrorUtils';
+import { scrollToItem } from '../utils/ScrollUtils';
 
 interface GlobalValueSet {
   id: string;
@@ -22,8 +25,8 @@ interface GlobalValueSet {
 }
 
 const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
-  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName } = useComposer();
-  const { editor, setActiveList } = useEditor();
+  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet } = useComposer();
+  const { editor, setActiveList, setActivePage, setHighlightedItem } = useEditor();
   const dialogOpen = open || editor.activeList !== undefined;
   const formLanguages = form.metadata.languages;
   const [globalValueSets, setGlobalValueSets] = React.useState<GlobalValueSet[] | undefined>(undefined);
@@ -32,6 +35,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [name, setName] = React.useState<string | undefined>(undefined);
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
+  const itemErrors = editor.errors.filter(e => e.itemId === currentValueSet?.id);
 
   React.useEffect(() => {
     const activeList = form.valueSets?.find(vs => vs.id === editor.activeList);
@@ -68,7 +72,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     onClose();
   }
 
-  const handleAddValueSetEntry = () => {
+  const addEntry = () => {
     if (currentValueSet) {
       const newEntry = {
         id: 'choice' + (currentValueSet.entries.length + 1),
@@ -79,7 +83,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     }
   }
 
-  const addGlobalList = () => {
+  const addNewList = () => {
     const newGvsIndex = form.metadata.composer?.globalValueSets?.length ?? 0;
     const newGvsName = 'untitled' + (newGvsIndex + 1);
     const newGvsId = generateValueSetId(form);
@@ -90,7 +94,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     }
   }
 
-  const downloadValueSet = () => {
+  const downloadList = () => {
     if (!currentValueSet) {
       return;
     }
@@ -108,70 +112,105 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     FileSaver.saveAs(blob, `valueSet-${currentValueSet.id}.csv`);
   }
 
+  const convertToLocalList = (valueSet: ValueSet, item: DialobItem) => {
+    const newId = generateValueSetId(form);
+    createValueSet(item?.id, valueSet?.entries);
+    updateItem(item?.id, 'valueSetId', newId);
+  }
+
+  const deleteList = () => {
+    if (currentValueSet) {
+      if (users) {
+        users.forEach(u => convertToLocalList(currentValueSet, u));
+      }
+      deleteGlobalValueSet(currentValueSet.id);
+      setCurrentValueSet(undefined);
+    }
+  }
+
+  const handleScroll = (item: DialobItem) => {
+    handleClose();
+    setAnchorEl(null);
+    setHighlightedItem(item);
+    scrollToItem(item.id, Object.values(form.data), editor.activePage, setActivePage);
+  }
+
   return (
     <>
       <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography variant='h5' fontWeight='bold'>Global lists</Typography>
+          <Typography fontWeight='bold'>Global lists</Typography>
           <Box flexGrow={1} />
-          <Typography sx={{ mr: 2 }}>Users: <b>{users ? users.length : 0}</b></Typography>
-          {users &&
-            <>
-              <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<Visibility />}>Show users</Button>
-              <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}>
-                <List>
-                  {users.map(i => (
-                    <ListItemButton key={i.id} sx={{ justifyContent: 'flex-start', color: 'text.primary' }}>{i.id}</ListItemButton>
-                  ))}
-                </List>
-              </Popover>
-            </>
-          }
-          <Button onClick={addGlobalList} endIcon={<Add />} sx={{ ml: 2 }}>Add new list</Button>
+          {globalValueSets && globalValueSets.length > 0 && <>
+            <Typography sx={{ mr: 2 }}>Users: <b>{users ? users.length : 0}</b></Typography>
+            {users &&
+              <>
+                <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<Visibility />}>Show users</Button>
+                <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}>
+                  <List>
+                    {users.map(i => (
+                      <ListItemButton key={i.id}
+                        sx={{ justifyContent: 'flex-start', color: 'text.primary' }}
+                        onClick={() => handleScroll(i)}
+                      >
+                        {i.id}
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Popover>
+              </>
+            }
+          </>}
+          <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}>Add new list</Button>
         </DialogTitle>
         <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0 }}>
           <Box sx={{ display: 'flex', height: '70vh', p: 3 }}>
-            <Stack sx={{ mr: 3 }}>
-              {globalValueSets?.map(gvs => {
-                const errorColor = getErrorColor(editor.errors, gvs.id);
-                return <Button key={gvs.id} variant={gvs.id === currentValueSet?.id ? 'contained' : 'outlined'} color={errorColor}
-                  onClick={() => setCurrentValueSet({ id: gvs.id, entries: gvs.entries })}>
-                  {gvs.label}
-                </Button>
-              })}
-            </Stack>
-            <Box sx={{ width: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <TextField value={name || ''} onChange={(e) => setName(e.target.value)} sx={{ width: '70%' }} />
-                <Button endIcon={<Delete />} color='error'>Delete list</Button>
-              </Box>
-              <TableContainer>
-                <StyledTable>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width='20%' align='center'>
-                        <IconButton onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
-                        <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                        <IconButton onClick={downloadValueSet}><Download /></IconButton>
-                      </TableCell>
-                      <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
-                      {formLanguages?.map(lang => (
-                        <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
-                          <Typography fontWeight='bold'>
-                            <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
-                          </Typography>
+            {globalValueSets && globalValueSets.length > 0 && <>
+              <Stack sx={{ mr: 3 }}>
+                {globalValueSets?.map(gvs => {
+                  const errorColor = getErrorColor(editor.errors, gvs.id);
+                  return <Button key={gvs.id} variant={gvs.id === currentValueSet?.id ? 'contained' : 'outlined'} color={errorColor}
+                    onClick={() => setCurrentValueSet({ id: gvs.id, entries: gvs.entries })}>
+                    {gvs.label}
+                  </Button>
+                })}
+              </Stack>
+              <Box sx={{ width: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <TextField value={name || ''} onChange={(e) => setName(e.target.value)} sx={{ width: '70%' }} />
+                  <Button endIcon={<Delete />} color='error' onClick={deleteList}>Delete list</Button>
+                </Box>
+                <TableContainer>
+                  <StyledTable>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell width='20%' align='center'>
+                          <IconButton onClick={addEntry}><Add color='success' /></IconButton>
+                          <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
+                          <IconButton onClick={downloadList}><Download /></IconButton>
                         </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
-                </StyledTable>
-              </TableContainer>
-            </Box>
+                        <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+                        {formLanguages?.map(lang => (
+                          <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+                            <Typography fontWeight='bold'>
+                              <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
+                            </Typography>
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
+                  </StyledTable>
+                </TableContainer>
+                {itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+                  <Typography><ErrorMessage error={error} /></Typography>
+                </Alert>)}
+              </Box>
+            </>}
           </Box>
         </DialogContent>
         <DialogActions>

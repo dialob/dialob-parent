@@ -22,6 +22,7 @@ export type ComposerAction =
   | { type: 'deleteValueSetentry', valueSetId: string, index: number}
   | { type: 'moveValueSetEntry', valueSetId: string, from: number, to: number}
   | { type: 'setGlobalValueSetName', valueSetId: string, name: string}
+  | { type: 'deleteGlobalValueSet', valueSetId: string}
   // | { type: 'updateValueSetEntryAttr', valueSetId: string, index: number, attr: string, value: any } // probably obsoleted by updateValueSetEntry
 
   | { type: 'setMetadataValue', attr: string, value: any}
