@@ -251,7 +251,6 @@ const TranslationDialog = (props) => {
     const csvResult = await parse(event.target.files[0]);
     const { data } = csvResult;
     if(validateParsedFileHeaders(data)){
-      // checking for missing itemID's inside the imported data
       const dataValidationResult = validateParsedFileData(data);
       setParsedImportData(data)
       setConfirmationModalOpen(true);
@@ -318,15 +317,9 @@ const TranslationDialog = (props) => {
     let allItems = props.form.get('data').toJS();
 
     function visitItem(item, pageId, parent) {
-      if (item.label) {
-        const key = `i:${item.id}:l`;
-        translations[key] = item.label;
-        metadata.key[key] = {description: 'Item label', richText: item.type === 'note', pageId: pageId, parent: `${parent.id} ${parent.type}`};
-      }else{
-        const key = `i:${item.id}:l`;
-        translations[key] = "";
-        metadata.key[key] = {description: 'Item label', richText: item.type === 'note', pageId: pageId, parent: `${parent.id} ${parent.type}`};
-      }
+      const key = `i:${item.id}:l`;
+      translations[key] = item.label || "";
+      metadata.key[key] = { description: 'Item label', richText: item.type === 'note', pageId: pageId, parent: `${parent.id} ${parent.type}`};
       if (item.description) {
         const key = `i:${item.id}:d`;
         translations[key] = item.description;
