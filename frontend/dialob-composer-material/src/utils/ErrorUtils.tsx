@@ -4,7 +4,7 @@ import { EditorError, ErrorSeverity } from "../editor";
 import { DialobItem } from "../dialob";
 import { Check, Info, Warning } from "@mui/icons-material";
 import { useIntl } from "react-intl";
-import { PreTextIcon } from "../views/tree/NavigationTreeItem";
+import { PreTextIcon } from "../components/tree/NavigationTreeItem";
 
 export const ErrorType: React.FC<{ error: EditorError }> = ({ error }) => {
   const intl = useIntl();
