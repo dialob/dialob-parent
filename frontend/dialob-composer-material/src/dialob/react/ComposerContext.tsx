@@ -11,7 +11,7 @@ const INITIAL_FORM: ComposerState = {
   metadata: {},
 };
 
-export const ComposerContext = React.createContext<{state: ComposerState, dispatch: Dispatch<ComposerAction>, callbacks?: ComposerCallbacks}>({
+export const ComposerContext = React.createContext<{ state: ComposerState, dispatch: Dispatch<ComposerAction>, callbacks?: ComposerCallbacks }>({
   state: INITIAL_FORM,
   dispatch: () => null,
   callbacks: {}
@@ -20,14 +20,14 @@ export const ComposerContext = React.createContext<{state: ComposerState, dispat
 export interface ComposerProviderProps {
   children: React.ReactNode;
   formData: ComposerState;
-  callbacks ?: ComposerCallbacks;
+  callbacks?: ComposerCallbacks;
 }
 
-export const ComposerProvider: React.FC<ComposerProviderProps> = ({children, formData, callbacks}) => {
+export const ComposerProvider: React.FC<ComposerProviderProps> = ({ children, formData, callbacks }) => {
   const [state, dispatch] = useReducer(formReducer, formData);
 
   return (
-    <ComposerContext.Provider value={{state, dispatch, callbacks}}>
+    <ComposerContext.Provider value={{ state, dispatch, callbacks }}>
       {children}
     </ComposerContext.Provider>
   );

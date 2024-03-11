@@ -6,6 +6,7 @@ import PropertiesEditor from "./PropertiesEditor";
 import DefaultValueEditor from "./DefaultValueEditor";
 import ValidationRuleEditor from "./ValidationRuleEditor";
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Editors {
   export const Label = LabelEditor;
   export const Description = DescriptionEditor;

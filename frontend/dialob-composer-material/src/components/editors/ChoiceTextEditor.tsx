@@ -25,6 +25,7 @@ const ChoiceTextEditor: React.FC<{
       }, 1000);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localizedString]);
 
   const handleAdd = (language: string) => {

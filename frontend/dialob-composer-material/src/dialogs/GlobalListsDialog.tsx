@@ -1,7 +1,5 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Papa from 'papaparse';
-import FileSaver from 'file-saver';
 import { Add, Close, Delete, Download, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
   Alert,
@@ -15,8 +13,10 @@ import { StyledTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
-import { ErrorMessage, getErrorColor } from '../utils/ErrorUtils';
+import { getErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
+import { downloadValueSet } from '../utils/ParseUtils';
+import { ErrorMessage } from '../components/ErrorComponents';
 
 interface GlobalValueSet {
   id: string;
@@ -42,12 +42,13 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     if (activeList) {
       setCurrentValueSet(activeList);
     }
-  }, [editor.activeList]);
+  }, [editor.activeList, form.valueSets]);
 
   React.useEffect(() => {
     const gvs = form.metadata.composer?.globalValueSets;
     const valueSets = form.valueSets;
     const mappedGvs = gvs?.map(gvs => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
       return { ...found, label: gvs.label }
     });
@@ -56,7 +57,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       setCurrentValueSet(mappedGvs?.[0]);
     }
     setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
-  }, [form.metadata.composer?.globalValueSets, currentValueSet]);
+  }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets]);
 
   React.useEffect(() => {
     if (currentValueSet && name) {
@@ -65,6 +66,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       }, 1000);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name])
 
   const handleClose = () => {
@@ -92,24 +94,6 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       setGlobalValueSetName(newGvsId, newGvsName);
       setCurrentValueSet({ id: newGvsId, entries: [] });
     }
-  }
-
-  const downloadList = () => {
-    if (!currentValueSet) {
-      return;
-    }
-    const entries = currentValueSet?.entries;
-    const result: { [key: string]: any }[] = [];
-    entries.forEach(e => {
-      let entry: { [key: string]: any } = { ID: e.id };
-      for (const lang in e.label) {
-        entry[lang] = e.label[lang];
-      }
-      result.push(entry);
-    });
-    const csv = Papa.unparse(result);
-    const blob = new Blob([csv], { type: 'text/csv' });
-    FileSaver.saveAs(blob, `valueSet-${currentValueSet.id}.csv`);
   }
 
   const convertToLocalList = (valueSet: ValueSet, item: DialobItem) => {
@@ -191,7 +175,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                         <TableCell width='20%' align='center'>
                           <IconButton onClick={addEntry}><Add color='success' /></IconButton>
                           <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                          <IconButton onClick={downloadList}><Download /></IconButton>
+                          <IconButton onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
                         </TableCell>
                         <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
                         {formLanguages?.map(lang => (

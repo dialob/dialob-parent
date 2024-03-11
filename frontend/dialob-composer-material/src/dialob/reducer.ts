@@ -7,8 +7,8 @@ export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): 
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
   const matcher = `^(${prefix})(\\d*)$`;
   const existing = idList.filter(id => {
-      const r = RegExp(matcher);
-      return r.test(id);
+    const r = RegExp(matcher);
+    return r.test(id);
   });
   let idx = 1;
   while (existing.findIndex(v => v === `${prefix}${idx}`) > -1) {
@@ -30,13 +30,13 @@ export const generateValueSetId = (state: ComposerState, prefix = 'vs'): string 
   return `${prefix}${idx}`;
 }
 
-const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks ?: ComposerCallbacks): void => {
+const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks): void => {
   const id = generateItemId(state, itemTemplate);
   const newItem = {
     ...itemTemplate,
     id: generateItemId(state, itemTemplate),
   }
-  state.data[id] = Object.assign(newItem, {id});
+  state.data[id] = Object.assign(newItem, { id });
   // TODO: Sanity check if parentItemId exists in form
   const newIndex = state.data[parentItemId].items?.findIndex(i => i === afterItemId);
   if (newIndex === undefined) {
@@ -53,13 +53,14 @@ const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentI
   }
 }
 
-const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any, language ?: string, ): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any, language?: string,): void => {
   // TODO: Sanity: item exists
   // TODO: Sanity: language exists in form level
   // TODO: Sanity: attribute is not an id or type
   if (language) {
     if (state.data[itemId][attribute] === undefined) {
-      state.data[itemId][attribute] = {[language]: value};
+      state.data[itemId][attribute] = { [language]: value };
     } else {
       state.data[itemId][attribute][language] = value;
     }
@@ -72,7 +73,7 @@ const updateLocalizedString = (state: ComposerState, itemId: string, attribute: 
   const item = state.data[itemId];
   if (item && (attribute === 'label' || attribute === 'description')) {
     item[attribute] = value;
-  } else if (attribute === 'validations' && index !== undefined){
+  } else if (attribute === 'validations' && index !== undefined) {
     const validations = state.data[itemId].validations;
     if (validations) {
       const rule = validations[index];
@@ -108,7 +109,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   // TODO: Sanity: item exists
 
   // Collect item and children to delete
-  const collect = (target:string):string[] => {
+  const collect = (target: string): string[] => {
     const subItems = state.data[target].items;
     if (subItems) {
       return [target].concat(subItems.reduce((l, i) => l.concat(collect(i)), [] as string[]));
@@ -123,7 +124,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   const valueSets = toDelete.map(iid => state.data[iid].valueSetId)
     .filter(vsId => vsId)
     .filter(vsId => globalValueSets.findIndex(gvs => gvs.valueSetId === vsId) === -1)
-    
+
   // Delete items
   toDelete.forEach(itemId => {
     delete state.data[itemId];
@@ -138,6 +139,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   });
 
   // Delete parent ref
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [parentItemId, item] of Object.entries(state.data)) {
     const itemIndex = item.items ? item.items.findIndex(i => i === itemId) : -1;
     if (itemIndex > -1 && item.items) {
@@ -147,14 +149,15 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setItemProp = (state: ComposerState, itemId: string, key: string, value: any): void => {
   // TODO: Sanity: item exists
   if (state.data[itemId].props === undefined) {
-    state.data[itemId].props = {[key]: value};
+    state.data[itemId].props = { [key]: value };
   } else {
     const props = state.data[itemId].props;
     if (props !== undefined) {
-     props[key] = value;
+      props[key] = value;
     }
   }
 }
@@ -171,8 +174,8 @@ const deleteItemProp = (state: ComposerState, itemId: string, key: string): void
   }
 }
 
-const createValidation = (state: ComposerState, itemId: string, rule ?: ValidationRule): void => {
-  const emptyRule: ValidationRule = {message: {}, rule: ''};
+const createValidation = (state: ComposerState, itemId: string, rule?: ValidationRule): void => {
+  const emptyRule: ValidationRule = { message: {}, rule: '' };
 
   // TODO: Sanity: item exists
   if (state.data[itemId].validations === undefined) {
@@ -190,7 +193,7 @@ const setValidationMessage = (state: ComposerState, itemId: string, index: numbe
       return;
     }
     if (!rule.message) {
-      rule.message = {[language]: message};
+      rule.message = { [language]: message };
     } else {
       rule.message[language] = message;
     }
@@ -204,7 +207,7 @@ const setValidationExpression = (state: ComposerState, itemId: string, index: nu
     if (!rule) {
       return;
     }
-   rule.rule = expression;
+    rule.rule = expression;
   }
 }
 
@@ -215,11 +218,11 @@ const deleteValidation = (state: ComposerState, itemId: string, index: number): 
     if (!rule) {
       return;
     }
-   validations.splice(index, 1);
+    validations.splice(index, 1);
   }
 }
 
-const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent:string): void => {
+const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string): void => {
   // TODO: Sanity: item exists
   // TODO: Ergonomics: fromParent and fromIndex can be computed by itemId and not needed in function parameters
   state.data[fromParent]?.items?.splice(fromIndex, 1);
@@ -230,7 +233,7 @@ const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toInd
   }
 }
 
-const createValueSet = (state: ComposerState, itemId: string | null,  entries?: ValueSetEntry[]): void => {
+const createValueSet = (state: ComposerState, itemId: string | null, entries?: ValueSetEntry[]): void => {
   // TODO: Sanity: item exists if not null
 
   const valueSetId = generateValueSetId(state, 'vs');
@@ -256,7 +259,7 @@ const createValueSet = (state: ComposerState, itemId: string | null,  entries?: 
     if (!state.metadata.composer.globalValueSets) {
       state.metadata.composer.globalValueSets = [];
     }
-    state.metadata.composer.globalValueSets.push({valueSetId, label: ''})
+    state.metadata.composer.globalValueSets.push({ valueSetId, label: '' })
   }
 }
 
@@ -267,7 +270,7 @@ const setValueSetEntries = (state: ComposerState, valueSetId: string, entries: V
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
       state.valueSets[vsIdx].entries = entries;
-    } 
+    }
   }
 }
 
@@ -336,6 +339,7 @@ const deleteGlobalValueSet = (state: ComposerState, valueSetId: string): void =>
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setMetadataValue = (state: ComposerState, attr: string, value: any): void => {
   // TODO: Sanity: Prevent overwriting certain critical attributes
 
@@ -353,7 +357,7 @@ const createVariable = (state: ComposerState, context: boolean): void => {
     name: variableId,
     expression: ''
   };
-  
+
   if (!Array.isArray(state.variables)) {
     state.variables = [variable];
   } else {
@@ -361,7 +365,8 @@ const createVariable = (state: ComposerState, context: boolean): void => {
   }
 }
 
-const updateContextVariable = (state: ComposerState, variableId: string, contextType ?: ContextVariableType, defaultValue ?: any): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType, defaultValue?: any): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => isContextVariable(v) && v.name === variableId);
     if (varIdx > -1) {
@@ -398,10 +403,11 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
     // Already exists, NO-OP
     return;
   }
-  
+
   // Copy language
   if (copyFrom && copyFrom !== language) {
     // Items
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [itemId, item] of Object.entries(state.data)) {
       // Item label
       if (item.label) {
@@ -441,6 +447,7 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
 }
 
 const deleteLanguage = (state: ComposerState, language: string): void => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [itemId, item] of Object.entries(state.data)) {
     if (item.label) {
       delete item.label[language];
@@ -462,7 +469,7 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
       vs.entries.forEach(vse => {
         if (vse.label[language]) {
           delete vse.label[language];
-        }        
+        }
       });
     });
   }
@@ -475,7 +482,7 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
   }
 }
 
-export const formReducer = (state: ComposerState, action: ComposerAction, callbacks ?: ComposerCallbacks): ComposerState => {
+export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
   const newState = produce(state, state => {
     if (action.type === 'addItem') {
       addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);

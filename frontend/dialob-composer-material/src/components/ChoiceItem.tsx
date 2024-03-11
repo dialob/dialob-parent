@@ -48,6 +48,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
       onUpdateId(entry, idValue);
     }, 1000);
     return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idValue]);
 
   React.useEffect(() => {
@@ -57,6 +58,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
       }, 1000);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rule]);
 
 

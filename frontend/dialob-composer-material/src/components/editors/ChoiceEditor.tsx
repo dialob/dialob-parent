@@ -1,7 +1,5 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Papa from 'papaparse';
-import FileSaver from 'file-saver';
 import { Add, Download, Edit, KeyboardArrowDown, Refresh, Upload, Warning } from '@mui/icons-material';
 import { Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem, Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEditor } from '../../editor';
@@ -12,7 +10,8 @@ import ChoiceList from '../ChoiceList';
 import ConvertConfirmationDialog from '../../dialogs/ConvertConfirmationDialog';
 import UploadValuesetDialog from '../../dialogs/UploadValuesetDialog';
 import GlobalList from '../GlobalList';
-import { ErrorMessage } from '../../utils/ErrorUtils';
+import { downloadValueSet } from '../../utils/ParseUtils';
+import { ErrorMessage } from '../ErrorComponents';
 
 
 const ChoiceEditor: React.FC = () => {
@@ -94,24 +93,6 @@ const ChoiceEditor: React.FC = () => {
     }
   }
 
-  const downloadValueSet = () => {
-    if (!currentValueSet) {
-      return;
-    }
-    const entries = currentValueSet?.entries;
-    const result: { [key: string]: any }[] = [];
-    entries.forEach(e => {
-      let entry: { [key: string]: any } = { ID: e.id };
-      for (const lang in e.label) {
-        entry[lang] = e.label[lang];
-      }
-      result.push(entry);
-    });
-    const csv = Papa.unparse(result);
-    const blob = new Blob([csv], { type: 'text/csv' });
-    FileSaver.saveAs(blob, `valueSet-${currentValueSet.id}.csv`);
-  }
-
   const editGlobalList = (listId?: string) => {
     setActiveItem(undefined);
     setItemOptionsActiveTab(undefined);
@@ -179,7 +160,7 @@ const ChoiceEditor: React.FC = () => {
                 <TableCell width='20%' align='center'>
                   <IconButton onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
                   <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                  <IconButton onClick={downloadValueSet}><Download /></IconButton>
+                  <IconButton onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
                 </TableCell>
                 <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
                 {formLanguages?.map(lang => (

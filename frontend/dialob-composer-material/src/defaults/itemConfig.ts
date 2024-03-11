@@ -9,6 +9,7 @@ interface ItemConfig {
   defaultIcon: React.ComponentType<SvgIconProps>,
   items: {
     matcher: (item: DialobItem) => boolean,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     component: React.FC<{ item: DialobItem, props?: any }>,
     props: {
       icon: React.ComponentType<SvgIconProps>,

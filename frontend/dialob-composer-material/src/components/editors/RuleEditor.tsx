@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Typography, Box, Alert } from '@mui/material';
+import { Typography, Box, Alert } from '@mui/material';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Help, Warning } from '@mui/icons-material';
+import { Warning } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 
@@ -19,7 +19,7 @@ const resolveRulePropName = (ruleType: RuleType): string => {
 
 const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const { updateItem } = useComposer();
-  const { editor } = useEditor();
+  const { editor, setActiveItem } = useEditor();
   const intl = useIntl();
   const item = editor.activeItem;
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
@@ -29,7 +29,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     if (item) {
       setRuleCode(item[resolveRulePropName(type)]);
     }
-  }, [item]);
+  }, [item, type]);
 
   React.useEffect(() => {
     // 3 seconds after every code change, check if rule is valid and set error message
@@ -48,15 +48,17 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     } else {
       setErrors([]);
     }
-  }, [ruleCode]);
+  }, [ruleCode, intl]);
 
   React.useEffect(() => {
     if (item && ruleCode) {
       const id = setTimeout(() => {
         updateItem(item.id, resolveRulePropName(type), ruleCode);
+        setActiveItem({ ...item, [resolveRulePropName(type)]: ruleCode });
       }, 300);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ruleCode]);
 
   if (!item) {

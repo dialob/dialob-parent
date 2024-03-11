@@ -1,6 +1,9 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab, DialogActions, Tooltip, styled, TextField, IconButton } from '@mui/material';
+import {
+  Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab,
+  DialogActions, Tooltip, styled, TextField, IconButton
+} from '@mui/material';
 import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
@@ -47,7 +50,7 @@ const ItemOptionsDialog: React.FC = () => {
       setActiveTab('label');
     }
     setId(item?.id || '');
-  }, [editor.itemOptionsActiveTab, open]);
+  }, [editor.itemOptionsActiveTab, open, item?.id]);
 
   if (!item) {
     return null;

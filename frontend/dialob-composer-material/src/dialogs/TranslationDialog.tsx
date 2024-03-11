@@ -1,13 +1,8 @@
 import React from "react";
-import { useEditor } from "../editor";
-import { useComposer } from "../dialob";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
-  const { editor } = useEditor();
-  const { form, addLanguage, deleteLanguage, updateItem, updateValueSetEntry, setValidationMessage } = useComposer();
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='xl'>
       <DialogTitle>

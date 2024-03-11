@@ -4,7 +4,7 @@ import { Upload, Warning } from "@mui/icons-material";
 import { DialogActionButtons } from "./DialogComponents";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
-import { parse } from "../utils/TranslationUtils";
+import { parseCsvFile } from "../utils/ParseUtils";
 
 type UploadMode = 'replace' | 'append' | 'update';
 const UPLOAD_MODES: UploadMode[] = ['replace', 'append', 'update'];
@@ -47,7 +47,7 @@ const UploadValuesetDialog: React.FC<{
     setLoading(true);
     setError(null);
 
-    const csvResult = await parse(selectedFile);
+    const csvResult = await parseCsvFile(selectedFile);
     if (!csvResult.meta.fields) {
       setError('Invalid CSV format');
       setLoading(false);
@@ -64,7 +64,7 @@ const UploadValuesetDialog: React.FC<{
       setError('Invalid CSV format');
     } else {
       const newEntries: ValueSetEntry[] = csvResult.data.map(d => {
-        let label: LocalizedString = {};
+        const label: LocalizedString = {};
         csvResult.meta.fields?.filter(f => f !== 'ID').forEach(f => {
           label[f] = d[f];
         });

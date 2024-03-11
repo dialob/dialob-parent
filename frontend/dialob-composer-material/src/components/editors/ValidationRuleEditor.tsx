@@ -29,10 +29,10 @@ const ValidationRuleEditor: React.FC = () => {
       validationRules.push({ index, validationRule: rule })
     });
     setRules(validationRules);
-    console.log('activeRule', validationRules, Object.values(activeRule?.validationRule || {}));
-    if (activeRule === undefined) {
+    if (activeRule === undefined || !validationRules.some((r) => r.index === activeRule.index)) {
       setActiveRule(validationRules.length > 0 ? validationRules[0] : undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
 
@@ -53,7 +53,7 @@ const ValidationRuleEditor: React.FC = () => {
     } else {
       setErrors([]);
     }
-  }, [activeRule]);
+  }, [activeRule, intl]);
 
   React.useEffect(() => {
     if (item && activeRule && activeRule.validationRule.rule) {
@@ -66,6 +66,7 @@ const ValidationRuleEditor: React.FC = () => {
       }, 300);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRule?.validationRule.rule]);
 
   if (!item) {
@@ -102,9 +103,6 @@ const ValidationRuleEditor: React.FC = () => {
       newRules[activeRule.index] = newRule;
       setRules(newRules);
       setActiveRule({ ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } });
-      /* const validations: ValidationRule[] = item.validations || [];
-      validations[activeRule.index] = newRule.validationRule;
-      setActiveItem({ ...item, validations: validations }); */
     }
   }
 

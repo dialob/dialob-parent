@@ -103,8 +103,8 @@ const en = {
 
   'dialogs.upload.valueset.title': 'Upload value set',
   'dialogs.upload.valueset.file': 'Choose file',
-  'dialogs.upload.valueset.replace': 'Replace', 
-  'dialogs.upload.valueset.replace.desc': 'Replaces all valueset entries with values from file', 
+  'dialogs.upload.valueset.replace': 'Replace',
+  'dialogs.upload.valueset.replace.desc': 'Replaces all valueset entries with values from file',
   'dialogs.upload.valueset.append': 'Append',
   'dialogs.upload.valueset.append.desc': 'Appends values from file to existing valueset entries',
   'dialogs.upload.valueset.update': 'Update',
