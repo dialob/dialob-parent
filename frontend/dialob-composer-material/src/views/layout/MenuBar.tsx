@@ -7,6 +7,7 @@ import { getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
 import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
+import TranslationDialog from '../../dialogs/TranslationDialog';
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -51,6 +52,7 @@ const MenuBar: React.FC = () => {
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
+  const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const languageMenuOpen = Boolean(anchorEl);
 
@@ -66,6 +68,7 @@ const MenuBar: React.FC = () => {
   return (
     <>
       <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
+      <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
@@ -76,7 +79,7 @@ const MenuBar: React.FC = () => {
               {form.metadata.label}
             </Typography>
           </Box>
-          <HeaderButton label='translations' />
+          <HeaderButton label='translations' onClick={() => setTranslationsDialogOpen(true)} />
           <HeaderButton label='variables' />
           <HeaderButton label='lists' onClick={() => setListsDialogOpen(true)} />
           <HeaderButton label='options' />

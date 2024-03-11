@@ -1,10 +1,10 @@
 import React from "react";
-import Papa from "papaparse";
 import { Dialog, DialogTitle, DialogContent, Button, CircularProgress, Typography, Select, MenuItem, Alert } from "@mui/material";
 import { Upload, Warning } from "@mui/icons-material";
 import { DialogActionButtons } from "./DialogComponents";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
+import { parse } from "../utils/TranslationUtils";
 
 type UploadMode = 'replace' | 'append' | 'update';
 const UPLOAD_MODES: UploadMode[] = ['replace', 'append', 'update'];
@@ -38,23 +38,6 @@ const UploadValuesetDialog: React.FC<{
     setUploadMode('replace');
     onClose();
   }
-
-  const parse = (inputFile: File): Promise<Papa.ParseResult<any>> => {
-    return new Promise((resolve, reject) => {
-      Papa.parse(inputFile, {
-        header: true,
-        transformHeader: h => h.trim(),
-        skipEmptyLines: true,
-        error: (error) => {
-          console.error('CSV Parse error', error);
-          reject(error);
-        },
-        complete: (results: Papa.ParseResult<any>) => {
-          resolve(results);
-        }
-      });
-    });
-  };
 
   const handleUpload = async () => {
     if (!selectedFile) {
