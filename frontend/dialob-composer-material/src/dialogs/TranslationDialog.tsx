@@ -24,7 +24,7 @@ const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.languages.title' />}><Translate /></Tooltip>} value='languages' />
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.missing.title' />}><Warning /></Tooltip>} value='missing' />
         </Tabs>
-        <Box sx={{ p: 2, width: 1 }}>
+        <Box sx={{ p: 3, width: 1 }}>
           {activeTab === 'files' && <Translations.Files />}
           {activeTab === 'languages' && <Translations.Languages />}
           {activeTab === 'missing' && <Translations.Missing />}

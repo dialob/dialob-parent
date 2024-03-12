@@ -126,9 +126,11 @@ const en = {
   'dialogs.translations.languages.title': 'Manage languages',
   'dialogs.translations.languages.add': 'Add language',
   'dialogs.translations.languages.add.desc': 'Add a new empty language to the translations',
+  'dialogs.translations.languages.language': 'Language',
   'dialogs.translations.languages.delete': 'Delete',
-  'dialogs.translations.languages.copy': 'Copy',
-  'dialogs.translations.languages.copy.desc': 'Copy translations from this language into a new one',
+  'dialogs.translations.languages.delete.confirm.title': 'Delete language',
+  'dialogs.translations.languages.delete.confirm.desc': `Are you sure you want to delete "{lang}" and all of its translations?`,
+  'dialogs.translations.languages.copy': 'Copy as new',
   'dialogs.translations.languages.active': 'Active',
   'dialogs.translations.missing.title': 'Missing translations',
 

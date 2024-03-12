@@ -1,11 +1,91 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Button, Table, TableContainer, TableHead, TableRow, TableCell, Paper, styled, Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton } from '@mui/material';
+import { FormattedMessage } from 'react-intl';
+import { Add, ContentCopy, Delete } from '@mui/icons-material';
+import { useComposer } from '../../dialob';
+import { useEditor } from '../../editor';
+import { DEFAULT_LANGUAGE_CONFIG } from '../../defaults';
+import LanguageDeleteConfirmation from './LanguageDeleteConfirmation';
+
+export const StyledTable = styled(Table)(({ theme }) => ({
+  '& .MuiTableCell-root': {
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(1),
+  },
+}));
 
 const LanguageEditor: React.FC = () => {
+  const { form, addLanguage } = useComposer();
+  const { editor, setActiveFormLanguage } = useEditor();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [copyFrom, setCopyFrom] = React.useState<string | undefined>();
+  const [deleteLanguage, setDeleteLanguage] = React.useState<string | undefined>();
+  const currentLanguages = form.metadata.languages || [];
+  const newLanguages = DEFAULT_LANGUAGE_CONFIG.filter(lang => !currentLanguages.includes(lang.code));
+
+  const handleAddLanguage = (code: string) => {
+    setAnchorEl(null);
+    addLanguage(code, copyFrom);
+  }
+
+  const handleCopyLanguage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, code: string) => {
+    setAnchorEl(e.currentTarget);
+    setCopyFrom(code);
+  }
+
   return (
-    <Box>
-      LanguageEditor
-    </Box>
+    <>
+      <LanguageDeleteConfirmation language={deleteLanguage} onClose={() => setDeleteLanguage(undefined)} />
+      <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
+        horizontal: 'left',
+        vertical: 'bottom',
+      }}>
+        <List>
+          {newLanguages.map(lang => (
+            <ListItemButton key={lang.code} onClick={() => handleAddLanguage(lang.code)}>
+              <FormattedMessage id={`locales.${lang.code}`} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Popover>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Tooltip title={<FormattedMessage id='dialogs.translations.languages.add.desc' />}>
+          <Button id='empty' endIcon={<Add />} onClick={(e) => setAnchorEl(e.currentTarget)}>
+            <FormattedMessage id='dialogs.translations.languages.add' />
+          </Button>
+        </Tooltip>
+      </Box>
+      <TableContainer sx={{ mt: 2 }}>
+        <StyledTable>
+          <TableHead>
+            <TableRow>
+              <TableCell width='70%' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.language' /></TableCell>
+              <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.copy' /></TableCell>
+              <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.delete' /></TableCell>
+              <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.active' /></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {currentLanguages.map(lang => (
+              <TableRow key={lang}>
+                <TableCell width='70%'><FormattedMessage id={`locales.${lang}`} /></TableCell>
+                <TableCell align='center'>
+                  <IconButton id='copy' onClick={(e) => handleCopyLanguage(e, lang)}><ContentCopy /></IconButton>
+                </TableCell>
+                <TableCell align='center'>
+                  <IconButton onClick={() => setDeleteLanguage(lang)} disabled={lang === editor.activeFormLanguage}>
+                    <Delete color={lang === editor.activeFormLanguage ? 'inherit' : 'error'} />
+                  </IconButton>
+                </TableCell>
+                <TableCell align='center'>
+                  <Switch checked={editor.activeFormLanguage === lang} onChange={() => setActiveFormLanguage(lang)} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </StyledTable>
+      </TableContainer>
+    </>
   );
 };
 
