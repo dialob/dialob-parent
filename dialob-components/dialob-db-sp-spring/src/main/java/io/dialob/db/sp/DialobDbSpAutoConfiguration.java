@@ -69,6 +69,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * NB! Conditional property prefixes and names should follow canonical naming, 
+ * see https://github.com/spring-projects/spring-boot/wiki/Canonical-properties
+ * to enable these properties configuration through environment variables.
+ */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(DialobSettings.class)
 @Import(DatabaseExceptionMapper.class)
