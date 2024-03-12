@@ -16,6 +16,8 @@
 package io.dialob.groovy;
 
 import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.settings.DialobSettings;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +29,10 @@ import java.util.List;
 public class DialobGroovyFunctionsAutoConfiguration {
 
   @Bean
-  public GroovyFunctionRegistry groovyFunctionRegistry(ApplicationContext applicationContext, FunctionRegistry functionRegistry) {
+  public GroovyFunctionRegistry groovyFunctionRegistry(ApplicationContext applicationContext, FunctionRegistry functionRegistry, DialobSettings dialobSettings) {
     GroovyFunctionRegistry groovyFunctionRegistry = new GroovyFunctionRegistry(applicationContext, functionRegistry);
     List<String> functions = new ArrayList<>();
-    functions.add("classpath:/scripts/FoaasService.groovy");
+    functions.addAll(dialobSettings.getFunction().getGroovy().getLocations());
     groovyFunctionRegistry.setGroovyFunctions(functions);
     return groovyFunctionRegistry;
   }
