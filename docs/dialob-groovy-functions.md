@@ -48,7 +48,7 @@ Same should be done for both dialob and session services.
 
 ## Building functions into docker image
 
-To publish functions along with dialob functions and configuration can be added to layer on top of dialob image, thus avoiding need to provide functions separately.
+To publish functions along with dialob image the function files can be added to layer on top of dialob image, thus avoiding need to provide functions separately.
 
 E.g. create following Docker build file `Dockerfile`:
 
