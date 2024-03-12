@@ -64,6 +64,8 @@ public class DialobSettings {
   private GcpSettings gcp = new GcpSettings();
 
   Map<String, Tags> tags = new HashMap<>();
+  
+  private FunctionSettings function = new FunctionSettings();
 
   @Data
   public static class DialobAssetsSettings {
