@@ -32,8 +32,7 @@ public class DialobGroovyFunctionsAutoConfiguration {
   public GroovyFunctionRegistry groovyFunctionRegistry(ApplicationContext applicationContext, FunctionRegistry functionRegistry, DialobSettings dialobSettings) {
     GroovyFunctionRegistry groovyFunctionRegistry = new GroovyFunctionRegistry(applicationContext, functionRegistry);
     List<String> functions = new ArrayList<>();
-    functions.add("classpath:/scripts/FoaasService.groovy");
-    functions.addAll(dialobSettings.getFunction().getGroovy().getPath());
+    functions.addAll(dialobSettings.getFunction().getGroovy().getLocations());
     groovyFunctionRegistry.setGroovyFunctions(functions);
     return groovyFunctionRegistry;
   }

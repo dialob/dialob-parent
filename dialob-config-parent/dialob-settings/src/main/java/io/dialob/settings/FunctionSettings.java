@@ -27,6 +27,6 @@ public class FunctionSettings {
   
   @Data
   public static class GroovyFunctionSettings {
-    private List<String> path = new ArrayList<>();
+    private List<String> locations = new ArrayList<>();
   }
 }
