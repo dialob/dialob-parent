@@ -9,4 +9,4 @@ const LanguageEditor: React.FC = () => {
   );
 };
 
-export default LanguageEditor;
+export { LanguageEditor };

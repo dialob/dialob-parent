@@ -9,4 +9,4 @@ const MissingTranslations: React.FC = () => {
   );
 };
 
-export default MissingTranslations;
+export { MissingTranslations };

@@ -37,4 +37,4 @@ const DefaultValueEditor: React.FC = () => {
   );
 }
 
-export default DefaultValueEditor;
+export { DefaultValueEditor };

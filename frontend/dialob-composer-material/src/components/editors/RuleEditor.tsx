@@ -78,4 +78,4 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   );
 };
 
-export default RuleEditor;
+export { RuleEditor };

@@ -6,7 +6,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { useEditor } from '../../editor';
 import { ValidationRule, useComposer } from '../../dialob';
-import LocalizedStringEditor from './LocalizedStringEditor';
+import { LocalizedStringEditor } from './LocalizedStringEditor';
 
 
 export interface IndexedRule {
@@ -142,4 +142,4 @@ const ValidationRuleEditor: React.FC = () => {
   );
 }
 
-export default ValidationRuleEditor;
+export { ValidationRuleEditor };

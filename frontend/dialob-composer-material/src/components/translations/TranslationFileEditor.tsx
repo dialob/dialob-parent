@@ -9,4 +9,4 @@ const TranslationFileEditor: React.FC = () => {
   );
 };
 
-export default TranslationFileEditor;
+export { TranslationFileEditor };

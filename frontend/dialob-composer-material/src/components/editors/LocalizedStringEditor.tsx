@@ -98,4 +98,4 @@ const LocalizedStringEditor: React.FC<{
   );
 }
 
-export default LocalizedStringEditor;
+export { LocalizedStringEditor };

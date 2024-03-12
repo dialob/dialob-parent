@@ -79,4 +79,4 @@ const PropertiesEditor: React.FC = () => {
   );
 }
 
-export default PropertiesEditor;
+export { PropertiesEditor };

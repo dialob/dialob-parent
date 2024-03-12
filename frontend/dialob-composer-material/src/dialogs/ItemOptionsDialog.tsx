@@ -100,7 +100,7 @@ const ItemOptionsDialog: React.FC = () => {
             {activeTab === 'description' && <Editors.Description />}
             {activeTab === 'rules' && <Editors.Rules />}
             {activeTab === 'validations' && <Editors.Validations />}
-            {activeTab === 'defaults' && <Editors.DefaultValue />}
+            {activeTab === 'defaults' && <Editors.Defaults />}
             {activeTab === 'choices' && <Editors.Choice />}
             {activeTab === 'properties' && <Editors.Properties />}
           </Box>

@@ -72,4 +72,4 @@ const ChoiceTextEditor: React.FC<{
   );
 }
 
-export default ChoiceTextEditor;
+export { ChoiceTextEditor };

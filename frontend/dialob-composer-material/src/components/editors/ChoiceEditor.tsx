@@ -205,4 +205,4 @@ const ChoiceEditor: React.FC = () => {
   );
 }
 
-export default ChoiceEditor;
+export { ChoiceEditor };

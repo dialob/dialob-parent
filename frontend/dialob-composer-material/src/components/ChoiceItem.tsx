@@ -7,7 +7,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { LocalizedString, ValueSetEntry, useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
-import ChoiceTextEditor from "./editors/ChoiceTextEditor";
+import Editors from "./editors";
 
 
 export interface ChoiceItemProps {
@@ -96,7 +96,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
                   <CodeMirror value={rule || ''} onChange={(value) => setRule(value)} extensions={[javascript({ jsx: true })]} />
                 </Box>}
                 <Box sx={{ mt: 2 }}>
-                  <ChoiceTextEditor entry={entry} onUpdate={onTextEdit} />
+                  <Editors.ChoiceText entry={entry} onUpdate={onTextEdit} />
                 </Box>
               </Box>
             </TableCell>
