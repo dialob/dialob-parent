@@ -1,5 +1,8 @@
 import React from 'react';
-import { Box, Button, Table, TableContainer, TableHead, TableRow, TableCell, Paper, styled, Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton } from '@mui/material';
+import {
+  Box, Button, Table, TableContainer, TableHead, TableRow, TableCell, styled,
+  Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton
+} from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Add, ContentCopy, Delete } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
@@ -7,7 +10,7 @@ import { useEditor } from '../../editor';
 import { DEFAULT_LANGUAGE_CONFIG } from '../../defaults';
 import LanguageDeleteConfirmation from './LanguageDeleteConfirmation';
 
-export const StyledTable = styled(Table)(({ theme }) => ({
+export const LanguagesTable = styled(Table)(({ theme }) => ({
   '& .MuiTableCell-root': {
     border: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(1),
@@ -56,7 +59,7 @@ const LanguageEditor: React.FC = () => {
         </Tooltip>
       </Box>
       <TableContainer sx={{ mt: 2 }}>
-        <StyledTable>
+        <LanguagesTable>
           <TableHead>
             <TableRow>
               <TableCell width='70%' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.language' /></TableCell>
@@ -83,7 +86,7 @@ const LanguageEditor: React.FC = () => {
               </TableRow>
             ))}
           </TableBody>
-        </StyledTable>
+        </LanguagesTable>
       </TableContainer>
     </>
   );

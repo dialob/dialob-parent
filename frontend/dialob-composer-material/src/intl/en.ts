@@ -133,6 +133,7 @@ const en = {
   'dialogs.translations.languages.copy': 'Copy as new',
   'dialogs.translations.languages.active': 'Active',
   'dialogs.translations.missing.title': 'Missing translations',
+  'dialogs.translations.missing.none': 'No missing translations',
 
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
