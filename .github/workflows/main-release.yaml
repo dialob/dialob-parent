@@ -46,4 +46,6 @@ jobs:
         GITHUB_REF_NAME: ${{ env.GITHUB_REF_NAME }}
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
         GPG_KEY_ID: ${{ secrets.DIALOB_GPG_KEY_ID }}
-        GPG_PASSPHRASE:  ${{ secrets.DIALOB_GPG_SEC }}
+        GPG_PASSPHRASE: ${{ secrets.DIALOB_GPG_SEC }}
+        OSSRH_USER: ${{ secrets.OSSRH_USER }}
+        OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
