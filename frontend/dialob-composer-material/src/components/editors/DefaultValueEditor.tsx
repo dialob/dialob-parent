@@ -1,14 +1,18 @@
 import { Box, TextField, Typography } from "@mui/material";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { useEditor } from "../editor";
-import { useComposer } from "../dialob";
+import { useEditor } from "../../editor";
+import { useComposer } from "../../dialob";
 
 const DefaultValueEditor: React.FC = () => {
   const { editor } = useEditor();
   const { updateItem } = useComposer();
   const item = editor.activeItem;
   const [defaultValue, setDefaultValue] = React.useState<string>(item?.defaultValue || '');
+
+  React.useEffect(() => {
+    setDefaultValue(item?.defaultValue || '');
+  }, [item]);
 
   React.useEffect(() => {
     if (item && defaultValue !== '') {

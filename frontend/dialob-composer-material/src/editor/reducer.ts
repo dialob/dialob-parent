@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { EditorAction } from './actions';
-import { ConfirmationDialogType, TextEditDialogType, RuleEditDialogType, EditorError, EditorState} from './types';
+import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType} from './types';
 import { DialobItem } from '../dialob';
 
 const setActivePage = (state: EditorState, page: DialobItem): void => {
@@ -27,20 +27,16 @@ const setConfirmationDialogType = (state: EditorState, dialogType?: Confirmation
   state.confirmationDialogType = dialogType;
 }
 
-const setTextEditDialogType = (state: EditorState, dialogType?: TextEditDialogType): void => {
-  state.textEditDialogType = dialogType;
+const setItemOptionsActiveTab = (state: EditorState, tab?: OptionsTabType): void => {
+  state.itemOptionsActiveTab = tab;
 }
 
-const setRuleEditDialogType = (state: EditorState, dialogType?: RuleEditDialogType): void => {
-  state.ruleEditDialogType = dialogType;
+const setHighlightedItem = (state: EditorState, item?: DialobItem): void => {
+  state.highlightedItem = item;
 }
 
-const setValidationRuleEditDialogOpen = (state: EditorState, open: boolean): void => {
-  state.validationRuleEditDialogOpen = open;
-}
-
-const setItemOptionsDialogOpen = (state: EditorState, open: boolean): void => {
-  state.itemOptionsDialogOpen = open;
+const setActiveList = (state: EditorState, listId?: string): void => {
+  state.activeList = listId;
 }
 
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
@@ -57,16 +53,12 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setActiveItem(state, action.item);
     } else if (action.type === 'setConfirmationDialogType') {
       setConfirmationDialogType(state, action.dialogType);
-    } else if (action.type === 'setTextEditDialogType') {
-      setTextEditDialogType(state, action.dialogType);
-    } else if (action.type === 'setRuleEditDialogType') {
-      setRuleEditDialogType(state, action.dialogType);
-    } else if (action.type === 'setValidationRuleEditDialogOpen') {
-      setValidationRuleEditDialogOpen(state, action.open);
-    } else if (action.type === 'setItemOptionsDialogOpen') {
-      setItemOptionsDialogOpen(state, action.open);
+    } else if (action.type === 'setItemOptionsActiveTab') {
+      setItemOptionsActiveTab(state, action.tab);
     } else if (action.type === 'setHighlightedItem') {
-      state.highlightedItem = action.item;
+      setHighlightedItem(state, action.item);
+    } else if (action.type === 'setActiveList') {
+      setActiveList(state, action.listId);
     }
   });
   return newState;

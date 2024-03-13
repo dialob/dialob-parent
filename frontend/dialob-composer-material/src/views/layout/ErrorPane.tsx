@@ -18,7 +18,7 @@ const errorCardBorderColor = (severity: string) => {
 };
 
 const ErrorPane: React.FC = () => {
-  const { editor, setActivePage } = useEditor();
+  const { editor, setActivePage, setActiveList } = useEditor();
   const { form } = useComposer();
 
   const handleScrollTo = (itemId?: string) => {
@@ -28,11 +28,23 @@ const ErrorPane: React.FC = () => {
     scrollToItem(itemId, Object.values(form.data), editor.activePage, setActivePage);
   }
 
+  const handleEditList = (listId?: string) => {
+    if (listId) {
+      setActiveList(listId);
+    }
+  }
+
+  const handleClick = (id?: string) => {
+    if (id) {
+      id.startsWith('vs') ? handleEditList(id) : handleScrollTo(id);
+    }
+  }
+
   return (
     <Box sx={{ m: 1 }}>
       {editor.errors.map(error => (
         <Card key={error.itemId} sx={{ mb: 2 }}>
-          <CardActionArea onClick={() => handleScrollTo(error.itemId)}>
+          <CardActionArea onClick={() => handleClick(error.itemId)}>
             <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.severity) }}>
               <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
               <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>

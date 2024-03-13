@@ -1,3 +1,5 @@
+# 2.10.2
+* Improved the TranslationDialog import and download functionality
 
 # 2.10.1
 * Show item type conversion menu for "note"

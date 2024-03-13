@@ -2,7 +2,7 @@ import {generateItemId, formReducer} from '../reducer';
 import testForm from './testForm.json';
 import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
-import { DialobItem, ComposerCallbacks, ComposerState } from '../types';
+import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString } from '../types';
 
 console.log('testform', testForm);
 
@@ -160,6 +160,60 @@ test('Update item, normal new language value', () => {
   };
   const newState = formReducer(testForm, action);
   expect(newState.data.tenantAdminLastName.description?.fi).toBe('Test');
+});
+
+test('Update item label, localized string', () => {
+  const newLabel: LocalizedString = {
+    'en': 'English Label',
+    'fi': 'Finnish Label'
+  };
+  const action: ComposerAction = {
+    type: 'updateLocalizedString',
+    attribute: 'label',
+    itemId: 'usedChannel',
+    value: newLabel,
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.data.usedChannel.label?.en).toBe('English Label');
+  expect(newState.data.usedChannel.label?.fi).toBe('Finnish Label');
+});
+
+test('Update item description, localized string', () => {
+  const newDesc: LocalizedString = {
+    'en': 'English Desc',
+    'fi': 'Finnish Desc'
+  };
+  const action: ComposerAction = {
+    type: 'updateLocalizedString',
+    attribute: 'description',
+    itemId: 'usedChannel',
+    value: newDesc,
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.data.usedChannel.description?.en).toBe('English Desc');
+  expect(newState.data.usedChannel.description?.fi).toBe('Finnish Desc');
+});
+
+test('Update validation message, localized string', () => {
+  expect(testForm.data.companyID.validations).toBeDefined();
+  expect(testForm.data.companyID.validations[0]).toBeDefined();
+  const newLabel: LocalizedString = {
+    'en': 'English Label',
+    'fi': 'Finnish Label'
+  };
+  const action: ComposerAction = {
+    type: 'updateLocalizedString',
+    attribute: 'validations',
+    itemId: 'companyID',
+    value: newLabel,
+    index: 0
+  };
+  const newState = formReducer(testForm, action);
+  console.log('new state', newState.data.companyID.validations);
+  expect(newState.data.companyID.validations).toBeDefined();
+  expect(newState.data.companyID.validations?.[0]).toBeDefined();
+  expect(newState.data.companyID.validations?.[0].message?.en).toBe('English Label');
+  expect(newState.data.companyID.validations?.[0].message?.fi).toBe('Finnish Label');
 });
 
 test('Change item type with merging the props #1', () => {
@@ -733,6 +787,33 @@ test('Set global valueset name', () => {
     const gvsIndex = newState.metadata.composer.globalValueSets.findIndex(gvs => gvs.valueSetId === 'vs45');
     expect(gvsIndex).toBeGreaterThan(-1);
     expect(newState.metadata.composer.globalValueSets[gvsIndex].label).toEqual('test');
+  }
+});
+
+test('Delete global valueset', () => {
+  const valueSetId = 'vs45';
+
+  const oldState = testForm;
+  expect(oldState.metadata?.composer?.globalValueSets).toBeDefined();
+  expect(oldState.valueSets).toBeDefined();
+  const gvsToDelete = oldState.metadata.composer.globalValueSets.find(gvs => gvs.valueSetId === valueSetId);
+  expect(gvsToDelete).toBeDefined();
+  const vsToDelete = oldState.valueSets.find(vs => vs.id === valueSetId);
+  expect(vsToDelete).toBeDefined();
+
+  const action: ComposerAction = {
+    type: 'deleteGlobalValueSet',
+    valueSetId: valueSetId
+  };
+
+  const newState = formReducer(testForm, action);
+  expect(newState.metadata?.composer?.globalValueSets).toBeDefined();
+  expect(newState.valueSets).toBeDefined();
+  if (newState.valueSets && newState.metadata?.composer?.globalValueSets) {
+    const deletedGvs = newState.metadata.composer.globalValueSets.find(gvs => gvs.valueSetId === valueSetId);
+    expect(deletedGvs).toBeUndefined();
+    const deletedVs = newState.valueSets.find(vs => vs.id === valueSetId);
+    expect(deletedVs).toBeUndefined();
   }
 });
 

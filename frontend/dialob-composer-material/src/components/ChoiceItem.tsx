@@ -1,36 +1,31 @@
 import React from "react";
-import { Button, IconButton, Table, TableBody, TableCell, TableRow, Typography, styled } from '@mui/material';
+import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
+import { Close, KeyboardArrowDown, KeyboardArrowUp, Visibility } from "@mui/icons-material";
 import { TreeItem } from "@atlaskit/tree";
 import { TreeDraggableProvided } from "@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types";
-import { StyledTextField } from "./TableEditorComponents";
-import { useEditor } from "../editor";
-import { ValueSetEntry } from "../dialob";
-import { Close, Visibility } from "@mui/icons-material";
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { LocalizedString, ValueSetEntry, useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
+import ChoiceTextEditor from "./editors/ChoiceTextEditor";
 
 
-interface ChoiceItemProps {
+export interface ChoiceItemProps {
   item: TreeItem,
   provided: TreeDraggableProvided,
-  onRuleEdit: (entry: ValueSetEntry) => void,
-  onTextEdit: (entry: ValueSetEntry) => void,
+  onRuleEdit: (entry: ValueSetEntry, rule: string) => void,
+  onTextEdit: (entry: ValueSetEntry, label: LocalizedString) => void,
   onDelete: (entry: ValueSetEntry) => void,
   onUpdateId: (entry: ValueSetEntry, id: string) => void,
+  isGlobal?: boolean
 }
 
 const MAX_CHOICE_LABEL_LENGTH = 40;
 
-const LabelButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(1.5),
-  width: '100%',
-  justifyContent: 'flex-start',
-  textTransform: 'none',
-}));
-
 const getLabel = (entry: ValueSetEntry, language: string) => {
   const localizedLabel = entry.label[language] ? entry.label[language] : undefined;
   if (!localizedLabel) {
-    return <Typography color='text.hint'>Label</Typography>;
+    return <></>;
   }
   if (localizedLabel.length > MAX_CHOICE_LABEL_LENGTH) {
     return <Typography>{localizedLabel.substring(0, MAX_CHOICE_LABEL_LENGTH) + '...'}</Typography>;
@@ -38,11 +33,15 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
   return <Typography>{localizedLabel}</Typography>;
 }
 
-const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId }) => {
-  const { editor } = useEditor();
+const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal }) => {
+  const { form } = useComposer();
   const entry = item.data;
+  const formLanguages = form.metadata.languages;
+  const languageNo = formLanguages?.length || 0;
   const [open, setOpen] = React.useState(false);
-  const [idValue, setIdValue] = React.useState(entry.id);
+  const [idValue, setIdValue] = React.useState<string>(entry.id);
+  const [rule, setRule] = React.useState<string | undefined>(entry.when);
+  const [expanded, setExpanded] = React.useState(false);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
@@ -51,31 +50,57 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
     return () => clearTimeout(id);
   }, [idValue]);
 
+  React.useEffect(() => {
+    if (rule) {
+      const id = setTimeout(() => {
+        onRuleEdit(entry, rule);
+      }, 1000);
+      return () => clearTimeout(id);
+    }
+  }, [rule]);
+
+
   return (
     <>
       <ChoiceDeleteDialog open={open} itemId={entry.id} onClick={() => onDelete(entry)} onClose={() => setOpen(false)} />
-      <Table>
+      <Table ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}>
         <TableBody>
-          <TableRow key={entry.id} ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}>
+          <TableRow key={entry.id}>
             <TableCell align='center' width='20%'>
+              <IconButton onClick={() => setExpanded(!expanded)}>{expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
               <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
-              <IconButton onClick={() => onRuleEdit(entry)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>
+              {!isGlobal && <IconButton onClick={() => setExpanded(true)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
             </TableCell>
-            <TableCell width='40%'>
-              <StyledTextField variant='standard' InputProps={{
-                disableUnderline: true,
-              }} value={idValue} onChange={(e) => setIdValue(e.target.value)} />
+            <TableCell width='30%' sx={{ p: 1 }}>
+              <Typography>{idValue}</Typography>
             </TableCell>
-            <TableCell width='40%'>
-              <LabelButton variant='text' color='inherit' onClick={() => onTextEdit(entry)}>
-                {getLabel(entry, editor.activeFormLanguage)}
-              </LabelButton>
-            </TableCell>
+            {formLanguages?.map(lang => (
+              <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+                {getLabel(entry, lang)}
+              </TableCell>
+            ))}
           </TableRow>
+          {expanded && <TableRow>
+            <TableCell colSpan={2 + languageNo}>
+              <Box sx={{ p: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Typography color='text.hint' variant='caption'>Key</Typography>
+                  <TextField value={idValue} onChange={(e) => setIdValue(e.target.value)} />
+                </Box>
+                {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
+                  <Typography color='text.hint' variant='caption'>Visbility rule</Typography>
+                  <CodeMirror value={rule || ''} onChange={(value) => setRule(value)} extensions={[javascript({ jsx: true })]} />
+                </Box>}
+                <Box sx={{ mt: 2 }}>
+                  <ChoiceTextEditor entry={entry} onUpdate={onTextEdit} />
+                </Box>
+              </Box>
+            </TableCell>
+          </TableRow>}
         </TableBody>
-      </Table>
+      </Table >
     </>
   );
 }

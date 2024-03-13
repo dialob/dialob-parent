@@ -7,9 +7,6 @@ import ErrorPane from './ErrorPane';
 import { useEditor } from '../../editor';
 import ConfirmationDialog from '../../dialogs/ConfirmationDialog';
 import { MENU_HEIGHT, SCROLL_SX } from '../../theme/siteTheme';
-import TextEditDialog from '../../dialogs/TextEditDialog';
-import RuleEditDialog from '../../dialogs/RuleEditDialog';
-import ValidationRuleEditDialog from '../../dialogs/ValidationRuleEditDialog';
 import ItemOptionsDialog from '../../dialogs/ItemOptionsDialog';
 
 const ComposerLayoutView: React.FC = () => {
@@ -19,9 +16,6 @@ const ComposerLayoutView: React.FC = () => {
   return (
     <>
       <ConfirmationDialog />
-      <TextEditDialog />
-      <RuleEditDialog />
-      <ValidationRuleEditDialog />
       <ItemOptionsDialog />
       <Box display='flex'>
         <MenuBar />

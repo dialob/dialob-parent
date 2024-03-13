@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Button, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { useEditor } from '../editor'
-import { StyledTable } from './TableEditorComponents';
-import { useComposer } from '../dialob';
+import { useEditor } from '../../editor'
+import { StyledTable } from '../TableEditorComponents';
+import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
-import PropItem from './PropItem';
+import PropItem from '../PropItem';
 
 export interface ItemProp {
   key: string;

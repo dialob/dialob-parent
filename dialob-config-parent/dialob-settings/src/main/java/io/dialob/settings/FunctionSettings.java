@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.program.expr.arith;
+package io.dialob.settings;
 
-import io.dialob.rule.parser.api.ValueType;
-import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.annotation.Nonnull;
+import lombok.Data;
 
-@Value.Immutable
-public interface NegOperatorNumber extends NegOperator {
-
-  default Object neg(@NotNull Object value) {
-    return -((Integer)value);
+@Data
+public class FunctionSettings {
+  
+  private GroovyFunctionSettings groovy = new GroovyFunctionSettings();
+  
+  @Data
+  public static class GroovyFunctionSettings {
+    private List<String> locations = new ArrayList<>();
   }
-
-  @Nonnull
-  @Override
-  default ValueType getValueType() {
-    return ValueType.INTEGER;
-  }
-
 }

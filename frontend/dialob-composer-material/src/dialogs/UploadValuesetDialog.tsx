@@ -110,7 +110,6 @@ const UploadValuesetDialog: React.FC<{
             appliedEntries.push(e);
           }
         });
-        console.log('appliedEntries', appliedEntries)
         setCurrentValueSet({ ...currentValueSet, entries: appliedEntries });
         setValueSetEntries(currentValueSet.id, appliedEntries);
       }

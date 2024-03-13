@@ -1,8 +1,9 @@
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule } from "./types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString } from "./types";
 
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string}
   | { type: 'updateItem', itemId: string, attribute: string, value: any, language?: string}
+  | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate}
   | { type: 'deleteItem', itemId: string}
   | { type: 'setItemProp', itemId: string, key: string, value: any}
@@ -21,6 +22,7 @@ export type ComposerAction =
   | { type: 'deleteValueSetentry', valueSetId: string, index: number}
   | { type: 'moveValueSetEntry', valueSetId: string, from: number, to: number}
   | { type: 'setGlobalValueSetName', valueSetId: string, name: string}
+  | { type: 'deleteGlobalValueSet', valueSetId: string}
   // | { type: 'updateValueSetEntryAttr', valueSetId: string, index: number, attr: string, value: any } // probably obsoleted by updateValueSetEntry
 
   | { type: 'setMetadataValue', attr: string, value: any}

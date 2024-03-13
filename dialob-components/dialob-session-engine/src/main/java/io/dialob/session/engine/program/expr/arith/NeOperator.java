@@ -21,22 +21,15 @@ import org.immutables.value.Value;
 import javax.annotation.Nonnull;
 
 @Value.Immutable
-public interface NeOperator<T> extends AbstractLogicalOperator {
+public interface NeOperator<T> extends EqOperator<T> {
 
   @Override
   default Boolean eval(@Nonnull EvalContext evalContext) {
-    Object lhsResult = getLhs().eval(evalContext);
-    Object rhsResult = getRhs().eval(evalContext);
-    if (lhsResult == rhsResult) {
-      return false;
+    Boolean result = EqOperator.super.eval(evalContext);
+    if (result == null) {
+      return null;
     }
-    if (lhsResult == null) {
-      return true;
-    }
-    if (rhsResult == null) {
-      return true;
-    }
-    return !lhsResult.equals(rhsResult);
+    return !result;
   }
 
 }

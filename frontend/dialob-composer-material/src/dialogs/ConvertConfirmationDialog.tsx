@@ -13,8 +13,12 @@ const ConvertConfirmationDialog: React.FC<{
     onClose();
   }
 
+  if (type === undefined) {
+    return null;
+  }
+
   return (
-    <Dialog open={type !== undefined} onClose={onClose}>
+    <Dialog open={true} onClose={onClose}>
       <DialogTitle>
         <FormattedMessage id='dialogs.confirmation.convert.title' />
       </DialogTitle>

@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
-import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule } from './types';
+import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule, LocalizedString } from './types';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -65,6 +65,24 @@ const updateItem = (state: ComposerState, itemId: string, attribute: string, val
     }
   } else {
     state.data[itemId][attribute] = value;
+  }
+}
+
+const updateLocalizedString = (state: ComposerState, itemId: string, attribute: string, value: LocalizedString, index?: number): void => {
+  const item = state.data[itemId];
+  if (item && (attribute === 'label' || attribute === 'description')) {
+    item[attribute] = value;
+  } else if (attribute === 'validations' && index !== undefined){
+    const validations = state.data[itemId].validations;
+    if (validations) {
+      const rule = validations[index];
+      if (!rule) {
+        return;
+      }
+      rule.message = value;
+    }
+  } else {
+    return;
   }
 }
 
@@ -311,6 +329,13 @@ const setGlobalValueSetName = (state: ComposerState, valueSetId: string, name: s
   }
 }
 
+const deleteGlobalValueSet = (state: ComposerState, valueSetId: string): void => {
+  if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined && state.metadata?.composer?.globalValueSets !== undefined) {
+    state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
+    state.metadata.composer.globalValueSets = state.metadata.composer.globalValueSets.filter(gvs => gvs.valueSetId !== valueSetId);
+  }
+}
+
 const setMetadataValue = (state: ComposerState, attr: string, value: any): void => {
   // TODO: Sanity: Prevent overwriting certain critical attributes
 
@@ -456,6 +481,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
     } else if (action.type === 'updateItem') {
       updateItem(state, action.itemId, action.attribute, action.value, action.language);
+    } else if (action.type === 'updateLocalizedString') {
+      updateLocalizedString(state, action.itemId, action.attribute, action.value, action.index);
     } else if (action.type === 'changeItemType') {
       convertItem(state, action.itemId, action.config);
     } else if (action.type === 'deleteItem') {
@@ -488,6 +515,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       moveValueSetEntry(state, action.valueSetId, action.from, action.to);
     } else if (action.type === 'setGlobalValueSetName') {
       setGlobalValueSetName(state, action.valueSetId, action.name);
+    } else if (action.type === 'deleteGlobalValueSet') {
+      deleteGlobalValueSet(state, action.valueSetId);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'createVariable') {

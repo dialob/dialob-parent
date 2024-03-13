@@ -58,7 +58,7 @@ public class GroovyFunctionRegistryTest {
       GroovyFunctionRegistry gfr = new GroovyFunctionRegistry(appCtx, functionRegistry);
       List<String> functions = new ArrayList<>();
       functions.add("classpath:/scripts/test.groovy");
-      functions.add("classpath:/scripts/FoaasService.groovy");
+      functions.add("file:src/test/resources/scripts/mapping.groovy");
       gfr.setGroovyFunctions(functions);
       return gfr;
     }
@@ -83,6 +83,8 @@ public class GroovyFunctionRegistryTest {
       FunctionRegistry.FunctionCallback callback = Mockito.mock(FunctionRegistry.FunctionCallback.class);
       functionRegistry.invokeFunctionAsync(callback, "Test.testFunction", "blah");
       verify(callback).succeeded("blah blah");
+      functionRegistry.invokeFunction(callback, "Mapping.mappingFunction", "value1");
+      verify(callback).succeeded("4");
       verifyNoMoreInteractions(callback);
     });
   }

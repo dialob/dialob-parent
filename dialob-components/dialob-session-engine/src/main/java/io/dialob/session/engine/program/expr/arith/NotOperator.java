@@ -17,16 +17,14 @@ package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface NotOperator extends UnaryOperator {
 
-  default Object apply(Object value) {
-    if (value == null) {
-      return null;
-    }
+  default Object apply(@NotNull Object value) {
     return !((Boolean)value);
   }
 
