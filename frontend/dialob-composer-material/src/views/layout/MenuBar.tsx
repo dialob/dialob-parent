@@ -7,6 +7,7 @@ import { getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
 import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
+import FormOptionsDialog from '../../dialogs/FormOptionsDialog';
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -52,6 +53,7 @@ const MenuBar: React.FC = () => {
   const formLanguages = form.metadata.languages || ['en'];
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
   const languageMenuOpen = Boolean(anchorEl);
 
   const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -66,6 +68,7 @@ const MenuBar: React.FC = () => {
   return (
     <>
       <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
+      <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
@@ -79,7 +82,7 @@ const MenuBar: React.FC = () => {
           <HeaderButton label='translations' />
           <HeaderButton label='variables' />
           <HeaderButton label='lists' onClick={() => setListsDialogOpen(true)} />
-          <HeaderButton label='options' />
+          <HeaderButton label='options' onClick={() => setOptionsDialogOpen(true)} />
           <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'version.latest' })} endIcon={<ArrowDropDown />} />
           <HeaderIconButton icon={<Support fontSize='small' />} />
           <Box flexGrow={1} />
