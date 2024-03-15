@@ -13,7 +13,7 @@ export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'd
 export type ContextVariable = {
   name: string;
   published?: boolean;
-  defaultValue ?: any;
+  defaultValue?: any;
   context: boolean;
   contextType: string; // TODO: ContextVariableType -- contextType is valid only when context === true, how to define this type in TS?
 };
@@ -32,11 +32,11 @@ export type ValueSet = {
   entries: ValueSetEntry[];
 };
 
-export type DialobItemType = 
-'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 
-'multichoice' | 'survey' | 'surveygroup' | 'list' 
-| 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup' |
-'verticalSurveygroup' | 'address' | 'textBox' | 'page';
+export type DialobItemType =
+  'questionnaire' | 'group' | 'text' | 'number' | 'boolean' |
+  'multichoice' | 'survey' | 'surveygroup' | 'list'
+  | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup' |
+  'verticalSurveygroup' | 'address' | 'textBox' | 'page';
 
 export type DialobCategoryType = 'structure' | 'input' | 'output';
 
@@ -68,6 +68,8 @@ export type DialobItem = DialobItemTemplate & {
 
 export type DialobItems = { [key: string]: DialobItem };
 
+export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
+
 export type ComposerState = {
   _id: string;
   _rev: string;
@@ -75,10 +77,13 @@ export type ComposerState = {
   data: {
     [item: string]: DialobItem;
   };
-  variables ?: (Variable | ContextVariable)[];
-  valueSets ?: ValueSet[];
+  variables?: (Variable | ContextVariable)[];
+  valueSets?: ValueSet[];
   metadata: {
     label?: string;
+    showDisabled?: boolean;
+    questionClientVisibility?: VisibilityType;
+    answersRequiredByDefault?: boolean;
     creator?: string;
     tenantId?: string;
     savedBy?: string;
@@ -86,7 +91,6 @@ export type ComposerState = {
     valid?: boolean;
     created?: string;
     lastSaved?: string;
-    answersRequiredByDefault?: boolean;
     composer?: {
       globalValueSets?: {
         label?: string;
