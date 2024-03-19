@@ -34,34 +34,36 @@ git config --global user.name "$BOT_NAME";
 git config --global user.email "$BOT_EMAIL";
 
 # Current and next version
-LAST_RELEASE_VERSION=$(cat dialob-build-parent/release.version)
-[[ $LAST_RELEASE_VERSION =~ ([^\\.]*)$ ]]
+RELEASE_VERSION=$(cat dialob-build-parent/release.version)
+[[ RELEASE_VERSION =~ ([^\\.]*)$ ]]
 MINOR_VERSION=`expr ${BASH_REMATCH[1]}`
-MAJOR_VERSION=${LAST_RELEASE_VERSION:0:`expr ${#LAST_RELEASE_VERSION} - ${#MINOR_VERSION}`}
+MAJOR_VERSION=${RELEASE_VERSION:0:`expr ${#RELEASE_VERSION} - ${#MINOR_VERSION}`}
 NEW_MINOR_VERSION=`expr ${MINOR_VERSION} + 1`
-RELEASE_VERSION=${MAJOR_VERSION}${NEW_MINOR_VERSION}
+NEXT_RELEASE_VERSION=${MAJOR_VERSION}${NEW_MINOR_VERSION}
 
 # docker image
 readonly local DIALOB_BOOT_IMAGE=docker.io/resys/dialob-boot
 readonly local DIALOB_SESSION_IMAGE=docker.io/resys/dialob-session-boot
 
 
-echo ${RELEASE_VERSION} > dialob-build-parent/release.version
 PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 echo "Docker image: docker.io/resys/dialob-session-boot:${RELEASE_VERSION}"
 echo "Docker image: docker.io/resys/dialob-boot:${RELEASE_VERSION}"
 echo "Git checkout refname: '${refname}' branch: '${branch}' commit: '${GITHUB_SHA}'"
 echo "Dev version: '${PROJECT_VERSION}' release version: '${RELEASE_VERSION}'"
-echo "Releasing: '${RELEASE_VERSION}', previous: '${LAST_RELEASE_VERSION}'"
+echo "Releasing: '${RELEASE_VERSION}'"
 
 mvn versions:set -DnewVersion=${RELEASE_VERSION}
 git commit -am "Release: ${RELEASE_VERSION}"
 git tag -a ${RELEASE_VERSION} -m "release ${RELEASE_VERSION}"
 
+echo "Prepare for next version '${NEXT_RELEASE_VERSION}'"
+
 mvn clean deploy -Prelease -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 mvn versions:set -DnewVersion=${PROJECT_VERSION}
-git commit -am "Release: ${RELEASE_VERSION}"
+echo ${NEXT_RELEASE_VERSION} > dialob-build-parent/release.version
+git commit -am "Prepare for ${NEXT_RELEASE_VERSION}"
 git push
 git push origin ${RELEASE_VERSION}
 
