@@ -97,7 +97,7 @@ dialob:
     sockjs:
       enabled: true
       webSocketEnabled: true
-      contextPath: "/socket/{tenantId}/{sessionId}"
+      contextPath: "/socket"
       urlAttributes:
         sessionId: sessionId
         tenantId: tenantId

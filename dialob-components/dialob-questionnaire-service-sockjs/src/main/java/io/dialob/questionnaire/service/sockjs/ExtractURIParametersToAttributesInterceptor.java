@@ -20,7 +20,6 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.lang.NonNull;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
@@ -30,31 +29,25 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class ExtractURITemplateVariablesToAttributesInterceptor implements HandshakeInterceptor {
+public class ExtractURIParametersToAttributesInterceptor implements HandshakeInterceptor {
 
   private final List<String> attributesToExtract = new ArrayList<>();
 
-  public ExtractURITemplateVariablesToAttributesInterceptor(String... attributesToExtract) {
+  public ExtractURIParametersToAttributesInterceptor(String... attributesToExtract) {
     this.attributesToExtract.addAll(Arrays.asList(attributesToExtract));
   }
 
   @Override
   public boolean beforeHandshake(@NonNull final ServerHttpRequest request, @NonNull final ServerHttpResponse response, @NonNull final WebSocketHandler wsHandler, @NonNull final Map<String, Object> attributes) throws Exception {
-    if (request instanceof ServletServerHttpRequest) {
-      final ServletServerHttpRequest serverRequest = (ServletServerHttpRequest) request;
-      jakarta.servlet.http.HttpServletRequest servletRequest = serverRequest.getServletRequest();
-      final Map<String, String> variables = (Map<String, String>) servletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-      LOGGER.debug("variables {}", variables);
-      if (variables != null) {
-        for (final String attribute : attributesToExtract) {
-          final String value = variables.get(attribute);
-          if (value != null) {
-            attributes.put(attribute, value);
-          }
+    if (request instanceof ServletServerHttpRequest serverRequest) {
+      var servletRequest = serverRequest.getServletRequest();
+      for (var name : attributesToExtract) {
+        String parameter = servletRequest.getParameter(name);
+        if (parameter != null) {
+          attributes.put(name, parameter);
         }
       }
     }
-
     return true;
   }
 

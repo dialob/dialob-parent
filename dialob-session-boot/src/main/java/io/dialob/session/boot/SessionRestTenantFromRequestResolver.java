@@ -36,25 +36,27 @@ public class SessionRestTenantFromRequestResolver implements TenantFromRequestRe
 
   @Override
   public Optional<Tenant> resolveTenantFromRequest(HttpServletRequest request) {
-    String pathInfo = request.getRequestURI();
-    if (StringUtils.isNotBlank(pathInfo)) {
-      String sessionId = getSessionId(pathInfo);
+    String sessionId = getSessionId(request);
+    if (StringUtils.isNotBlank(sessionId)) {
       try {
         return getQuestionnaireSession(sessionId)
           .map(QuestionnaireSession::getTenantId).map(tId -> ImmutableTenant.of(tId, Optional.empty()));
-      } catch(DocumentNotFoundException dnfe) {
-        return Optional.empty();
+      } catch (DocumentNotFoundException dnfe) {
+        /* fall throught */;
       }
     }
     return Optional.empty();
   }
 
-  protected String getSessionId(String pathInfo) {
-    if(pathInfo.startsWith("/session/socket/-/")) {
-      pathInfo = pathInfo.substring(18);
-      return StringUtils.substringBefore(pathInfo, "/");
+  protected String getSessionId(HttpServletRequest request) {
+    var sessionId = request.getParameter("sessionId");
+    if (StringUtils.isBlank(sessionId)) {
+      sessionId = StringUtils.substringAfterLast(request.getPathInfo(), "/");
     }
-    return StringUtils.substringAfterLast(pathInfo, "/");
+    if (!StringUtils.containsOnly(sessionId, "0123456789abcdefABCDEF")) {
+      return null;
+    }
+    return sessionId;
   }
 
   @NonNull

@@ -74,7 +74,7 @@ public class DialobQuestionnaireServiceAutoConfiguration {
   }
 
   @Bean
-  public EventPublisher questionnaireSessionEventPublisher(TaskExecutor taskExecutor, ApplicationEventPublisher applicationEventPublisher) {
+  public EventPublisher questionnaireSessionEventPublisher(@Qualifier("applicationTaskExecutor") TaskExecutor taskExecutor, ApplicationEventPublisher applicationEventPublisher) {
     return new QuestionnaireSessionEventPublisher(taskExecutor, applicationEventPublisher);
   }
 

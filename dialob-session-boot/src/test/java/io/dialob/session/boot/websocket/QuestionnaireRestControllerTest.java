@@ -21,15 +21,24 @@ import io.dialob.api.questionnaire.ImmutableAnswer;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.cache.DialobCacheAutoConfiguration;
+import io.dialob.function.DialobFunctionAutoConfiguration;
+import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
+import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
 import io.dialob.session.boot.Application;
+import io.dialob.session.boot.ApplicationAutoConfiguration;
+import io.dialob.settings.DialobSettings;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -45,9 +54,22 @@ import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"})
-@ContextConfiguration(classes = {Application.class, QuestionnaireRestControllerTest.TestConfiguration.class})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+  "dialob.db.database-type=none",
+  "dialob.session.cache.type=LOCAL"
+}, classes = {
+  Application.class,
+  ApplicationAutoConfiguration.class,
+  QuestionnaireWebSocketTest.TestConfiguration.class,
+  DialobQuestionnaireServiceSockJSAutoConfiguration.class,
+  DialobFunctionAutoConfiguration.class,
+  DialobQuestionnaireServiceAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobCacheAutoConfiguration.class,
+})
 @EnableCaching
+@EnableWebSocket
+@EnableConfigurationProperties({DialobSettings.class})
 public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 

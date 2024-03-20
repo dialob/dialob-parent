@@ -29,11 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class ExtractURITemplateVariablesToAttributesInterceptorTest {
+public class ExtractURIParametersToAttributesInterceptorTest {
 
   @Test
   public void shouldNotExtractAnything() throws Exception {
-    ExtractURITemplateVariablesToAttributesInterceptor interceptor = new ExtractURITemplateVariablesToAttributesInterceptor();
+    ExtractURIParametersToAttributesInterceptor interceptor = new ExtractURIParametersToAttributesInterceptor();
     Map<String,Object> attributes = new HashMap<>();
     WebSocketHandler wsHandler = mock(WebSocketHandler.class);
     ServletServerHttpRequest request = mock(ServletServerHttpRequest.class);
@@ -51,10 +51,8 @@ public class ExtractURITemplateVariablesToAttributesInterceptorTest {
 
   @Test
   public void shouldExtractId() throws Exception {
-    ExtractURITemplateVariablesToAttributesInterceptor interceptor = new ExtractURITemplateVariablesToAttributesInterceptor("id");
+    ExtractURIParametersToAttributesInterceptor interceptor = new ExtractURIParametersToAttributesInterceptor("id","id2","id3");
     Map<String,Object> attributes = new HashMap<>();
-    Map<String,Object> variables = new HashMap<>();
-    variables.put("id","123");
     WebSocketHandler wsHandler = mock(WebSocketHandler.class);
     ServletServerHttpRequest request = mock(ServletServerHttpRequest.class);
     ServerHttpResponse response = mock(ServerHttpResponse.class);
@@ -62,7 +60,9 @@ public class ExtractURITemplateVariablesToAttributesInterceptorTest {
 
 
     when(request.getServletRequest()).thenReturn(httpServletRequest);
-    when(httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(variables);
+
+    when(httpServletRequest.getParameter("id")).thenReturn("123");
+    when(httpServletRequest.getParameter("id2")).thenReturn(null);
 
     interceptor.beforeHandshake(request, response, wsHandler, attributes);
 

@@ -20,6 +20,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,9 +43,8 @@ import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 
 @RestController
+@Slf4j
 public class DefaultAnswerController implements AnswerController, QuestionnaireActionsService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAnswerController.class);
 
   private final QuestionnaireSessionService questionnaireSessionService;
   private final boolean returnStackTrace;
