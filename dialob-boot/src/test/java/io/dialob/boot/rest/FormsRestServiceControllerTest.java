@@ -19,11 +19,18 @@ import io.dialob.api.form.*;
 import io.dialob.api.rest.Errors;
 import io.dialob.boot.Application;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.form.service.DialobFormServiceAutoConfiguration;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
+import io.dialob.form.service.rest.DialobFormServiceRestAutoConfiguration;
 import io.dialob.integration.api.event.FormUpdatedEvent;
+import io.dialob.integration.queue.DialobIntegrationQueueAutoConfiguration;
 import io.dialob.questionnaire.service.api.session.FormFinder;
+import io.dialob.rest.RestApiExceptionMapper;
+import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import jakarta.inject.Inject;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +41,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -87,7 +95,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   AbstractSecuredRestTests.TestConfiguration.class,
   Application.class,
-  FormsRestServiceControllerTest.TestConfiguration.class})
+  FormsRestServiceControllerTest.TestConfiguration.class,
+  DialobFormServiceRestAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobFormServiceAutoConfiguration.class,
+  DialobIntegrationQueueAutoConfiguration.class,
+  ValidationAutoConfiguration.class,
+  RestApiExceptionMapper.class
+})
 @EnableConfigurationProperties(ServerProperties.class)
 public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
@@ -117,7 +132,11 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   private ListenerMock listenerMock;
 
   @MockBean
+  private CurrentTenant currentTenant;
+  @MockBean
   private FormVersionControlDatabase formVersionControlDatabase;
+  @MockBean
+  private FunctionRegistry functionRegistry;
 
   @BeforeEach
   public void resetMocks() {
@@ -126,6 +145,12 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Value("${server.context-path:/}")
   protected String contextPath;
+
+  @BeforeEach
+  void setupTenant() {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+  }
 
   @Override
   public String getContextPath() {
@@ -309,6 +334,8 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldAcceptUpdateByNameWhenForced() throws Exception {
+    doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
+
     Form formDocument = ImmutableForm.builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
@@ -374,6 +401,8 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldBeAbleToPutLatestTag() throws Exception {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(true);
 
     // We need to return cfrs token on update action
@@ -394,6 +423,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldNotModifyIfUpdateIsNotDone() throws Exception {
+    when(currentTenant.getId()).thenReturn(tenantId);
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(false);
 
     // We need to return cfrs token on update action

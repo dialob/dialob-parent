@@ -82,11 +82,6 @@ class FillControllerTest extends AbstractUIControllerTest {
   @Configuration(proxyBeanMethods = false)
   @Import(QuestionnaireSecurityConfigurer.class)
   public static class Config {
-//    @Bean
-//    public QuestionnaireSecurityConfigurer questionnaireSecurityConfigurer(@NonNull TenantAccessEvaluator tenantPermissionEvaluator,
-//                                                                           @NonNull AuthenticationStrategy authenticationStrategy) {
-//      return new QuestionnaireSecurityConfigurer("/", tenantPermissionEvaluator, authenticationStrategy);
-//    }
 
     @Bean
     public TenantAccessEvaluator tenantAccessEvaluator() {

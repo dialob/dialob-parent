@@ -17,8 +17,8 @@ package io.dialob.boot.controller;
 
 import io.dialob.boot.security.ApiServiceSecurityConfigurer;
 import io.dialob.common.Permissions;
-import io.dialob.form.service.rest.FormsRestService;
-import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
+import io.dialob.form.service.rest.FormsRestServiceController;
+import io.dialob.questionnaire.service.rest.QuestionnairesRestServiceController;
 import io.dialob.security.key.ApiKey;
 import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
@@ -127,10 +127,10 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   public TenantAccessEvaluator tenantAccessEvaluator;
 
   @MockBean
-  public FormsRestService formsRestServiceController;
+  public FormsRestServiceController formsRestServiceController;
 
   @MockBean
-  public QuestionnairesRestService questionnairesRestServiceController;
+  public QuestionnairesRestServiceController questionnairesRestServiceController;
 
   @MockBean
   public ClientApiKeyService clientApiKeyService;

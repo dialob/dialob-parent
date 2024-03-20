@@ -15,25 +15,22 @@
  */
 package io.dialob.boot.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
-
+import io.dialob.boot.settings.LandingApplicationSettings;
+import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MvcResult;
 
-import io.dialob.boot.settings.LandingApplicationSettings;
-import io.dialob.security.tenant.CurrentTenant;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {
@@ -54,7 +51,8 @@ import io.dialob.security.tenant.CurrentTenant;
 })
 @ContextConfiguration(classes = {
   LandingController.class,
-  LandingApplicationSettings.class})
+})
+@EnableConfigurationProperties({LandingApplicationSettings.class})
 class LandingControllerTest extends AbstractUIControllerTest {
 
   @MockBean
@@ -63,7 +61,7 @@ class LandingControllerTest extends AbstractUIControllerTest {
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
   public void test() throws Exception {
-    MvcResult result = mockMvc.perform(get("/landing/").accept(MediaType.TEXT_HTML))
+    mockMvc.perform(get("/landing").accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("<title>Dialob</title>")))
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
@@ -74,8 +72,6 @@ class LandingControllerTest extends AbstractUIControllerTest {
       .andExpect(content().string(containsString("\"composerUrl\":\"\\/composer\"")))
       .andExpect(content().string(containsString("\"backendApiUrl\":\"\\/api\"")))
       .andReturn();
-//    System.out.println(result.getResponse().getContentAsString());
-
   }
 
 }
