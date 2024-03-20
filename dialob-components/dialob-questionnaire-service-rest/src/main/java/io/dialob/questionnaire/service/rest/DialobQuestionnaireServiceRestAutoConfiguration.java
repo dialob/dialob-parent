@@ -15,32 +15,17 @@
  */
 package io.dialob.questionnaire.service.rest;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.user.CurrentUserProvider;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration(proxyBeanMethods = false)
+@Import(QuestionnairesRestServiceController.class)
 public class DialobQuestionnaireServiceRestAutoConfiguration {
 
-  @Bean
-  public QuestionnairesRestService questionnairesRestService(QuestionnaireSessionService questionnaireSessionService,
-                                                             QuestionnaireSessionSaveService questionnaireSessionSaveService,
-                                                             QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory,
-                                                             QuestionnaireDatabase questionnaireRepository,
-                                                             FormDatabase formDatabase,
-                                                             CurrentTenant currentTenant,
-                                                             CurrentUserProvider currentUserProvider,
-                                                             CSVSerializer csvSerializer) {
-    return new QuestionnairesRestServiceController(questionnaireSessionService, questionnaireSessionSaveService, questionnaireSessionBuilderFactory, questionnaireRepository, formDatabase, currentTenant, currentUserProvider, csvSerializer);
-  }
 
   @Bean
   CSVSerializer csvSerializer(QuestionnaireDatabase questionnaireDatabase, CurrentTenant currentTenant) {

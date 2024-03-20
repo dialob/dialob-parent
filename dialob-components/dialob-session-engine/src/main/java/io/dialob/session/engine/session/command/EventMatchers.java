@@ -109,7 +109,7 @@ public final class EventMatchers {
     return ImmutableEventMatchers.ErrorActivityEventMatcher.of(errorEventMatcher);
   }
 
-  public static EventMatcher whenValueSetUpdated(@Nonnull ValueSetId valueSetId) {
+  public static EventMatcher whenValueSetUpdated(@NonNull ValueSetId valueSetId) {
     return ImmutableEventMatchers.ValueSetUpdatedEventMatcher.of(valueSetId);
   }
 

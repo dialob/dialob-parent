@@ -119,10 +119,8 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
   protected HttpSecurity configureAuthentication(HttpSecurity http) throws Exception {
     // Disable authentication
     return http
-      .sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and()
-      .logout().disable();
+      .sessionManagement((configurer) -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .logout((configurer) -> configurer.disable());
   }
 
   @Override

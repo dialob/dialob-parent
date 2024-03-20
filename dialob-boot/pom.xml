@@ -270,8 +270,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-sleuth</artifactId>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.session</groupId>
@@ -326,6 +326,12 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.redis</groupId>
+      <artifactId>testcontainers-redis</artifactId>
+      <version>2.2.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
