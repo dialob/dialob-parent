@@ -66,7 +66,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ReviewApplicationSettings.class,
   DialobSecurityAwsAutoConfiguration.class,
   AdminControllerAwsElbTest.TestConfiguration.class,
-  DialobSecurityAwsAutoConfiguration.class
 })
 class AdminControllerAwsElbTest extends AbstractUIControllerTest {
 
