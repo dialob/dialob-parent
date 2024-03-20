@@ -161,11 +161,11 @@ public class MongoDbQuestionnaireDatabaseTest {
   public void shouldFindDocumentById() {
     assertNotNull(database);
 
-    when(mongoTemplate.findById(eq("1230"),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"))).thenReturn(ModifiableQuestionnaire.create().from(QuestionnaireFactory.questionnaire(null,"123")));
+    when(mongoTemplate.findOne(eq(Query.query(Criteria.where("id").is("1230"))),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"))).thenReturn(ModifiableQuestionnaire.create().from(QuestionnaireFactory.questionnaire(null,"123")));
 
     assertNotNull(database.findOne(tenantId, "1230"));
 
-    verify(mongoTemplate).findById(eq("1230"),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"));
+    verify(mongoTemplate).findOne(eq(Query.query(Criteria.where("id").is("1230"))),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"));
     verify(mongoTemplate, atLeast(0)).getConverter();
     verify(mongoTemplate).setApplicationContext(any(ApplicationContext.class));
 
@@ -186,6 +186,7 @@ public class MongoDbQuestionnaireDatabaseTest {
 
     verify(mongoTemplate).remove(eq(Query.query(Criteria.where("id").is("1230"))),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"));
     verify(mongoTemplate, atLeast(0)).getConverter();
+    verify(mongoTemplate, atLeast(1)).findOne(eq(Query.query(Criteria.where("id").is("1230"))),eq(ModifiableQuestionnaire.class),eq("modifiableQuestionnaire"));
     verifyNoMoreInteractions(mongoTemplate, deleteResult);
   }
 

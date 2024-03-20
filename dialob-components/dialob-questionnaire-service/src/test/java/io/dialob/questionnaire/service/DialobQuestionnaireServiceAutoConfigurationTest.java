@@ -16,19 +16,6 @@
 package io.dialob.questionnaire.service;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
-import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
@@ -38,6 +25,17 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DialobQuestionnaireServiceAutoConfigurationTest {
 
@@ -82,7 +80,6 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
-        TaskExecutionAutoConfiguration.class,
         TaskSchedulingAutoConfiguration.class,
         DialobQuestionnaireServiceAutoConfiguration.class))
       .run(context -> {
@@ -100,7 +97,6 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
-        TaskExecutionAutoConfiguration.class,
         TaskSchedulingAutoConfiguration.class,
         DialobQuestionnaireServiceAutoConfiguration.class))
       .withSystemProperties("dialob.session.postSubmitHandler.enabled=false")
@@ -118,7 +114,6 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
-        TaskExecutionAutoConfiguration.class,
         TaskSchedulingAutoConfiguration.class,
         DialobQuestionnaireServiceAutoConfiguration.class))
       .withSystemProperties("dialob.session.autosave.enabled=true")
