@@ -20,9 +20,12 @@ import io.dialob.api.proto.Action;
 import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.session.boot.Application;
+import io.dialob.settings.DialobSettings;
+import io.dialob.tenant.DialobTenantConfigurationAutoConfiguration;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,8 +44,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 // NOTE! This tests fails randomly, due race condition between actions sent over websocket.
 //
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {Application.class, QuestionnaireOnlineUpdateTest.TestConfiguration.class})
+@ContextConfiguration(classes = {Application.class, QuestionnaireOnlineUpdateTest.TestConfiguration.class, DialobTenantConfigurationAutoConfiguration.class})
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"})
+@EnableConfigurationProperties(DialobSettings.class)
 @EnableCaching
 public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
 

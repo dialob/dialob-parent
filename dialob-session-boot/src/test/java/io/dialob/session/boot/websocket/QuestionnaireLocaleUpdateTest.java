@@ -18,15 +18,26 @@ package io.dialob.session.boot.websocket;
 import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ValueSetEntry;
+import io.dialob.function.DialobFunctionAutoConfiguration;
+import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
+import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
+import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.session.boot.Application;
+import io.dialob.session.boot.ApplicationAutoConfiguration;
+import io.dialob.settings.DialobSettings;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketMessagingAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -40,10 +51,21 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 // NOTE! This tests fails randomly, due race condition between actions sent over websocket.
 //
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {Application.class, QuestionnaireLocaleUpdateTest.TestConfiguration.class})
+@ContextConfiguration(classes = {
+  Application.class,
+  ApplicationAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  QuestionnaireLocaleUpdateTest.TestConfiguration.class,
+  DialobQuestionnaireServiceSockJSAutoConfiguration.class,
+  DialobFunctionAutoConfiguration.class,
+  DialobQuestionnaireServiceAutoConfiguration.class
+})
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"})
 @EnableCaching
+@EnableWebSocket
+@EnableConfigurationProperties({DialobSettings.class})
 public class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
+
 
   @Inject
   private ApplicationEventPublisher applicationEventPublisher;

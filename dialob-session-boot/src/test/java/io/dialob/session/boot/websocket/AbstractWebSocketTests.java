@@ -29,6 +29,7 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.sockjs.WebSocketRequestTestTemplate;
 import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.session.boot.ProvideTestRedis;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.SerializationUtils;
@@ -52,6 +53,15 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 public class AbstractWebSocketTests implements ProvideTestRedis {
+
+  @MockBean
+  CurrentTenant currentTenant;
+
+  @BeforeEach
+  void initCurrentTenant() {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+  }
 
   public static class TestConfiguration {
 
@@ -133,8 +143,6 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   @Inject
   protected QuestionnaireDatabase questionnaireDatabase;
 
-  @Inject
-  CurrentTenant currentTenant;
 
   @MockBean
   protected FormDatabase formDatabase;

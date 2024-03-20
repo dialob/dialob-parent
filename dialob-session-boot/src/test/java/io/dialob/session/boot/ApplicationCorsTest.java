@@ -32,13 +32,16 @@ import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -60,53 +63,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   webEnvironment = MOCK,
   properties = {
     "server.servlet.contextPath=/dialob",
+    "security.basic.enabled=false",
     "dialob.session.rest.context=/answers",
     "dialob.session.sockjs.webSocketEnabled=false",
     "dialob.session.cache.type=NONE"
   })
+@SpringBootConfiguration
+@EnableWebSecurity(debug = true)
 @EnableConfigurationProperties(DialobSettings.class)
 class ApplicationCorsTest implements ProvideTestRedis {
 
-  @Configuration(proxyBeanMethods = false)
-  @EnableAutoConfiguration(exclude = {
-    DialobSessionEngineAutoConfiguration.class,
-    DialobFormServiceAutoConfiguration.class,
-    DialobSessionRestAutoConfiguration.class
-  })
-  public static class TestConfiguration {
-
-    @Bean
-    public AnswerController answerController() {
-      return Mockito.mock(AnswerController.class);
-    }
-
-    @Bean
-    public QuestionnaireSessionService questionnaireSessionService() {
-      return Mockito.mock(QuestionnaireSessionService.class);
-    }
-    @Bean
-    public QuestionnaireSessionSaveService questionnaireSessionSaveService() {
-      return Mockito.mock(QuestionnaireSessionSaveService.class);
-    }
-
-
-  }
 
   @Inject
   public WebApplicationContext wac;
 
   @Inject
-  public AnswerController answerController;
-
-  @Inject
   public DialobSettings dialobSettings;
 
+
+  @MockBean
+  public AnswerController answerController;
+
+  @MockBean
+  QuestionnaireSessionSaveService questionnaireSessionSaveService;
+  @MockBean
   public QuestionnaireSessionService questionnaireSessionService;
 
-  @Inject
-  public void setQuestionnaireSessionService(QuestionnaireSessionService questionnaireSessionService) {
-    this.questionnaireSessionService = (QuestionnaireSessionService) AopProxyUtils.getSingletonTarget(questionnaireSessionService);
-  }
+//  @Inject
+//  public void setQuestionnaireSessionService(QuestionnaireSessionService questionnaireSessionService) {
+//    this.questionnaireSessionService = (QuestionnaireSessionService) AopProxyUtils.getSingletonTarget(questionnaireSessionService);
+//  }
 
   private MockMvc mockMvc;
 

@@ -20,6 +20,7 @@ import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableVariable;
 import io.dialob.api.proto.Action;
+import io.dialob.function.DialobFunctionAutoConfiguration;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.boot.Application;
@@ -28,6 +29,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.context.ContextConfiguration;
@@ -46,7 +48,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"})
-@ContextConfiguration(classes = {Application.class, QuestionnaireAsyncFunctionExecutorTest.TestConfiguration.class})
+@ContextConfiguration(classes = {
+  Application.class,
+  QuestionnaireAsyncFunctionExecutorTest.TestConfiguration.class,
+  DialobFunctionAutoConfiguration.class,
+})
 @EnableCaching
 public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTests {
 
