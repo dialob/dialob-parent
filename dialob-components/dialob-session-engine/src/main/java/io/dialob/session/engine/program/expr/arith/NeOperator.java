@@ -23,7 +23,7 @@ import org.immutables.value.Value;
 public interface NeOperator<T> extends EqOperator<T> {
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     Boolean result = EqOperator.super.eval(evalContext);
     if (result == null) {
       return null;

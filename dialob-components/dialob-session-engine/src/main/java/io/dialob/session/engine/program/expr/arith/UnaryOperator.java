@@ -40,5 +40,5 @@ public interface UnaryOperator extends Expression {
     return getExpression().getEvalRequiredConditions();
   }
 
-  Object apply(@Nonnull Object value);
+  Object apply(@NonNull Object value);
 }

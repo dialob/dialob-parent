@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public interface FormsRestService {
   ResponseEntity<Form> postForm(
     @Parameter (description = "New form", name = "form", required = true)
     @RequestBody
-    Form formDocument);
+    @Valid Form formDocument);
 
   /**
    *
