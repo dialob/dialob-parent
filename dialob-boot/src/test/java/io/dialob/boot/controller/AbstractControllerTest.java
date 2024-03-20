@@ -32,6 +32,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @EnableWebSecurity
 @EnableWebMvc
 public abstract class AbstractControllerTest {
+
   public MockMvc mockMvc;
 
   @Autowired

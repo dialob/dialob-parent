@@ -18,16 +18,29 @@ package io.dialob.boot.rest;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.boot.Application;
+import io.dialob.boot.security.SecurityConfiguration;
+import io.dialob.boot.settings.AdminApplicationSettings;
+import io.dialob.boot.settings.ComposerApplicationSettings;
+import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.form.service.DialobFormServiceAutoConfiguration;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.repository.FormListItem;
+import io.dialob.form.service.rest.DialobFormServiceRestAutoConfiguration;
 import io.dialob.integration.api.event.FormUpdatedEvent;
+import io.dialob.integration.queue.DialobIntegrationQueueAutoConfiguration;
 import io.dialob.integration.redis.ProvideTestRedis;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.FormFinder;
+import io.dialob.rest.RestApiExceptionMapper;
+import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.settings.DialobSettings;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +48,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -57,6 +72,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -70,21 +86,49 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
-  "dialob.db.database-type=none"})
+  "dialob.security.authenticationMethod=NONE",
+  "dialob.db.database-type=none"
+})
 @ContextConfiguration(classes = {
   AbstractSecuredRestTests.TestConfiguration.class,
   Application.class,
   FormsRestServiceControllerApiKeyTest.TestConfiguration.class,
-  ServletWebServerFactoryAutoConfiguration.class})
+  ServletWebServerFactoryAutoConfiguration.class,
+  SecurityConfiguration.class,
+  DialobFormServiceRestAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobFormServiceAutoConfiguration.class,
+  DialobIntegrationQueueAutoConfiguration.class,
+  ValidationAutoConfiguration.class,
+  RestApiExceptionMapper.class
+
+})
+@EnableConfigurationProperties({
+  DialobSettings.class,
+  ComposerApplicationSettings.class,
+  QuestionnaireApplicationSettings.class,
+  AdminApplicationSettings.class,
+  ReviewApplicationSettings.class
+})
 public class FormsRestServiceControllerApiKeyTest implements ProvideTestRedis {
 
-  public FormsRestServiceControllerApiKeyTest() {}
+  @MockBean
+  private CurrentTenant currentTenant;
+  @MockBean
+  private FunctionRegistry functionRegistry;
 
   public interface ListenerMock {
     @EventListener
     void onFormUpdatedEvent(FormUpdatedEvent event);
   }
 
+  public String tenantId = "00000000-0000-0000-0000-000000000000";
+
+  @BeforeEach
+  void setupTenant() {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+  }
 
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {
@@ -173,7 +217,7 @@ public class FormsRestServiceControllerApiKeyTest implements ProvideTestRedis {
 
     HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret");
 
-    ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<FormListItem>>() {});
+    ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() { });
     assertEquals(200, response.getStatusCodeValue());
     verify(formDatabase, times(1)).findAllMetadata(anyString(), isNull(), any());
     List<FormListItem> r = response.getBody();
