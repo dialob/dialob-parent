@@ -64,7 +64,7 @@ public class DialobSettings {
   private GcpSettings gcp = new GcpSettings();
 
   Map<String, Tags> tags = new HashMap<>();
-  
+
   private FunctionSettings function = new FunctionSettings();
 
   @Data
@@ -192,7 +192,8 @@ public class DialobSettings {
 
     public enum AuthenticationMethod {
       OAUTH2,
-      AWSELB
+      AWSELB,
+      NONE
     }
 
     private boolean enabled;

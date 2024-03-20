@@ -63,7 +63,7 @@ public class DialobCacheAutoConfiguration {
     }
 
     @Bean
-    public ScheduledSessionEvictionPolicy scheduledSessionEvictionPolicy(Clock clock, Optional<QuestionnaireSessionSaveService> sessionService, Optional<CacheManager> cacheManager, DialobSettings dialobSettings) {
+    public ScheduledSessionEvictionPolicy scheduledSessionEvictionPolicy(Optional<Clock> clock, Optional<QuestionnaireSessionSaveService> sessionService, Optional<CacheManager> cacheManager, DialobSettings dialobSettings) {
       return new ScheduledSessionEvictionPolicy(
         clock,
         questionnaireSessionCache,

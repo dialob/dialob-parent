@@ -46,12 +46,12 @@ public class ScheduledSessionEvictionPolicy {
 
   private final Integer ttl;
 
-  public ScheduledSessionEvictionPolicy(Clock clock,
+  public ScheduledSessionEvictionPolicy(Optional<Clock> clock,
                                         QuestionnaireSessionCache cache,
                                         Optional<QuestionnaireSessionSaveService> sessionService,
                                         Optional<CacheManager> cacheManager,
                                         Integer ttl) {
-    this.clock = clock;
+    this.clock = clock.orElseGet(Clock::systemDefaultZone);
     this.cache = cache;
     this.sessionService = sessionService;
     this.cacheManager = cacheManager;

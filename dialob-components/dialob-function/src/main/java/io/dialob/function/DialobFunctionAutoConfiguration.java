@@ -17,6 +17,7 @@ package io.dialob.function;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SyncTaskExecutor;
@@ -29,7 +30,7 @@ import io.dialob.security.tenant.CurrentTenant;
 public class DialobFunctionAutoConfiguration {
 
   @Bean
-  public FunctionRegistry functionRegistry(Optional<TaskExecutor> taskExecutor, CurrentTenant currentTenant) {
+  public FunctionRegistry functionRegistry(@Qualifier("applicationTaskExecutor") Optional<TaskExecutor> taskExecutor, CurrentTenant currentTenant) {
     return new FunctionRegistryImpl(taskExecutor.orElseGet(SyncTaskExecutor::new), currentTenant);
   }
 

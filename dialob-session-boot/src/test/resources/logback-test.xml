@@ -2,10 +2,12 @@
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-  <logger name="org.springframework.web.socket" level="INFO"/>
+  <logger name="org.springframework.web.socket" level="DEBUG"/>
   <logger name="org.springframework.web" level="INFO"/>
   <logger name="org.apache.catalina" level="INFO"/>
   <logger name="org.apache.tomcat" level="INFO"/>
+  <logger name="org.springframework.security" level="DEBUG"/>
+  <logger name="io.dialob.questionnaire.service.sockjs" level="DEBUG"/>
   
   <!-- prevents request GET /manage/logfile getting into infinite loop -->
   <logger name="org.springframework.security.web.context.HttpSessionSecurityContextRepository$SaveToSessionResponseWrapper" level="WARN"/>
@@ -21,6 +23,8 @@
 
   <!-- suppress tomcat logging -->
   <logger name="org.apache.coyote.http11.Http11Processor" level="WARN"/>
+  <logger name="org.springframework.web.servlet.HandlerMapping.Mappings" level="DEBUG"/>
+  <logger name="org.springframework.web.servlet" level="DEBUG"/>
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
   </root>
