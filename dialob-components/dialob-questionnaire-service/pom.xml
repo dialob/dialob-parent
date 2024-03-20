@@ -27,6 +27,11 @@
   <artifactId>dialob-questionnaire-service</artifactId>
   <dependencies>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-json</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-questionnaire-service-api</artifactId>
     </dependency>

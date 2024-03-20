@@ -15,54 +15,16 @@
  */
 package io.dialob.form.service.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.form.service.api.validation.FormIdRenamer;
-import io.dialob.form.service.api.validation.FormItemCopier;
-import io.dialob.integration.api.NodeId;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.session.engine.program.FormValidatorExecutor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.Clock;
-import java.util.Optional;
+import org.springframework.context.annotation.Import;
 
 @Configuration(proxyBeanMethods = false)
+@Import({
+  FormsRestServiceController.class,
+  FormTagsRestServiceController.class
+})
 public class DialobFormServiceRestAutoConfiguration {
-
-  private final FormsRestServiceController formsRestServiceController;
-  private final FormTagsRestService formTagsRestService;
-
-  public DialobFormServiceRestAutoConfiguration(
-    ApplicationEventPublisher eventPublisher,
-    FormDatabase formDatabase,
-    Optional<FormVersionControlDatabase> formVersionControlDatabase,
-    FormValidatorExecutor validator,
-    FormIdRenamer renamer,
-    ObjectMapper objectMapper,
-    NodeId nodeId,
-    FormItemCopier formItemCopier,
-    CurrentTenant currentTenant,
-    CurrentUserProvider currentUserProvider,
-    Optional<Clock> clock)
-  {
-    this.formsRestServiceController = new FormsRestServiceController(eventPublisher, formDatabase, formVersionControlDatabase, validator, renamer, objectMapper, nodeId, formItemCopier, currentTenant, currentUserProvider, clock.orElse(Clock.systemDefaultZone()));
-    this.formTagsRestService = new FormTagsRestServiceController(formVersionControlDatabase, currentTenant);
-  }
-
-  @Bean
-  public FormsRestService formsRestService() {
-    return formsRestServiceController;
-  }
-
-  @Bean
-  public FormTagsRestService formTagsRestService() {
-    return formTagsRestService;
-  }
 
   @Bean
   public FormRootItemMustBeDefinedValidator formRootItemMustBeDefinedValidator() {

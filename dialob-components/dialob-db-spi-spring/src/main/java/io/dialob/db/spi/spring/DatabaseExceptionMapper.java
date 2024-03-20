@@ -20,8 +20,7 @@ import io.dialob.api.rest.Errors;
 import io.dialob.api.rest.ImmutableErrors;
 import io.dialob.db.spi.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,37 +28,36 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Slf4j
 public class DatabaseExceptionMapper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseExceptionMapper.class);
-
   @ExceptionHandler
-  public ResponseEntity handleDocumentNotFoundException(DocumentNotFoundException exception) {
+  public ResponseEntity<Errors> handleDocumentNotFoundException(DocumentNotFoundException exception) {
     return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDatabaseUnauthorizedException(DatabaseUnauthorizedException exception) {
+  public ResponseEntity<Errors> handleDatabaseUnauthorizedException(DatabaseUnauthorizedException exception) {
     return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDocumentForbiddenException(DocumentForbiddenException exception) {
+  public ResponseEntity<Errors> handleDocumentForbiddenException(DocumentForbiddenException exception) {
     return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDocumentConflictException(DocumentConflictException exception) {
+  public ResponseEntity<Errors> handleDocumentConflictException(DocumentConflictException exception) {
     return buildResponse(HttpStatus.CONFLICT, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDocumentLockedException(DocumentLockedException exception) {
+  public ResponseEntity<Errors> handleDocumentLockedException(DocumentLockedException exception) {
     return buildResponse(HttpStatus.LOCKED, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity invalidDefinitionException(InvalidDefinitionException exception) {
+  public ResponseEntity<Errors> invalidDefinitionException(InvalidDefinitionException exception) {
     if (exception.getCause() instanceof ConstraintViolationException) {
       ConstraintViolationException constraintViolationException = (ConstraintViolationException) exception.getCause();
 

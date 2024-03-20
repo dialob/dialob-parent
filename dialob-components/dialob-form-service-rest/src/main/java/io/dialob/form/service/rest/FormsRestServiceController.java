@@ -36,10 +36,9 @@ import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,9 +59,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 public class FormsRestServiceController implements FormsRestService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(FormsRestServiceController.class);
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
@@ -112,7 +110,9 @@ public class FormsRestServiceController implements FormsRestService {
                                     NodeId nodeId,
                                     FormItemCopier formItemCopier,
                                     CurrentTenant currentTenant,
-                                    CurrentUserProvider currentUserProvider, Clock clock) {
+                                    CurrentUserProvider currentUserProvider,
+                                    Optional<Clock> clock)
+  {
     this.eventPublisher = eventPublisher;
     this.formDatabase = formDatabase;
     this.formVersionControlDatabase = formVersionControlDatabase;
@@ -123,7 +123,7 @@ public class FormsRestServiceController implements FormsRestService {
     this.formItemCopier = formItemCopier;
     this.currentTenant = currentTenant;
     this.currentUserProvider = currentUserProvider;
-    this.clock = clock;
+    this.clock = clock.orElseGet(Clock::systemDefaultZone);
   }
 
   @Override
