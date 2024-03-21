@@ -15,19 +15,6 @@
  */
 package io.dialob.session.rest;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Optional;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableAction;
@@ -41,6 +28,16 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j

@@ -15,28 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormTag;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableFormTag;
+import io.dialob.api.form.*;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -48,6 +27,16 @@ import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBackendTest {

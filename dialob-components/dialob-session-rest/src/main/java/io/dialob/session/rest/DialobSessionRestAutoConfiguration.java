@@ -15,17 +15,16 @@
  */
 package io.dialob.session.rest;
 
-import java.util.Optional;
-
+import io.dialob.questionnaire.service.api.ActionProcessingService;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.settings.DialobSettings;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.dialob.questionnaire.service.api.ActionProcessingService;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.settings.DialobSettings;
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 public class DialobSessionRestAutoConfiguration {

@@ -17,7 +17,6 @@ package io.dialob.groovy;
 
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.settings.DialobSettings;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

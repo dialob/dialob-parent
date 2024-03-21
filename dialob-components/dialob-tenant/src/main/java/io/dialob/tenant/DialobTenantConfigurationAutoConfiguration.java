@@ -15,14 +15,13 @@
  */
 package io.dialob.tenant;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.FixedCurrentTenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import io.dialob.settings.DialobSettings;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 public class DialobTenantConfigurationAutoConfiguration {

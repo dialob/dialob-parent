@@ -27,9 +27,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.stream.Stream;
 
 @Value.Immutable
 public interface ArrayReducerOperator<T> extends Expression {

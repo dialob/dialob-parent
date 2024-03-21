@@ -15,17 +15,15 @@
  */
 package io.dialob.integration.api.event;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import io.dialob.security.tenant.ImmutableTenant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import java.util.Optional;
 
-import io.dialob.security.tenant.ImmutableTenant;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FormDeletedEventTest {
   private ObjectMapper mapper = new ObjectMapper().registerModules(new Jdk8Module());

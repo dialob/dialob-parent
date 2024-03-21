@@ -19,8 +19,6 @@ import io.dialob.session.engine.session.model.IdUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class GroupTest {
 
   @Test

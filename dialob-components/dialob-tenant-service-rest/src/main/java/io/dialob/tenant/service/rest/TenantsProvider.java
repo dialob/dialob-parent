@@ -15,11 +15,10 @@
  */
 package io.dialob.tenant.service.rest;
 
-import java.util.List;
-
+import io.dialob.security.tenant.Tenant;
 import org.springframework.lang.NonNull;
 
-import io.dialob.security.tenant.Tenant;
+import java.util.List;
 
 interface TenantsProvider {
 

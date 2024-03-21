@@ -20,7 +20,6 @@ import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableValidation;
 import io.dialob.api.proto.Action;
-import io.dialob.api.questionnaire.Answer;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
@@ -35,7 +34,7 @@ import java.time.Clock;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 

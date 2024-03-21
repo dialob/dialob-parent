@@ -15,34 +15,24 @@
  */
 package io.dialob.boot.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Iterator;
-import java.util.Optional;
-
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.ApplicationAutoConfiguration;
-import io.dialob.boot.security.SecurityConfiguration;
 import io.dialob.boot.settings.AdminApplicationSettings;
 import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.boot.settings.ReviewApplicationSettings;
-import io.dialob.form.service.rest.DialobFormServiceRestAutoConfiguration;
+import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
-import io.dialob.questionnaire.service.rest.DialobExceptionMapper;
+import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.rest.DialobQuestionnaireServiceRestAutoConfiguration;
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
@@ -55,7 +45,6 @@ import org.mockito.invocation.Invocation;
 import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -69,15 +58,19 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.questionnaire.service.api.session.FormFinder;
-import io.dialob.security.tenant.CurrentTenant;
+import java.util.Iterator;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)

@@ -15,15 +15,14 @@
  */
 package io.dialob.security.spring;
 
-import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationToken;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ApiKeyCurrentUserProvider implements CurrentUserProvider {
   @NonNull

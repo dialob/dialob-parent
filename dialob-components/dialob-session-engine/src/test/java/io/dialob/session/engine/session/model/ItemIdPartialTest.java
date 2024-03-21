@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import org.immutables.value.Value;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

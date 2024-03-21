@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.dialob.session.engine.session.command.EventMatchers.*;
 import static io.dialob.session.engine.session.command.Triggers.*;
-import static io.dialob.session.engine.session.command.Triggers.valueSetUpdatedEvent;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

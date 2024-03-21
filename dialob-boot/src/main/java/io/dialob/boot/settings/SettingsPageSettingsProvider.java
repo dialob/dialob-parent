@@ -15,17 +15,16 @@
  */
 package io.dialob.boot.settings;
 
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.lang.NonNull;
-
 import io.dialob.boot.controller.PageAttributes;
 import io.dialob.boot.controller.PageSettingsProvider;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.NoTenantInScopeException;
+import org.springframework.lang.NonNull;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class SettingsPageSettingsProvider implements PageSettingsProvider {
 

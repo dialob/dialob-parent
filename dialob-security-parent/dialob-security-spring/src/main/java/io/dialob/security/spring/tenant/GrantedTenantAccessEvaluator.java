@@ -15,13 +15,12 @@
  */
 package io.dialob.security.spring.tenant;
 
-import java.util.Objects;
-
+import io.dialob.security.tenant.Tenant;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import io.dialob.security.tenant.Tenant;
+import java.util.Objects;
 
 public class GrantedTenantAccessEvaluator implements TenantAccessEvaluator {
 

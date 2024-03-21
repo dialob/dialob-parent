@@ -28,7 +28,6 @@ import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
 import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
-import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.session.boot.Application;
 import io.dialob.session.boot.ApplicationAutoConfiguration;
 import io.dialob.settings.DialobSettings;
@@ -39,10 +38,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
@@ -52,7 +49,6 @@ import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.groups.Tuple.tuple;
-import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(SpringExtension.class)
