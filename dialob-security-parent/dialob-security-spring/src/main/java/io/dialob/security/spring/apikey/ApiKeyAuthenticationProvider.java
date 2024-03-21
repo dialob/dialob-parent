@@ -15,16 +15,15 @@
  */
 package io.dialob.security.spring.apikey;
 
-import java.util.Collection;
-import java.util.Objects;
-
+import io.dialob.security.key.ApiKey;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import io.dialob.security.key.ApiKey;
+import java.util.Collection;
+import java.util.Objects;
 
 public class ApiKeyAuthenticationProvider implements AuthenticationProvider {
 

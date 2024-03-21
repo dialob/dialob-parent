@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.sp;
 
-import com.google.common.collect.Lists;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;

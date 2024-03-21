@@ -15,9 +15,9 @@
  */
 package io.dialob.security.spring.tenant;
 
-import java.util.Optional;
-
 import io.dialob.security.tenant.Tenant;
+
+import java.util.Optional;
 
 public interface DefaultTenantSupplier {
 

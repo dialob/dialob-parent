@@ -15,6 +15,7 @@
  */
 package io.dialob.service.common.security;
 
+import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -32,8 +33,6 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import io.dialob.settings.DialobSettings;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;

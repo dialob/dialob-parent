@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session;
 
-import com.google.common.collect.Maps;
 import io.dialob.api.proto.ActionsFactory;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;

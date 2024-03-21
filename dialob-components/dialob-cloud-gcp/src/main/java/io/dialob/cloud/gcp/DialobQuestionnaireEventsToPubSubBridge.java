@@ -15,9 +15,9 @@
  */
 package io.dialob.cloud.gcp;
 
+import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
 
 @Slf4j
 public class DialobQuestionnaireEventsToPubSubBridge {

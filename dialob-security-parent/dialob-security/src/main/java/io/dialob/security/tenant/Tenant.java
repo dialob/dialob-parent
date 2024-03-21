@@ -15,15 +15,14 @@
  */
 package io.dialob.security.tenant;
 
-import java.io.Serializable;
-import java.util.Optional;
-
-import org.immutables.value.Value;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableTenant.class)

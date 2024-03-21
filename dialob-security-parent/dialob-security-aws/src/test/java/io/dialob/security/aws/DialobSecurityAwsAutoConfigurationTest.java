@@ -15,16 +15,14 @@
  */
 package io.dialob.security.aws;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.nimbusds.jwt.proc.JWTProcessor;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
-import com.nimbusds.jwt.proc.JWTProcessor;
-
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.settings.DialobSettings;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DialobSecurityAwsAutoConfigurationTest {
 

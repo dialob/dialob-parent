@@ -15,8 +15,8 @@
  */
 package io.dialob.cloud.gcp;
 
-import org.springframework.integration.annotation.MessagingGateway;
 import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
+import org.springframework.integration.annotation.MessagingGateway;
 
 @MessagingGateway(defaultRequestChannel = "dialobQuestionnairePubSubOutputChannel")
 public interface DialobQuestionnaireEventsMessagingGateway {

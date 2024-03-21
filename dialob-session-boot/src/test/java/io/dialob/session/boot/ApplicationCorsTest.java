@@ -16,40 +16,29 @@
 package io.dialob.session.boot;
 
 import io.dialob.api.proto.ImmutableActions;
-import io.dialob.form.service.DialobFormServiceAutoConfiguration;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.session.rest.AnswerController;
 import io.dialob.session.rest.DefaultAnswerController;
-import io.dialob.session.rest.DialobSessionRestAutoConfiguration;
 import io.dialob.settings.CorsSettings;
 import io.dialob.settings.DialobSettings;
-import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import jakarta.inject.Inject;
 
 import java.net.URI;
 import java.util.Optional;

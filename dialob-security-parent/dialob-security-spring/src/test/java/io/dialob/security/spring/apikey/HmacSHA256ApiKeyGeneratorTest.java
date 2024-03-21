@@ -19,7 +19,6 @@ import io.dialob.security.key.ApiKey;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Base64;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

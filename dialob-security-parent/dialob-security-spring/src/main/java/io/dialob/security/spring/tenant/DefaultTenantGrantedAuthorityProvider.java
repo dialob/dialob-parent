@@ -15,14 +15,13 @@
  */
 package io.dialob.security.spring.tenant;
 
-import java.util.Optional;
-
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.security.tenant.Tenant;
+import java.util.Optional;
 
 public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSupplier {
 

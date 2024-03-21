@@ -15,9 +15,7 @@
  */
 package io.dialob.boot.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +26,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 import org.springframework.util.StringUtils;
 
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WithDialobUserSecurityContextFactory implements
   WithSecurityContextFactory<WithDialobUser> {

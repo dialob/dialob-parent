@@ -15,15 +15,14 @@
  */
 package io.dialob.tenant.service.rest;
 
-import java.util.List;
-
+import io.dialob.security.tenant.Tenant;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.dialob.security.tenant.Tenant;
+import java.util.List;
 
 @RestController
 @RequestMapping("${dialob.api.context-path:}/tenants")

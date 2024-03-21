@@ -15,16 +15,15 @@
  */
 package io.dialob.security.spring;
 
+import io.dialob.security.spring.audit.AuditConfiguration;
+import io.dialob.security.spring.filter.MDCRequestIdFilter;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import io.dialob.security.spring.audit.AuditConfiguration;
-import io.dialob.security.spring.filter.MDCRequestIdFilter;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 
 @Configuration(proxyBeanMethods = false)
 @Import(AuditConfiguration.class)

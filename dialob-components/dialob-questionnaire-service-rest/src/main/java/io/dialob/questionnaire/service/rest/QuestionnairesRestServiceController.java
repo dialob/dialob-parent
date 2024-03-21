@@ -15,62 +15,14 @@
  */
 package io.dialob.questionnaire.service.rest;
 
-import static io.dialob.api.proto.ActionsFactory.answer;
-import static io.dialob.api.proto.ActionsFactory.complete;
-import static io.dialob.api.proto.ActionsFactory.gotoPage;
-import static io.dialob.api.proto.ActionsFactory.removeAnswers;
-import static io.dialob.api.proto.ActionsFactory.setValue;
-import static java.util.Collections.singletonList;
-import static org.springframework.http.ResponseEntity.notFound;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.dialob.api.form.Form;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ActionsFactory;
 import io.dialob.api.proto.ValueSet;
-import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Error;
-import io.dialob.api.questionnaire.ImmutableError;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireListItem;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.api.questionnaire.QuestionnaireFactory;
-import io.dialob.api.questionnaire.QuestionnaireListItem;
-import io.dialob.api.rest.IdAndRevision;
-import io.dialob.api.rest.ImmutableErrors;
-import io.dialob.api.rest.ImmutableIdAndRevision;
-import io.dialob.api.rest.ImmutableItems;
-import io.dialob.api.rest.ImmutableResponse;
-import io.dialob.api.rest.Items;
-import io.dialob.api.rest.Response;
+import io.dialob.api.questionnaire.*;
+import io.dialob.api.rest.*;
 import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
@@ -83,6 +35,26 @@ import io.dialob.rest.type.ApiException;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static io.dialob.api.proto.ActionsFactory.*;
+import static java.util.Collections.singletonList;
+import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
 @Slf4j

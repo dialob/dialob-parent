@@ -45,7 +45,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;

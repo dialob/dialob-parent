@@ -15,17 +15,12 @@
  */
 package io.dialob.boot.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import io.dialob.boot.security.SecurityConfiguration;
+import io.dialob.boot.settings.AdminApplicationSettings;
+import io.dialob.boot.settings.ComposerApplicationSettings;
+import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,12 +37,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import io.dialob.boot.security.SecurityConfiguration;
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {

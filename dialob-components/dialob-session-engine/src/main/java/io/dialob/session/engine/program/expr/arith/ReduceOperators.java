@@ -16,7 +16,6 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.rule.parser.node.IdExprNode;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 

@@ -15,16 +15,16 @@
  */
 package io.dialob.settings;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
-
 @Data
 public class FunctionSettings {
-  
+
   private GroovyFunctionSettings groovy = new GroovyFunctionSettings();
-  
+
   @Data
   public static class GroovyFunctionSettings {
     private List<String> locations = new ArrayList<>();
