@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -96,7 +97,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     final ActionProcessingService actionProcessingService,
     final ObjectMapper mapper,
     final QuestionnaireSessionService questionnaireSessionService,
-    final TaskExecutor taskExecutor)
+    @Qualifier("applicationTaskExecutor") final TaskExecutor taskExecutor)
   {
     this.settings = settings.getSession().getSockjs();
     this.eventPublisher = eventPublisher;
@@ -144,6 +145,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
           .message("not found")
           .id(this.questionnaireId).build());
       } catch(Exception e) {
+        LOGGER.error("Websocket handler failed: {}", e.getMessage());
         LOGGER.debug("Error in websocket handler", e);
         actions.actions(Collections.singletonList(createNotifyServerErrorAction(e)));
       }

@@ -60,7 +60,7 @@ import static io.dialob.session.engine.Utils.*;
 @Slf4j
 @EqualsAndHashCode(exclude = {"eventPublisher", "state"})
 @ToString
-public class DialobQuestionnaireSession implements QuestionnaireSession, Serializable {
+public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   enum State {
     NEW,
@@ -92,16 +92,17 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
   private final transient Function<ItemState, ActionItem> toActionItemFunction;
 
   private DialobQuestionnaireSession(String rev, @NonNull DialobSession dialobSession, @NonNull DialobQuestionnaireSession dialobQuestionnaireSession) {
-    this.rev = rev;
-    this.dialobSession = dialobSession;
-    this.eventPublisher = dialobQuestionnaireSession.eventPublisher;
-    this.sessionContextFactory = dialobQuestionnaireSession.sessionContextFactory;
-    this.asyncFunctionInvoker = dialobQuestionnaireSession.asyncFunctionInvoker;
-    this.dialobProgram = dialobQuestionnaireSession.dialobProgram;
-    this.questionClientVisibility = dialobQuestionnaireSession.questionClientVisibility;
-    this.state = new AtomicReference<>(dialobQuestionnaireSession.state.get());
-    this.metadata = dialobQuestionnaireSession.metadata;
-    this.toActionItemFunction = dialobQuestionnaireSession.toActionItemFunction;
+    this(
+      dialobQuestionnaireSession.eventPublisher,
+      dialobQuestionnaireSession.sessionContextFactory,
+      dialobQuestionnaireSession.asyncFunctionInvoker,
+      dialobSession,
+      dialobQuestionnaireSession.dialobProgram,
+      rev,
+      dialobQuestionnaireSession.metadata,
+      dialobQuestionnaireSession.state.get(),
+      dialobQuestionnaireSession.questionClientVisibility
+    );
   }
 
   private DialobQuestionnaireSession(@NonNull QuestionnaireEventPublisher eventPublisher,
@@ -118,7 +119,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     this.eventPublisher = eventPublisher;
     this.sessionContextFactory = sessionContextFactory;
     this.asyncFunctionInvoker = asyncFunctionInvoker;
-    this.dialobSession = dialobSession;
+    this.dialobSession = Objects.requireNonNull(dialobSession, "dialobSession may not be null");
     this.dialobProgram = dialobProgram;
     this.questionClientVisibility = questionClientVisibility;
     this.state = new AtomicReference<>(state);

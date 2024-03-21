@@ -28,6 +28,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cache.CacheManager;
@@ -81,6 +82,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
         TaskSchedulingAutoConfiguration.class,
+        TaskExecutionAutoConfiguration.class,
         DialobQuestionnaireServiceAutoConfiguration.class))
       .run(context -> {
         assertThat(context).hasSingleBean(QuestionnaireSessionProcessingService.class);
@@ -98,6 +100,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
         TaskSchedulingAutoConfiguration.class,
+        TaskExecutionAutoConfiguration.class,
         DialobQuestionnaireServiceAutoConfiguration.class))
       .withSystemProperties("dialob.session.postSubmitHandler.enabled=false")
       .run(context -> {
@@ -115,6 +118,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
         TaskSchedulingAutoConfiguration.class,
+        TaskExecutionAutoConfiguration.class,
         DialobQuestionnaireServiceAutoConfiguration.class))
       .withSystemProperties("dialob.session.autosave.enabled=true")
       .run(context -> {

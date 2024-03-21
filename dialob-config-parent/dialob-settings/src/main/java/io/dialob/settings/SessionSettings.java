@@ -82,7 +82,7 @@ public class SessionSettings {
     private UrlAttributes urlAttributes = new UrlAttributes();
 
     @NotEmpty
-    private String contextPath = "/socket/{tenantId}/{sessionId}";
+    private String contextPath = "/socket";
 
     private int maxTextMessageBufferSize = 65536;
 

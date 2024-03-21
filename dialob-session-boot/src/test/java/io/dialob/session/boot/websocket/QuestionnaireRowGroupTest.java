@@ -20,16 +20,26 @@ import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableValidation;
 import io.dialob.api.proto.Action;
+import io.dialob.cache.DialobCacheAutoConfiguration;
+import io.dialob.function.DialobFunctionAutoConfiguration;
+import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
+import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
 import io.dialob.session.boot.Application;
+import io.dialob.session.boot.ApplicationAutoConfiguration;
+import io.dialob.settings.DialobSettings;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
+import io.dialob.spring.boot.redis.RedisQuestionnaireDialobSessionCacheConfiguration;
 import jakarta.inject.Inject;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -41,9 +51,23 @@ import static org.assertj.core.groups.Tuple.tuple;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"})
-@ContextConfiguration(classes = {Application.class, QuestionnaireRowGroupTest.TestConfiguration.class})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+  "dialob.db.database-type=none",
+  "dialob.session.cache.type=LOCAL"
+}, classes = {
+  Application.class,
+  ApplicationAutoConfiguration.class,
+  QuestionnaireRowGroupTest.TestConfiguration.class,
+  DialobQuestionnaireServiceSockJSAutoConfiguration.class,
+  DialobFunctionAutoConfiguration.class,
+  DialobQuestionnaireServiceAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+//  RedisQuestionnaireDialobSessionCacheConfiguration.class,
+  DialobCacheAutoConfiguration.class
+})
 @EnableCaching
+@EnableWebSocket
+@EnableConfigurationProperties({DialobSettings.class})
 public class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
 
 

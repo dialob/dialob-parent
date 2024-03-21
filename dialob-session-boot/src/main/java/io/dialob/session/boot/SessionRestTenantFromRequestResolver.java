@@ -42,14 +42,21 @@ public class SessionRestTenantFromRequestResolver implements TenantFromRequestRe
         return getQuestionnaireSession(sessionId)
           .map(QuestionnaireSession::getTenantId).map(tId -> ImmutableTenant.of(tId, Optional.empty()));
       } catch (DocumentNotFoundException dnfe) {
-        return Optional.empty();
+        /* fall throught */;
       }
     }
     return Optional.empty();
   }
 
   protected String getSessionId(HttpServletRequest request) {
-    return request.getParameter("sessionId");
+    var sessionId = request.getParameter("sessionId");
+    if (StringUtils.isBlank(sessionId)) {
+      sessionId = StringUtils.substringAfterLast(request.getPathInfo(), "/");
+    }
+    if (!StringUtils.containsOnly(sessionId, "0123456789abcdefABCDEF")) {
+      return null;
+    }
+    return sessionId;
   }
 
   @NonNull

@@ -18,6 +18,7 @@ package io.dialob.session.boot.websocket;
 import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ValueSetEntry;
+import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
 import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
@@ -45,22 +46,26 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.tuple;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 //
 // NOTE! This tests fails randomly, due race condition between actions sent over websocket.
 //
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+  "dialob.db.database-type=none",
+  "dialob.session.cache.type=LOCAL"
+}, classes = {
   Application.class,
   ApplicationAutoConfiguration.class,
-  DialobSessionEngineAutoConfiguration.class,
   QuestionnaireLocaleUpdateTest.TestConfiguration.class,
   DialobQuestionnaireServiceSockJSAutoConfiguration.class,
   DialobFunctionAutoConfiguration.class,
-  DialobQuestionnaireServiceAutoConfiguration.class
+  DialobQuestionnaireServiceAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobCacheAutoConfiguration.class,
 })
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"})
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
@@ -72,6 +77,7 @@ public class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
 
   @Test
   public void updateFormLocaleOnline() throws Exception {
+    when(currentTenant.getId()).thenReturn(tenantId);
 
     ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
     Consumer<ImmutableForm.Builder> initializer = formBuilder -> {

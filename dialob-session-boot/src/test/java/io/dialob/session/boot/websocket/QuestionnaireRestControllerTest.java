@@ -21,7 +21,9 @@ import io.dialob.api.questionnaire.ImmutableAnswer;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
+import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
 import io.dialob.session.boot.Application;
 import io.dialob.session.boot.ApplicationAutoConfiguration;
@@ -54,14 +56,16 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
   "dialob.db.database-type=none",
-})
-@ContextConfiguration(classes = {
+  "dialob.session.cache.type=LOCAL"
+}, classes = {
   Application.class,
   ApplicationAutoConfiguration.class,
-  DialobSessionEngineAutoConfiguration.class,
-  QuestionnaireRestControllerTest.TestConfiguration.class,
+  QuestionnaireWebSocketTest.TestConfiguration.class,
   DialobQuestionnaireServiceSockJSAutoConfiguration.class,
-  DialobFunctionAutoConfiguration.class
+  DialobFunctionAutoConfiguration.class,
+  DialobQuestionnaireServiceAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobCacheAutoConfiguration.class,
 })
 @EnableCaching
 @EnableWebSocket

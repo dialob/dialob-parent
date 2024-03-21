@@ -23,8 +23,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
+import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
+import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
+import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.session.boot.ApplicationAutoConfiguration;
 import io.dialob.settings.DialobSettings;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
@@ -34,7 +38,9 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -48,13 +54,18 @@ import io.dialob.session.boot.Application;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"dialob.db.database-type=none"}, classes = {
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+  "dialob.db.database-type=none",
+  "dialob.session.cache.type=LOCAL"
+}, classes = {
   Application.class,
   ApplicationAutoConfiguration.class,
   QuestionnaireWebSocketTest.TestConfiguration.class,
   DialobQuestionnaireServiceSockJSAutoConfiguration.class,
   DialobFunctionAutoConfiguration.class,
-  DialobSessionEngineAutoConfiguration.class
+  DialobQuestionnaireServiceAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobCacheAutoConfiguration.class,
 })
 @EnableCaching
 @EnableWebSocket
