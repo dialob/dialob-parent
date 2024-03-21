@@ -24,6 +24,6 @@ jobs:
           java-version: '17'
 
       - name: build
-        run: ./mvn verify -Pdialob-build -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: ./mvnw verify -Pdialob-build -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
 
