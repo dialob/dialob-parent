@@ -15,25 +15,13 @@
  */
 package io.dialob.session.rest;
 
-import static io.dialob.api.proto.Action.Type.RESET;
-import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import io.dialob.api.proto.*;
+import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.questionnaire.service.api.ActionProcessingService;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.settings.DialobSettingsAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +30,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.api.proto.Action;
-import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableAction;
-import io.dialob.api.proto.ImmutableActionItem;
-import io.dialob.api.proto.ImmutableActions;
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.questionnaire.service.api.ActionProcessingService;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.settings.DialobSettingsAutoConfiguration;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static io.dialob.api.proto.Action.Type.RESET;
+import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {DialobSessionRestAutoConfiguration.class, DialobSettingsAutoConfiguration.class}, properties = {

@@ -15,20 +15,17 @@
  */
 package io.dialob.tenant.service.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
+import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
-import io.dialob.security.tenant.Tenant;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class GrantedAuthorityTenantsProviderTest {
 

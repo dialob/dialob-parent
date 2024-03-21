@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 public class NodeOperator implements Serializable {

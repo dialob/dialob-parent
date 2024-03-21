@@ -15,7 +15,6 @@
  */
 package io.dialob.questionnaire.service.rest;
 
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.FormDataMissingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -15,17 +15,16 @@
  */
 package io.dialob.security.spring.oauth2;
 
-import static java.util.stream.Collectors.toList;
+import io.dialob.security.spring.tenant.GroupGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import io.dialob.security.spring.tenant.GroupGrantedAuthority;
+import static java.util.stream.Collectors.toList;
 
 public class Groups2GrantedAuthorisations implements UnaryOperator<Stream<? extends GrantedAuthority>> {
 

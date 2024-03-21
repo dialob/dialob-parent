@@ -16,7 +16,6 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.model.*;
 import io.dialob.session.engine.session.model.IdUtils;

@@ -15,7 +15,3 @@
  */
 package io.dialob.rule.parser.api;
 
-import org.immutables.value.Value;
-
-import java.util.Optional;
-

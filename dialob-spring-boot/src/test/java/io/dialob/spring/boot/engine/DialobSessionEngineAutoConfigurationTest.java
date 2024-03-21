@@ -15,17 +15,6 @@
  */
 package io.dialob.spring.boot.engine;
 
-import static org.mockito.Mockito.mock;
-
-import java.time.Clock;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -35,6 +24,16 @@ import io.dialob.session.engine.QuestionnaireDialobProgramService;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
 import io.dialob.settings.DialobSettings;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Clock;
+
+import static org.mockito.Mockito.mock;
 
 class DialobSessionEngineAutoConfigurationTest {
 

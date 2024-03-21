@@ -15,21 +15,14 @@
  */
 package io.dialob.boot.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Optional;
-
+import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.boot.security.SecurityConfiguration;
+import io.dialob.boot.settings.*;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,18 +38,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
-import io.dialob.boot.security.SecurityConfiguration;
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
-import io.dialob.boot.settings.SettingsPageSettingsProvider;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.CurrentTenant;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {

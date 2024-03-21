@@ -15,8 +15,18 @@
  */
 package io.dialob.boot;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dialob.boot.controller.AdminController;
+import io.dialob.boot.controller.ComposerController;
+import io.dialob.boot.controller.FillController;
+import io.dialob.boot.controller.ReviewController;
+import io.dialob.boot.security.*;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.settings.DialobSettingsAutoConfiguration;
+import io.dialob.tenant.DialobTenantConfigurationAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -28,24 +38,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.dialob.boot.controller.AdminController;
-import io.dialob.boot.controller.ComposerController;
-import io.dialob.boot.controller.FillController;
-import io.dialob.boot.controller.ReviewController;
-import io.dialob.boot.security.AdminSecurityConfigurer;
-import io.dialob.boot.security.ApiServiceSecurityConfigurer;
-import io.dialob.boot.security.ComposerSecurityConfigurer;
-import io.dialob.boot.security.QuestionnaireSecurityConfigurer;
-import io.dialob.boot.security.ReviewSecurityConfigurer;
-import io.dialob.boot.security.WebApiSecurityConfigurer;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.settings.DialobSettingsAutoConfiguration;
-import io.dialob.tenant.DialobTenantConfigurationAutoConfiguration;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ApplicationAutoConfigurationTest {
 

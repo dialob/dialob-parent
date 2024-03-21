@@ -15,9 +15,13 @@
  */
 package io.dialob.session.boot;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
+import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
+import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
+import io.dialob.security.spring.AuthenticationStrategy;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.session.rest.SessionPermissionEvaluator;
+import io.dialob.settings.DialobSettingsAutoConfiguration;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,13 +31,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
-import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
-import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.session.rest.SessionPermissionEvaluator;
-import io.dialob.settings.DialobSettingsAutoConfiguration;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ApplicationAutoConfigurationTest {
 

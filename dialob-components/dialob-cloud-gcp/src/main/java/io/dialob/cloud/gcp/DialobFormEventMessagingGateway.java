@@ -15,10 +15,10 @@
  */
 package io.dialob.cloud.gcp;
 
-import org.springframework.integration.annotation.MessagingGateway;
 import io.dialob.integration.api.event.FormDeletedEvent;
 import io.dialob.integration.api.event.FormTaggedEvent;
 import io.dialob.integration.api.event.FormUpdatedEvent;
+import org.springframework.integration.annotation.MessagingGateway;
 
 @MessagingGateway(defaultRequestChannel = "dialobFormPubSubOutputChannel")
 public interface DialobFormEventMessagingGateway {
