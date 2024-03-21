@@ -8,3 +8,8 @@
 Websocket URL changed
 
 `/socket/{tenantId}/{sessionId}` -> `/socket?tenantId={tenantId}&sessionId={sessionId}`
+
+Upgrade to Spring security 6 
+
+https://github.com/spring-projects/spring-security/wiki/Spring-Security-6.0-Migration-Guide
+
