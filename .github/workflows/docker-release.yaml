@@ -25,6 +25,7 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '11'
+          cache: 'maven'
 
       - name: Docker Hub login
         uses: docker/login-action@v3
