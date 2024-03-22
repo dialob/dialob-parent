@@ -29,7 +29,6 @@ public class DialobSettings {
 
   public enum DatabaseType {
     NONE,
-    COUCHDB,
     MONGODB,
     FILEDB,
     DIALOBAPIDB,
