@@ -14,3 +14,6 @@ Upgrade to Spring security 6
 
 https://github.com/spring-projects/spring-security/wiki/Spring-Security-6.0-Migration-Guide
 
+Spring boot autoconfiguration change
+
+https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#auto-configuration-files
