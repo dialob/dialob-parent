@@ -17,7 +17,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -52,19 +52,15 @@
     <thirdparty.log.level>INFO</thirdparty.log.level>
     <antlr4.version>4.13.1</antlr4.version>
     <assertj-core.version>3.25.3</assertj-core.version>
-    <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-    <cobertura.halt-on-failure>false</cobertura.halt-on-failure>
-    <cobertura.total-branch-rate>1</cobertura.total-branch-rate>
-    <cobertura.total-line-rate>1</cobertura.total-line-rate>
     <commons-lang3.version>3.14.0</commons-lang3.version>
-    
+
     <guava.version>33.1.0-jre</guava.version>
     <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
     <immutables.version>2.10.1</immutables.version>
     <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
     <json-path.version>2.9.0</json-path.version>
     <jsoup.version>1.15.3</jsoup.version>
-    <feign.version>11.8</feign.version>
+    <feign.version>13.2.1</feign.version>
 
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <junit.platform.version>1.10.2</junit.platform.version>
@@ -87,7 +83,6 @@
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-validator.version>1.8.0</commons-validator.version>
     <aws-java-sdk.version>2.25.13</aws-java-sdk.version>
-    <spring-cloud-starter-parent.version>2023.0.0</spring-cloud-starter-parent.version>
     <micrometer-registry-prometheus.version>1.12.4</micrometer-registry-prometheus.version>
     <s3mock-junit5.version>3.5.2</s3mock-junit5.version>
     <groovy.version>4.0.20</groovy.version>
@@ -98,6 +93,7 @@
     <tomcat-embed-el.version>10.1.19</tomcat-embed-el.version>
     <spotbugs-annotations.version>4.8.3</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
+    <commons-compress.version>1.26.1</commons-compress.version>
   </properties>
 
 
@@ -240,16 +236,6 @@
       </dependency>
 
       <dependency>
-        <groupId>com.nimbusds</groupId>
-        <artifactId>oauth2-oidc-sdk</artifactId>
-        <version>8.23.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.nimbusds</groupId>
-        <artifactId>nimbus-jose-jwt</artifactId>
-        <version>9.1.1</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.groovy</groupId>
         <artifactId>groovy</artifactId>
         <version>${groovy.version}</version>
@@ -265,13 +251,6 @@
         <version>${spring-boot.version}</version>
         <scope>import</scope>
         <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>${spring-cloud-starter-parent.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>software.amazon.awssdk</groupId>
@@ -462,35 +441,14 @@
         <version>${immutables.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.lordofthejars</groupId>
-        <artifactId>nosqlunit-mongodb</artifactId>
-        <version>${nosqlunit.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>com.github.ben-manes.caffeine</groupId>
         <artifactId>caffeine</artifactId>
         <version>${caffeine.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <scope>test</scope>
-        <version>2.2.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.26.0</version>
+        <version>${commons-compress.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.protobuf</groupId>
@@ -522,6 +480,11 @@
       <dependency>
         <groupId>io.github.openfeign</groupId>
         <artifactId>feign-slf4j</artifactId>
+        <version>${feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jackson</artifactId>
         <version>${feign.version}</version>
       </dependency>
       <dependency>
@@ -580,7 +543,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -590,7 +553,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
@@ -659,7 +622,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.13.0</version>
           <configuration>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
             <annotationProcessorPaths>
@@ -675,26 +638,6 @@
               </path>
             </annotationProcessorPaths>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <version>${cobertura-maven-plugin.version}</version>
-          <configuration>
-            <check>
-              <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
-              <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
-              <haltOnFailure>${cobertura.halt-on-failure}</haltOnFailure>
-            </check>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>clean</goal>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -713,12 +656,12 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.7.0.1746</version>
+          <version>3.11.0.3922</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.antlr</groupId>

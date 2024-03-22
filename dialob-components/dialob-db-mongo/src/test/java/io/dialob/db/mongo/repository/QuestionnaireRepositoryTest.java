@@ -15,20 +15,16 @@
  */
 package io.dialob.db.mongo.repository;
 
-import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import io.dialob.api.questionnaire.*;
 import io.dialob.db.mongo.AbsractMongoTest;
 import io.dialob.db.mongo.convert.QuestionnaireReadingConverter;
 import io.dialob.db.mongo.convert.QuestionnaireWritingConverter;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -40,24 +36,24 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
+@Disabled
 @ContextConfiguration(classes = QuestionnaireRepositoryTest.QuestionnaireRepositoryTestConfiguration.class)
 public class QuestionnaireRepositoryTest extends AbsractMongoTest {
 
   public static final String MONGO_DATABASE = "questionnaires-test";
 
-  @Rule
-  public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(MONGO_DATABASE);
+  //  @Rule
+//  public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(MONGO_DATABASE);
   public static final Date CREATED = new Date(Instant.parse("2018-01-20T10:10:56.800Z").toEpochMilli());
   public static final Questionnaire IMMUTABLE_QUESTIONNAIRE = ImmutableQuestionnaire.builder()
     .id(null)
@@ -99,27 +95,26 @@ public class QuestionnaireRepositoryTest extends AbsractMongoTest {
   private QuestionnaireRepository repository;
 
   @Test
-  @ShouldMatchDataSet()
-  @Ignore // TODO Fix this
-  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
+//  @ShouldMatchDataSet()
+//  @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
   public void shouldInsertNewQuestionnaire() {
     Questionnaire questionnaire = repository.save(ModifiableQuestionnaire.create().from(IMMUTABLE_QUESTIONNAIRE));
-    List<ModifiableQuestionnaire> questionnaires  = repository.findAll();
-    assertNotNull(questionnaire.getId());
+    List<ModifiableQuestionnaire> questionnaires = repository.findAll();
+    Assertions.assertNotNull(questionnaire.getId());
   }
 
-  @Ignore // TODO MongoMappingContext should map interface types to implementation types
+  // TODO MongoMappingContext should map interface types to implementation types
   @Test
-  @UsingDataSet
+//  @UsingDataSet
   public void shouldReadQuestionnaire() {
-    List<ModifiableQuestionnaire> questionnaires  = repository.findAll();
+    List<ModifiableQuestionnaire> questionnaires = repository.findAll();
     assertEquals(IMMUTABLE_QUESTIONNAIRE, questionnaires.get(0).toImmutable().withId(null).withRev(null));
   }
 
 
-  @Ignore // TODO MongoMappingContext should map interface types to implementation types
+  // TODO MongoMappingContext should map interface types to implementation types
   @Test
-  @UsingDataSet
+//  @UsingDataSet
   public void shouldDeleteQuestionnaire() {
     assertFalse(repository.findAll().isEmpty());
     repository.deleteById(repository.findAll().stream().findFirst().get().getId());
@@ -127,11 +122,11 @@ public class QuestionnaireRepositoryTest extends AbsractMongoTest {
   }
 
 
-  @Ignore // TODO MongoMappingContext should map interface types to implementation types
+  // TODO MongoMappingContext should map interface types to implementation types
   @Test
-  @UsingDataSet
+//  @UsingDataSet
   public void shouldReadLegacyData() {
-    List<ModifiableQuestionnaire> questionnaires  = repository.findAll();
+    List<ModifiableQuestionnaire> questionnaires = repository.findAll();
     assertFalse(questionnaires.isEmpty());
   }
 }
