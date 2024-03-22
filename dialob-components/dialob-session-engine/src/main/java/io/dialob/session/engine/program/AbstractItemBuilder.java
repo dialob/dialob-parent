@@ -29,7 +29,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -131,7 +130,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     return Optional.empty();
   }
 
-  @NotNull
+  @NonNull
   protected FormValidationError.Type getActiveWhenExpressionErrorType() {
     return FormValidationError.Type.VISIBILITY;
   }

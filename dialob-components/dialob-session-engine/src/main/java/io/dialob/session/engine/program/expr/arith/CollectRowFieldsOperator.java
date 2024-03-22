@@ -24,7 +24,6 @@ import io.dialob.session.engine.session.command.EventMatchers;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,7 +42,7 @@ public interface CollectRowFieldsOperator extends Expression {
   ValueType getType();
 
   @Override
-  default Object eval(@NotNull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     return getItemId().getParent().flatMap(ItemId::getParent)
       .map(rgId -> (List<Integer>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
       .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber))

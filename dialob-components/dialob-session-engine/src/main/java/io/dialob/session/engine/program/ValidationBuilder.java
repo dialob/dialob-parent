@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program;
 
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
@@ -27,7 +28,6 @@ import io.dialob.session.engine.program.model.ImmutableError;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Optional;
@@ -102,7 +102,8 @@ public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, Qu
   }
 
   @Override
-  protected FormValidationError.@NotNull Type getActiveWhenExpressionErrorType() {
+  @NonNull
+  protected FormValidationError.Type getActiveWhenExpressionErrorType() {
     return FormValidationError.Type.VALIDATION;
   }
 }
