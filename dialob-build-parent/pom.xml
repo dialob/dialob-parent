@@ -624,7 +624,6 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.13.0</version>
           <configuration>
-            <forceJavacCompilerUse>true</forceJavacCompilerUse>
             <annotationProcessorPaths>
               <path>
                 <groupId>org.projectlombok</groupId>
