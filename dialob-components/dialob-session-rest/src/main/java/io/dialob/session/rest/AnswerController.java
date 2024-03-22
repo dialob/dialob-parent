@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("${dialob.session.rest.context:/}")
+@RestController
 public interface AnswerController {
 
   @GetMapping("/{sessionId}")
