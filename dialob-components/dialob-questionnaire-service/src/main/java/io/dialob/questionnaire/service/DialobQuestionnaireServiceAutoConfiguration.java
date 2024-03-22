@@ -28,6 +28,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
@@ -73,7 +74,7 @@ public class DialobQuestionnaireServiceAutoConfiguration {
   }
 
   @Bean
-  public EventPublisher questionnaireSessionEventPublisher(@Qualifier("applicationTaskExecutor") TaskExecutor taskExecutor, ApplicationEventPublisher applicationEventPublisher) {
+  public EventPublisher questionnaireSessionEventPublisher(@Qualifier(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME) TaskExecutor taskExecutor, ApplicationEventPublisher applicationEventPublisher) {
     return new QuestionnaireSessionEventPublisher(taskExecutor, applicationEventPublisher);
   }
 
