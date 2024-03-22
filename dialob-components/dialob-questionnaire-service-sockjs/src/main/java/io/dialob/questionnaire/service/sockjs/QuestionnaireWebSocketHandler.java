@@ -43,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -91,7 +92,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     final ActionProcessingService actionProcessingService,
     final ObjectMapper mapper,
     final QuestionnaireSessionService questionnaireSessionService,
-    @Qualifier("applicationTaskExecutor") final TaskExecutor taskExecutor)
+    @Qualifier(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME) final TaskExecutor taskExecutor)
   {
     this.settings = settings.getSession().getSockjs();
     this.eventPublisher = eventPublisher;
