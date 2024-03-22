@@ -59,13 +59,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.lordofthejars</groupId>
-      <artifactId>nosqlunit-mongodb</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

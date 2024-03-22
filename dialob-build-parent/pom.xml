@@ -98,6 +98,7 @@
     <tomcat-embed-el.version>10.1.19</tomcat-embed-el.version>
     <spotbugs-annotations.version>4.8.3</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
+    <commons-compress.version>1.26.1</commons-compress.version>
   </properties>
 
 
@@ -462,35 +463,14 @@
         <version>${immutables.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.lordofthejars</groupId>
-        <artifactId>nosqlunit-mongodb</artifactId>
-        <version>${nosqlunit.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>com.github.ben-manes.caffeine</groupId>
         <artifactId>caffeine</artifactId>
         <version>${caffeine.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <scope>test</scope>
-        <version>2.2.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.26.0</version>
+        <version>${commons-compress.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.protobuf</groupId>

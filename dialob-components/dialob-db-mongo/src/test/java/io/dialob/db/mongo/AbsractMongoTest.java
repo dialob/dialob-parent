@@ -19,12 +19,12 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public abstract class AbsractMongoTest {
 
-  protected static GenericContainer<?> mongod = new GenericContainer<>(DockerImageName.parse("mongo:3.6"))
+  protected static MongoDBContainer mongod = new MongoDBContainer(DockerImageName.parse("mongo"))
     .withExposedPorts(27017)
     .withEnv("MONGO_INITDB_ROOT_USERNAME", "mongo")
     .withEnv("MONGO_INITDB_ROOT_PASSWORD", "mongo")
@@ -36,7 +36,7 @@ public abstract class AbsractMongoTest {
   }
 
   protected static MongoClient createMongoClient() {
-    return MongoClients.create("mongodb://" + mongod.getHost() + ":" + mongod.getFirstMappedPort());
+    return MongoClients.create(mongod.getConnectionString());
   }
 
   @AfterAll
