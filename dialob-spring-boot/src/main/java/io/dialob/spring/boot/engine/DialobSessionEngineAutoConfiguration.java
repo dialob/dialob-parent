@@ -43,7 +43,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 
-import java.time.Clock;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,9 +106,8 @@ public class DialobSessionEngineAutoConfiguration {
 
   @Bean
   public DialobSessionEvalContextFactory dialobSessionEvalContextFactory(FunctionRegistry functionRegistry,
-                                                                         Optional<Clock> clock,
                                                                          Optional<DialobSessionUpdateHook> dialobSessionEvalHooks) {
-    return new DialobSessionEvalContextFactory(functionRegistry, clock.orElse(Clock.systemDefaultZone()), dialobSessionEvalHooks.orElse(null));
+    return new DialobSessionEvalContextFactory(functionRegistry, dialobSessionEvalHooks.orElse(null));
   }
 
   @Bean

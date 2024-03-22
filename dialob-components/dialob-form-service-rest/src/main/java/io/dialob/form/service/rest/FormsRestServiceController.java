@@ -52,7 +52,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.time.Clock;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -99,8 +99,6 @@ public class FormsRestServiceController implements FormsRestService {
 
   private final CurrentUserProvider currentUserProvider;
 
-  private final Clock clock;
-
   public FormsRestServiceController(ApplicationEventPublisher eventPublisher,
                                     FormDatabase formDatabase,
                                     Optional<FormVersionControlDatabase> formVersionControlDatabase,
@@ -110,8 +108,7 @@ public class FormsRestServiceController implements FormsRestService {
                                     NodeId nodeId,
                                     FormItemCopier formItemCopier,
                                     CurrentTenant currentTenant,
-                                    CurrentUserProvider currentUserProvider,
-                                    Optional<Clock> clock)
+                                    CurrentUserProvider currentUserProvider)
   {
     this.eventPublisher = eventPublisher;
     this.formDatabase = formDatabase;
@@ -123,7 +120,6 @@ public class FormsRestServiceController implements FormsRestService {
     this.formItemCopier = formItemCopier;
     this.currentTenant = currentTenant;
     this.currentUserProvider = currentUserProvider;
-    this.clock = clock.orElseGet(Clock::systemDefaultZone);
   }
 
   @Override
@@ -243,7 +239,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   private Form updateMetadata(Form form) {
-    Date now = new Date(clock.millis());
+    Date now = Date.from(Instant.now());
     final ImmutableFormMetadata.Builder builder = ImmutableFormMetadata.builder().from(form.getMetadata());
     builder.lastSaved(now);
     builder.tenantId(currentTenant.getId());

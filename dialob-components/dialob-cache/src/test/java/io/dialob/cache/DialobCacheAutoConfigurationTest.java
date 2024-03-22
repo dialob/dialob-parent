@@ -27,19 +27,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 
-import java.time.Clock;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DialobCacheAutoConfigurationTest {
 
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {
-
-    @Bean
-    public Clock clock() {
-      return Clock.systemUTC();
-    }
 
     @Bean
     public QuestionnaireSessionSaveService sessionService() {

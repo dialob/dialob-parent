@@ -25,7 +25,6 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
-import java.time.Clock;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -56,8 +55,6 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private final Map<ItemId, AsyncFunctionCall> pendingUpdates;
 
-  private final Clock clock;
-
   private final boolean activating;
 
   private boolean didComplete;
@@ -70,7 +67,6 @@ public class DialobSessionEvalContext implements EvalContext {
     @NonNull FunctionRegistry functionRegistry,
     @NonNull DialobSession dialobSession,
     @NonNull Consumer<Event> updatesConsumer,
-    @NonNull Clock clock,
     boolean activating,
     DialobSessionUpdateHook dialobSessionUpdateHook)
   {
@@ -79,7 +75,6 @@ public class DialobSessionEvalContext implements EvalContext {
     this.functionRegistry = functionRegistry;
     this.dialobSession = dialobSession;
     this.updatesConsumer = updatesConsumer;
-    this.clock = clock;
     this.activating = activating;
     this.originalStates = ImmutableItemStates.builder().from(dialobSession).build();
     this.pendingUpdates = new HashMap<>();
@@ -98,7 +93,6 @@ public class DialobSessionEvalContext implements EvalContext {
     this.functionRegistry = parent.functionRegistry;
     this.dialobSession = parent.dialobSession;
     this.updatesConsumer = parent.updatesConsumer;
-    this.clock = parent.clock;
     this.activating = parent.activating;
     this.originalStates = parent.originalStates;
     this.pendingUpdates = parent.pendingUpdates;
@@ -293,13 +287,6 @@ public class DialobSessionEvalContext implements EvalContext {
   public FunctionRegistry getFunctionRegistry() {
     return this.functionRegistry;
   }
-
-  @NonNull
-  @Override
-  public Clock getClock() {
-    return this.clock;
-  }
-
 
   @Override
   @NonNull

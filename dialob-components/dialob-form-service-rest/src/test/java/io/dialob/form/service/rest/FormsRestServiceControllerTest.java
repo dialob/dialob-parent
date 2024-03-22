@@ -33,6 +33,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -45,13 +46,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -77,18 +75,10 @@ class FormsRestServiceControllerTest {
     }
 
 
-    @Bean
-    public Clock clock() {
-      return Clock.fixed(Instant.now(), ZoneId.systemDefault());
-    }
-
   }
 
   @Autowired
   private WebApplicationContext webApplicationContext;
-
-  @Autowired
-  private Clock clock;
 
   @MockBean
   private FormDatabase formDatabase;
@@ -182,11 +172,16 @@ class FormsRestServiceControllerTest {
       .andExpect(jsonPath("$._id", is("234")))
       .andExpect(jsonPath("$._rev", is("543")));
 
-    verify(formDatabase).save(eq("t-123"),eq(ImmutableForm.builder().from(immutableForm)
-      .id(null)
-      .rev(null)
-      .metadata(ImmutableFormMetadata.builder().from(immutableForm.getMetadata()).lastSaved(new Date(clock.millis())).savedBy("u1").tenantId("t-123").build())
-      .build()));
+    ArgumentCaptor<Form> captor = ArgumentCaptor.captor();
+    verify(formDatabase).save(eq("t-123"), captor.capture());
+    Form form = captor.getValue();
+    assertNull(form.getId());
+    assertNull(form.getRev());
+    assertEquals("u1", form.getMetadata().getSavedBy());
+    assertEquals("t-123", form.getMetadata().getTenantId());
+    assertNotNull(form.getMetadata().getLastSaved());
+    assertTrue(form.getData().isEmpty());
+
     verify(currentTenant, times(2)).getId();
     verify(currentUserProvider).getUserId();
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);

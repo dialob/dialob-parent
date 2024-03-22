@@ -29,8 +29,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Clock;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -39,11 +37,6 @@ class DialobSpringBootAutoConfigurationTest {
   @Configuration
   @EnableCaching
   public static class MockConfigurations {
-    @Bean
-    public Clock clock() {
-      return Clock.systemDefaultZone();
-    }
-
     @Bean
     public DialobProgramService dialobProgramService() {
       DialobProgramService mock = Mockito.mock(DialobProgramService.class);

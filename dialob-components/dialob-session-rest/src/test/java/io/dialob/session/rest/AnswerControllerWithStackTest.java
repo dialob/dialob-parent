@@ -30,8 +30,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.Clock;
-
 import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,9 +50,6 @@ public class AnswerControllerWithStackTest {
 
   @MockBean
   private ActionProcessingService actionProcessingService;
-
-  @MockBean
-  private Clock clock;
 
   @MockBean
   private CurrentUserProvider currentUserProvider;

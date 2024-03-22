@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import java.time.Clock;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +45,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
   FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
 
-  DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+  DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
 
   public Program buildProgram() {
     return newProgramBuilder().startProgram()
@@ -91,7 +90,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   public void shouldBeVisitable() {
     Program program = buildProgram();
     final AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant", "session1", "fi", null, (id, item) -> Optional.empty(), valueSetId -> Collections.emptyList(), Maps.newHashMap(), null, null, null);
     program.accept(createDialobSessionProgramVisitor);
 

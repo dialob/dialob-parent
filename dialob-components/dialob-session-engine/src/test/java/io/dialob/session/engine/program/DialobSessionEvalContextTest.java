@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import java.time.Clock;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,7 +37,6 @@ class DialobSessionEvalContextTest {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
-    Clock clock = Clock.systemDefaultZone();
 
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = Mockito.mock(ItemState.class);
@@ -50,7 +48,7 @@ class DialobSessionEvalContextTest {
 
     when(dialobSession.getItemState((ImmutableItemRef) IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
 
-    DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, clock, false, null);
+    DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
 
     EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
@@ -88,7 +86,6 @@ class DialobSessionEvalContextTest {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
-    Clock clock = Clock.systemDefaultZone();
 
     ItemState originalState = null;
     ItemState updatedState = Mockito.mock(ItemState.class);
@@ -97,7 +94,7 @@ class DialobSessionEvalContextTest {
     when(updatedState.getId()).thenReturn(IdUtils.toId("is1"));
     when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
 
-    DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, clock, false, null);
+    DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,null);
 
     EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
@@ -133,7 +130,6 @@ class DialobSessionEvalContextTest {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
-    Clock clock = Clock.systemDefaultZone();
 
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = null;
@@ -145,7 +141,7 @@ class DialobSessionEvalContextTest {
 
     when(dialobSession.getItemState((ImmutableItemRef) IdUtils.toId("is1"))).thenReturn(Optional.ofNullable(updatedState));
 
-    DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, clock, false, null);
+    DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
 
     EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);

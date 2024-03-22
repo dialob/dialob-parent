@@ -23,7 +23,6 @@ import io.dialob.session.engine.session.AsyncFunctionCall;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
@@ -77,16 +76,13 @@ public interface EvalContext {
 
   @NonNull
   default LocalDate today() {
-    return LocalDate.now(getClock());
+    return LocalDate.now();
   }
 
   @NonNull
   default LocalTime now() {
-    return LocalTime.now(getClock());
+    return LocalTime.now();
   }
-
-  @NonNull
-  Clock getClock();
 
   @NonNull
   OutputFormatter getOutputFormatter();
@@ -101,7 +97,6 @@ public interface EvalContext {
 
   /**
    *
-   * @param targetId
    * @param asyncFunctionCall
    * @return id of update
    */
