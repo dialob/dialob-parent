@@ -52,7 +52,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
@@ -70,7 +70,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * NB! Conditional property prefixes and names should follow canonical naming, 
+ * NB! Conditional property prefixes and names should follow canonical naming,
  * see https://github.com/spring-projects/spring-boot/wiki/Canonical-properties
  * to enable these properties configuration through environment variables.
  */

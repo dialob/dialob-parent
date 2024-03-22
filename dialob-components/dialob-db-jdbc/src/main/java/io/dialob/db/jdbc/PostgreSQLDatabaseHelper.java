@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.util.PGobject;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.nio.ByteBuffer;

@@ -20,7 +20,7 @@ import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.ImmutableFormMetadataRow;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.function.Consumer;
 

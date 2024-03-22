@@ -22,7 +22,7 @@ import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Vocabulary;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
