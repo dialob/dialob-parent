@@ -39,18 +39,14 @@ public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
   @Override
   public HttpSecurity configureAuthentication(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
-    http = http
-      .oauth2Login()
-      .tokenEndpoint()
-      .accessTokenResponseClient(accessTokenResponseClient).and()
-      .loginPage(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/default") // Skip login provider selection
-      .userInfoEndpoint()
-      .userAuthoritiesMapper(grantedAuthoritiesMapper)
-      .and()
-      .and();
-    return http.sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-      .and();
+    return http
+      .oauth2Login(login -> login
+        .tokenEndpoint(customizer -> customizer.accessTokenResponseClient(accessTokenResponseClient))
+        .loginPage(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/default") // Skip login provider selection
+        .userInfoEndpoint(customizer -> customizer
+          .userAuthoritiesMapper(grantedAuthoritiesMapper)))
+      .sessionManagement(customizer -> customizer
+        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
     // @formatter:on
   }
 

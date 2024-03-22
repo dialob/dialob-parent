@@ -24,6 +24,7 @@ import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
@@ -93,14 +94,13 @@ public abstract class AbstractWebSecurityConfigurer {
   protected HttpSecurity configureCsrf(HttpSecurity http) throws Exception {
     // @formatter:off
     if (authenticationStrategy instanceof ElbAuthenticationStrategy) {
-      http = http.csrf()
-        .csrfTokenRepository(csrfTokenRepository)
+      return http.csrf(customizer -> customizer.csrfTokenRepository(csrfTokenRepository)
+
         // {@link CsrfAuthenticationStrategy} resets csrf token on each onauthentication event to prevent cross session
         // token sharing. However when preauthentication filter is used, onauthentication is triggered on every
         // request. This causes CSRF token to change for each request and client cannot follow this. Therefore we'll
         // accept token to be shared cross sessions in single browser window, than not to have CSRF protection at all.
-        .sessionAuthenticationStrategy((authentication, request, response) -> {})
-        .and();
+        .sessionAuthenticationStrategy((authentication, request, response) -> {}));
     }
     return http;
     // @formatter:on
@@ -119,20 +119,16 @@ public abstract class AbstractWebSecurityConfigurer {
   protected HttpSecurity configureFrameOptions(HttpSecurity http) throws Exception {
     // @formatter:off
     return http
-      .headers()
-      .frameOptions()
-      .sameOrigin()
-      .and();
+      .headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
     // @formatter:on
   }
 
   protected HttpSecurity configureLogout(HttpSecurity http) throws Exception {
     // @formatter:off
     return http
-      .logout()
-      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-      .logoutSuccessUrl("/")
-      .and();
+      .logout(customizer -> customizer
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutSuccessUrl("/"));
     // @formatter:on
   }
 
