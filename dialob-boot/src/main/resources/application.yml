@@ -12,16 +12,15 @@ server:
 login.server.url: "https://login.example.com"
 
 spring:
+  profiles:
+    active:
+      - ui
   aop:
     proxy-target-class: false
   session:
     store-type: none
   application:
     name: ${project.artifactId:dialob-boot}
-  profiles:
-    active:
-      - couchdb
-      - ui
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
