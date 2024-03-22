@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -46,7 +46,7 @@ public class ArrayValueType implements ValueType {
     return (Class<? extends T[]>) Array.newInstance(clazz, 0).getClass();
   }
 
-  static ValueType arrayOf(@NotNull ValueType valueType) {
+  static ValueType arrayOf(@NonNull ValueType valueType) {
     return ARRAY_VALUE_TYPES.computeIfAbsent(valueType, ArrayValueType::new);
   }
 

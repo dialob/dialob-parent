@@ -1,7 +1,7 @@
 package io.dialob.rule.parser.node;
 
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class NodeOperator implements Serializable {
 
   private final Category category;
 
-  private NodeOperator(@NotNull String operator, @NotNull Category category) {
+  private NodeOperator(@NonNull String operator, @NonNull Category category) {
     this.operator = operator;
     this.category = category;
   }
@@ -62,8 +62,8 @@ public class NodeOperator implements Serializable {
       .build();
   }
 
-  @NotNull
-  public static NodeOperator createNodeOperator(@NotNull String operator) {
+  @NonNull
+  public static NodeOperator createNodeOperator(@NonNull String operator) {
     NodeOperator nodeOperator = OPERATORS.get(operator);
     if (nodeOperator == null) {
       return new NodeOperator(operator, Category.FUNCTION);
@@ -119,12 +119,12 @@ public class NodeOperator implements Serializable {
     LEAF      // nop
   }
 
-  @NotNull
+  @NonNull
   public String getOperator() {
     return operator;
   }
 
-  @NotNull
+  @NonNull
   public Category getCategory() {
     return category;
   }
