@@ -21,6 +21,7 @@ export type ComposerAction =
   | { type: 'setValueSetEntries', valueSetId: string, entries: ValueSetEntry[] }
   | { type: 'addValueSetEntry', valueSetId: string, entry?: ValueSetEntry }
   | { type: 'updateValueSetEntry', valueSetId: string, index: number, entry: ValueSetEntry }
+	| { type: 'updateValueSetEntryOld', valueSetId: string, index: number, valueSetEntryId: string | undefined, text: string, language: string }
   | { type: 'deleteValueSetentry', valueSetId: string, index: number }
   | { type: 'moveValueSetEntry', valueSetId: string, from: number, to: number }
   | { type: 'setGlobalValueSetName', valueSetId: string, name: string }
