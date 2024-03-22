@@ -17,7 +17,7 @@ package io.dialob.tenant.service.rest;
 
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.List;

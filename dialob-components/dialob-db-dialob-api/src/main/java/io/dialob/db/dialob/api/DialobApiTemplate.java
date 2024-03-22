@@ -17,7 +17,7 @@ package io.dialob.db.dialob.api;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.*;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;

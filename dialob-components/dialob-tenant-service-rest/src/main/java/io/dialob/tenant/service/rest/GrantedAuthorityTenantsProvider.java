@@ -18,7 +18,7 @@ package io.dialob.tenant.service.rest;
 import io.dialob.security.spring.tenant.TenantGrantedAuthority;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

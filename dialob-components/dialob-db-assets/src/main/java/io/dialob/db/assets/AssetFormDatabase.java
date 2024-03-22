@@ -22,7 +22,7 @@ import io.dialob.db.assets.serialization.AssetFormMetadataRowDeserializer;
 import io.dialob.db.assets.serialization.AssetFormSerializer;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.function.Consumer;
 

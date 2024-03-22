@@ -15,7 +15,7 @@
  */
 package io.dialob.boot.controller;
 
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface PageSettingsProvider {
 
