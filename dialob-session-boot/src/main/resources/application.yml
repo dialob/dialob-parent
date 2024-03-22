@@ -21,8 +21,8 @@ spring:
   application:
     name: ${project.artifactId:}
   profiles:
-    active: couchdb
-#    active: mongodb
+    active:
+    - jdbc
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
