@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 
-import java.time.Clock;
 import java.time.Instant;
 import java.util.function.Consumer;
 
@@ -65,7 +64,7 @@ public class DialobQuestionnaireSessionBuilderTest {
     final AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
 
     final DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
-    final DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    final DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     final DialobProgramService dialobProgramService = QuestionnaireDialobProgramService.newBuilder()
       .setFormDatabase(formFinder)
       .setProgramFromFormCompiler(programFromFormCompiler)

@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
@@ -64,14 +65,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.SerializationUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -147,7 +146,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
     @Bean
     public DialobSessionEvalContextFactory sessionContextFactory(FunctionRegistry functionRegistry, AsyncFunctionInvoker asyncFunctionInvoker) {
-      return new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+      return new DialobSessionEvalContextFactory(functionRegistry, null);
     }
 
     @Bean
