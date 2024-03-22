@@ -15,21 +15,23 @@
  */
 package io.dialob.db.mongo;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MongoQuestionnaireIdObfuscatorTest {
 
   @Test
   public void test() {
     MongoQuestionnaireIdObfuscator idObfuscator = new MongoQuestionnaireIdObfuscator();
-    Assert.assertEquals("0123", idObfuscator.toMongoId("123"));
-    Assert.assertEquals("9123", idObfuscator.toMongoId("9123"));
-    Assert.assertEquals("abcdef", idObfuscator.toMongoId("ABCDEF"));
-    Assert.assertEquals("00abcdef", idObfuscator.toMongoId("00ABCDEF"));
-    Assert.assertNull(idObfuscator.toMongoId(""));
-    Assert.assertNull(idObfuscator.toMongoId(null));
-    Assert.assertNull(idObfuscator.toMongoId("z"));
+    assertEquals("0123", idObfuscator.toMongoId("123"));
+    assertEquals("9123", idObfuscator.toMongoId("9123"));
+    assertEquals("abcdef", idObfuscator.toMongoId("ABCDEF"));
+    assertEquals("00abcdef", idObfuscator.toMongoId("00ABCDEF"));
+    assertNull(idObfuscator.toMongoId(""));
+    assertNull(idObfuscator.toMongoId(null));
+    assertNull(idObfuscator.toMongoId("z"));
   }
 
 }
