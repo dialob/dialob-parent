@@ -16,11 +16,11 @@
 package io.dialob.rule.parser;
 
 import io.dialob.rule.parser.api.ValueType;
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class ParserUtil {
 
-  public static boolean isBuiltInFunction(@NotNull String function) {
+  public static boolean isBuiltInFunction(@NonNull String function) {
     return "def".equals(function) || "ref".equals(function)
       || "isAnswered".equals(function)
       || "isNotAnswered".equals(function)
@@ -34,7 +34,7 @@ public class ParserUtil {
       ;
   }
 
-  public static boolean isReducerOperator(@NotNull String reducer) {
+  public static boolean isReducerOperator(@NonNull String reducer) {
     return "sumOf".equals(reducer)
       || "minOf".equals(reducer)
       || "maxOf".equals(reducer)
@@ -42,7 +42,7 @@ public class ParserUtil {
       || "anyOf".equals(reducer);
   }
 
-  public static ValueType getReducerOperatorReturnType(@NotNull String reducer, @NotNull ValueType inputType) {
+  public static ValueType getReducerOperatorReturnType(@NonNull String reducer, @NonNull ValueType inputType) {
     switch(reducer) {
       case "allOf":
       case "anyOf":
@@ -54,7 +54,7 @@ public class ParserUtil {
     return null;
   }
 
-  public static ValueType itemTypeToValueType(@NotNull String itemType) {
+  public static ValueType itemTypeToValueType(@NonNull String itemType) {
     switch (itemType) {
       case "text":
       case "list":

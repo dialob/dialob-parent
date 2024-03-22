@@ -1,7 +1,7 @@
 package io.dialob.rule.parser.node;
 
 import io.dialob.rule.parser.api.ValueType;
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -50,11 +50,11 @@ public abstract class NodeBase implements TypedNode, Serializable {
     return type;
   }
 
-  public void setValueType(@NotNull ValueType type) {
+  public void setValueType(@NonNull ValueType type) {
     this.type = Objects.requireNonNull(type);
   }
 
-  @NotNull
+  @NonNull
   public Map<String, ValueType> getDependencies() {
     return Collections.emptyMap();
   }
@@ -71,19 +71,19 @@ public abstract class NodeBase implements TypedNode, Serializable {
     return false;
   }
 
-  public NodeBase addSubnode(@NotNull NodeBase topNode) {
+  public NodeBase addSubnode(@NonNull NodeBase topNode) {
     throw new IllegalStateException("Cannot add subnodes on leaf node");
   }
 
-  @NotNull
+  @NonNull
   public List<NodeBase> getSubnodes() {
     return Collections.emptyList();
   }
 
-  @NotNull
+  @NonNull
   public abstract NodeOperator getNodeOperator();
 
-  public abstract NodeBase accept(@NotNull ASTVisitor visitor);
+  public abstract NodeBase accept(@NonNull ASTVisitor visitor);
 
   public String toTypedString() {
     return toString() + "[" + type + "]";

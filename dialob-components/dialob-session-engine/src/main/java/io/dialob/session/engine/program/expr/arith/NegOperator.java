@@ -15,15 +15,15 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface NegOperator extends UnaryOperator {
 
-  default Object apply(@NotNull Object value) {
+  default Object apply(@NonNull Object value) {
     return neg(value);
   }
 
-  Object neg(@NotNull Object value);
+  Object neg(@NonNull Object value);
 
 
 }

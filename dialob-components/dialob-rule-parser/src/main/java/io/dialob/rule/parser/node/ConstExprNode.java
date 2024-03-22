@@ -4,8 +4,8 @@ package io.dialob.rule.parser.node;
 import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.text.StringEscapeUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -33,7 +33,7 @@ public class ConstExprNode extends NodeBase {
     return true;
   }
 
-  @NotNull
+  @NonNull
   @Override
   public NodeOperator getNodeOperator() {
     return NodeOperator.CONST;
@@ -88,7 +88,7 @@ public class ConstExprNode extends NodeBase {
   }
 
 
-  public NodeBase accept(@NotNull ASTVisitor visitor) {
+  public NodeBase accept(@NonNull ASTVisitor visitor) {
     return visitor.visitConstExpr(this);
   }
 }

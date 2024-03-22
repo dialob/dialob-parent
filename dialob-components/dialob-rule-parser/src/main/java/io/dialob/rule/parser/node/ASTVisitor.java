@@ -1,28 +1,28 @@
 package io.dialob.rule.parser.node;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 
 public interface ASTVisitor {
 
   @Nullable
-  default ASTVisitor visitCallExpr(@NotNull CallExprNode node) {
+  default ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
     return this;
   }
 
-  @NotNull
-  default NodeBase endCallExpr(@NotNull CallExprNode node) {
+  @NonNull
+  default NodeBase endCallExpr(@NonNull CallExprNode node) {
     return node;
   }
 
-  @NotNull
-  default NodeBase visitConstExpr(@NotNull ConstExprNode node) {
+  @NonNull
+  default NodeBase visitConstExpr(@NonNull ConstExprNode node) {
     return node;
   }
 
-  @NotNull
-  default NodeBase visitIdExpr(@NotNull IdExprNode node) {
+  @NonNull
+  default NodeBase visitIdExpr(@NonNull IdExprNode node) {
     return node;
   }
 

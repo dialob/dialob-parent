@@ -15,10 +15,10 @@
  */
 package io.dialob.rule.parser.function;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface Function {
 
-  void invoke(FunctionRegistry.FunctionCallback callback, @NotNull String functionName, Object... args);
+  void invoke(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, Object... args);
 
 }

@@ -18,13 +18,12 @@ package io.dialob.session.engine.program.expr.arith;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
 @Value.Immutable
 public interface NegOperatorDecimal extends NegOperator {
-  default Object neg(@NotNull Object value) {
+  default Object neg(@NonNull Object value) {
     return ((BigDecimal)value).negate();
   }
 

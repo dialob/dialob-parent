@@ -16,7 +16,7 @@
 package io.dialob.rule.parser;
 
 import io.dialob.rule.parser.node.*;
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class ExpressionMerger implements ASTVisitor {
     }
 
     @Override
-    public ASTVisitor visitCallExpr(@NotNull CallExprNode subNode) {
+    public ASTVisitor visitCallExpr(@NonNull CallExprNode subNode) {
         push(subNode);
         if (parentNode == null) {
             parentNode = subNode;
@@ -88,8 +88,8 @@ public class ExpressionMerger implements ASTVisitor {
    }
 
     @Override
-    @NotNull
-    public CallExprNode endCallExpr(@NotNull CallExprNode subNode) {
+    @NonNull
+    public CallExprNode endCallExpr(@NonNull CallExprNode subNode) {
         pop();
         if (nodeStack == 0) {
             for (NodeBase arg : newArguments) {
@@ -111,15 +111,15 @@ public class ExpressionMerger implements ASTVisitor {
     }
 
     @Override
-    @NotNull
-    public NodeBase visitConstExpr(@NotNull ConstExprNode subNode) {
+    @NonNull
+    public NodeBase visitConstExpr(@NonNull ConstExprNode subNode) {
         newArguments.add(subNode);
         return subNode;
     }
 
     @Override
-    @NotNull
-    public NodeBase visitIdExpr(@NotNull IdExprNode subNode) {
+    @NonNull
+    public NodeBase visitIdExpr(@NonNull IdExprNode subNode) {
         newArguments.add(subNode);
         return subNode;
     }
