@@ -66,7 +66,7 @@
     <jsoup.version>1.15.3</jsoup.version>
     <feign.version>11.8</feign.version>
 
-    <junit.jupiter.version>5.10.2	</junit.jupiter.version>
+    <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <junit.platform.version>1.10.2</junit.platform.version>
 
     <logback.version>1.4.14</logback.version>
