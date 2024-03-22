@@ -51,6 +51,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
   "dialob.db.database-type=none",
+  "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
   "dialob.session.cache.type=LOCAL"
 }, classes = {
   Application.class,
