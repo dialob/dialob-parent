@@ -16,8 +16,8 @@
 package io.dialob.rule.parser.api;
 
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -67,7 +67,7 @@ public interface VariableFinder {
    * @param aliasName
    * @return id of actual variable
    */
-  @NotNull
+  @NonNull
   default String mapAlias(String aliasName) {
     return aliasName;
   }

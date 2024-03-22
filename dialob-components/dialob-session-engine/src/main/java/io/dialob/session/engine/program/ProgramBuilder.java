@@ -17,6 +17,7 @@ package io.dialob.session.engine.program;
 
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.common.Constants;
@@ -37,8 +38,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -412,7 +411,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   }
 
-  protected AbstractItemBuilder<?, ?> findVariable(@NotNull String variableName, boolean includePrototypes) {
+  protected AbstractItemBuilder<?, ?> findVariable(@NonNull String variableName, boolean includePrototypes) {
     AbstractItemBuilder<?, ?> abstractItemBuilder = types.get(IdUtils.toId(variableName));
     if (abstractItemBuilder != null) {
       return abstractItemBuilder;

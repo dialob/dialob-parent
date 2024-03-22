@@ -17,8 +17,8 @@ package io.dialob.rule.parser.api;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -89,12 +89,12 @@ public interface ValueType extends Serializable {
 
   boolean isPrimitive();
 
-  static ValueType arrayOf(@NotNull ValueType valueType) {
+  static ValueType arrayOf(@NonNull ValueType valueType) {
     return ArrayValueType.arrayOf(valueType);
   }
 
   @Nullable
-  static ValueType valueTypeOf(final @NotNull Class<?> returnType) {
+  static ValueType valueTypeOf(final @NonNull Class<?> returnType) {
     if (returnType == String.class) {
       return STRING;
     }

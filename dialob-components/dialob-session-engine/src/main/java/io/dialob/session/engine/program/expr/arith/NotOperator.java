@@ -18,12 +18,11 @@ package io.dialob.session.engine.program.expr.arith;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
 
 @Value.Immutable
 public interface NotOperator extends UnaryOperator {
 
-  default Object apply(@NotNull Object value) {
+  default Object apply(@NonNull Object value) {
     return !((Boolean)value);
   }
 
