@@ -78,6 +78,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   properties = {
     "tenantId=itest",
     "dialob.db.database-type=none",
+    "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
     "spring.security.oauth2.client.registration[0].provider=own",
     "spring.security.oauth2.client.registration[0].clientId=cl1",
     "spring.security.oauth2.client.registration[0].clientSecret=xxx",
