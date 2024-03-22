@@ -15,6 +15,7 @@
  */
 package io.dialob.session.rest;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableAction;
@@ -31,15 +32,12 @@ import io.dialob.security.user.CurrentUserProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
 @Slf4j
 public class DefaultAnswerController implements AnswerController, QuestionnaireActionsService {
 
