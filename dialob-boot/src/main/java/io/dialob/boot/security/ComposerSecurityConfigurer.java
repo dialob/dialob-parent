@@ -44,10 +44,9 @@ public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
     // @formatter:off
     return http
       .securityMatcher(requestMatcher())
-      .authorizeHttpRequests()
+      .authorizeHttpRequests(customizer -> customizer
         .requestMatchers(antMatcher(HttpMethod.GET,getContextPath() + "/**")).hasAuthority(Permissions.COMPOSER_VIEW)
-        .anyRequest().denyAll()
-        .and();
+        .anyRequest().denyAll());
     // @formatter:on
   }
 
