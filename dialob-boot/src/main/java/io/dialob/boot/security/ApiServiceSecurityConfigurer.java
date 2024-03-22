@@ -34,6 +34,8 @@ import org.springframework.core.env.Profiles;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
@@ -120,17 +122,17 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
     // Disable authentication
     return http
       .sessionManagement((configurer) -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-      .logout((configurer) -> configurer.disable());
+      .logout(AbstractHttpConfigurer::disable);
   }
 
   @Override
   protected HttpSecurity configureCsrf(HttpSecurity http) throws Exception {
-    return http.csrf().disable();
+    return http.csrf(AbstractHttpConfigurer::disable);
   }
 
   @Override
   protected HttpSecurity configureFrameOptions(HttpSecurity http) throws Exception {
-    return http.headers().frameOptions().disable().and();
+    return http.headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
   }
 
   @Override

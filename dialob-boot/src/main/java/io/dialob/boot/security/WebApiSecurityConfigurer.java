@@ -42,7 +42,7 @@ public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
   protected HttpSecurity configureCors(HttpSecurity http) {
     return settings.getApi().getCors().toCorsConfiguration().map(corsConfiguration -> {
       try {
-        return http.cors().configurationSource(request -> corsConfiguration).and();
+        return http.cors(customizer -> customizer.configurationSource(request -> corsConfiguration));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
