@@ -18,7 +18,7 @@ package io.dialob.session.boot;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.CorsSettings;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;

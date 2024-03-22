@@ -19,7 +19,7 @@ import io.dialob.security.spring.apikey.ApiKeyAuthenticationToken;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

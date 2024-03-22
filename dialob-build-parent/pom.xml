@@ -96,6 +96,7 @@
     <springdoc.version>1.8.0</springdoc.version>
     <testcontainers.version>1.19.7</testcontainers.version>
     <tomcat-embed-el.version>10.1.19</tomcat-embed-el.version>
+    <spotbugs-annotations.version>4.8.3</spotbugs-annotations.version>
   </properties>
 
 
@@ -107,7 +108,7 @@
     <dependency>
       <groupId>com.github.spotbugs</groupId>
       <artifactId>spotbugs-annotations</artifactId>
-      <version>4.7.3</version>
+      <version>${spotbugs-annotations.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

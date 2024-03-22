@@ -21,7 +21,7 @@ import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.NoTenantInScopeException;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Map;
 import java.util.Optional;

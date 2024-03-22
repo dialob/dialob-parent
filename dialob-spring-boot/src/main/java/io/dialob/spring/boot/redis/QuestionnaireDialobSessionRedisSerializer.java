@@ -30,7 +30,7 @@ import io.micrometer.core.instrument.noop.NoopTimer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.IOException;

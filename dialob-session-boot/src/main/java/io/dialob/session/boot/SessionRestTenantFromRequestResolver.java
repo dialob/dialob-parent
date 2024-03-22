@@ -22,7 +22,7 @@ import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Optional;
 

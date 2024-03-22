@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import io.dialob.security.spring.oauth2.UsersAndGroupsService;
 import io.dialob.security.spring.oauth2.model.Group;

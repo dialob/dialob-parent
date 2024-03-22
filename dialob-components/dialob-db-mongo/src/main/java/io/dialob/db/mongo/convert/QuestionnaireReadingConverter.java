@@ -19,7 +19,7 @@ import io.dialob.api.questionnaire.ModifiableQuestionnaire;
 import io.dialob.api.questionnaire.Questionnaire;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 @ReadingConverter
 public class QuestionnaireReadingConverter implements Converter<ModifiableQuestionnaire, Questionnaire> {

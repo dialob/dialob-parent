@@ -15,7 +15,7 @@
  */
 package io.dialob.security.spring;
 
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 public interface AuthenticationStrategy {

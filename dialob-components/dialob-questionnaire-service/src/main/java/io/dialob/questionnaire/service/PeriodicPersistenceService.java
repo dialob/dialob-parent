@@ -24,7 +24,7 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.concurrent.ConcurrentHashMap;

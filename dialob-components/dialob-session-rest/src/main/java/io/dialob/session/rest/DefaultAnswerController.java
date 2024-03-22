@@ -31,7 +31,7 @@ import io.dialob.security.user.CurrentUserProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.PrintWriter;

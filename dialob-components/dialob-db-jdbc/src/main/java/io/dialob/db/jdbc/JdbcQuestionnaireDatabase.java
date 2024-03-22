@@ -33,7 +33,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 

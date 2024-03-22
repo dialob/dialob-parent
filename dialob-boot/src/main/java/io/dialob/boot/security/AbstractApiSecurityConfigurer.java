@@ -19,7 +19,7 @@ import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
