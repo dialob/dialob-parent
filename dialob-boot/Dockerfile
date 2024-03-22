@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM amazoncorretto:11
+FROM amazoncorretto:17
 ARG RELEASE_VERSION
 ENV BASH_ENV /etc/profile
 RUN echo "java:x:2000:2000:Java:/java:/sbin/nologin:" >> /etc/passwd && \

@@ -80,7 +80,7 @@
             <artifactId>jib-maven-plugin</artifactId>
             <configuration>
               <from>
-                <image>docker.resys.io/docker/java-runtime:11-amzn</image>
+                <image>docker.resys.io/docker/java-runtime:17-amzn</image>
               </from>
               <container>
                 <ports>
