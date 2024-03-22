@@ -97,6 +97,7 @@
     <testcontainers.version>1.19.7</testcontainers.version>
     <tomcat-embed-el.version>10.1.19</tomcat-embed-el.version>
     <spotbugs-annotations.version>4.8.3</spotbugs-annotations.version>
+    <db2jcc.version>11.5.8.0</db2jcc.version>
   </properties>
 
 
@@ -449,6 +450,11 @@
         <groupId>com.ibm.db2.jcc</groupId>
         <artifactId>db2jcc4</artifactId>
         <version>${db2jcc4.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ibm.db2</groupId>
+        <artifactId>jcc</artifactId>
+        <version>${db2jcc.version}</version>
       </dependency>
       <dependency>
         <groupId>org.immutables</groupId>

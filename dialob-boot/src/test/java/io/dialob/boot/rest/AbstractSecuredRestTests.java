@@ -58,7 +58,7 @@ public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
     }
 
     @Bean
-    public DatabaseExceptionMapper couchDbExceptionMapper() {
+    public DatabaseExceptionMapper databaseExceptionMapper() {
       return new DatabaseExceptionMapper();
     }
 

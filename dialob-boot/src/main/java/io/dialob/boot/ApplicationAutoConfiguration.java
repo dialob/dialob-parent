@@ -38,7 +38,7 @@ import org.thymeleaf.templateresolver.UrlTemplateResolver;
 import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
-@Import(SecurityConfiguration.class)
+@Import({SecurityConfiguration.class})
 public class ApplicationAutoConfiguration {
 
   @Configuration(proxyBeanMethods = false)
@@ -49,7 +49,7 @@ public class ApplicationAutoConfiguration {
     LandingController.class,
     ReviewController.class,
     ComposerController.class,
-    GlobalModelAttributesInjector.class
+    GlobalModelAttributesInjector.class,
   })
   @EnableConfigurationProperties({
     AdminApplicationSettings.class,
