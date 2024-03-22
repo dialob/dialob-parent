@@ -30,7 +30,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,9 +52,6 @@ public class AnswerControllerTest {
 
   @MockBean
   private ActionProcessingService actionProcessingService;
-
-  @MockBean
-  private Clock clock;
 
   @MockBean
   private CurrentUserProvider currentUserProvider;

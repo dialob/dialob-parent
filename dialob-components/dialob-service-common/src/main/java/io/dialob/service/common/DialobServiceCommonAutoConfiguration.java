@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Clock;
 
 @Configuration(proxyBeanMethods = false)
 @Import({ServiceExceptionMapper.class, SecurityDisabledConfiguration.class})
@@ -37,11 +36,6 @@ public class DialobServiceCommonAutoConfiguration {
   public StringHttpMessageConverter stringEncodingConverter() {
     LOGGER.debug("Constructing bean stringEncodingConverter");
     return new StringHttpMessageConverter(StandardCharsets.UTF_8);
-  }
-
-  @Bean
-  public Clock clock() {
-    return Clock.systemDefaultZone();
   }
 
   @Bean
