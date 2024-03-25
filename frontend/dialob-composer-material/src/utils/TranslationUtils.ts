@@ -1,31 +1,37 @@
 import Papa from "papaparse";
 import { ComposerState, DialobItem, LocalizedString, ValueSet } from "../dialob";
+import FileSaver from "file-saver";
 
 export type TranslationType = 'label' | 'description' | 'valueset' | 'validation';
 
-export interface TranslationData {
+interface TranslationData {
 	[key: string]: LocalizedString | undefined | string;
 }
 
-export interface MetadataEntry {
+interface MetadataEntry {
 	description: string;
 	richText?: boolean;
 	pageId: string;
 	parent: string;
 }
 
-export interface Metadata {
+interface Metadata {
 	key: { [key: string]: MetadataEntry };
 }
 
-export interface GlobalValueSet {
+interface GlobalValueSet {
 	label?: string;
 	valueSetId: string;
 }
 
-export interface ItemTranslations {
+interface ItemTranslations {
 	translations: TranslationData;
 	metadata: Metadata;
+}
+
+export interface ParsedImportData {
+	missingInCsv: string[];
+	missingInForm: string[];
 }
 
 export interface MissingTranslation {
@@ -154,9 +160,7 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
 	return missing;
 }
 
-// TODO: Add functions for CSV generation and validation here
-
-export const getAllItemTranslations = (form: ComposerState) => {
+export const getAllItemTranslations = (form: ComposerState) : ItemTranslations => {
 	const translations: TranslationData = { key: {} };
 	const metadata: Metadata = { key: {} };
 	const formItems = form.data;
@@ -216,7 +220,7 @@ export const getAllItemTranslations = (form: ComposerState) => {
 	return { translations, metadata };
 }
 
-export const getGlobalValueSetTranslations = (form: ComposerState) => {
+export const getGlobalValueSetTranslations = (form: ComposerState) : ItemTranslations | undefined => {
 	const globalValueSets: GlobalValueSet[] | undefined = form.metadata.composer?.globalValueSets;
 	if (globalValueSets && globalValueSets?.length > 0) {
 		const translations: TranslationData = { key: {} };
@@ -257,3 +261,124 @@ export const parse = (inputFile: File) => {
 		});
 	});
 };
+
+export const validateParsedFileHeaders = (data: string[][], form: ComposerState) : boolean => {
+	const formLabel = form.metadata.label;
+	if (data[0][0] !== formLabel || data[1][0] !== 'Item ID' || data[1][1] !== 'PageID'
+		|| data[1][2] !== 'ParentID ItemType' || data[1][3] !== 'Description') {
+		return false
+	}
+	for (let i = 4; i < data[1].length; i++) {
+		if (data[1][i].length !== 2)
+			return false
+	}
+	return true
+}
+
+const getItemDescriptions = (form: ComposerState) : string[] => {
+	const formItems = form.data;
+	const keys = Object.keys(formItems);
+	// eslint-disable-next-line prefer-const
+	let itemDescriptions: string[] = [];
+	for (const key of keys) {
+		if (formItems[key].description) {
+			itemDescriptions.push(`Item description for ${key}`)
+		}
+		if (formItems[key].validations) {
+			itemDescriptions.push(`Validation for ${key}`)
+		}
+		itemDescriptions.push(`Item label for ${key}`)
+	}
+	return itemDescriptions;
+}
+
+const getValueSetDescriptions = (form: ComposerState) : string[] => {
+	const valueSets = form.valueSets;
+	let valueSetDescriptions: string[] = []
+	if (valueSets) {
+		valueSetDescriptions = valueSets.map((valueSet) => `Valueset entry for ${valueSet.id}`)
+	}
+	return valueSetDescriptions;
+}
+
+export const validateParsedFileData = (data: string[][], form: ComposerState) : ParsedImportData => {
+	let itemDescriptions: string[] = getItemDescriptions(form);
+	let valueSetDescriptions: string[] = getValueSetDescriptions(form);
+
+	const parsedDescriptions: Set<string> = new Set();
+	const missingInForm: string[] = [];
+	for (let i = 2; i < data.length; i++) {
+		parsedDescriptions.add(data[i][3]);
+	}
+
+	parsedDescriptions.forEach((descriptionItem: string) => {
+		if (itemDescriptions?.includes(descriptionItem)) {
+			itemDescriptions = itemDescriptions.filter(itemID => itemID !== descriptionItem && itemID !== "Item label for questionnaire");
+		} else if (valueSetDescriptions?.includes(descriptionItem)) {
+			valueSetDescriptions = valueSetDescriptions.filter(valueSetID => valueSetID !== descriptionItem);
+		} else {
+			missingInForm.push(descriptionItem);
+		}
+	});
+
+	const missingInCsv: string[] = [...itemDescriptions, ...valueSetDescriptions];
+	return { missingInCsv, missingInForm }
+}
+
+
+const createTranslationCSVRow = (value: MetadataEntry, key: string, translations: ItemTranslations, form: ComposerState) : string[] => {
+	const languages = form.metadata.languages || [];
+	const row = [];
+	row.push(key)
+	row.push(value?.pageId);
+	row.push(value?.parent);
+	row.push(`${value.description} for ${key.split(":")[1]}`)
+	languages.forEach(l => {
+		const name = translations.translations[key];
+		if (typeof name === "object") {
+			row.push(name[l])
+		} else {
+			row.push("")
+		}
+	})
+	return row;
+}
+
+export const createTranslationCSVformat = (
+	allItemTranslations: ItemTranslations,
+	globalValueSetTranslations: ItemTranslations | undefined,
+	result: (string | undefined)[][],
+	form: ComposerState) : (string | undefined)[][] => {
+	for (const [key, value] of Object.entries(allItemTranslations.metadata.key)) {
+		const row = createTranslationCSVRow(value, key, allItemTranslations, form);
+		result.push(row)
+	}
+	if (globalValueSetTranslations) {
+		for (const [key, value] of Object.entries(globalValueSetTranslations.metadata.key)) {
+			const row = createTranslationCSVRow(value, key, globalValueSetTranslations, form);
+			result.push(row)
+		}
+	}
+	return result
+}
+
+export const downloadFormData = (form: ComposerState) : void => {
+	const formLabel = form.metadata.label;
+	const languages = form.metadata.languages || [];
+	const allItemTranslations = getAllItemTranslations(form);
+	const globalValueSetTranslations = getGlobalValueSetTranslations(form);
+
+	let result = [];
+	const firstRow = [formLabel]
+	result.push(firstRow)
+	const secondRow = ["Item ID", "PageID", "ParentID ItemType", "Description"];
+	languages.forEach(l => {
+		secondRow.push(l);
+	})
+	result.push(secondRow)
+	result = createTranslationCSVformat(allItemTranslations, globalValueSetTranslations, result, form)
+
+	const csv = Papa.unparse(result);
+	const blob = new Blob([csv], { type: 'text/csv' });
+	FileSaver.saveAs(blob, `translation_${formLabel}.csv`);
+}
