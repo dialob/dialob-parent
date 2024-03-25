@@ -17,10 +17,17 @@ package io.dialob.cache;
 
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.common.Constants;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 class LocalQuestionnaireSessionCacheTest {
 
@@ -36,6 +43,21 @@ class LocalQuestionnaireSessionCacheTest {
     Assertions.assertNull(cache.get("q1"));
     Assertions.assertNull(cache.get("q1", Questionnaire.class));
     Assertions.assertNotNull(cache.get("q1", () -> "1"));
+  }
+
+  @Test
+  public void shouldEvictSessionWhenThereIsPersistenceConflict() {
+    LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
+    Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback = Mockito.mock(Function.class);
+    Mockito.when(beforeCloseCallback.apply(any())).thenThrow(DocumentConflictException.class);
+    var q = Mockito.mock(QuestionnaireSession.class);
+    Mockito.when(q.getSessionId()).thenReturn(Optional.of("123"));
+    Mockito.when(q.getTenantId()).thenReturn("T12");
+    Mockito.when(q.isActive()).thenReturn(true);
+    cache.put(q);
+    Assertions.assertNotNull(cache.get("123"));
+    cache.evict("123", beforeCloseCallback);
+    Assertions.assertNull(cache.get("123"));
   }
 
 }
