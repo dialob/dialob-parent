@@ -23,7 +23,7 @@ public class FormDataMissingException extends RuntimeException {
   private final String formRev;
 
   public FormDataMissingException(@NonNull String formId, String formRev) {
-    super("Form '" + formId + (formRev != null ? "' rev '" + formRev : "'") + "' cannot be loaded.");
+    super("Form '" + formId + (formRev != null ? "' rev '" + formRev : "'") + " cannot be loaded.");
     this.formId = formId;
     this.formRev = formRev;
   }
