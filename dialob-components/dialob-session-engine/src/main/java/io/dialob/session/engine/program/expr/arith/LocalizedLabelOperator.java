@@ -17,6 +17,7 @@ package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
@@ -29,7 +30,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,7 +42,7 @@ public interface LocalizedLabelOperator extends Expression {
 
   Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([\\w]*?)(:.*?)?}");
 
-  static LocalizedLabelOperator createLocalizedLabelOperator(@Nonnull ProgramBuilder programBuilder, @Nonnull Label label) {
+  static LocalizedLabelOperator createLocalizedLabelOperator(@NonNull ProgramBuilder programBuilder, @NonNull Label label) {
     Map<String, Expression> value = Maps.newHashMap();
     label.getLabels().forEach((key, labelString) -> {
       int i = 0;
@@ -90,18 +90,18 @@ public interface LocalizedLabelOperator extends Expression {
     return ImmutableLocalizedLabelOperator.of(value);
   }
 
-  static Expression toStringExpression(@Nonnull ProgramBuilder programBuilder, ItemId itemId, VariableReference variableReference) {
+  static Expression toStringExpression(@NonNull ProgramBuilder programBuilder, ItemId itemId, VariableReference variableReference) {
     return programBuilder.findValueSetIdForItem(itemId)
       .<Expression>map(valueSetId -> ImmutableValueSetEntryToStringOperator.of(ImmutableValueSetId.of(valueSetId), variableReference))
       .orElseGet(() -> ImmutableToStringOperator.of(variableReference));
   }
 
-  @Nonnull
+  @NonNull
   @Value.Parameter
   Map<String, Expression> getValue();
 
   @Override
-  default String eval(@Nonnull EvalContext evalContext) {
+  default String eval(@NonNull EvalContext evalContext) {
     Expression expression = getValue().get(evalContext.getLanguage());
     if (expression == null) {
       return null;
@@ -109,7 +109,7 @@ public interface LocalizedLabelOperator extends Expression {
     return (String) expression.eval(evalContext);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getValue()
@@ -120,7 +120,7 @@ public interface LocalizedLabelOperator extends Expression {
       .orElse(Collections.emptySet());
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.STRING;

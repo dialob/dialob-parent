@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,14 +32,14 @@ public interface RowItemsExpression extends Expression {
 
   List<ItemId> getItemIds();
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
   @Override
-  default Collection<ItemId> eval(@Nonnull EvalContext evalContext) {
+  default Collection<ItemId> eval(@NonNull EvalContext evalContext) {
     return getItemIds().stream().map(itemId -> evalContext.mapTo(itemId, true)).collect(toList());
   }
 

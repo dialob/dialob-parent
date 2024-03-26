@@ -15,38 +15,38 @@
  */
 package io.dialob.form.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public interface FormDatabase {
 
-  @Nonnull
-  Form findOne(@Nonnull String tenantId, @Nonnull String id, String rev);
+  @NonNull
+  Form findOne(@NonNull String tenantId, @NonNull String id, String rev);
 
-  @Nonnull
-  Form findOne(@Nonnull String tenantId, @Nonnull String id);
+  @NonNull
+  Form findOne(@NonNull String tenantId, @NonNull String id);
 
-  boolean exists(@Nonnull String tenantId, @Nonnull String id);
+  boolean exists(@NonNull String tenantId, @NonNull String id);
 
   // flush whole cache, ensure that revisioned forms are flushed too
-  boolean delete(String tenantId, @Nonnull String id);
+  boolean delete(String tenantId, @NonNull String id);
 
-  @Nonnull
-  Form save(String tenantId, @Nonnull Form document);
+  @NonNull
+  Form save(String tenantId, @NonNull Form document);
 
   @Value.Immutable
   interface FormMetadataRow {
     @Value.Parameter
-    @Nonnull
+    @NonNull
     String getId();
 
     @Value.Parameter
-    @Nonnull
+    @NonNull
     Form.Metadata getValue();
   }
 
-  void findAllMetadata(String tenantId, Form.Metadata metadata, @Nonnull Consumer<FormMetadataRow> consumer);
+  void findAllMetadata(String tenantId, Form.Metadata metadata, @NonNull Consumer<FormMetadataRow> consumer);
 }

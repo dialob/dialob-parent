@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.ByteArrayInputStream;

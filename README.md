@@ -71,7 +71,6 @@ Dialob backend services
 For default configurations, see YML-s in **dialob-config-parent/dialob-settings**
 
 * **aws** - AWS environment: Enable AWS ELB authentication
-* **couchdb** - (deprecated, not in use)
 * **dialobapidb** - Form and questionnaire persistence - Dialob API
 * **elasticsearch** - (deprecated, not in use)
 * **filedb** - Form and questionnaire persistence - Filesystem
@@ -147,6 +146,8 @@ mvn clean test -D"groups=db2" -D"excludedGroups=postgresql,mysql"
 ```
 
 ### Running locally
+
+1. Run local database server
 
 ```shell
 docker run --name dialob-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password123 postgres

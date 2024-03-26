@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session;
 
-import com.google.common.collect.Maps;
 import io.dialob.api.proto.ActionsFactory;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -121,7 +119,7 @@ class CreateDialobSessionProgramVisitorTest {
     // TODO session is created based on Program, but execution is done against DialobProgram??
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
-    DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobSessionUpdater sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession);
     sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")), true);
     sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")), true);

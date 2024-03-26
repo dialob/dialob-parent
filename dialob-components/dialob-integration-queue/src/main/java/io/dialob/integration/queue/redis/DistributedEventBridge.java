@@ -18,6 +18,7 @@ package io.dialob.integration.queue.redis;
 import io.dialob.integration.api.Constants;
 import io.dialob.integration.api.NodeId;
 import io.dialob.integration.api.event.DistributedEvent;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,8 +27,6 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageDeliveryException;
-
-import javax.inject.Named;
 
 public class DistributedEventBridge {
 

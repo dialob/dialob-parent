@@ -35,7 +35,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.net.InetSocketAddress;
-import java.time.Clock;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,9 +58,6 @@ public class QuestionnaireWebSocketHandlerTest {
 
   @Spy
   public DialobSettings settings = new DialobSettings();
-
-  @Mock
-  public Clock clock;
 
   @Mock
   public QuestionnaireSessionService questionnaireSessionService;

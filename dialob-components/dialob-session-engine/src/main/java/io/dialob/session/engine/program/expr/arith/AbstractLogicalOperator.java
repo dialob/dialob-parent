@@ -15,13 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-
-import javax.annotation.Nonnull;
 
 public interface AbstractLogicalOperator extends InfixOperator<Boolean> {
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;

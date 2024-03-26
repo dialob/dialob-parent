@@ -15,7 +15,8 @@
  */
 package io.dialob.security;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public final class UUIDUtils {
   private UUIDUtils() {
   }
 
-  public static UUID toUUID(@Nonnull byte[] oid) {
+  public static UUID toUUID(@NonNull byte[] oid) {
     if (oid.length != 16) {
       throw new IllegalArgumentException("UUID is 16 bytes long. oid is " + oid.length + " bytes.");
     }
@@ -35,7 +36,7 @@ public final class UUIDUtils {
   }
 
 
-  public static byte[] toBytes(@Nonnull UUID uuid) {
+  public static byte[] toBytes(@NonNull UUID uuid) {
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
     bb.putLong(uuid.getMostSignificantBits());
     bb.putLong(uuid.getLeastSignificantBits());

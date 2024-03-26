@@ -15,9 +15,9 @@
  */
 package io.dialob.session.engine.program.model;
 
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +28,7 @@ public interface DisplayItem extends Item {
   String getView();
 
   @Nullable
-  Map<String, @Nullable Object> getProps();
+  Map<String, @org.checkerframework.checker.nullness.qual.Nullable Object> getProps();
 
   Optional<Expression> getClassName();
 
@@ -42,7 +42,7 @@ public interface DisplayItem extends Item {
 
   Optional<Expression> getDescriptionExpression();
 
-  @Nonnull
+  @NonNull
   List<Error> getErrors();
 
 }

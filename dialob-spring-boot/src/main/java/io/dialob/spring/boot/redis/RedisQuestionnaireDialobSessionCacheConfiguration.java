@@ -31,7 +31,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Optional;
 

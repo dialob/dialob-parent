@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.DialobProgram;
@@ -30,7 +31,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -52,21 +52,21 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
 
   protected final List<Command<?>> evalQueue = new LinkedList<>();
 
-  public ActiveDialobSessionUpdater(@Nonnull DialobSessionEvalContextFactory sessionContextFactory,
-                                    @Nonnull DialobProgram dialobProgram,
-                                    @Nonnull DialobSession dialobSession) {
+  public ActiveDialobSessionUpdater(@NonNull DialobSessionEvalContextFactory sessionContextFactory,
+                                    @NonNull DialobProgram dialobProgram,
+                                    @NonNull DialobSession dialobSession) {
     this.sessionContextFactory = requireNonNull(sessionContextFactory);
     this.dialobProgram = requireNonNull(dialobProgram);
     this.dialobSession = requireNonNull(dialobSession);
   }
 
   @Override
-  public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@Nonnull Iterable<Action> actions) {
+  public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions) {
     return dispatchActions(actions, false);
   }
 
   @Override
-  public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@Nonnull Iterable<Action> actions, boolean activating) {
+  public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions, boolean activating) {
     DialobSessionEvalContext evalContext = sessionContextFactory.createDialobSessionEvalContext(dialobSession, this::queueUpdate, activating);
     applyUpdates(actions);
     while(!evalQueue.isEmpty()) {
@@ -83,7 +83,7 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
     return evalContext::accept;
   }
 
-  protected void applyUpdates(@Nonnull Iterable<Action> actions) {
+  protected void applyUpdates(@NonNull Iterable<Action> actions) {
     actions.forEach(action -> {
       ItemId itemId = IdUtils.toIdNullable(action.getId());
       switch(action.getType()) {
@@ -125,7 +125,7 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
     });
   }
 
-  private void queueUpdate(@Nonnull Event event) {
+  private void queueUpdate(@NonNull Event event) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(" -> event({})", event);
     }
@@ -148,7 +148,7 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
     return Stream.of(command);
   }
 
-  protected void queueCommand(@Nonnull final Command<?> updateCommand) {
+  protected void queueCommand(@NonNull final Command<?> updateCommand) {
     Collection<Command<?>> mustBeBefore = dialobProgram.getCommandsToCommands(updateCommand);
     if (mustBeBefore.isEmpty()) {
       evalQueue.add(updateCommand);

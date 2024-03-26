@@ -15,14 +15,14 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.net.InetAddress;
 
 @Value.Immutable
 public interface QuestionnaireClientConnectedEvent extends QuestionnaireEvent {
 
-  @Nonnull
+  @NonNull
   InetAddress getClient();
 }

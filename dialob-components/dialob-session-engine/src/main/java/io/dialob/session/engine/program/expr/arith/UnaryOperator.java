@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 public interface UnaryOperator extends Expression {
@@ -29,16 +29,16 @@ public interface UnaryOperator extends Expression {
   Expression getExpression();
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     Object value = getExpression().eval(evalContext);
     return value == null ? null : apply(value);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getExpression().getEvalRequiredConditions();
   }
 
-  Object apply(@Nonnull Object value);
+  Object apply(@NonNull Object value);
 }

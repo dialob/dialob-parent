@@ -15,19 +15,19 @@
  */
 package io.dialob.form.service.api.validation;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.FormValidationError;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 public interface FormIdRenamer {
-  List<FormValidationError> validateRename(@Nonnull Form formDocument, @Nonnull String oldId, @Nonnull String newId);
+  List<FormValidationError> validateRename(@NonNull Form formDocument, @NonNull String oldId, @NonNull String newId);
 
-  FormItem renameAttributes(@Nonnull FormItem item, @Nonnull UnaryOperator<String> idRenamer, @Nonnull String oldId, @Nonnull String newId);
+  FormItem renameAttributes(@NonNull FormItem item, @NonNull UnaryOperator<String> idRenamer, @NonNull String oldId, @NonNull String newId);
 
-  Pair<Form, List<FormValidationError>> renameIdentifiers(@Nonnull Form form, @Nonnull String oldId, @Nonnull String newId);
+  Pair<Form, List<FormValidationError>> renameIdentifiers(@NonNull Form form, @NonNull String oldId, @NonNull String newId);
 }

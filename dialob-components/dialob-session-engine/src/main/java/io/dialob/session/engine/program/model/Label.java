@@ -15,25 +15,25 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 @Value.Immutable
 public interface Label extends ProgramNode {
 
-  @Nonnull
-  static Label createLabel(@Nonnull Map<String,String> map) {
+  @NonNull
+  static Label createLabel(@NonNull Map<String,String> map) {
     return ImmutableLabel.builder().putAllLabels(map).build();
   }
 
-  @Nonnull
+  @NonNull
   Map<String, String> getLabels();
 
   @Nullable
-  default String getLabel(@Nonnull String language) {
+  default String getLabel(@NonNull String language) {
     return getLabels().get(language);
   }
 }

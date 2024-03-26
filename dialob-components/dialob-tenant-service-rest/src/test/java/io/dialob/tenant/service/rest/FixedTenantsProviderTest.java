@@ -15,18 +15,17 @@
  */
 package io.dialob.tenant.service.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
-import io.dialob.security.tenant.Tenant;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class FixedTenantsProviderTest {
 

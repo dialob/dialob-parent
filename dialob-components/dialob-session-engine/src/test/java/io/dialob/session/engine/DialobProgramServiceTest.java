@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import java.time.Clock;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +45,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
     AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);;
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     QuestionnaireDialobProgramService service = QuestionnaireDialobProgramService.newBuilder().setFormDatabase(formFinder).setProgramFromFormCompiler(programFromFormCompiler).build();
 //    Form formDocument = Mockito.mock(Form.class);
     String formFile = "form.json";

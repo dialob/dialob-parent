@@ -15,15 +15,15 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.SessionObject;
 
-import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 public interface CreateCommand<T extends SessionObject> extends Command {
 
-  @Nonnull
-  Stream<T> create(@Nonnull EvalContext context);
+  @NonNull
+  Stream<T> create(@NonNull EvalContext context);
 
 }

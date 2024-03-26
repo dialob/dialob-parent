@@ -16,20 +16,17 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>dialob-security-parent</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <properties>
-    <feign.version>10.2.0</feign.version>
-  </properties>
 
   <artifactId>dialob-security-uaa</artifactId>
   <dependencies>
-  
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-security-spring</artifactId>
@@ -37,13 +34,13 @@
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-settings</artifactId>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-common</artifactId>
-    </dependency>    
-    
-    
+    </dependency>
+
+
     <dependency>
       <groupId>io.github.openfeign</groupId>
       <artifactId>feign-core</artifactId>
@@ -73,6 +70,4 @@
       <artifactId>jackson-datatype-jdk8</artifactId>
     </dependency>
   </dependencies>
-
-
 </project>

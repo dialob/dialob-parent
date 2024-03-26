@@ -15,20 +15,20 @@
  */
 package io.dialob.session.engine.spi;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface ExpressionCompiler {
 
-  boolean compile(@Nonnull ItemId itemId,
-                  @Nonnull String expression,
-                  @Nonnull AliasesProvider aliasesProvider,
-                  @Nonnull Consumer<Expression> consumer,
-                  @Nonnull FormValidationError.Type type, Optional<Integer> index);
+  boolean compile(@NonNull ItemId itemId,
+                  @NonNull String expression,
+                  @NonNull AliasesProvider aliasesProvider,
+                  @NonNull Consumer<Expression> consumer,
+                  @NonNull FormValidationError.Type type, Optional<Integer> index);
 
 }

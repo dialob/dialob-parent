@@ -15,10 +15,10 @@
  */
 package io.dialob.cloud.gcp;
 
-import lombok.extern.slf4j.Slf4j;
 import io.dialob.integration.api.event.FormDeletedEvent;
 import io.dialob.integration.api.event.FormTaggedEvent;
 import io.dialob.integration.api.event.FormUpdatedEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 
 @Slf4j

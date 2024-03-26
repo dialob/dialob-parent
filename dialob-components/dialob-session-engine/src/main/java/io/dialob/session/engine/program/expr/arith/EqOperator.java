@@ -15,17 +15,16 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface EqOperator<T> extends AbstractLogicalOperator {
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     Object lhsResult = getLhs().eval(evalContext);
     Object rhsResult = getRhs().eval(evalContext);
     if (lhsResult == rhsResult) {
@@ -40,7 +39,7 @@ public interface EqOperator<T> extends AbstractLogicalOperator {
     return lhsResult.equals(rhsResult);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;

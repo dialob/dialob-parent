@@ -18,7 +18,7 @@ package io.dialob.db.dialob.api;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.form.service.api.FormDatabase;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.function.Consumer;
 

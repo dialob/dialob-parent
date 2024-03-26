@@ -18,7 +18,7 @@ package io.dialob.security.spring.apikey;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 

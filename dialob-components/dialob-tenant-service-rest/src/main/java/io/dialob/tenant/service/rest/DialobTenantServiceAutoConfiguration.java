@@ -15,12 +15,11 @@
  */
 package io.dialob.tenant.service.rest;
 
+import io.dialob.security.tenant.CurrentTenant;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import io.dialob.security.tenant.CurrentTenant;
 
 @Configuration(proxyBeanMethods = false)
 @Import(TenantsRestController.class)

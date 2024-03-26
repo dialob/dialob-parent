@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
@@ -25,7 +26,6 @@ import io.dialob.session.engine.session.command.event.ImmutableRowItemsRemovedEv
 import io.dialob.session.engine.session.command.event.ImmutableValueSetUpdatedEvent;
 import io.dialob.session.engine.session.model.*;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -196,11 +196,11 @@ public final class CommandFactory {
     return COMPLETE;
   }
 
-  public static GotoPage gotoPage(@Nonnull ItemId page) {
+  public static GotoPage gotoPage(@NonNull ItemId page) {
     return ImmutableGotoPage.of(page, ACTIVE_PAGE_TRIGGERS);
   }
 
-  public static SetAnswer setAnswer(@Nonnull ItemId questionId, Object answer) {
+  public static SetAnswer setAnswer(@NonNull ItemId questionId, Object answer) {
     return ImmutableSetAnswer.of(questionId, answer, Arrays.asList(
       Triggers.<ItemState>trigger(stateChangedEvent(questionId)).when(ITEM_STATE_CHANGED),
       Triggers.<ItemState>trigger(Triggers.validityUpdatedEvent(onTarget(questionId))).when(ITEM_INVALIDITY_CHANGED),
@@ -208,38 +208,38 @@ public final class CommandFactory {
     ));
   }
 
-  public static SetLocale setLocale(@Nonnull String locale) {
+  public static SetLocale setLocale(@NonNull String locale) {
     return ImmutableSetLocale.of(locale, Arrays.asList(
       Triggers.<ItemState>trigger(sessionLocaleUpdatedEvent()).when(ALWAYS)
     ));
   }
 
-  public static SetVariableValue setVariableValue(@Nonnull ItemId id, Object value) {
+  public static SetVariableValue setVariableValue(@NonNull ItemId id, Object value) {
     return ImmutableSetVariableValue.of(id, value, Arrays.asList(
       Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED),
       Triggers.<ItemState>trigger(Triggers.statusUpdatedEvent(onTarget(id))).when(ITEM_STATUS_CHANGED)
     ));
   }
 
-  public static SetVariableFailed setVariableFailed(@Nonnull ItemId id) {
+  public static SetVariableFailed setVariableFailed(@NonNull ItemId id) {
     return ImmutableSetVariableFailed.of(id, ImmutableList.of(
       Triggers.<ItemState>trigger(Triggers.statusUpdatedEvent(onTarget(id))).when(ITEM_STATUS_CHANGED)
     ));
   }
 
-  public static ItemUpdateCommand deleteRow(@Nonnull ItemId toBeRemoved) {
+  public static ItemUpdateCommand deleteRow(@NonNull ItemId toBeRemoved) {
     return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) ImmutableDeleteRow.of(parent, toBeRemoved, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> ImmutableNopCommand.of(toBeRemoved, emptyList()));
   }
 
-  public static SetRows addRows(@Nonnull ItemId id, @Nonnull List<Integer> ids) {
+  public static SetRows addRows(@NonNull ItemId id, @NonNull List<Integer> ids) {
     return ImmutableSetRows.of(id, ids, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED)));
   }
 
-  public static AddRow addRow(@Nonnull ItemId targetId) {
+  public static AddRow addRow(@NonNull ItemId targetId) {
     return ImmutableAddRow.of(targetId, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)));
   }
 
-  public static InitRowGroupItemsCommand initRowGroupItemsCommand(@Nonnull ItemId targetId) {
+  public static InitRowGroupItemsCommand initRowGroupItemsCommand(@NonNull ItemId targetId) {
     return ImmutableInitRowGroupItemsCommand.of(targetId, ImmutableList.of(Triggers.<ItemState>trigger(itemsChangedEvent(onTarget(targetId))).when(GROUP_ITEMS_CHANGED)));
   }
 

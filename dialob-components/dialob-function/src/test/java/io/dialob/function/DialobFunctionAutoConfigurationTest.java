@@ -15,6 +15,8 @@
  */
 package io.dialob.function;
 
+import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.tenant.CurrentTenant;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,9 +24,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import io.dialob.rule.parser.function.FunctionRegistry;
-import io.dialob.security.tenant.CurrentTenant;
 
 class DialobFunctionAutoConfigurationTest {
 

@@ -16,13 +16,13 @@
 package io.dialob.session.engine.program.expr;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public interface ExpressionList extends Expression {
   List<Expression> getExpressions();
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     return getExpressions().stream()
       .map(expression -> expression.eval(evalContext))
       .filter(Objects::nonNull)
@@ -50,13 +50,13 @@ public interface ExpressionList extends Expression {
       .collect(Collectors.toList());
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     final ImmutableSet.Builder<EventMatcher> deps = ImmutableSet.builder();

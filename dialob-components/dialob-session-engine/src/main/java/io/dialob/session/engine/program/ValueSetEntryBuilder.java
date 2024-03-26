@@ -15,12 +15,11 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.model.*;
 import io.dialob.session.engine.session.model.IdUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -74,7 +73,8 @@ public class ValueSetEntryBuilder extends AbstractItemBuilder<ValueSetEntryBuild
   }
 
   @Override
-  protected FormValidationError.@NotNull Type getActiveWhenExpressionErrorType() {
+  @NonNull
+  protected FormValidationError.Type getActiveWhenExpressionErrorType() {
     return FormValidationError.Type.VALUESET_ENTRY;
   }
 }

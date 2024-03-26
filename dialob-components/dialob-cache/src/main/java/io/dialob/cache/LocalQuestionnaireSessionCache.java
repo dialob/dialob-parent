@@ -15,6 +15,7 @@
  */
 package io.dialob.cache;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.security.tenant.ImmutableTenant;
@@ -22,7 +23,6 @@ import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +47,7 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     return sessionCache.size();
   }
 
-  protected ValueWrapper internalGet(@Nonnull String questionnaireId) {
+  protected ValueWrapper internalGet(@NonNull String questionnaireId) {
     QuestionnaireSession session = sessionCache.get(questionnaireId);
     if (session == null) {
       return null;
@@ -55,7 +55,7 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     return () -> session;
   }
 
-  public synchronized void evict(@Nonnull String sessionId, Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback) {
+  public synchronized void evict(@NonNull String sessionId, Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback) {
     final QuestionnaireSession questionnaireSession = sessionCache.get(sessionId);
     if (questionnaireSession == null) {
       return;
@@ -95,8 +95,8 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     });
   }
 
-  @Nonnull
-  protected QuestionnaireSession put(@Nonnull QuestionnaireSession questionnaireSession) {
+  @NonNull
+  protected QuestionnaireSession put(@NonNull QuestionnaireSession questionnaireSession) {
     return questionnaireSession.getSessionId().map(sessionId -> {
       LOGGER.debug("Caching session {} rev {}", sessionId, questionnaireSession.getRev());
       QuestionnaireSession previousSession = sessionCache.put(sessionId, questionnaireSession);
@@ -112,29 +112,29 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
   }
 
   @Override
-  public void forEach(@Nonnull Consumer<QuestionnaireSession> sessionConsumer) {
+  public void forEach(@NonNull Consumer<QuestionnaireSession> sessionConsumer) {
     sessionCache.values().forEach(sessionConsumer);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String getName() {
     return name;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Object getNativeCache() {
     return this.sessionCache;
   }
 
   @Override
-  public ValueWrapper get(@Nonnull Object key) {
+  public ValueWrapper get(@NonNull Object key) {
     return internalGet((String) key);
   }
 
   @Override
-  public <T> T get(@Nonnull Object key, Class<T> type) {
+  public <T> T get(@NonNull Object key, Class<T> type) {
     final ValueWrapper valueWrapper = internalGet((String) key);
     if (valueWrapper == null) {
       return null;
@@ -143,7 +143,7 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
   }
 
   @Override
-  public <T> T get(@Nonnull Object key, @Nonnull Callable<T> valueLoader) {
+  public <T> T get(@NonNull Object key, @NonNull Callable<T> valueLoader) {
     final ValueWrapper valueWrapper = internalGet((String) key);
     if (valueWrapper == null) {
       try {
@@ -156,12 +156,12 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
   }
 
   @Override
-  public void put(@Nonnull Object key, Object value) {
+  public void put(@NonNull Object key, Object value) {
     putIfAbsent(key, value);
   }
 
   @Override
-  public ValueWrapper putIfAbsent(@Nonnull Object key, Object value) {
+  public ValueWrapper putIfAbsent(@NonNull Object key, Object value) {
     if (!(key instanceof String || key instanceof Optional)) {
       throw new IllegalArgumentException("questionnaireSession cache key must be String or Optional");
     }
@@ -173,7 +173,7 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
   }
 
   @Override
-  public void evict(@Nonnull Object key) {
+  public void evict(@NonNull Object key) {
     evict((String) key, null);
   }
 

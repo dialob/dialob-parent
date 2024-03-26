@@ -51,7 +51,7 @@ public class PostSubmitHandlerTest {
     when(request.getHeaders()).thenReturn(httpHeaders);
     when(request.getBody()).thenReturn(body);
     when(request.execute()).thenReturn(response);
-    when(response.getRawStatusCode()).thenReturn(HttpStatus.OK.value());
+    when(response.getStatusCode()).thenReturn(HttpStatus.OK);
     when(response.getHeaders()).thenReturn(responseHttpHeaders);
 
 
@@ -86,7 +86,7 @@ public class PostSubmitHandlerTest {
     when(request.getHeaders()).thenReturn(httpHeaders);
     when(request.getBody()).thenReturn(body);
     when(request.execute()).thenReturn(response);
-    when(response.getRawStatusCode()).thenReturn(HttpStatus.OK.value());
+    when(response.getStatusCode()).thenReturn(HttpStatus.OK);
     when(response.getHeaders()).thenReturn(responseHttpHeaders);
 
 

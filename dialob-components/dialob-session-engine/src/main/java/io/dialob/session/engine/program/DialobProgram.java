@@ -16,11 +16,12 @@
 package io.dialob.session.engine.program;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.model.Item;
 import io.dialob.session.engine.program.model.Program;
-import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
+import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.command.*;
 import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.DialobSession;
@@ -29,7 +30,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
@@ -50,18 +50,18 @@ public class DialobProgram implements Serializable {
 
   private final Map<Command<?>, Set<Command<?>>> commandsToCommands;
 
-  private DialobProgram(@Nonnull Program program,
-                        @Nonnull Map<EventMatcher, List<Command<?>>> inputUpdates,
-                        @Nonnull Map<ItemId, List<Command<?>>> itemCommands,
-                        @Nonnull Map<Command<?>, Set<Command<?>>> commandsToCommands) {
+  private DialobProgram(@NonNull Program program,
+                        @NonNull Map<EventMatcher, List<Command<?>>> inputUpdates,
+                        @NonNull Map<ItemId, List<Command<?>>> itemCommands,
+                        @NonNull Map<Command<?>, Set<Command<?>>> commandsToCommands) {
     this.program = Objects.requireNonNull(program);
     this.inputUpdates = Objects.requireNonNull(inputUpdates);
     this.itemCommands = Objects.requireNonNull(itemCommands);
     this.commandsToCommands = Objects.requireNonNull(commandsToCommands);
   }
 
-  @Nonnull
-  public static DialobProgram createDialobProgram(@Nonnull Program program) {
+  @NonNull
+  public static DialobProgram createDialobProgram(@NonNull Program program) {
     DependencyResolverVisitor visitor = new DependencyResolverVisitor();
     program.accept(visitor);
     return new DialobProgram(program,
@@ -70,7 +70,7 @@ public class DialobProgram implements Serializable {
       visitor.getCommandsToCommands());
   }
 
-  public Stream<Command<?>> findDependencies(@Nonnull Event event) {
+  public Stream<Command<?>> findDependencies(@NonNull Event event) {
     return inputUpdates
       .entrySet()
       .stream()
@@ -128,16 +128,16 @@ public class DialobProgram implements Serializable {
    * @deprecated Only used in unit tests
    */
   @Deprecated
-  public DialobSession createSession(@Nonnull DialobSessionEvalContextFactory sessionContextFactory, String tenantId, final String sessionId, final String language, String activePage) {
+  public DialobSession createSession(@NonNull DialobSessionEvalContextFactory sessionContextFactory, String tenantId, final String sessionId, final String language, String activePage) {
     return this.createSession(sessionContextFactory, tenantId, sessionId, language, activePage, (itemId, item) -> Optional.empty(), valueSetId -> Collections.emptyList(), null, null, null);
   }
 
-  public DialobSession createSession(@Nonnull DialobSessionEvalContextFactory sessionContextFactory,
+  public DialobSession createSession(@NonNull DialobSessionEvalContextFactory sessionContextFactory,
                                      final String tenantId,
                                      final String sessionId,
                                      final String language,
                                      final String activePage,
-                                     @Nonnull CreateDialobSessionProgramVisitor.InitialValueResolver initialValueResolver,
+                                     @NonNull CreateDialobSessionProgramVisitor.InitialValueResolver initialValueResolver,
                                      CreateDialobSessionProgramVisitor.ProvidedValueSetEntriesResolver findProvidedValueSetEntries,
                                      Date completed,
                                      Date opened,
@@ -148,7 +148,7 @@ public class DialobProgram implements Serializable {
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     new ActiveDialobSessionUpdater(sessionContextFactory, this, dialobSession) {
       @Override
-      protected void applyUpdates(@Nonnull Iterable<Action> actions) {
+      protected void applyUpdates(@NonNull Iterable<Action> actions) {
         createDialobSessionProgramVisitor.getUpdates().forEach(this::queueCommand);
         // find first whenActiveUpdated page, if activePage is unset
         if (activePage == null) {

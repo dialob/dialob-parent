@@ -16,13 +16,13 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
@@ -31,17 +31,17 @@ import static io.dialob.session.engine.session.command.EventMatchers.whenValueUp
 public interface VariableReference<T> extends Expression {
 
   @Value.Parameter(order = 0)
-  @Nonnull
+  @NonNull
   ItemId getItemId();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenValueUpdated(getItemId()));
   }
 
   @Override
-  default T eval(@Nonnull EvalContext evalContext) {
+  default T eval(@NonNull EvalContext evalContext) {
     return (T) evalContext.getItemValue(getItemId());
   }
 

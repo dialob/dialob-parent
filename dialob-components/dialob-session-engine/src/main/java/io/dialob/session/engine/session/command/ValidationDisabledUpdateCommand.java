@@ -15,18 +15,17 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ErrorState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-
 @Value.Immutable
 public interface ValidationDisabledUpdateCommand extends ErrorUpdateCommand {
 
-  @Nonnull
+  @NonNull
   @Override
-  default ErrorState update(@Nonnull EvalContext context, @Nonnull ErrorState state) {
+  default ErrorState update(@NonNull EvalContext context, @NonNull ErrorState state) {
     final Object eval = getExpression().eval(context);
     ErrorState.UpdateBuilder updateBuilder = state.update(context).setDisabled(eval != null ? (Boolean) eval : false);
     return updateBuilder.get();

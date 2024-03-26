@@ -18,6 +18,9 @@ package io.dialob.security.aws.elb;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.JWTProcessor;
 import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,9 +33,6 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.security.KeyPair;
 import java.time.Instant;
 import java.util.Arrays;
@@ -94,7 +94,7 @@ class ElbAuthenticationStrategyTest  extends TestBase {
     verify(request).getHeader("X-Amzn-Oidc-Identity");
     verify(request, times(2)).getHeader("X-Amzn-Oidc-Data");
     verify(request).getRemoteAddr();
-    verify(request).getSession(false);
+    verify(request, times(2)).getSession(false);
     verify(chain).doFilter(request, response);
 
     Mockito.verifyNoMoreInteractions(request, response, chain, jwtProcessor);

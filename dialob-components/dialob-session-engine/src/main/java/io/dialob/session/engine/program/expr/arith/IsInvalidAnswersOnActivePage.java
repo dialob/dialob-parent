@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -25,8 +26,9 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,7 +43,7 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
   ItemId getPageContainerId();
 
   @Override
-  default Boolean eval(@Nonnull EvalContext context) {
+  default Boolean eval(@NonNull EvalContext context) {
 
     final Set<ItemId> questionsWithErrors = context.getErrorStates().stream()
       .filter(ErrorState::isActive)
@@ -63,7 +65,7 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
       .anyMatch(questionsWithErrors::contains);
   }
 
-  default Stream<? extends ItemState> findQuestionItems(@Nonnull EvalContext context, Stream<ItemId> items) {
+  default Stream<? extends ItemState> findQuestionItems(@NonNull EvalContext context, Stream<ItemId> items) {
     return items
       .map(context::getItemState)
       .flatMap(Optional::stream)
@@ -75,13 +77,13 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
       });
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ANY_ERROR;

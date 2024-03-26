@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.form.service.api.validation.FormValidator;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +33,8 @@ public class FormValidatorExecutor {
     this.formValidators = formValidators;
   }
 
-  @Nonnull
-  public List<FormValidationError> validate(@Nonnull Form form) {
+  @NonNull
+  public List<FormValidationError> validate(@NonNull Form form) {
     return formValidators.stream()
       .map(formValidator -> formValidator.validate(form))
       .flatMap(List::stream)

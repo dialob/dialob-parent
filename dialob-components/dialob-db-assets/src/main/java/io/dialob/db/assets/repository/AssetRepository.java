@@ -16,7 +16,7 @@
 package io.dialob.db.assets.repository;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;

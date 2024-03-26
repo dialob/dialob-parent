@@ -15,10 +15,9 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
-
-import javax.annotation.Nullable;
 
 @org.immutables.value.Value.Immutable
 public interface ConditionalValue<T> extends ProgramNode, Value<T> {

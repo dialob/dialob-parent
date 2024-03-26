@@ -15,26 +15,25 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-
 @Value.Immutable
 public interface Complete extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
-  @Nonnull
+  @NonNull
   @Value.Default
   default ItemId getTargetId() {
     return DialobSession.QUESTIONNAIRE_REF;
   }
 
   @Override
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (!itemState.isInvalidAnswers()) {
       context.complete();
     }

@@ -15,42 +15,9 @@
  */
 package io.dialob.questionnaire.service.rest;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.function.Consumer;
-
-import javax.inject.Inject;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -65,13 +32,37 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rest.DialobRestAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Consumer;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatabaseExceptionMapper.class,
   CSVSerializerTest.TestConfiguration.class,
   QuestionnairesRestServiceController.class,
   DialobRestAutoConfiguration.class})
-@SpringBootTest()
 @EnableWebMvc
 @WebAppConfiguration
 public class CSVSerializerTest {

@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemIndex;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +33,8 @@ public interface DeleteRow extends AbstractUpdateCommand<ItemId, ItemState>, Ite
   ItemId getToBeRemoved();
 
   @Override
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();

@@ -15,11 +15,10 @@
  */
 package io.dialob.tenant.service.rest;
 
-import java.util.List;
-
-import org.springframework.lang.NonNull;
-
 import io.dialob.security.tenant.Tenant;
+import edu.umd.cs.findbugs.annotations.NonNull;
+
+import java.util.List;
 
 interface TenantsProvider {
 

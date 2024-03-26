@@ -17,6 +17,8 @@ package io.dialob.session.engine.sp;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.*;
 import io.dialob.api.questionnaire.Error;
 import io.dialob.api.questionnaire.*;
@@ -42,10 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -60,7 +59,7 @@ import static io.dialob.session.engine.Utils.*;
 @Slf4j
 @EqualsAndHashCode(exclude = {"eventPublisher", "state"})
 @ToString
-public class DialobQuestionnaireSession implements QuestionnaireSession, Serializable {
+public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   enum State {
     NEW,
@@ -91,34 +90,35 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
 
   private final transient Function<ItemState, ActionItem> toActionItemFunction;
 
-  private DialobQuestionnaireSession(String rev, @Nonnull DialobSession dialobSession, @Nonnull DialobQuestionnaireSession dialobQuestionnaireSession) {
-    this.rev = rev;
-    this.dialobSession = dialobSession;
-    this.eventPublisher = dialobQuestionnaireSession.eventPublisher;
-    this.sessionContextFactory = dialobQuestionnaireSession.sessionContextFactory;
-    this.asyncFunctionInvoker = dialobQuestionnaireSession.asyncFunctionInvoker;
-    this.dialobProgram = dialobQuestionnaireSession.dialobProgram;
-    this.questionClientVisibility = dialobQuestionnaireSession.questionClientVisibility;
-    this.state = new AtomicReference<>(dialobQuestionnaireSession.state.get());
-    this.metadata = dialobQuestionnaireSession.metadata;
-    this.toActionItemFunction = dialobQuestionnaireSession.toActionItemFunction;
+  private DialobQuestionnaireSession(String rev, @NonNull DialobSession dialobSession, @NonNull DialobQuestionnaireSession dialobQuestionnaireSession) {
+    this(
+      dialobQuestionnaireSession.eventPublisher,
+      dialobQuestionnaireSession.sessionContextFactory,
+      dialobQuestionnaireSession.asyncFunctionInvoker,
+      dialobSession,
+      dialobQuestionnaireSession.dialobProgram,
+      rev,
+      dialobQuestionnaireSession.metadata,
+      dialobQuestionnaireSession.state.get(),
+      dialobQuestionnaireSession.questionClientVisibility
+    );
   }
 
-  private DialobQuestionnaireSession(@Nonnull QuestionnaireEventPublisher eventPublisher,
-                                     @Nonnull DialobSessionEvalContextFactory sessionContextFactory,
-                                     @Nonnull AsyncFunctionInvoker asyncFunctionInvoker,
-                                     @Nonnull DialobSession dialobSession,
-                                     @Nonnull DialobProgram dialobProgram,
+  private DialobQuestionnaireSession(@NonNull QuestionnaireEventPublisher eventPublisher,
+                                     @NonNull DialobSessionEvalContextFactory sessionContextFactory,
+                                     @NonNull AsyncFunctionInvoker asyncFunctionInvoker,
+                                     @NonNull DialobSession dialobSession,
+                                     @NonNull DialobProgram dialobProgram,
                                      String rev,
-                                     @Nonnull Questionnaire.Metadata metadata,
-                                     @Nonnull State state,
-                                     @Nonnull QuestionClientVisibility questionClientVisibility) {
+                                     @NonNull Questionnaire.Metadata metadata,
+                                     @NonNull State state,
+                                     @NonNull QuestionClientVisibility questionClientVisibility) {
     this.rev = rev;
     this.metadata = metadata;
     this.eventPublisher = eventPublisher;
     this.sessionContextFactory = sessionContextFactory;
     this.asyncFunctionInvoker = asyncFunctionInvoker;
-    this.dialobSession = dialobSession;
+    this.dialobSession = Objects.requireNonNull(dialobSession, "dialobSession may not be null");
     this.dialobProgram = dialobProgram;
     this.questionClientVisibility = questionClientVisibility;
     this.state = new AtomicReference<>(state);
@@ -145,7 +145,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return new Builder();
   }
 
-  public void writeTo(@Nonnull CodedOutputStream output) throws IOException {
+  public void writeTo(@NonNull CodedOutputStream output) throws IOException {
     writeNullableString(output, rev);
     output.writeInt32NoTag(questionClientVisibility.ordinal());
     output.writeInt32NoTag(state.get().ordinal());
@@ -190,7 +190,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
 
     private Questionnaire.Metadata metadata;
 
-    public Builder readFrom(@Nonnull CodedInputStream input) throws IOException {
+    public Builder readFrom(@NonNull CodedInputStream input) throws IOException {
       rev = readNullableString(input);
       questionClientVisibility = QuestionClientVisibility.values()[input.readInt32()];
       state = State.values()[input.readInt32()];
@@ -255,7 +255,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
       return this;
     }
 
-    public Builder questionClientVisibility(@Nonnull QuestionClientVisibility questionClientVisibility) {
+    public Builder questionClientVisibility(@NonNull QuestionClientVisibility questionClientVisibility) {
       this.questionClientVisibility = questionClientVisibility;
       return this;
     }
@@ -284,9 +284,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
   }
 
 
-  @Nonnull
+  @NonNull
   @Override
-  public DispatchActionsResult dispatchActions(String revision, @Nonnull Collection<Action> actions) {
+  public DispatchActionsResult dispatchActions(String revision, @NonNull Collection<Action> actions) {
     ImmutableQuestionnaireSession.DispatchActionsResult.Builder result = ImmutableQuestionnaireSession
       .DispatchActionsResult.builder()
       .isDidComplete(false);
@@ -347,13 +347,13 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
       .build();
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public DispatchActionsResult dispatchActions(@Nonnull Collection<Action> actions) {
+  public DispatchActionsResult dispatchActions(@NonNull Collection<Action> actions) {
     return dispatchActions(dialobSession.getRevision(), actions);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Questionnaire getQuestionnaire() {
     Questionnaire.Metadata.Status status;
@@ -420,7 +420,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return answers;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String getRevision() {
     return dialobSession.getRevision();
@@ -437,7 +437,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return this.metadata.getOwner();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Instant getLastUpdate() {
     return dialobSession.getLastUpdate();
@@ -448,7 +448,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return dialobSession.getRootItem().getActivePage().map(IdUtils::toString);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<io.dialob.api.proto.ValueSet> getValueSets() {
     List<io.dialob.api.proto.ValueSet> valueSets = new ArrayList<>();
@@ -464,7 +464,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return valueSets;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<Error> getErrors() {
     List<Error> errors = new ArrayList<>();
@@ -485,7 +485,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return errors;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<ActionItem> getItems() {
     final List<ActionItem> formItems = new ArrayList<>();
@@ -499,11 +499,11 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
   }
 
   @Override
-  public Optional<ActionItem> getItemById(@Nonnull String itemId) {
+  public Optional<ActionItem> getItemById(@NonNull String itemId) {
     return dialobSession.getItemState(IdUtils.toId(itemId)).map(toActionItemFunction);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<ActionItem> getVisibleItems() {
     final List<ActionItem> formItems = new ArrayList<>();
@@ -521,7 +521,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return formItems;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<Answer> getAnswers() {
     final List<Answer> answers = new ArrayList<>();
@@ -552,7 +552,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return answers;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<VariableValue> getVariableValues() {
     final List<VariableValue> answers = new ArrayList<>();
@@ -571,7 +571,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
   }
 
   @Override
-  public void buildFullForm(@Nonnull UpdatesCallback updatesCallback) {
+  public void buildFullForm(@NonNull UpdatesCallback updatesCallback) {
     updatesCallback.removeAll();
     getLocale().ifPresent(updatesCallback::locale);
     getVisibleItems().forEach(updatesCallback::questionAdded);
@@ -613,7 +613,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     getSessionId().ifPresent(eventPublisher::opened);
   }
 
-  @Nonnull
+  @NonNull
   static String[] convertRows(List<String> rows) {
     Pattern pattern = Pattern.compile("^([^\\[]+)\\[(\\d+)]$");
     return rows.stream()
@@ -646,7 +646,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     return true;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String getFormId() {
     return dialobProgram.getProgram().getId();
@@ -691,18 +691,18 @@ public class DialobQuestionnaireSession implements QuestionnaireSession, Seriali
     }
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Questionnaire.Metadata.Status getStatus() {
     return dialobSession.isCompleted() ? Questionnaire.Metadata.Status.COMPLETED : Questionnaire.Metadata.Status.OPEN;
   }
 
-  @Nonnull
+  @NonNull
   public DialobProgram getDialobProgram() {
     return dialobProgram;
   }
 
-  @Nonnull
+  @NonNull
   public DialobSession getDialobSession() {
     return dialobSession;
   }

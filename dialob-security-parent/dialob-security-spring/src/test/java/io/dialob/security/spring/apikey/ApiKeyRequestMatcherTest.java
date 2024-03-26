@@ -16,11 +16,10 @@
 package io.dialob.security.spring.apikey;
 
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
 

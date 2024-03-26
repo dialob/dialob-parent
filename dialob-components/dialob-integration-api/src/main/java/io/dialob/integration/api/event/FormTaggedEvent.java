@@ -18,10 +18,9 @@ package io.dialob.integration.api.event;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 @Value.Immutable
@@ -30,10 +29,10 @@ import javax.annotation.Nullable;
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface FormTaggedEvent extends FormEvent, DistributedEvent {
 
-  @Nonnull
+  @NonNull
   String getFormName();
 
-  @Nonnull
+  @NonNull
   String getTagName();
 
   @Nullable

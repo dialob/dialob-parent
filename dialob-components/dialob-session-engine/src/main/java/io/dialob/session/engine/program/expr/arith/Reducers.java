@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.CannotReduceTypeException;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
@@ -121,8 +121,8 @@ public class Reducers {
     Reducer<T> div();
   }
 
-  @Nonnull
-  public static OperatorTemplate<?> ofType(@Nonnull ValueType valueType) {
+  @NonNull
+  public static OperatorTemplate<?> ofType(@NonNull ValueType valueType) {
     if (valueType == ValueType.DECIMAL) {
       return DECIMAL_OPERATOR_TEMPLATE;
     }
@@ -153,7 +153,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.PERIOD;
@@ -174,7 +174,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.DURATION;
@@ -207,7 +207,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.DECIMAL;
@@ -240,7 +240,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.INTEGER;
@@ -261,7 +261,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.BOOLEAN;
@@ -276,7 +276,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.STRING;

@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.Event;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -39,8 +39,8 @@ public interface Trigger<T> extends Serializable {
    * @param updateState item's updated state
    * @return triggered event, when item state change matches
    */
-  @Nonnull
-  default Stream<Event> apply(@Nonnull T itemState, T updateState) {
+  @NonNull
+  default Stream<Event> apply(@NonNull T itemState, T updateState) {
     return getWhen().test(itemState, updateState) ? createEvent(itemState, updateState) : Stream.empty();
   }
 

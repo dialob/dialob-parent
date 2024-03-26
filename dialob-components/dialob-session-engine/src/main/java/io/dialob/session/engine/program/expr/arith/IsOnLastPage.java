@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -24,7 +25,6 @@ import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +35,7 @@ import static io.dialob.session.engine.session.command.EventMatchers.whenAvailab
 public interface IsOnLastPage extends Expression {
 
   @Override
-  default Boolean eval(@Nonnull EvalContext context) {
+  default Boolean eval(@NonNull EvalContext context) {
     return context.getItemState(DialobSession.QUESTIONNAIRE_REF).map(questionnaire -> questionnaire.getActivePage().map(activePage -> {
       List<ItemId> availableItems = questionnaire.getAvailableItems();
       if (availableItems.size() <= 1) {
@@ -46,13 +46,13 @@ public interface IsOnLastPage extends Expression {
     }).orElse(false)).orElse(false);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenActivePageUpdated(), whenAvailableItemsUpdated());

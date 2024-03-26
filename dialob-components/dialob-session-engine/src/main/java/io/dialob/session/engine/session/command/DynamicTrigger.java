@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.Event;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
@@ -41,9 +41,9 @@ public interface DynamicTrigger<T> extends Trigger<T> {
    * @param updateState item's updated state
    * @return triggered event, when item state change matches
    */
-  @Nonnull
+  @NonNull
   @Override
-  default Stream<Event> apply(@Nonnull T originalState, T updateState) {
+  default Stream<Event> apply(@NonNull T originalState, T updateState) {
     return getWhen().test(originalState, updateState) ? getEventsProvider().createEvents(originalState, updateState) : Stream.empty();
   }
 

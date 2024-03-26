@@ -80,7 +80,7 @@
             <artifactId>jib-maven-plugin</artifactId>
             <configuration>
               <from>
-                <image>docker.resys.io/docker/java-runtime:11-amzn</image>
+                <image>docker.resys.io/docker/java-runtime:17-amzn</image>
               </from>
               <container>
                 <ports>
@@ -270,8 +270,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-sleuth</artifactId>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.session</groupId>
@@ -293,11 +293,6 @@
       <scope>test</scope>
     </dependency>
     
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp-urlconnection</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
@@ -326,6 +321,11 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.redis</groupId>
+      <artifactId>testcontainers-redis</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

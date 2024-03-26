@@ -20,8 +20,6 @@ import io.dialob.api.proto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;

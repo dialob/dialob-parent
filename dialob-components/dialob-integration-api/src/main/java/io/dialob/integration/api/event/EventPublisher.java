@@ -15,10 +15,10 @@
  */
 package io.dialob.integration.api.event;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface EventPublisher {
 
-  void publish(@Nonnull Event event);
+  void publish(@NonNull Event event);
 
 }

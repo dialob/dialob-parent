@@ -15,59 +15,59 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
 public interface QuestionnaireSessionBuilder {
 
-  @Nonnull
+  @NonNull
   QuestionnaireSession build();
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setCreateOnly(boolean createOnly);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setActiveItem(String activeItem);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setFormId(String formId);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setFormRev(String formRev);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setCreator(String owner);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setOwner(String owner);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setSubmitUrl(String submitUrl);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setLanguage(String language);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setStatus(Questionnaire.Metadata.Status status);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setAdditionalProperties(Map<String, Object> additionalProperties);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setQuestionnaire(Questionnaire questionnaire);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setContextValues(List<ContextValue> contextValues);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setAnswers(List<Answer> answers);
 
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder setValueSets(List<ValueSet> valueSets);
 }

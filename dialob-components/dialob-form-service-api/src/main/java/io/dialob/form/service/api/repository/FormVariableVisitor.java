@@ -15,12 +15,11 @@
  */
 package io.dialob.form.service.api.repository;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Variable;
-
-import javax.annotation.Nonnull;
 
 public interface FormVariableVisitor extends Visitor {
 
-  void visitFormVariable(@Nonnull Variable formVariable);
+  void visitFormVariable(@NonNull Variable formVariable);
 
 }

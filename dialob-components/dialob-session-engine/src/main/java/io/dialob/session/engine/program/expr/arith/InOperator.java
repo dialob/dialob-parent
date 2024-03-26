@@ -15,18 +15,18 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 @Value.Immutable
 public interface InOperator extends InfixOperator<Boolean> {
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     Object item = getLhs().eval(evalContext);
     if (item == null) {
       return false;
@@ -38,7 +38,7 @@ public interface InOperator extends InfixOperator<Boolean> {
     return item.equals(targetGroup);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;

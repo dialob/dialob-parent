@@ -15,21 +15,19 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.stream.Stream;
 
 @Value.Immutable
 public interface ArrayReducerOperator<T> extends Expression {
@@ -49,7 +47,7 @@ public interface ArrayReducerOperator<T> extends Expression {
 
   @Nullable
   @Override
-  default Object eval(@NotNull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     final List<T> values = (List<T>) getArrayExpression().eval(evalContext);
     return values
       .stream()
@@ -58,7 +56,7 @@ public interface ArrayReducerOperator<T> extends Expression {
       .orElse((T) getPlaceholderValue());
   }
 
-  @NotNull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return getArrayExpression().getValueType().getItemValueType();

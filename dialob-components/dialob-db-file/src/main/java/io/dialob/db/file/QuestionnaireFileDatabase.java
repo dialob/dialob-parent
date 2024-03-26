@@ -20,7 +20,7 @@ import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.function.Consumer;
 

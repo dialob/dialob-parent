@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.program.expr;
 
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public enum OperatorSymbol {
   PLUS("+"),

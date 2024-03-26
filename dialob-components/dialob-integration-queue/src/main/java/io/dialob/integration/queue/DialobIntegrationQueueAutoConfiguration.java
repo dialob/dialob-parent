@@ -19,6 +19,7 @@ import io.dialob.integration.api.Constants;
 import io.dialob.integration.api.ImmutableNodeId;
 import io.dialob.integration.api.NodeId;
 import io.dialob.integration.queue.redis.DistributedEventBridge;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -30,7 +31,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
 
-import javax.inject.Named;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;

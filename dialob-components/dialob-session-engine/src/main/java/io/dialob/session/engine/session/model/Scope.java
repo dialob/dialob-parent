@@ -15,9 +15,9 @@
  */
 package io.dialob.session.engine.session.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
@@ -25,7 +25,7 @@ import java.util.Set;
 @Value.Immutable
 public interface Scope extends Serializable {
 
-  @Nonnull
+  @NonNull
   @Value.Parameter(order = -1000)
   ItemId getScopeId();
 

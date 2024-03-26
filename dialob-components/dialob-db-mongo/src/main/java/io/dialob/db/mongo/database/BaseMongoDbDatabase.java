@@ -23,7 +23,7 @@ import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Optional;
 

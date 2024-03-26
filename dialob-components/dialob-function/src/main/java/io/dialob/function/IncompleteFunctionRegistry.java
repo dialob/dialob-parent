@@ -18,7 +18,7 @@ package io.dialob.function;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class IncompleteFunctionRegistry implements FunctionRegistry {
 

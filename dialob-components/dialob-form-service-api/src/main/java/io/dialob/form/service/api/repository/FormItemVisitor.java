@@ -15,10 +15,10 @@
  */
 package io.dialob.form.service.api.repository;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormItem;
 import io.dialob.form.service.api.type.ValidationVisitor;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public interface FormItemVisitor extends Visitor {
@@ -27,18 +27,18 @@ public interface FormItemVisitor extends Visitor {
 
   default void endValidations() {}
 
-  void visitQuestionnaireItem(@Nonnull FormItem formItem);
+  void visitQuestionnaireItem(@NonNull FormItem formItem);
 
-  void visitGroup(@Nonnull FormItem formItem);
+  void visitGroup(@NonNull FormItem formItem);
 
-  void visitSurveyGroup(@Nonnull FormItem formItem);
+  void visitSurveyGroup(@NonNull FormItem formItem);
 
-  void visitRowGroup(@Nonnull FormItem formItem);
+  void visitRowGroup(@NonNull FormItem formItem);
 
-  void visitPage(@Nonnull FormItem formItem);
+  void visitPage(@NonNull FormItem formItem);
 
-  void visitQuestion(@Nonnull FormItem formItem);
+  void visitQuestion(@NonNull FormItem formItem);
 
-  void visitNote(@Nonnull FormItem formItem);
+  void visitNote(@NonNull FormItem formItem);
 
 }

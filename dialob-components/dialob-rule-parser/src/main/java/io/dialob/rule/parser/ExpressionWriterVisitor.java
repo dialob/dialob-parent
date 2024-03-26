@@ -16,7 +16,7 @@
 package io.dialob.rule.parser;
 
 import io.dialob.rule.parser.node.*;
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class ExpressionWriterVisitor implements ASTVisitor {
 
@@ -40,8 +40,8 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   }
 
   @Override
-  @NotNull
-  public ASTVisitor visitCallExpr(@NotNull CallExprNode node) {
+  @NonNull
+  public ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
     addSeparator();
     String separator = getOperatorSeparator(node.getNodeOperator());
 
@@ -79,7 +79,7 @@ public class ExpressionWriterVisitor implements ASTVisitor {
     return separator;
   }
 
-  private String convertOperator(@NotNull String operator) {
+  private String convertOperator(@NonNull String operator) {
     return operator;
   }
 
@@ -88,8 +88,8 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   }
 
   @Override
-  @NotNull
-  public NodeBase endCallExpr(@NotNull CallExprNode node) {
+  @NonNull
+  public NodeBase endCallExpr(@NonNull CallExprNode node) {
     switch (node.getNodeOperator().getCategory()) {
       case FUNCTION:
         stringBuilder.append(subVisitor.toString()).append(")");
@@ -137,8 +137,8 @@ public class ExpressionWriterVisitor implements ASTVisitor {
 
 
   @Override
-  @NotNull
-  public NodeBase visitConstExpr(@NotNull ConstExprNode node) {
+  @NonNull
+  public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
     addSeparator();
     stringBuilder.append(node.getValue());
     if (node.getUnit() != null) {
@@ -159,8 +159,8 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   }
 
   @Override
-  @NotNull
-  public NodeBase visitIdExpr(@NotNull IdExprNode node) {
+  @NonNull
+  public NodeBase visitIdExpr(@NonNull IdExprNode node) {
     addSeparator();
     stringBuilder.append(convertId(node.getId()));
     return node;

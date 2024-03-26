@@ -28,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -44,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
 @EnableCaching
 public class FormDatabaseTest {
 

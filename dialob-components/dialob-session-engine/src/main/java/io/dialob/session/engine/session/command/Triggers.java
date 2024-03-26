@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ItemId;
@@ -22,7 +23,6 @@ import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -41,7 +41,7 @@ public class Triggers {
     private EventsProvider<T> eventsProvider;
     private Event event;
 
-    public TriggerBuilder(@Nonnull EventsProvider<T> eventsProvider) {
+    public TriggerBuilder(@NonNull EventsProvider<T> eventsProvider) {
       this.eventsProvider = requireNonNull(eventsProvider);
     }
 
@@ -49,7 +49,7 @@ public class Triggers {
       this.event = event;
     }
 
-    public Trigger<T> when(@Nonnull BiPredicate<T, T> predicate) {
+    public Trigger<T> when(@NonNull BiPredicate<T, T> predicate) {
       if (event != null) {
         return ImmutableStaticTrigger.<T>builder().when(predicate).addAllEvents(event).build();
       }
@@ -62,23 +62,23 @@ public class Triggers {
     Stream<Event> createEvents(T originalState, T updatedState);
   }
 
-  public static <T> TriggerBuilder<T> trigger(@Nonnull EventsProvider<T> eventsProvider) {
+  public static <T> TriggerBuilder<T> trigger(@NonNull EventsProvider<T> eventsProvider) {
     return new TriggerBuilder<>(requireNonNull(eventsProvider));
   }
 
-  public static <T> TriggerBuilder<T> trigger(@Nonnull Event event) {
+  public static <T> TriggerBuilder<T> trigger(@NonNull Event event) {
     return new TriggerBuilder<>(requireNonNull(event));
   }
 
-  public static TargetEvent onTarget(@Nonnull ItemId targetId) {
+  public static TargetEvent onTarget(@NonNull ItemId targetId) {
     return stateChangedEvent(targetId);
   }
 
-  public static ValueSetEvent valueSetUpdatedEvent(@Nonnull ValueSetId valueSetId) {
+  public static ValueSetEvent valueSetUpdatedEvent(@NonNull ValueSetId valueSetId) {
     return ImmutableValueSetUpdatedEvent.of(valueSetId);
   }
 
-  public static TargetEvent stateChangedEvent(@Nonnull ItemId targetId) {
+  public static TargetEvent stateChangedEvent(@NonNull ItemId targetId) {
     return ImmutableTargetEvent.of(targetId);
   }
 
@@ -86,7 +86,7 @@ public class Triggers {
     return ImmutableSessionLocaleUpdatedEvent.INSTANCE;
   }
 
-  public static Event errorActivityUpdatedEvent(@Nonnull ErrorId errorId) {
+  public static Event errorActivityUpdatedEvent(@NonNull ErrorId errorId) {
     return ImmutableErrorActiveUpdatedEvent.of(errorId);
   }
 

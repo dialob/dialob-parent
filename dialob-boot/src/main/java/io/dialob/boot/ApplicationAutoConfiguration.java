@@ -20,6 +20,7 @@ import io.dialob.boot.security.SecurityConfiguration;
 import io.dialob.boot.settings.*;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,14 +32,13 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.UrlTemplateResolver;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
-@Import(SecurityConfiguration.class)
+@Import({SecurityConfiguration.class})
 public class ApplicationAutoConfiguration {
 
   @Configuration(proxyBeanMethods = false)
@@ -49,7 +49,7 @@ public class ApplicationAutoConfiguration {
     LandingController.class,
     ReviewController.class,
     ComposerController.class,
-    GlobalModelAttributesInjector.class
+    GlobalModelAttributesInjector.class,
   })
   @EnableConfigurationProperties({
     AdminApplicationSettings.class,

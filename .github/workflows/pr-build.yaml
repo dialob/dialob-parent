@@ -1,0 +1,30 @@
+on:
+  pull_request:
+    branches:
+      - dev
+      - dev-*
+
+name: pull request - build
+
+jobs:
+  build:
+    name: Build - pull request
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: build
+        run: ./mvnw verify -Pdialob-build -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+

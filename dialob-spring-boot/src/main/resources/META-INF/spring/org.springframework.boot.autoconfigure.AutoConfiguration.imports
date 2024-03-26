@@ -1,0 +1,2 @@
+io.dialob.spring.boot.DialobSpringBootAutoConfiguration
+io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration

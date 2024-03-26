@@ -1,8 +1,8 @@
 package io.dialob.rule.parser.node;
 
 import io.dialob.rule.parser.api.ValueType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.List;
 
@@ -104,11 +104,11 @@ public class ASTBuilder {
     return this;
   }
 
-  public ASTBuilder idExprNode(@Nullable String namespace, @NotNull String text, @Nullable ValueType valueType, @NotNull Span span) {
+  public ASTBuilder idExprNode(@Nullable String namespace, @NonNull String text, @Nullable ValueType valueType, @NonNull Span span) {
     return idExprNode(namespace, null, text, valueType, span);
   }
 
-  public ASTBuilder idExprNode(@Nullable String namespace, @Nullable String scopeId, @NotNull String text, @Nullable ValueType valueType, @NotNull Span span) {
+  public ASTBuilder idExprNode(@Nullable String namespace, @Nullable String scopeId, @NonNull String text, @Nullable ValueType valueType, @NonNull Span span) {
     push(new IdExprNode(peek(), namespace, scopeId, text, valueType, span));
     return this;
   }

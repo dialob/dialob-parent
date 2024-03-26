@@ -15,19 +15,6 @@
  */
 package io.dialob.questionnaire.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.CacheManager;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-
 import io.dialob.common.Constants;
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -39,6 +26,19 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 @Slf4j
@@ -74,7 +74,7 @@ public class DialobQuestionnaireServiceAutoConfiguration {
   }
 
   @Bean
-  public EventPublisher questionnaireSessionEventPublisher(TaskExecutor taskExecutor, ApplicationEventPublisher applicationEventPublisher) {
+  public EventPublisher questionnaireSessionEventPublisher(@Qualifier(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME) TaskExecutor taskExecutor, ApplicationEventPublisher applicationEventPublisher) {
     return new QuestionnaireSessionEventPublisher(taskExecutor, applicationEventPublisher);
   }
 

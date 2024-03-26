@@ -15,13 +15,12 @@
  */
 package io.dialob.security.spring.oauth2.model;
 
-import java.io.Serializable;
-
-import org.immutables.value.Value;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
+
+import java.io.Serializable;
 
 
 @Value.Immutable

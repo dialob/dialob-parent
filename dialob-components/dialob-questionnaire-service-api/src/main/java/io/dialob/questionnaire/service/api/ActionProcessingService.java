@@ -15,21 +15,21 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Function;
 
 public interface ActionProcessingService {
 
-  @Nonnull
+  @NonNull
   @Deprecated // TODO replace with computeSessionUpdate
-  Actions answerQuestion(@Nonnull String questionnaireId, String revision, @Nonnull List<Action> actions);
+  Actions answerQuestion(@NonNull String questionnaireId, String revision, @NonNull List<Action> actions);
 
-  @Nonnull
-  QuestionnaireSession computeSessionUpdate(@Nonnull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession,QuestionnaireSession> updateFunction);
+  @NonNull
+  QuestionnaireSession computeSessionUpdate(@NonNull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession,QuestionnaireSession> updateFunction);
 
 }

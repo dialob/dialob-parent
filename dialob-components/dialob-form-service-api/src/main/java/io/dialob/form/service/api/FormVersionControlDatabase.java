@@ -15,10 +15,10 @@
  */
 package io.dialob.form.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormTag;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public interface FormVersionControlDatabase {
    *
    * @return form database service
    */
-  @Nonnull
+  @NonNull
   FormDatabase getFormDatabase();
 
   /**
@@ -44,15 +44,15 @@ public interface FormVersionControlDatabase {
    * @param snapshot create snapshot of form before tagging
    * @return
    */
-  Optional<FormTag> createTagOnLatest(String tenantId, @Nonnull String formName, String tag, String description, boolean snapshot);
+  Optional<FormTag> createTagOnLatest(String tenantId, @NonNull String formName, String tag, String description, boolean snapshot);
 
-  boolean delete(String tenantId, @Nonnull String formName);
+  boolean delete(String tenantId, @NonNull String formName);
 
-  boolean deleteTag(String tenantId, @Nonnull String formName, String tag);
+  boolean deleteTag(String tenantId, @NonNull String formName, String tag);
 
-  Optional<FormTag> createTag(String tenantId, @Nonnull String formName, String tag, String description, String formDocumentIdOrRefName, @Nonnull FormTag.Type type);
+  Optional<FormTag> createTag(String tenantId, @NonNull String formName, String tag, String description, String formDocumentIdOrRefName, @NonNull FormTag.Type type);
 
-  boolean updateLabel(String tenantId, @Nonnull String formName, String label);
+  boolean updateLabel(String tenantId, @NonNull String formName, String label);
 
   /**
    * Creates copy of form document and returns id of new form.
@@ -62,21 +62,21 @@ public interface FormVersionControlDatabase {
    * @param formId
    * @return formId of new copy
    */
-  String createSnapshot(String tenantId, @Nonnull String formId);
+  String createSnapshot(String tenantId, @NonNull String formId);
 
   /**
    * @return true when formId is not form document id, but name.
    */
-  boolean isName(String tenantId, @Nonnull String formId);
+  boolean isName(String tenantId, @NonNull String formId);
 
-  @Nonnull
-  List<FormTag> findTags(String tenantId, @Nonnull String formId, @Nullable FormTag.Type type);
+  @NonNull
+  List<FormTag> findTags(String tenantId, @NonNull String formId, @Nullable FormTag.Type type);
 
-  Optional<FormTag> findTag(String tenantId, @Nonnull String formName, @Nullable String name);
+  Optional<FormTag> findTag(String tenantId, @NonNull String formName, @Nullable String name);
 
-  boolean updateLatest(String tenantId, @Nonnull String formId, @Nonnull FormTag tag);
+  boolean updateLatest(String tenantId, @NonNull String formId, @NonNull FormTag tag);
 
-  @Nonnull
+  @NonNull
   List<FormTag> queryTags(String tenantId, String formName, String formId, String name, FormTag.Type type);
 
   /**

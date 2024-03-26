@@ -15,27 +15,7 @@
  */
 package io.dialob.db.sp;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-
-import javax.sql.DataSource;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.assertj.ApplicationContextAssert;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dialob.db.assets.AssetFormDatabase;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
@@ -49,7 +29,24 @@ import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.assertj.ApplicationContextAssert;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import software.amazon.awssdk.services.s3.S3Client;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DialobDbJdbcAutoConfigurationTest {
 
@@ -134,7 +131,7 @@ class DialobDbJdbcAutoConfigurationTest {
           .hasSingleBean(QuestionnaireDatabase.class);
       });
   }
-  
+
   @Test
   public void testDialobDbJdbcAutoConfigurationTypeASSETS() {
     new ApplicationContextRunner()

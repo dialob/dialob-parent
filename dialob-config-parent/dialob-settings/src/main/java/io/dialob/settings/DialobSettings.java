@@ -15,12 +15,11 @@
  */
 package io.dialob.settings;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
-import java.net.URL;
 import java.util.*;
 
 @ConfigurationProperties("dialob")
@@ -30,7 +29,6 @@ public class DialobSettings {
 
   public enum DatabaseType {
     NONE,
-    COUCHDB,
     MONGODB,
     FILEDB,
     DIALOBAPIDB,
@@ -64,7 +62,7 @@ public class DialobSettings {
   private GcpSettings gcp = new GcpSettings();
 
   Map<String, Tags> tags = new HashMap<>();
-  
+
   private FunctionSettings function = new FunctionSettings();
 
   @Data
@@ -192,7 +190,8 @@ public class DialobSettings {
 
     public enum AuthenticationMethod {
       OAUTH2,
-      AWSELB
+      AWSELB,
+      NONE
     }
 
     private boolean enabled;

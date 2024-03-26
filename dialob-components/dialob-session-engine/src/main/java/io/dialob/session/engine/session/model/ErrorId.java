@@ -15,17 +15,17 @@
  */
 package io.dialob.session.engine.session.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Value.Immutable
 public interface ErrorId extends ItemId {
 
   @Value.Parameter
-  @Nonnull
+  @NonNull
   ItemId getItemId();
 
   @Value.Parameter

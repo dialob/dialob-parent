@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ErrorState;
@@ -22,7 +23,6 @@ import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.SessionObject;
 import io.dialob.session.engine.session.model.ValueSetState;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -31,7 +31,7 @@ public abstract class AbstractFormActionsUpdatesItemsVisitor extends AbstractFor
 
   private final Predicate<SessionObject> isVisiblePredicate;
 
-  AbstractFormActionsUpdatesItemsVisitor(@Nonnull FormActions formActions, @Nonnull Predicate<SessionObject> isVisiblePredicate) {
+  AbstractFormActionsUpdatesItemsVisitor(@NonNull FormActions formActions, @NonNull Predicate<SessionObject> isVisiblePredicate) {
     super(formActions);
     this.isVisiblePredicate = isVisiblePredicate;
   }
@@ -100,24 +100,24 @@ public abstract class AbstractFormActionsUpdatesItemsVisitor extends AbstractFor
     });
   }
 
-  protected abstract void updated(@Nonnull ErrorState updated);
+  protected abstract void updated(@NonNull ErrorState updated);
 
-  protected abstract void updated(@Nonnull ValueSetState updated);
+  protected abstract void updated(@NonNull ValueSetState updated);
 
-  protected abstract void activated(@Nonnull ErrorState updated);
+  protected abstract void activated(@NonNull ErrorState updated);
 
-  protected abstract void inactivated(@Nonnull ErrorState updated);
+  protected abstract void inactivated(@NonNull ErrorState updated);
 
-  protected abstract void disabled(@Nonnull ItemState updated);
+  protected abstract void disabled(@NonNull ItemState updated);
 
-  protected abstract void enabled(@Nonnull ItemState updated);
+  protected abstract void enabled(@NonNull ItemState updated);
 
-  protected abstract void activated(@Nonnull ItemState updated);
+  protected abstract void activated(@NonNull ItemState updated);
 
-  protected abstract void inactivated(@Nonnull ItemState updated);
+  protected abstract void inactivated(@NonNull ItemState updated);
 
-  protected abstract void updated(@Nonnull ItemState updated);
+  protected abstract void updated(@NonNull ItemState updated);
 
-  protected abstract void languageChanged(@Nonnull String language);
+  protected abstract void languageChanged(@NonNull String language);
 
 }

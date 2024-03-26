@@ -19,6 +19,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.api.proto.*;
@@ -32,8 +34,6 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetState;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -84,29 +84,29 @@ public class Utils {
     return Optional.empty();
   }
 
-  public static boolean isVariable(@Nonnull String type) {
+  public static boolean isVariable(@NonNull String type) {
     return isProgramVariable(type) || isContextVariable(type);
   }
 
-  public static boolean isContextVariable(@Nonnull String type) {
+  public static boolean isContextVariable(@NonNull String type) {
     return "context".equals(type);
   }
 
-  public static boolean isProgramVariable(@Nonnull String type) {
+  public static boolean isProgramVariable(@NonNull String type) {
     return "variable".equals(type);
   }
 
-  public static boolean isNote(@Nonnull String type) {
+  public static boolean isNote(@NonNull String type) {
     return "note".equals(type);
   }
 
-  public static boolean isRowgroup(@Nonnull String type) {
+  public static boolean isRowgroup(@NonNull String type) {
     return "rowgroup".equals(type);
   }
 
 
-  @Nonnull
-  public static String mapValueTypeToType(@Nonnull ValueType valueType) {
+  @NonNull
+  public static String mapValueTypeToType(@NonNull ValueType valueType) {
     if (valueType == ValueType.STRING) {
       return "text";
     }
@@ -131,11 +131,11 @@ public class Utils {
     throw new RuntimeException("Unknown question type " + valueType);
   }
 
-  public static boolean isGroupType(@Nonnull ItemState itemState) {
+  public static boolean isGroupType(@NonNull ItemState itemState) {
     return !isQuestionType(itemState);
   }
 
-  public static boolean isQuestionType(@Nonnull ItemState itemState) {
+  public static boolean isQuestionType(@NonNull ItemState itemState) {
     switch (itemState.getType()) {
       case Constants.QUESTIONNAIRE:
       case "group":
@@ -153,7 +153,7 @@ public class Utils {
   }
 
   @Nullable
-  public static Object parse(@Nonnull String type, Object answer) {
+  public static Object parse(@NonNull String type, Object answer) {
     if (isVariable(type)) {
       return answer;
     }
@@ -165,7 +165,7 @@ public class Utils {
   }
 
   @Nullable
-  public static Object parse(@Nonnull ValueType valueType, Object value) {
+  public static Object parse(@NonNull ValueType valueType, Object value) {
     if (value == null) {
       return null;
     }
@@ -185,23 +185,23 @@ public class Utils {
     return null;
   }
 
-  @Nonnull
-  public static ValueSet toValueSet(@Nonnull ValueSetState valueSetState) {
+  @NonNull
+  public static ValueSet toValueSet(@NonNull ValueSetState valueSetState) {
     return ImmutableValueSet.builder()
       .id(IdUtils.toString(valueSetState.getId()))
       .entries(valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).collect(Collectors.toList())).build();
   }
 
-  @Nonnull
-  public static Error toError(@Nonnull ErrorState updated) {
+  @NonNull
+  public static Error toError(@NonNull ErrorState updated) {
     return ImmutableError.builder()
       .id(IdUtils.toString(updated.getItemId()))
       .code(updated.getCode())
       .description(updated.getLabel()).build();
   }
 
-  @Nonnull
-  public static ActionItem toActionItem(@Nonnull ItemState itemState, UnaryOperator<ImmutableActionItem.Builder> post) {
+  @NonNull
+  public static ActionItem toActionItem(@NonNull ItemState itemState, UnaryOperator<ImmutableActionItem.Builder> post) {
     Object value;
     if (isVariable(itemState.getType())) {
       value = itemState.getValue();
@@ -242,7 +242,7 @@ public class Utils {
     return actionItemBuilder.build();
   }
 
-  public static void writeNullableString(@Nonnull CodedOutputStream output, String string) throws IOException {
+  public static void writeNullableString(@NonNull CodedOutputStream output, String string) throws IOException {
     if (string == null) {
       output.writeBoolNoTag(false);
     } else {
@@ -252,7 +252,7 @@ public class Utils {
   }
 
   @Nullable
-  public static String readNullableString(@Nonnull CodedInputStream input) throws IOException {
+  public static String readNullableString(@NonNull CodedInputStream input) throws IOException {
     if (input.readBool()) {
       return input.readString();
     }
@@ -260,7 +260,7 @@ public class Utils {
   }
 
 
-  public static void writeNullableDate(@Nonnull CodedOutputStream output, Date date) throws IOException {
+  public static void writeNullableDate(@NonNull CodedOutputStream output, Date date) throws IOException {
     if (date == null) {
       output.writeBoolNoTag(false);
     } else {
@@ -269,7 +269,7 @@ public class Utils {
     }
   }
 
-  public static Date readNullableDate(@Nonnull CodedInputStream input) throws IOException {
+  public static Date readNullableDate(@NonNull CodedInputStream input) throws IOException {
     if (input.readBool()) {
       return new Date(input.readInt64());
     }
@@ -277,7 +277,7 @@ public class Utils {
   }
 
 
-  public static void writeObjectValue(@Nonnull CodedOutputStream output, Object value) throws IOException {
+  public static void writeObjectValue(@NonNull CodedOutputStream output, Object value) throws IOException {
     final boolean present = value != null;
     output.writeBoolNoTag(present);
     if (present) {
@@ -320,7 +320,7 @@ public class Utils {
   }
 
 
-  public static Object readObjectValue(@Nonnull CodedInputStream input) throws IOException {
+  public static Object readObjectValue(@NonNull CodedInputStream input) throws IOException {
     if (input.readBool()) {
       byte answerType = input.readRawByte();
       int count;

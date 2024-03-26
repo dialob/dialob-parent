@@ -21,15 +21,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dialob.security.ErrorsResponse;
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
 import io.dialob.security.spring.filter.ApiKeyAuthenticationEntryPoint;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.DelegatingServletOutputStream;
 import org.springframework.security.core.AuthenticationException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

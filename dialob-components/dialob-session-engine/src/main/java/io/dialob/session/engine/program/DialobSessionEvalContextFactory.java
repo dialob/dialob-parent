@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
@@ -22,33 +23,29 @@ import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.DialobSession;
 
-import javax.annotation.Nonnull;
-import java.time.Clock;
 import java.util.function.Consumer;
 
 public class DialobSessionEvalContextFactory {
 
   private final FunctionRegistry functionRegistry;
 
-  private final Clock clock;
 
   private final DialobSessionUpdateHook dialobSessionUpdateHook;
 
-  public DialobSessionEvalContextFactory(FunctionRegistry functionRegistry, Clock clock, DialobSessionUpdateHook dialobSessionUpdateHook) {
+  public DialobSessionEvalContextFactory(FunctionRegistry functionRegistry, DialobSessionUpdateHook dialobSessionUpdateHook) {
     this.functionRegistry = functionRegistry;
-    this.clock = clock;
     this.dialobSessionUpdateHook = dialobSessionUpdateHook;
   }
 
-  @Nonnull
-  public DialobSessionEvalContext createDialobSessionEvalContext(@Nonnull DialobSession dialobSession,
-                                                                 @Nonnull Consumer<Event> updatesConsumer,
+  @NonNull
+  public DialobSessionEvalContext createDialobSessionEvalContext(@NonNull DialobSession dialobSession,
+                                                                 @NonNull Consumer<Event> updatesConsumer,
                                                                  boolean activating) {
-    return new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, clock, activating, dialobSessionUpdateHook);
+    return new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, activating, dialobSessionUpdateHook);
   }
 
 
-  public DialobSessionUpdater createSessionUpdater(@Nonnull DialobProgram dialobProgram, @Nonnull DialobSession dialobSession) {
+  public DialobSessionUpdater createSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession) {
     if (dialobSession.isCompleted()) {
       return DialobSessionUpdater.NOOP_UPDATER;
     }

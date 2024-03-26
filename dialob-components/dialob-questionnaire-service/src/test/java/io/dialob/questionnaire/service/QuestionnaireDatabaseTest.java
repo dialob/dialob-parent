@@ -17,6 +17,7 @@ package io.dialob.questionnaire.service;
 
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.*;

@@ -17,6 +17,7 @@ package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ImmutableItemStates;
 import io.dialob.session.engine.session.model.ItemId;
@@ -24,7 +25,6 @@ import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,9 +38,9 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
   @Value.Parameter
   ItemId getItemPrototypeId();
 
-  @Nonnull
+  @NonNull
   @Override
-  default ItemStates update(@Nonnull final EvalContext context, @Nonnull final ItemStates itemStates) {
+  default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     final ItemState currentItemState = itemStates.getItemStates().get(getTargetId());
     Set<ItemId> currentItems = currentItemState != null ? Sets.newHashSet(currentItemState.getItems()) : ImmutableSet.of();
     Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(ImmutableSet.of());
@@ -68,7 +68,7 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
     return builder.build();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return ImmutableSet.of(

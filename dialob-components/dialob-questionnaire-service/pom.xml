@@ -27,6 +27,11 @@
   <artifactId>dialob-questionnaire-service</artifactId>
   <dependencies>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-json</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-questionnaire-service-api</artifactId>
     </dependency>
@@ -52,14 +57,17 @@
       <artifactId>spring-boot-actuator</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-el</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.el</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

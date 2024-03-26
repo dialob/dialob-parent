@@ -17,6 +17,7 @@ package io.dialob.session.engine;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.form.service.api.repository.*;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -29,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class DialobProgramFromFormCompiler {
    * @throws DialobProgramErrorsException if any compilation errors found
    * @return compiled DialobProgram
    */
-  public DialobProgram compileForm(@Nonnull Form formDocument) {
+  public DialobProgram compileForm(@NonNull Form formDocument) {
     ProgramBuilder builder = new ProgramBuilder(functionRegistry);
     VisitableForm.makeVisitableForm(formDocument).accept(new FormVisitor() {
 
@@ -67,7 +67,7 @@ public class DialobProgramFromFormCompiler {
       }
 
       @Override
-      public void visitForm(@Nonnull Form formDocument) {
+      public void visitForm(@NonNull Form formDocument) {
         builder.setId(formDocument.getId());
         formLabel = formDocument.getMetadata().getLabel();
         languages = formDocument.getMetadata().getLanguages();
@@ -87,7 +87,7 @@ public class DialobProgramFromFormCompiler {
 
 
           @Override
-          public void visitQuestionnaireItem(@Nonnull FormItem formItem) {
+          public void visitQuestionnaireItem(@NonNull FormItem formItem) {
             builder
               .addRoot()
               .setView(formItem.getView())
@@ -99,7 +99,7 @@ public class DialobProgramFromFormCompiler {
           }
 
           @Override
-          public void visitGroup(@Nonnull FormItem formItem) {
+          public void visitGroup(@NonNull FormItem formItem) {
             builder.addGroup(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
@@ -112,7 +112,7 @@ public class DialobProgramFromFormCompiler {
           }
 
           @Override
-          public void visitSurveyGroup(@Nonnull FormItem formItem) {
+          public void visitSurveyGroup(@NonNull FormItem formItem) {
             builder.addSurveyGroup(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
@@ -126,7 +126,7 @@ public class DialobProgramFromFormCompiler {
           }
 
           @Override
-          public void visitRowGroup(@Nonnull FormItem formItem) {
+          public void visitRowGroup(@NonNull FormItem formItem) {
             builder.addRowGroup(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
@@ -142,7 +142,7 @@ public class DialobProgramFromFormCompiler {
           }
 
           @Override
-          public void visitPage(@Nonnull FormItem formItem) {
+          public void visitPage(@NonNull FormItem formItem) {
             builder.addPage(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
@@ -155,7 +155,7 @@ public class DialobProgramFromFormCompiler {
           }
 
           @Override
-          public void visitQuestion(@Nonnull FormItem formItem) {
+          public void visitQuestion(@NonNull FormItem formItem) {
             QuestionBuilder questionBuilder = builder.addQuestion(formItem.getId())
               .setLabel(formItem.getLabel())
               .setDescription(formItem.getDescription())
@@ -187,13 +187,13 @@ public class DialobProgramFromFormCompiler {
           }
 
           @Override
-          public void visitNote(@Nonnull FormItem formItem) {
+          public void visitNote(@NonNull FormItem formItem) {
             this.visitQuestion(formItem);
           }
         });
       }
 
-      @Nonnull
+      @NonNull
       @Override
       public Optional<FormValueSetVisitor> startValueSets() {
         return Optional.of(valueSet -> {
@@ -208,7 +208,7 @@ public class DialobProgramFromFormCompiler {
         });
       }
 
-      @Nonnull
+      @NonNull
       @Override
       public Optional<FormVariableVisitor> startFormVariables() {
         return Optional.of(formVariable -> builder.addVariable(formVariable.getName())

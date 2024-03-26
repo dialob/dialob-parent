@@ -18,11 +18,11 @@ package io.dialob.session.engine.session.model;
 import com.google.common.collect.Lists;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 
@@ -69,16 +69,16 @@ public class IdUtils {
 
 
 
-  @Nonnull
-  public static ItemId toId(@Nullable String scopeId, @Nonnull String itemId) {
+  @NonNull
+  public static ItemId toId(@Nullable String scopeId, @NonNull String itemId) {
     if (StringUtils.isNotBlank(scopeId)) {
       return toId(scopeId + "." + itemId);
     }
     return toId(itemId);
   }
 
-  @Nonnull
-  public static ItemId toId(@Nonnull String itemId) {
+  @NonNull
+  public static ItemId toId(@NonNull String itemId) {
     if (Constants.QUESTIONNAIRE.equals(itemId)) {
       return QUESTIONNAIRE_ID;
     }
@@ -112,7 +112,7 @@ public class IdUtils {
     return itemId.withParent(ImmutableItemIndex.of(index, itemId.getParent().flatMap(ItemId::getParent)));
   }
 
-  public static boolean matches(@Nonnull Optional<ItemId> itemIdLh, @Nonnull Optional<ItemId> itemIdRh) {
+  public static boolean matches(@NonNull Optional<ItemId> itemIdLh, @NonNull Optional<ItemId> itemIdRh) {
     if (itemIdLh.isPresent() == itemIdRh.isPresent()) {
       return itemIdLh.map(itemId -> matches(itemId, itemIdRh.get())).orElse(true);
     }
@@ -120,7 +120,7 @@ public class IdUtils {
   }
 
 
-  public static boolean matches(@Nonnull ItemId itemIdLh, @Nonnull ItemId itemIdRh) {
+  public static boolean matches(@NonNull ItemId itemIdLh, @NonNull ItemId itemIdRh) {
     if (itemIdLh.equals(itemIdRh)) {
       return true;
     }

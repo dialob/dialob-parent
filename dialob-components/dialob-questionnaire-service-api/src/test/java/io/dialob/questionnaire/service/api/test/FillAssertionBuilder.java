@@ -27,12 +27,12 @@ import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilder;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import jakarta.inject.Provider;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.Assertions;
 import org.mockito.ArgumentCaptor;
 
-import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

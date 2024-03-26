@@ -15,23 +15,22 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface Constant<T> extends Expression {
 
   T getValue();
 
-  @Nonnull
+  @NonNull
   ValueType getValueType();
 
   @Override
-  default T eval(@Nonnull EvalContext evalContext) {
+  default T eval(@NonNull EvalContext evalContext) {
     return getValue();
   }
 

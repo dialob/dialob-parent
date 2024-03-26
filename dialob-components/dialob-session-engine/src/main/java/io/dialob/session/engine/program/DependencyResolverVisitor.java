@@ -18,6 +18,7 @@ package io.dialob.session.engine.program;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.session.engine.DebugUtil;
@@ -31,7 +32,6 @@ import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,7 +61,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
     return Optional.of(new AbstractItemVisitor() {
 
       @Override
-      public void visitGroup(@Nonnull Group group) {
+      public void visitGroup(@NonNull Group group) {
         visitDisplayItem(group);
         ItemId groupId;
         if (isRowgroup(group.getType()) || isRow(group.getType())) {
@@ -89,7 +89,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
       }
 
       @Override
-      public void visitDisplayItem(@Nonnull DisplayItem displayItem) {
+      public void visitDisplayItem(@NonNull DisplayItem displayItem) {
         final ItemId itemId = displayItem.getId();
         displayItem.getActiveExpression().ifPresent(expression -> updateCommandFactory.createUpdateActivity(itemId, expression));
         displayItem.getRequiredExpression().ifPresent(expression -> updateCommandFactory.createUpdateRequired(itemId, expression));
@@ -103,18 +103,18 @@ class DependencyResolverVisitor implements ProgramVisitor {
       }
 
       @Override
-      public void visitVariableItem(@Nonnull VariableItem variableItem) {
+      public void visitVariableItem(@NonNull VariableItem variableItem) {
         updateCommandFactory.createUpdateVariable(variableItem.getId(), variableItem.getValueExpression());
       }
 
     });
   }
 
-  private boolean isRowgroup(@Nonnull String type) {
+  private boolean isRowgroup(@NonNull String type) {
     return "rowgroup".equals(type);
   }
 
-  private boolean isRow(@Nonnull String type) {
+  private boolean isRow(@NonNull String type) {
     return "row".equals(type);
   }
 
@@ -229,17 +229,17 @@ class DependencyResolverVisitor implements ProgramVisitor {
     }
   }
 
-  @Nonnull
+  @NonNull
   public Map<EventMatcher, List<Command<?>>> getInputUpdates() {
     return inputUpdates;
   }
 
-  @Nonnull
+  @NonNull
   public Map<ItemId, List<Command<?>>> getItemCommands() {
     return itemCommands;
   }
 
-  @Nonnull
+  @NonNull
   public Map<Command<?>, Set<Command<?>>> getCommandsToCommands() {
     return commandsToCommands == null ?
       Collections.emptyMap() :

@@ -27,6 +27,7 @@ import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import io.dialob.session.engine.program.DialobRuleExpressionCompiler;
+import jakarta.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;

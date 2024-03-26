@@ -15,11 +15,11 @@
  */
 package io.dialob.security.key;
 
+import org.immutables.value.Value;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import org.immutables.value.Value;
 
 @Value.Immutable
 @Value.Style()

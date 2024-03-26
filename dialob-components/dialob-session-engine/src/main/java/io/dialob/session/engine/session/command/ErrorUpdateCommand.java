@@ -16,13 +16,13 @@
 package io.dialob.session.engine.session.command;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
   @Value.Parameter(order = 1)
   Expression getExpression();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();

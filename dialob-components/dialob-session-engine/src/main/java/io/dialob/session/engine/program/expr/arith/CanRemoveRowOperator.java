@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -24,7 +25,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenRowCanBeRemovedUpdatedEvent;
@@ -36,17 +36,17 @@ public interface CanRemoveRowOperator extends Expression {
   ItemId getItemId();
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     return evalContext.getItemState(this.getItemId()).map(ItemState::isRowCanBeRemoved).orElse(false);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(whenRowCanBeRemovedUpdatedEvent(getItemId()));

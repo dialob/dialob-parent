@@ -19,8 +19,6 @@ import io.dialob.api.form.FormTag;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +34,7 @@ public interface FormTagsRestService {
 
   @Operation(summary = OpenApiDoc.TAG.TAG_SUMMARY, description = OpenApiDoc.TAG.TAG_OP)
 
-  
+
   @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}) ResponseEntity <List<FormTag>> getTags(
     @Parameter(description = OpenApiDoc.GENERAL.FORM_NAME) @RequestParam(name = "formName", required = false) String formName,
     @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) @RequestParam(name = "formId", required = false) String formId,

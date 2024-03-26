@@ -16,11 +16,11 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -42,7 +42,7 @@ public interface InfixOperator<T> extends Expression {
   @Value.Parameter
   Expression getRhs();
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     Set<EventMatcher> lset = getLhs().getEvalRequiredConditions();

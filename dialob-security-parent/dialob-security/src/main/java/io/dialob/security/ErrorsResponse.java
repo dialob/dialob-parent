@@ -15,16 +15,14 @@
  */
 package io.dialob.security;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.annotation.Nullable;
-
-import org.immutables.value.Value;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import org.immutables.value.Value;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableErrorsResponse.class)

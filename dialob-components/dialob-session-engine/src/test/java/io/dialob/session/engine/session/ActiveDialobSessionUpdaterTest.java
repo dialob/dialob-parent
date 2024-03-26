@@ -32,7 +32,6 @@ import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.Clock;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -45,7 +44,7 @@ class ActiveDialobSessionUpdaterTest {
   public void shouldSetContextVariable() {
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
 
-    DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgram program = DialobProgram.createDialobProgram(ImmutableProgram.builder()
       .id("p1")
       .addItems(ImmutableVariableItem.builder()

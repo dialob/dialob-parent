@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
@@ -25,14 +26,13 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
 @Value.Immutable
 public interface FunctionCallOperator extends Expression {
 
-  @Nonnull
+  @NonNull
   ValueType getValueType();
 
   String getFunctionName();
@@ -40,7 +40,7 @@ public interface FunctionCallOperator extends Expression {
   List<Expression> getArgs();
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     final FunctionRegistry functionRegistry = evalContext.getFunctionRegistry();
     final Object[] args = getArgs().stream().map(arg -> arg.eval(evalContext)).toArray();
     if (functionRegistry.isAsyncFunction(getFunctionName())) {
@@ -57,7 +57,7 @@ public interface FunctionCallOperator extends Expression {
                                         }
 
                                         @Override
-                                        public void failed(@Nonnull String error) {
+                                        public void failed(@NonNull String error) {
                                           // TODO Add error handling
                                         }
                                       },
@@ -67,7 +67,7 @@ public interface FunctionCallOperator extends Expression {
     }
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     final ImmutableSet.Builder<EventMatcher> deps = ImmutableSet.builder();

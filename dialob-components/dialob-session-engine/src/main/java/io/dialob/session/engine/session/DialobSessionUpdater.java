@@ -15,19 +15,19 @@
  */
 package io.dialob.session.engine.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public interface DialobSessionUpdater {
 
   static final DialobSessionUpdater NOOP_UPDATER = (actions, activating) -> updatedItemsVisitor -> {};
 
-  default Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@Nonnull Iterable<Action> actions) {
+  default Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions) {
     return dispatchActions(actions, false);
   }
 
-  Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@Nonnull Iterable<Action> actions, boolean activating);
+  Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions, boolean activating);
 }

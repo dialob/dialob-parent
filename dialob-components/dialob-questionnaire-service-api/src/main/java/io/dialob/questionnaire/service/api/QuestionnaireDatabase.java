@@ -15,28 +15,28 @@
  */
 package io.dialob.questionnaire.service.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.questionnaire.Questionnaire;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
 public interface QuestionnaireDatabase {
 
-  @Nonnull
-  Questionnaire findOne(String tenantId, @Nonnull String id, String rev);
+  @NonNull
+  Questionnaire findOne(String tenantId, @NonNull String id, String rev);
 
-  @Nonnull
-  Questionnaire findOne(String tenantId, @Nonnull String id);
+  @NonNull
+  Questionnaire findOne(String tenantId, @NonNull String id);
 
-  boolean exists(String tenantId, @Nonnull String id);
+  boolean exists(String tenantId, @NonNull String id);
 
-  boolean delete(String tenantId, @Nonnull String id);
+  boolean delete(String tenantId, @NonNull String id);
 
-  @Nonnull
-  Questionnaire save(String tenantId, @Nonnull Questionnaire document);
+  @NonNull
+  Questionnaire save(String tenantId, @NonNull Questionnaire document);
 
   default MetadataRow findMetadata(String tenantId, String questionnaireId) {
     return ImmutableMetadataRow.builder().id(questionnaireId).value(findOne(tenantId, questionnaireId).getMetadata()).build();
@@ -44,11 +44,11 @@ public interface QuestionnaireDatabase {
 
   @Value.Immutable
   interface MetadataRow extends Serializable {
-    @Nonnull
+    @NonNull
     @Value.Parameter
     String getId();
 
-    @Nonnull
+    @NonNull
     @Value.Parameter
     Questionnaire.Metadata getValue();
   }
@@ -69,6 +69,6 @@ public interface QuestionnaireDatabase {
                        @Nullable String formName,
                        @Nullable String formTag,
                        @Nullable Questionnaire.Metadata.Status status,
-                       @Nonnull Consumer<MetadataRow> consumer);
+                       @NonNull Consumer<MetadataRow> consumer);
 
 }

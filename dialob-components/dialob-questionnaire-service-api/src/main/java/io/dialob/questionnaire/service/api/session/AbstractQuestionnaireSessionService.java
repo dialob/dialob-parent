@@ -16,8 +16,7 @@
 package io.dialob.questionnaire.service.api.session;
 
 
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -30,8 +29,8 @@ public abstract class AbstractQuestionnaireSessionService implements Questionnai
   private final QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory;
   private final CurrentTenant currentTenant;
 
-  protected AbstractQuestionnaireSessionService(@Nonnull QuestionnaireDatabase questionnaireDatabase,
-                                                @Nonnull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory, CurrentTenant currentTenant) {
+  protected AbstractQuestionnaireSessionService(@NonNull QuestionnaireDatabase questionnaireDatabase,
+                                                @NonNull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory, CurrentTenant currentTenant) {
     this.questionnaireDatabase = questionnaireDatabase;
     this.questionnaireSessionBuilderFactory = questionnaireSessionBuilderFactory;
     this.currentTenant = currentTenant;
@@ -48,7 +47,7 @@ public abstract class AbstractQuestionnaireSessionService implements Questionnai
   }
 
   @Override
-  public QuestionnaireSession findOne(@Nonnull String questionnaireId, boolean openIfClosed) {
+  public QuestionnaireSession findOne(@NonNull String questionnaireId, boolean openIfClosed) {
     if (openIfClosed) {
       return restore(questionnaireId);
     }

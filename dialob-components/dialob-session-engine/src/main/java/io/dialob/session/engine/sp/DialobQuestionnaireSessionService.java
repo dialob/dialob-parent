@@ -15,8 +15,7 @@
  */
 package io.dialob.session.engine.sp;
 
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.AbstractQuestionnaireSessionService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
@@ -25,9 +24,9 @@ import io.dialob.security.tenant.CurrentTenant;
 public class DialobQuestionnaireSessionService extends AbstractQuestionnaireSessionService {
 
 
-  public DialobQuestionnaireSessionService(@Nonnull QuestionnaireDatabase questionnaireDatabase,
-                                           @Nonnull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory,
-                                           @Nonnull CurrentTenant currentTenant)
+  public DialobQuestionnaireSessionService(@NonNull QuestionnaireDatabase questionnaireDatabase,
+                                           @NonNull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory,
+                                           @NonNull CurrentTenant currentTenant)
   {
     super(questionnaireDatabase, questionnaireSessionBuilderFactory, currentTenant);
   }

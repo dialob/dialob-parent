@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.ImmutableError;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.session.engine.session.model.*;
 
-import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -29,52 +29,52 @@ public class FormActionsUpdatesItemsVisitor extends AbstractFormActionsUpdatesIt
 
   private final Function<ItemState, ActionItem> toActionItemFunction;
 
-  public FormActionsUpdatesItemsVisitor(@Nonnull FormActions formActions,
-                                        @Nonnull Predicate<SessionObject> isVisiblePredicate,
-                                        @Nonnull Function<ItemState, ActionItem> toActionItemFunction) {
+  public FormActionsUpdatesItemsVisitor(@NonNull FormActions formActions,
+                                        @NonNull Predicate<SessionObject> isVisiblePredicate,
+                                        @NonNull Function<ItemState, ActionItem> toActionItemFunction) {
     super(formActions, isVisiblePredicate);
     this.toActionItemFunction = toActionItemFunction;
   }
 
-  protected void updated(@Nonnull ErrorState updated) {
+  protected void updated(@NonNull ErrorState updated) {
     // triggered when error label is updated
     formActions.addError(Utils.toError(updated));
   }
 
   @Override
-  protected void updated(@Nonnull ValueSetState updated) {
+  protected void updated(@NonNull ValueSetState updated) {
     formActions.newValueSet(Utils.toValueSet(updated));
   }
 
-  protected void activated(@Nonnull ErrorState updated) {
+  protected void activated(@NonNull ErrorState updated) {
     formActions.addError(Utils.toError(updated));
   }
 
-  protected void inactivated(@Nonnull ErrorState updated) {
+  protected void inactivated(@NonNull ErrorState updated) {
     formActions.removeError(ImmutableError.builder().id(IdUtils.toString(updated.getItemId())).code(updated.getCode()).build());
   }
 
-  protected void disabled(@Nonnull ItemState updated) {
+  protected void disabled(@NonNull ItemState updated) {
     updated(updated);
   }
 
-  protected void enabled(@Nonnull ItemState updated) {
+  protected void enabled(@NonNull ItemState updated) {
     updated(updated);
   }
 
-  protected void activated(@Nonnull ItemState updated) {
+  protected void activated(@NonNull ItemState updated) {
     formActions.newQuestion(toActionItemFunction.apply(updated));
   }
 
-  protected void inactivated(@Nonnull ItemState updated) {
+  protected void inactivated(@NonNull ItemState updated) {
     formActions.removeQuestion(IdUtils.toString(updated.getId()));
   }
 
-  protected void updated(@Nonnull ItemState updated) {
+  protected void updated(@NonNull ItemState updated) {
     formActions.updateQuestion(toActionItemFunction.apply(updated));
   }
 
-  protected void languageChanged(@Nonnull String language) {
+  protected void languageChanged(@NonNull String language) {
     formActions.locale(new Locale(language));
   }
 

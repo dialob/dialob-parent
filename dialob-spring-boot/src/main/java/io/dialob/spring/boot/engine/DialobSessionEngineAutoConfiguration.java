@@ -15,17 +15,6 @@
  */
 package io.dialob.spring.boot.engine;
 
-import java.time.Clock;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
-
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.validation.FormValidator;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -41,16 +30,21 @@ import io.dialob.session.engine.DialobProgramFromFormCompiler;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
-import io.dialob.session.engine.program.DialobFormValidator;
-import io.dialob.session.engine.program.DialobRuleExpressionCompiler;
-import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.FormValidatorExecutor;
-import io.dialob.session.engine.program.ValueSetValidator;
+import io.dialob.session.engine.program.*;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionBuilder;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionSaveService;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
 import io.dialob.spring.boot.redis.RedisQuestionnaireDialobSessionCacheConfiguration;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
+
+import java.util.List;
+import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
 @Import(RedisQuestionnaireDialobSessionCacheConfiguration.class)
@@ -112,9 +106,8 @@ public class DialobSessionEngineAutoConfiguration {
 
   @Bean
   public DialobSessionEvalContextFactory dialobSessionEvalContextFactory(FunctionRegistry functionRegistry,
-                                                                         Optional<Clock> clock,
                                                                          Optional<DialobSessionUpdateHook> dialobSessionEvalHooks) {
-    return new DialobSessionEvalContextFactory(functionRegistry, clock.orElse(Clock.systemDefaultZone()), dialobSessionEvalHooks.orElse(null));
+    return new DialobSessionEvalContextFactory(functionRegistry, dialobSessionEvalHooks.orElse(null));
   }
 
   @Bean

@@ -17,14 +17,13 @@ package io.dialob.security.aws.elb;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.JWTProcessor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesWebAuthenticationDetails;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.KeyPair;
 import java.time.Instant;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;

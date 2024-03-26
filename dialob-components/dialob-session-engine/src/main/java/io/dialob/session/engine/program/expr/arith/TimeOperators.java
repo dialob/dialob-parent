@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.OperatorSymbol;
 import io.dialob.session.engine.program.model.Expression;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.LocalTime;
 
 public class TimeOperators  extends ComparableTypeOperators<LocalTime> {
@@ -29,18 +29,18 @@ public class TimeOperators  extends ComparableTypeOperators<LocalTime> {
 
   private static final Expression NOW = ImmutableNowExpression.builder().build();
 
-  @Nonnull
+  @NonNull
   public static Expression today() {
     return TODAY;
   }
 
-  @Nonnull
+  @NonNull
   public static Expression now() {
     return NOW;
   }
 
   @Nullable
-  public static Expression createOperator(@Nonnull OperatorSymbol operator, @Nonnull Expression lhs, @Nonnull Expression rhs) {
+  public static Expression createOperator(@NonNull OperatorSymbol operator, @NonNull Expression lhs, @NonNull Expression rhs) {
     ValueType lhsValueType = lhs.getValueType();
     ValueType rhsValueType = rhs.getValueType();
     if (operator == OperatorSymbol.MINUS) {

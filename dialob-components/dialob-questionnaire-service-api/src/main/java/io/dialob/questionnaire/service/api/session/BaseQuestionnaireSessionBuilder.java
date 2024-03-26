@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.*;
@@ -22,7 +23,6 @@ import io.dialob.questionnaire.service.api.FormDataMissingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -63,19 +63,19 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   private Map<String,Object> additionalProperties;
 
-  protected BaseQuestionnaireSessionBuilder(@Nonnull FormFinder formFinder) {
+  protected BaseQuestionnaireSessionBuilder(@NonNull FormFinder formFinder) {
     this.formFinder = formFinder;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setActiveItem(String activeItem) {
     this.activeItem = activeItem;
     return this;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setFormId(String formId) {
     this.formId = formId;
     return this;
@@ -92,35 +92,35 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setFormRev(String formRev) {
     this.formRev = formRev;
     return this;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setSubmitUrl(String submitUrl) {
     this.submitUrl = submitUrl;
     return this;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setContextValues(List<ContextValue> contextValues) {
     this.contextValues = contextValues;
     return this;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setCreateOnly(boolean createOnly) {
     this.createOnly = createOnly;
     return this;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setLanguage(String language) {
     this.language = language;
     if (StringUtils.isBlank(language)) {
@@ -130,27 +130,27 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setStatus(Questionnaire.Metadata.Status status) {
     this.status = status;
     return this;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setAnswers(List<Answer> answers) {
     this.answers = answers;
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public QuestionnaireSessionBuilder setValueSets(List<ValueSet> valueSets) {
     this.valueSets = valueSets;
     return this;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public QuestionnaireSessionBuilder setAdditionalProperties(Map<String,Object> additionalProperties) {
     this.additionalProperties = additionalProperties;
@@ -158,7 +158,7 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
   }
 
   @Override
-  @Nonnull
+  @NonNull
   public QuestionnaireSessionBuilder setQuestionnaire(Questionnaire questionnaire) {
     this.questionnaire = questionnaire;
     if (this.questionnaire != null) {
@@ -186,8 +186,8 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
     return this;
   }
 
-  @Nonnull
-  protected Questionnaire createNewQuestionnaire(@Nonnull String formId, String formRev, String formName, String label, String submitUrl, String creator, String owner, Map<String, Object> additionalProperties, boolean useLatest) {
+  @NonNull
+  protected Questionnaire createNewQuestionnaire(@NonNull String formId, String formRev, String formName, String label, String submitUrl, String creator, String owner, Map<String, Object> additionalProperties, boolean useLatest) {
     final ImmutableQuestionnaire.Builder questionnaire = ImmutableQuestionnaire.builder();
     final ImmutableQuestionnaireMetadata.Builder metadata = ImmutableQuestionnaireMetadata.builder();
 
@@ -228,10 +228,10 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
     return questionnaire.build();
   }
 
-  @Nonnull
-  protected abstract QuestionnaireSession createQuestionnaireSession(boolean newSession, @Nonnull Form formDocument);
+  @NonNull
+  protected abstract QuestionnaireSession createQuestionnaireSession(boolean newSession, @NonNull Form formDocument);
 
-  @Nonnull
+  @NonNull
   public QuestionnaireSession build() {
     Objects.requireNonNull(getFormId(), "QuestionnaireSessionBuilder.formId is required");
 

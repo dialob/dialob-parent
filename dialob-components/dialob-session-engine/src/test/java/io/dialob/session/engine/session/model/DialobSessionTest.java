@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.model;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.SessionUpdateCommand;
@@ -23,7 +24,6 @@ import io.dialob.session.engine.session.command.Trigger;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,9 +56,9 @@ class DialobSessionTest {
         return ImmutableList.of();
       }
 
-      @Nonnull
+      @NonNull
       @Override
-      public ItemStates update(@Nonnull EvalContext context, @Nonnull ItemStates target) {
+      public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
         return target;
       }
     };
@@ -82,9 +82,9 @@ class DialobSessionTest {
         return ImmutableList.of();
       }
 
-      @Nonnull
+      @NonNull
       @Override
-      public ItemStates update(@Nonnull EvalContext context, @Nonnull ItemStates target) {
+      public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
         return ImmutableItemStates.builder().from(target).putItemStates(ITEM_STATE.getId(), ITEM_STATE).build();
       }
     };
@@ -109,9 +109,9 @@ class DialobSessionTest {
         return ImmutableList.of();
       }
 
-      @Nonnull
+      @NonNull
       @Override
-      public ItemStates update(@Nonnull EvalContext context, @Nonnull ItemStates target) {
+      public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
         return ImmutableItemStates.builder().build();
       }
     };
@@ -136,9 +136,9 @@ class DialobSessionTest {
         return ImmutableList.of();
       }
 
-      @Nonnull
+      @NonNull
       @Override
-      public ItemStates update(@Nonnull EvalContext context, @Nonnull ItemStates target) {
+      public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
         return ImmutableItemStates.builder().putItemStates(ITEM_STATE.getId(), new ItemState(
           ITEM_STATE.getId(),
           null, "text", null,

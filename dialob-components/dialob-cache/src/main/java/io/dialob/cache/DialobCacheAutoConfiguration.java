@@ -17,6 +17,7 @@ package io.dialob.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.settings.DialobSettings;
@@ -34,9 +35,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.lang.NonNull;
 
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,9 +62,8 @@ public class DialobCacheAutoConfiguration {
     }
 
     @Bean
-    public ScheduledSessionEvictionPolicy scheduledSessionEvictionPolicy(Clock clock, Optional<QuestionnaireSessionSaveService> sessionService, Optional<CacheManager> cacheManager, DialobSettings dialobSettings) {
+    public ScheduledSessionEvictionPolicy scheduledSessionEvictionPolicy(Optional<QuestionnaireSessionSaveService> sessionService, Optional<CacheManager> cacheManager, DialobSettings dialobSettings) {
       return new ScheduledSessionEvictionPolicy(
-        clock,
         questionnaireSessionCache,
         sessionService,
         cacheManager, dialobSettings.getSession().getCache().getTimeToLive());

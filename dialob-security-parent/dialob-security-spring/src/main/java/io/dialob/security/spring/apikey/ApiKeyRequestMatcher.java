@@ -15,11 +15,9 @@
  */
 package io.dialob.security.spring.apikey;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class ApiKeyRequestMatcher implements RequestMatcher {
 

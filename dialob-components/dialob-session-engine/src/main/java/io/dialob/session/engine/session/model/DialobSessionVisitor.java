@@ -15,26 +15,27 @@
  */
 package io.dialob.session.engine.session.model;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.Optional;
 
 public interface DialobSessionVisitor {
 
   @FunctionalInterface
   interface ItemVisitor {
-    void visitItemState(@Nonnull ItemState itemState);
+    void visitItemState(@NonNull ItemState itemState);
     default void end() {}
   }
 
   @FunctionalInterface
   interface ValueSetVisitor {
-    void visitValueSetState(@Nonnull ValueSetState valueSetState);
+    void visitValueSetState(@NonNull ValueSetState valueSetState);
     default void end() {}
   }
 
   @FunctionalInterface
   interface ErrorVisitor {
-    void visitErrorState(@Nonnull ErrorState errorState);
+    void visitErrorState(@NonNull ErrorState errorState);
     default void end() {}
   }
 

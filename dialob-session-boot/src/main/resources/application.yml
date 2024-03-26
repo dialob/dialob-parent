@@ -1,6 +1,7 @@
 nodeId: "default"
 
 server:
+  max-http-request-header-size: 64KB
   port: 8080
   use-forward-headers: true
   servlet:
@@ -21,8 +22,8 @@ spring:
   application:
     name: ${project.artifactId:}
   profiles:
-    active: couchdb
-#    active: mongodb
+    active:
+    - jdbc
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -97,7 +98,7 @@ dialob:
     sockjs:
       enabled: true
       webSocketEnabled: true
-      contextPath: "/socket/{tenantId}/{sessionId}"
+      contextPath: "/socket"
       urlAttributes:
         sessionId: sessionId
         tenantId: tenantId
