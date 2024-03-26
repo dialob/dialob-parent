@@ -298,16 +298,11 @@ const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
 	}
 }
 
-const updateValueSetEntryOld = (state: ComposerState, valueSetId: string, index: number, valueSetEntryId: string | undefined, text: string, language: string): void => {
+const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, index: number, text: string | null, language: string): void => {
 	if (state.valueSets) {
 		const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-		if (vsIdx > -1) {
-			if (valueSetEntryId) {
-				state.valueSets[vsIdx].entries[index].id = valueSetEntryId;
-			}
-			if (text !== null) {
-				state.valueSets[vsIdx].entries[index].label[language] = text;
-			}
+		if (vsIdx > -1 && text !== null) {
+			state.valueSets[vsIdx].entries[index].label[language] = text;
 		}
 	}
 }
@@ -530,8 +525,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			addValueSetEntry(state, action.valueSetId, action.entry);
 		} else if (action.type === 'updateValueSetEntry') {
 			updateValueSetEntry(state, action.valueSetId, action.index, action.entry);
-		} else if (action.type === 'updateValueSetEntryOld') {
-			updateValueSetEntryOld(state, action.valueSetId, action.index, action.valueSetEntryId, action.text, action.language);
+		} else if (action.type === 'updateValueSetEntryLabel') {
+			updateValueSetEntryLabel(state, action.valueSetId, action.index, action.text, action.language);
 		} else if (action.type === 'deleteValueSetentry') {
 			deleteValueSetEntry(state, action.valueSetId, action.index);
 		} else if (action.type === 'moveValueSetEntry') {

@@ -21,7 +21,9 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ content, title }) => 
 		<Box width="50%">
 			<Typography sx={{ mb: 2 }} variant="h6"><FormattedMessage id={title} /></Typography>
 			<Box sx={{ display: "flex", flexDirection: "column" }}>
-				{content?.map((item, index) => <Typography key={index} style={{ margin: "2px 0px" }}>{item}</Typography>)}
+				{content?.map((item, index) =>
+					<Typography key={index} style={{ margin: "2px 0px" }}>{item.replace(" for ", " - ")}</Typography>
+				)}
 			</Box>
 		</Box>
 	);
@@ -42,7 +44,7 @@ const TranslationFileEditor: React.FC = () => {
 	const [overviewData, setOverviewData] = useState<ParsedImportData | undefined>(undefined);
 	const [uploadedFileName, setUploadedFileName] = useState<string | undefined>(undefined);
 	const [validationError, setValidationError] = useState<boolean>(false);
-	const { form, addLanguage, updateItem, updateValueSetEntryOld, setValidationMessage } = useComposer();
+	const { form, addLanguage, updateItem, updateValueSetEntryLabel, setValidationMessage } = useComposer();
 
 	const languages = useMemo(() => {
 		return form.metadata.languages || [];
@@ -61,9 +63,9 @@ const TranslationFileEditor: React.FC = () => {
 			}
 		} else if (keyTokens[0] === 'v') {
 			// ValueSet
-			updateValueSetEntryOld(keyTokens[1], parseInt(keyTokens[2]), undefined, text, language);
+			updateValueSetEntryLabel(keyTokens[1], parseInt(keyTokens[2]), text, language);
 		}
-	}, [setValidationMessage, updateItem, updateValueSetEntryOld])
+	}, [setValidationMessage, updateItem, updateValueSetEntryLabel])
 
 
 	const handleConfirmTranslation = useCallback(() => {

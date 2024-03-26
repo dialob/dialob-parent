@@ -704,12 +704,11 @@ test('Update valueset entry', () => {
 	}
 });
 
-test('Update valueset entry old', () => {
+test('Update valueset entry label: text is not null', () => {
 	const action: ComposerAction = {
-		type: 'updateValueSetEntryOld',
+		type: 'updateValueSetEntryLabel',
 		valueSetId: 'vs2',
 		index: 3,
-		valueSetEntryId: 'a',
 		text: 'Test A',
 		language: 'en'
 	};
@@ -721,6 +720,25 @@ test('Update valueset entry old', () => {
 		expect(newState.valueSets[vsIndex].entries).toBeDefined();
 		expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
 		expect(newState.valueSets[vsIndex].entries[3].label["en"]).toEqual('Test A');
+	}
+});
+
+test('Update valueset entry label: text is null', () => {
+	const action: ComposerAction = {
+		type: 'updateValueSetEntryLabel',
+		valueSetId: 'vs2',
+		index: 3,
+		text: null,
+		language: 'en'
+	};
+	const newState = formReducer(testForm, action);
+	expect(newState.valueSets).toBeDefined();
+	if (newState.valueSets) {
+		const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
+		expect(vsIndex).toBeGreaterThan(-1);
+		expect(newState.valueSets[vsIndex].entries).toBeDefined();
+		expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
+		expect(newState.valueSets[vsIndex].entries[3]).toStrictEqual(testForm.valueSets[vsIndex].entries[3]);
 	}
 });
 

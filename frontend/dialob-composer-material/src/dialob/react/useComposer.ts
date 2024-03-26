@@ -70,8 +70,8 @@ export const useComposer = () => {
 		dispatch({ type: 'updateValueSetEntry', valueSetId, index, entry });
 	}
 
-	const updateValueSetEntryOld = (valueSetId: string, index: number, valueSetEntryId: string | undefined, text: string, language: string) => {
-		dispatch({ type: 'updateValueSetEntryOld', valueSetId, index, valueSetEntryId, text, language });
+	const updateValueSetEntryLabel = (valueSetId: string, index: number, text: string | null, language: string) => {
+		dispatch({ type: 'updateValueSetEntryLabel', valueSetId, index, text, language });
 	}
 
 	const deleteValueSetEntry = (valueSetId: string, index: number) => {
@@ -137,7 +137,7 @@ export const useComposer = () => {
 		setValueSetEntries,
 		addValueSetEntry,
 		updateValueSetEntry,
-		updateValueSetEntryOld,
+		updateValueSetEntryLabel,
 		deleteValueSetEntry,
 		moveValueSetEntry,
 		setGlobalValueSetName,
