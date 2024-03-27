@@ -45,6 +45,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }, [editor.activeList, form.valueSets]);
 
   React.useEffect(() => {
+    if (dialogOpen) {
     const gvs = form.metadata.composer?.globalValueSets;
     const valueSets = form.valueSets;
     const mappedGvs = gvs?.map(gvs => {
@@ -57,7 +58,8 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       setCurrentValueSet(mappedGvs?.[0]);
     }
     setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
-  }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets]);
+  }
+  }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
     if (currentValueSet && name) {
@@ -71,6 +73,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   const handleClose = () => {
     setActiveList(undefined);
+    setCurrentValueSet(undefined);
     onClose();
   }
 
