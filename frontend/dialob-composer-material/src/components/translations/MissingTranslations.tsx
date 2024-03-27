@@ -60,7 +60,7 @@ const MissingTranslationsCategory: React.FC<{ type: TranslationType, translation
             {translations.map((missing, idx) => (
               <TableRow key={idx}>
                 <TableCell width='70%'>
-                  <Button variant='text' onClick={() => navigateToItem(missing)} sx={{ color: 'inherit', m: 0, justifyContent: 'flex-start' }}>
+                  <Button variant='text' onClick={() => navigateToItem(missing)} sx={{ color: 'inherit', m: 0, justifyContent: 'flex-start', textTransform: 'none' }}>
                     {missing.id}
                   </Button>
                 </TableCell>

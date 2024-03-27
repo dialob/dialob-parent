@@ -171,10 +171,10 @@ const TranslationFileEditor: React.FC = () => {
 	return (
 		<Box>
 			<Box sx={{ display: "flex", mb: 3, alignItems: "center", gap: 3 }}>
-				<Button onClick={handleDownload} variant='outlined' endIcon={<FileDownloadIcon />}>
+				<Button onClick={handleDownload} variant='outlined' endIcon={<FileDownloadIcon />} sx={{ textTransform: 'none'}}>
 					<Typography><FormattedMessage id='dialogs.translations.files.download' /></Typography>
 				</Button>
-				<Button onClick={handleUpload} variant='outlined' endIcon={<FileUploadIcon />}>
+				<Button onClick={handleUpload} variant='outlined' endIcon={<FileUploadIcon />} sx={{ textTransform: 'none'}}>
 					<Typography><FormattedMessage id='dialogs.translations.files.upload' /></Typography>
 				</Button>
 				<Typography>{uploadedFileName}</Typography>
