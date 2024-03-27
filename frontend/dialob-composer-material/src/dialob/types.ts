@@ -72,6 +72,8 @@ export type DialobItem = DialobItemTemplate & {
 
 export type DialobItems = { [key: string]: DialobItem };
 
+export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
+
 export type ComposerState = {
   _id: string;
   _rev: string;
@@ -83,6 +85,9 @@ export type ComposerState = {
   valueSets?: ValueSet[];
   metadata: {
     label?: string;
+    showDisabled?: boolean;
+    questionClientVisibility?: VisibilityType;
+    answersRequiredByDefault?: boolean;
     creator?: string;
     tenantId?: string;
     savedBy?: string;
@@ -90,7 +95,6 @@ export type ComposerState = {
     valid?: boolean;
     created?: string;
     lastSaved?: string;
-    answersRequiredByDefault?: boolean;
     composer?: {
       globalValueSets?: {
         label?: string;

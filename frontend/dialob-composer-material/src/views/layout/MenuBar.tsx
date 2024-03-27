@@ -8,6 +8,7 @@ import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
 import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
 import TranslationDialog from '../../dialogs/TranslationDialog';
+import FormOptionsDialog from '../../dialogs/FormOptionsDialog';
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -54,6 +55,7 @@ const MenuBar: React.FC = () => {
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
   const languageMenuOpen = Boolean(anchorEl);
 
   const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -69,6 +71,7 @@ const MenuBar: React.FC = () => {
     <>
       <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
       <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
+      <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
@@ -82,7 +85,7 @@ const MenuBar: React.FC = () => {
           <HeaderButton label='translations' onClick={() => setTranslationsDialogOpen(true)} />
           <HeaderButton label='variables' />
           <HeaderButton label='lists' onClick={() => setListsDialogOpen(true)} />
-          <HeaderButton label='options' />
+          <HeaderButton label='options' onClick={() => setOptionsDialogOpen(true)} />
           <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'version.latest' })} endIcon={<ArrowDropDown />} />
           <HeaderIconButton icon={<Support fontSize='small' />} />
           <Box flexGrow={1} />
