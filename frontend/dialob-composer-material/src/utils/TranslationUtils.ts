@@ -160,7 +160,7 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
 	return missing;
 }
 
-export const getAllItemTranslations = (form: ComposerState) : ItemTranslations => {
+export const getAllItemTranslations = (form: ComposerState): ItemTranslations => {
 	const translations: TranslationData = { key: {} };
 	const metadata: Metadata = { key: {} };
 	const formItems = form.data;
@@ -220,7 +220,7 @@ export const getAllItemTranslations = (form: ComposerState) : ItemTranslations =
 	return { translations, metadata };
 }
 
-export const getGlobalValueSetTranslations = (form: ComposerState) : ItemTranslations | undefined => {
+export const getGlobalValueSetTranslations = (form: ComposerState): ItemTranslations | undefined => {
 	const globalValueSets: GlobalValueSet[] | undefined = form.metadata.composer?.globalValueSets;
 	if (globalValueSets && globalValueSets?.length > 0) {
 		const translations: TranslationData = { key: {} };
@@ -262,71 +262,88 @@ export const parse = (inputFile: File) => {
 	});
 };
 
-export const validateParsedFileHeaders = (data: string[][], form: ComposerState) : boolean => {
+export const validateParsedFileHeaders = (data: string[][], form: ComposerState): boolean => {
 	const formLabel = form.metadata.label;
 	if (data[0][0] !== formLabel || data[1][0] !== 'Item ID' || data[1][1] !== 'PageID'
 		|| data[1][2] !== 'ParentID ItemType' || data[1][3] !== 'Description') {
 		return false
 	}
+	// Checking if each language in CSV has exactly 2 letters
 	for (let i = 4; i < data[1].length; i++) {
 		if (data[1][i].length !== 2)
 			return false
 	}
+	// Check if the number of languages match
+	if (data[1].length - 4 !== form.metadata.languages?.length) {
+		return false
+	}
 	return true
 }
 
-const getItemDescriptions = (form: ComposerState) : string[] => {
+const getItemKeys = (form: ComposerState): string[] => {
 	const formItems = form.data;
 	const keys = Object.keys(formItems);
 	// eslint-disable-next-line prefer-const
-	let itemDescriptions: string[] = [];
+	let itemKeys: string[] = [];
 	for (const key of keys) {
+		if (key === "questionnaire") {
+			continue;
+		}
+		const resultingKey = `i:${formItems[key].id}:`;
 		if (formItems[key].description) {
-			itemDescriptions.push(`Item description for ${key}`)
+			itemKeys.push(resultingKey + "d");
 		}
 		if (formItems[key].validations) {
-			itemDescriptions.push(`Validation for ${key}`)
+			formItems[key].validations?.forEach((validation, index) => {
+				itemKeys.push(`${resultingKey}v:${index}`);
+			})
 		}
-		itemDescriptions.push(`Item label for ${key}`)
+		itemKeys.push(resultingKey + "l");
 	}
-	return itemDescriptions;
+	return itemKeys;
 }
 
-const getValueSetDescriptions = (form: ComposerState) : string[] => {
+const getValueSetKeys = (form: ComposerState): string[] => {
 	const valueSets = form.valueSets;
-	let valueSetDescriptions: string[] = []
+	const valueSetKeys: string[] = []
 	if (valueSets) {
-		valueSetDescriptions = valueSets.map((valueSet) => `Valueset entry for ${valueSet.id}`)
+		valueSets.forEach((valueSet) => {
+			const resultingKey = `v:${valueSet.id}:`;
+			valueSet.entries.forEach((entry, index) => {
+				valueSetKeys.push(`${resultingKey}${index}:${entry.id}`)
+			})
+		})
 	}
-	return valueSetDescriptions;
+	return valueSetKeys;
 }
 
-export const validateParsedFileData = (data: string[][], form: ComposerState) : ParsedImportData => {
-	let itemDescriptions: string[] = getItemDescriptions(form);
-	let valueSetDescriptions: string[] = getValueSetDescriptions(form);
+export const validateParsedFileData = (data: string[][], form: ComposerState): ParsedImportData => {
+	let itemKeys: string[] = getItemKeys(form);
+	let valueSetKeys: string[] = getValueSetKeys(form);
 
-	const parsedDescriptions: Set<string> = new Set();
+	const parsedKeys: Set<string> = new Set();
 	const missingInForm: string[] = [];
 	for (let i = 2; i < data.length; i++) {
-		parsedDescriptions.add(data[i][3]);
+		parsedKeys.add(data[i][0]);
 	}
 
-	parsedDescriptions.forEach((descriptionItem: string) => {
-		if (itemDescriptions?.includes(descriptionItem)) {
-			itemDescriptions = itemDescriptions.filter(itemID => itemID !== descriptionItem && itemID !== "Item label for questionnaire");
-		} else if (valueSetDescriptions?.includes(descriptionItem)) {
-			valueSetDescriptions = valueSetDescriptions.filter(valueSetID => valueSetID !== descriptionItem);
+	// Finding missing items in csv and missing items in form
+	parsedKeys.forEach((descriptionItem: string) => {
+		if (itemKeys?.includes(descriptionItem)) {
+			itemKeys = itemKeys.filter(itemID => itemID !== descriptionItem);
+		} else if (valueSetKeys?.includes(descriptionItem)) {
+			valueSetKeys = valueSetKeys.filter(valueSetID => valueSetID !== descriptionItem);
 		} else {
 			missingInForm.push(descriptionItem);
 		}
 	});
 
-	const missingInCsv: string[] = [...itemDescriptions, ...valueSetDescriptions];
+	const missingInCsv: string[] = [...itemKeys, ...valueSetKeys];
 	return { missingInCsv, missingInForm }
 }
 
 
-const createTranslationCSVRow = (value: MetadataEntry, key: string, translations: ItemTranslations, form: ComposerState) : string[] => {
+const createTranslationCSVRow = (value: MetadataEntry, key: string, translations: ItemTranslations, form: ComposerState): string[] => {
 	const languages = form.metadata.languages || [];
 	const row = [];
 	row.push(key)
@@ -348,7 +365,7 @@ export const createTranslationCSVformat = (
 	allItemTranslations: ItemTranslations,
 	globalValueSetTranslations: ItemTranslations | undefined,
 	result: (string | undefined)[][],
-	form: ComposerState) : (string | undefined)[][] => {
+	form: ComposerState): (string | undefined)[][] => {
 	for (const [key, value] of Object.entries(allItemTranslations.metadata.key)) {
 		const row = createTranslationCSVRow(value, key, allItemTranslations, form);
 		result.push(row)
@@ -362,7 +379,7 @@ export const createTranslationCSVformat = (
 	return result
 }
 
-export const downloadFormData = (form: ComposerState) : void => {
+export const downloadFormData = (form: ComposerState): void => {
 	const formLabel = form.metadata.label;
 	const languages = form.metadata.languages || [];
 	const allItemTranslations = getAllItemTranslations(form);
@@ -381,4 +398,22 @@ export const downloadFormData = (form: ComposerState) : void => {
 	const csv = Papa.unparse(result);
 	const blob = new Blob([csv], { type: 'text/csv' });
 	FileSaver.saveAs(blob, `translation_${formLabel}.csv`);
+}
+
+export const overwiewTextFormatter = (key: string) => {
+	const keys = key.split(":");
+	const type = keys[0];
+	const id = keys[1];
+	if (type === "i") {
+		if (keys[2] === "l") {
+			return `Item label for ${id}`;
+		} else if (keys[2] === "d") {
+			return `Item description for ${id}`;
+		} else {
+			return `Item validation rule[${keys[3]}] for ${id}`;
+		}
+	} else {
+		// valueSet
+		return `Valueset entry[${keys[2]}] for ${id}`;
+	}
 }

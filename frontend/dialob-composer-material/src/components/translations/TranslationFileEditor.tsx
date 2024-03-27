@@ -4,7 +4,7 @@ import { useComposer } from '../../dialob';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { FormattedMessage } from 'react-intl';
-import { ParsedImportData, downloadFormData, parse, validateParsedFileData, validateParsedFileHeaders } from '../../utils/TranslationUtils';
+import { ParsedImportData, downloadFormData, overwiewTextFormatter, parse, validateParsedFileData, validateParsedFileHeaders } from '../../utils/TranslationUtils';
 
 interface OverviewSectionProps {
 	content?: string[];
@@ -22,7 +22,7 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ content, title }) => 
 			<Typography sx={{ mb: 2 }} variant="h6"><FormattedMessage id={title} /></Typography>
 			<Box sx={{ display: "flex", flexDirection: "column" }}>
 				{content?.map((item, index) =>
-					<Typography key={index} style={{ margin: "2px 0px" }}>{item.replace(" for ", " - ")}</Typography>
+					<Typography key={index} style={{ margin: "2px 0px" }}>{overwiewTextFormatter(item)}</Typography>
 				)}
 			</Box>
 		</Box>
@@ -52,18 +52,19 @@ const TranslationFileEditor: React.FC = () => {
 
 	const updateTranslation = useCallback((key: string, language: string, text: string) => {
 		const keyTokens = key.split(':');
+		const id = keyTokens[1];
 		if (keyTokens[0] === 'i') {
 			// Item
 			if (keyTokens[2] === 'l') {
-				updateItem(keyTokens[1], 'label', text, language);
+				updateItem(id, 'label', text, language);
 			} else if (keyTokens[2] === 'd') {
-				updateItem(keyTokens[1], 'description', text, language);
+				updateItem(id, 'description', text, language);
 			} else if (keyTokens[2] === 'v') {
-				setValidationMessage(keyTokens[1], parseInt(keyTokens[3]), language, text);
+				setValidationMessage(id, parseInt(keyTokens[3]), language, text);
 			}
 		} else if (keyTokens[0] === 'v') {
 			// ValueSet
-			updateValueSetEntryLabel(keyTokens[1], parseInt(keyTokens[2]), text, language);
+			updateValueSetEntryLabel(id, parseInt(keyTokens[2]), text, language);
 		}
 	}, [setValidationMessage, updateItem, updateValueSetEntryLabel])
 
@@ -72,21 +73,27 @@ const TranslationFileEditor: React.FC = () => {
 		if (parsedImportData && parsedImportData.length > 1) {
 			// checking if there is additional languages inside CSV
 			if (parsedImportData[1].length - 4 > languages.length) {
-				for (let i = 4; i < parsedImportData[1].length; i++)
-					if (!languages.includes(parsedImportData[1][i])) {
-						addLanguage(parsedImportData[1][i]);
+				for (let i = 4; i < parsedImportData[1].length; i++) {
+					const language = parsedImportData[1][i];
+					if (!languages.includes(language)) {
+						addLanguage(language);
 					}
+				}
 			}
 			// translating
+			// Outer loop starts from 2 to skip headers
 			for (let i = 2; i < parsedImportData.length; i++) {
+				// Inner loop is looping through each row languages
 				for (let j = 4; j < parsedImportData[i].length; j++) {
-					if (parsedImportData[i].length !== 0 && parsedImportData[i][0]) {
+					const parsedKey = parsedImportData[i][0];
+					const language = parsedImportData[1][j];
+					const text = parsedImportData[i][j].trim();
+					if (parsedImportData[i].length !== 0 && parsedKey) {
 						if (!overviewData?.missingInForm) {
-							updateTranslation(parsedImportData[i][0], parsedImportData[1][j], parsedImportData[i][j].trim());
+							updateTranslation(parsedKey, language, text);
 						} else {
-							const description = parsedImportData[i][3];
-							if (!overviewData?.missingInForm.includes(description)) {
-								updateTranslation(parsedImportData[i][0], parsedImportData[1][j], parsedImportData[i][j].trim());
+							if (!overviewData?.missingInForm.includes(parsedKey)) {
+								updateTranslation(parsedKey, language, text);
 							}
 						}
 					}
@@ -180,9 +187,9 @@ const TranslationFileEditor: React.FC = () => {
 				/>
 			</Box>
 			{
-				translationOverviewOpen && <Paper elevation={4} sx={{ borderRadius: "10px", padding: 2, maxHeight: "80%" }}>
+				translationOverviewOpen && <Paper elevation={4} sx={{ borderRadius: "10px", padding: 2 }}>
 					<Typography variant="h3"><FormattedMessage id="dialogs.translations.files.overview" /></Typography>
-					<Box display="flex" maxHeight="300px" mt={2} sx={{ overflowY: "auto" }}>
+					<Box display="flex" maxHeight="35vh" mt={2} sx={{ overflowY: "auto" }}>
 						{showMissingInCsv && <OverviewSection content={overviewData?.missingInCsv} title="dialogs.translations.files.missing" />}
 						{showMissingInForm && <OverviewSection content={overviewData?.missingInForm} title="dialogs.translations.files.missing.form" />}
 						{showSuccessAlert && <OverviewAlert severity="success" title="dialogs.translations.files.success" />}

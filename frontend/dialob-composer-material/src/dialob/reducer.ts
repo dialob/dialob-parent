@@ -302,6 +302,7 @@ const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, inde
 	if (state.valueSets) {
 		const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
 		if (vsIdx > -1 && text !== null) {
+			
 			state.valueSets[vsIdx].entries[index].label[language] = text;
 		}
 	}
