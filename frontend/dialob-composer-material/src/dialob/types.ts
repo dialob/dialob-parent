@@ -15,7 +15,7 @@ export type ContextVariable = {
   published?: boolean;
   defaultValue?: any;
   context: boolean;
-  contextType: string; // TODO: ContextVariableType -- contextType is valid only when context === true, how to define this type in TS?
+  contextType: ContextVariableType;
 };
 
 export const isContextVariable = (variable: ContextVariable | Variable): variable is ContextVariable => (variable as ContextVariable).context === true;
@@ -96,6 +96,9 @@ export type ComposerState = {
         label?: string;
         valueSetId: string;
       }[];
+      contextValues?: {
+        [name: string]: any;
+      }
     },
     [prop: string]: any;
   }

@@ -127,6 +127,10 @@ const en = {
   'dialogs.form.options.created': 'Created',
   'dialogs.form.options.saved': 'Saved',
 
+  'dialogs.variables.title': 'Variables',
+  'dialogs.variables.context.title': 'Context variables',
+  'dialogs.variables.expression.title': 'Expression variables',
+
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
   'errors.type.VISIBILITY': 'Visibility',
