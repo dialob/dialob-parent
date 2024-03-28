@@ -359,7 +359,7 @@ const setMetadataValue = (state: ComposerState, attr: string, value: any): void 
 const createVariable = (state: ComposerState, context: boolean): void => {
 	const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
-	const variable = context ? {
+	const variable: ContextVariable | Variable = context ? {
 		name: variableId,
 		context: true,
 		contextType: 'text'
