@@ -13,6 +13,7 @@ export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'd
 export type ContextVariable = {
   name: string;
   published?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   context: boolean;
   contextType: string; // TODO: ContextVariableType -- contextType is valid only when context === true, how to define this type in TS?
@@ -24,6 +25,7 @@ export type ValueSetEntry = {
   id: string;
   label: LocalizedString;
   when?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 }
 
@@ -56,9 +58,11 @@ export type DialobItemTemplate = {
   items?: string[];
   className?: string[];
   props?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;
   };
   validations?: ValidationRule[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 };
 
@@ -97,6 +101,7 @@ export type ComposerState = {
         valueSetId: string;
       }[];
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;
   }
 };

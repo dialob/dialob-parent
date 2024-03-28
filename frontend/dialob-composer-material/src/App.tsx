@@ -1,13 +1,13 @@
-import { ComposerProvider } from './dialob'
+import { ComposerProvider, ComposerState } from './dialob'
 import { EditorProvider } from './editor';
 import { IntlProvider } from 'react-intl';
 import messages from './intl';
 import form from './dialob/test/multiPageForm.json';
-import ComposerLayoutView from './views/layout/ComposerLayoutView';
+import ComposerLayoutView from './views/ComposerLayoutView';
 
 function App() {
   return (
-    <ComposerProvider formData={form}>
+    <ComposerProvider formData={form as ComposerState}>
       <EditorProvider>
         <IntlProvider locale='en' messages={messages['en']}>
           <ComposerLayoutView />

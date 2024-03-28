@@ -1,5 +1,5 @@
 import React from 'react';
-import RuleEditor from './RuleEditor';
+import { RuleEditor } from './RuleEditor';
 import { FormattedMessage } from 'react-intl';
 import { Box, Button } from '@mui/material';
 import { Help } from '@mui/icons-material';
@@ -19,4 +19,4 @@ const RulesEditor: React.FC = () => {
   );
 }
 
-export default RulesEditor;
+export { RulesEditor };

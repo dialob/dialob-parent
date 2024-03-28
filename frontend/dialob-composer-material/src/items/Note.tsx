@@ -5,6 +5,7 @@ import { DialobItem } from '../dialob';
 import { IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
@@ -22,7 +23,7 @@ const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
       setHighlighted(false);
     }, 3000);
     return () => clearTimeout(id);
-  }, [editor.highlightedItem])
+  }, [editor.highlightedItem, item.id])
 
   return (
     <Element name={item.id}>

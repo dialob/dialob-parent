@@ -1,13 +1,13 @@
 import React from 'react';
 import { Drawer, Box, Container } from '@mui/material';
-import MenuBar from './MenuBar';
-import NavigationPane from './NavigationPane';
-import EditorArea from './EditorArea';
-import ErrorPane from './ErrorPane';
-import { useEditor } from '../../editor';
-import ConfirmationDialog from '../../dialogs/ConfirmationDialog';
-import { MENU_HEIGHT, SCROLL_SX } from '../../theme/siteTheme';
-import ItemOptionsDialog from '../../dialogs/ItemOptionsDialog';
+import MenuBar from './layout/MenuBar';
+import NavigationPane from './layout/NavigationPane';
+import EditorArea from './layout/EditorArea';
+import ErrorPane from './layout/ErrorPane';
+import { useEditor } from '../editor';
+import ConfirmationDialog from '../dialogs/ConfirmationDialog';
+import { MENU_HEIGHT, SCROLL_SX } from '../theme/siteTheme';
+import ItemOptionsDialog from '../dialogs/ItemOptionsDialog';
 
 const ComposerLayoutView: React.FC = () => {
   const { editor } = useEditor();

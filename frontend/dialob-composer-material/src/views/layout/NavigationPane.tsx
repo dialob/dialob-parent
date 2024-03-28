@@ -1,5 +1,5 @@
 import React from 'react';
-import NavigationTreeView from '../tree/NavigationTreeView';
+import NavigationTreeView from '../../components/tree/NavigationTreeView';
 
 const NavigationPane: React.FC = () => {
   return (

@@ -22,7 +22,7 @@ const buildTreeFromValueSet = (valueSet?: ValueSet): TreeData => {
   if (!valueSet) {
     return { rootId: 'root', items: {} };
   }
-  const items = valueSet.entries.map((entry, idx) => ({
+  const items = valueSet.entries.map((entry) => ({
     id: entry.id,
     children: [],
     data: entry,

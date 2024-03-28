@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { EditorAction } from './actions';
-import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType} from './types';
+import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType } from './types';
 import { DialobItem } from '../dialob';
 
 const setActivePage = (state: EditorState, page: DialobItem): void => {

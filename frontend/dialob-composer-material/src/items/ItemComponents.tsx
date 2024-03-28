@@ -3,7 +3,7 @@ import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useCompose
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
-  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, Edit, EditNote
+  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, EditNote
 } from "@mui/icons-material";
 import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -261,6 +261,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClose = (e: any, level: number) => {
     e.stopPropagation();
     if (level === 2) {

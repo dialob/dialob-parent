@@ -31,6 +31,7 @@ const PropertiesEditor: React.FC = () => {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditProp = (key: string, value: any) => {
     if (item) {
       setItemProp(item.id, key, value);
@@ -78,4 +79,4 @@ const PropertiesEditor: React.FC = () => {
   );
 }
 
-export default PropertiesEditor;
+export { PropertiesEditor };
