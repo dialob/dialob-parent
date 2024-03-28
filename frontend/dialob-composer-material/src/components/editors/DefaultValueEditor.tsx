@@ -5,7 +5,7 @@ import { useEditor } from "../../editor";
 import { useComposer } from "../../dialob";
 
 const DefaultValueEditor: React.FC = () => {
-  const { editor } = useEditor();
+  const { editor, setActiveItem } = useEditor();
   const { updateItem } = useComposer();
   const item = editor.activeItem;
   const [defaultValue, setDefaultValue] = React.useState<string>(item?.defaultValue || '');
@@ -18,9 +18,11 @@ const DefaultValueEditor: React.FC = () => {
     if (item && defaultValue !== '') {
       const id = setTimeout(() => {
         updateItem(item?.id, 'defaultValue', defaultValue);
+        setActiveItem({ ...item, defaultValue });
       }, 1000);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   if (!item) {
@@ -35,4 +37,4 @@ const DefaultValueEditor: React.FC = () => {
   );
 }
 
-export default DefaultValueEditor;
+export { DefaultValueEditor };

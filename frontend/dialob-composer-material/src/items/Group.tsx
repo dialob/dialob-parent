@@ -15,6 +15,7 @@ const createChildren = (item: DialobItem, items: DialobItems) => {
     .map(item => itemFactory(item));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const theme = useTheme();
   const { form } = useComposer();
@@ -36,7 +37,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
       setHighlighted(false);
     }, 3000);
     return () => clearTimeout(id);
-  }, [editor.highlightedItem])
+  }, [editor.highlightedItem, item.id])
 
   return (
     <Element name={item.id}>

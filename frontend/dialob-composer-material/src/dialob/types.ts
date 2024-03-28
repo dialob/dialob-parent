@@ -13,6 +13,7 @@ export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'd
 export type ContextVariable = {
   name: string;
   published?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   context: boolean;
   contextType: ContextVariableType;
@@ -24,6 +25,7 @@ export type ValueSetEntry = {
   id: string;
   label: LocalizedString;
   when?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 }
 
@@ -56,9 +58,11 @@ export type DialobItemTemplate = {
   items?: string[];
   className?: string[];
   props?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;
   };
   validations?: ValidationRule[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 };
 
@@ -100,6 +104,7 @@ export type ComposerState = {
         [name: string]: any;
       }
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;
   }
 };

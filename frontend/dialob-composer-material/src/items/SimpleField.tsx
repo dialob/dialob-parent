@@ -6,7 +6,7 @@ import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, Visibilit
 import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
@@ -25,7 +25,7 @@ const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props 
       setHighlighted(false);
     }, 3000);
     return () => clearTimeout(id);
-  }, [editor.highlightedItem])
+  }, [editor.highlightedItem, item.id])
 
   return (
     <Element name={item.id}>

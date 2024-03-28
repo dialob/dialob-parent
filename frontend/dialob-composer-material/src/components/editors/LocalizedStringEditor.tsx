@@ -25,7 +25,7 @@ const LocalizedStringEditor: React.FC<{
     if (item) {
       setLocalizedString(type === 'validations' ? rule?.validationRule.message : item[type]);
     }
-  }, [item, rule]);
+  }, [item, rule, type]);
 
   React.useEffect(() => {
     if (item && localizedString) {
@@ -42,6 +42,7 @@ const LocalizedStringEditor: React.FC<{
       }, 1000);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localizedString]);
 
   if (!item || (type === 'validations' && rule === undefined)) {
@@ -97,4 +98,4 @@ const LocalizedStringEditor: React.FC<{
   );
 }
 
-export default LocalizedStringEditor;
+export { LocalizedStringEditor };

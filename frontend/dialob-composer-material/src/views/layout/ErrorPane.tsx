@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import { useEditor } from '../../editor';
-import { ErrorMessage, ErrorType } from '../../utils/ErrorUtils';
 import { useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
+import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
 
 
 const errorCardBorderColor = (severity: string) => {

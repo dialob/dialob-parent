@@ -9,7 +9,6 @@ import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
-const MAX_PAGES_PER_ROW = 5;
 
 const getPageTabTitle = (item: DialobItem, language: string): string => {
   const rawLabel = item.label ? item.label[language] : null;
