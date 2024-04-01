@@ -4,11 +4,20 @@ import { Close, Help } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import ExpressionVariables from '../components/variables/ExpressionVariables';
 import ContextVariables from '../components/variables/ContextVariables';
+import { VariableTabType, useEditor } from '../editor';
 
 const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
-  const [activeTab, setActiveTab] = React.useState<'context' | 'expression'>('context');
+  const { editor, setActiveVariableTab } = useEditor();
+  const dialogOpen = open || editor.activeVariableTab !== undefined;
+  const [activeTab, setActiveTab] = React.useState<VariableTabType>(editor.activeVariableTab || 'context');
+
+  const handleClose = () => {
+    onClose();
+    setActiveVariableTab(undefined);
+  }
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='xl'>
+    <Dialog open={dialogOpen} onClose={onClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.title' /></Typography>
         <Button variant='outlined' endIcon={<Help />}
@@ -27,7 +36,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} endIcon={<Close />}>Close</Button>
+        <Button onClick={handleClose} endIcon={<Close />}>Close</Button>
       </DialogActions>
     </Dialog>
   )

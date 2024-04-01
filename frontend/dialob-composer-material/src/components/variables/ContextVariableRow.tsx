@@ -1,7 +1,9 @@
 import React from 'react';
-import { Button, IconButton, Menu, MenuItem, Switch, TableCell, TableRow, TextField, Typography } from '@mui/material';
+import { Button, IconButton, Menu, MenuItem, Switch, TableCell, TableRow, TextField, Typography, alpha, useTheme } from '@mui/material';
 import { Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { ContextVariable, ContextVariableType, useComposer } from '../../dialob';
+import { useEditor } from '../../editor';
+import { useErrorColorSx } from '../../utils/ErrorUtils';
 
 const types: ContextVariableType[] = [
   'text',
@@ -53,10 +55,14 @@ const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ variable }) 
 
 const ContextVariableRow: React.FC<{ variable: ContextVariable }> = ({ variable }) => {
   const { updateContextVariable, deleteVariable } = useComposer();
+  const { editor } = useEditor();
+  const theme = useTheme();
   // name and published updates need to be connected to backend
   const [name, setName] = React.useState<string>(variable.name);
   const [published, setPublished] = React.useState<boolean>(variable.published ?? false);
   const [defaultValue, setDefaultValue] = React.useState<string | undefined>(variable.defaultValue);
+  const errorColorSx = useErrorColorSx(editor.errors, variable.name);
+  const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
 
   React.useEffect(() => {
     const id = setTimeout(() => {
@@ -66,7 +72,7 @@ const ContextVariableRow: React.FC<{ variable: ContextVariable }> = ({ variable 
   }, [defaultValue]);
 
   return (
-    <TableRow key={variable.name}>
+    <TableRow key={variable.name} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
       <TableCell>
         <IconButton sx={{ p: 1, m: 1 }} onClick={() => deleteVariable(variable.name)}><Delete /></IconButton>
       </TableCell>

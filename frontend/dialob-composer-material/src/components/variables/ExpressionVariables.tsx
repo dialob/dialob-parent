@@ -5,15 +5,19 @@ import { Add } from "@mui/icons-material";
 import ExpressionVariableRow from "./ExpressionVariableRow";
 
 const ExpressionVariables: React.FC = () => {
-  const { form } = useComposer();
+  const { form, createVariable } = useComposer();
   const expressionVariables = form.variables?.filter(v => !isContextVariable(v)) as Variable[];
+
+  const handleAdd = () => {
+    createVariable(false);
+  }
 
   return (
     <VariablesTable>
       <TableHead>
         <TableRow>
           <TableCell sx={{ width: '5%', alignItems: 'center' }}>
-            <IconButton sx={{ p: 1, m: 1 }}><Add /></IconButton>
+            <IconButton sx={{ p: 1, m: 1 }} onClick={handleAdd}><Add /></IconButton>
           </TableCell>
           <TableCell sx={{ fontWeight: 'bold', width: '5%' }}>
             Published

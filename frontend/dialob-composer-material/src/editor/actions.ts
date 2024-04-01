@@ -1,4 +1,4 @@
-import { ConfirmationDialogType, EditorError, OptionsTabType } from "./types";
+import { ConfirmationDialogType, EditorError, OptionsTabType, VariableTabType } from "./types";
 import { DialobItem } from "../dialob";
 
 export type EditorAction =
@@ -11,3 +11,5 @@ export type EditorAction =
   | { type: 'setItemOptionsActiveTab', tab?: OptionsTabType }
   | { type: 'setHighlightedItem', item?: DialobItem }
   | { type: 'setActiveList', listId?: string }
+  | { type: 'setActiveVariableTab', tab?: VariableTabType }
+  
