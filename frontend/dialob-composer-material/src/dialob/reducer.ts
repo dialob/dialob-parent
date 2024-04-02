@@ -408,6 +408,15 @@ const deleteVariable = (state: ComposerState, variableId: string): void => {
 	}
 }
 
+const updateVariablePublishing = (state: ComposerState, variableId: string, published: boolean): void => {
+	if (state.variables) {
+		const varIdx = state.variables.findIndex(v => v.name === variableId);
+		if (varIdx > -1) {
+			(state.variables[varIdx]).published = published;
+		}
+	}
+}
+
 const addLanguage = (state: ComposerState, language: string, copyFrom?: string): void => {
 	if (state.metadata.languages && state.metadata.languages.indexOf(language) > -1) {
 		// Already exists, NO-OP
@@ -544,6 +553,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
 		} else if (action.type === 'updateExpressionVariable') {
 			updateExpressionVariable(state, action.variableId, action.expression);
+    } else if (action.type === 'updateVariablePublishing') {
+      updateVariablePublishing(state, action.variableId, action.published);
 		} else if (action.type === 'deleteVariable') {
 			deleteVariable(state, action.variableId);
 		} else if (action.type === 'addLanguage') {

@@ -31,8 +31,8 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
           <Tab value='expression' label={<FormattedMessage id='dialogs.variables.expression.title' />} />
         </Tabs>
         <Box sx={{ p: 3, width: 1 }}>
-          {activeTab === 'context' && <ContextVariables />}
-          {activeTab === 'expression' && <ExpressionVariables />}
+          {activeTab === 'context' && <ContextVariables onClose={onClose} />}
+          {activeTab === 'expression' && <ExpressionVariables onClose={onClose} />}
         </Box>
       </DialogContent>
       <DialogActions>

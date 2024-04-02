@@ -1,10 +1,11 @@
-import { IconButton, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import { IconButton, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import { Variable, isContextVariable, useComposer } from "../../dialob"
 import { VariablesTable } from "./ContextVariables";
 import { Add } from "@mui/icons-material";
 import ExpressionVariableRow from "./ExpressionVariableRow";
+import { FormattedMessage } from "react-intl";
 
-const ExpressionVariables: React.FC = () => {
+const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { form, createVariable } = useComposer();
   const expressionVariables = form.variables?.filter(v => !isContextVariable(v)) as Variable[];
 
@@ -16,23 +17,29 @@ const ExpressionVariables: React.FC = () => {
     <VariablesTable>
       <TableHead>
         <TableRow>
-          <TableCell sx={{ width: '5%', alignItems: 'center' }}>
+          <TableCell width='5%' align='center'>
             <IconButton sx={{ p: 1, m: 1 }} onClick={handleAdd}><Add /></IconButton>
           </TableCell>
-          <TableCell sx={{ fontWeight: 'bold', width: '5%' }}>
-            Published
+          <TableCell width='5%' align='center'>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.published' /></Typography>
           </TableCell>
-          <TableCell sx={{ fontWeight: 'bold', width: '40%' }}>
-            ID
+          <TableCell width='30%'>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.id' /></Typography>
           </TableCell>
-          <TableCell sx={{ fontWeight: 'bold', width: '50%' }}>
-            Expression
+          <TableCell width='35%'>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.type' /></Typography>
+          </TableCell>
+          <TableCell width='20%'>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.description' /></Typography>
+          </TableCell>
+          <TableCell width='5%' align='center'>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.users' /></Typography>
           </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {expressionVariables?.map(variable => (
-          <ExpressionVariableRow key={variable.name} variable={variable} />
+          <ExpressionVariableRow key={variable.name} variable={variable} onClose={onClose} />
         ))}
       </TableBody>
     </VariablesTable>

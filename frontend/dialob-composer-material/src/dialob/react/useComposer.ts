@@ -108,6 +108,10 @@ export const useComposer = () => {
 		dispatch({ type: 'updateExpressionVariable', variableId, expression });
 	}
 
+  const updateVariablePublishing = (variableId: string, published: boolean) => {
+    dispatch({ type: 'updateVariablePublishing', variableId, published });
+  }
+
 	const deleteVariable = (variableId: string) => {
 		dispatch({ type: 'deleteVariable', variableId });
 	}
@@ -146,6 +150,7 @@ export const useComposer = () => {
 		createVariable,
 		updateContextVariable,
 		updateExpressionVariable,
+    updateVariablePublishing,
 		deleteVariable,
 		addLanguage,
 		deleteLanguage,
