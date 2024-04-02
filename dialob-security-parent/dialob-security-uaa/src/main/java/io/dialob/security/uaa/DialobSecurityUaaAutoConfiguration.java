@@ -15,15 +15,21 @@
  */
 package io.dialob.security.uaa;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import feign.Feign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
+import feign.slf4j.Slf4jLogger;
+import io.dialob.common.Permissions;
+import io.dialob.security.spring.oauth2.*;
+import io.dialob.security.spring.tenant.GrantedTenantAccessEvaluator;
+import io.dialob.security.spring.tenant.MapTenantGroupToTenantGrantedAuthority;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.uaa.spi.UaaClient;
+import io.dialob.security.uaa.spi.UaaUsersAndGroupsService;
+import io.dialob.settings.DialobSettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -31,26 +37,9 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import feign.Feign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import feign.slf4j.Slf4jLogger;
-import io.dialob.common.Permissions;
-import io.dialob.security.spring.oauth2.Groups2GrantedAuthorisations;
-import io.dialob.security.spring.oauth2.OAuth2AuthenticationInterceptor;
-import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.oauth2.UaaGroups2GroupGrantedAuthoritiesMapper;
-import io.dialob.security.spring.oauth2.UsersAndGroupsService;
-import io.dialob.security.spring.tenant.GrantedTenantAccessEvaluator;
-import io.dialob.security.spring.tenant.MapTenantGroupToTenantGrantedAuthority;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.uaa.spi.UaaClient;
-import io.dialob.security.uaa.spi.UaaUsersAndGroupsService;
-import io.dialob.settings.DialobSettings;
+import java.util.*;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 @Configuration(proxyBeanMethods = false)
 @Profile("uaa")
@@ -78,7 +67,7 @@ public class DialobSecurityUaaAutoConfiguration {
   @Bean
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper(DialobSettings dialobSettings,
                                                            Optional<UsersAndGroupsService> usersAndGroupsService) {
-    List<UnaryOperator<Stream<? extends GrantedAuthority>>> operators = new ArrayList<>();
+    var operators = new ArrayList<UnaryOperator<Stream<? extends GrantedAuthority>>>();
 
     final Map<String, Set<String>> groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
