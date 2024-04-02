@@ -18,27 +18,12 @@ package io.dialob.security.uaa.spi;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
-import io.dialob.security.uaa.spi.model.UaaGroup;
-import io.dialob.security.uaa.spi.model.UaaGroupList;
 import io.dialob.security.uaa.spi.model.UaaUser;
-import io.dialob.security.uaa.spi.model.UaaUserList;
 
 @Headers("Content-Type: application/json")
 public interface UaaClient {
 
   @RequestLine("GET /Users/{userId}")
   UaaUser getUser(@Param("userId") String userId);
-
-  @RequestLine("GET /Groups/{groupId}")
-  UaaGroup getGroup(@Param("groupId") String groupId);
-
-  @RequestLine("GET /Groups?filter=displayName eq \"{displayName}\"")
-  UaaGroupList findGroupsByDisplayName(@Param("displayName") String displayName);
-
-  @RequestLine("GET /Groups?filter=displayName sw \"{displayNamePrefix}\"")
-  UaaGroupList findGroupsByDisplayNamePrefix(@Param("displayNamePrefix") String displayNamePrefix);
-
-  @RequestLine("GET /Users?filter=userName eq \"{userName}\"")
-  UaaUserList findUsersByUserName(@Param("userName") String userName);
 
 }
