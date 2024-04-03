@@ -16,7 +16,7 @@ export type ContextVariable = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   context: boolean;
-  contextType: ContextVariableType;
+  contextType: ContextVariableType | string;
 };
 
 export const isContextVariable = (variable: ContextVariable | Variable): variable is ContextVariable => (variable as ContextVariable).context === true;

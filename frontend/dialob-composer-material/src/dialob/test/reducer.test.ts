@@ -2,7 +2,7 @@ import { generateItemId, formReducer } from '../reducer';
 import testForm from './testForm.json';
 import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
-import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString } from '../types';
+import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString, Variable, ContextVariable } from '../types';
 
 console.log('testform', testForm);
 
@@ -960,6 +960,36 @@ test('Update expression variable', () => {
 	}
 });
 
+test('Publish variable', () => {
+	const action: ComposerAction = {
+		type: 'updateVariablePublishing',
+		variableId: 'companyMainBL',
+		published: true
+	}
+	const newState = formReducer(testForm, action);
+	expect(newState.variables).toBeDefined();
+	if (newState.variables) {
+		const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
+		expect(vIndex).toBeGreaterThan(-1);
+		expect(newState.variables[vIndex].published).toBe(true);
+	}
+});
+
+test('Unpublish variable', () => {
+	const action: ComposerAction = {
+		type: 'updateVariablePublishing',
+		variableId: 'companyMainBL',
+		published: false
+	}
+	const newState = formReducer(testForm, action);
+	expect(newState.variables).toBeDefined();
+	if (newState.variables) {
+		const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
+		expect(vIndex).toBeGreaterThan(-1);
+		expect(newState.variables[vIndex].published).toBe(false);
+	}
+});
+
 test('Delete variable', () => {
 	const action: ComposerAction = {
 		type: 'deleteVariable',
@@ -971,6 +1001,31 @@ test('Delete variable', () => {
 		expect(newState.variables.length).toEqual(4);
 		const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
 		expect(vIndex).toEqual(-1);
+	}
+});
+
+test('Move variable (swap)', () => {
+  expect(testForm.variables).toBeDefined();
+  const originIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyName');
+  expect(originIndex).toBeGreaterThan(-1);
+  const origin = testForm.variables[originIndex];
+  const destinationIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyID');
+  expect(destinationIndex).toBeGreaterThan(-1);
+  const destination = testForm.variables[destinationIndex];
+	const action: ComposerAction = {
+		type: 'moveVariable',
+		origin: origin, 
+    destination: destination
+	}
+	const newState = formReducer(testForm, action);
+	expect(newState.variables).toBeDefined();
+	if (newState.variables) {
+		const nameIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyName');
+    expect(nameIndex).toBeGreaterThan(-1);
+		expect(nameIndex).toBe(destinationIndex);
+    const idIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyID');
+    expect(idIndex).toBeGreaterThan(-1);
+    expect(idIndex).toBe(originIndex);
 	}
 });
 

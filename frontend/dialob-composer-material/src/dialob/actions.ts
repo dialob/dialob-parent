@@ -32,7 +32,7 @@ export type ComposerAction =
 
 	| { type: 'createVariable', context: boolean }
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	| { type: 'updateContextVariable', variableId: string, defaultValue?: any, contextType?: ContextVariableType }
+	| { type: 'updateContextVariable', variableId: string, defaultValue?: any, contextType?: ContextVariableType | string }
 	| { type: 'updateExpressionVariable', variableId: string, expression: string }
   | { type: 'updateVariablePublishing', variableId: string, published: boolean }
 	| { type: 'deleteVariable', variableId: string }

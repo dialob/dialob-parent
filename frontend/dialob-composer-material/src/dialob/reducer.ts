@@ -376,7 +376,7 @@ const createVariable = (state: ComposerState, context: boolean): void => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType, defaultValue?: any): void => {
+const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType | string, defaultValue?: any): void => {
 	if (state.variables) {
 		const varIdx = state.variables.findIndex(v => isContextVariable(v) && v.name === variableId);
 		if (varIdx > -1) {
