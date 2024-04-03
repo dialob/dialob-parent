@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography, styled } from '@mui/material';
+import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { ContextVariable, ContextVariableType, DialobItem, Variable, useComposer } from '../../dialob';
 import { Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
@@ -10,8 +10,6 @@ import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
 import { TreeItem } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
-import ExpressionVariableRow from './ExpressionVariableRow';
-import ContextVariableRow from './ContextVariableRow';
 import { matchByKeyword } from '../../utils/SearchUtils';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
@@ -27,18 +25,6 @@ export interface VariableProps {
   item: TreeItem,
   provided: TreeDraggableProvided,
   onClose: () => void
-}
-
-export const renderVariableItem = (props: VariableProps, type: 'context' | 'expression') => {
-  const { item, provided, onClose } = props;
-  if (type === 'context') {
-    return (
-      <ContextVariableRow item={item} provided={provided} onClose={onClose} />
-    );
-  }
-  return (
-    <ExpressionVariableRow item={item} provided={provided} onClose={onClose} />
-  );
 }
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
@@ -63,7 +49,7 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
   );
 }
 
-export const DescriptionField: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
+export const DescriptionField: React.FC = () => {
   const [description, setDescription] = React.useState<string | undefined>(); // add description to context
   return (
     <TextField
@@ -125,6 +111,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
       updateContextVariable(variable.name, variable.contextType, defaultValue);
     }, 1000);
     return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   return (
@@ -147,6 +134,7 @@ export const ExpressionField: React.FC<{ variable: Variable }> = ({ variable }) 
       updateExpressionVariable(variable.name, expression);
     }, 1000);
     return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expression]);
 
   return (

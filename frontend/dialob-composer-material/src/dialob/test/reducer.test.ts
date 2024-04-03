@@ -2,7 +2,7 @@ import { generateItemId, formReducer } from '../reducer';
 import testForm from './testForm.json';
 import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
-import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString, Variable, ContextVariable } from '../types';
+import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString } from '../types';
 
 console.log('testform', testForm);
 

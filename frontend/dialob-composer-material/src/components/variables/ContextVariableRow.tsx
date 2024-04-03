@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableRow, alpha, useTheme } from '@mui/material';
+import { TableBody, TableCell, TableRow, alpha, useTheme } from '@mui/material';
 import { ContextVariable } from '../../dialob';
 import { useEditor } from '../../editor';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
@@ -40,7 +40,7 @@ const ContextVariableRow: React.FC<VariableProps> = ({ item, provided, onClose }
             <DefaultValueField variable={variable} />
           </TableCell>
           <TableCell width='20%' sx={{ p: 1 }}>
-            <DescriptionField variable={variable} />
+            <DescriptionField />
           </TableCell>
           <TableCell width='8%' align='center' sx={{ p: 1 }}>
             <UsersField variable={variable} onClose={onClose} />

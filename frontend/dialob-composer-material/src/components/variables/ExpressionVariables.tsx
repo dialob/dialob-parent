@@ -1,12 +1,21 @@
 import React from "react";
-import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import { IconButton, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import { Variable, isContextVariable, useComposer } from "../../dialob"
 import { Add } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import Tree, { TreeData, TreeDestinationPosition, TreeSourcePosition, moveItemOnTree } from "@atlaskit/tree";
 import { INIT_TREE, buildTreeFromVariables } from "../../utils/TreeUtils";
-import { renderVariableItem } from "./VariableComponents";
+import { VariableProps } from "./VariableComponents";
 import { BorderedTable } from "../TableEditorComponents";
+import ExpressionVariableRow from "./ExpressionVariableRow";
+
+
+const renderVariableItem = (props: VariableProps) => {
+  const { item, provided, onClose } = props;
+  return (
+    <ExpressionVariableRow item={item} provided={provided} onClose={onClose} />
+  );
+}
 
 const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { form, createVariable, moveVariable } = useComposer();
@@ -64,7 +73,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <TableCell colSpan={7}>
             <Tree
               tree={tree}
-              renderItem={(props) => renderVariableItem({ ...props, onClose: onClose }, 'expression')}
+              renderItem={(props) => renderVariableItem({ ...props, onClose: onClose })}
               onDragEnd={onDragEnd}
               isDragEnabled
             />
