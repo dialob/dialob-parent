@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography, styled } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { ContextVariable, ContextVariableType, DialobItem, Variable, useComposer } from '../../dialob';
 import { Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
@@ -8,8 +8,13 @@ import { javascript } from '@codemirror/lang-javascript';
 import { useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
+import { TreeItem } from '@atlaskit/tree';
+import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
+import ExpressionVariableRow from './ExpressionVariableRow';
+import ContextVariableRow from './ContextVariableRow';
+import { matchByKeyword } from '../../utils/SearchUtils';
 
-const types: ContextVariableType[] = [
+const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
   'boolean',
   'number',
@@ -17,6 +22,24 @@ const types: ContextVariableType[] = [
   'date',
   'time'
 ]
+
+export interface VariableProps {
+  item: TreeItem,
+  provided: TreeDraggableProvided,
+  onClose: () => void
+}
+
+export const renderVariableItem = (props: VariableProps, type: 'context' | 'expression') => {
+  const { item, provided, onClose } = props;
+  if (type === 'context') {
+    return (
+      <ContextVariableRow item={item} provided={provided} onClose={onClose} />
+    );
+  }
+  return (
+    <ExpressionVariableRow item={item} provided={provided} onClose={onClose} />
+  );
+}
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { deleteVariable } = useComposer();
@@ -82,7 +105,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
         </Typography>
       </Button>
       <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-        {types.length > 0 && types.filter(type => type !== variable.contextType)
+        {VARIABLE_TYPES.length > 0 && VARIABLE_TYPES.filter(type => type !== variable.contextType)
           .map((type, index) => (
             <MenuItem key={index} onClick={(e) => handleConvertType(e, type)}>
               <Typography textTransform='capitalize'>{type}</Typography>
@@ -171,29 +194,3 @@ export const UsersField: React.FC<{ variable: ContextVariable | Variable, onClos
     </>
   );
 }
-
-// dummy implementation to check for string matches, will be replaced by a backend implementation
-export const matchByKeyword = (item: DialobItem, languages?: string[], keyword?: string) => {
-  if (!keyword || !languages) {
-    return true;
-  }
-  for (const language of languages) {
-    if (item.label && item.label[language] && item.label[language].toLowerCase().includes(keyword.toLowerCase())) {
-      return true;
-    } else if (item.description && item.description[language] && item.description[language].toLowerCase().includes(keyword.toLowerCase())) {
-      return true;
-    } else if (item.id.toLowerCase().includes(keyword.toLowerCase())) {
-      return true;
-    } else if (item.activeWhen?.toLowerCase().includes(keyword.toLowerCase())) {
-      return true;
-    } else if (item.required?.toLowerCase().includes(keyword.toLowerCase())) {
-      return true;
-    } else if (item.validations?.some((validation) => (validation.message && validation.message[language] &&
-      validation.message[language].toLowerCase().includes(keyword.toLowerCase())) ||
-      (validation.rule && validation.rule.toLowerCase().includes(keyword.toLowerCase())))) {
-      return true;
-    }
-  }
-  return false;
-}
-

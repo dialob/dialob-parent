@@ -1,6 +1,46 @@
-import { ItemId, TreeData } from "@atlaskit/tree";
-import { DialobItem } from "../../dialob";
+import { ItemId, TreeData } from '@atlaskit/tree';
+import { ContextVariable, DialobItem, ValueSet, Variable } from '../dialob';
 
+export const INIT_TREE: TreeData = {
+  rootId: 'root',
+  items: {},
+}
+
+export const buildTreeFromVariables = (variables: (ContextVariable | Variable)[]): TreeData => {
+  const items = variables.map((variable, index) => ({
+    id: variable.name,
+    children: [],
+    data: {
+      variable: variable,
+      index: index,
+    }
+  }));
+  return {
+    rootId: 'root',
+    items: {
+      root: { id: 'root', children: items.map(i => i.id), data: undefined },
+      ...Object.fromEntries(items.map(i => [i.id, i]))
+    }
+  };
+}
+
+export const buildTreeFromValueSet = (valueSet?: ValueSet): TreeData => {
+  if (!valueSet) {
+    return { rootId: 'root', items: {} };
+  }
+  const items = valueSet.entries.map((entry) => ({
+    id: entry.id,
+    children: [],
+    data: entry,
+  }));
+  return {
+    rootId: 'root',
+    items: {
+      root: { id: 'root', children: items.map(i => i.id), data: undefined },
+      ...Object.fromEntries(items.map(i => [i.id, i]))
+    }
+  };
+}
 
 export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string): TreeData => {
   const tree: TreeData = {

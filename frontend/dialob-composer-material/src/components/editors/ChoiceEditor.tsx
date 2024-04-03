@@ -5,7 +5,7 @@ import { Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButt
 import { useEditor } from '../../editor';
 import { ValueSet, useComposer } from '../../dialob';
 import { generateValueSetId } from '../../dialob/reducer';
-import { StyledTable } from '../TableEditorComponents';
+import { BorderedTable } from '../TableEditorComponents';
 import ChoiceList from '../ChoiceList';
 import ConvertConfirmationDialog from '../../dialogs/ConvertConfirmationDialog';
 import UploadValuesetDialog from '../../dialogs/UploadValuesetDialog';
@@ -154,7 +154,7 @@ const ChoiceEditor: React.FC = () => {
           </Button>
         </Box>
         <TableContainer>
-          <StyledTable>
+          <BorderedTable>
             <TableHead>
               <TableRow>
                 <TableCell width='20%' align='center'>
@@ -173,7 +173,7 @@ const ChoiceEditor: React.FC = () => {
               </TableRow>
             </TableHead>
             <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
-          </StyledTable>
+          </BorderedTable>
         </TableContainer>
       </> : <Box>
         <Typography><FormattedMessage id='dialogs.options.choices.select.global' /></Typography>

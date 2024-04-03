@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString } from "../types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable, Variable } from "../types";
 
 export const useComposer = () => {
 	const { state, dispatch } = useContext(ComposerContext);
@@ -116,6 +116,10 @@ export const useComposer = () => {
 		dispatch({ type: 'deleteVariable', variableId });
 	}
 
+  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
+    dispatch({ type: 'moveVariable', origin, destination });
+  }
+
 	const addLanguage = (language: string, copyFrom?: string) => {
 		dispatch({ type: 'addLanguage', language, copyFrom });
 	}
@@ -152,6 +156,7 @@ export const useComposer = () => {
 		updateExpressionVariable,
     updateVariablePublishing,
 		deleteVariable,
+    moveVariable,
 		addLanguage,
 		deleteLanguage,
 		form: state

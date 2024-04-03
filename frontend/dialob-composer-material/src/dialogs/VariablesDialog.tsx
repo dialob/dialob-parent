@@ -11,9 +11,18 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   const dialogOpen = open || editor.activeVariableTab !== undefined;
   const [activeTab, setActiveTab] = React.useState<VariableTabType>(editor.activeVariableTab || 'context');
 
+  React.useEffect(() => {
+    const type = editor.activeVariableTab || 'context';
+    setActiveTab(type);
+  }, [editor.activeVariableTab]);
+
   const handleClose = () => {
     onClose();
     setActiveVariableTab(undefined);
+  }
+
+  if (!dialogOpen) {
+    return null;
   }
 
   return (
