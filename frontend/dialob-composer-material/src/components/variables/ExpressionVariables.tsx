@@ -49,7 +49,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       <TableHead>
         <TableRow>
           <TableCell width='5%' align='center' sx={{ p: 1 }}>
-            <IconButton sx={{ p: 1, m: 1 }} onClick={handleAdd}><Add /></IconButton>
+            <IconButton sx={{ p: 1, m: 1 }} onClick={handleAdd}><Add color='success' /></IconButton>
           </TableCell>
           <TableCell width='7%' align='center' sx={{ p: 1 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.published' /></Typography>
@@ -57,13 +57,13 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <TableCell width='25%' sx={{ p: 1 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.id' /></Typography>
           </TableCell>
-          <TableCell width='35%' sx={{ p: 1 }}>
-            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.type' /></Typography>
+          <TableCell width='33%' sx={{ p: 1 }}>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.expression' /></Typography>
           </TableCell>
-          <TableCell width='20%' sx={{ p: 1 }}>
+          <TableCell width='25%' sx={{ p: 1 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.description' /></Typography>
           </TableCell>
-          <TableCell width='8%' align='center' sx={{ p: 1 }}>
+          <TableCell width='5%' align='center' sx={{ p: 1 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.users' /></Typography>
           </TableCell>
         </TableRow>

@@ -30,7 +30,7 @@ export interface VariableProps {
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { deleteVariable } = useComposer();
   return (
-    <IconButton sx={{ p: 1, m: 1 }} onClick={() => deleteVariable(variable.name)}><Delete /></IconButton>
+    <IconButton sx={{ p: 1, m: 1 }} onClick={() => deleteVariable(variable.name)}><Delete color='error' /></IconButton>
   );
 }
 

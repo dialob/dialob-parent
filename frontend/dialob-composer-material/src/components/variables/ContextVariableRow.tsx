@@ -30,19 +30,19 @@ const ContextVariableRow: React.FC<VariableProps> = ({ item, provided, onClose }
           <TableCell width='7%' align='center' sx={{ p: 1 }}>
             <PublishedSwitch variable={variable} />
           </TableCell>
-          <TableCell width='30%' sx={{ p: 1 }}>
+          <TableCell width='25%' sx={{ p: 1 }}>
             <NameField variable={variable} />
           </TableCell>
-          <TableCell width='10%' sx={{ p: 1 }}>
+          <TableCell width='8%' sx={{ p: 1 }}>
             <ContextTypeMenu variable={variable} />
           </TableCell>
-          <TableCell width='20%' sx={{ p: 1 }}>
+          <TableCell width='25%' sx={{ p: 1 }}>
             <DefaultValueField variable={variable} />
           </TableCell>
-          <TableCell width='20%' sx={{ p: 1 }}>
+          <TableCell width='25%' sx={{ p: 1 }}>
             <DescriptionField />
           </TableCell>
-          <TableCell width='8%' align='center' sx={{ p: 1 }}>
+          <TableCell width='5%' align='center' sx={{ p: 1 }}>
             <UsersField variable={variable} onClose={onClose} />
           </TableCell>
         </TableRow>
