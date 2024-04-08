@@ -354,6 +354,7 @@ const setMetadataValue = (state: ComposerState, attr: string, value: any): void 
 	// TODO: Sanity: Prevent overwriting certain critical attributes
 
 	state.metadata[attr] = value;
+  console.log('contextValues', Object.values(state.metadata.composer?.contextValues || {}))
 }
 
 const createVariable = (state: ComposerState, context: boolean): void => {

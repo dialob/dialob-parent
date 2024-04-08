@@ -22,6 +22,7 @@ const en = {
   'buttons.close': 'Close',
   'buttons.delete': 'Delete',
   'buttons.copy.clip': 'Copy to clipboard',
+  'buttons.preview': 'Preview',
 
   'menus.options': 'Options',
   'menus.description': 'Description',
@@ -163,6 +164,11 @@ const en = {
   'dialogs.variables.default': 'Default value',
   'dialogs.variables.type': 'Type',
   'dialogs.variables.users.tooltip': 'Show users',
+
+  'dialogs.preview.title': 'Preview',
+  'dialogs.preview.desc': 'Values for context variables',
+  'dialogs.preview.table.id': 'ID',
+  'dialogs.preview.table.value': 'Value',
 
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',

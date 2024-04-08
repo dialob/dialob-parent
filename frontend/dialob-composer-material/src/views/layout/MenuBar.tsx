@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem, styled } from '@mui/material';
 import { ArrowDropDown, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useComposer } from '../../dialob';
+import { isContextVariable, useComposer } from '../../dialob';
 import { getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
@@ -10,6 +10,7 @@ import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
 import TranslationDialog from '../../dialogs/TranslationDialog';
 import FormOptionsDialog from '../../dialogs/FormOptionsDialog';
 import VariablesDialog from '../../dialogs/VariablesDialog';
+import PreviewDialog from '../../dialogs/PreviewDialog';
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -38,9 +39,9 @@ const HeaderButton: React.FC<{
   );
 };
 
-const HeaderIconButton: React.FC<{ icon: React.ReactElement, disabled?: boolean }> = ({ icon, disabled }) => {
+const HeaderIconButton: React.FC<{ icon: React.ReactElement, disabled?: boolean, onClick?: () => void }> = ({ icon, disabled, onClick }) => {
   return (
-    <ResponsiveButton variant='text' color='inherit' disabled={disabled}>
+    <ResponsiveButton variant='text' color='inherit' disabled={disabled} onClick={onClick}>
       {icon}
     </ResponsiveButton>
   );
@@ -58,6 +59,7 @@ const MenuBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
   const [variablesDialogOpen, setVariablesDialogOpen] = React.useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = React.useState(false);
   const languageMenuOpen = Boolean(anchorEl);
 
   const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -69,12 +71,22 @@ const MenuBar: React.FC = () => {
     setAnchorEl(null);
   }
 
+  const handleInitiatePreview = () => {
+    const contextVariables = form.variables?.filter(isContextVariable);
+    if (contextVariables && contextVariables.length > 0) {
+      setPreviewDialogOpen(true);
+    } else {
+      // TODO initiate preview
+    }
+  }
+
   return (
     <>
       <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
       <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
       <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <VariablesDialog open={variablesDialogOpen} onClose={() => setVariablesDialogOpen(false)} />
+      <PreviewDialog open={previewDialogOpen} onClose={() => setPreviewDialogOpen(false)} />
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
@@ -108,7 +120,7 @@ const MenuBar: React.FC = () => {
                 </MenuItem>
               ))}
           </Menu>
-          <HeaderIconButton icon={<Visibility fontSize='small' />} />
+          <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitiatePreview} />
           <HeaderIconButton icon={<Close />} />
         </Stack>
       </AppBar>
