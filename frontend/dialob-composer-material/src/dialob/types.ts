@@ -74,9 +74,21 @@ export type DialobItems = { [key: string]: DialobItem };
 
 export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
 
+export type ComposerTag = {
+  id: string;
+  name: string;
+  description: string;
+  created: string;
+}
+
+export const isReadOnly = (state: ComposerState): boolean => {
+  return state._tag !== undefined;
+}
+
 export type ComposerState = {
   _id: string;
   _rev: string;
+  _tag?: string;
   name: string;
   data: {
     [item: string]: DialobItem;

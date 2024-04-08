@@ -22,6 +22,7 @@ const en = {
   'buttons.close': 'Close',
   'buttons.delete': 'Delete',
   'buttons.copy.clip': 'Copy to clipboard',
+  'buttons.activate': 'Activate',
 
   'menus.options': 'Options',
   'menus.description': 'Description',
@@ -31,6 +32,8 @@ const en = {
   'menus.conversions.hint': 'Convert to:',
   'menus.add': 'Add item',
   'menus.insert.below': 'Insert below',
+  'menus.versions.manage': 'Manage versions',
+  'menus.versions.create': 'Create version tag',
 
   'placeholders.group': 'Group label',
   'placeholders.surveygroup': 'Survey group label',
@@ -163,6 +166,14 @@ const en = {
   'dialogs.variables.default': 'Default value',
   'dialogs.variables.type': 'Type',
   'dialogs.variables.users.tooltip': 'Show users',
+
+  'dialogs.versioning.title': 'Versioning',
+  'dialogs.versioning.list': 'List of tagged versions',
+  'dialogs.versioning.editable.desc': 'Only the LATEST version is editable',
+  'dialogs.versioning.list.header.name': 'Name',
+  'dialogs.versioning.list.header.description': 'Description',
+  'dialogs.versioning.list.header.created': 'Created',
+  'dialogs.versioning.list.header.actions': 'Actions',
 
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
