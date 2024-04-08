@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { useEditor } from '../../editor'
-import { StyledTable } from '../TableEditorComponents';
+import { BorderedTable } from '../TableEditorComponents';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import PropItem from '../PropItem';
@@ -62,7 +62,7 @@ const PropertiesEditor: React.FC = () => {
         </Button>
       </Box>
       <TableContainer>
-        <StyledTable>
+        <BorderedTable>
           <TableHead>
             <TableRow>
               <TableCell width='10%' />
@@ -73,7 +73,7 @@ const PropertiesEditor: React.FC = () => {
           <TableBody>
             {props.map(prop => <PropItem key={prop.key} prop={prop} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
           </TableBody>
-        </StyledTable>
+        </BorderedTable>
       </TableContainer>
     </Box>
   );

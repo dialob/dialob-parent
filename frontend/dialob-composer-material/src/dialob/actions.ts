@@ -1,4 +1,4 @@
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString } from "./types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable, Variable } from "./types";
 
 export type ComposerAction =
 	| { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string }
@@ -32,9 +32,11 @@ export type ComposerAction =
 
 	| { type: 'createVariable', context: boolean }
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	| { type: 'updateContextVariable', variableId: string, defaultValue?: any, contextType?: ContextVariableType }
+	| { type: 'updateContextVariable', variableId: string, defaultValue?: any, contextType?: ContextVariableType | string }
 	| { type: 'updateExpressionVariable', variableId: string, expression: string }
+  | { type: 'updateVariablePublishing', variableId: string, published: boolean }
 	| { type: 'deleteVariable', variableId: string }
+  | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
 
 	| { type: 'addLanguage', language: string, copyFrom?: string }
 	| { type: 'deleteLanguage', language: string }

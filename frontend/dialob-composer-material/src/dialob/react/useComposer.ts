@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString } from "../types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable, Variable } from "../types";
 
 export const useComposer = () => {
 	const { state, dispatch } = useContext(ComposerContext);
@@ -100,7 +100,7 @@ export const useComposer = () => {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const updateContextVariable = (variableId: string, contextType: ContextVariableType, defaultValue?: any) => {
+	const updateContextVariable = (variableId: string, contextType: ContextVariableType | string, defaultValue?: any) => {
 		dispatch({ type: 'updateContextVariable', variableId, defaultValue, contextType });
 	}
 
@@ -108,9 +108,17 @@ export const useComposer = () => {
 		dispatch({ type: 'updateExpressionVariable', variableId, expression });
 	}
 
+  const updateVariablePublishing = (variableId: string, published: boolean) => {
+    dispatch({ type: 'updateVariablePublishing', variableId, published });
+  }
+
 	const deleteVariable = (variableId: string) => {
 		dispatch({ type: 'deleteVariable', variableId });
 	}
+
+  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
+    dispatch({ type: 'moveVariable', origin, destination });
+  }
 
 	const addLanguage = (language: string, copyFrom?: string) => {
 		dispatch({ type: 'addLanguage', language, copyFrom });
@@ -146,7 +154,9 @@ export const useComposer = () => {
 		createVariable,
 		updateContextVariable,
 		updateExpressionVariable,
+    updateVariablePublishing,
 		deleteVariable,
+    moveVariable,
 		addLanguage,
 		deleteLanguage,
 		form: state

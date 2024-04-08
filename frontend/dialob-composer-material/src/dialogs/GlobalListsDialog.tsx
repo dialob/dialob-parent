@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { DialobItem, ValueSet, ValueSetEntry, useComposer } from '../dialob';
 import { generateValueSetId } from '../dialob/reducer';
-import { StyledTable } from '../components/TableEditorComponents';
+import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
@@ -46,19 +46,19 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   React.useEffect(() => {
     if (dialogOpen) {
-    const gvs = form.metadata.composer?.globalValueSets;
-    const valueSets = form.valueSets;
-    const mappedGvs = gvs?.map(gvs => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
-      return { ...found, label: gvs.label }
-    });
-    setGlobalValueSets(mappedGvs);
-    if (!currentValueSet) {
-      setCurrentValueSet(mappedGvs?.[0]);
+      const gvs = form.metadata.composer?.globalValueSets;
+      const valueSets = form.valueSets;
+      const mappedGvs = gvs?.map(gvs => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
+        return { ...found, label: gvs.label }
+      });
+      setGlobalValueSets(mappedGvs);
+      if (!currentValueSet) {
+        setCurrentValueSet(mappedGvs?.[0]);
+      }
+      setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
     }
-    setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
-  }
   }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
@@ -172,7 +172,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                   <Button endIcon={<Delete />} color='error' onClick={deleteList}>Delete list</Button>
                 </Box>
                 <TableContainer>
-                  <StyledTable>
+                  <BorderedTable>
                     <TableHead>
                       <TableRow>
                         <TableCell width='20%' align='center'>
@@ -191,7 +191,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                       </TableRow>
                     </TableHead>
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
-                  </StyledTable>
+                  </BorderedTable>
                 </TableContainer>
                 {itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
                   <Typography><ErrorMessage error={error} /></Typography>

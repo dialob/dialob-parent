@@ -28,7 +28,13 @@ const DEMO_ERRORS: EditorError[] = [
     type: 'VALUESET',
     itemId: 'usedChannel',
     expression: 'phone',
-  }
+  },
+  {
+    severity: 'ERROR' as ErrorSeverity,
+    message: 'UNKNOWN_VARIABLE',
+    type: 'VARIABLE',
+    itemId: 'companyMainBL',
+  },
 ];
 
 const INITIAL_EDITOR: EditorState = {

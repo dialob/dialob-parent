@@ -152,6 +152,18 @@ const en = {
   'dialogs.form.options.created': 'Created',
   'dialogs.form.options.saved': 'Saved',
 
+  'dialogs.variables.title': 'Variables',
+  'dialogs.variables.context.title': 'Context variables',
+  'dialogs.variables.expression.title': 'Expression variables',
+  'dialogs.variables.id': 'ID',
+  'dialogs.variables.published': 'Published',
+  'dialogs.variables.description': 'Description',
+  'dialogs.variables.users': 'Users',
+  'dialogs.variables.expression': 'Expression',
+  'dialogs.variables.default': 'Default value',
+  'dialogs.variables.type': 'Type',
+  'dialogs.variables.users.tooltip': 'Show users',
+
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
   'errors.type.VISIBILITY': 'Visibility',

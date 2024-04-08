@@ -2,6 +2,7 @@ import { FolderOpen } from '@mui/icons-material';
 
 export const FALLBACK_LANGUAGE = 'en';
 export const TREE_WIDTH = '300px';
+export const MAX_VARIABLE_DESCRIPTION_LENGTH = 50;
 
 export const PAGE_CONFIG = {
   type: 'group',

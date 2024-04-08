@@ -11,16 +11,11 @@ import Tree, {
 } from '@atlaskit/tree';
 import { DialobItem, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
-import { buildTreeFromForm } from './TreeBuilder';
 import NavigationTreeItem from './NavigationTreeItem';
 import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
+import { INIT_TREE, buildTreeFromForm } from '../../utils/TreeUtils';
 
-
-const INIT_TREE: TreeData = {
-  rootId: 'root',
-  items: {},
-};
 
 const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): boolean => {
   if (!destination) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ValueSetEntry, useComposer } from '../dialob';
 import { TableBody, TableRow, TableCell, TableHead, Typography } from '@mui/material';
-import { StyledTable } from './TableEditorComponents';
+import { BorderedTable } from './TableEditorComponents';
 import { FormattedMessage } from 'react-intl';
 
 const GlobalList: React.FC<{ entries?: ValueSetEntry[] }> = ({ entries }) => {
@@ -13,7 +13,7 @@ const GlobalList: React.FC<{ entries?: ValueSetEntry[] }> = ({ entries }) => {
   }
 
   return (
-    <StyledTable sx={{ mt: 2 }}>
+    <BorderedTable sx={{ mt: 2 }}>
       <TableHead>
         <TableRow>
           <TableCell sx={{ p: 1 }}>
@@ -40,7 +40,7 @@ const GlobalList: React.FC<{ entries?: ValueSetEntry[] }> = ({ entries }) => {
           </TableRow>
         ))}
       </TableBody>
-    </StyledTable>
+    </BorderedTable>
   );
 }
 

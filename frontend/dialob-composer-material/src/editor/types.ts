@@ -3,6 +3,7 @@ import { DialobItem } from "../dialob";
 export type ErrorSeverity = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL';
 export type ConfirmationDialogType = 'duplicate' | 'delete';
 export type OptionsTabType = 'id' | 'label' | 'description' | 'rules' | 'validations' | 'choices' | 'defaults' | 'properties';
+export type VariableTabType = 'context' | 'expression';
 
 export type EditorError = {
   severity: ErrorSeverity;
@@ -21,4 +22,5 @@ export type EditorState = {
   itemOptionsActiveTab?: OptionsTabType;
   highlightedItem?: DialobItem;
   activeList?: string;
+  activeVariableTab?: VariableTabType;
 };
