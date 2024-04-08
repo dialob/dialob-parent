@@ -175,6 +175,10 @@ const en = {
   'dialogs.versioning.list.header.created': 'Created',
   'dialogs.versioning.list.header.actions': 'Actions',
 
+  'dialogs.create.tag.title': 'Create new version tag',
+  'dialogs.create.tag.name': 'Tag name',
+  'dialogs.create.tag.desc': 'Tag description',
+
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',
   'errors.type.VISIBILITY': 'Visibility',
