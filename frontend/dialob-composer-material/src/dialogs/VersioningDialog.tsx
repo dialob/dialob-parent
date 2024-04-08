@@ -1,22 +1,23 @@
 import React from "react";
 import {
   Dialog, DialogTitle, DialogContent, Button, DialogActions, Typography, Box,
-  TableHead, TableRow, TableCell, TableBody, alpha, useTheme, IconButton
+  TableHead, TableRow, TableCell, TableBody, alpha, useTheme, IconButton,
+  Tooltip
 } from "@mui/material";
-import { Close, Download, EditNote, LocalOffer } from "@mui/icons-material";
+import { Close, ContentCopy, Download, EditNote, LocalOffer } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import { ComposerTag, useComposer } from "../dialob";
 import { BorderedTable } from "../components/TableEditorComponents";
 import { downloadForm } from "../utils/ParseUtils";
 
-const LATEST_TAG: ComposerTag = { id: '0', name: 'LATEST', description: 'Latest version', created: new Date().toISOString() };
+const LATEST_TAG: ComposerTag = { id: '00000', name: 'LATEST', description: 'Latest version', created: new Date().toISOString() };
 
 const DEMO_TAGS: ComposerTag[] = [
-  { id: '1', name: 'Tag 1', description: 'Description 1', created: new Date('2024-04-03T15:24:00').toISOString() },
-  { id: '2', name: 'Tag 2', description: 'Description 2', created: new Date('2024-04-04T12:48:00').toISOString() },
-  { id: '3', name: 'Tag 3', description: 'Description 3', created: new Date('2024-04-05T14:32:00').toISOString() },
-  { id: '4', name: 'Tag 4', description: 'Description 4', created: new Date('2024-04-06T19:17:00').toISOString() },
-  { id: '5', name: 'Tag 5', description: 'Description 5', created: new Date('2024-04-07T03:20:00').toISOString() },
+  { id: '11111', name: 'Tag 1', description: 'Description 1', created: new Date('2024-04-03T15:24:00').toISOString() },
+  { id: '22222', name: 'Tag 2', description: 'Description 2', created: new Date('2024-04-04T12:48:00').toISOString() },
+  { id: '33333', name: 'Tag 3', description: 'Description 3', created: new Date('2024-04-05T14:32:00').toISOString() },
+  { id: '44444', name: 'Tag 4', description: 'Description 4', created: new Date('2024-04-06T19:17:00').toISOString() },
+  { id: '55555', name: 'Tag 5', description: 'Description 5', created: new Date('2024-04-07T03:20:00').toISOString() },
 ];
 
 const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
@@ -52,9 +53,17 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
             <TableBody>
               {[LATEST_TAG, ...DEMO_TAGS].map(tag => (
                 <TableRow key={tag.id} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
-                  <TableCell sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
-                    {tag.name === 'LATEST' ? <EditNote fontSize='medium' color='primary' sx={{ mr: 1 }} /> : <LocalOffer fontSize='small' sx={{ mr: 1 }} />}
-                    <Typography>{tag.name}</Typography>
+                  <TableCell>
+                    <Tooltip
+                      title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.id)}>
+                        {tag.id}
+                      </Button>}
+                      placement='left'>
+                      <Box sx={{ display: 'flex', p: 1 }}>
+                        {tag.name === 'LATEST' ? <EditNote fontSize='medium' color='primary' sx={{ mr: 1 }} /> : <LocalOffer fontSize='small' sx={{ mr: 1 }} />}
+                        <Typography>{tag.name}</Typography>
+                      </Box>
+                    </Tooltip>
                   </TableCell>
                   <TableCell sx={{ p: 1 }}><Typography>{tag.description}</Typography></TableCell>
                   <TableCell sx={{ p: 1 }}><Typography>{new Date(tag.created).toLocaleString('en-GB')}</Typography></TableCell>
