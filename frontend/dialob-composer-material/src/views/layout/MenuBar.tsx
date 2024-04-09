@@ -71,7 +71,7 @@ const MenuBar: React.FC = () => {
     setAnchorEl(null);
   }
 
-  const handleInitiatePreview = () => {
+  const handleInitPreview = () => {
     const contextVariables = form.variables?.filter(isContextVariable);
     if (contextVariables && contextVariables.length > 0) {
       setPreviewDialogOpen(true);
@@ -120,7 +120,7 @@ const MenuBar: React.FC = () => {
                 </MenuItem>
               ))}
           </Menu>
-          <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitiatePreview} />
+          <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitPreview} />
           <HeaderIconButton icon={<Close />} />
         </Stack>
       </AppBar>

@@ -1,18 +1,21 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, Table, TableHead, TableRow, TableCell, TableBody, TextField } from "@mui/material";
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography,
+  TableHead, TableRow, TableCell, TableBody, TextField
+} from "@mui/material";
 import { Close, Visibility } from "@mui/icons-material";
 import { isContextVariable, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { BorderedTable } from "../components/TableEditorComponents";
 
 const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, value }) => {
-  const { setMetadataValue } = useComposer();
+  const { setContextValue } = useComposer();
   const [editableValue, setEditableValue] = React.useState<string>(value);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
       if (editableValue !== '' && editableValue !== value) {
-        // update value in metadata
+        setContextValue(name, editableValue)
       }
     }, 1000);
     return () => clearTimeout(id);
@@ -29,9 +32,14 @@ const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, valu
 }
 
 const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
-  const { form, setMetadataValue } = useComposer();
+  const { form } = useComposer();
   const contextValues = form.metadata.composer?.contextValues;
   const contextVariables = form.variables?.filter(isContextVariable);
+
+  const initPreview = () => {
+    // TODO init preview
+    onClose();
+  }
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
@@ -59,7 +67,7 @@ const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open,
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} endIcon={<Visibility />} variant='contained'><FormattedMessage id='buttons.preview' /></Button>
+        <Button onClick={initPreview} endIcon={<Visibility />} variant='contained'><FormattedMessage id='buttons.preview' /></Button>
         <Button onClick={onClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
       </DialogActions>
     </Dialog>
