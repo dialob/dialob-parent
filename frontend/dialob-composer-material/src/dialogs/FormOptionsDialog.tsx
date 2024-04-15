@@ -6,6 +6,7 @@ import {
 import { Close, ContentCopy } from "@mui/icons-material";
 import { VisibilityType, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
+import { version } from "../../package.json";
 
 const visibilityModeOptions = [
   { value: 'ONLY_ENABLED' as VisibilityType, label: 'dialogs.form.options.visibility.ONLY_ENABLED' },
@@ -30,30 +31,39 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const [required, setRequired] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    const visibility = form.metadata?.questionClientVisibility ||
-      (form.metadata?.showDisabled ? 'SHOW_DISABLED' : 'ONLY_ENABLED');
-    setVisibilityMode(visibility);
-    setRequired(form.metadata?.answersRequiredByDefault || false);
-    setLabel(form.metadata?.label);
-  }, [form.metadata]);
+    if (open) {
+      const visibility = form.metadata?.questionClientVisibility ||
+        (form.metadata?.showDisabled ? 'SHOW_DISABLED' : 'ONLY_ENABLED');
+      setVisibilityMode(visibility);
+      setRequired(form.metadata?.answersRequiredByDefault || false);
+      setLabel(form.metadata?.label);
+    }
+  }, [form.metadata, open]);
 
   React.useEffect(() => {
-    if (label) {
+    if (label !== form.metadata?.label && label !== undefined) {
       const id = setTimeout(() => {
         setMetadataValue('label', label);
       }, 1000);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [label, setMetadataValue]);
 
   React.useEffect(() => {
-    if (visibilityMode) {
+    const visibility = form.metadata?.questionClientVisibility ||
+      (form.metadata?.showDisabled ? 'SHOW_DISABLED' : 'ONLY_ENABLED');
+    if (visibilityMode !== visibility && visibilityMode !== undefined) {
       setMetadataValue('questionClientVisibility', visibilityMode);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibilityMode, setMetadataValue]);
 
   React.useEffect(() => {
-    setMetadataValue('answersRequiredByDefault', required);
+    if (required !== form.metadata?.answersRequiredByDefault && required !== undefined) {
+      setMetadataValue('answersRequiredByDefault', required);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [required, setMetadataValue]);
 
   return (
@@ -66,16 +76,16 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography fontWeight='bold'><FormattedMessage id='dialogs.form.options.label' /></Typography>
           <TextField value={label || ''} onChange={(e) => setLabel(e.target.value)} fullWidth />
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.visibility' /></Typography>
-          <Select value={visibilityMode} onChange={(e) => setVisibilityMode(e.target.value as VisibilityType)} fullWidth>
+          <Select value={visibilityMode || ''} onChange={(e) => setVisibilityMode(e.target.value as VisibilityType)} fullWidth>
             {visibilityModeOptions.map(option => <MenuItem key={option.value} value={option.value}>
               <FormattedMessage id={option.label} />
             </MenuItem>)}
           </Select>
-          <Alert severity="info" variant="outlined" sx={{ mt: 2 }}>
+          {visibilityMode !== undefined && <Alert severity="info" variant="outlined" sx={{ mt: 2 }}>
             <Typography>
               <FormattedMessage id={`dialogs.form.options.visibility.${visibilityMode}.desc`} />
             </Typography>
-          </Alert>
+          </Alert>}
           <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
             <Checkbox checked={required} onChange={(e) => setRequired(e.target.checked)} />
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.form.options.required' /></Typography>
@@ -101,6 +111,10 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography>{form?.metadata.created && new Date(form?.metadata.created).toLocaleString('en-GB')}</Typography>
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.saved' /></Typography>
           <Typography>{form?.metadata.lastSaved && new Date(form?.metadata.lastSaved).toLocaleString('en-GB')}</Typography>
+          <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.composer' /></Typography>
+          <Typography>{version}</Typography>
+          <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.backend' /></Typography>
+          <Typography>x.y.z{/* TODO:: get backend version */}</Typography>
         </Box>
       </DialogContent>
       <DialogActions>

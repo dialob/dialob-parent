@@ -37,6 +37,16 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
   const itemErrors = editor.errors.filter(e => e.itemId === currentValueSet?.id);
 
+  const getMappedGvs = () => {
+    const gvs = form.metadata.composer?.globalValueSets;
+    const valueSets = form.valueSets;
+    return gvs?.map(gvs => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
+      return { ...found, label: gvs.label }
+    });
+  }
+
   React.useEffect(() => {
     const activeList = form.valueSets?.find(vs => vs.id === editor.activeList);
     if (activeList) {
@@ -46,13 +56,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   React.useEffect(() => {
     if (dialogOpen) {
-      const gvs = form.metadata.composer?.globalValueSets;
-      const valueSets = form.valueSets;
-      const mappedGvs = gvs?.map(gvs => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
-        return { ...found, label: gvs.label }
-      });
+      const mappedGvs = getMappedGvs();
       setGlobalValueSets(mappedGvs);
       if (!currentValueSet) {
         setCurrentValueSet(mappedGvs?.[0]);
@@ -62,11 +66,15 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
-    if (currentValueSet && name) {
-      const id = setTimeout(() => {
-        setGlobalValueSetName(currentValueSet.id, name);
-      }, 1000);
-      return () => clearTimeout(id);
+    if (currentValueSet !== undefined && name !== undefined && name !== '') {
+      const mappedGvs = getMappedGvs();
+      const gvsName = mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label;
+      if (gvsName !== name) {
+        const id = setTimeout(() => {
+          setGlobalValueSetName(currentValueSet.id, name);
+        }, 1000);
+        return () => clearTimeout(id);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name])

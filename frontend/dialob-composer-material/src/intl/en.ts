@@ -151,6 +151,8 @@ const en = {
   'dialogs.form.options.id': 'Instance ID',
   'dialogs.form.options.created': 'Created',
   'dialogs.form.options.saved': 'Saved',
+  'dialogs.form.options.version.composer': 'Composer version',
+  'dialogs.form.options.version.backend': 'Backend version',
 
   'dialogs.variables.title': 'Variables',
   'dialogs.variables.context.title': 'Context variables',
