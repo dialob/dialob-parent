@@ -89,17 +89,6 @@ const en = {
   'dialogs.options.properties.add': 'Add property',
   'dialogs.options.default.set': 'Set default value',
 
-  'dialogs.rules.requirement.title': '{itemId}: requirement',
-  'dialogs.rules.visibility.title': '{itemId}: visibility',
-  'dialogs.rules.validation.title': '{itemId}: validation',
-  'dialogs.rules.validation.rule': 'Rule {index}',
-  'dialogs.rules.validation.message': 'Message',
-  'dialogs.rules.validation.expression': 'Expression',
-  'dialogs.rules.error': 'Invalid rule: {rule}',
-
-  'dialogs.text.description.title': '{itemId}: description',
-  'dialogs.text.label.title': '{itemId}: label',
-
   'dialogs.upload.valueset.title': 'Upload value set',
   'dialogs.upload.valueset.file': 'Choose file',
   'dialogs.upload.valueset.replace': 'Replace',
@@ -202,6 +191,7 @@ const en = {
   'errors.message.UNKNOWN_REDUCER_OPERATOR': 'Unknown multirow aggregate function',
   'errors.message.OPERATOR_CANNOT_REDUCE_TYPE': 'This aggregate function can\'t be used for this item type',
   'errors.message.UNKNOWN_FUNCTION': 'Undefined function',
+  'errors.invalid.rule': 'Invalid rule: {rule}',
 
 };
 

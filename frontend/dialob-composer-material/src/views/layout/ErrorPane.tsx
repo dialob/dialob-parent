@@ -4,7 +4,6 @@ import { EditorError, VariableTabType, useEditor } from '../../editor';
 import { isContextVariable, useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
-import { FormattedMessage } from 'react-intl';
 import { BoldedMessage } from '../../utils/LocalizationUtils';
 
 
