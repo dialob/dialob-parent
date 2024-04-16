@@ -17,6 +17,7 @@ import { getErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
+import { BoldedMessage } from '../utils/LocalizationUtils';
 
 interface GlobalValueSet {
   id: string;
@@ -63,6 +64,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       }
       setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
@@ -132,16 +134,19 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   return (
     <>
-      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
+      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)}
+        currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography fontWeight='bold'>Global lists</Typography>
+          <Typography fontWeight='bold'><FormattedMessage id='dialogs.lists.global.title' /></Typography>
           <Box flexGrow={1} />
           {globalValueSets && globalValueSets.length > 0 && <>
-            <Typography sx={{ mr: 2 }}>Users: <b>{users ? users.length : 0}</b></Typography>
+            <Typography sx={{ mr: 2 }}><BoldedMessage id='dialogs.lists.global.users' values={{ count: users ? users.length : 0 }} /></Typography>
             {users &&
               <>
-                <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<Visibility />}>Show users</Button>
+                <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<Visibility />}>
+                  <FormattedMessage id='dialogs.lists.global.users.show' />
+                </Button>
                 <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'left',
@@ -160,7 +165,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               </>
             }
           </>}
-          <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}>Add new list</Button>
+          <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}><FormattedMessage id='dialogs.lists.global.add' /></Button>
         </DialogTitle>
         <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0 }}>
           <Box sx={{ display: 'flex', height: '70vh', p: 3 }}>
@@ -177,7 +182,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               <Box sx={{ width: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <TextField value={name || ''} onChange={(e) => setName(e.target.value)} sx={{ width: '70%' }} />
-                  <Button endIcon={<Delete />} color='error' onClick={deleteList}>Delete list</Button>
+                  <Button endIcon={<Delete />} color='error' onClick={deleteList}><FormattedMessage id='dialogs.lists.global.delete' /></Button>
                 </Box>
                 <TableContainer>
                   <BorderedTable>
@@ -192,7 +197,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                         {formLanguages?.map(lang => (
                           <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
                             <Typography fontWeight='bold'>
-                              <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
+                              <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                             </Typography>
                           </TableCell>
                         ))}

@@ -104,11 +104,11 @@ const UploadValuesetDialog: React.FC<{
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
       <DialogTitle>
-        Upload Valueset
+        <FormattedMessage id='dialogs.upload.valueset.title' />
       </DialogTitle>
       <DialogContent>
         <Button variant='contained' color='inherit' startIcon={<Upload />} onClick={() => ref.current?.click()} sx={{ mb: 2 }}>
-          Choose File
+          <FormattedMessage id='dialogs.upload.valueset.file' />
         </Button>
         <input type='file' hidden ref={ref} accept='text/csv' onChange={onFileChange} />
         {selectedFile && <Typography sx={{ mb: 2 }}>{selectedFile.name}</Typography>}

@@ -428,10 +428,8 @@ export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
     >
       {item.activeWhen ?
         <Typography fontFamily='monospace' textTransform='none'>
-          {item.activeWhen.length > MAX_RULE_LENGTH ?
-            item.activeWhen.substring(0, MAX_RULE_LENGTH) + '...' :
-            item.activeWhen
-          }
+          {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+          {item.activeWhen.length > MAX_RULE_LENGTH ? item.activeWhen.substring(0, MAX_RULE_LENGTH) + '...' : item.activeWhen}
         </Typography> :
         <Typography color='text.hint'>
           <FormattedMessage id='buttons.visibility' />

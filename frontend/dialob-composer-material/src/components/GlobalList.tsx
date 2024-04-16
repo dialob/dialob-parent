@@ -21,7 +21,7 @@ const GlobalList: React.FC<{ entries?: ValueSetEntry[] }> = ({ entries }) => {
           </TableCell>
           {formLanguages?.map(lang =>
             <TableCell sx={{ p: 1 }} key={lang}>
-              <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} /></Typography>
+              <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.text' values={{ language: lang }} /></Typography>
             </TableCell>
           )}
         </TableRow>

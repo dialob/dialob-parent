@@ -33,6 +33,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
           </TableCell>
           <TableCell width='33%' sx={{ p: 1 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
               {variable.expression.substring(0, 45) + (variable.expression.length > 45 ? '...' : '')}
               <IconButton><Edit color={expanded ? 'primary' : 'inherit'} onClick={() => setExpanded(!expanded)} /></IconButton>
             </Box>

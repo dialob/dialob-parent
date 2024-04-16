@@ -126,9 +126,8 @@ const MenuBar: React.FC = () => {
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
-            <Typography sx={{ fontWeight: 'bold' }}>
-              Dialob Composer
-            </Typography>
+            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+            <Typography sx={{ fontWeight: 'bold' }}>Dialob Composer</Typography>
             <Typography sx={{ ml: 1 }}>
               {form.metadata.label}
             </Typography>
@@ -154,7 +153,7 @@ const MenuBar: React.FC = () => {
           }} disableAutoFocus disableScrollLock>
             <List sx={{ maxHeight: '50vh', ...SCROLL_SX }}>
               {searchMatches.length === 0 && <MenuItem>
-                <Typography color='text.hint'>Enter search keyword</Typography>
+                <Typography color='text.hint'><FormattedMessage id='search.keyword' /></Typography>
               </MenuItem>}
               {searchMatches
                 .sort((a, b) => a.type.localeCompare(b.type))
@@ -174,7 +173,7 @@ const MenuBar: React.FC = () => {
               .filter((language) => language !== editor.activeFormLanguage)
               .map((language) => (
                 <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
-                  {intl.formatMessage({ id: 'locales.' + language })}
+                  <FormattedMessage id={`locales.${language}`} />
                 </MenuItem>
               ))}
           </Menu>

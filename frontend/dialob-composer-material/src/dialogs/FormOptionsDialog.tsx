@@ -114,7 +114,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.composer' /></Typography>
           <Typography>{version}</Typography>
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.backend' /></Typography>
-          <Typography>x.y.z{/* TODO:: get backend version */}</Typography>
+          <Typography><FormattedMessage id='dialogs.form.options.version.backend' />{/* TODO:: get backend version */}</Typography>
         </Box>
       </DialogContent>
       <DialogActions>

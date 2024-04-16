@@ -15,6 +15,7 @@ import NavigationTreeItem from './NavigationTreeItem';
 import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 import { INIT_TREE, buildTreeFromForm } from '../../utils/TreeUtils';
+import { FormattedMessage } from 'react-intl';
 
 
 const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): boolean => {
@@ -110,8 +111,8 @@ const NavigationTreeView: React.FC = () => {
   return (
     <Box>
       <Paper elevation={3} sx={{ my: 1, p: 1, display: 'flex', justifyContent: 'space-evenly' }}>
-        <Button variant='text' onClick={expandAll} endIcon={<KeyboardArrowDown />}>Expand All</Button>
-        <Button variant='text' onClick={collapseAll} endIcon={<KeyboardArrowRight />}>Collapse All</Button>
+        <Button variant='text' onClick={expandAll} endIcon={<KeyboardArrowDown />}><FormattedMessage id='tree.expand' /></Button>
+        <Button variant='text' onClick={collapseAll} endIcon={<KeyboardArrowRight />}><FormattedMessage id='tree.collapse' /></Button>
       </Paper>
       <Tree
         tree={tree}
