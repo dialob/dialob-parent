@@ -19,7 +19,7 @@ const ChoiceTextEditor: React.FC<{
   }, [entry]);
 
   React.useEffect(() => {
-    if (localizedString) {
+    if (localizedString && localizedString !== entry.label) {
       const id = setTimeout(() => {
         onUpdate(entry, localizedString)
       }, 1000);

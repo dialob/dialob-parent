@@ -39,7 +39,7 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   React.useEffect(() => {
-    if (editor.itemOptionsActiveTab !== undefined) {
+    if (editor.itemOptionsActiveTab) {
       if (editor.itemOptionsActiveTab === 'id') {
         setEditMode(true);
       } else {

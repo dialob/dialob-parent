@@ -41,7 +41,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }, [form.metadata, open]);
 
   React.useEffect(() => {
-    if (label !== form.metadata?.label && label !== undefined) {
+    if (label && label !== form.metadata?.label) {
       const id = setTimeout(() => {
         setMetadataValue('label', label);
       }, 1000);
@@ -53,14 +53,14 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   React.useEffect(() => {
     const visibility = form.metadata?.questionClientVisibility ||
       (form.metadata?.showDisabled ? 'SHOW_DISABLED' : 'ONLY_ENABLED');
-    if (visibilityMode !== visibility && visibilityMode !== undefined) {
+    if (visibilityMode && visibilityMode !== visibility) {
       setMetadataValue('questionClientVisibility', visibilityMode);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibilityMode, setMetadataValue]);
 
   React.useEffect(() => {
-    if (required !== form.metadata?.answersRequiredByDefault && required !== undefined) {
+    if (required && required !== form.metadata?.answersRequiredByDefault) {
       setMetadataValue('answersRequiredByDefault', required);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

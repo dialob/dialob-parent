@@ -51,7 +51,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   }, [ruleCode, intl]);
 
   React.useEffect(() => {
-    if (item && ruleCode) {
+    if (item && ruleCode && ruleCode !== item[resolveRulePropName(type)]) {
       const id = setTimeout(() => {
         updateItem(item.id, resolveRulePropName(type), ruleCode);
         setActiveItem({ ...item, [resolveRulePropName(type)]: ruleCode });

@@ -66,7 +66,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
-    if (currentValueSet !== undefined && name !== undefined && name !== '') {
+    if (currentValueSet && name && name !== '') {
       const mappedGvs = getMappedGvs();
       const gvsName = mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label;
       if (gvsName !== name) {

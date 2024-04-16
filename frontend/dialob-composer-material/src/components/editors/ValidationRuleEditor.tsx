@@ -56,7 +56,8 @@ const ValidationRuleEditor: React.FC = () => {
   }, [activeRule, intl]);
 
   React.useEffect(() => {
-    if (item && activeRule && activeRule.validationRule.rule) {
+    if (item && activeRule && activeRule.validationRule.rule && item.validations?.[activeRule.index] &&
+      activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule) {
       const expression = activeRule.validationRule.rule;
       const id = setTimeout(() => {
         const validations = [...item.validations || []];

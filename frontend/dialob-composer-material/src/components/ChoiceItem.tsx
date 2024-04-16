@@ -44,15 +44,17 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
   const [expanded, setExpanded] = React.useState(false);
 
   React.useEffect(() => {
-    const id = setTimeout(() => {
-      onUpdateId(entry, idValue);
-    }, 1000);
-    return () => clearTimeout(id);
+    if (idValue !== entry.id) {
+      const id = setTimeout(() => {
+        onUpdateId(entry, idValue);
+      }, 1000);
+      return () => clearTimeout(id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idValue]);
 
   React.useEffect(() => {
-    if (rule) {
+    if (rule && rule !== entry.when) {
       const id = setTimeout(() => {
         onRuleEdit(entry, rule);
       }, 1000);
