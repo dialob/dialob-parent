@@ -1,3 +1,4 @@
+import { ChoiceEditor as Choice } from "./ChoiceEditor";
 import { ChoiceTextEditor as ChoiceText } from "./ChoiceTextEditor";
 import { LabelEditor as Label } from "./LabelEditor";
 import { DescriptionEditor as Description } from "./DescriptionEditor";
@@ -7,6 +8,7 @@ import { DefaultValueEditor as Defaults } from "./DefaultValueEditor";
 import { ValidationRuleEditor as Validations } from "./ValidationRuleEditor";
 
 export default {
+  Choice,
   ChoiceText,
   Label,
   Description,

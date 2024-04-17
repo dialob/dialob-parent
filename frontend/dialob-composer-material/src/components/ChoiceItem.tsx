@@ -65,7 +65,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rule]);
 
-
   return (
     <>
       <ChoiceDeleteDialog open={open} itemId={entry.id} onClick={() => onDelete(entry)} onClose={() => setOpen(false)} />
@@ -92,7 +91,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
             <TableCell colSpan={2 + languageNo}>
               <Box sx={{ p: 1 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography color='text.hint' variant='caption'><FormattedMessage id='dialog.options.key' /></Typography>
+                  <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.key' /></Typography>
                   <TextField value={idValue} onChange={(e) => setIdValue(e.target.value)} />
                 </Box>
                 {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
