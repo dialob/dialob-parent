@@ -138,7 +138,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography fontWeight='bold'><FormattedMessage id='dialogs.lists.global.title' /></Typography>
+          <Typography fontWeight='bold' variant='h4'>Global lists</Typography>
           <Box flexGrow={1} />
           {globalValueSets && globalValueSets.length > 0 && <>
             <Typography sx={{ mr: 2 }}><BoldedMessage id='dialogs.lists.global.users' values={{ count: users ? users.length : 0 }} /></Typography>

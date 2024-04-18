@@ -25,7 +25,8 @@ function generateValueSetId(state, prefix) {
 }
 
 function addItem(state, action) {
-  const itemId = generateItemId(state, action.config.type, action.config.view);
+  const viewType = action.idPrefix ? action.idPrefix : action.config.view;
+  const itemId = generateItemId(state, action.config.type, viewType);
   const itemConfig = Immutable.fromJS(Object.assign({id: itemId}, action.config));
   return state.update('data', data => data.set(itemId, itemConfig)
               .update(action.parentItemId, parent => {

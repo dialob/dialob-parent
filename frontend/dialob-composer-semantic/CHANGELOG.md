@@ -1,3 +1,6 @@
+# 2.10.3
+* Added `preAddItem` optional configuration callback method for extensions.
+
 # 2.10.2
 * Improved the TranslationDialog import and download functionality
 

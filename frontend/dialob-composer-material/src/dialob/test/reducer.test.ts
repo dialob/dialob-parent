@@ -872,6 +872,31 @@ test('Set form metadata value', () => {
 	});
 });
 
+test('Set context value, first time', () => {
+	const action: ComposerAction = {
+		type: 'setContextValue',
+		name: 'test',
+		value: 'testing123'
+	};
+	const newState = formReducer(testForm, action);
+  expect(newState.metadata.composer?.contextValues).toBeDefined();
+	expect(newState.metadata.composer?.contextValues?.['test']).toBe('testing123');
+});
+
+test('Set context value', () => {
+	const action: ComposerAction = {
+		type: 'setContextValue',
+		name: 'test2',
+		value: 'testing2-123'
+	};
+	const newState = formReducer(testForm, action);
+  expect(newState.metadata.composer?.contextValues).toBeDefined();
+  console.log('values', Object.entries(newState.metadata.composer?.contextValues || {}))
+  if (newState.metadata.composer?.contextValues) {
+    expect(newState.metadata.composer?.contextValues['test2']).toBe('testing2-123');
+  }
+});
+
 test('Create context variable', () => {
 	const action: ComposerAction = {
 		type: 'createVariable',

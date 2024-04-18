@@ -95,6 +95,10 @@ export const useComposer = () => {
 		dispatch({ type: 'setMetadataValue', attr, value });
 	}
 
+  const setContextValue = (name: string, value: string) => {
+    dispatch({ type: 'setContextValue', name, value });
+  }
+
 	const createVariable = (context: boolean) => {
 		dispatch({ type: 'createVariable', context });
 	}
@@ -128,6 +132,10 @@ export const useComposer = () => {
 		dispatch({ type: 'deleteLanguage', language });
 	}
 
+  const loadVersion = (tagName: string) => {
+    dispatch({ type: 'loadVersion', tagName });
+  }
+
 	return {
 		addItem,
 		updateItem,
@@ -151,6 +159,7 @@ export const useComposer = () => {
 		setGlobalValueSetName,
 		deleteGlobalValueSet,
 		setMetadataValue,
+    setContextValue,
 		createVariable,
 		updateContextVariable,
 		updateExpressionVariable,
@@ -159,6 +168,7 @@ export const useComposer = () => {
     moveVariable,
 		addLanguage,
 		deleteLanguage,
+    loadVersion,
 		form: state
 	};
 

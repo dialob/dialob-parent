@@ -356,6 +356,16 @@ const setMetadataValue = (state: ComposerState, attr: string, value: any): void 
 	state.metadata[attr] = value;
 }
 
+const setContextValue = (state: ComposerState, name: string, value: string): void => {
+  if (state.metadata.composer) {
+    if (!state.metadata.composer?.contextValues) {
+      state.metadata.composer.contextValues = {};
+    }
+    state.metadata.composer.contextValues[name] = value;
+  }
+  console.log('update', name, value, Object.entries(state.metadata.composer?.contextValues || {}))
+}
+
 const createVariable = (state: ComposerState, context: boolean): void => {
 	const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
@@ -509,7 +519,21 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
 	}
 }
 
+const loadVersion = (state: ComposerState, tagName: string): void => {
+  // TODO load tag version from backend
+  if (tagName === 'LATEST') {
+    state._tag = undefined;
+  } else {
+    state._tag = tagName;
+  }
+}
+
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
+  if (state._tag) {
+    // if a version tag is loaded, then it's in read-only mode
+    return state;
+  }
+
 	const newState = produce(state, state => {
 		if (action.type === 'addItem') {
 			addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
@@ -555,6 +579,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			deleteGlobalValueSet(state, action.valueSetId);
 		} else if (action.type === 'setMetadataValue') {
 			setMetadataValue(state, action.attr, action.value);
+    } else if (action.type === 'setContextValue') {
+      setContextValue(state, action.name, action.value);
 		} else if (action.type === 'createVariable') {
 			createVariable(state, action.context);
 		} else if (action.type === 'updateContextVariable') {
@@ -571,7 +597,9 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			addLanguage(state, action.language, action.copyFrom);
 		} else if (action.type === 'deleteLanguage') {
 			deleteLanguage(state, action.language);
-		}
+		} else if (action.type === 'loadVersion') {
+      loadVersion(state, action.tagName);
+    }
 	});
 	// Extension point in procude...
 	return newState;

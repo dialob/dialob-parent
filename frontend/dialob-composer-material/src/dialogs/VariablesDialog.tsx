@@ -28,7 +28,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   return (
     <Dialog open={dialogOpen} onClose={onClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.title' /></Typography>
+        <Typography fontWeight='bold' variant='h4'><FormattedMessage id='dialogs.variables.title' /></Typography>
         <Button variant='outlined' endIcon={<Help />}
           onClick={() => window.open('https://docs.dialob.io/#/200_advanced_operations/700_custom_variables', "_blank")}>
           <FormattedMessage id='help' />

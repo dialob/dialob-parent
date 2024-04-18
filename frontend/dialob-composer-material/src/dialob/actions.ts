@@ -29,6 +29,7 @@ export type ComposerAction =
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	| { type: 'setMetadataValue', attr: string, value: any }
+  | { type: 'setContextValue', name: string, value: string }
 
 	| { type: 'createVariable', context: boolean }
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,3 +41,4 @@ export type ComposerAction =
 
 	| { type: 'addLanguage', language: string, copyFrom?: string }
 	| { type: 'deleteLanguage', language: string }
+  | { type: 'loadVersion', tagName: string }

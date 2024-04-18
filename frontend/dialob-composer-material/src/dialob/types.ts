@@ -74,9 +74,21 @@ export type DialobItems = { [key: string]: DialobItem };
 
 export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
 
+export type ComposerTag = {
+  id: string;
+  name: string;
+  description: string;
+  created: string;
+}
+
+export const isReadOnly = (state: ComposerState): boolean => {
+  return state._tag !== undefined;
+}
+
 export type ComposerState = {
   _id: string;
   _rev: string;
+  _tag?: string;
   name: string;
   data: {
     [item: string]: DialobItem;
@@ -101,8 +113,7 @@ export type ComposerState = {
         valueSetId: string;
       }[];
       contextValues?: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [name: string]: any;
+        [name: string]: string;
       }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
