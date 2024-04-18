@@ -127,7 +127,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography fontWeight='bold'>Global lists</Typography>
+          <Typography fontWeight='bold' variant='h4'>Global lists</Typography>
           <Box flexGrow={1} />
           {globalValueSets && globalValueSets.length > 0 && <>
             <Typography sx={{ mr: 2 }}>Users: <b>{users ? users.length : 0}</b></Typography>
