@@ -25,6 +25,17 @@ export function addItem(config, parentItemId, afterItemId = null) {
   };
 }
 
+export function addItemWithIdPrefix(config, parentItemId, idPrefix, afterItemId = null) {
+  return {
+    type: Actions.ADD_ITEM,
+    config,
+    parentItemId,
+    afterItemId,
+    idPrefix,
+    saveNeeded: true
+  };
+}
+
 export function changeItemType(config, itemId) {
   return {
     type: Actions.CHANGE_ITEM_TYPE,

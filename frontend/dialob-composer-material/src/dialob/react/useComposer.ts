@@ -132,6 +132,10 @@ export const useComposer = () => {
 		dispatch({ type: 'deleteLanguage', language });
 	}
 
+  const loadVersion = (tagName: string) => {
+    dispatch({ type: 'loadVersion', tagName });
+  }
+
 	return {
 		addItem,
 		updateItem,
@@ -164,6 +168,7 @@ export const useComposer = () => {
     moveVariable,
 		addLanguage,
 		deleteLanguage,
+    loadVersion,
 		form: state
 	};
 

@@ -23,6 +23,7 @@ const en = {
   'buttons.delete': 'Delete',
   'buttons.copy.clip': 'Copy to clipboard',
   'buttons.preview': 'Preview',
+  'buttons.activate': 'Activate',
 
   'menus.options': 'Options',
   'menus.description': 'Description',
@@ -32,6 +33,8 @@ const en = {
   'menus.conversions.hint': 'Convert to:',
   'menus.add': 'Add item',
   'menus.insert.below': 'Insert below',
+  'menus.versions.manage': 'Manage versions',
+  'menus.versions.create': 'Create version tag',
 
   'placeholders.group': 'Group label',
   'placeholders.surveygroup': 'Survey group label',
@@ -169,6 +172,18 @@ const en = {
   'dialogs.preview.desc': 'Values for context variables',
   'dialogs.preview.table.id': 'ID',
   'dialogs.preview.table.value': 'Value',
+
+  'dialogs.versioning.title': 'Versioning',
+  'dialogs.versioning.list': 'List of tagged versions',
+  'dialogs.versioning.editable.desc': 'Only the LATEST version is editable',
+  'dialogs.versioning.list.header.name': 'Name',
+  'dialogs.versioning.list.header.description': 'Description',
+  'dialogs.versioning.list.header.created': 'Created',
+  'dialogs.versioning.list.header.actions': 'Actions',
+
+  'dialogs.create.tag.title': 'Create new version tag',
+  'dialogs.create.tag.name': 'Tag name',
+  'dialogs.create.tag.desc': 'Tag description',
 
   'errors.title': 'error',
   'errors.type.VARIABLE': 'Variable',

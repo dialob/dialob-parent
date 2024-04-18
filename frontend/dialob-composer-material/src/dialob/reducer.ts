@@ -519,7 +519,21 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
 	}
 }
 
+const loadVersion = (state: ComposerState, tagName: string): void => {
+  // TODO load tag version from backend
+  if (tagName === 'LATEST') {
+    state._tag = undefined;
+  } else {
+    state._tag = tagName;
+  }
+}
+
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
+  if (state._tag) {
+    // if a version tag is loaded, then it's in read-only mode
+    return state;
+  }
+
 	const newState = produce(state, state => {
 		if (action.type === 'addItem') {
 			addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
@@ -583,7 +597,9 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			addLanguage(state, action.language, action.copyFrom);
 		} else if (action.type === 'deleteLanguage') {
 			deleteLanguage(state, action.language);
-		}
+		} else if (action.type === 'loadVersion') {
+      loadVersion(state, action.tagName);
+    }
 	});
 	// Extension point in procude...
 	return newState;

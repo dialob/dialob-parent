@@ -59,6 +59,7 @@ const DIALOB_COMPOSER_CONFIG = {
   itemTypes: DEFAULT_ITEMTYPE_CONFIG,
   valueSetProps: CUSTOM_VALUESET_PROPS,
   postAddItem: (dispatch, action, lastItem) => {},
+  preAddItem: (dispatch, action) => action,
   closeHandler : () => {}
 };
 ```
@@ -70,7 +71,8 @@ const DIALOB_COMPOSER_CONFIG = {
 * **documentationUrl** - (Optional) URL for user guide documentaion, defaults to `https://docs.dialob.io/`
 * **itemTypes** - Configuration for item types
 * **valueSetProps** - (Optional) configuration for custom properties for valueset entries
-* **postAddItem** - (Optional) callback function that gets called after a new item gets added to a form. Arguments: `dispatch` - Redux dispatch for dispatching additional actions into composer state, `action`- The Redux action that was used for creating the item, `lastItem` - The item that was added (including ID). Use this, for example, to create addtitional form structure depending on the created item, communicate to other parts of application etc.
+* **postAddItem** - (Optional) callback function that gets called after a new item gets added to a form. Arguments: `dispatch` - Redux dispatch for dispatching additional actions into composer state, `action`- The Redux action that was used for creating the item, `lastItem` - The item that was added (including ID). Use this, for example, to create addtitional form structure depending on the created item, communicate to other parts of application etc. 
+* **preAddItem** - (Optional) callback function that gets called before a new item gets added to a form. Arguments: `dispatch` - Redux dispatch for dispatching additional actions into composer state, `action`- The Redux action that was used for creating the item. Return `action`: Return original action for no change in operation, return new or modified action for modifying the behavior, return action with `noop` type to skip.
 * **closeHandler** - JS function that is called when toolbar `X` button is clicked.
 
 ### Item type configuration

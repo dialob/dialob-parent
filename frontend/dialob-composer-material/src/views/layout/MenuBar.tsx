@@ -11,6 +11,9 @@ import TranslationDialog from '../../dialogs/TranslationDialog';
 import FormOptionsDialog from '../../dialogs/FormOptionsDialog';
 import VariablesDialog from '../../dialogs/VariablesDialog';
 import PreviewDialog from '../../dialogs/PreviewDialog';
+import VersioningDialog from '../../dialogs/VersioningDialog';
+import CreateTagDialog from '../../dialogs/CreateTagDialog';
+import { downloadForm } from '../../utils/ParseUtils';
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -54,21 +57,35 @@ const MenuBar: React.FC = () => {
   const { editor, setActiveFormLanguage } = useEditor();
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
+  const currentTag = form._tag ?? 'LATEST';
+  const languageMenuOpen = Boolean(anchorEl);
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
   const [variablesDialogOpen, setVariablesDialogOpen] = React.useState(false);
   const [previewDialogOpen, setPreviewDialogOpen] = React.useState(false);
-  const languageMenuOpen = Boolean(anchorEl);
+  const [versioningDialogOpen, setVersioningDialogOpen] = React.useState(false);
+  const [createTagDialogOpen, setCreateTagDialogOpen] = React.useState(false);
+  const [anchorElLanguage, setAnchorElLanguage] = React.useState<null | HTMLElement>(null);
+  const [anchorElVersion, setAnchorElVersion] = React.useState<null | HTMLElement>(null);
 
   const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElLanguage(event.currentTarget);
   }
 
   const handleLanguageSelect = (languageCode: string) => {
     setActiveFormLanguage(languageCode);
-    setAnchorEl(null);
+    setAnchorElLanguage(null);
+  }
+
+  const handleOpenVersioningDialog = () => {
+    setAnchorElVersion(null);
+    setVersioningDialogOpen(true);
+  }
+
+  const handleOpenCreateTagDialog = () => {
+    setAnchorElVersion(null);
+    setCreateTagDialogOpen(true);
   }
 
   const handleInitPreview = () => {
@@ -87,6 +104,8 @@ const MenuBar: React.FC = () => {
       <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <VariablesDialog open={variablesDialogOpen} onClose={() => setVariablesDialogOpen(false)} />
       <PreviewDialog open={previewDialogOpen} onClose={() => setPreviewDialogOpen(false)} />
+      <VersioningDialog open={versioningDialogOpen} onClose={() => setVersioningDialogOpen(false)} />
+      <CreateTagDialog open={createTagDialogOpen} onClose={() => setCreateTagDialogOpen(false)} />
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
@@ -101,17 +120,27 @@ const MenuBar: React.FC = () => {
           <HeaderButton label='variables' onClick={() => setVariablesDialogOpen(true)} />
           <HeaderButton label='lists' onClick={() => setListsDialogOpen(true)} />
           <HeaderButton label='options' onClick={() => setOptionsDialogOpen(true)} />
-          <HeaderButton label={intl.formatMessage({ id: 'version' }) + ": " + intl.formatMessage({ id: 'version.latest' })} endIcon={<ArrowDropDown />} />
-          <HeaderIconButton icon={<Support fontSize='small' />} />
+          <HeaderButton endIcon={<ArrowDropDown />}
+            label={intl.formatMessage({ id: 'version' }) + ": " + currentTag}
+            onClick={(e) => setAnchorElVersion(e.currentTarget)} />
+          <Menu open={Boolean(anchorElVersion)} anchorEl={anchorElVersion} onClose={() => setAnchorElVersion(null)} disableScrollLock={true}>
+            <MenuItem onClick={handleOpenVersioningDialog}>
+              <FormattedMessage id='menus.versions.manage' />
+            </MenuItem>
+            <MenuItem onClick={handleOpenCreateTagDialog}>
+              <FormattedMessage id='menus.versions.create' />
+            </MenuItem>
+          </Menu>
+          <HeaderIconButton icon={<Support fontSize='small' />} onClick={() => window.open('https://docs.dialob.io/', "_blank")} />
           <Box flexGrow={1} />
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
             <InputBase placeholder={intl.formatMessage({ id: 'search' })} />
             <Search />
           </Box>
-          <HeaderIconButton icon={<Download />} />
+          <HeaderIconButton icon={<Download />} onClick={() => downloadForm(form)} />
           <HeaderIconButton disabled icon={getStatusIcon(editor.errors)} />
           <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
-          <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>
+          <Menu open={Boolean(anchorElLanguage)} anchorEl={anchorElLanguage} onClose={() => setAnchorElLanguage(null)} disableScrollLock={true}>
             {formLanguages
               .filter((language) => language !== editor.activeFormLanguage)
               .map((language) => (
