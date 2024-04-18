@@ -95,6 +95,10 @@ export const useComposer = () => {
 		dispatch({ type: 'setMetadataValue', attr, value });
 	}
 
+  const setContextValue = (name: string, value: string) => {
+    dispatch({ type: 'setContextValue', name, value });
+  }
+
 	const createVariable = (context: boolean) => {
 		dispatch({ type: 'createVariable', context });
 	}
@@ -155,6 +159,7 @@ export const useComposer = () => {
 		setGlobalValueSetName,
 		deleteGlobalValueSet,
 		setMetadataValue,
+    setContextValue,
 		createVariable,
 		updateContextVariable,
 		updateExpressionVariable,

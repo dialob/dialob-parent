@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Box, Divider, InputBase, Stack, Typography, useTheme, Button, Menu, MenuItem, styled } from '@mui/material';
 import { ArrowDropDown, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useComposer } from '../../dialob';
+import { isContextVariable, useComposer } from '../../dialob';
 import { getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH } from '../../theme/siteTheme';
@@ -10,6 +10,7 @@ import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
 import TranslationDialog from '../../dialogs/TranslationDialog';
 import FormOptionsDialog from '../../dialogs/FormOptionsDialog';
 import VariablesDialog from '../../dialogs/VariablesDialog';
+import PreviewDialog from '../../dialogs/PreviewDialog';
 import VersioningDialog from '../../dialogs/VersioningDialog';
 import CreateTagDialog from '../../dialogs/CreateTagDialog';
 import { downloadForm } from '../../utils/ParseUtils';
@@ -57,10 +58,12 @@ const MenuBar: React.FC = () => {
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const currentTag = form._tag ?? 'LATEST';
+  const languageMenuOpen = Boolean(anchorEl);
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
   const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
   const [variablesDialogOpen, setVariablesDialogOpen] = React.useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = React.useState(false);
   const [versioningDialogOpen, setVersioningDialogOpen] = React.useState(false);
   const [createTagDialogOpen, setCreateTagDialogOpen] = React.useState(false);
   const [anchorElLanguage, setAnchorElLanguage] = React.useState<null | HTMLElement>(null);
@@ -85,12 +88,22 @@ const MenuBar: React.FC = () => {
     setCreateTagDialogOpen(true);
   }
 
+  const handleInitPreview = () => {
+    const contextVariables = form.variables?.filter(isContextVariable);
+    if (contextVariables && contextVariables.length > 0) {
+      setPreviewDialogOpen(true);
+    } else {
+      // TODO initiate preview
+    }
+  }
+
   return (
     <>
       <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
       <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
       <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <VariablesDialog open={variablesDialogOpen} onClose={() => setVariablesDialogOpen(false)} />
+      <PreviewDialog open={previewDialogOpen} onClose={() => setPreviewDialogOpen(false)} />
       <VersioningDialog open={versioningDialogOpen} onClose={() => setVersioningDialogOpen(false)} />
       <CreateTagDialog open={createTagDialogOpen} onClose={() => setCreateTagDialogOpen(false)} />
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
@@ -136,7 +149,7 @@ const MenuBar: React.FC = () => {
                 </MenuItem>
               ))}
           </Menu>
-          <HeaderIconButton icon={<Visibility fontSize='small' />} />
+          <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitPreview} />
           <HeaderIconButton icon={<Close />} />
         </Stack>
       </AppBar>

@@ -356,6 +356,16 @@ const setMetadataValue = (state: ComposerState, attr: string, value: any): void 
 	state.metadata[attr] = value;
 }
 
+const setContextValue = (state: ComposerState, name: string, value: string): void => {
+  if (state.metadata.composer) {
+    if (!state.metadata.composer?.contextValues) {
+      state.metadata.composer.contextValues = {};
+    }
+    state.metadata.composer.contextValues[name] = value;
+  }
+  console.log('update', name, value, Object.entries(state.metadata.composer?.contextValues || {}))
+}
+
 const createVariable = (state: ComposerState, context: boolean): void => {
 	const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
@@ -569,6 +579,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			deleteGlobalValueSet(state, action.valueSetId);
 		} else if (action.type === 'setMetadataValue') {
 			setMetadataValue(state, action.attr, action.value);
+    } else if (action.type === 'setContextValue') {
+      setContextValue(state, action.name, action.value);
 		} else if (action.type === 'createVariable') {
 			createVariable(state, action.context);
 		} else if (action.type === 'updateContextVariable') {
