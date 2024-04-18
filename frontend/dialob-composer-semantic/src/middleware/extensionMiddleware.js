@@ -10,6 +10,10 @@ export const extensionMiddleware = store => {
     }
 
     // PRE callbacks
+    if (action.type === Actions.ADD_ITEM && config.preAddItem) {
+      action = config.preAddItem(store.dispatch, action);
+    }
+
     let result = next(action);
     // POST callbacks
     if (action.type === Actions.ADD_ITEM && config.postAddItem) {
