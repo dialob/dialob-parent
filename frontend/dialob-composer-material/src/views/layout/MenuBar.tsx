@@ -193,7 +193,7 @@ const MenuBar: React.FC = () => {
           }} disableAutoFocus disableScrollLock>
             <List sx={{ maxHeight: '50vh', ...SCROLL_SX }}>
               {searchMatches.length === 0 && <MenuItem>
-                <Typography color='text.hint'><FormattedMessage id='search.keyword' /></Typography>
+                <Typography color='text.hint'><FormattedMessage id='search.hint' /></Typography>
               </MenuItem>}
               {searchMatches
                 .sort((a, b) => a.type.localeCompare(b.type))

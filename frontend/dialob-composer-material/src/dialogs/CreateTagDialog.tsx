@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const [name, setName] = React.useState<string | undefined>();
   const [desc, setDesc] = React.useState<string | undefined>();
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>
