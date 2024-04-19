@@ -39,7 +39,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
       const invalid = Math.random() < 0.5;
       if (invalid) {
         const id = setTimeout(() => {
-          setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: ruleCode })]);
+          setErrors([intl.formatMessage({ id: 'errors.invalid.rule' }, { rule: ruleCode })]);
         }, 1000);
         return () => clearTimeout(id);
       } else {
@@ -51,7 +51,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   }, [ruleCode, intl]);
 
   React.useEffect(() => {
-    if (item && ruleCode) {
+    if (item && ruleCode && ruleCode !== item[resolveRulePropName(type)]) {
       const id = setTimeout(() => {
         updateItem(item.id, resolveRulePropName(type), ruleCode);
         setActiveItem({ ...item, [resolveRulePropName(type)]: ruleCode });

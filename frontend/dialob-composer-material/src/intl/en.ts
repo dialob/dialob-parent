@@ -11,10 +11,15 @@ const en = {
   'version': 'Version',
   'version.latest': 'LATEST',
   'search': 'Search',
+  'search.hint': 'Enter search keyword',
   'preview': 'Preview',
   'help': 'Help',
+  'add': 'Add',
 
   'page.label': 'Page label',
+
+  'tree.expand': 'Expand all',
+  'tree.collapse': 'Collapse all',
 
   'buttons.visibility': 'Visibility',
   'buttons.cancel': 'Cancel',
@@ -77,34 +82,23 @@ const en = {
   'dialogs.options.description.add': 'Add description translation',
   'dialogs.options.key': 'Key',
   'dialogs.options.value': 'Value',
-  'dialogs.options.text': 'Text',
+  'dialogs.options.text': 'Text - {language}',
   'dialogs.options.rule': 'Rule',
   'dialogs.options.rules.requirement': 'Requirement',
   'dialogs.options.rules.visibility': 'Visibility',
   'dialogs.options.validations.rule.tab': 'Rule {index}',
   'dialogs.options.validations.rule.delete': 'Delete rule',
   'dialogs.options.validations.rule.add': 'Add rule',
-  'dialogs.options.validations.add': 'Add message translation',
   'dialogs.options.choices.text.add': 'Add choice translation',
   'dialogs.options.choices.convert.local': 'Convert to local list',
   'dialogs.options.choices.convert.global': 'Convert to global list',
   'dialogs.options.choices.edit.global': 'Edit global list',
   'dialogs.options.choices.create.local': 'Create local list',
+  'dialogs.options.choices.create.global': 'Create global list',
   'dialogs.options.choices.select.global': 'Select global list',
   'dialogs.options.choices.divider': 'OR',
   'dialogs.options.properties.add': 'Add property',
   'dialogs.options.default.set': 'Set default value',
-
-  'dialogs.rules.requirement.title': '{itemId}: requirement',
-  'dialogs.rules.visibility.title': '{itemId}: visibility',
-  'dialogs.rules.validation.title': '{itemId}: validation',
-  'dialogs.rules.validation.rule': 'Rule {index}',
-  'dialogs.rules.validation.message': 'Message',
-  'dialogs.rules.validation.expression': 'Expression',
-  'dialogs.rules.error': 'Invalid rule: {rule}',
-
-  'dialogs.text.description.title': '{itemId}: description',
-  'dialogs.text.label.title': '{itemId}: label',
 
   'dialogs.upload.valueset.title': 'Upload value set',
   'dialogs.upload.valueset.file': 'Choose file',
@@ -155,6 +149,8 @@ const en = {
   'dialogs.form.options.id': 'Instance ID',
   'dialogs.form.options.created': 'Created',
   'dialogs.form.options.saved': 'Saved',
+  'dialogs.form.options.version.composer': 'Composer version',
+  'dialogs.form.options.version.backend': 'Backend version',
 
   'dialogs.variables.title': 'Variables',
   'dialogs.variables.context.title': 'Context variables',
@@ -168,6 +164,11 @@ const en = {
   'dialogs.variables.type': 'Type',
   'dialogs.variables.users.tooltip': 'Show users',
 
+  'dialogs.lists.global.title': 'Global lists',
+  'dialogs.lists.global.users': 'Users: <b>{count}</b>',
+  'dialogs.lists.global.users.show': 'Show users',
+  'dialogs.lists.global.add': 'Add new list',
+  'dialogs.lists.global.delete': 'Delete list',
   'dialogs.preview.title': 'Preview',
   'dialogs.preview.desc': 'Values for context variables',
   'dialogs.preview.table.id': 'ID',
@@ -186,6 +187,7 @@ const en = {
   'dialogs.create.tag.desc': 'Tag description',
 
   'errors.title': 'error',
+  'errors.at': ' at <b>{itemId}</b>',
   'errors.type.VARIABLE': 'Variable',
   'errors.type.VISIBILITY': 'Visibility',
   'errors.type.DEFAULT_VALUE': 'Default value',
@@ -216,6 +218,7 @@ const en = {
   'errors.message.UNKNOWN_REDUCER_OPERATOR': 'Unknown multirow aggregate function',
   'errors.message.OPERATOR_CANNOT_REDUCE_TYPE': 'This aggregate function can\'t be used for this item type',
   'errors.message.UNKNOWN_FUNCTION': 'Undefined function',
+  'errors.invalid.rule': 'Invalid rule: {rule}',
 
 };
 

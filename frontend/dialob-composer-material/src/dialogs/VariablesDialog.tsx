@@ -45,7 +45,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} endIcon={<Close />}>Close</Button>
+        <Button onClick={handleClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
       </DialogActions>
     </Dialog>
   )

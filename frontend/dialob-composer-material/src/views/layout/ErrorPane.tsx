@@ -4,6 +4,7 @@ import { EditorError, VariableTabType, useEditor } from '../../editor';
 import { isContextVariable, useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
+import { BoldedMessage } from '../../utils/LocalizationUtils';
 
 
 const errorCardBorderColor = (severity: string) => {
@@ -59,7 +60,7 @@ const ErrorPane: React.FC = () => {
             <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.severity) }}>
               <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
               <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>
-              {error.itemId && <Typography component='span' variant='subtitle2'> at <b>{error.itemId}</b></Typography>}
+              {error.itemId && <Typography component='span' variant='subtitle2'><BoldedMessage id='errors.at' values={{ itemId: error.itemId }} /></Typography>}
             </CardContent>
           </CardActionArea>
         </Card>

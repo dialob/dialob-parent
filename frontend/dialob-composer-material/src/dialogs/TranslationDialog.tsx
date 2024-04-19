@@ -31,7 +31,7 @@ const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} endIcon={<Close />}>Close</Button>
+        <Button onClick={onClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
       </DialogActions>
     </Dialog>
   );

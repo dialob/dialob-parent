@@ -1,7 +1,6 @@
-import { DialobItem } from "../dialob";
+import { ContextVariable, DialobItem, Variable } from "../dialob";
 
-// dummy implementation to check for string matches, will be replaced by a backend implementation
-export const matchByKeyword = (item: DialobItem, languages?: string[], keyword?: string) => {
+export const matchItemByKeyword = (item: DialobItem, languages?: string[], keyword?: string) => {
   if (!keyword || !languages) {
     return true;
   }
@@ -21,6 +20,20 @@ export const matchByKeyword = (item: DialobItem, languages?: string[], keyword?:
       (validation.rule && validation.rule.toLowerCase().includes(keyword.toLowerCase())))) {
       return true;
     }
+  }
+  return false;
+}
+
+export const matchVariableByKeyword = (variable: ContextVariable | Variable, keyword?: string) => {
+  if (!keyword) {
+    return true;
+  }
+  if (variable.name.toLowerCase().includes(keyword.toLowerCase())) {
+    return true;
+  } else if ((variable as ContextVariable).defaultValue?.toLowerCase().includes(keyword.toLowerCase())) {
+    return true;
+  } else if ((variable as Variable).expression?.toLowerCase().includes(keyword.toLowerCase())) {
+    return true;
   }
   return false;
 }

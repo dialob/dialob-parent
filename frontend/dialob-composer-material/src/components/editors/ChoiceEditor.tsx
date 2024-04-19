@@ -1,7 +1,10 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Add, Download, Edit, KeyboardArrowDown, Refresh, Upload, Warning } from '@mui/icons-material';
-import { Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem, Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem,
+  Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography
+} from '@mui/material';
 import { useEditor } from '../../editor';
 import { ValueSet, useComposer } from '../../dialob';
 import { generateValueSetId } from '../../dialob/reducer';
@@ -111,7 +114,8 @@ const ChoiceEditor: React.FC = () => {
 
   return (
     <>
-      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
+      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
+        currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <ConvertConfirmationDialog
         type={dialogType}
         onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
@@ -145,7 +149,7 @@ const ChoiceEditor: React.FC = () => {
                 setAnchorEl(null);
               }}>
                 <Add fontSize='small' color='success' />
-                <Typography>Add new list</Typography>
+                <Typography><FormattedMessage id='dialogs.options.choices.create.global' /></Typography>
               </ListItemButton>
             </List>
           </Popover>
@@ -162,11 +166,13 @@ const ChoiceEditor: React.FC = () => {
                   <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
                   <IconButton onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
                 </TableCell>
-                <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+                <TableCell width='30%' sx={{ p: 1 }}>
+                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography>
+                </TableCell>
                 {formLanguages?.map(lang => (
                   <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
                     <Typography fontWeight='bold'>
-                      <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
+                      <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                     </Typography>
                   </TableCell>
                 ))}

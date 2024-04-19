@@ -10,7 +10,7 @@ import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
 import { TreeItem } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
-import { matchByKeyword } from '../../utils/SearchUtils';
+import { matchItemByKeyword } from '../../utils/SearchUtils';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -145,7 +145,7 @@ export const ExpressionField: React.FC<{ variable: Variable }> = ({ variable }) 
 export const UsersField: React.FC<{ variable: ContextVariable | Variable, onClose: () => void }> = ({ variable, onClose }) => {
   const { form } = useComposer();
   const { editor, setHighlightedItem, setActivePage } = useEditor();
-  const users = Object.values(form.data).filter(item => matchByKeyword(item, form.metadata.languages, variable.name));
+  const users = Object.values(form.data).filter(item => matchItemByKeyword(item, form.metadata.languages, variable.name));
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const handleScroll = (item: DialobItem) => {

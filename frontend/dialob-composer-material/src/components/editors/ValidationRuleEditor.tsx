@@ -44,7 +44,7 @@ const ValidationRuleEditor: React.FC = () => {
       const invalid = Math.random() < 0.5;
       if (invalid) {
         const id = setTimeout(() => {
-          setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: activeRule.validationRule.rule })]);
+          setErrors([intl.formatMessage({ id: 'errors.invalid.rule' }, { rule: activeRule.validationRule.rule })]);
         }, 1000);
         return () => clearTimeout(id);
       } else {
@@ -56,7 +56,8 @@ const ValidationRuleEditor: React.FC = () => {
   }, [activeRule, intl]);
 
   React.useEffect(() => {
-    if (item && activeRule && activeRule.validationRule.rule) {
+    if (item && activeRule && activeRule.validationRule.rule && item.validations?.[activeRule.index] &&
+      activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule) {
       const expression = activeRule.validationRule.rule;
       const id = setTimeout(() => {
         const validations = [...item.validations || []];
