@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -9,5 +9,37 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script th:if="${appConfig}" th:inline="javascript" defer>
+      var appConfig = /*[[${appConfig}]]*/ {};
+      
+      var apiUrlOverride = "%VITE_DIALOB_API_URL%";
+  
+      if (appConfig.formId === undefined && !apiUrlOverride.startsWith("%")) {
+        console.log("LocalMode", apiUrlOverride, appConfig);
+        const urlParams = new URLSearchParams(window.location.search);
+        const formId = urlParams.get("id");
+        
+        console.log("Local Form ID: ", formId);
+        
+        appConfig = {
+            backend_api_url: apiUrlOverride,
+            formId,
+          filling_app_url: 'http://localhost:3001/#',
+          credentialMode: 'omit'
+        };
+      }
+      
+      // Wait for deferred module load
+      function checkRender() {
+        if (window.renderDialobComposer === undefined) {
+          console.log("Check...");
+          window.setTimeout(checkRender, 1000);
+        } else {
+          window.renderDialobComposer(document.getElementById("root"), appConfig);
+        }
+      }
+          
+      checkRender();
+    </script>
   </body>
 </html>

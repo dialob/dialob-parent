@@ -492,7 +492,12 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
 	}
 }
 
-export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
+const setRevision = (state: ComposerState, revision: string): void => {
+	state._rev = revision;
+}
+
+export const  formReducer =  (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {	
+	console.log('Action', action);
 	const newState = produce(state, state => {
 		if (action.type === 'addItem') {
 			addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
@@ -550,8 +555,23 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 			addLanguage(state, action.language, action.copyFrom);
 		} else if (action.type === 'deleteLanguage') {
 			deleteLanguage(state, action.language);
+		} else if (action.type === 'setRevision') {
+			console.log('>> SET REV', action.revision);
+			setRevision(state, action.revision);
 		}
 	});
-	// Extension point in procude...
+
+	/*
+	const onSave = callbacks?.onSave;
+	if (onSave) {
+		onSave(newState)
+			.then(revision => {
+				return produce(newState, state => {
+					setRevision(state, revision);
+				});
+			});		
+	}
+	*/
+	
 	return newState;
 }

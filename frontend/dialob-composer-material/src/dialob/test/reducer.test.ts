@@ -138,6 +138,29 @@ test('Update item, normal existing value', () => {
 	expect(newState.data.tenantAdminLastName.required).toBe(false);
 });
 
+/* TODO: Temporarily switched off
+test('Update item, onUpdate callback', () => {
+	const action: ComposerAction = {
+		type: 'updateItem',
+		itemId: 'tenantAdminLastName',
+		attribute: 'required',
+		value: false
+	};
+
+	const callbacks: ComposerCallbacks = {
+		onUpdate: (_state: ComposerState) => {
+			console.log('onUpdate called!');
+		}
+	}
+
+	jest.spyOn(callbacks, 'onUpdate');
+
+	const newState = formReducer(testForm, action, callbacks);
+	expect(newState.data.tenantAdminLastName.required).toBe(false);
+	expect(callbacks.onUpdate).toHaveBeenCalled();
+});
+*/
+
 test('Update item, normal existing language value', () => {
 	const action: ComposerAction = {
 		type: 'updateItem',
