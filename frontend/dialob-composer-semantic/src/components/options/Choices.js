@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Button, Dropdown, Form, Divider} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {isGlobalValueSet} from '../../helpers/utils';
-import {createValueset, updateItem, makeValuesetGlobal, copyValuesetLocal} from '../../actions';
+import {createValueset, updateItem, makeValuesetGlobal, copyValuesetLocal, deleteValueset} from '../../actions';
 import ValueSetEditor from '../ValueSetEditor';
 
 class Choices extends Component {
@@ -35,7 +35,10 @@ class Choices extends Component {
       return (
         <React.Fragment>
           <ValueSetEditor valueSetId={this.props.item.get('valueSetId')} />
-          <Button onClick={() => this.props.makeValuesetGlobal(this.props.item.get('valueSetId'))}>Make Global</Button>
+          <div style={{paddingTop: '10px'}}>
+            <Button onClick={() => this.props.makeValuesetGlobal(this.props.item.get('valueSetId'))}>Make Global</Button>
+            <Button onClick={() => this.props.deleteValueset(this.props.item.get('id'))}>Delete</Button>
+          </div>
         </React.Fragment>
       );
     }
@@ -49,7 +52,8 @@ const ChoicesConnected = connect(
     createValueset,
     updateItem,
     makeValuesetGlobal,
-    copyValuesetLocal
+    copyValuesetLocal,
+    deleteValueset
   }
 )(Choices);
 

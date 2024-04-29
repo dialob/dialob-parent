@@ -108,6 +108,15 @@ export function createValueset(forItem = null, entries = null) {
   };
 }
 
+export function deleteValueset(itemId) {
+  return {
+    type: Actions.DELETE_VALUESET,
+    itemId,
+    confirm: true,
+    saveNeeded: true
+  };
+}
+
 export function makeValuesetGlobal(valueSetId) {
   return {
     type: Actions.MAKE_VALUESET_GLOBAL,
