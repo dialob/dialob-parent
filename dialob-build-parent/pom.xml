@@ -68,9 +68,9 @@
     <logback.version>1.4.14</logback.version>
     <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
     <mockito.version>5.11.0</mockito.version>
-    <spring-boot.version>3.2.4</spring-boot.version>
-    <spring-integration.version>6.2.2</spring-integration.version>
-    <spring-security.version>6.2.3</spring-security.version>
+    <spring-boot.version>3.2.5</spring-boot.version>
+    <spring-integration.version>6.2.4</spring-integration.version>
+    <spring-security.version>6.2.4</spring-security.version>
     <spring-session.version>3.2.2</spring-session.version>
     <swagger.version>2.2.21</swagger.version>
     <validation-api.version>3.0.2</validation-api.version>
