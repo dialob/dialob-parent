@@ -34,8 +34,9 @@ export const useReducerWithMiddleware = (reducer: React.Reducer<ComposerState, C
 
   useEffect(() => {
     if (actionRef.current !== undefined) {
-      postMiddlewares.forEach(mw => mw(actionRef.current, state, dispatch)); 
-    } 
+      postMiddlewares.forEach(mw => mw(actionRef.current, state, dispatch));
+      actionRef.current = undefined;
+    }
   }, [postMiddlewares, state]);
 
   const dispatchUsingMiddleware = (action: ComposerAction) => {
@@ -60,7 +61,7 @@ export const ComposerProvider: React.FC<ComposerProviderProps> = ({ children, fo
 
 }
 */
-export const ComposerProvider: React.FC<ComposerProviderProps> = ({ children, formData, preMiddleware, postMiddleware}) => {
+export const ComposerProvider: React.FC<ComposerProviderProps> = ({ children, formData, preMiddleware, postMiddleware }) => {
   const [state, dispatch] = useReducerWithMiddleware(formReducer, formData, preMiddleware, postMiddleware);
 
   return (
