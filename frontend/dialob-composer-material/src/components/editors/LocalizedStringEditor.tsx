@@ -28,7 +28,7 @@ const LocalizedStringEditor: React.FC<{
   }, [item, rule, type]);
 
   React.useEffect(() => {
-    if (item && localizedString) {
+    if (item && localizedString && localizedString !== (type === 'validations' ? rule?.validationRule.message : item[type])) {
       const id = setTimeout(() => {
         updateLocalizedString(item.id, type, localizedString, rule?.index);
         if (type === 'validations' && rule && setRule && item) {

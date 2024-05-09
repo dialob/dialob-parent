@@ -39,7 +39,7 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   React.useEffect(() => {
-    if (editor.itemOptionsActiveTab !== undefined) {
+    if (editor.itemOptionsActiveTab) {
       if (editor.itemOptionsActiveTab === 'id') {
         setEditMode(true);
       } else {
@@ -68,7 +68,7 @@ const ItemOptionsDialog: React.FC = () => {
           )
         }} /> :
           <Button variant='text' sx={{ color: 'inherit', textTransform: 'none' }} endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
-            <Typography variant='h5' fontWeight='bold'>{id}</Typography>
+            <Typography variant='h4' fontWeight='bold'>{id}</Typography>
           </Button>}
         <Box flexGrow={1} />
         <StyledButtonContainer>

@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString } from "../types";
+import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable, Variable } from "../types";
 
 export const useComposer = () => {
 	const { state, dispatch } = useContext(ComposerContext);
@@ -95,12 +95,16 @@ export const useComposer = () => {
 		dispatch({ type: 'setMetadataValue', attr, value });
 	}
 
+  const setContextValue = (name: string, value: string) => {
+    dispatch({ type: 'setContextValue', name, value });
+  }
+
 	const createVariable = (context: boolean) => {
 		dispatch({ type: 'createVariable', context });
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const updateContextVariable = (variableId: string, contextType: ContextVariableType, defaultValue?: any) => {
+	const updateContextVariable = (variableId: string, contextType: ContextVariableType | string, defaultValue?: any) => {
 		dispatch({ type: 'updateContextVariable', variableId, defaultValue, contextType });
 	}
 
@@ -108,9 +112,17 @@ export const useComposer = () => {
 		dispatch({ type: 'updateExpressionVariable', variableId, expression });
 	}
 
+  const updateVariablePublishing = (variableId: string, published: boolean) => {
+    dispatch({ type: 'updateVariablePublishing', variableId, published });
+  }
+
 	const deleteVariable = (variableId: string) => {
 		dispatch({ type: 'deleteVariable', variableId });
 	}
+
+  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
+    dispatch({ type: 'moveVariable', origin, destination });
+  }
 
 	const addLanguage = (language: string, copyFrom?: string) => {
 		dispatch({ type: 'addLanguage', language, copyFrom });
@@ -119,6 +131,10 @@ export const useComposer = () => {
 	const deleteLanguage = (language: string) => {
 		dispatch({ type: 'deleteLanguage', language });
 	}
+
+  const loadVersion = (tagName: string) => {
+    dispatch({ type: 'loadVersion', tagName });
+  }
 
 	return {
 		addItem,
@@ -143,12 +159,16 @@ export const useComposer = () => {
 		setGlobalValueSetName,
 		deleteGlobalValueSet,
 		setMetadataValue,
+    setContextValue,
 		createVariable,
 		updateContextVariable,
 		updateExpressionVariable,
+    updateVariablePublishing,
 		deleteVariable,
+    moveVariable,
 		addLanguage,
 		deleteLanguage,
+    loadVersion,
 		form: state
 	};
 

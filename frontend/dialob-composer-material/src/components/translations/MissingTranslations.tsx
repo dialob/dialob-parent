@@ -50,6 +50,7 @@ const MissingTranslationsCategory: React.FC<{ type: TranslationType, translation
         <LanguagesTable>
           <TableHead>
             <TableRow>
+              {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
               <TableCell width='70%' sx={{ fontWeight: 'bold' }}>ID</TableCell>
               {languages.map(lang => (
                 <TableCell key={lang} align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id={`locales.${lang}`} /></TableCell>

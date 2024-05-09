@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { EditorContext } from "./EditorContext";
 import { DialobItem } from "../../dialob";
-import { ConfirmationDialogType, EditorError, OptionsTabType } from "../types";
+import { ConfirmationDialogType, EditorError, OptionsTabType, VariableTabType } from "../types";
 
 export const useEditor = () => {
   const { state, dispatch } = useContext(EditorContext);
@@ -42,6 +42,10 @@ export const useEditor = () => {
     dispatch({ type: 'setActiveList', listId });
   }
 
+  const setActiveVariableTab = (tab?: VariableTabType): void => {
+    dispatch({ type: 'setActiveVariableTab', tab });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -53,5 +57,6 @@ export const useEditor = () => {
     setItemOptionsActiveTab,
     setHighlightedItem,
     setActiveList,
+    setActiveVariableTab,
   };
 }

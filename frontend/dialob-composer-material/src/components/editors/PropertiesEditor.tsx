@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { useEditor } from '../../editor'
-import { StyledTable } from '../TableEditorComponents';
+import { BorderedTable } from '../TableEditorComponents';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import PropItem from '../PropItem';
@@ -54,15 +54,15 @@ const PropertiesEditor: React.FC = () => {
 
   return (
     <Box>
-      <Typography>Add property</Typography>
+      <Typography><FormattedMessage id='dialogs.options.properties.add' /></Typography>
       <Box sx={{ display: 'flex', mb: 2, mt: 1 }}>
         <TextField variant='outlined' value={newProp} onChange={(e) => setNewProp(e.target.value)} />
         <Button color='inherit' variant='contained' onClick={() => handleAddProp()} sx={{ ml: 2 }} disabled={newProp === ''}>
-          <Typography sx={{ px: 2 }}>Add</Typography>
+          <Typography sx={{ px: 2 }}><FormattedMessage id='add' /></Typography>
         </Button>
       </Box>
       <TableContainer>
-        <StyledTable>
+        <BorderedTable>
           <TableHead>
             <TableRow>
               <TableCell width='10%' />
@@ -73,7 +73,7 @@ const PropertiesEditor: React.FC = () => {
           <TableBody>
             {props.map(prop => <PropItem key={prop.key} prop={prop} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
           </TableBody>
-        </StyledTable>
+        </BorderedTable>
       </TableContainer>
     </Box>
   );

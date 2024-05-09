@@ -25,7 +25,8 @@ function generateValueSetId(state, prefix) {
 }
 
 function addItem(state, action) {
-  const itemId = generateItemId(state, action.config.type, action.config.view);
+  const viewType = action.idPrefix ? action.idPrefix : action.config.view;
+  const itemId = generateItemId(state, action.config.type, viewType);
   const itemConfig = Immutable.fromJS(Object.assign({id: itemId}, action.config));
   return state.update('data', data => data.set(itemId, itemConfig)
               .update(action.parentItemId, parent => {
@@ -98,6 +99,22 @@ function newValueSet(state, itemId = null, entries = null) {
       }
     });
   }
+
+  return newState;
+}
+
+function deleteValueset(state, itemId) {
+  const valueSetId = state.getIn(['data', itemId, 'valueSetId']);
+  const globalValueSets = state.getIn(['metadata', 'composer', 'globalValueSets']);
+
+  if (!valueSetId || isGlobalValueSet(globalValueSets, valueSetId)) {
+    // Skip if valueSetId is not set or is a global valueset
+    return state;
+  }
+  
+  let newState = state;
+  newState = newState.update('valueSets', v => v.delete(v.findIndex(i => i.get('id') === valueSetId)));
+  newState = newState.deleteIn(['data', itemId, 'valueSetId']);
 
   return newState;
 }
@@ -362,6 +379,8 @@ export function formReducer(state = INITIAL_STATE, action) {
       return deleteItem(state, action.itemId);
     case Actions.CREATE_VALUESET:
       return newValueSet(state, action.forItem, action.entries);
+    case Actions.DELETE_VALUESET:
+      return deleteValueset(state, action.itemId);
     case Actions.MAKE_VALUESET_GLOBAL:
       return makeValuesetGlobal(state, action.valueSetId);
     case Actions.COPY_VALUESET_LOCAL:

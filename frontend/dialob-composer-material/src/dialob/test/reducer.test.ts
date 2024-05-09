@@ -895,6 +895,31 @@ test('Set form metadata value', () => {
 	});
 });
 
+test('Set context value, first time', () => {
+	const action: ComposerAction = {
+		type: 'setContextValue',
+		name: 'test',
+		value: 'testing123'
+	};
+	const newState = formReducer(testForm, action);
+  expect(newState.metadata.composer?.contextValues).toBeDefined();
+	expect(newState.metadata.composer?.contextValues?.['test']).toBe('testing123');
+});
+
+test('Set context value', () => {
+	const action: ComposerAction = {
+		type: 'setContextValue',
+		name: 'test2',
+		value: 'testing2-123'
+	};
+	const newState = formReducer(testForm, action);
+  expect(newState.metadata.composer?.contextValues).toBeDefined();
+  console.log('values', Object.entries(newState.metadata.composer?.contextValues || {}))
+  if (newState.metadata.composer?.contextValues) {
+    expect(newState.metadata.composer?.contextValues['test2']).toBe('testing2-123');
+  }
+});
+
 test('Create context variable', () => {
 	const action: ComposerAction = {
 		type: 'createVariable',
@@ -983,6 +1008,36 @@ test('Update expression variable', () => {
 	}
 });
 
+test('Publish variable', () => {
+	const action: ComposerAction = {
+		type: 'updateVariablePublishing',
+		variableId: 'companyMainBL',
+		published: true
+	}
+	const newState = formReducer(testForm, action);
+	expect(newState.variables).toBeDefined();
+	if (newState.variables) {
+		const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
+		expect(vIndex).toBeGreaterThan(-1);
+		expect(newState.variables[vIndex].published).toBe(true);
+	}
+});
+
+test('Unpublish variable', () => {
+	const action: ComposerAction = {
+		type: 'updateVariablePublishing',
+		variableId: 'companyMainBL',
+		published: false
+	}
+	const newState = formReducer(testForm, action);
+	expect(newState.variables).toBeDefined();
+	if (newState.variables) {
+		const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
+		expect(vIndex).toBeGreaterThan(-1);
+		expect(newState.variables[vIndex].published).toBe(false);
+	}
+});
+
 test('Delete variable', () => {
 	const action: ComposerAction = {
 		type: 'deleteVariable',
@@ -994,6 +1049,31 @@ test('Delete variable', () => {
 		expect(newState.variables.length).toEqual(4);
 		const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
 		expect(vIndex).toEqual(-1);
+	}
+});
+
+test('Move variable (swap)', () => {
+  expect(testForm.variables).toBeDefined();
+  const originIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyName');
+  expect(originIndex).toBeGreaterThan(-1);
+  const origin = testForm.variables[originIndex];
+  const destinationIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyID');
+  expect(destinationIndex).toBeGreaterThan(-1);
+  const destination = testForm.variables[destinationIndex];
+	const action: ComposerAction = {
+		type: 'moveVariable',
+		origin: origin, 
+    destination: destination
+	}
+	const newState = formReducer(testForm, action);
+	expect(newState.variables).toBeDefined();
+	if (newState.variables) {
+		const nameIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyName');
+    expect(nameIndex).toBeGreaterThan(-1);
+		expect(nameIndex).toBe(destinationIndex);
+    const idIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyID');
+    expect(idIndex).toBeGreaterThan(-1);
+    expect(idIndex).toBe(originIndex);
 	}
 });
 

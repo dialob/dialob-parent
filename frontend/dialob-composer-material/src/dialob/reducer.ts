@@ -356,10 +356,20 @@ const setMetadataValue = (state: ComposerState, attr: string, value: any): void 
 	state.metadata[attr] = value;
 }
 
+const setContextValue = (state: ComposerState, name: string, value: string): void => {
+  if (state.metadata.composer) {
+    if (!state.metadata.composer?.contextValues) {
+      state.metadata.composer.contextValues = {};
+    }
+    state.metadata.composer.contextValues[name] = value;
+  }
+  console.log('update', name, value, Object.entries(state.metadata.composer?.contextValues || {}))
+}
+
 const createVariable = (state: ComposerState, context: boolean): void => {
 	const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
-	const variable = context ? {
+	const variable: ContextVariable | Variable = context ? {
 		name: variableId,
 		context: true,
 		contextType: 'text'
@@ -376,7 +386,7 @@ const createVariable = (state: ComposerState, context: boolean): void => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType, defaultValue?: any): void => {
+const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType | string, defaultValue?: any): void => {
 	if (state.variables) {
 		const varIdx = state.variables.findIndex(v => isContextVariable(v) && v.name === variableId);
 		if (varIdx > -1) {
@@ -406,6 +416,23 @@ const deleteVariable = (state: ComposerState, variableId: string): void => {
 			state.variables.splice(varIdx, 1);
 		}
 	}
+}
+
+const updateVariablePublishing = (state: ComposerState, variableId: string, published: boolean): void => {
+	if (state.variables) {
+		const varIdx = state.variables.findIndex(v => v.name === variableId);
+		if (varIdx > -1) {
+			(state.variables[varIdx]).published = published;
+		}
+	}
+}
+
+const moveVariable = (state: ComposerState, origin: ContextVariable | Variable, destination: ContextVariable | Variable): void => {
+  const originIdx = state.variables?.findIndex(v => v.name === origin.name);
+  const destinationIdx = state.variables?.findIndex(v => v.name === destination.name);
+  if (originIdx !== undefined && destinationIdx !== undefined && originIdx > -1 && destinationIdx > -1 && state.variables) {
+    [state.variables[originIdx], state.variables[destinationIdx]] = [state.variables[destinationIdx], state.variables[originIdx]];
+  }
 }
 
 const addLanguage = (state: ComposerState, language: string, copyFrom?: string): void => {
@@ -496,8 +523,21 @@ const setRevision = (state: ComposerState, revision: string): void => {
 	state._rev = revision;
 }
 
-export const  formReducer =  (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {	
-	console.log('Action', action);
+const loadVersion = (state: ComposerState, tagName: string): void => {
+  // TODO load tag version from backend
+  if (tagName === 'LATEST') {
+    state._tag = undefined;
+  } else {
+    state._tag = tagName;
+  }
+}
+
+export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
+  if (state._tag) {
+    // if a version tag is loaded, then it's in read-only mode
+    return state;
+  }
+
 	const newState = produce(state, state => {
 		if (action.type === 'addItem') {
 			addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
@@ -543,14 +583,20 @@ export const  formReducer =  (state: ComposerState, action: ComposerAction, call
 			deleteGlobalValueSet(state, action.valueSetId);
 		} else if (action.type === 'setMetadataValue') {
 			setMetadataValue(state, action.attr, action.value);
+    } else if (action.type === 'setContextValue') {
+      setContextValue(state, action.name, action.value);
 		} else if (action.type === 'createVariable') {
 			createVariable(state, action.context);
 		} else if (action.type === 'updateContextVariable') {
 			updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
 		} else if (action.type === 'updateExpressionVariable') {
 			updateExpressionVariable(state, action.variableId, action.expression);
+    } else if (action.type === 'updateVariablePublishing') {
+      updateVariablePublishing(state, action.variableId, action.published);
 		} else if (action.type === 'deleteVariable') {
 			deleteVariable(state, action.variableId);
+    } else if (action.type === 'moveVariable') {
+      moveVariable(state, action.origin, action.destination);
 		} else if (action.type === 'addLanguage') {
 			addLanguage(state, action.language, action.copyFrom);
 		} else if (action.type === 'deleteLanguage') {
@@ -558,7 +604,9 @@ export const  formReducer =  (state: ComposerState, action: ComposerAction, call
 		} else if (action.type === 'setRevision') {
 			console.log('>> SET REV', action.revision);
 			setRevision(state, action.revision);
-		}
+		} else if (action.type === 'loadVersion') {
+      loadVersion(state, action.tagName);
+    }
 	});
 
 	/*

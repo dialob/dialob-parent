@@ -8,6 +8,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { LocalizedString, ValueSetEntry, useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import Editors from "./editors";
+import { FormattedMessage } from "react-intl";
 
 
 export interface ChoiceItemProps {
@@ -28,6 +29,7 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
     return <></>;
   }
   if (localizedLabel.length > MAX_CHOICE_LABEL_LENGTH) {
+    // eslint-disable-next-line formatjs/no-literal-string-in-jsx
     return <Typography>{localizedLabel.substring(0, MAX_CHOICE_LABEL_LENGTH) + '...'}</Typography>;
   }
   return <Typography>{localizedLabel}</Typography>;
@@ -44,15 +46,17 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
   const [expanded, setExpanded] = React.useState(false);
 
   React.useEffect(() => {
-    const id = setTimeout(() => {
-      onUpdateId(entry, idValue);
-    }, 1000);
-    return () => clearTimeout(id);
+    if (idValue !== entry.id) {
+      const id = setTimeout(() => {
+        onUpdateId(entry, idValue);
+      }, 1000);
+      return () => clearTimeout(id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idValue]);
 
   React.useEffect(() => {
-    if (rule) {
+    if (rule && rule !== entry.when) {
       const id = setTimeout(() => {
         onRuleEdit(entry, rule);
       }, 1000);
@@ -60,7 +64,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rule]);
-
 
   return (
     <>
@@ -88,11 +91,11 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
             <TableCell colSpan={2 + languageNo}>
               <Box sx={{ p: 1 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography color='text.hint' variant='caption'>Key</Typography>
+                  <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.key' /></Typography>
                   <TextField value={idValue} onChange={(e) => setIdValue(e.target.value)} />
                 </Box>
                 {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
-                  <Typography color='text.hint' variant='caption'>Visbility rule</Typography>
+                  <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
                   <CodeMirror value={rule || ''} onChange={(value) => setRule(value)} extensions={[javascript({ jsx: true })]} />
                 </Box>}
                 <Box sx={{ mt: 2 }}>

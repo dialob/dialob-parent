@@ -16,13 +16,10 @@
 package io.dialob.security.spring.oauth2;
 
 import io.dialob.security.spring.apikey.Constants;
-import io.dialob.security.spring.oauth2.model.Group;
 import io.dialob.security.spring.oauth2.model.User;
-
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 
-import java.util.List;
 import java.util.Optional;
 
 @CacheConfig(cacheNames = Constants.CACHE_NAME)
@@ -30,11 +27,5 @@ public interface UsersAndGroupsService {
 
   @Cacheable
   Optional<User> findUser(String userId);
-
-  @Cacheable
-  Optional<Group> findGroup(String groupId);
-
-  @Cacheable
-  List<Group> findGroupByName(String groupName);
 
 }

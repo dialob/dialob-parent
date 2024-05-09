@@ -3,12 +3,8 @@ import Tree, { moveItemOnTree, TreeData, TreeSourcePosition, TreeDestinationPosi
 import { TableBody, TableCell, TableRow } from "@mui/material";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
 import ChoiceItem, { ChoiceItemProps } from "./ChoiceItem";
+import { INIT_TREE, buildTreeFromValueSet } from "../utils/TreeUtils";
 
-
-const INIT_TREE: TreeData = {
-  rootId: 'root',
-  items: {},
-};
 
 const renderItem = (props: ChoiceItemProps) => {
   const { item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal } = props;
@@ -16,24 +12,6 @@ const renderItem = (props: ChoiceItemProps) => {
     <ChoiceItem item={item} provided={provided} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
       onDelete={onDelete} onUpdateId={onUpdateId} isGlobal={isGlobal} />
   );
-}
-
-const buildTreeFromValueSet = (valueSet?: ValueSet): TreeData => {
-  if (!valueSet) {
-    return { rootId: 'root', items: {} };
-  }
-  const items = valueSet.entries.map((entry) => ({
-    id: entry.id,
-    children: [],
-    data: entry,
-  }));
-  return {
-    rootId: 'root',
-    items: {
-      root: { id: 'root', children: items.map(i => i.id), data: undefined },
-      ...Object.fromEntries(items.map(i => [i.id, i]))
-    }
-  };
 }
 
 const ChoiceList: React.FC<{

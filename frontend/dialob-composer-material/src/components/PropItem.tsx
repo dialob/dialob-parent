@@ -12,7 +12,7 @@ const PropItem: React.FC<{
   const [value, setValue] = React.useState<string>(prop.value || '');
 
   React.useEffect(() => {
-    if (value !== '') {
+    if (value !== '' && value !== prop.value) {
       const id = setTimeout(() => {
         onEdit(prop.key, value);
       }, 1000);

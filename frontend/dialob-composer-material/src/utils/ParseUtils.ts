@@ -1,4 +1,4 @@
-import { ValueSet } from "../dialob";
+import { ComposerState, ValueSet } from "../dialob";
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 
@@ -20,6 +20,18 @@ export const downloadValueSet = (valueSet?: ValueSet) => {
   const csv = Papa.unparse(result);
   const blob = new Blob([csv], { type: 'text/csv' });
   FileSaver.saveAs(blob, `valueSet-${valueSet.id}.csv`);
+}
+
+export const downloadForm = (form: ComposerState, tagName?: string) => {
+  if (tagName === 'LATEST' || tagName === undefined) {
+    // download current form
+    const json = JSON.stringify(form, null,  2);
+    const blob = new Blob([json], {type: 'application/json;charset=utf-8'});
+    FileSaver.saveAs(blob, `${form._id}.json`);
+  } else {
+    // download specific tag
+    // TODO get tag from backend and then download
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

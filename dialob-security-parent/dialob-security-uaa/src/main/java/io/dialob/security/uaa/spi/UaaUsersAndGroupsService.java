@@ -15,26 +15,19 @@
  */
 package io.dialob.security.uaa.spi;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-
 import io.dialob.security.spring.oauth2.UsersAndGroupsService;
 import io.dialob.security.spring.oauth2.model.Group;
 import io.dialob.security.spring.oauth2.model.ImmutableGroup;
 import io.dialob.security.spring.oauth2.model.ImmutableUser;
 import io.dialob.security.spring.oauth2.model.User;
-import io.dialob.security.uaa.spi.model.UaaGroup;
 import io.dialob.security.uaa.spi.model.UaaUser;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 
+import java.util.Optional;
+
+@Slf4j
 public class UaaUsersAndGroupsService extends UaaServiceBase implements UsersAndGroupsService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(UaaUsersAndGroupsService.class);
 
   public UaaUsersAndGroupsService(final @NonNull UaaClient uaaClient) {
     super(uaaClient);
@@ -66,34 +59,4 @@ public class UaaUsersAndGroupsService extends UaaServiceBase implements UsersAnd
     });
   }
 
-  @Override
-  public Optional<Group> findGroup(final String groupId) {
-    LOGGER.debug("findGroup('{}')", groupId);
-    if (groupId == null) {
-      return Optional.empty();
-    }
-    return get(client -> client.getGroup(groupId))
-      .map(this::mapToGroup);
-  }
-
-  @Override
-  public List<Group> findGroupByName(String groupName) {
-    LOGGER.debug("findGroupByName('{}')", groupName);
-    if (groupName == null) {
-      return Collections.emptyList();
-    }
-    return list(client -> client.findGroupsByDisplayName(groupName).getResources()).stream()
-      .map(this::mapToGroup)
-      .collect(Collectors.toList());
-  }
-
-  private Group mapToGroup(UaaGroup group) {
-    return ImmutableGroup
-      .builder()
-      .id(group.getId())
-      .name(group.getDisplayName())
-      .addAllMembers(group.getMembers().stream()
-        .map(UaaGroup.Member::getValue)::iterator) // map id to userName?
-      .build();
-  }
 }

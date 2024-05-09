@@ -16,7 +16,7 @@ export type ContextVariable = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   context: boolean;
-  contextType: string; // TODO: ContextVariableType -- contextType is valid only when context === true, how to define this type in TS?
+  contextType: ContextVariableType | string;
 };
 
 export const isContextVariable = (variable: ContextVariable | Variable): variable is ContextVariable => (variable as ContextVariable).context === true;
@@ -74,9 +74,21 @@ export type DialobItems = { [key: string]: DialobItem };
 
 export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
 
+export type ComposerTag = {
+  id: string;
+  name: string;
+  description: string;
+  created: string;
+}
+
+export const isReadOnly = (state: ComposerState): boolean => {
+  return state._tag !== undefined;
+}
+
 export type ComposerState = {
   _id: string;
   _rev: string;
+  _tag?: string;
   name: string;
   data: {
     [item: string]: DialobItem;
@@ -100,6 +112,9 @@ export type ComposerState = {
         label?: string;
         valueSetId: string;
       }[];
+      contextValues?: {
+        [name: string]: string;
+      }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;

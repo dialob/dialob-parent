@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { DialobItem, ValueSet, ValueSetEntry, useComposer } from '../dialob';
 import { generateValueSetId } from '../dialob/reducer';
-import { StyledTable } from '../components/TableEditorComponents';
+import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
@@ -17,6 +17,7 @@ import { getErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
+import { BoldedMessage } from '../utils/LocalizationUtils';
 
 interface GlobalValueSet {
   id: string;
@@ -37,6 +38,16 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
   const itemErrors = editor.errors.filter(e => e.itemId === currentValueSet?.id);
 
+  const getMappedGvs = () => {
+    const gvs = form.metadata.composer?.globalValueSets;
+    const valueSets = form.valueSets;
+    return gvs?.map(gvs => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
+      return { ...found, label: gvs.label }
+    });
+  }
+
   React.useEffect(() => {
     const activeList = form.valueSets?.find(vs => vs.id === editor.activeList);
     if (activeList) {
@@ -46,27 +57,26 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   React.useEffect(() => {
     if (dialogOpen) {
-    const gvs = form.metadata.composer?.globalValueSets;
-    const valueSets = form.valueSets;
-    const mappedGvs = gvs?.map(gvs => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
-      return { ...found, label: gvs.label }
-    });
-    setGlobalValueSets(mappedGvs);
-    if (!currentValueSet) {
-      setCurrentValueSet(mappedGvs?.[0]);
+      const mappedGvs = getMappedGvs();
+      setGlobalValueSets(mappedGvs);
+      if (!currentValueSet) {
+        setCurrentValueSet(mappedGvs?.[0]);
+      }
+      setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
     }
-    setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
-    if (currentValueSet && name) {
-      const id = setTimeout(() => {
-        setGlobalValueSetName(currentValueSet.id, name);
-      }, 1000);
-      return () => clearTimeout(id);
+    if (currentValueSet && name && name !== '') {
+      const mappedGvs = getMappedGvs();
+      const gvsName = mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label;
+      if (gvsName !== name) {
+        const id = setTimeout(() => {
+          setGlobalValueSetName(currentValueSet.id, name);
+        }, 1000);
+        return () => clearTimeout(id);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name])
@@ -124,16 +134,19 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   return (
     <>
-      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
+      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)}
+        currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography fontWeight='bold'>Global lists</Typography>
+          <Typography fontWeight='bold' variant='h4'><FormattedMessage id='dialogs.lists.global.title' /></Typography>
           <Box flexGrow={1} />
           {globalValueSets && globalValueSets.length > 0 && <>
-            <Typography sx={{ mr: 2 }}>Users: <b>{users ? users.length : 0}</b></Typography>
+            <Typography sx={{ mr: 2 }}><BoldedMessage id='dialogs.lists.global.users' values={{ count: users ? users.length : 0 }} /></Typography>
             {users &&
               <>
-                <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<Visibility />}>Show users</Button>
+                <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<Visibility />}>
+                  <FormattedMessage id='dialogs.lists.global.users.show' />
+                </Button>
                 <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'left',
@@ -152,7 +165,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               </>
             }
           </>}
-          <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}>Add new list</Button>
+          <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}><FormattedMessage id='dialogs.lists.global.add' /></Button>
         </DialogTitle>
         <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0 }}>
           <Box sx={{ display: 'flex', height: '70vh', p: 3 }}>
@@ -169,10 +182,10 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               <Box sx={{ width: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <TextField value={name || ''} onChange={(e) => setName(e.target.value)} sx={{ width: '70%' }} />
-                  <Button endIcon={<Delete />} color='error' onClick={deleteList}>Delete list</Button>
+                  <Button endIcon={<Delete />} color='error' onClick={deleteList}><FormattedMessage id='dialogs.lists.global.delete' /></Button>
                 </Box>
                 <TableContainer>
-                  <StyledTable>
+                  <BorderedTable>
                     <TableHead>
                       <TableRow>
                         <TableCell width='20%' align='center'>
@@ -184,14 +197,14 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                         {formLanguages?.map(lang => (
                           <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
                             <Typography fontWeight='bold'>
-                              <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
+                              <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                             </Typography>
                           </TableCell>
                         ))}
                       </TableRow>
                     </TableHead>
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
-                  </StyledTable>
+                  </BorderedTable>
                 </TableContainer>
                 {itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
                   <Typography><ErrorMessage error={error} /></Typography>
