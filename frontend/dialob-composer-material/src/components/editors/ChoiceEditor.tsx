@@ -203,7 +203,7 @@ const ChoiceEditor: React.FC = () => {
       </Box>
       }
       {
-        itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+        itemErrors.map((error, index) => <Alert key={index} severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
           <Typography><ErrorMessage error={error} /></Typography>
         </Alert>)
       }

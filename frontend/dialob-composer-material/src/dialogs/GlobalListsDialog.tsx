@@ -206,7 +206,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
                   </BorderedTable>
                 </TableContainer>
-                {itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+                {itemErrors.map((error, index) => <Alert key={index} severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
                   <Typography><ErrorMessage error={error} /></Typography>
                 </Alert>)}
               </Box>

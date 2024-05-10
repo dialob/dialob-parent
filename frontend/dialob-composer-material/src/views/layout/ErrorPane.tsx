@@ -57,7 +57,7 @@ const ErrorPane: React.FC = () => {
       {editor.errors.map(error => (
         <Card key={error.itemId} sx={{ mb: 2 }}>
           <CardActionArea onClick={() => handleClick(error)}>
-            <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.severity) }}>
+            <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.level) }}>
               <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
               <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>
               {error.itemId && <Typography component='span' variant='subtitle2'><BoldedMessage id='errors.at' values={{ itemId: error.itemId }} /></Typography>}

@@ -6,11 +6,13 @@ export type OptionsTabType = 'id' | 'label' | 'description' | 'rules' | 'validat
 export type VariableTabType = 'context' | 'expression';
 
 export type EditorError = {
-  severity: ErrorSeverity;
+  level: ErrorSeverity;
   message: string;
   type: string;
   itemId?: string;
   expression?: string;
+  startIndex?: number;
+  endIndex?: number;
 };
 
 export type EditorState = {

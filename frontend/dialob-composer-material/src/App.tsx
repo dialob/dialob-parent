@@ -1,13 +1,14 @@
+import React from 'react';
 import { ComposerProvider, ComposerState } from './dialob'
-import { EditorProvider } from './editor';
+import { useEditor } from './editor';
 import { IntlProvider } from 'react-intl';
 import messages from './intl';
 import ComposerLayoutView from './views/ComposerLayoutView';
-import { Dispatch, useCallback, useContext } from 'react';
-import { BackendContext } from './backend/BackendContext';
+import { Dispatch } from 'react';
 import { CircularProgress, Grid } from '@mui/material';
 import { Middleware } from './dialob/react/ComposerContext';
 import { ComposerAction } from './dialob/actions';
+import { useBackend } from './backend/useBackend';
 
 const ProgressSplash: React.FC = () => {
   return (
@@ -27,38 +28,22 @@ const ProgressSplash: React.FC = () => {
 }
 
 function App() {
-  const backendContext = useContext(BackendContext);
-
-  /*
-  async function saveForm(form: ComposerState): Promise<string> {
-    console.log("Update trigger");
-    try {
-      const saveResult = await backendContext.saveForm(form);
-      console.log("save result", saveResult);
-      return Promise.resolve(saveResult)
-    } catch (error) {
-      console.error("Save error", error);
-    }
-  }
-  */
+  const { form, loaded, saveForm } = useBackend();
+  const { setErrors } = useEditor();
 
   async function saveFormMiddleware(action: ComposerAction | undefined, state: ComposerState, dispatch: Dispatch<ComposerAction>) {
     if (action !== undefined && action.type !== 'setRevision') {
-      console.log('OLD REV', state._rev);
-      console.log('Action', action);
-      backendContext.saveForm(state)
-        .then(saveResult => {
-          if (saveResult.success && saveResult.result)  {
-            // backendContext.setErrors();          
-            console.log('NEW REV', saveResult.result.rev);
-            dispatch({ type: 'setRevision', revision: saveResult.result?.rev });
-          }  
+      saveForm(state)
+        .then(saveResponse => {
+          if (saveResponse.success && saveResponse.result) {
+            setErrors(saveResponse.result.errors);
+            dispatch({ type: 'setRevision', revision: saveResponse.result?.rev });
+          }
         });
     }
   }
 
-
-  if (backendContext.form === null || !backendContext.loaded) {
+  if (form === null || !loaded) {
     return (
       <ProgressSplash />
     );
@@ -67,30 +52,16 @@ function App() {
   const preMiddleware: Middleware[] = [];
 
   const postMiddleware: Middleware[] = [
-   saveFormMiddleware // Remove this to disable saving
+    saveFormMiddleware,
   ];
 
   return (
-    <ComposerProvider formData={backendContext.form} preMiddleware={preMiddleware} postMiddleware={postMiddleware}>
-      <EditorProvider>
-        <IntlProvider locale='en' messages={messages['en']}>
-          <ComposerLayoutView />
-        </IntlProvider>
-      </EditorProvider>
+    <ComposerProvider formData={form} preMiddleware={preMiddleware} postMiddleware={postMiddleware}>
+      <IntlProvider locale='en' messages={messages['en']}>
+        <ComposerLayoutView />
+      </IntlProvider>
     </ComposerProvider>
   )
-
-  /*
-  return (
-    <ComposerProvider formData={backendContext.form} callbacks={{onSave: saveForm}}>
-      <EditorProvider>
-        <IntlProvider locale='en' messages={messages['en']}>
-          <ComposerLayoutView />
-        </IntlProvider>
-      </EditorProvider>
-    </ComposerProvider>
-  )
-  */
 }
 
 export default App;

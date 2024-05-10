@@ -1,43 +1,50 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App  from './App'
+import App from './App'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { siteTheme } from './theme/siteTheme'
-import { BackendProvider, DialobComposerConfig } from './backend/BackendContext'
+import { BackendProvider } from './backend/BackendContext'
+import { EditorProvider } from './editor'
+import { AppConfig, DialobComposerConfig } from './backend/types'
 
 
-
-const renderDialobComposer = (targetElement: HTMLElement, appConfig: any) => { // TODO typings?
+const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) => {
 
   const FORM_ID = appConfig.formId;
 
   const DIALOB_COMPOSER_CONFIG: DialobComposerConfig = {
-  transport: {
-    csrf: appConfig.csrfHeader ? {
-      headerName: appConfig.csrfHeader,
-      token: appConfig.csrf
-    } : undefined,
-    apiUrl: appConfig.backend_api_url,
-    // previewUrl: appConfig.filling_app_url,
-    tenantId: appConfig.tenantId || undefined,
-    credentialMode: appConfig.credentialMode || undefined
-  },
- 
- // closeHandler : () => window.location.href = appConfig.adminAppUrl
-};
+    transport: {
+      csrf: appConfig.csrfHeader ? {
+        headerName: appConfig.csrfHeader,
+        token: appConfig.csrf
+      } : undefined,
+      apiUrl: appConfig.backend_api_url,
+      // previewUrl: appConfig.filling_app_url,
+      tenantId: appConfig.tenantId || undefined,
+      credentialMode: appConfig.credentialMode || undefined
+    },
+
+    // closeHandler : () => window.location.href = appConfig.adminAppUrl
+  };
 
   ReactDOM.createRoot(targetElement!).render(
     <React.StrictMode>
       <ThemeProvider theme={siteTheme}>
         <CssBaseline />
         <BackendProvider config={DIALOB_COMPOSER_CONFIG.transport} formId={FORM_ID}>
-          <App />
+          <EditorProvider>
+            <App />
+          </EditorProvider>
         </BackendProvider>
       </ThemeProvider>
     </React.StrictMode>,
   )
-
 };
 
-// @ts-ignore
+declare global {
+  interface Window {
+    renderDialobComposer: (targetElement: HTMLElement, appConfig: AppConfig) => void;
+  }
+}
+
 window.renderDialobComposer = renderDialobComposer;

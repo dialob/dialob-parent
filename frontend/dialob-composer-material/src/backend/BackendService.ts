@@ -1,50 +1,6 @@
 import { ComposerState } from "../dialob";
+import { SaveResult, SaveFormResponse, TransportConfig } from "./types";
 
-export interface TransportConfig {
-  csrf?: {
-    headerName: string;
-    token: string;
-  };
-  apiUrl: string;
-  tenantId?: string;
-  credentialMode?: RequestCredentials;
-}
-
-export interface ApiSaveResult {
-  ok: boolean;
-  id: string;
-  rev: string;
-  errors: any; // TODO type
-}
-
-/* 
-  "errors": [
-        {
-            "itemId": "group8",
-            "message": "SYNTAX_ERROR",
-            "level": "ERROR",
-            "type": "VISIBILITY",
-            "startIndex": 1,
-            "endIndex": 1
-        },
-        {
-            "itemId": "group8",
-            "message": "SYNTAX_ERROR",
-            "level": "ERROR",
-            "type": "VISIBILITY",
-            "startIndex": 2,
-            "endIndex": 2
-        }
-    ]
-*/
-
-export interface SaveResult {
-  result?: ApiSaveResult;
-  success: boolean;
-  apiError?: string
-}
-
-// TODO: This service needs rewrite when things start to work...
 
 export class BackendService {
   private config: TransportConfig;
@@ -57,22 +13,25 @@ export class BackendService {
 
   private prepareFormsUrl(formId: string, formTag: string | undefined): string {
     const baseUrl = new URL(`${this.config.apiUrl}/forms/${formId}`);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: Record<string, any> = new URLSearchParams();
-  
+
+    // eslint-disable-next-line no-extra-boolean-cast
     if (!!formTag) {
       params.append('rev', formTag);
     }
-    
+
+    // eslint-disable-next-line no-extra-boolean-cast
     if (!!this.config.tenantId) {
       params.append('tenantId', this.config.tenantId);
     }
-  
+
     baseUrl.search = params.toString();
-    
+
     return baseUrl.toString();
   }
 
-  private async storeForm(formData: ComposerState): Promise<ApiSaveResult> {
+  private async storeForm(formData: ComposerState): Promise<SaveResult> {
     const headers: Record<string, string> = {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -81,7 +40,7 @@ export class BackendService {
       headers[this.config.csrf.headerName] = this.config.csrf.token;
     }
 
-    let options: RequestInit = {
+    const options: RequestInit = {
       method: 'PUT',
       credentials: this.config.credentialMode,
       headers,
@@ -98,16 +57,16 @@ export class BackendService {
     return await response.json();
   }
 
-  public async saveForm(form: ComposerState): Promise<SaveResult> {
+  public async saveForm(form: ComposerState): Promise<SaveFormResponse> {
     if (this.isSaving) {
       console.log('DEFER SAVE');
       return {
         result: undefined,
         success: true
       }
-    } 
+    }
 
-    this.isSaving  = true;
+    this.isSaving = true;
 
     try {
       const res = await this.storeForm(form);
@@ -116,11 +75,12 @@ export class BackendService {
         result: res,
         success: true
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       this.isSaving = false;
       return {
         success: false,
-        apiError: err  
+        apiError: err
       }
     }
   }
@@ -133,22 +93,20 @@ export class BackendService {
     if (this.config.csrf) {
       headers[this.config.csrf.headerName] = this.config.csrf.token;
     }
-  
-    let options: RequestInit = {
+
+    const options: RequestInit = {
       method: 'GET',
       credentials: this.config.credentialMode,
       headers
     }
-  
+
     const response = await fetch(this.prepareFormsUrl(formId, undefined), options);
-  
+
     if (!response.ok) {
       console.error("Form fetch error", response.status);
       throw new Error(`${response.status}`);
     }
-  
+
     return await response.json();
   }
-
-
 }

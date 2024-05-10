@@ -12,7 +12,7 @@ const setActiveFormLanguage = (state: EditorState, language: string): void => {
 }
 
 const setErrors = (state: EditorState, errors: EditorError[]): void => {
-  state.errors.push(...errors);
+  state.errors = errors;
 }
 
 const clearErrors = (state: EditorState): void => {
