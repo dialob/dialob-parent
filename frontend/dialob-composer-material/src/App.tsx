@@ -9,6 +9,7 @@ import { CircularProgress, Grid } from '@mui/material';
 import { Middleware } from './dialob/react/ComposerContext';
 import { ComposerAction } from './dialob/actions';
 import { useBackend } from './backend/useBackend';
+import { SaveResult } from './backend/types';
 
 const ProgressSplash: React.FC = () => {
   return (
@@ -36,9 +37,13 @@ function App() {
       saveForm(state)
         .then(saveResponse => {
           if (saveResponse.success && saveResponse.result) {
-            setErrors(saveResponse.result.errors);
-            dispatch({ type: 'setRevision', revision: saveResponse.result?.rev });
+            const result = saveResponse.result as SaveResult;
+            setErrors(result.errors);
+            dispatch({ type: 'setRevision', revision: result.rev });
           }
+        })
+        .catch(err => {
+          setErrors([{ level: 'FATAL', message: err.message }])
         });
     }
   }

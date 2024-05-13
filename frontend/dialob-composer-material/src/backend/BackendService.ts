@@ -1,5 +1,5 @@
 import { ComposerState } from "../dialob";
-import { SaveResult, SaveFormResponse, TransportConfig } from "./types";
+import { SaveResult, TransportConfig, DuplicateResult, ApiResponse } from "./types";
 
 
 export class BackendService {
@@ -11,18 +11,20 @@ export class BackendService {
     this.isSaving = false;
   }
 
-  private prepareFormsUrl(formId: string, formTag: string | undefined): string {
-    const baseUrl = new URL(`${this.config.apiUrl}/forms/${formId}`);
+  private prepareFormsUrl(url?: string, formTag?: string, itemId?: string): string {
+    const baseUrl = new URL(this.config.apiUrl + (url || ''));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: Record<string, any> = new URLSearchParams();
 
-    // eslint-disable-next-line no-extra-boolean-cast
-    if (!!formTag) {
+    if (formTag) {
       params.append('rev', formTag);
     }
 
-    // eslint-disable-next-line no-extra-boolean-cast
-    if (!!this.config.tenantId) {
+    if (itemId) {
+      params.append('itemId', itemId);
+    }
+
+    if (this.config.tenantId) {
       params.append('tenantId', this.config.tenantId);
     }
 
@@ -31,7 +33,8 @@ export class BackendService {
     return baseUrl.toString();
   }
 
-  private async storeForm(formData: ComposerState): Promise<SaveResult> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async doFetch(url: string, method: string, body?: ComposerState): Promise<any> {
     const headers: Record<string, string> = {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -41,23 +44,26 @@ export class BackendService {
     }
 
     const options: RequestInit = {
-      method: 'PUT',
+      method,
       credentials: this.config.credentialMode,
-      headers,
-      body: JSON.stringify(formData)
+      headers
     }
 
-    const response = await fetch(this.prepareFormsUrl(formData._id, undefined), options);
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(url, options);
 
     if (!response.ok) {
-      console.error("Form store error", response.status);
+      console.error("Backend service error", response.status);
       throw new Error(`${response.status}`);
     }
 
     return await response.json();
   }
 
-  public async saveForm(form: ComposerState): Promise<SaveFormResponse> {
+  public async saveForm(form: ComposerState): Promise<ApiResponse> {
     if (this.isSaving) {
       console.log('DEFER SAVE');
       return {
@@ -69,10 +75,10 @@ export class BackendService {
     this.isSaving = true;
 
     try {
-      const res = await this.storeForm(form);
+      const res = await this.doFetch(this.prepareFormsUrl(`/forms/${form._id}`), 'PUT', form);
       this.isSaving = false;
       return {
-        result: res,
+        result: res as SaveResult,
         success: true
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,27 +92,22 @@ export class BackendService {
   }
 
   public async loadForm(formId: string): Promise<ComposerState> {
-    const headers: Record<string, string> = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    };
-    if (this.config.csrf) {
-      headers[this.config.csrf.headerName] = this.config.csrf.token;
+    return await this.doFetch(this.prepareFormsUrl(`/forms/${formId}`), 'GET');
+  }
+
+  public async duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse> {
+    try {
+      const res = await this.doFetch(this.prepareFormsUrl(`/forms/actions/itemCopy`, undefined, itemId), 'POST', form);
+      return {
+        result: res as DuplicateResult,
+        success: true
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      return {
+        success: false,
+        apiError: err
+      }
     }
-
-    const options: RequestInit = {
-      method: 'GET',
-      credentials: this.config.credentialMode,
-      headers
-    }
-
-    const response = await fetch(this.prepareFormsUrl(formId, undefined), options);
-
-    if (!response.ok) {
-      console.error("Form fetch error", response.status);
-      throw new Error(`${response.status}`);
-    }
-
-    return await response.json();
   }
 }

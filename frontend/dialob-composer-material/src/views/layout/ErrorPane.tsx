@@ -54,8 +54,8 @@ const ErrorPane: React.FC = () => {
 
   return (
     <Box sx={{ m: 1 }}>
-      {editor.errors.map(error => (
-        <Card key={error.itemId} sx={{ mb: 2 }}>
+      {editor.errors.map((error, index) => (
+        <Card key={index} sx={{ mb: 2 }}>
           <CardActionArea onClick={() => handleClick(error)}>
             <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.level) }}>
               <Typography variant='subtitle1'><ErrorType error={error} /></Typography>

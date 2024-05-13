@@ -5,7 +5,8 @@ export const useBackend = () => {
   const backendContext = useContext(BackendContext);
   return {
     form: backendContext.form,
-    saveForm: backendContext.saveForm,
     loaded: backendContext.loaded,
+    saveForm: backendContext.saveForm,
+    duplicateItem: backendContext.duplicateItem,
   }
 }

@@ -9,8 +9,15 @@ export interface SaveResult {
   errors: EditorError[];
 }
 
-export interface SaveFormResponse {
-  result?: SaveResult;
+export interface DuplicateResult {
+  ok: boolean;
+  id: string;
+  rev: string;
+  form: ComposerState;
+}
+
+export interface ApiResponse {
+  result?: SaveResult | DuplicateResult;
   success: boolean;
   apiError?: string;
 }
@@ -42,5 +49,6 @@ export interface BackendState {
   formId: string;
   loaded: boolean;
   form: ComposerState | null;
-  saveForm(form: ComposerState): Promise<SaveFormResponse>;
+  saveForm(form: ComposerState): Promise<ApiResponse>;
+  duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
 }

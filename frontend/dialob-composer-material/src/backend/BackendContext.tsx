@@ -1,7 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ComposerState } from "../dialob";
 import { BackendService } from "./BackendService";
-import { BackendState, SaveFormResponse, TransportConfig } from "./types";
+import { ApiResponse, BackendState, TransportConfig } from "./types";
 
 
 const INITIAL_BACKEND: BackendState = {
@@ -9,7 +9,11 @@ const INITIAL_BACKEND: BackendState = {
   loaded: false,
   form: null,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  saveForm: (form: ComposerState): Promise<SaveFormResponse> => {
+  saveForm: (form: ComposerState): Promise<ApiResponse> => {
+    return Promise.resolve({ success: true });
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  duplicateItem: (form: ComposerState, itemId: string): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   }
 };
@@ -38,7 +42,13 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
   }, [formId]);
 
   return (
-    <BackendContext.Provider value={{ form: formData, loaded, formId, saveForm: backendService.current.saveForm.bind(backendService.current) }}>
+    <BackendContext.Provider value={{
+      form: formData,
+      loaded,
+      formId,
+      saveForm: backendService.current.saveForm.bind(backendService.current),
+      duplicateItem: backendService.current.duplicateItem.bind(backendService.current),
+    }}>
       {children}
     </BackendContext.Provider>
   );

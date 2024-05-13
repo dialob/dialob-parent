@@ -8,7 +8,7 @@ export type VariableTabType = 'context' | 'expression';
 export type EditorError = {
   level: ErrorSeverity;
   message: string;
-  type: string;
+  type?: string;
   itemId?: string;
   expression?: string;
   startIndex?: number;

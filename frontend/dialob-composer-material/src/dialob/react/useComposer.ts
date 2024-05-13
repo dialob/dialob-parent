@@ -136,6 +136,10 @@ export const useComposer = () => {
     dispatch({ type: 'loadVersion', tagName });
   }
 
+  const setRevision = (revision: string) => {
+    dispatch({ type: 'setRevision', revision });
+  }
+
   return {
     addItem,
     updateItem,
@@ -169,6 +173,7 @@ export const useComposer = () => {
     addLanguage,
     deleteLanguage,
     loadVersion,
+    setRevision,
     form: state
   };
 
