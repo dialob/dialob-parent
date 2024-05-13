@@ -11,7 +11,7 @@ import { ComposerAction } from './dialob/actions';
 import { useBackend } from './backend/useBackend';
 import { SaveResult } from './backend/types';
 
-const ProgressSplash: React.FC = () => {
+export const ProgressSplash: React.FC = () => {
   return (
     <Grid
       container

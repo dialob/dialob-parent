@@ -8,10 +8,39 @@ import { useEditor } from '../editor';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 import { MENU_HEIGHT, SCROLL_SX } from '../theme/siteTheme';
 import ItemOptionsDialog from '../dialogs/ItemOptionsDialog';
+import { useBackend } from '../backend/useBackend';
+import { useComposer } from '../dialob';
+import { SaveResult } from '../backend/types';
+import { ProgressSplash } from '../App';
 
 const ComposerLayoutView: React.FC = () => {
-  const { editor } = useEditor();
+  const { form, setRevision } = useComposer();
+  const { editor, setErrors } = useEditor();
+  const { saveForm } = useBackend();
   const hasErrors = editor.errors.length > 0;
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    console.log('SAVE ON LOAD');
+    saveForm(form)
+      .then(saveResponse => {
+        if (saveResponse.success && saveResponse.result) {
+          const result = saveResponse.result as SaveResult;
+          setErrors(result.errors);
+          setRevision(result.rev);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        setErrors([{ level: 'FATAL', message: err.message }])
+        setLoading(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (loading) {
+    return <ProgressSplash />;
+  }
 
   return (
     <>

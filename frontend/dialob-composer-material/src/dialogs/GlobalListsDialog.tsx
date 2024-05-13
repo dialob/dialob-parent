@@ -13,7 +13,7 @@ import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
-import { getErrorColor } from '../utils/ErrorUtils';
+import { getItemErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
@@ -172,7 +172,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
             {globalValueSets && globalValueSets.length > 0 && <>
               <Stack sx={{ mr: 3 }}>
                 {globalValueSets?.map(gvs => {
-                  const errorColor = getErrorColor(editor.errors, gvs.id);
+                  const errorColor = getItemErrorColor(editor.errors, gvs.id);
                   return <Button key={gvs.id} variant={gvs.id === currentValueSet?.id ? 'contained' : 'outlined'} color={errorColor}
                     onClick={() => setCurrentValueSet({ id: gvs.id, entries: gvs.entries })}>
                     {gvs.label}
@@ -206,8 +206,8 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
                   </BorderedTable>
                 </TableContainer>
-                {itemErrors.map((error, index) => <Alert key={index} severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
-                  <Typography><ErrorMessage error={error} /></Typography>
+                {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+                  <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
                 </Alert>)}
               </Box>
             </>}

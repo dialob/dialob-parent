@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box, IconButton, TableBody, TableCell, TableRow, alpha, useTheme } from '@mui/material';
+import { Alert, AlertColor, Box, IconButton, TableBody, TableCell, TableRow, Typography, alpha, useTheme } from '@mui/material';
 import { Variable } from '../../dialob';
 import { useEditor } from '../../editor';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
 import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';
 import { BorderedTable } from '../TableEditorComponents';
-import { Edit } from '@mui/icons-material';
+import { Edit, Warning } from '@mui/icons-material';
+import { ErrorMessage } from '../ErrorComponents';
 
 const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClose }) => {
   const { editor } = useEditor();
@@ -13,6 +14,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
   const variable = item.data.variable as Variable;
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
+  const itemErrors = editor.errors.filter(e => e.itemId === variable.name);
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
   return (
@@ -45,11 +47,20 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
             <UsersField variable={variable} onClose={onClose} />
           </TableCell>
         </TableRow>
-        {expanded && <TableRow>
-          <TableCell colSpan={6}>
-            <ExpressionField variable={variable} />
-          </TableCell>
-        </TableRow>}
+        {expanded && <>
+          <TableRow>
+            <TableCell colSpan={6}>
+              <ExpressionField variable={variable} />
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={6}>
+              {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+                <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+              </Alert>)}
+            </TableCell>
+          </TableRow>
+        </>}
       </TableBody>
     </BorderedTable>
   );

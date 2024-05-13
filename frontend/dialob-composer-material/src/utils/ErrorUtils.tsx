@@ -5,10 +5,10 @@ import { Check, Info, Warning } from "@mui/icons-material";
 import { PreTextIcon } from "../components/tree/NavigationTreeItem";
 
 const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined => {
-  const hasFatal = errors.some(error => error.severity === 'FATAL');
-  const hasError = errors.some(error => error.severity === 'ERROR');
-  const hasWarning = errors.some(error => error.severity === 'WARNING');
-  const hasInfo = errors.some(error => error.severity === 'INFO');
+  const hasFatal = errors.some(error => error.level === 'FATAL');
+  const hasError = errors.some(error => error.level === 'ERROR');
+  const hasWarning = errors.some(error => error.level === 'WARNING');
+  const hasInfo = errors.some(error => error.level === 'INFO');
   if (hasFatal) {
     return 'FATAL';
   }
@@ -29,7 +29,7 @@ const getItemErrorSeverity = (errors: EditorError[], itemId: string): ErrorSever
   return getDominantSeverity(itemErrors);
 }
 
-export const getErrorColor = (errors: EditorError[], itemId: string) => {
+export const getItemErrorColor = (errors: EditorError[], itemId: string) => {
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':

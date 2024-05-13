@@ -27,7 +27,7 @@ const ChoiceEditor: React.FC = () => {
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
-  const itemErrors = editor.errors.filter(e => e.itemId === item?.id);
+  const itemErrors = editor.errors.filter(e => e.itemId === item?.valueSetId);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
@@ -202,11 +202,9 @@ const ChoiceEditor: React.FC = () => {
         </Button>
       </Box>
       }
-      {
-        itemErrors.map((error, index) => <Alert key={index} severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
-          <Typography><ErrorMessage error={error} /></Typography>
-        </Alert>)
-      }
+      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      </Alert>)}
     </>
   );
 }

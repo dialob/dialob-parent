@@ -13,6 +13,7 @@ export type EditorError = {
   expression?: string;
   startIndex?: number;
   endIndex?: number;
+  index?: number;
 };
 
 export type EditorState = {

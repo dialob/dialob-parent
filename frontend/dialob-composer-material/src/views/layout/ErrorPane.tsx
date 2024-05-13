@@ -21,6 +21,7 @@ const errorCardBorderColor = (severity: string) => {
 const ErrorPane: React.FC = () => {
   const { editor, setActivePage, setActiveList, setActiveVariableTab } = useEditor();
   const { form } = useComposer();
+  const gvs = form.metadata.composer?.globalValueSets;
 
   const handleScrollTo = (itemId?: string) => {
     if (!itemId) {
@@ -35,9 +36,12 @@ const ErrorPane: React.FC = () => {
     }
   }
 
-  const handleClick = (error: EditorError) => {
+  const handleClick = (error: EditorError, gvs?: {
+    label?: string | undefined;
+    valueSetId: string;
+  }[]) => {
     if (error.itemId) {
-      if (error.itemId.startsWith('vs')) {
+      if (gvs?.map(gvs => gvs.valueSetId).includes(error.itemId)) {
         handleEditList(error.itemId);
       } else if (error.type === 'VARIABLE') {
         const variable = form.variables?.find(v => v.name === error.itemId);
@@ -56,7 +60,7 @@ const ErrorPane: React.FC = () => {
     <Box sx={{ m: 1 }}>
       {editor.errors.map((error, index) => (
         <Card key={index} sx={{ mb: 2 }}>
-          <CardActionArea onClick={() => handleClick(error)}>
+          <CardActionArea onClick={() => handleClick(error, gvs)}>
             <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.level) }}>
               <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
               <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>

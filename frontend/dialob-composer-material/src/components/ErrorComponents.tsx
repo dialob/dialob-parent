@@ -1,6 +1,6 @@
 import { useIntl } from "react-intl";
 import { EditorError } from "../editor";
-import { DialobItem, Variable, useComposer } from "../dialob";
+import { DialobItem, ValueSet, Variable, useComposer } from "../dialob";
 
 export const ErrorType: React.FC<{ error: EditorError }> = ({ error }) => {
   const intl = useIntl();
@@ -27,6 +27,8 @@ const extractCodeFromItem = (item: DialobItem, start: number, end: number, type:
       return item.activeWhen!.substring(start, end + 1);
     case 'REQUIREMENT':
       return item.required!.substring(start, end + 1);
+    case 'VALIDATION':
+      return item.validations![0].rule?.substring(start, end + 1) || '';
     default:
       return '';
   }
@@ -36,10 +38,14 @@ const extractCodeFromVariable = (variable: Variable, start: number, end: number)
   return variable.expression.substring(start, end + 1);
 }
 
+const extractListError = (valueSet: ValueSet, index: number) => {
+  return valueSet.entries[index].id;
+}
+
 export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {
   const intl = useIntl();
   const { form } = useComposer();
-  const { message, expression, type, startIndex, endIndex, itemId } = error;
+  const { message, expression, type, startIndex, endIndex, index, itemId } = error;
   let msg = message;
   let code = '';
   if (message === 'VALUESET_DUPLICATE_KEY') {
@@ -58,6 +64,12 @@ export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {
       }
     } else {
       code = extractCodeFromItem(form.data[itemId], startIndex, endIndex, type);
+    }
+  }
+  if (type === 'VALUESET' && index !== undefined) {
+    const valueSet = form.valueSets?.find(v => v.id === itemId);
+    if (valueSet) {
+      code = extractListError(valueSet, index);
     }
   }
   return <>{msg} <i>{code}</i></>;

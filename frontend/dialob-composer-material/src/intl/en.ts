@@ -206,7 +206,7 @@ const en = {
   'errors.message.NO_EQUALITY_RELATION_BETWEEN_TYPES': 'Can\'t compare these variables',
   'errors.message.BOOLEAN_EXPRESSION_EXPECTED': 'Boolean expression expected',
   'errors.message.VALUESET_EMPTY': 'Choice list is empty',
-  'errors.message.VALUESET_DUPLICATE_KEY': `Choice list has duplicate key "{expression}"`,
+  'errors.message.VALUESET_DUPLICATE_KEY': `Choice list has duplicate key`,
   'errors.message.VALUESET_EMPTY_KEY': 'Choice list has empty key',
   'errors.message.CONTEXT_VARIABLE_UNDEFINED_TYPE': 'Context variable type not defined',
   'errors.message.VALUE_TYPE_NOT_SET': 'Value type not set',
