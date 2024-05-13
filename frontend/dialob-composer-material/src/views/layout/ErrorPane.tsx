@@ -19,7 +19,7 @@ const errorCardBorderColor = (severity: string) => {
 };
 
 const ErrorPane: React.FC = () => {
-  const { editor, setActivePage, setActiveList, setActiveVariableTab } = useEditor();
+  const { editor, setActivePage, setActiveList, setActiveVariableTab, setHighlightedItem } = useEditor();
   const { form } = useComposer();
   const gvs = form.metadata.composer?.globalValueSets;
 
@@ -50,8 +50,15 @@ const ErrorPane: React.FC = () => {
         }
         const type: VariableTabType = isContextVariable(variable) ? 'context' : 'expression';
         setActiveVariableTab(type);
+      } else if (error.itemId.includes('vs') || error.itemId.includes('valueset')) {
+        const item = Object.values(form.data).find(item => item.valueSetId === error.itemId);
+        if (item) {
+          handleScrollTo(item.id);
+          setHighlightedItem(form.data[item.id]);
+        }
       } else {
         handleScrollTo(error.itemId);
+        setHighlightedItem(form.data[error.itemId]);
       }
     }
   }
