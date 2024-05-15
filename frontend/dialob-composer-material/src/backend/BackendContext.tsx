@@ -9,7 +9,7 @@ const INITIAL_BACKEND: BackendState = {
   loaded: false,
   form: null,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  saveForm: (form: ComposerState): Promise<ApiResponse> => {
+  saveForm: (form: ComposerState, dryRun?: boolean): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

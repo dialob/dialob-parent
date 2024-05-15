@@ -22,7 +22,7 @@ const ComposerLayoutView: React.FC = () => {
 
   React.useEffect(() => {
     console.log('SAVE ON LOAD');
-    saveForm(form)
+    saveForm(form, true)
       .then(saveResponse => {
         if (saveResponse.success && saveResponse.result) {
           const result = saveResponse.result as SaveResult;

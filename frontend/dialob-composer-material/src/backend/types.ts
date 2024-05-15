@@ -49,6 +49,6 @@ export interface BackendState {
   formId: string;
   loaded: boolean;
   form: ComposerState | null;
-  saveForm(form: ComposerState): Promise<ApiResponse>;
+  saveForm(form: ComposerState, dryRun?: boolean): Promise<ApiResponse>;
   duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
 }

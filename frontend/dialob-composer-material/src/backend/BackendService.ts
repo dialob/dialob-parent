@@ -1,6 +1,11 @@
 import { ComposerState } from "../dialob";
 import { SaveResult, TransportConfig, DuplicateResult, ApiResponse } from "./types";
 
+interface UrlParams {
+  formTag?: string;
+  itemId?: string;
+  dryRun?: boolean;
+}
 
 export class BackendService {
   private config: TransportConfig;
@@ -11,8 +16,9 @@ export class BackendService {
     this.isSaving = false;
   }
 
-  private prepareFormsUrl(url?: string, formTag?: string, itemId?: string): string {
-    const baseUrl = new URL(this.config.apiUrl + (url || ''));
+  private prepareFormsUrl(url: string, urlParams?: UrlParams): string {
+    const { formTag, itemId, dryRun } = urlParams || {};
+    const baseUrl = new URL(this.config.apiUrl + url);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: Record<string, any> = new URLSearchParams();
 
@@ -26,6 +32,10 @@ export class BackendService {
 
     if (this.config.tenantId) {
       params.append('tenantId', this.config.tenantId);
+    }
+
+    if (dryRun) {
+      params.append('dryRun', 'true');
     }
 
     baseUrl.search = params.toString();
@@ -63,7 +73,7 @@ export class BackendService {
     return await response.json();
   }
 
-  public async saveForm(form: ComposerState): Promise<ApiResponse> {
+  public async saveForm(form: ComposerState, dryRun?: boolean): Promise<ApiResponse> {
     if (this.isSaving) {
       console.log('DEFER SAVE');
       return {
@@ -75,7 +85,7 @@ export class BackendService {
     this.isSaving = true;
 
     try {
-      const res = await this.doFetch(this.prepareFormsUrl(`/forms/${form._id}`), 'PUT', form);
+      const res = await this.doFetch(this.prepareFormsUrl(`/forms/${form._id}`, { dryRun }), 'PUT', form);
       this.isSaving = false;
       return {
         result: res as SaveResult,
@@ -97,7 +107,7 @@ export class BackendService {
 
   public async duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse> {
     try {
-      const res = await this.doFetch(this.prepareFormsUrl(`/forms/actions/itemCopy`, undefined, itemId), 'POST', form);
+      const res = await this.doFetch(this.prepareFormsUrl(`/forms/actions/itemCopy`, { itemId }), 'POST', form);
       return {
         result: res as DuplicateResult,
         success: true
