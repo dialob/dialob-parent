@@ -64,6 +64,7 @@ const en = {
   'tooltips.choices': 'Choices',
   'tooltips.global': 'Global choice list',
   'tooltips.local': 'Local choice list',
+  'tooltips.visibility': 'Visibility rule',
   'tooltips.requirement': 'Requirement rule',
   'tooltips.properties': 'Properties',
   'tooltips.default': 'Default value',

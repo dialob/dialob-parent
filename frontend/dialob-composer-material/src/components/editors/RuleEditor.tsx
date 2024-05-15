@@ -48,6 +48,10 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     return null;
   }
 
+  if (item.type === 'note' && type === 'requirement') {
+    return null;
+  }
+
   return (
     <Box sx={{ mb: 2 }}>
       <Typography color='text.hint'><FormattedMessage id={`dialogs.options.rules.${type}`} /></Typography>

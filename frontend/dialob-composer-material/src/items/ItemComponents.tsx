@@ -112,7 +112,7 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
   const { editor } = useEditor();
   const [label, setLabel] = React.useState<string>('');
-  const hasIndicators = item.description || item.valueSetId || item.validations;
+  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const maxLabelLength = hasIndicators ? MAX_LABEL_LENGTH_WITH_INDICATORS : MAX_LABEL_LENGTH_WITHOUT_INDICATORS;
   const placeholderId = isPage(form.data, item) ? 'page.label' : Defaults.DEFAULT_ITEM_CONFIG.items.find(i => i.matcher(item))?.props.placeholder;
   const placeholder = intl.formatMessage({ id: placeholderId });
@@ -182,6 +182,10 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
           < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' /></IconButton>
+        </Tooltip>}
+      {item.type === 'note' && item.activeWhen &&
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.visibility' />}>
+          < IconButton onClick={(e) => handleClick(e, 'rules')}><Visibility fontSize='small' /></IconButton>
         </Tooltip>}
     </Box >
   );
