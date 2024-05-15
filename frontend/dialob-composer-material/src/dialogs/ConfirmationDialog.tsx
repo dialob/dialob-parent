@@ -4,9 +4,12 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { useComposer } from '../dialob';
 import { FormattedMessage } from 'react-intl';
 import { DialogActionButtons } from './DialogComponents';
+import { useBackend } from '../backend/useBackend';
+import { DuplicateResult } from '../backend/types';
 
 const ConfirmationDialog: React.FC = () => {
-  const { deleteItem } = useComposer();
+  const { form, deleteItem, duplicateItem: onDuplicate } = useComposer();
+  const { duplicateItem } = useBackend();
   const { editor, setConfirmationDialogType } = useEditor();
   const type = editor.confirmationDialogType;
   const activeItem = editor.activeItem;
@@ -24,6 +27,15 @@ const ConfirmationDialog: React.FC = () => {
       deleteItem(activeItem.id);
       handleClose();
     } else if (type === 'duplicate') {
+      duplicateItem(form, activeItem.id).then(duplicateResponse => {
+        if (duplicateResponse.success && duplicateResponse.result) {
+          const duplicateRes = duplicateResponse.result as DuplicateResult;
+          const newData = duplicateRes.form.data;
+          const newItem = newData[activeItem.id + 1];
+          const parentItemId = Object.values(newData).find(i => i.items && i.items.includes(newItem.id))!.id;
+          onDuplicate(newItem, parentItemId, activeItem.id);
+        }
+      });
       handleClose();
     }
   }
