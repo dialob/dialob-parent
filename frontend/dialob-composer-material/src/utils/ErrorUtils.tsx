@@ -62,6 +62,23 @@ export const useErrorColorSx = (errors: EditorError[], itemId: string): string |
   }
 }
 
+export const useErrorColor = (error: EditorError | undefined): string | undefined => {
+  const theme = useTheme();
+  if (error === undefined) {
+    return undefined;
+  }
+  switch (error.level) {
+    case 'FATAL':
+      return theme.palette.error.main;
+    case 'ERROR':
+      return theme.palette.error.main;
+    case 'WARNING':
+      return theme.palette.warning.main;
+    case 'INFO':
+      return theme.palette.info.main;
+  }
+}
+
 export const getErrorIcon = (errors: EditorError[], itemId: string): React.ReactNode | undefined => {
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {

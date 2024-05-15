@@ -23,11 +23,11 @@ const ChoiceEditor: React.FC = () => {
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const formLanguages = form.metadata.languages;
+  const itemErrors = editor.errors.filter(e => e.itemId === item?.valueSetId);
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
-  const itemErrors = editor.errors.filter(e => e.itemId === item?.valueSetId);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {

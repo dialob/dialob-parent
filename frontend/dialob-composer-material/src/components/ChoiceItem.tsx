@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
+import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Typography, alpha, useTheme } from '@mui/material';
 import { Close, KeyboardArrowDown, KeyboardArrowUp, Visibility } from "@mui/icons-material";
 import { TreeItem } from "@atlaskit/tree";
 import { TreeDraggableProvided } from "@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types";
@@ -9,10 +9,13 @@ import { LocalizedString, ValueSetEntry, useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import Editors from "./editors";
 import { FormattedMessage } from "react-intl";
+import { useErrorColor } from "../utils/ErrorUtils";
+import { useEditor } from "../editor";
 
 
 export interface ChoiceItemProps {
   item: TreeItem,
+  valueSetId?: string,
   provided: TreeDraggableProvided,
   onRuleEdit: (entry: ValueSetEntry, rule: string) => void,
   onTextEdit: (entry: ValueSetEntry, label: LocalizedString) => void,
@@ -35,11 +38,16 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
   return <Typography>{localizedLabel}</Typography>;
 }
 
-const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal }) => {
+const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal }) => {
   const { form } = useComposer();
-  const entry = item.data;
+  const { editor } = useEditor();
+  const theme = useTheme();
+  const entry = item.data.entry;
   const formLanguages = form.metadata.languages;
   const languageNo = formLanguages?.length || 0;
+  const error = editor.errors.find(e => e.itemId === valueSetId && e.index == item.data.index);
+  const errorColor = useErrorColor(error);
+  const backgroundColor = errorColor || theme.palette.background.paper;
   const [open, setOpen] = React.useState(false);
   const [idValue, setIdValue] = React.useState<string>(entry.id);
   const [rule, setRule] = React.useState<string | undefined>(entry.when);
@@ -72,7 +80,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, provided, onRuleEdit, onT
         {...provided.draggableProps}
         {...provided.dragHandleProps}>
         <TableBody>
-          <TableRow key={entry.id}>
+          <TableRow key={entry.id} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
             <TableCell align='center' width='20%'>
               <IconButton onClick={() => setExpanded(!expanded)}>{expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
               <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
