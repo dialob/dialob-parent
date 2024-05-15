@@ -8,6 +8,7 @@ import { useEditor } from '../../editor';
 import { ValidationRule, useComposer } from '../../dialob';
 import { LocalizedStringEditor } from './LocalizedStringEditor';
 import { ErrorMessage } from '../ErrorComponents';
+import { useLinter } from '../../utils/ErrorUtils';
 
 
 export interface IndexedRule {
@@ -20,6 +21,7 @@ const ValidationRuleEditor: React.FC = () => {
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const itemErrors = editor.errors.filter(e => e.itemId === item?.id && e.type === 'VALIDATION');
+  const linter = useLinter(itemErrors);
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [activeRule, setActiveRule] = React.useState<IndexedRule | undefined>(undefined);
 
@@ -111,7 +113,7 @@ const ValidationRuleEditor: React.FC = () => {
         </Button>
       </Box>
       {rules.length > 0 && activeRule !== undefined && <Box sx={{ mt: 2 }}>
-        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} extensions={[javascript({ jsx: true })]} />
+        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} extensions={[javascript({ jsx: true }), linter]} />
       </Box>}
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />

@@ -5,12 +5,13 @@ import { ContextVariable, ContextVariableType, DialobItem, Variable, useComposer
 import { Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { useEditor } from '../../editor';
+import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
 import { TreeItem } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
+import { useLinter } from '../../utils/ErrorUtils';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -125,7 +126,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   );
 }
 
-export const ExpressionField: React.FC<{ variable: Variable }> = ({ variable }) => {
+export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorError[] }> = ({ variable, errors }) => {
   const { updateExpressionVariable } = useComposer();
   const [expression, setExpression] = React.useState<string>(variable.expression);
 
@@ -138,7 +139,7 @@ export const ExpressionField: React.FC<{ variable: Variable }> = ({ variable }) 
   }, [expression]);
 
   return (
-    <CodeMirror value={expression} onChange={(e) => setExpression(e)} extensions={[javascript({ jsx: true })]} />
+    <CodeMirror value={expression} onChange={(e) => setExpression(e)} extensions={[javascript({ jsx: true }), useLinter(errors)]} />
   );
 }
 

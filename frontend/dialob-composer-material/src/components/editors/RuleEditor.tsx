@@ -7,6 +7,7 @@ import { Warning } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { ErrorMessage } from '../ErrorComponents';
+import { useLinter } from '../../utils/ErrorUtils';
 
 type RuleType = 'visibility' | 'requirement';
 
@@ -23,6 +24,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const itemErrors = editor.errors.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
+  const linter = useLinter(itemErrors);
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
 
   React.useEffect(() => {
@@ -50,7 +52,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     <Box sx={{ mb: 2 }}>
       <Typography color='text.hint'><FormattedMessage id={`dialogs.options.rules.${type}`} /></Typography>
       <Box>
-        <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true })]} />
+        <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true }), linter]} />
       </Box>
       {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>

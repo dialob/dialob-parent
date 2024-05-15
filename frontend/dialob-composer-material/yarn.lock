@@ -401,6 +401,15 @@
     "@codemirror/view" "^6.0.0"
     crelt "^1.0.5"
 
+"@codemirror/lint@^6.7.1":
+  version "6.7.1"
+  resolved "https://registry.npmjs.org/@codemirror/lint/-/lint-6.7.1.tgz#bed4b3a38785678efbe683efe0e61d8ccf478d58"
+  integrity sha512-rELba6QJD20/bNXWP/cKTGLrwVEcpa2ViwULCV03ONcY1Je85++7sczVRUlnE4TJMjatx3IJTz6HX4NXi+moXw==
+  dependencies:
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
+    crelt "^1.0.5"
+
 "@codemirror/search@^6.0.0":
   version "6.5.5"
   resolved "https://registry.npmjs.org/@codemirror/search/-/search-6.5.5.tgz#cf97e201da364da2285c2a250167af25bbd2a4a2"

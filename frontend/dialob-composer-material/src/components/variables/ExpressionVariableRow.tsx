@@ -50,7 +50,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
         {expanded && <>
           <TableRow>
             <TableCell colSpan={6}>
-              <ExpressionField variable={variable} />
+              <ExpressionField variable={variable} errors={itemErrors} />
             </TableCell>
           </TableRow>
           <TableRow>

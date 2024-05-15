@@ -9,7 +9,7 @@ import { LocalizedString, ValueSetEntry, useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import Editors from "./editors";
 import { FormattedMessage } from "react-intl";
-import { useErrorColor } from "../utils/ErrorUtils";
+import { useLinter, useErrorColor } from "../utils/ErrorUtils";
 import { useEditor } from "../editor";
 
 
@@ -46,6 +46,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
   const formLanguages = form.metadata.languages;
   const languageNo = formLanguages?.length || 0;
   const error = editor.errors.find(e => e.itemId === valueSetId && e.index == item.data.index);
+  const linter = useLinter(error && [error]);
   const errorColor = useErrorColor(error);
   const backgroundColor = errorColor || theme.palette.background.paper;
   const [open, setOpen] = React.useState(false);
@@ -104,7 +105,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
                 </Box>
                 {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
                   <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
-                  <CodeMirror value={rule || ''} onChange={(value) => setRule(value)} extensions={[javascript({ jsx: true })]} />
+                  <CodeMirror value={rule || ''} onChange={(value) => setRule(value)} extensions={[javascript({ jsx: true }), linter]} />
                 </Box>}
                 <Box sx={{ mt: 2 }}>
                   <Editors.ChoiceText entry={entry} onUpdate={onTextEdit} />
