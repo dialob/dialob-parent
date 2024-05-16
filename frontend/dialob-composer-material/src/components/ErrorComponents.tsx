@@ -24,11 +24,11 @@ export const ErrorType: React.FC<{ error: EditorError }> = ({ error }) => {
 const extractCodeFromItem = (item: DialobItem, start: number, end: number, type: string) => {
   switch (type) {
     case 'VISIBILITY':
-      return item.activeWhen!.substring(start, end + 1);
+      return item.activeWhen ? item.activeWhen.substring(start, end + 1) : '';
     case 'REQUIREMENT':
-      return item.required!.substring(start, end + 1);
+      return item.required ? item.required.substring(start, end + 1) : '';
     case 'VALIDATION':
-      return item.validations![0].rule?.substring(start, end + 1) || '';
+      return (item.validations && item.validations[0].rule) ? item.validations[0].rule.substring(start, end + 1) : '';
     default:
       return '';
   }
@@ -63,7 +63,10 @@ export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {
         code = extractCodeFromVariable(variable as Variable, startIndex, endIndex);
       }
     } else {
-      code = extractCodeFromItem(form.data[itemId], startIndex, endIndex, type);
+      const item = form.data[itemId];
+      if (item) {
+        code = extractCodeFromItem(form.data[itemId], startIndex, endIndex, type);
+      }
     }
   }
   if (type === 'VALUESET' && index !== undefined) {

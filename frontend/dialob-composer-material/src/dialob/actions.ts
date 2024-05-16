@@ -1,8 +1,10 @@
-import { DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable, Variable, DialobItem } from "./types";
+import {
+  DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
+  Variable, DialobItems
+} from "./types";
 
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string }
-  | { type: 'duplicateItem', item: DialobItem, parentItemId: string, afterItemId: string }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'updateItem', itemId: string, attribute: string, value: any, language?: string }
   | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
@@ -44,3 +46,4 @@ export type ComposerAction =
   | { type: 'deleteLanguage', language: string }
   | { type: 'setRevision', revision: string }
   | { type: 'loadVersion', tagName: string }
+  | { type: 'setFormData', formData: DialobItems }

@@ -1,7 +1,10 @@
 import { produce } from 'immer';
 import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
-import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule, LocalizedString, DialobItem } from './types';
+import {
+  ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable,
+  ValidationRule, LocalizedString, DialobItems
+} from './types';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -50,23 +53,6 @@ const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentI
   const onAddItem = callbacks?.onAddItem;
   if (onAddItem) {
     onAddItem(state, state.data[id]);
-  }
-}
-
-const duplicateItem = (state: ComposerState, item: DialobItem, parentItemId: string, afterItemId: string, callbacks?: ComposerCallbacks): void => {
-  state.data[item.id] = item;
-  const newIndex = state.data[parentItemId].items?.findIndex(i => i === afterItemId);
-  if (newIndex === undefined) {
-    state.data[parentItemId].items = [item.id];
-  } else if (newIndex < 0) {
-    state.data[parentItemId].items?.push(item.id);
-  } else {
-    state.data[parentItemId].items?.splice(newIndex + 1, 0, item.id);
-  }
-
-  const onAddItem = callbacks?.onAddItem;
-  if (onAddItem) {
-    onAddItem(state, state.data[item.id]);
   }
 }
 
@@ -548,6 +534,10 @@ const loadVersion = (state: ComposerState, tagName: string): void => {
   }
 }
 
+const setFormData = (state: ComposerState, formData: DialobItems): void => {
+  state.data = formData;
+}
+
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
   if (state._tag) {
     // if a version tag is loaded, then it's in read-only mode
@@ -557,8 +547,6 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
   const newState = produce(state, state => {
     if (action.type === 'addItem') {
       addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
-    } else if (action.type === 'duplicateItem') {
-      duplicateItem(state, action.item, action.parentItemId, action.afterItemId, callbacks);
     } else if (action.type === 'updateItem') {
       updateItem(state, action.itemId, action.attribute, action.value, action.language);
     } else if (action.type === 'updateLocalizedString') {
@@ -624,6 +612,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       setRevision(state, action.revision);
     } else if (action.type === 'loadVersion') {
       loadVersion(state, action.tagName);
+    } else if (action.type === 'setFormData') {
+      setFormData(state, action.formData);
     }
   });
 
