@@ -3,15 +3,13 @@ import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Swit
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { ContextVariable, ContextVariableType, DialobItem, Variable, useComposer } from '../../dialob';
 import { Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
 import { TreeItem } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
-import { useLinter } from '../../utils/ErrorUtils';
+import CodeMirror from '../code/CodeMirror';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -139,7 +137,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   }, [expression]);
 
   return (
-    <CodeMirror value={expression} onChange={(e) => setExpression(e)} extensions={[javascript({ jsx: true }), useLinter(errors)]} />
+    <CodeMirror value={expression} onChange={(e) => setExpression(e)} errors={errors} />
   );
 }
 

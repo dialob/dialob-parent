@@ -115,28 +115,3 @@ export const getStatusIcon = (errors: EditorError[]): React.ReactElement => {
       return <Check color='success' fontSize='small' />;
   }
 }
-
-export const useLinter = (errors?: EditorError[]): Extension => {
-  const intl = useIntl();
-
-  if (!errors) {
-    return linter(() => []);
-  }
-
-  return linter(() => {
-    const diagnostics: Diagnostic[] = []
-    errors.forEach(error => {
-      if (error.startIndex !== undefined && error.endIndex !== undefined) {
-        const label = `errors.message.${error.message}`;
-        const diagnostic = {
-          from: error.startIndex,
-          to: error.endIndex + 1,
-          severity: error.level.toLowerCase() as LintSeverity,
-          message: intl.formatMessage({ id: label })
-        };
-        diagnostics.push(diagnostic);
-      }
-    })
-    return diagnostics
-  })
-}

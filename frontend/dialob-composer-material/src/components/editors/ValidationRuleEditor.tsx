@@ -2,13 +2,11 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip, AlertColor } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
 import { useEditor } from '../../editor';
 import { ValidationRule, useComposer } from '../../dialob';
 import { LocalizedStringEditor } from './LocalizedStringEditor';
 import { ErrorMessage } from '../ErrorComponents';
-import { useLinter } from '../../utils/ErrorUtils';
+import CodeMirror from '../code/CodeMirror';
 
 
 export interface IndexedRule {
@@ -21,7 +19,6 @@ const ValidationRuleEditor: React.FC = () => {
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const itemErrors = editor.errors.filter(e => e.itemId === item?.id && e.type === 'VALIDATION');
-  const linter = useLinter(itemErrors);
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [activeRule, setActiveRule] = React.useState<IndexedRule | undefined>(undefined);
 
@@ -113,7 +110,7 @@ const ValidationRuleEditor: React.FC = () => {
         </Button>
       </Box>
       {rules.length > 0 && activeRule !== undefined && <Box sx={{ mt: 2 }}>
-        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} extensions={[javascript({ jsx: true }), linter]} />
+        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} errors={itemErrors} />
       </Box>}
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
