@@ -40,10 +40,9 @@ function App() {
             const result = saveResponse.result as SaveResult;
             setErrors(result.errors);
             dispatch({ type: 'setRevision', revision: result.rev });
+          } else if (saveResponse.apiError) {
+            setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
           }
-        })
-        .catch(err => {
-          setErrors([{ level: 'FATAL', message: err.message }])
         });
     }
   }

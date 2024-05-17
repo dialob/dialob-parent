@@ -40,6 +40,7 @@ const getLinter = (intl: IntlShape, errors?: EditorError[]): Extension => {
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const matcher = (stream: StringStream, _state: unknown): string | null => {
   if (stream.match(/'(?:[^\\]|\\.)*?(?:'|$)/)) {
     return 'string';
@@ -53,7 +54,7 @@ const matcher = (stream: StringStream, _state: unknown): string | null => {
   if (stream.match(new RegExp(`(?:${RESERVED_WORDS.map(w => w.label).join('|')})\\b`))) {
     return 'keyword';
   }
-  if (stream.match(/[-+\/*=<>!]+/)) {
+  if (stream.match(/[-+/*=<>!]+/)) {
     return 'operator';
   }
   if (stream.match(/[a-z$][\w$]*/)) {

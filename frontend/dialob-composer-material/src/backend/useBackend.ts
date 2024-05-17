@@ -8,5 +8,6 @@ export const useBackend = () => {
     loaded: backendContext.loaded,
     saveForm: backendContext.saveForm,
     duplicateItem: backendContext.duplicateItem,
+    createTag: backendContext.createTag,
   }
 }

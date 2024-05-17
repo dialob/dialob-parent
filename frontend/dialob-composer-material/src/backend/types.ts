@@ -16,10 +16,22 @@ export interface DuplicateResult {
   form: ComposerState;
 }
 
+export interface CreateTagResult {
+  ok: boolean;
+}
+
 export interface ApiResponse {
-  result?: SaveResult | DuplicateResult;
   success: boolean;
-  apiError?: string;
+  result?: SaveResult | DuplicateResult | CreateTagResult;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apiError?: any;
+}
+
+export interface CreateTagRequest {
+  name: string;
+  description: string;
+  formName: string;
+  formId?: string;
 }
 
 export interface TransportConfig {
@@ -51,4 +63,5 @@ export interface BackendState {
   form: ComposerState | null;
   saveForm(form: ComposerState, dryRun?: boolean): Promise<ApiResponse>;
   duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
+  createTag(request: CreateTagRequest): Promise<ApiResponse>;
 }

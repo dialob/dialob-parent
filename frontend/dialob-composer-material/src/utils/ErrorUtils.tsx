@@ -1,13 +1,8 @@
 import React from "react";
-import { useTheme } from "@mui/material";
+import { AlertColor, useTheme } from "@mui/material";
 import { EditorError, ErrorSeverity } from "../editor";
 import { Check, Info, Warning } from "@mui/icons-material";
 import { PreTextIcon } from "../components/tree/NavigationTreeItem";
-import { Diagnostic, linter } from "@codemirror/lint";
-import { Extension } from "@uiw/react-codemirror";
-import { useIntl } from "react-intl";
-
-type LintSeverity = "hint" | "info" | "warning" | "error";
 
 const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined => {
   const hasFatal = errors.some(error => error.level === 'FATAL');
@@ -32,6 +27,21 @@ const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined =
 const getItemErrorSeverity = (errors: EditorError[], itemId: string): ErrorSeverity | undefined => {
   const itemErrors = errors.filter(error => error.itemId === itemId);
   return getDominantSeverity(itemErrors);
+}
+
+export const getErrorSeverity = (error: EditorError): AlertColor => {
+  switch (error.level) {
+    case 'FATAL':
+      return 'error';
+    case 'ERROR':
+      return 'error';
+    case 'WARNING':
+      return 'warning';
+    case 'INFO':
+      return 'info';
+    default:
+      return 'info';
+  }
 }
 
 export const getItemErrorColor = (errors: EditorError[], itemId: string) => {

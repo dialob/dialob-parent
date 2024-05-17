@@ -1,7 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ComposerState } from "../dialob";
 import { BackendService } from "./BackendService";
-import { ApiResponse, BackendState, TransportConfig } from "./types";
+import { ApiResponse, BackendState, CreateTagRequest, TransportConfig } from "./types";
 
 
 const INITIAL_BACKEND: BackendState = {
@@ -15,7 +15,11 @@ const INITIAL_BACKEND: BackendState = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   duplicateItem: (form: ComposerState, itemId: string): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
-  }
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  createTag: (request: CreateTagRequest): Promise<ApiResponse> => {
+    return Promise.resolve({ success: true });
+  },
 };
 
 export const BackendContext = createContext<BackendState>(INITIAL_BACKEND);
@@ -48,6 +52,7 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
       formId,
       saveForm: backendService.current.saveForm.bind(backendService.current),
       duplicateItem: backendService.current.duplicateItem.bind(backendService.current),
+      createTag: backendService.current.createTag.bind(backendService.current),
     }}>
       {children}
     </BackendContext.Provider>

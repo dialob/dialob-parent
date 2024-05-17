@@ -1,11 +1,12 @@
 import React from 'react';
-import { Typography, Box, Alert, AlertColor } from '@mui/material';
+import { Typography, Box, Alert } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Warning } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { ErrorMessage } from '../ErrorComponents';
 import CodeMirror from '../code/CodeMirror';
+import { getErrorSeverity } from '../../utils/ErrorUtils';
 
 type RuleType = 'visibility' | 'requirement';
 
@@ -55,7 +56,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
       <Box>
         <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} errors={itemErrors} />
       </Box>
-      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </Box>

@@ -1,12 +1,13 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip, AlertColor } from '@mui/material';
+import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
 import { useEditor } from '../../editor';
 import { ValidationRule, useComposer } from '../../dialob';
 import { LocalizedStringEditor } from './LocalizedStringEditor';
 import { ErrorMessage } from '../ErrorComponents';
 import CodeMirror from '../code/CodeMirror';
+import { getErrorSeverity } from '../../utils/ErrorUtils';
 
 
 export interface IndexedRule {
@@ -115,7 +116,7 @@ const ValidationRuleEditor: React.FC = () => {
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
       </Box>
-      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </>

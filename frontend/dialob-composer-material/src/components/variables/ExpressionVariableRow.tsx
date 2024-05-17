@@ -1,8 +1,8 @@
 import React from 'react';
-import { Alert, AlertColor, Box, IconButton, TableBody, TableCell, TableRow, Typography, alpha, useTheme } from '@mui/material';
+import { Alert, Box, IconButton, TableBody, TableCell, TableRow, Typography, alpha, useTheme } from '@mui/material';
 import { Variable } from '../../dialob';
 import { useEditor } from '../../editor';
-import { useErrorColorSx } from '../../utils/ErrorUtils';
+import { getErrorSeverity, useErrorColorSx } from '../../utils/ErrorUtils';
 import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';
 import { BorderedTable } from '../TableEditorComponents';
 import { Edit, Warning } from '@mui/icons-material';
@@ -55,7 +55,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
           </TableRow>
           <TableRow>
             <TableCell colSpan={6}>
-              {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+              {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
                 <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
               </Alert>)}
             </TableCell>

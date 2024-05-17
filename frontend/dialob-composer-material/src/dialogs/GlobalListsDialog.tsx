@@ -2,9 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Add, Close, Delete, Download, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
-  Alert,
-  AlertColor,
-  Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
+  Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from '@mui/material';
 import { DialobItem, ValueSet, ValueSetEntry, useComposer } from '../dialob';
@@ -13,7 +11,7 @@ import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
-import { getItemErrorColor } from '../utils/ErrorUtils';
+import { getErrorSeverity, getItemErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
@@ -206,7 +204,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
                   </BorderedTable>
                 </TableContainer>
-                {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+                {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
                   <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
                 </Alert>)}
               </Box>

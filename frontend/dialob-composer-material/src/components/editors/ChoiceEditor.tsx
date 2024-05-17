@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Add, Download, Edit, KeyboardArrowDown, Refresh, Upload, Warning } from '@mui/icons-material';
 import {
-  Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem,
+  Alert, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem,
   Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography
 } from '@mui/material';
 import { useEditor } from '../../editor';
@@ -15,6 +15,7 @@ import UploadValuesetDialog from '../../dialogs/UploadValuesetDialog';
 import GlobalList from '../GlobalList';
 import { downloadValueSet } from '../../utils/ParseUtils';
 import { ErrorMessage } from '../ErrorComponents';
+import { getErrorSeverity } from '../../utils/ErrorUtils';
 
 
 const ChoiceEditor: React.FC = () => {
@@ -202,7 +203,7 @@ const ChoiceEditor: React.FC = () => {
         </Button>
       </Box>
       }
-      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={error.level.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
+      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </>

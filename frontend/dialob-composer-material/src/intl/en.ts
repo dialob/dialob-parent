@@ -198,6 +198,7 @@ const en = {
   'errors.type.VALUESET_ENTRY': 'List entry',
   'errors.type.CANADDROW': 'Add row',
   'errors.type.CANREMOVEROW': 'Remove row',
+  'errors.type.TAG_ERROR': 'Tag',
   'errors.message.RB_VARIABLE_NEEDS_EXPRESSION': 'Missing expression',
   'errors.message.INVALID_DEFAULT_VALUE': 'Invalid value',
   'errors.message.UNKNOWN_VARIABLE': 'Unknown variable',

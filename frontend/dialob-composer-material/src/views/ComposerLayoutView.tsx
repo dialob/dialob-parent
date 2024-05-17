@@ -14,7 +14,7 @@ import { SaveResult } from '../backend/types';
 import { ProgressSplash } from '../App';
 
 const ComposerLayoutView: React.FC = () => {
-  const { form, setRevision } = useComposer();
+  const { form } = useComposer();
   const { editor, setErrors } = useEditor();
   const { saveForm } = useBackend();
   const hasErrors = editor.errors.length > 0;
@@ -27,13 +27,11 @@ const ComposerLayoutView: React.FC = () => {
         if (saveResponse.success && saveResponse.result) {
           const result = saveResponse.result as SaveResult;
           setErrors(result.errors);
-          setRevision(result.rev);
+          setLoading(false);
+        } else if (saveResponse.apiError) {
+          setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
           setLoading(false);
         }
-      })
-      .catch(err => {
-        setErrors([{ level: 'FATAL', message: err.message }])
-        setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

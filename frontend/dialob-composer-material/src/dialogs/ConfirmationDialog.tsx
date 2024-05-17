@@ -34,14 +34,12 @@ const ConfirmationDialog: React.FC = () => {
           if (duplicateResponse.success && duplicateResponse.result) {
             const duplicateRes = duplicateResponse.result as DuplicateResult;
             setFormData(duplicateRes.form.data);
+          } else if (duplicateResponse.apiError) {
+            setErrors([{ level: 'FATAL', message: duplicateResponse.apiError.message }]);
           }
           setLoading(false);
-        })
-        .catch(err => {
-          setErrors([{ level: 'FATAL', message: err.message }]);
-          setLoading(false);
-        })
-        .finally(() => handleClose());
+          handleClose();
+        });
     }
   }
 
