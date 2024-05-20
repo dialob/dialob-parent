@@ -75,10 +75,12 @@ export type DialobItems = { [key: string]: DialobItem };
 export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
 
 export type ComposerTag = {
-  id: string;
   name: string;
+  formName: string;
+  formId: string;
   description: string;
   created: string;
+  type: 'NORMAL' | 'MUTABLE';
 }
 
 export const isReadOnly = (state: ComposerState): boolean => {
@@ -119,6 +121,14 @@ export type ComposerState = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;
   }
+};
+
+export const INIT_STATE: ComposerState = {
+  _id: '',
+  _rev: '',
+  name: '',
+  data: {},
+  metadata: {},
 };
 
 export type ComposerCallbacks = {

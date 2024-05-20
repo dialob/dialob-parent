@@ -2,7 +2,8 @@ import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, DialobItems
+  Variable, DialobItems,
+  ComposerState
 } from "../types";
 
 export const useComposer = () => {
@@ -135,8 +136,8 @@ export const useComposer = () => {
     dispatch({ type: 'deleteLanguage', language });
   }
 
-  const loadVersion = (tagName: string) => {
-    dispatch({ type: 'loadVersion', tagName });
+  const setForm = (form: ComposerState, tagName?: string) => {
+    dispatch({ type: 'setForm', form, tagName });
   }
 
   const setRevision = (revision: string) => {
@@ -179,7 +180,7 @@ export const useComposer = () => {
     moveVariable,
     addLanguage,
     deleteLanguage,
-    loadVersion,
+    setForm,
     setRevision,
     setFormData,
     form: state

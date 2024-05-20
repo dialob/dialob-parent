@@ -525,13 +525,14 @@ const setRevision = (state: ComposerState, revision: string): void => {
   state._rev = revision;
 }
 
-const loadVersion = (state: ComposerState, tagName: string): void => {
-  // TODO load tag version from backend
-  if (tagName === 'LATEST') {
-    state._tag = undefined;
-  } else {
+const setForm = (state: ComposerState, form: ComposerState, tagName?: string): void => {
+  Object.assign(state, form);
+  if (tagName && tagName !== 'LATEST') {
     state._tag = tagName;
+  } else {
+    state._tag = undefined;
   }
+  console.log('>> SET FORM', state);
 }
 
 const setFormData = (state: ComposerState, formData: DialobItems): void => {
@@ -539,7 +540,8 @@ const setFormData = (state: ComposerState, formData: DialobItems): void => {
 }
 
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
-  if (state._tag) {
+  console.log('>> REDUCER', action, state)
+  if (state._tag && (action.type === 'setForm' ? action.tagName !== 'LATEST' : true)) {
     // if a version tag is loaded, then it's in read-only mode
     return state;
   }
@@ -610,8 +612,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     } else if (action.type === 'setRevision') {
       console.log('>> SET REV', action.revision);
       setRevision(state, action.revision);
-    } else if (action.type === 'loadVersion') {
-      loadVersion(state, action.tagName);
+    } else if (action.type === 'setForm') {
+      setForm(state, action.form, action.tagName);
     } else if (action.type === 'setFormData') {
       setFormData(state, action.formData);
     }

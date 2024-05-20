@@ -1,4 +1,4 @@
-import { ComposerState } from "../dialob";
+import { ComposerState, ComposerTag } from "../dialob";
 import { EditorError } from "../editor";
 
 
@@ -61,7 +61,9 @@ export interface BackendState {
   formId: string;
   loaded: boolean;
   form: ComposerState | null;
+  loadForm(formId: string, tagName?: string): Promise<ComposerState>;
   saveForm(form: ComposerState, dryRun?: boolean): Promise<ApiResponse>;
   duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
   createTag(request: CreateTagRequest): Promise<ApiResponse>;
+  getTags(formName: string): Promise<ComposerTag[]>;
 }

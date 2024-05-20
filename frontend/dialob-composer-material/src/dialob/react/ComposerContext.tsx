@@ -1,18 +1,10 @@
 import React, { useReducer, Dispatch, useEffect } from 'react';
 import { formReducer } from '../reducer';
 import { ComposerAction } from '../actions';
-import { ComposerState, ComposerCallbacks } from '../types';
-
-const INITIAL_FORM: ComposerState = {
-  _id: '',
-  _rev: '',
-  name: '',
-  data: {},
-  metadata: {},
-};
+import { ComposerState, ComposerCallbacks, INIT_STATE } from '../types';
 
 export const ComposerContext = React.createContext<{ state: ComposerState, dispatch: Dispatch<ComposerAction>, callbacks?: ComposerCallbacks }>({
-  state: INITIAL_FORM,
+  state: INIT_STATE,
   dispatch: () => null,
   callbacks: {}
 });

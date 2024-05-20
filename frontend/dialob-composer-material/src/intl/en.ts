@@ -182,6 +182,7 @@ const en = {
   'dialogs.versioning.list.header.description': 'Description',
   'dialogs.versioning.list.header.created': 'Created',
   'dialogs.versioning.list.header.actions': 'Actions',
+  'dialogs.versioning.copy.id': 'Copy ID',
 
   'dialogs.create.tag.title': 'Create new version tag',
   'dialogs.create.tag.name': 'Tag name',

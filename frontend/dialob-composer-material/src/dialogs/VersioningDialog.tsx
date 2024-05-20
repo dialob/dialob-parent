@@ -9,20 +9,37 @@ import { FormattedMessage } from "react-intl";
 import { ComposerTag, useComposer } from "../dialob";
 import { BorderedTable } from "../components/TableEditorComponents";
 import { downloadForm } from "../utils/ParseUtils";
+import { useBackend } from "../backend/useBackend";
+import { useEditor } from "../editor";
 
-const LATEST_TAG: ComposerTag = { id: '00000', name: 'LATEST', description: 'Latest version', created: new Date().toISOString() };
-
-const DEMO_TAGS: ComposerTag[] = [
-  { id: '11111', name: 'Tag 1', description: 'Description 1', created: new Date('2024-04-03T15:24:00').toISOString() },
-  { id: '22222', name: 'Tag 2', description: 'Description 2', created: new Date('2024-04-04T12:48:00').toISOString() },
-  { id: '33333', name: 'Tag 3', description: 'Description 3', created: new Date('2024-04-05T14:32:00').toISOString() },
-  { id: '44444', name: 'Tag 4', description: 'Description 4', created: new Date('2024-04-06T19:17:00').toISOString() },
-  { id: '55555', name: 'Tag 5', description: 'Description 5', created: new Date('2024-04-07T03:20:00').toISOString() },
-];
 
 const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const theme = useTheme();
-  const { form, loadVersion } = useComposer();
+  const { form, setForm } = useComposer();
+  const { getTags, loadForm } = useBackend();
+  const { clearErrors } = useEditor();
+  const [tags, setTags] = React.useState<ComposerTag[]>([]);
+
+  const LATEST_TAG: ComposerTag = React.useMemo(() => ({
+    formId: form._id, name: 'LATEST', formName: form.name, description: 'Latest version',
+    created: new Date().toISOString(), type: 'NORMAL'
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), []);
+
+  React.useEffect(() => {
+    if (open) {
+      getTags(form.name).then(setTags);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const handleLoadVersion = (tag: ComposerTag) => {
+    loadForm(tag.formId, tag.name).then(form => {
+      setForm(form, tag.name);
+      clearErrors();
+      onClose();
+    });
+  }
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
@@ -51,12 +68,12 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
               </TableRow>
             </TableHead>
             <TableBody>
-              {[LATEST_TAG, ...DEMO_TAGS].map(tag => (
-                <TableRow key={tag.id} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
+              {[LATEST_TAG, ...tags].map(tag => (
+                <TableRow key={tag.formId} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
                   <TableCell>
                     <Tooltip
-                      title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.id)}>
-                        {tag.id}
+                      title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.formId)}>
+                        <Typography><FormattedMessage id='dialogs.versioning.copy.id' /></Typography>
                       </Button>}
                       placement='left'>
                       <Box sx={{ display: 'flex', p: 1 }}>
@@ -70,7 +87,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
                   <TableCell align='center'>
                     <Button variant='outlined' color='primary'
                       disabled={tag.name === form._tag || (form._tag === undefined && tag.name === 'LATEST')}
-                      onClick={() => loadVersion(tag.name)}>
+                      onClick={() => handleLoadVersion(tag)}>
                       <FormattedMessage id='buttons.activate' />
                     </Button>
                     <IconButton sx={{ ml: 1 }} onClick={() => downloadForm(form, tag.name)}><Download color='success' /></IconButton>

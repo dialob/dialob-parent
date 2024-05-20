@@ -1,6 +1,7 @@
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, DialobItems
+  Variable, DialobItems,
+  ComposerState
 } from "./types";
 
 export type ComposerAction =
@@ -45,5 +46,5 @@ export type ComposerAction =
   | { type: 'addLanguage', language: string, copyFrom?: string }
   | { type: 'deleteLanguage', language: string }
   | { type: 'setRevision', revision: string }
-  | { type: 'loadVersion', tagName: string }
+  | { type: 'setForm', form: ComposerState, tagName?: string }
   | { type: 'setFormData', formData: DialobItems }

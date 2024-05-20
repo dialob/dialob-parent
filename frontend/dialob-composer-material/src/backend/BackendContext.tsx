@@ -1,25 +1,28 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import { ComposerState } from "../dialob";
+import { ComposerState, ComposerTag, INIT_STATE } from "../dialob";
 import { BackendService } from "./BackendService";
 import { ApiResponse, BackendState, CreateTagRequest, TransportConfig } from "./types";
 
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const INITIAL_BACKEND: BackendState = {
   formId: "",
   loaded: false,
   form: null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  saveForm: (form: ComposerState, dryRun?: boolean): Promise<ApiResponse> => {
+  loadForm: (_formId: string, _tagName?: string): Promise<ComposerState> => {
+    return Promise.resolve(INIT_STATE);
+  },
+  saveForm: (_form: ComposerState, _dryRun?: boolean): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  duplicateItem: (form: ComposerState, itemId: string): Promise<ApiResponse> => {
+  duplicateItem: (_form: ComposerState, _itemId: string): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  createTag: (request: CreateTagRequest): Promise<ApiResponse> => {
+  createTag: (_request: CreateTagRequest): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
+  getTags: (_formName: string): Promise<ComposerTag[]> => {
+    return Promise.resolve([]);
+  }
 };
 
 export const BackendContext = createContext<BackendState>(INITIAL_BACKEND);
@@ -50,9 +53,11 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
       form: formData,
       loaded,
       formId,
+      loadForm: backendService.current.loadForm.bind(backendService.current),
       saveForm: backendService.current.saveForm.bind(backendService.current),
       duplicateItem: backendService.current.duplicateItem.bind(backendService.current),
       createTag: backendService.current.createTag.bind(backendService.current),
+      getTags: backendService.current.getTags.bind(backendService.current),
     }}>
       {children}
     </BackendContext.Provider>

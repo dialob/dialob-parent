@@ -1,4 +1,4 @@
-import { ComposerState } from "../dialob";
+import { ComposerState, ComposerTag } from "../dialob";
 import { SaveResult, TransportConfig, DuplicateResult, ApiResponse, CreateTagRequest, CreateTagResult } from "./types";
 
 interface UrlParams {
@@ -8,6 +8,7 @@ interface UrlParams {
   snapshot?: boolean;
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export class BackendService {
   private config: TransportConfig;
   private isSaving: boolean;
@@ -20,10 +21,9 @@ export class BackendService {
   private prepareFormsUrl(url: string, urlParams?: UrlParams): string {
     const { formTag, itemId, dryRun, snapshot } = urlParams || {};
     const baseUrl = new URL(this.config.apiUrl + url);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: Record<string, any> = new URLSearchParams();
 
-    if (formTag) {
+    if (formTag && formTag !== 'LATEST') {
       params.append('rev', formTag);
     }
     if (itemId) {
@@ -43,7 +43,6 @@ export class BackendService {
     return baseUrl.toString();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async doFetch(url: string, method: string, body?: any): Promise<any> {
     const headers: Record<string, string> = {
       'Accept': 'application/json',
@@ -91,7 +90,6 @@ export class BackendService {
         result: res as SaveResult,
         success: true
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       this.isSaving = false;
       return {
@@ -101,8 +99,8 @@ export class BackendService {
     }
   }
 
-  public async loadForm(formId: string): Promise<ComposerState> {
-    return await this.doFetch(this.prepareFormsUrl(`/forms/${formId}`), 'GET');
+  public async loadForm(formId: string, tagName?: string): Promise<ComposerState> {
+    return await this.doFetch(this.prepareFormsUrl(`/forms/${formId}`, { formTag: tagName }), 'GET');
   }
 
   public async duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse> {
@@ -112,7 +110,6 @@ export class BackendService {
         result: res as DuplicateResult,
         success: true
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       return {
         success: false,
@@ -120,24 +117,6 @@ export class BackendService {
       }
     }
   }
-
-  /* 
-  createTag(formName, tagName, tagDescription, formId = null) {
-    let tagData = {
-      name: tagName,
-      description: tagDescription,
-      formName
-    };
-    if (formId) {
-      tagData.formId = formId;
-    }
-    let url = `${this.baseUrl}/forms/${formName}/tags`;
-    if (!formId) {
-      url += '?snapshot=true';
-    }
-    return this.doFetch(url, 'post', tagData);
-  }
-  */
 
   public async createTag(request: CreateTagRequest): Promise<ApiResponse> {
     const { formName, formId } = request;
@@ -151,12 +130,15 @@ export class BackendService {
         result: res as CreateTagResult,
         success: true
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       return {
         success: false,
         apiError: err
       }
     }
+  }
+
+  public async getTags(formName: string): Promise<ComposerTag[]> {
+    return await this.doFetch(this.prepareFormsUrl(`/forms/${formName}/tags`), 'GET');
   }
 }
