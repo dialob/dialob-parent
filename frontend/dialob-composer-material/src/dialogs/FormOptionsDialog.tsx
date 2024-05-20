@@ -7,6 +7,7 @@ import { Close, ContentCopy } from "@mui/icons-material";
 import { VisibilityType, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { version } from "../../package.json";
+import { useBackend } from "../backend/useBackend";
 
 const visibilityModeOptions = [
   { value: 'ONLY_ENABLED' as VisibilityType, label: 'dialogs.form.options.visibility.ONLY_ENABLED' },
@@ -26,9 +27,16 @@ const CopyToClipboardButton: React.FC<{ text: string }> = ({ text }) => {
 
 const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form, setMetadataValue } = useComposer();
+  const { getBuildInfo } = useBackend();
   const [label, setLabel] = React.useState<string | undefined>();
   const [visibilityMode, setVisibilityMode] = React.useState<VisibilityType | undefined>();
   const [required, setRequired] = React.useState<boolean>(false);
+  const [backendVersion, setBackendVersion] = React.useState<string>('0.0.0');
+
+  React.useEffect(() => {
+    getBuildInfo().then(info => setBackendVersion(info.build.version));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     if (open) {
@@ -114,7 +122,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.composer' /></Typography>
           <Typography>{version}</Typography>
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.backend' /></Typography>
-          <Typography><FormattedMessage id='dialogs.form.options.version.backend' />{/* TODO:: get backend version */}</Typography>
+          <Typography>{backendVersion}</Typography>
         </Box>
       </DialogContent>
       <DialogActions>

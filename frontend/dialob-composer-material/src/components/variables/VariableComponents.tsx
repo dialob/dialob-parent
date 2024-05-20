@@ -41,7 +41,7 @@ export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }>
 }
 
 export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
-  // name updates are considered an id change and will need to be connected to backend
+  // TODO: id change
   const [name, setName] = React.useState<string>(variable.name);
   return (
     <TextField value={name} onChange={(e) => setName(e.target.value)} variant='standard' InputProps={{ disableUnderline: true }} fullWidth />
@@ -49,7 +49,7 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
 }
 
 export const DescriptionField: React.FC = () => {
-  const [description, setDescription] = React.useState<string | undefined>(); // add description to context
+  const [description, setDescription] = React.useState<string | undefined>(); // TODO: add description to context
   return (
     <TextField
       value={description || ''}

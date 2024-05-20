@@ -87,6 +87,16 @@ export interface AppConfig {
   credentialMode: RequestCredentials;
 }
 
+export interface BuildInfo {
+  build: {
+    artifact: string;
+    name: string;
+    version: string;
+    group: string;
+    time: string;
+  }
+}
+
 export interface BackendState {
   formId: string;
   loaded: boolean;
@@ -99,4 +109,5 @@ export interface BackendState {
   getTags(formName: string): Promise<ComposerTag[]>;
   changeItemId(form: ComposerState, oldId: string, newId: string): Promise<ApiResponse>;
   createPreviewSession(formId: string, language: string, context?: PreviewSessionContext): Promise<ApiResponse>;
+  getBuildInfo(): Promise<BuildInfo>;
 }
