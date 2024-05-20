@@ -1,11 +1,13 @@
 import React from "react";
-import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, Paper, TableCell, Grid } from '@mui/material';
-import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune } from '@mui/icons-material';
+import {
+  Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography,
+  Paper, TableCell, Grid
+} from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
 import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
-import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -43,62 +45,6 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
         </TableBody>
       </Table>
     </TableContainer>
-  );
-}
-
-const PageMenuButton: React.FC<{ item: DialobItem }> = ({ item }) => {
-  const { setConfirmationDialogType, setActiveItem } = useEditor();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(null);
-  };
-
-  const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    handleClose(e);
-    setConfirmationDialogType('delete');
-    setActiveItem(item);
-  }
-
-  const handleDuplicate = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    handleClose(e);
-    setConfirmationDialogType('duplicate');
-    setActiveItem(item);
-  }
-
-  return (
-    <Box>
-      <IconButton onClick={handleClick} component='span' sx={{ ml: 1 }}>
-        <MenuIcon />
-      </IconButton>
-      <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
-        <MenuItem onClick={handleClose}>
-          <Tune sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.options' />
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Key sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.change.id' />
-        </MenuItem>
-        <MenuItem onClick={handleDelete}>
-          <Close sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.delete' />
-        </MenuItem>
-        <MenuItem onClick={handleDuplicate}>
-          <ContentCopy sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.duplicate' />
-        </MenuItem>
-      </Menu>
-    </Box>
   );
 }
 
