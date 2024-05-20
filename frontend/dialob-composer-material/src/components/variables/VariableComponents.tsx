@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { ContextVariable, ContextVariableType, DialobItem, Variable, useComposer } from '../../dialob';
-import { Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
+import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
@@ -10,6 +10,9 @@ import { TreeItem } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
 import CodeMirror from '../code/CodeMirror';
+import { validateId } from '../../utils/ValidateUtils';
+import { useBackend } from '../../backend/useBackend';
+import { ChangeIdResult } from '../../backend/types';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -41,10 +44,50 @@ export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }>
 }
 
 export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
-  // TODO: id change
+  const { changeItemId } = useBackend();
+  const { form, setForm } = useComposer();
+  const { setErrors } = useEditor();
+  const [editMode, setEditMode] = React.useState(false);
+  const [idError, setIdError] = React.useState(false);
+
+  const handleChangeName = () => {
+    if (name !== variable.name) {
+      if (validateId(name, form.data, form.variables)) {
+        changeItemId(form, variable.name, name).then((response) => {
+          const result = response.result as ChangeIdResult;
+          if (response.success) {
+            setForm(result.form);
+            setErrors(result.errors);
+            setIdError(false);
+          } else if (response.apiError) {
+            setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+          }
+          setEditMode(false);
+        });
+      } else {
+        setIdError(true);
+      }
+    }
+  }
+
+  const handleCloseChange = () => {
+    setEditMode(false);
+    setIdError(false);
+    setName(variable.name);
+  }
+
   const [name, setName] = React.useState<string>(variable.name);
   return (
-    <TextField value={name} onChange={(e) => setName(e.target.value)} variant='standard' InputProps={{ disableUnderline: true }} fullWidth />
+    <TextField value={name} onChange={(e) => setName(e.target.value)} variant='standard' fullWidth error={idError}
+      onFocus={() => setEditMode(true)} helperText={editMode && <FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
+        disableUnderline: true,
+        endAdornment: (
+          editMode && <>
+            <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
+            <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+          </>
+        )
+      }} />
   );
 }
 

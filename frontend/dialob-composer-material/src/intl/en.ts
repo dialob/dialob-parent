@@ -188,6 +188,9 @@ const en = {
   'dialogs.create.tag.name': 'Tag name',
   'dialogs.create.tag.desc': 'Tag description',
 
+  'dialogs.change.id': 'Change ID',
+  'dialogs.change.id.tip': 'Valid ID can consist of letters, numbers & underscores. It must not contain reserved words used in expressions, must start with a letter and be unique',
+
   'errors.title': 'error',
   'errors.at': ' at <b>{itemId}</b>',
   'errors.type.VARIABLE': 'Variable',

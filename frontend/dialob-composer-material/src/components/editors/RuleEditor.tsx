@@ -7,6 +7,7 @@ import { useEditor } from '../../editor';
 import { ErrorMessage } from '../ErrorComponents';
 import CodeMirror from '../code/CodeMirror';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
+import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 
 type RuleType = 'visibility' | 'requirement';
 
@@ -46,7 +47,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     return null;
   }
 
-  if (item.type === 'note' && type === 'requirement') {
+  if (!DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.find(i => i.config.type === item.type) && type === 'requirement') {
     return null;
   }
 

@@ -12,6 +12,7 @@ import Editors from '../components/editors';
 import { useBackend } from '../backend/useBackend';
 import { useComposer } from '../dialob';
 import { ChangeIdResult } from '../backend/types';
+import { validateId } from '../utils/ValidateUtils';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -31,6 +32,7 @@ const ItemOptionsDialog: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState<OptionsTabType>('label');
   const [editMode, setEditMode] = React.useState(false);
   const [id, setId] = React.useState<string>(item?.id || '');
+  const [idError, setIdError] = React.useState<boolean>(false);
   const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
 
   React.useEffect(() => {
@@ -58,20 +60,30 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   const handleChangeId = () => {
-    if (item && id !== '' && id !== item.id) {
-      changeItemId(form, item.id, id).then((response) => {
-        const result = response.result as ChangeIdResult;
-        if (response.success) {
-          setForm(result.form);
-          setErrors(result.errors);
-        } else if (response.apiError) {
-          setErrors([{ level: 'FATAL', message: response.apiError.message }]);
-        }
-        setEditMode(false);
-      });
+    if (item && id !== item.id) {
+      if (validateId(id, form.data, form.variables)) {
+        changeItemId(form, item.id, id).then((response) => {
+          const result = response.result as ChangeIdResult;
+          if (response.success) {
+            setForm(result.form);
+            setErrors(result.errors);
+            setIdError(false);
+          } else if (response.apiError) {
+            setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+          }
+          setEditMode(false);
+        });
+      } else {
+        setIdError(true);
+      }
     }
   }
 
+  const handleCloseChange = () => {
+    setEditMode(false);
+    setIdError(false);
+    setId(item?.id || '');
+  }
 
   if (!item) {
     return null;
@@ -80,11 +92,11 @@ const ItemOptionsDialog: React.FC = () => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} InputProps={{
+        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError} helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
           endAdornment: (
             <>
               <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
-              <IconButton onClick={() => setEditMode(false)}><Close color='error' /></IconButton>
+              <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
             </>
           )
         }} /> :

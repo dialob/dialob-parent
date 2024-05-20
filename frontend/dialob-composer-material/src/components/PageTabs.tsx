@@ -3,7 +3,7 @@ import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, Ta
 import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune } from '@mui/icons-material';
 import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
-import { LabelField, VisibilityField } from "../items/ItemComponents";
+import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
 import { FormattedMessage } from "react-intl";
 
@@ -144,7 +144,7 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
           key={index}
         >
           <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
-          < PageMenuButton item={item} />
+          <OptionsMenu item={item} isPage />
         </Button >
       );
     });

@@ -242,7 +242,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   );
 }
 
-export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
+export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean }> = ({ item, isPage }) => {
   const { form, addItem } = useComposer();
   const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -332,28 +332,30 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
           <ContentCopy sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.duplicate' />
         </MenuItem>
-        <Divider />
-        <MenuItem onClick={(e) => handleClick(e, 2)}>
-          <FormattedMessage id='menus.insert.below' />
-          <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-        </MenuItem>
-        <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
-          disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-          {itemCategories.map((c, index) => (
-            <MenuItem key={index} onClick={(e) => handleClick(e, 3, c.title)}>
-              <Typography>{c.title}</Typography>
-              <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-              <Menu open={c.title === chosenCategory} onClose={(e) => handleClose(e, 3)} anchorEl={itemsAnchorEl}
-                disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                {c.items.map((i, index) => (
-                  <MenuItem key={index} onClick={(e) => handleCreate(e, i.config)}>
-                    <Typography>{i.title}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </MenuItem>
-          ))}
-        </Menu>
+        {!isPage && <>
+          <Divider />
+          <MenuItem onClick={(e) => handleClick(e, 2)}>
+            <FormattedMessage id='menus.insert.below' />
+            <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
+          </MenuItem>
+          <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
+            disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            {itemCategories.map((c, index) => (
+              <MenuItem key={index} onClick={(e) => handleClick(e, 3, c.title)}>
+                <Typography>{c.title}</Typography>
+                <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
+                <Menu open={c.title === chosenCategory} onClose={(e) => handleClose(e, 3)} anchorEl={itemsAnchorEl}
+                  disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                  {c.items.map((i, index) => (
+                    <MenuItem key={index} onClick={(e) => handleCreate(e, i.config)}>
+                      <Typography>{i.title}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </MenuItem>
+            ))}
+          </Menu>
+        </>}
       </Menu>
     </>
   );
