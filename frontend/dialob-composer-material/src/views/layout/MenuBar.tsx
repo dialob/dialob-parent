@@ -16,6 +16,8 @@ import CreateTagDialog from '../../dialogs/CreateTagDialog';
 import { downloadForm } from '../../utils/ParseUtils';
 import { matchItemByKeyword, matchVariableByKeyword } from '../../utils/SearchUtils';
 import { scrollToItem } from '../../utils/ScrollUtils';
+import { useBackend } from '../../backend/useBackend';
+import { CreateSessionResult } from '../../backend/types';
 
 interface SearchMatch {
   type: 'item' | 'variable';
@@ -61,7 +63,8 @@ const MenuBar: React.FC = () => {
   const theme = useTheme();
   const intl = useIntl();
   const { form } = useComposer();
-  const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab } = useEditor();
+  const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab, setErrors } = useEditor();
+  const { config, createPreviewSession } = useBackend();
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const currentTag = form._tag ?? 'LATEST';
@@ -102,7 +105,19 @@ const MenuBar: React.FC = () => {
     if (contextVariables && contextVariables.length > 0) {
       setPreviewDialogOpen(true);
     } else {
-      // TODO initiate preview
+      createPreviewSession(form._id, editor.activeFormLanguage).then((response) => {
+        const result = response.result as CreateSessionResult;
+        if (response.success) {
+          const win = window.open(`${config.transport.previewUrl}/${result._id}`);
+          if (win) {
+            win.focus();
+          } else {
+            setErrors([{ level: 'FATAL', message: 'FATAL_POPUP' }]);
+          }
+        } else if (response.apiError) {
+          setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+        }
+      });
     }
   }
 
@@ -117,6 +132,10 @@ const MenuBar: React.FC = () => {
         setActiveVariableTab(isContextVariable(variable) ? 'context' : 'expression');
       }
     }
+  }
+
+  const handleClose = () => {
+    config.closeHandler();
   }
 
   React.useEffect(() => {
@@ -218,7 +237,7 @@ const MenuBar: React.FC = () => {
               ))}
           </Menu>
           <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitPreview} />
-          <HeaderIconButton icon={<Close />} />
+          <HeaderIconButton icon={<Close />} onClick={handleClose} />
         </Stack>
       </AppBar>
     </>

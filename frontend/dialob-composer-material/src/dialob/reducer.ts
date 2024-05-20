@@ -3,7 +3,7 @@ import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
 import {
   ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable,
-  ValidationRule, LocalizedString, DialobItems
+  ValidationRule, LocalizedString
 } from './types';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
@@ -525,6 +525,7 @@ const setRevision = (state: ComposerState, revision: string): void => {
   state._rev = revision;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const setForm = (state: ComposerState, form: ComposerState, tagName?: string, _save?: boolean): void => {
   Object.assign(state, form);
   if (tagName && tagName !== 'LATEST') {

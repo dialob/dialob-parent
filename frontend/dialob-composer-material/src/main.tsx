@@ -19,19 +19,18 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) 
         token: appConfig.csrf
       } : undefined,
       apiUrl: appConfig.backend_api_url,
-      // previewUrl: appConfig.filling_app_url,
+      previewUrl: appConfig.filling_app_url,
       tenantId: appConfig.tenantId || undefined,
-      credentialMode: appConfig.credentialMode || undefined
+      credentialMode: appConfig.credentialMode || undefined,
     },
-
-    // closeHandler : () => window.location.href = appConfig.adminAppUrl
+    closeHandler: () => window.location.href = appConfig.adminAppUrl,
   };
 
   ReactDOM.createRoot(targetElement!).render(
     <React.StrictMode>
       <ThemeProvider theme={siteTheme}>
         <CssBaseline />
-        <BackendProvider config={DIALOB_COMPOSER_CONFIG.transport} formId={FORM_ID}>
+        <BackendProvider config={DIALOB_COMPOSER_CONFIG} formId={FORM_ID}>
           <EditorProvider>
             <App />
           </EditorProvider>

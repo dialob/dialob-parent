@@ -1,13 +1,14 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ComposerState, ComposerTag, INIT_STATE } from "../dialob";
 import { BackendService } from "./BackendService";
-import { ApiResponse, BackendState, CreateTagRequest, TransportConfig } from "./types";
+import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const INITIAL_BACKEND: BackendState = {
   formId: "",
   loaded: false,
   form: null,
+  config: { transport: { apiUrl: "", previewUrl: "" }, closeHandler: () => { } },
   loadForm: (_formId: string, _tagName?: string): Promise<ComposerState> => {
     return Promise.resolve(INIT_STATE);
   },
@@ -26,6 +27,9 @@ const INITIAL_BACKEND: BackendState = {
   changeItemId: (_form: ComposerState, _oldId: string, _newId: string): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
+  createPreviewSession: (_formId: string, _language: string, _context?: PreviewSessionContext): Promise<ApiResponse> => {
+    return Promise.resolve({ success: true });
+  },
 };
 
 export const BackendContext = createContext<BackendState>(INITIAL_BACKEND);
@@ -33,7 +37,7 @@ export const BackendContext = createContext<BackendState>(INITIAL_BACKEND);
 export interface BackendProviderProps {
   children: React.ReactNode;
   formId: string;
-  config: TransportConfig;
+  config: DialobComposerConfig;
 }
 
 export const BackendProvider: React.FC<BackendProviderProps> = ({ children, formId, config }) => {
@@ -53,15 +57,17 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
 
   return (
     <BackendContext.Provider value={{
-      form: formData,
-      loaded,
       formId,
+      loaded,
+      form: formData,
+      config,
       loadForm: backendService.current.loadForm.bind(backendService.current),
       saveForm: backendService.current.saveForm.bind(backendService.current),
       duplicateItem: backendService.current.duplicateItem.bind(backendService.current),
       createTag: backendService.current.createTag.bind(backendService.current),
       getTags: backendService.current.getTags.bind(backendService.current),
       changeItemId: backendService.current.changeItemId.bind(backendService.current),
+      createPreviewSession: backendService.current.createPreviewSession.bind(backendService.current),
     }}>
       {children}
     </BackendContext.Provider>

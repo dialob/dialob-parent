@@ -28,9 +28,13 @@ export interface CreateTagResult {
   ok: boolean;
 }
 
+export interface CreateSessionResult {
+  _id: string;
+}
+
 export interface ApiResponse {
   success: boolean;
-  result?: SaveResult | DuplicateResult | CreateTagResult;
+  result?: SaveResult | DuplicateResult | CreateTagResult | ChangeIdResult | CreateSessionResult;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apiError?: any;
 }
@@ -42,18 +46,34 @@ export interface CreateTagRequest {
   formId?: string;
 }
 
+export type PreviewSessionContext = {
+  id: string;
+  value: string;
+}[];
+
+export interface PreviewSessionData {
+  metadata: {
+    formId: string
+    formRev: string;
+    language: string;
+  };
+  context?: PreviewSessionContext;
+}
+
 export interface TransportConfig {
   csrf?: {
     headerName: string;
     token: string;
   }
   apiUrl: string;
+  previewUrl: string;
   tenantId?: string;
   credentialMode?: RequestCredentials;
 }
 
 export interface DialobComposerConfig {
   transport: TransportConfig;
+  closeHandler: () => void;
 }
 
 export interface AppConfig {
@@ -61,6 +81,8 @@ export interface AppConfig {
   csrfHeader: string;
   csrf: string;
   backend_api_url: string;
+  filling_app_url: string;
+  adminAppUrl: string;
   tenantId: string;
   credentialMode: RequestCredentials;
 }
@@ -69,10 +91,12 @@ export interface BackendState {
   formId: string;
   loaded: boolean;
   form: ComposerState | null;
+  config: DialobComposerConfig;
   loadForm(formId: string, tagName?: string): Promise<ComposerState>;
   saveForm(form: ComposerState, dryRun?: boolean): Promise<ApiResponse>;
   duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
   createTag(request: CreateTagRequest): Promise<ApiResponse>;
   getTags(formName: string): Promise<ComposerTag[]>;
   changeItemId(form: ComposerState, oldId: string, newId: string): Promise<ApiResponse>;
+  createPreviewSession(formId: string, language: string, context?: PreviewSessionContext): Promise<ApiResponse>;
 }

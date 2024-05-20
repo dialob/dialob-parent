@@ -2,8 +2,7 @@ import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, DialobItems,
-  ComposerState
+  Variable, ComposerState
 } from "../types";
 
 export const useComposer = () => {

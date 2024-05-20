@@ -1,7 +1,6 @@
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, DialobItems,
-  ComposerState
+  Variable, ComposerState
 } from "./types";
 
 export type ComposerAction =
