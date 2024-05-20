@@ -8,7 +8,7 @@ import { useBackend } from '../backend/useBackend';
 import { DuplicateResult } from '../backend/types';
 
 const ConfirmationDialog: React.FC = () => {
-  const { form, deleteItem, setFormData } = useComposer();
+  const { form, deleteItem, setForm } = useComposer();
   const { duplicateItem } = useBackend();
   const { editor, setConfirmationDialogType, setErrors } = useEditor();
   const type = editor.confirmationDialogType;
@@ -33,7 +33,7 @@ const ConfirmationDialog: React.FC = () => {
         .then(duplicateResponse => {
           if (duplicateResponse.success && duplicateResponse.result) {
             const duplicateRes = duplicateResponse.result as DuplicateResult;
-            setFormData(duplicateRes.form.data);
+            setForm(duplicateRes.form, undefined, true);
           } else if (duplicateResponse.apiError) {
             setErrors([{ level: 'FATAL', message: duplicateResponse.apiError.message }]);
           }

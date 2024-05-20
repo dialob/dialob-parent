@@ -9,6 +9,9 @@ import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import { ConversionMenu } from '../items/ItemComponents';
 import Editors from '../components/editors';
+import { useBackend } from '../backend/useBackend';
+import { useComposer } from '../dialob';
+import { ChangeIdResult } from '../backend/types';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -19,7 +22,9 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
 }));
 
 const ItemOptionsDialog: React.FC = () => {
-  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType } = useEditor();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
+  const { form, setForm } = useComposer();
+  const { changeItemId } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
   const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice');
@@ -27,16 +32,6 @@ const ItemOptionsDialog: React.FC = () => {
   const [editMode, setEditMode] = React.useState(false);
   const [id, setId] = React.useState<string>(item?.id || '');
   const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
-
-  const handleClose = () => {
-    setItemOptionsActiveTab(undefined);
-    setActiveItem(undefined);
-  }
-
-  const handleDelete = () => {
-    setItemOptionsActiveTab(undefined);
-    setConfirmationDialogType('delete');
-  }
 
   React.useEffect(() => {
     if (editor.itemOptionsActiveTab) {
@@ -52,6 +47,32 @@ const ItemOptionsDialog: React.FC = () => {
     setId(item?.id || '');
   }, [editor.itemOptionsActiveTab, open, item?.id]);
 
+  const handleClose = () => {
+    setItemOptionsActiveTab(undefined);
+    setActiveItem(undefined);
+  }
+
+  const handleDelete = () => {
+    setItemOptionsActiveTab(undefined);
+    setConfirmationDialogType('delete');
+  }
+
+  const handleChangeId = () => {
+    if (item && id !== '' && id !== item.id) {
+      changeItemId(form, item.id, id).then((response) => {
+        const result = response.result as ChangeIdResult;
+        if (response.success) {
+          setForm(result.form);
+          setErrors(result.errors);
+        } else if (response.apiError) {
+          setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+        }
+        setEditMode(false);
+      });
+    }
+  }
+
+
   if (!item) {
     return null;
   }
@@ -62,7 +83,7 @@ const ItemOptionsDialog: React.FC = () => {
         {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} InputProps={{
           endAdornment: (
             <>
-              <IconButton onClick={() => setEditMode(false)}><Check color='success' /></IconButton>
+              <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
               <IconButton onClick={() => setEditMode(false)}><Close color='error' /></IconButton>
             </>
           )

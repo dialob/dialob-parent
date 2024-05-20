@@ -525,22 +525,16 @@ const setRevision = (state: ComposerState, revision: string): void => {
   state._rev = revision;
 }
 
-const setForm = (state: ComposerState, form: ComposerState, tagName?: string): void => {
+const setForm = (state: ComposerState, form: ComposerState, tagName?: string, _save?: boolean): void => {
   Object.assign(state, form);
   if (tagName && tagName !== 'LATEST') {
     state._tag = tagName;
   } else {
     state._tag = undefined;
   }
-  console.log('>> SET FORM', state);
-}
-
-const setFormData = (state: ComposerState, formData: DialobItems): void => {
-  state.data = formData;
 }
 
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
-  console.log('>> REDUCER', action, state)
   if (state._tag && (action.type === 'setForm' ? action.tagName !== 'LATEST' : true)) {
     // if a version tag is loaded, then it's in read-only mode
     return state;
@@ -614,8 +608,6 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       setRevision(state, action.revision);
     } else if (action.type === 'setForm') {
       setForm(state, action.form, action.tagName);
-    } else if (action.type === 'setFormData') {
-      setFormData(state, action.formData);
     }
   });
 

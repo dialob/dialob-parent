@@ -33,7 +33,7 @@ function App() {
   const { setErrors } = useEditor();
 
   async function saveFormMiddleware(action: ComposerAction | undefined, state: ComposerState, dispatch: Dispatch<ComposerAction>) {
-    if (action !== undefined && action.type !== 'setRevision' && state._tag === undefined) {
+    if (action && action.type !== 'setRevision' && state._tag === undefined && (action.type === 'setForm' ? action.save === true : false)) {
       saveForm(state)
         .then(saveResponse => {
           if (saveResponse.success && saveResponse.result) {

@@ -16,6 +16,14 @@ export interface DuplicateResult {
   form: ComposerState;
 }
 
+export interface ChangeIdResult {
+  ok: boolean;
+  id: string;
+  rev: string;
+  form: ComposerState;
+  errors: EditorError[];
+}
+
 export interface CreateTagResult {
   ok: boolean;
 }
@@ -66,4 +74,5 @@ export interface BackendState {
   duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
   createTag(request: CreateTagRequest): Promise<ApiResponse>;
   getTags(formName: string): Promise<ComposerTag[]>;
+  changeItemId(form: ComposerState, oldId: string, newId: string): Promise<ApiResponse>;
 }

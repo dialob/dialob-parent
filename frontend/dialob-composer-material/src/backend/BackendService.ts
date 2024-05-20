@@ -1,11 +1,13 @@
 import { ComposerState, ComposerTag } from "../dialob";
-import { SaveResult, TransportConfig, DuplicateResult, ApiResponse, CreateTagRequest, CreateTagResult } from "./types";
+import { SaveResult, TransportConfig, DuplicateResult, ApiResponse, CreateTagRequest, CreateTagResult, ChangeIdResult } from "./types";
 
 interface UrlParams {
   formTag?: string;
   itemId?: string;
   dryRun?: boolean;
   snapshot?: boolean;
+  oldId?: string;
+  newId?: string;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -19,7 +21,7 @@ export class BackendService {
   }
 
   private prepareFormsUrl(url: string, urlParams?: UrlParams): string {
-    const { formTag, itemId, dryRun, snapshot } = urlParams || {};
+    const { formTag, itemId, dryRun, snapshot, oldId, newId } = urlParams || {};
     const baseUrl = new URL(this.config.apiUrl + url);
     const params: Record<string, any> = new URLSearchParams();
 
@@ -37,6 +39,12 @@ export class BackendService {
     }
     if (snapshot) {
       params.append('snapshot', 'true');
+    }
+    if (oldId) {
+      params.append('oldId', oldId);
+    }
+    if (newId) {
+      params.append('newId', newId);
     }
 
     baseUrl.search = params.toString();
@@ -140,5 +148,20 @@ export class BackendService {
 
   public async getTags(formName: string): Promise<ComposerTag[]> {
     return await this.doFetch(this.prepareFormsUrl(`/forms/${formName}/tags`), 'GET');
+  }
+
+  public async changeItemId(form: ComposerState, oldId: string, newId: string): Promise<ApiResponse> {
+    try {
+      const res = await this.doFetch(this.prepareFormsUrl(`/forms/${form._id}`, { oldId, newId }), 'PUT', form);
+      return {
+        result: res as ChangeIdResult,
+        success: true
+      }
+    } catch (err: any) {
+      return {
+        success: false,
+        apiError: err
+      }
+    }
   }
 }

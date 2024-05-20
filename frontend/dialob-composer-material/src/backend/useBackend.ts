@@ -11,5 +11,6 @@ export const useBackend = () => {
     duplicateItem: backendContext.duplicateItem,
     createTag: backendContext.createTag,
     getTags: backendContext.getTags,
+    changeItemId: backendContext.changeItemId,
   }
 }

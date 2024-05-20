@@ -22,7 +22,10 @@ const INITIAL_BACKEND: BackendState = {
   },
   getTags: (_formName: string): Promise<ComposerTag[]> => {
     return Promise.resolve([]);
-  }
+  },
+  changeItemId: (_form: ComposerState, _oldId: string, _newId: string): Promise<ApiResponse> => {
+    return Promise.resolve({ success: true });
+  },
 };
 
 export const BackendContext = createContext<BackendState>(INITIAL_BACKEND);
@@ -58,6 +61,7 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
       duplicateItem: backendService.current.duplicateItem.bind(backendService.current),
       createTag: backendService.current.createTag.bind(backendService.current),
       getTags: backendService.current.getTags.bind(backendService.current),
+      changeItemId: backendService.current.changeItemId.bind(backendService.current),
     }}>
       {children}
     </BackendContext.Provider>

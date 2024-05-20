@@ -136,16 +136,12 @@ export const useComposer = () => {
     dispatch({ type: 'deleteLanguage', language });
   }
 
-  const setForm = (form: ComposerState, tagName?: string) => {
-    dispatch({ type: 'setForm', form, tagName });
+  const setForm = (form: ComposerState, tagName?: string, save?: boolean) => {
+    dispatch({ type: 'setForm', form, tagName, save });
   }
 
   const setRevision = (revision: string) => {
     dispatch({ type: 'setRevision', revision });
-  }
-
-  const setFormData = (formData: DialobItems) => {
-    dispatch({ type: 'setFormData', formData });
   }
 
   return {
@@ -182,7 +178,6 @@ export const useComposer = () => {
     deleteLanguage,
     setForm,
     setRevision,
-    setFormData,
     form: state
   };
 
