@@ -41,6 +41,16 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
     });
   }
 
+  const handleDownload = (tag: ComposerTag) => {
+    if (tag.name === 'LATEST') {
+      downloadForm(form);
+    } else {
+      loadForm(tag.formId, tag.name).then(form => {
+        downloadForm(form);
+      });
+    }
+  }
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
       <DialogTitle>
@@ -90,7 +100,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
                       onClick={() => handleLoadVersion(tag)}>
                       <FormattedMessage id='buttons.activate' />
                     </Button>
-                    <IconButton sx={{ ml: 1 }} onClick={() => downloadForm(form, tag.name)}><Download color='success' /></IconButton>
+                    <IconButton sx={{ ml: 1 }} onClick={() => handleDownload(tag)}><Download color='success' /></IconButton>
                   </TableCell>
                 </TableRow>
               ))}
