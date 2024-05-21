@@ -236,8 +236,8 @@ const MenuBar: React.FC = () => {
                 </MenuItem>
               ))}
           </Menu>
-          <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitPreview} />
-          <HeaderIconButton icon={<Close />} onClick={handleClose} />
+          <HeaderIconButton icon={<Visibility fontSize='small' color='primary' />} onClick={handleInitPreview} />
+          <HeaderIconButton icon={<Close sx={{ color: 'error.dark' }} />} onClick={handleClose} />
         </Stack>
       </AppBar>
     </>

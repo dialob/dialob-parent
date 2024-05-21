@@ -1,7 +1,9 @@
 import React from "react";
 import {
   Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography,
-  Paper, TableCell, Grid
+  Paper, TableCell, Grid,
+  alpha,
+  useTheme
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { DialobItem, DialobItems, useComposer } from "../dialob";
@@ -49,6 +51,7 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
 }
 
 const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
+  const theme = useTheme();
   const { addItem } = useComposer();
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
@@ -82,16 +85,18 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
       const item = items[itemId];
       const isActive = item.id === editor.activePage?.id;
       const variant = isActive ? 'contained' : 'text';
+      const activeSx = isActive ? { backgroundColor: 'primary.main' } : {};
       return (
-        <Button
-          onClick={(e) => handlePageClick(e, itemId)}
-          variant={variant}
-          color='inherit'
-          key={index}
-        >
-          <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
-          <OptionsMenu item={item} isPage />
-        </Button >
+        <Box sx={{ border: 1, borderColor: 'divider', ...activeSx }}>
+          <Button
+            onClick={(e) => handlePageClick(e, itemId)}
+            variant={variant}
+            key={index}
+            endIcon={<OptionsMenu item={item} isPage light={isActive} />}
+          >
+            <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+          </Button >
+        </Box>
       );
     });
 
@@ -110,7 +115,7 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
         </Grid>
         <Box sx={{ flexGrow: 1 }} />
         <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
-          <Add />
+          <Add color='primary' />
         </IconButton>
       </Box>
       <PageHeader item={editor.activePage} />

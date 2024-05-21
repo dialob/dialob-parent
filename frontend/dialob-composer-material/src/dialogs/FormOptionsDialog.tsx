@@ -34,9 +34,10 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const [backendVersion, setBackendVersion] = React.useState<string>('0.0.0');
 
   React.useEffect(() => {
-    getBuildInfo().then(info => setBackendVersion(info.build.version));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (open) {
+      getBuildInfo().then(info => setBackendVersion(info.build.version));
+    }
+  }, [open]);
 
   React.useEffect(() => {
     if (open) {

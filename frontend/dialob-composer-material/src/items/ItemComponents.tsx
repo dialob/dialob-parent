@@ -163,29 +163,29 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
       {item.description &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.description' />}>
-          <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' /></IconButton>
+          <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' sx={{ color: 'info.main' }} /></IconButton>
         </Tooltip>}
       {item.valueSetId &&
         <Tooltip placement='top' title={<FormattedMessage id={`tooltips.${isGlobalValueSet ? 'global' : 'local'}`} />}>
           <IconButton onClick={(e) => handleClick(e, 'choices')}>
-            {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
+            {isGlobalValueSet ? <Public fontSize='small' sx={{ color: 'success.light' }} /> : <Place fontSize='small' sx={{ color: 'success.light' }} />}
           </IconButton>
         </Tooltip>}
       {item.validations && item.validations.length > 0 &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.validations' />}>
-          <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' /></IconButton>
+          <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' sx={{ color: 'warning.light' }} /></IconButton>
         </Tooltip>}
       {item.required &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.requirement' />}>
-          <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' /></IconButton>
+          <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' sx={{ color: 'error.light' }} /></IconButton>
         </Tooltip>}
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
-          < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' /></IconButton>
+          < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
         </Tooltip>}
       {item.type === 'note' && item.activeWhen &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.visibility' />}>
-          < IconButton onClick={(e) => handleClick(e, 'rules')}><Visibility fontSize='small' /></IconButton>
+          < IconButton onClick={(e) => handleClick(e, 'rules')}><Visibility fontSize='small' sx={{ color: 'primary.light' }} /></IconButton>
         </Tooltip>}
     </Box >
   );
@@ -221,7 +221,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   return (
     <>
       <Button onClick={handleClick} component='span' sx={{ ml: 1 }} variant='text'
-        color='inherit' endIcon={<KeyboardArrowDown />}
+        endIcon={<KeyboardArrowDown />}
         disabled={conversions.length === 0}
       >
         <Typography variant='subtitle2'>
@@ -242,7 +242,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   );
 }
 
-export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean }> = ({ item, isPage }) => {
+export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?: boolean }> = ({ item, isPage, light }) => {
   const { form, addItem } = useComposer();
   const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -316,8 +316,8 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean }> = ({ 
 
   return (
     <>
-      <IconButton onClick={(e) => handleClick(e, 1)}>
-        <MenuIcon color='inherit' />
+      <IconButton onClick={(e) => handleClick(e, 1)} onMouseDown={(e) => e.stopPropagation()}>
+        <MenuIcon sx={{ color: light ? 'white' : 'inherit' }} />
       </IconButton>
       <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={(e) => handleOptions(e)}>
@@ -332,30 +332,28 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean }> = ({ 
           <ContentCopy sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.duplicate' />
         </MenuItem>
-        {!isPage && <>
-          <Divider />
-          <MenuItem onClick={(e) => handleClick(e, 2)}>
-            <FormattedMessage id='menus.insert.below' />
-            <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-          </MenuItem>
-          <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
-            disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-            {itemCategories.map((c, index) => (
-              <MenuItem key={index} onClick={(e) => handleClick(e, 3, c.title)}>
-                <Typography>{c.title}</Typography>
-                <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-                <Menu open={c.title === chosenCategory} onClose={(e) => handleClose(e, 3)} anchorEl={itemsAnchorEl}
-                  disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                  {c.items.map((i, index) => (
-                    <MenuItem key={index} onClick={(e) => handleCreate(e, i.config)}>
-                      <Typography>{i.title}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </MenuItem>
-            ))}
-          </Menu>
-        </>}
+        {!isPage && <Divider />}
+        {!isPage && <MenuItem onClick={(e) => handleClick(e, 2)}>
+          <FormattedMessage id='menus.insert.below' />
+          <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
+        </MenuItem>}
+        <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
+          disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          {itemCategories.map((c, index) => (
+            <MenuItem key={index} onClick={(e) => handleClick(e, 3, c.title)}>
+              <Typography>{c.title}</Typography>
+              <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
+              <Menu open={c.title === chosenCategory} onClose={(e) => handleClose(e, 3)} anchorEl={itemsAnchorEl}
+                disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                {c.items.map((i, index) => (
+                  <MenuItem key={index} onClick={(e) => handleCreate(e, i.config)}>
+                    <Typography>{i.title}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </MenuItem>
+          ))}
+        </Menu>
       </Menu>
     </>
   );
@@ -429,7 +427,7 @@ export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
     <FullWidthButton
       variant='text'
       color='inherit'
-      endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
+      endIcon={<Visibility color={item.activeWhen ? 'primary' : 'disabled'} sx={{ mr: 1 }} />}
       onClick={handleClick}
     >
       {item.activeWhen ?
@@ -457,7 +455,7 @@ export const NoteField: React.FC<{ item: DialobItem }> = ({ item }) => {
     <FullWidthButton
       variant='text'
       color='inherit'
-      endIcon={<Note color='disabled' sx={{ mr: 1 }} />}
+      endIcon={<Note sx={{ mr: 1, color: 'text.main' }} />}
       onClick={handleClick}
     >
       <Label item={item} />
