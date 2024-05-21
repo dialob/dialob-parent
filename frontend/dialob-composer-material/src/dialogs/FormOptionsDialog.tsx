@@ -37,7 +37,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     if (open) {
       getBuildInfo().then(info => setBackendVersion(info.build.version));
     }
-  }, [open]);
+  }, [open, getBuildInfo]);
 
   React.useEffect(() => {
     if (open) {

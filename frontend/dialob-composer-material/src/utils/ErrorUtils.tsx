@@ -125,3 +125,19 @@ export const getStatusIcon = (errors: EditorError[]): React.ReactElement => {
       return <Check color='success' fontSize='small' />;
   }
 }
+
+export const getStatus = (errors: EditorError[]): string => {
+  const dominantSeverity = getDominantSeverity(errors);
+  switch (dominantSeverity) {
+    case 'FATAL':
+      return 'fatal';
+    case 'ERROR':
+      return 'error';
+    case 'WARNING':
+      return 'warning';
+    case 'INFO':
+      return 'info';
+    default:
+      return 'ok';
+  }
+}

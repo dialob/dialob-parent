@@ -58,7 +58,7 @@ const PropertiesEditor: React.FC = () => {
       <Box sx={{ display: 'flex', mb: 2, mt: 1 }}>
         <TextField variant='outlined' value={newProp} onChange={(e) => setNewProp(e.target.value)} />
         <Button color='inherit' variant='contained' onClick={() => handleAddProp()} sx={{ ml: 2 }} disabled={newProp === ''}>
-          <Typography sx={{ px: 2 }}><FormattedMessage id='add' /></Typography>
+          <Typography sx={{ px: 2 }}><FormattedMessage id='dialogs.options.properties.add.short' /></Typography>
         </Button>
       </Box>
       <TableContainer>

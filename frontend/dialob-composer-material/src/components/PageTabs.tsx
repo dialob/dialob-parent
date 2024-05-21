@@ -1,9 +1,7 @@
 import React from "react";
 import {
   Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography,
-  Paper, TableCell, Grid,
-  alpha,
-  useTheme
+  Paper, TableCell, Grid
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { DialobItem, DialobItems, useComposer } from "../dialob";
@@ -51,7 +49,6 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
 }
 
 const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
-  const theme = useTheme();
   const { addItem } = useComposer();
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
