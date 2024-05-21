@@ -86,6 +86,7 @@ const en = {
 
   'dialogs.options.label.add': 'Add label translation',
   'dialogs.options.description.add': 'Add description translation',
+  'dialogs.options.validations.add': 'Add validation message translation',
   'dialogs.options.key': 'Key',
   'dialogs.options.value': 'Value',
   'dialogs.options.text': 'Text - {language}',

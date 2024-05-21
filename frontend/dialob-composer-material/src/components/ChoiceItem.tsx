@@ -44,7 +44,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
   const entry = item.data.entry;
   const formLanguages = form.metadata.languages;
   const languageNo = formLanguages?.length || 0;
-  const error = editor.errors.find(e => e.itemId === valueSetId && e.index == item.data.index);
+  const error = editor.errors?.find(e => e.itemId === valueSetId && e.index == item.data.index);
   const errorColor = useErrorColor(error);
   const backgroundColor = errorColor || theme.palette.background.paper;
   const [open, setOpen] = React.useState(false);

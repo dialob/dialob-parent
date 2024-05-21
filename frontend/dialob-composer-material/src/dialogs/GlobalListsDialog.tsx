@@ -34,7 +34,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [name, setName] = React.useState<string | undefined>(undefined);
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
-  const itemErrors = editor.errors.filter(e => e.itemId === currentValueSet?.id);
+  const itemErrors = editor.errors?.filter(e => e.itemId === currentValueSet?.id);
 
   const getMappedGvs = () => {
     const gvs = form.metadata.composer?.globalValueSets;
@@ -204,7 +204,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
                   </BorderedTable>
                 </TableContainer>
-                {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+                {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
                   <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
                 </Alert>)}
               </Box>

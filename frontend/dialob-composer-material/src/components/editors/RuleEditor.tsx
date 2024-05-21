@@ -23,7 +23,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const { updateItem } = useComposer();
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
-  const itemErrors = editor.errors.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
 
   React.useEffect(() => {
@@ -57,7 +57,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
       <Box>
         <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} errors={itemErrors} />
       </Box>
-      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </Box>

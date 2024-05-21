@@ -17,7 +17,7 @@ const ComposerLayoutView: React.FC = () => {
   const { form } = useComposer();
   const { editor, setErrors } = useEditor();
   const { saveForm } = useBackend();
-  const hasErrors = editor.errors.length > 0;
+  const hasErrors = editor.errors?.length > 0;
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {

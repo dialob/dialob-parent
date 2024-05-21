@@ -19,7 +19,7 @@ const ValidationRuleEditor: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression } = useComposer();
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
-  const itemErrors = editor.errors.filter(e => e.itemId === item?.id && e.type === 'VALIDATION');
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === 'VALIDATION');
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [activeRule, setActiveRule] = React.useState<IndexedRule | undefined>(undefined);
 
@@ -116,7 +116,7 @@ const ValidationRuleEditor: React.FC = () => {
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
       </Box>
-      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </>

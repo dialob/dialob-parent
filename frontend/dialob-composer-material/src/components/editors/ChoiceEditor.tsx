@@ -24,7 +24,7 @@ const ChoiceEditor: React.FC = () => {
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const formLanguages = form.metadata.languages;
-  const itemErrors = editor.errors.filter(e => e.itemId === item?.valueSetId);
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.valueSetId);
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
@@ -203,7 +203,7 @@ const ChoiceEditor: React.FC = () => {
         </Button>
       </Box>
       }
-      {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </>

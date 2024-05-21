@@ -14,7 +14,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
   const variable = item.data.variable as Variable;
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
-  const itemErrors = editor.errors.filter(e => e.itemId === variable.name);
+  const itemErrors = editor.errors?.filter(e => e.itemId === variable.name);
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
   return (
@@ -55,7 +55,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
           </TableRow>
           <TableRow>
             <TableCell colSpan={6}>
-              {itemErrors.length > 0 && itemErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+              {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
                 <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
               </Alert>)}
             </TableCell>

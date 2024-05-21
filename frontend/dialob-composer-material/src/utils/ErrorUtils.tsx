@@ -4,7 +4,10 @@ import { EditorError, ErrorSeverity } from "../editor";
 import { Check, Info, Warning } from "@mui/icons-material";
 import { PreTextIcon } from "../components/tree/NavigationTreeItem";
 
-const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined => {
+const getDominantSeverity = (errors: EditorError[] | undefined): ErrorSeverity | undefined => {
+  if (!errors || errors.length === 0) {
+    return undefined;
+  }
   const hasFatal = errors.some(error => error.level === 'FATAL');
   const hasError = errors.some(error => error.level === 'ERROR');
   const hasWarning = errors.some(error => error.level === 'WARNING');
@@ -24,8 +27,8 @@ const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined =
   return undefined;
 }
 
-const getItemErrorSeverity = (errors: EditorError[], itemId: string): ErrorSeverity | undefined => {
-  const itemErrors = errors.filter(error => error.itemId === itemId);
+const getItemErrorSeverity = (errors: EditorError[] | undefined, itemId: string): ErrorSeverity | undefined => {
+  const itemErrors = errors?.filter(error => error.itemId === itemId);
   return getDominantSeverity(itemErrors);
 }
 
@@ -44,7 +47,7 @@ export const getErrorSeverity = (error: EditorError): AlertColor => {
   }
 }
 
-export const getItemErrorColor = (errors: EditorError[], itemId: string) => {
+export const getItemErrorColor = (errors: EditorError[] | undefined, itemId: string) => {
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':
@@ -60,7 +63,7 @@ export const getItemErrorColor = (errors: EditorError[], itemId: string) => {
   }
 }
 
-export const useErrorColorSx = (errors: EditorError[], itemId: string): string | undefined => {
+export const useErrorColorSx = (errors: EditorError[] | undefined, itemId: string): string | undefined => {
   const theme = useTheme();
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
@@ -94,7 +97,7 @@ export const useErrorColor = (error: EditorError | undefined): string | undefine
   }
 }
 
-export const getErrorIcon = (errors: EditorError[], itemId: string): React.ReactNode | undefined => {
+export const getErrorIcon = (errors: EditorError[] | undefined, itemId: string): React.ReactNode | undefined => {
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':
@@ -110,7 +113,7 @@ export const getErrorIcon = (errors: EditorError[], itemId: string): React.React
   }
 }
 
-export const getStatusIcon = (errors: EditorError[]): React.ReactElement => {
+export const getStatusIcon = (errors: EditorError[] | undefined): React.ReactElement => {
   const dominantSeverity = getDominantSeverity(errors);
   switch (dominantSeverity) {
     case 'FATAL':
@@ -126,7 +129,7 @@ export const getStatusIcon = (errors: EditorError[]): React.ReactElement => {
   }
 }
 
-export const getStatus = (errors: EditorError[]): string => {
+export const getStatus = (errors: EditorError[] | undefined): string => {
   const dominantSeverity = getDominantSeverity(errors);
   switch (dominantSeverity) {
     case 'FATAL':

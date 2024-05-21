@@ -69,7 +69,7 @@ const ErrorPane: React.FC = () => {
 
   return (
     <Box sx={{ m: 1 }}>
-      {editor.errors.map((error, index) => (
+      {editor.errors?.map((error, index) => (
         <Card key={index} sx={{ mb: 2 }}>
           <CardActionArea onClick={() => handleClick(error, gvs)}>
             <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.level) }}>
