@@ -5,6 +5,7 @@ import { isContextVariable, useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
 import { BoldedMessage } from '../../utils/LocalizationUtils';
+import { isPage } from '../../items/ItemComponents';
 
 
 const errorCardBorderColor = (severity: string) => {
@@ -56,6 +57,9 @@ const ErrorPane: React.FC = () => {
           handleScrollTo(item.id);
           setHighlightedItem(form.data[item.id]);
         }
+      } else if (isPage(form.data, form.data[error.itemId])) {
+        setActivePage(form.data[error.itemId]);
+        setHighlightedItem(form.data[error.itemId]);
       } else {
         handleScrollTo(error.itemId);
         setHighlightedItem(form.data[error.itemId]);

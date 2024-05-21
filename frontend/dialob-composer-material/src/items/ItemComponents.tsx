@@ -88,7 +88,7 @@ const resolveTypeName = (type: string): string => {
   return type;
 }
 
-const isPage = (items: DialobItems, item: DialobItem): boolean => {
+export const isPage = (items: DialobItems, item: DialobItem): boolean => {
   return Object.values(items).find(i => i.type === 'questionnaire' && i.items && i.items.includes(item.id)) !== undefined;
 }
 

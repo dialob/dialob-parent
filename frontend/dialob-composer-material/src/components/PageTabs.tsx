@@ -48,6 +48,36 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
   );
 }
 
+const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLElement>) => void }> = ({ item, onClick }) => {
+  const { editor } = useEditor();
+  const isActive = item.id === editor.activePage?.id;
+  const variant = isActive ? 'contained' : 'text';
+  const [highlighted, setHighlighted] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (editor?.highlightedItem?.id === item.id) {
+      setHighlighted(true);
+    }
+    const id = setTimeout(() => {
+      setHighlighted(false);
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [editor.highlightedItem, item.id])
+
+  return (
+    <Box sx={{ border: 1, borderColor: 'divider' }}>
+      <Button
+        onClick={onClick}
+        variant={variant}
+        color={highlighted ? 'info' : 'primary'}
+        endIcon={<OptionsMenu item={item} isPage light={isActive} />}
+      >
+        <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+      </Button >
+    </Box>
+  );
+}
+
 const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   const { addItem } = useComposer();
   const { editor, setActivePage } = useEditor();
@@ -80,20 +110,12 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     rootItem.items &&
     rootItem.items.map((itemId: string, index: number) => {
       const item = items[itemId];
-      const isActive = item.id === editor.activePage?.id;
-      const variant = isActive ? 'contained' : 'text';
-      const activeSx = isActive ? { backgroundColor: 'primary.main' } : {};
       return (
-        <Box sx={{ border: 1, borderColor: 'divider', ...activeSx }}>
-          <Button
-            onClick={(e) => handlePageClick(e, itemId)}
-            variant={variant}
-            key={index}
-            endIcon={<OptionsMenu item={item} isPage light={isActive} />}
-          >
-            <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
-          </Button >
-        </Box>
+        <PageTab
+          key={index}
+          item={item}
+          onClick={(e) => handlePageClick(e, itemId)}
+        />
       );
     });
 
