@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Box, Divider, Stack, Typography, useTheme, Button, Menu, MenuItem, styled, TextField, Popover, List, Tooltip } from '@mui/material';
 import { ArrowDropDown, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { isContextVariable, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { getStatus, getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH, SCROLL_SX } from '../../theme/siteTheme';
@@ -18,6 +18,7 @@ import { matchItemByKeyword, matchVariableByKeyword } from '../../utils/SearchUt
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { useBackend } from '../../backend/useBackend';
 import { CreateSessionResult } from '../../backend/types';
+import { isContextVariable } from '../../utils/ItemUtils';
 
 interface SearchMatch {
   type: 'item' | 'variable';

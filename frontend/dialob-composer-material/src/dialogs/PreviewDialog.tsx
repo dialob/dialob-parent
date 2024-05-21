@@ -4,12 +4,13 @@ import {
   TableHead, TableRow, TableCell, TableBody, TextField
 } from "@mui/material";
 import { Close, Visibility } from "@mui/icons-material";
-import { isContextVariable, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { BorderedTable } from "../components/TableEditorComponents";
 import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
 import { CreateSessionResult, PreviewSessionContext } from "../backend/types";
+import { isContextVariable } from "../utils/ItemUtils";
 
 const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, value }) => {
   const { setContextValue } = useComposer();

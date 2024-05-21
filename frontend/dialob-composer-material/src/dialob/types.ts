@@ -19,8 +19,6 @@ export type ContextVariable = {
   contextType: ContextVariableType | string;
 };
 
-export const isContextVariable = (variable: ContextVariable | Variable): variable is ContextVariable => (variable as ContextVariable).context === true;
-
 export type ValueSetEntry = {
   id: string;
   label: LocalizedString;
@@ -81,10 +79,6 @@ export type ComposerTag = {
   description: string;
   created: string;
   type: 'NORMAL' | 'MUTABLE';
-}
-
-export const isReadOnly = (state: ComposerState): boolean => {
-  return state._tag !== undefined;
 }
 
 export type ComposerState = {

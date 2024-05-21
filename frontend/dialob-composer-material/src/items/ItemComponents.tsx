@@ -1,5 +1,5 @@
 import React from "react";
-import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useComposer } from "../dialob";
+import { DialobItem, DialobItemTemplate, DialobItemType, useComposer } from "../dialob";
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
@@ -9,6 +9,7 @@ import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
 import { OptionsTabType, useEditor } from "../editor";
 import * as Defaults from "../defaults";
+import { isPage } from "../utils/ItemUtils";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -88,10 +89,6 @@ const resolveTypeName = (type: string): string => {
   return type;
 }
 
-export const isPage = (items: DialobItems, item: DialobItem): boolean => {
-  return Object.values(items).find(i => i.type === 'questionnaire' && i.items && i.items.includes(item.id)) !== undefined;
-}
-
 export const IdField: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { setActiveItem, setItemOptionsActiveTab } = useEditor();
 
@@ -168,7 +165,7 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       {item.valueSetId &&
         <Tooltip placement='top' title={<FormattedMessage id={`tooltips.${isGlobalValueSet ? 'global' : 'local'}`} />}>
           <IconButton onClick={(e) => handleClick(e, 'choices')}>
-            {isGlobalValueSet ? <Public fontSize='small' sx={{ color: 'success.light' }} /> : <Place fontSize='small' sx={{ color: 'success.light' }} />}
+            {isGlobalValueSet ? <Public fontSize='small' sx={{ color: 'success.dark' }} /> : <Place fontSize='small' sx={{ color: 'success.light' }} />}
           </IconButton>
         </Tooltip>}
       {item.validations && item.validations.length > 0 &&

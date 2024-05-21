@@ -2,9 +2,10 @@ import { produce } from 'immer';
 import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
 import {
-  ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable,
+  ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable,
   ValidationRule, LocalizedString
 } from './types';
+import { isContextVariable } from '../utils/ItemUtils';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import { EditorError, VariableTabType, useEditor } from '../../editor';
-import { isContextVariable, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
-import { BoldedMessage } from '../../utils/LocalizationUtils';
-import { isPage } from '../../items/ItemComponents';
+import { BoldedMessage } from '../../intl/BoldedMessage';
+import { isContextVariable, isPage } from '../../utils/ItemUtils';
 
 
 const errorCardBorderColor = (severity: string) => {

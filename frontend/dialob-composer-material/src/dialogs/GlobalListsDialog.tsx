@@ -15,7 +15,7 @@ import { getErrorSeverity, getItemErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
-import { BoldedMessage } from '../utils/LocalizationUtils';
+import { BoldedMessage } from '../intl/BoldedMessage';
 
 interface GlobalValueSet {
   id: string;
