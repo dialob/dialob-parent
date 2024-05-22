@@ -19,7 +19,7 @@ const ConvertConfirmationDialog: React.FC<{
 
   return (
     <Dialog open={true} onClose={onClose}>
-      <DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.confirmation.convert.title' />
       </DialogTitle>
       <DialogContent>

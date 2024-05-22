@@ -243,9 +243,11 @@ const MenuBar: React.FC = () => {
               ))}
           </Menu>
           <Tooltip title={<FormattedMessage id='header.preview' />} placement='bottom'>
-            <ResponsiveButton variant='text' color='inherit' onClick={handleInitPreview} disabled={status === 'FATAL' || status === 'ERROR'}>
-              <Visibility fontSize='small' color={(status === 'FATAL' || status === 'ERROR') ? 'disabled' : 'primary'} />
-            </ResponsiveButton>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <ResponsiveButton variant='text' color='inherit' onClick={handleInitPreview} disabled={status === 'FATAL' || status === 'ERROR'}>
+                <Visibility fontSize='small' color={(status === 'FATAL' || status === 'ERROR') ? 'disabled' : 'primary'} />
+              </ResponsiveButton>
+            </Box>
           </Tooltip>
           <Tooltip title={<FormattedMessage id='header.close' />} placement='bottom'>
             <ResponsiveButton variant='text' color='inherit' onClick={handleClose}>

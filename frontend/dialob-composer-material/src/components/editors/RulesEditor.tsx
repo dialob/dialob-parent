@@ -10,7 +10,7 @@ const RulesEditor: React.FC = () => {
       <Box sx={{ display: 'flex' }}>
         <Box flexGrow={1} />
         <Button variant='outlined' endIcon={<Help />} onClick={() => window.open('https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del', "_blank")}>
-          <FormattedMessage id='help' />
+          <FormattedMessage id='buttons.help' />
         </Button>
       </Box>
       <RuleEditor type='visibility' />

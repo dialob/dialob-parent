@@ -16,7 +16,7 @@ export const DialogActionButtons: React.FC<{ handleClose: () => void, handleClic
 export const DialogHelpButton: React.FC<{ helpUrl: string }> = ({ helpUrl }) => {
   return (
     <Button color='inherit' variant='contained' endIcon={<Help />} onClick={() => window.open(helpUrl, "_blank")}>
-      <FormattedMessage id='help' />
+      <FormattedMessage id='buttons.help' />
     </Button>
   );
 }

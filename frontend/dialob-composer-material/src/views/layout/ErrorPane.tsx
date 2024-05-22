@@ -42,6 +42,7 @@ const ErrorPane: React.FC = () => {
     valueSetId: string;
   }[]) => {
     if (error.itemId) {
+      console.log('error', error.itemId, gvs)
       if (gvs?.map(gvs => gvs.valueSetId).includes(error.itemId)) {
         handleEditList(error.itemId);
       } else if (error.type === 'VARIABLE') {
@@ -58,6 +59,7 @@ const ErrorPane: React.FC = () => {
           setHighlightedItem(form.data[item.id]);
         }
       } else if (isPage(form.data, form.data[error.itemId])) {
+        window.scrollTo(0, 0);
         setActivePage(form.data[error.itemId]);
         setHighlightedItem(form.data[error.itemId]);
       } else {

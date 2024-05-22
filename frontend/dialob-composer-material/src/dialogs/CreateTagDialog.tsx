@@ -50,8 +50,8 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle>
-        <Typography fontWeight='bold' variant='h4'><FormattedMessage id='dialogs.create.tag.title' /></Typography>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
+        <FormattedMessage id='dialogs.create.tag.title' />
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '50vh' }}>
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', width: 1 }}>

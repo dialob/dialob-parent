@@ -53,8 +53,8 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
-      <DialogTitle>
-        <Typography fontWeight='bold' variant='h4'><FormattedMessage id='dialogs.versioning.title' /></Typography>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
+        <FormattedMessage id='dialogs.versioning.title' />
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
         <Box sx={{ p: 3 }}>

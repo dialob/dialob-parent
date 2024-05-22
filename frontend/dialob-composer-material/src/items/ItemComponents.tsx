@@ -313,9 +313,10 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
 
   return (
     <>
-      <IconButton onClick={(e) => handleClick(e, 1)} onMouseDown={(e) => e.stopPropagation()}>
-        <MenuIcon sx={{ color: light ? 'white' : 'inherit' }} />
-      </IconButton>
+      <Box onClick={(e) => handleClick(e, 1)} onMouseDown={(e) => e.stopPropagation()}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <MenuIcon sx={{ color: light ? 'white' : 'inherit', '&:hover': { color: 'divider', cursor: 'pointer' } }} />
+      </Box>
       <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={(e) => handleOptions(e)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />

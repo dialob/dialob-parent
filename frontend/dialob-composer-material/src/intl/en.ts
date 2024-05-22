@@ -30,6 +30,7 @@ const en = {
   'buttons.copy.clip': 'Copy to clipboard',
   'buttons.preview': 'Preview',
   'buttons.activate': 'Activate',
+  'buttons.help': 'Help',
 
   'menus.options': 'Options',
   'menus.description': 'Description',
@@ -103,6 +104,7 @@ const en = {
   'dialogs.options.properties.add': 'Add property',
   'dialogs.options.properties.add.short': 'Add',
   'dialogs.options.default.set': 'Set default value',
+  'dialogs.options.preview': 'Preview',
 
   'dialogs.upload.valueset.title': 'Upload value set',
   'dialogs.upload.valueset.file': 'Choose file',

@@ -78,7 +78,7 @@ const ChoiceList: React.FC<{
     <TableBody>
       <TableRow>
         <TableCell colSpan={2 + languageNo}>
-          <Tree
+          {valueSet?.entries && valueSet.entries.length > 0 && <Tree
             tree={tree}
             renderItem={(props) => renderItem({
               ...props, valueSetId: valueSet?.id, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
@@ -86,7 +86,7 @@ const ChoiceList: React.FC<{
             })}
             onDragEnd={onDragEnd}
             isDragEnabled
-          />
+          />}
         </TableCell>
       </TableRow>
     </TableBody>

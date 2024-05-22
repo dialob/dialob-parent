@@ -61,7 +61,9 @@ const LocalizedStringEditor: React.FC<{
     <>
       <Box display='flex'>
         <Box flexGrow={1} />
-        <Button variant={preview ? 'contained' : 'outlined'} endIcon={<Visibility />} onClick={() => setPreview(!preview)}><FormattedMessage id='preview' /></Button>
+        <Button variant={preview ? 'contained' : 'outlined'} endIcon={<Visibility />} onClick={() => setPreview(!preview)}>
+          <FormattedMessage id='dialogs.options.preview' />
+        </Button>
         <Button variant='outlined' onClick={(e) => setAnchorEl(e.currentTarget)}
           disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}
           sx={{ textTransform: 'none', ml: 1 }} endIcon={<Add />}>

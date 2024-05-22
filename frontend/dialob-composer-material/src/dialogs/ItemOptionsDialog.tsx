@@ -92,16 +92,18 @@ const ItemOptionsDialog: React.FC = () => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError} helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
-          endAdornment: (
-            <>
-              <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
-              <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
-            </>
-          )
-        }} /> :
-          <Button variant='text' sx={{ color: 'inherit', textTransform: 'none' }} endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
-            <Typography variant='h4' fontWeight='bold'>{id}</Typography>
+        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
+          helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
+            endAdornment: (
+              <>
+                <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
+                <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+              </>
+            )
+          }} /> :
+          <Button variant='text' sx={{ color: 'inherit', textTransform: 'none', fontWeight: 'bold', fontSize: 'h5.fontSize' }}
+            endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
+            {id}
           </Button>}
         <Box flexGrow={1} />
         <StyledButtonContainer>

@@ -45,7 +45,7 @@ const ConfirmationDialog: React.FC = () => {
 
   return (
     <Dialog open onClose={handleClose} fullWidth maxWidth='sm'>
-      <DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
         {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.title' />}
         {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.title' />}
       </DialogTitle>
