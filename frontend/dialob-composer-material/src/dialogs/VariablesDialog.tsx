@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs } from '@mui/material';
 import { Close, Help } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import ExpressionVariables from '../components/variables/ExpressionVariables';

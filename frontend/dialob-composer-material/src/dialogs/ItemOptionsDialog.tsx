@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
-  Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab,
+  Dialog, DialogTitle, DialogContent, Button, Box, Tabs, Tab,
   DialogActions, Tooltip, styled, TextField, IconButton
 } from '@mui/material';
 import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel } from "@mui/icons-material";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs, Tooltip } from "@mui/material";
 import { Close, Help, Translate, UploadFile, Warning } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import Translations from "../components/translations";

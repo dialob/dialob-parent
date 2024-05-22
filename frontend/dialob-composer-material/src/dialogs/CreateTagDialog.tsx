@@ -29,7 +29,14 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
               .then(saveResponse => {
                 if (saveResponse.success && saveResponse.result) {
                   const result = saveResponse.result as SaveResult;
-                  setErrors(result.errors);
+                  const errors = result.errors?.map(e => {
+                    if (e.itemId && e.itemId.includes(':')) {
+                      const itemId = e.itemId.split(':')[0];
+                      return { ...e, itemId: itemId };
+                    }
+                    return e;
+                  });
+                  setErrors(errors);
                 } else if (saveResponse.apiError) {
                   setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
                 }

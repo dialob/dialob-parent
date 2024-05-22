@@ -26,7 +26,14 @@ const ComposerLayoutView: React.FC = () => {
       .then(saveResponse => {
         if (saveResponse.success && saveResponse.result) {
           const result = saveResponse.result as SaveResult;
-          setErrors(result.errors);
+          const errors = result.errors?.map(e => {
+            if (e.itemId && e.itemId.includes(':')) {
+              const itemId = e.itemId.split(':')[0];
+              return { ...e, itemId: itemId };
+            }
+            return e;
+          });
+          setErrors(errors);
           setLoading(false);
         } else if (saveResponse.apiError) {
           setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
