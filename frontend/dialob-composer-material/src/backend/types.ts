@@ -30,6 +30,7 @@ export interface CreateTagResult {
 
 export interface CreateSessionResult {
   _id: string;
+  _rev: string;
 }
 
 export interface ApiResponse {
@@ -48,7 +49,8 @@ export interface CreateTagRequest {
 
 export type PreviewSessionContext = {
   id: string;
-  value: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
 }[];
 
 export interface PreviewSessionData {

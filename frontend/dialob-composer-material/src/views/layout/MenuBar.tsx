@@ -61,6 +61,7 @@ const MenuBar: React.FC = () => {
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const currentTag = form._tag ?? 'LATEST';
+  const status = getStatus(editor.errors);
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
   const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
@@ -226,7 +227,7 @@ const MenuBar: React.FC = () => {
               <Download />
             </ResponsiveButton>
           </Tooltip>
-          <Tooltip title={<FormattedMessage id={`header.status.${getStatus(editor.errors)}`} />} placement='bottom'>
+          <Tooltip title={<FormattedMessage id='header.status' values={{ status }} />} placement='bottom'>
             <ResponsiveButton variant='text' color='inherit'>
               {getStatusIcon(editor.errors)}
             </ResponsiveButton>
@@ -242,8 +243,8 @@ const MenuBar: React.FC = () => {
               ))}
           </Menu>
           <Tooltip title={<FormattedMessage id='header.preview' />} placement='bottom'>
-            <ResponsiveButton variant='text' color='inherit' onClick={handleInitPreview}>
-              <Visibility fontSize='small' color='primary' />
+            <ResponsiveButton variant='text' color='inherit' onClick={handleInitPreview} disabled={status === 'FATAL' || status === 'ERROR'}>
+              <Visibility fontSize='small' color={(status === 'FATAL' || status === 'ERROR') ? 'disabled' : 'primary'} />
             </ResponsiveButton>
           </Tooltip>
           <Tooltip title={<FormattedMessage id='header.close' />} placement='bottom'>

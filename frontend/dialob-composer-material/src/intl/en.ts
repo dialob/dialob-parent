@@ -13,11 +13,7 @@ const en = {
   'header.search': 'Search',
   'header.search.hint': 'Enter search keyword',
   'header.download': 'Download form as JSON',
-  'header.status.fatal': 'Current form status: FATAL',
-  'header.status.error': 'Current form status: ERROR',
-  'header.status.warning': 'Current form status: WARNING',
-  'header.status.info': 'Current form status: INFO',
-  'header.status.ok': 'Current form status: OK',
+  'header.status': 'Current form status: {status}',
   'header.preview': 'Preview form',
   'header.close': 'Close Composer',
 

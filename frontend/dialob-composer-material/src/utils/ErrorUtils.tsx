@@ -1,6 +1,6 @@
 import React from "react";
 import { AlertColor, useTheme } from "@mui/material";
-import { EditorError, ErrorSeverity } from "../editor";
+import { ComposerStatus, EditorError, ErrorSeverity } from "../editor";
 import { Check, Info, Warning } from "@mui/icons-material";
 import { PreTextIcon } from "../components/tree/NavigationTreeItem";
 
@@ -129,18 +129,18 @@ export const getStatusIcon = (errors: EditorError[] | undefined): React.ReactEle
   }
 }
 
-export const getStatus = (errors: EditorError[] | undefined): string => {
+export const getStatus = (errors: EditorError[] | undefined): ComposerStatus => {
   const dominantSeverity = getDominantSeverity(errors);
   switch (dominantSeverity) {
     case 'FATAL':
-      return 'fatal';
+      return 'FATAL';
     case 'ERROR':
-      return 'error';
+      return 'ERROR';
     case 'WARNING':
-      return 'warning';
+      return 'WARNING';
     case 'INFO':
-      return 'info';
+      return 'INFO';
     default:
-      return 'ok';
+      return 'OK';
   }
 }

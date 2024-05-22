@@ -1,6 +1,7 @@
 import { DialobItem } from "../dialob";
 
 export type ErrorSeverity = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL';
+export type ComposerStatus = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL' | 'OK';
 export type ConfirmationDialogType = 'duplicate' | 'delete';
 export type OptionsTabType = 'id' | 'label' | 'description' | 'rules' | 'validations' | 'choices' | 'defaults' | 'properties';
 export type VariableTabType = 'context' | 'expression';
