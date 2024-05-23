@@ -24,7 +24,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
   const children = createChildren(item, form.data);
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
-  const hasIndicators = item.description || item.valueSetId || item.validations;
+  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};

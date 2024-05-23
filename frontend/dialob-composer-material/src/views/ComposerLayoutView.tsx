@@ -8,10 +8,43 @@ import { useEditor } from '../editor';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 import { MENU_HEIGHT, SCROLL_SX } from '../theme/siteTheme';
 import ItemOptionsDialog from '../dialogs/ItemOptionsDialog';
+import { useBackend } from '../backend/useBackend';
+import { useComposer } from '../dialob';
+import { SaveResult } from '../backend/types';
+import { ProgressSplash } from '../App';
 
 const ComposerLayoutView: React.FC = () => {
-  const { editor } = useEditor();
-  const hasErrors = editor.errors.length > 0;
+  const { form } = useComposer();
+  const { editor, setErrors } = useEditor();
+  const { saveForm } = useBackend();
+  const hasErrors = editor.errors?.length > 0;
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    saveForm(form, true)
+      .then(saveResponse => {
+        if (saveResponse.success && saveResponse.result) {
+          const result = saveResponse.result as SaveResult;
+          const errors = result.errors?.map(e => {
+            if (e.itemId && e.itemId.includes(':')) {
+              const itemId = e.itemId.split(':')[0];
+              return { ...e, itemId: itemId };
+            }
+            return e;
+          });
+          setErrors(errors);
+          setLoading(false);
+        } else if (saveResponse.apiError) {
+          setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
+          setLoading(false);
+        }
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (loading) {
+    return <ProgressSplash />;
+  }
 
   return (
     <>

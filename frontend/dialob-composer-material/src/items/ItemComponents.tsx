@@ -1,5 +1,5 @@
 import React from "react";
-import { DialobItem, DialobItemTemplate, DialobItemType, DialobItems, useComposer } from "../dialob";
+import { DialobItem, DialobItemTemplate, DialobItemType, useComposer } from "../dialob";
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
@@ -9,6 +9,7 @@ import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
 import { FormattedMessage, useIntl } from "react-intl";
 import { OptionsTabType, useEditor } from "../editor";
 import * as Defaults from "../defaults";
+import { isPage } from "../utils/ItemUtils";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -88,10 +89,6 @@ const resolveTypeName = (type: string): string => {
   return type;
 }
 
-const isPage = (items: DialobItems, item: DialobItem): boolean => {
-  return Object.values(items).find(i => i.type === 'questionnaire' && i.items && i.items.includes(item.id)) !== undefined;
-}
-
 export const IdField: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { setActiveItem, setItemOptionsActiveTab } = useEditor();
 
@@ -112,7 +109,7 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { form } = useComposer();
   const { editor } = useEditor();
   const [label, setLabel] = React.useState<string>('');
-  const hasIndicators = item.description || item.valueSetId || item.validations;
+  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const maxLabelLength = hasIndicators ? MAX_LABEL_LENGTH_WITH_INDICATORS : MAX_LABEL_LENGTH_WITHOUT_INDICATORS;
   const placeholderId = isPage(form.data, item) ? 'page.label' : Defaults.DEFAULT_ITEM_CONFIG.items.find(i => i.matcher(item))?.props.placeholder;
   const placeholder = intl.formatMessage({ id: placeholderId });
@@ -163,25 +160,29 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
       {item.description &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.description' />}>
-          <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' /></IconButton>
+          <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' sx={{ color: 'info.main' }} /></IconButton>
         </Tooltip>}
       {item.valueSetId &&
         <Tooltip placement='top' title={<FormattedMessage id={`tooltips.${isGlobalValueSet ? 'global' : 'local'}`} />}>
           <IconButton onClick={(e) => handleClick(e, 'choices')}>
-            {isGlobalValueSet ? <Public fontSize='small' /> : <Place fontSize='small' />}
+            {isGlobalValueSet ? <Public fontSize='small' sx={{ color: 'success.dark' }} /> : <Place fontSize='small' sx={{ color: 'success.light' }} />}
           </IconButton>
         </Tooltip>}
       {item.validations && item.validations.length > 0 &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.validations' />}>
-          <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' /></IconButton>
+          <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' sx={{ color: 'warning.light' }} /></IconButton>
         </Tooltip>}
       {item.required &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.requirement' />}>
-          <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' /></IconButton>
+          <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' sx={{ color: 'error.light' }} /></IconButton>
         </Tooltip>}
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
-          < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' /></IconButton>
+          < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
+        </Tooltip>}
+      {item.type === 'note' && item.activeWhen &&
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.visibility' />}>
+          < IconButton onClick={(e) => handleClick(e, 'rules')}><Visibility fontSize='small' sx={{ color: 'primary.light' }} /></IconButton>
         </Tooltip>}
     </Box >
   );
@@ -217,7 +218,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   return (
     <>
       <Button onClick={handleClick} component='span' sx={{ ml: 1 }} variant='text'
-        color='inherit' endIcon={<KeyboardArrowDown />}
+        endIcon={<KeyboardArrowDown />}
         disabled={conversions.length === 0}
       >
         <Typography variant='subtitle2'>
@@ -238,7 +239,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   );
 }
 
-export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
+export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?: boolean }> = ({ item, isPage, light }) => {
   const { form, addItem } = useComposer();
   const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -312,9 +313,10 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
   return (
     <>
-      <IconButton onClick={(e) => handleClick(e, 1)}>
-        <MenuIcon color='inherit' />
-      </IconButton>
+      <Box onClick={(e) => handleClick(e, 1)} onMouseDown={(e) => e.stopPropagation()}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <MenuIcon sx={{ color: light ? 'white' : 'inherit', '&:hover': { color: 'divider', cursor: 'pointer' } }} />
+      </Box>
       <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={(e) => handleOptions(e)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
@@ -328,11 +330,11 @@ export const OptionsMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
           <ContentCopy sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.duplicate' />
         </MenuItem>
-        <Divider />
-        <MenuItem onClick={(e) => handleClick(e, 2)}>
+        {!isPage && <Divider />}
+        {!isPage && <MenuItem onClick={(e) => handleClick(e, 2)}>
           <FormattedMessage id='menus.insert.below' />
           <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-        </MenuItem>
+        </MenuItem>}
         <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
           disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
           {itemCategories.map((c, index) => (
@@ -423,7 +425,7 @@ export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
     <FullWidthButton
       variant='text'
       color='inherit'
-      endIcon={<Visibility color='disabled' sx={{ mr: 1 }} />}
+      endIcon={<Visibility color={item.activeWhen ? 'primary' : 'disabled'} sx={{ mr: 1 }} />}
       onClick={handleClick}
     >
       {item.activeWhen ?
@@ -451,7 +453,7 @@ export const NoteField: React.FC<{ item: DialobItem }> = ({ item }) => {
     <FullWidthButton
       variant='text'
       color='inherit'
-      endIcon={<Note color='disabled' sx={{ mr: 1 }} />}
+      endIcon={<Note sx={{ mr: 1, color: 'text.main' }} />}
       onClick={handleClick}
     >
       <Label item={item} />

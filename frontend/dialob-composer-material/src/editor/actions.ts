@@ -12,4 +12,3 @@ export type EditorAction =
   | { type: 'setHighlightedItem', item?: DialobItem }
   | { type: 'setActiveList', listId?: string }
   | { type: 'setActiveVariableTab', tab?: VariableTabType }
-  

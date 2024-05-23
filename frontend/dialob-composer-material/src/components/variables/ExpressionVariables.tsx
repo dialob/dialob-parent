@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
-import { Variable, isContextVariable, useComposer } from "../../dialob"
+import { Variable, useComposer } from "../../dialob"
 import { Add } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import Tree, { TreeData, TreeDestinationPosition, TreeSourcePosition, moveItemOnTree } from "@atlaskit/tree";
@@ -8,6 +8,7 @@ import { INIT_TREE, buildTreeFromVariables } from "../../utils/TreeUtils";
 import { VariableProps } from "./VariableComponents";
 import { BorderedTable } from "../TableEditorComponents";
 import ExpressionVariableRow from "./ExpressionVariableRow";
+import { isContextVariable } from "../../utils/ItemUtils";
 
 
 const renderVariableItem = (props: VariableProps) => {

@@ -7,9 +7,9 @@ import { INIT_TREE, buildTreeFromValueSet } from "../utils/TreeUtils";
 
 
 const renderItem = (props: ChoiceItemProps) => {
-  const { item, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal } = props;
+  const { item, valueSetId, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal } = props;
   return (
-    <ChoiceItem item={item} provided={provided} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
+    <ChoiceItem item={item} valueSetId={valueSetId} provided={provided} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
       onDelete={onDelete} onUpdateId={onUpdateId} isGlobal={isGlobal} />
   );
 }
@@ -78,15 +78,15 @@ const ChoiceList: React.FC<{
     <TableBody>
       <TableRow>
         <TableCell colSpan={2 + languageNo}>
-          <Tree
+          {valueSet?.entries && valueSet.entries.length > 0 && <Tree
             tree={tree}
             renderItem={(props) => renderItem({
-              ...props, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
+              ...props, valueSetId: valueSet?.id, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
               onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId, isGlobal: isGlobal
             })}
             onDragEnd={onDragEnd}
             isDragEnabled
-          />
+          />}
         </TableCell>
       </TableRow>
     </TableBody>

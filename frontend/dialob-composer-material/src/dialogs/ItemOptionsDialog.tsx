@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
-  Dialog, DialogTitle, DialogContent, Button, Box, Typography, Tabs, Tab,
+  Dialog, DialogTitle, DialogContent, Button, Box, Tabs, Tab,
   DialogActions, Tooltip, styled, TextField, IconButton
 } from '@mui/material';
 import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel } from "@mui/icons-material";
@@ -9,6 +9,10 @@ import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import { ConversionMenu } from '../items/ItemComponents';
 import Editors from '../components/editors';
+import { useBackend } from '../backend/useBackend';
+import { useComposer } from '../dialob';
+import { ChangeIdResult } from '../backend/types';
+import { validateId } from '../utils/ValidateUtils';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -19,24 +23,17 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
 }));
 
 const ItemOptionsDialog: React.FC = () => {
-  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType } = useEditor();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
+  const { form, setForm } = useComposer();
+  const { changeItemId } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
   const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice');
   const [activeTab, setActiveTab] = React.useState<OptionsTabType>('label');
   const [editMode, setEditMode] = React.useState(false);
   const [id, setId] = React.useState<string>(item?.id || '');
+  const [idError, setIdError] = React.useState<boolean>(false);
   const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
-
-  const handleClose = () => {
-    setItemOptionsActiveTab(undefined);
-    setActiveItem(undefined);
-  }
-
-  const handleDelete = () => {
-    setItemOptionsActiveTab(undefined);
-    setConfirmationDialogType('delete');
-  }
 
   React.useEffect(() => {
     if (editor.itemOptionsActiveTab) {
@@ -52,6 +49,42 @@ const ItemOptionsDialog: React.FC = () => {
     setId(item?.id || '');
   }, [editor.itemOptionsActiveTab, open, item?.id]);
 
+  const handleClose = () => {
+    setItemOptionsActiveTab(undefined);
+    setActiveItem(undefined);
+  }
+
+  const handleDelete = () => {
+    setItemOptionsActiveTab(undefined);
+    setConfirmationDialogType('delete');
+  }
+
+  const handleChangeId = () => {
+    if (item && id !== item.id) {
+      if (validateId(id, form.data, form.variables)) {
+        changeItemId(form, item.id, id).then((response) => {
+          const result = response.result as ChangeIdResult;
+          if (response.success) {
+            setForm(result.form);
+            setErrors(result.errors);
+            setIdError(false);
+          } else if (response.apiError) {
+            setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+          }
+          setEditMode(false);
+        });
+      } else {
+        setIdError(true);
+      }
+    }
+  }
+
+  const handleCloseChange = () => {
+    setEditMode(false);
+    setIdError(false);
+    setId(item?.id || '');
+  }
+
   if (!item) {
     return null;
   }
@@ -59,16 +92,18 @@ const ItemOptionsDialog: React.FC = () => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} InputProps={{
-          endAdornment: (
-            <>
-              <IconButton onClick={() => setEditMode(false)}><Check color='success' /></IconButton>
-              <IconButton onClick={() => setEditMode(false)}><Close color='error' /></IconButton>
-            </>
-          )
-        }} /> :
-          <Button variant='text' sx={{ color: 'inherit', textTransform: 'none' }} endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
-            <Typography variant='h4' fontWeight='bold'>{id}</Typography>
+        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
+          helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
+            endAdornment: (
+              <>
+                <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
+                <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+              </>
+            )
+          }} /> :
+          <Button variant='text' sx={{ color: 'inherit', textTransform: 'none', fontWeight: 'bold', fontSize: 'h5.fontSize' }}
+            endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
+            {id}
           </Button>}
         <Box flexGrow={1} />
         <StyledButtonContainer>

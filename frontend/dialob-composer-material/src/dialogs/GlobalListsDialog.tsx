@@ -2,9 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Add, Close, Delete, Download, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
-  Alert,
-  AlertColor,
-  Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
+  Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from '@mui/material';
 import { DialobItem, ValueSet, ValueSetEntry, useComposer } from '../dialob';
@@ -13,11 +11,11 @@ import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
-import { getErrorColor } from '../utils/ErrorUtils';
+import { getErrorSeverity, getItemErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
-import { BoldedMessage } from '../utils/LocalizationUtils';
+import { BoldedMessage } from '../intl/BoldedMessage';
 
 interface GlobalValueSet {
   id: string;
@@ -36,7 +34,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [name, setName] = React.useState<string | undefined>(undefined);
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
-  const itemErrors = editor.errors.filter(e => e.itemId === currentValueSet?.id);
+  const itemErrors = editor.errors?.filter(e => e.itemId === currentValueSet?.id);
 
   const getMappedGvs = () => {
     const gvs = form.metadata.composer?.globalValueSets;
@@ -134,11 +132,11 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   return (
     <>
-      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(true)}
+      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
         currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography fontWeight='bold' variant='h4'><FormattedMessage id='dialogs.lists.global.title' /></Typography>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
+          <FormattedMessage id='dialogs.lists.global.title' />
           <Box flexGrow={1} />
           {globalValueSets && globalValueSets.length > 0 && <>
             <Typography sx={{ mr: 2 }}><BoldedMessage id='dialogs.lists.global.users' values={{ count: users ? users.length : 0 }} /></Typography>
@@ -172,7 +170,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
             {globalValueSets && globalValueSets.length > 0 && <>
               <Stack sx={{ mr: 3 }}>
                 {globalValueSets?.map(gvs => {
-                  const errorColor = getErrorColor(editor.errors, gvs.id);
+                  const errorColor = getItemErrorColor(editor.errors, gvs.id);
                   return <Button key={gvs.id} variant={gvs.id === currentValueSet?.id ? 'contained' : 'outlined'} color={errorColor}
                     onClick={() => setCurrentValueSet({ id: gvs.id, entries: gvs.entries })}>
                     {gvs.label}
@@ -206,8 +204,8 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                     <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} isGlobal={true} />
                   </BorderedTable>
                 </TableContainer>
-                {itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
-                  <Typography><ErrorMessage error={error} /></Typography>
+                {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+                  <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
                 </Alert>)}
               </Box>
             </>}

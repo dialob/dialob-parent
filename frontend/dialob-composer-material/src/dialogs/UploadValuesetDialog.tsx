@@ -103,7 +103,7 @@ const UploadValuesetDialog: React.FC<{
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.upload.valueset.title' />
       </DialogTitle>
       <DialogContent>

@@ -4,9 +4,13 @@ import {
   TableHead, TableRow, TableCell, TableBody, TextField
 } from "@mui/material";
 import { Close, Visibility } from "@mui/icons-material";
-import { isContextVariable, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { BorderedTable } from "../components/TableEditorComponents";
+import { useBackend } from "../backend/useBackend";
+import { useEditor } from "../editor";
+import { CreateSessionResult, PreviewSessionContext } from "../backend/types";
+import { isContextVariable } from "../utils/ItemUtils";
 
 const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, value }) => {
   const { setContextValue } = useComposer();
@@ -34,18 +38,33 @@ const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, valu
 
 const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form } = useComposer();
+  const { config, createPreviewSession } = useBackend();
+  const { editor, setErrors } = useEditor();
   const contextValues = form.metadata.composer?.contextValues;
   const contextVariables = form.variables?.filter(isContextVariable);
 
   const initPreview = () => {
-    // TODO init preview
-    onClose();
+    const context: PreviewSessionContext = Object.entries(contextValues || {}).map(([name, value]) => ({ id: name, value }));
+    createPreviewSession(form._id, editor.activeFormLanguage, context).then((response) => {
+      const result = response.result as CreateSessionResult;
+      if (response.success) {
+        const win = window.open(`${config.transport.previewUrl}/${result._id}`);
+        if (win) {
+          win.focus();
+        } else {
+          setErrors([{ level: 'FATAL', message: 'FATAL_POPUP' }]);
+        }
+      } else if (response.apiError) {
+        setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+      }
+      onClose();
+    });
   }
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>
-        <Typography fontWeight='bold' variant='h4'><FormattedMessage id='dialogs.preview.title' /></Typography>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
+        <FormattedMessage id='dialogs.preview.title' />
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
         <Box sx={{ p: 3, width: 1 }}>

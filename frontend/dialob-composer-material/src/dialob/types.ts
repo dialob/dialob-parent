@@ -19,8 +19,6 @@ export type ContextVariable = {
   contextType: ContextVariableType | string;
 };
 
-export const isContextVariable = (variable: ContextVariable | Variable): variable is ContextVariable => (variable as ContextVariable).context === true;
-
 export type ValueSetEntry = {
   id: string;
   label: LocalizedString;
@@ -75,14 +73,12 @@ export type DialobItems = { [key: string]: DialobItem };
 export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
 
 export type ComposerTag = {
-  id: string;
   name: string;
+  formName: string;
+  formId: string;
   description: string;
   created: string;
-}
-
-export const isReadOnly = (state: ComposerState): boolean => {
-  return state._tag !== undefined;
+  type: 'NORMAL' | 'MUTABLE';
 }
 
 export type ComposerState = {
@@ -121,6 +117,15 @@ export type ComposerState = {
   }
 };
 
+export const INIT_STATE: ComposerState = {
+  _id: '',
+  _rev: '',
+  name: '',
+  data: {},
+  metadata: {},
+};
+
 export type ComposerCallbacks = {
   onAddItem?: (state: ComposerState, item: DialobItem) => void;
+  onSave?: (state: ComposerState) => Promise<string>;
 }

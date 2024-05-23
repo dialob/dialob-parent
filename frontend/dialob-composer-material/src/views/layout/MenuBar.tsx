@@ -1,9 +1,9 @@
 import React from 'react';
-import { AppBar, Box, Divider, Stack, Typography, useTheme, Button, Menu, MenuItem, styled, TextField, Popover, List } from '@mui/material';
+import { AppBar, Box, Divider, Stack, Typography, useTheme, Button, Menu, MenuItem, styled, TextField, Popover, List, Tooltip } from '@mui/material';
 import { ArrowDropDown, Close, Download, Search, Support, Visibility } from '@mui/icons-material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { isContextVariable, useComposer } from '../../dialob';
-import { getStatusIcon } from '../../utils/ErrorUtils';
+import { useComposer } from '../../dialob';
+import { getStatus, getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH, SCROLL_SX } from '../../theme/siteTheme';
 import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
@@ -16,6 +16,9 @@ import CreateTagDialog from '../../dialogs/CreateTagDialog';
 import { downloadForm } from '../../utils/ParseUtils';
 import { matchItemByKeyword, matchVariableByKeyword } from '../../utils/SearchUtils';
 import { scrollToItem } from '../../utils/ScrollUtils';
+import { useBackend } from '../../backend/useBackend';
+import { CreateSessionResult } from '../../backend/types';
+import { isContextVariable } from '../../utils/ItemUtils';
 
 interface SearchMatch {
   type: 'item' | 'variable';
@@ -49,22 +52,16 @@ const HeaderButton: React.FC<{
   );
 };
 
-const HeaderIconButton: React.FC<{ icon: React.ReactElement, disabled?: boolean, onClick?: () => void }> = ({ icon, disabled, onClick }) => {
-  return (
-    <ResponsiveButton variant='text' color='inherit' disabled={disabled} onClick={onClick}>
-      {icon}
-    </ResponsiveButton>
-  );
-};
-
 const MenuBar: React.FC = () => {
   const theme = useTheme();
   const intl = useIntl();
   const { form } = useComposer();
-  const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab } = useEditor();
+  const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab, setErrors } = useEditor();
+  const { config, createPreviewSession } = useBackend();
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const currentTag = form._tag ?? 'LATEST';
+  const status = getStatus(editor.errors);
   const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
   const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
@@ -102,7 +99,19 @@ const MenuBar: React.FC = () => {
     if (contextVariables && contextVariables.length > 0) {
       setPreviewDialogOpen(true);
     } else {
-      // TODO initiate preview
+      createPreviewSession(form._id, editor.activeFormLanguage).then((response) => {
+        const result = response.result as CreateSessionResult;
+        if (response.success) {
+          const win = window.open(`${config.transport.previewUrl}/${result._id}`);
+          if (win) {
+            win.focus();
+          } else {
+            setErrors([{ level: 'FATAL', message: 'FATAL_POPUP' }]);
+          }
+        } else if (response.apiError) {
+          setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+        }
+      });
     }
   }
 
@@ -117,6 +126,10 @@ const MenuBar: React.FC = () => {
         setActiveVariableTab(isContextVariable(variable) ? 'context' : 'expression');
       }
     }
+  }
+
+  const handleClose = () => {
+    config.closeHandler();
   }
 
   React.useEffect(() => {
@@ -162,12 +175,12 @@ const MenuBar: React.FC = () => {
               {form.metadata.label}
             </Typography>
           </Box>
-          <HeaderButton label='translations' onClick={() => setTranslationsDialogOpen(true)} />
-          <HeaderButton label='variables' onClick={() => setVariablesDialogOpen(true)} />
-          <HeaderButton label='lists' onClick={() => setListsDialogOpen(true)} />
-          <HeaderButton label='options' onClick={() => setOptionsDialogOpen(true)} />
+          <HeaderButton label='header.translations' onClick={() => setTranslationsDialogOpen(true)} />
+          <HeaderButton label='header.variables' onClick={() => setVariablesDialogOpen(true)} />
+          <HeaderButton label='header.lists' onClick={() => setListsDialogOpen(true)} />
+          <HeaderButton label='header.options' onClick={() => setOptionsDialogOpen(true)} />
           <HeaderButton endIcon={<ArrowDropDown />}
-            label={intl.formatMessage({ id: 'version' }) + ": " + currentTag}
+            label={intl.formatMessage({ id: 'header.version' }) + ": " + currentTag}
             onClick={(e) => setAnchorElVersion(e.currentTarget)} />
           <Menu open={Boolean(anchorElVersion)} anchorEl={anchorElVersion} onClose={() => setAnchorElVersion(null)} disableScrollLock={true}>
             <MenuItem onClick={handleOpenVersioningDialog}>
@@ -177,12 +190,16 @@ const MenuBar: React.FC = () => {
               <FormattedMessage id='menus.versions.create' />
             </MenuItem>
           </Menu>
-          <HeaderIconButton icon={<Support fontSize='small' />} onClick={() => window.open('https://docs.dialob.io/', "_blank")} />
+          <Tooltip title={<FormattedMessage id='header.help' />} placement='bottom'>
+            <ResponsiveButton onClick={() => window.open('https://docs.dialob.io/', "_blank")} variant='text' color='inherit' >
+              <Support fontSize='small' />
+            </ResponsiveButton>
+          </Tooltip>
           <Box flexGrow={1} />
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }} onClick={(e) => setSearchAnchor(e.currentTarget)}>
             <TextField
               variant='standard'
-              placeholder={intl.formatMessage({ id: 'search' })}
+              placeholder={intl.formatMessage({ id: 'header.search' })}
               InputProps={{ endAdornment: <Search />, disableUnderline: true }}
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)} />
@@ -193,7 +210,7 @@ const MenuBar: React.FC = () => {
           }} disableAutoFocus disableScrollLock>
             <List sx={{ maxHeight: '50vh', ...SCROLL_SX }}>
               {searchMatches.length === 0 && <MenuItem>
-                <Typography color='text.hint'><FormattedMessage id='search.hint' /></Typography>
+                <Typography color='text.hint'><FormattedMessage id='header.search.hint' /></Typography>
               </MenuItem>}
               {searchMatches
                 .sort((a, b) => a.type.localeCompare(b.type))
@@ -205,8 +222,16 @@ const MenuBar: React.FC = () => {
                 ))}
             </List>
           </Popover>
-          <HeaderIconButton icon={<Download />} onClick={() => downloadForm(form)} />
-          <HeaderIconButton disabled icon={getStatusIcon(editor.errors)} />
+          <Tooltip title={<FormattedMessage id='header.download' />} placement='bottom'>
+            <ResponsiveButton onClick={() => downloadForm(form)} variant='text' color='inherit' >
+              <Download />
+            </ResponsiveButton>
+          </Tooltip>
+          <Tooltip title={<FormattedMessage id='header.status' values={{ status }} />} placement='bottom'>
+            <ResponsiveButton variant='text' color='inherit'>
+              {getStatusIcon(editor.errors)}
+            </ResponsiveButton>
+          </Tooltip>
           <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
           <Menu open={Boolean(anchorElLanguage)} anchorEl={anchorElLanguage} onClose={() => setAnchorElLanguage(null)} disableScrollLock={true}>
             {formLanguages
@@ -217,8 +242,18 @@ const MenuBar: React.FC = () => {
                 </MenuItem>
               ))}
           </Menu>
-          <HeaderIconButton icon={<Visibility fontSize='small' />} onClick={handleInitPreview} />
-          <HeaderIconButton icon={<Close />} />
+          <Tooltip title={<FormattedMessage id='header.preview' />} placement='bottom'>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <ResponsiveButton variant='text' color='inherit' onClick={handleInitPreview} disabled={status === 'FATAL' || status === 'ERROR'}>
+                <Visibility fontSize='small' color={(status === 'FATAL' || status === 'ERROR') ? 'disabled' : 'primary'} />
+              </ResponsiveButton>
+            </Box>
+          </Tooltip>
+          <Tooltip title={<FormattedMessage id='header.close' />} placement='bottom'>
+            <ResponsiveButton variant='text' color='inherit' onClick={handleClose}>
+              <Close sx={{ color: 'error.dark' }} />
+            </ResponsiveButton>
+          </Tooltip>
         </Stack>
       </AppBar>
     </>

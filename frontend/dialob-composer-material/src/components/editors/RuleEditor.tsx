@@ -1,11 +1,13 @@
 import React from 'react';
 import { Typography, Box, Alert } from '@mui/material';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Warning } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
+import { ErrorMessage } from '../ErrorComponents';
+import CodeMirror from '../code/CodeMirror';
+import { getErrorSeverity } from '../../utils/ErrorUtils';
+import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 
 type RuleType = 'visibility' | 'requirement';
 
@@ -20,35 +22,15 @@ const resolveRulePropName = (ruleType: RuleType): string => {
 const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const { updateItem } = useComposer();
   const { editor, setActiveItem } = useEditor();
-  const intl = useIntl();
   const item = editor.activeItem;
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
   const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
-  const [errors, setErrors] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     if (item) {
       setRuleCode(item[resolveRulePropName(type)]);
     }
   }, [item, type]);
-
-  React.useEffect(() => {
-    // 3 seconds after every code change, check if rule is valid and set error message
-    if (ruleCode && ruleCode.length > 0) {
-      // TODO add rule error check
-      // random boolean for now
-      const invalid = Math.random() < 0.5;
-      if (invalid) {
-        const id = setTimeout(() => {
-          setErrors([intl.formatMessage({ id: 'errors.invalid.rule' }, { rule: ruleCode })]);
-        }, 1000);
-        return () => clearTimeout(id);
-      } else {
-        setErrors([]);
-      }
-    } else {
-      setErrors([]);
-    }
-  }, [ruleCode, intl]);
 
   React.useEffect(() => {
     if (item && ruleCode && ruleCode !== item[resolveRulePropName(type)]) {
@@ -65,15 +47,19 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     return null;
   }
 
+  if (!DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.find(i => i.config.type === item.type) && type === 'requirement') {
+    return null;
+  }
+
   return (
     <Box sx={{ mb: 2 }}>
       <Typography color='text.hint'><FormattedMessage id={`dialogs.options.rules.${type}`} /></Typography>
       <Box>
-        <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} extensions={[javascript({ jsx: true })]} />
+        <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} errors={itemErrors} />
       </Box>
-      {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }} icon={<Warning />}>
-        {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
-      </Alert>}
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      </Alert>)}
     </Box>
   );
 };
