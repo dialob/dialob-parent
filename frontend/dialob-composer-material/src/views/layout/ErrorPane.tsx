@@ -42,7 +42,6 @@ const ErrorPane: React.FC = () => {
     valueSetId: string;
   }[]) => {
     if (error.itemId) {
-      console.log('error', error.itemId, gvs)
       if (gvs?.map(gvs => gvs.valueSetId).includes(error.itemId)) {
         handleEditList(error.itemId);
       } else if (error.type === 'VARIABLE') {

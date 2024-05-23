@@ -47,9 +47,7 @@ function App() {
                 return { ...e, itemId: itemId };
               }
               return e;
-            });
-            console.log('errors', errors)
-            setErrors(errors);
+            }); setErrors(errors);
             dispatch({ type: 'setRevision', revision: result.rev });
           } else if (saveResponse.apiError) {
             setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
