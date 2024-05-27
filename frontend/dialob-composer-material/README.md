@@ -73,6 +73,16 @@ yarn build
 
 Builds static package under dist folder.
 
+## Building and deploying to demo.dialob.io
+
+```bash
+yarn build
+aws sso login
+./aws-deploy.sh
+```
+
+This will build and deploy artifacts to AWS S3, making the template available with url: https://s3.eu-central-1.amazonaws.com/cdn.resys.io/dialob-composer-material/dev/index.html
+
 ## Running
 
 ### For development
