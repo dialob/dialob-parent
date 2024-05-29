@@ -8,7 +8,7 @@ export const DescriptionWrapper: React.FC<DescriptionWrapperProps> = ({title, te
     return <>{children}</>;
   } else {
     return (
-      <div style={{display: 'flex', alignItems: 'flex-end'}}>
+      <div style={{display: 'flex', alignItems: 'flex-start'}}>
         <div style={{flexGrow: 1}}>
           {children}
         </div>
