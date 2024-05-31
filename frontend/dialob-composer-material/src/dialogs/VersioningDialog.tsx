@@ -11,13 +11,14 @@ import { BorderedTable } from "../components/TableEditorComponents";
 import { downloadForm } from "../utils/ParseUtils";
 import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
+import { SaveResult } from "../backend/types";
 
 
 const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const theme = useTheme();
   const { form, setForm } = useComposer();
-  const { getTags, loadForm } = useBackend();
-  const { clearErrors } = useEditor();
+  const { getTags, loadForm, saveForm } = useBackend();
+  const { setErrors, clearErrors } = useEditor();
   const [tags, setTags] = React.useState<ComposerTag[]>([]);
 
   const LATEST_TAG: ComposerTag = React.useMemo(() => ({
@@ -35,8 +36,27 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
 
   const handleLoadVersion = (tag: ComposerTag) => {
     loadForm(tag.formId, tag.name).then(form => {
-      setForm(form, tag.name);
-      clearErrors();
+      if (tag.name === 'LATEST') {
+        saveForm(form, true)
+          .then(saveResponse => {
+            if (saveResponse.success && saveResponse.result) {
+              const result = saveResponse.result as SaveResult;
+              const errors = result.errors?.map(e => {
+                if (e.itemId && e.itemId.includes(':')) {
+                  const itemId = e.itemId.split(':')[0];
+                  return { ...e, itemId: itemId };
+                }
+                return e;
+              });
+              setErrors(errors);
+            } else if (saveResponse.apiError) {
+              setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
+            }
+          });
+      } else {
+        setForm(form, tag.name);
+        clearErrors();
+      }
       onClose();
     });
   }
