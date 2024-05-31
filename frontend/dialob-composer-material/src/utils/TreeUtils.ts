@@ -25,7 +25,7 @@ export const buildTreeFromVariables = (variables: (ContextVariable | Variable)[]
 }
 
 export const buildTreeFromValueSet = (valueSet?: ValueSet): TreeData => {
-  if (!valueSet) {
+  if (!valueSet || !valueSet.entries) {
     return { rootId: 'root', items: {} };
   }
   const items = valueSet.entries.map((entry, index) => ({

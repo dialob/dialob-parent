@@ -44,17 +44,10 @@ export const StyledTable = styled(Table, {
 ));
 
 
-const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: DialobItemType) => {
+const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: string) => {
   for (const idx in itemTypes.categories) {
     const c = itemTypes.categories[idx];
-    const resultConfig = c.items.find(v => v.config.view === type);
-    if (resultConfig) {
-      return resultConfig;
-    }
-  }
-  for (const idx in itemTypes.categories) {
-    const c = itemTypes.categories[idx];
-    const resultConfig = c.items.find(v => v.config.type === type);
+    const resultConfig = c.items.find(v => v.config.view === type || v.config.type === type);
     if (resultConfig) {
       return resultConfig;
     }
@@ -63,7 +56,7 @@ const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: DialobItemType) => 
 }
 
 const getItemConversions = (item: DialobItem): { text: string, value: DialobItemTemplate }[] => {
-  const thisItemType = findItemTypeConfig(DEFAULT_ITEMTYPE_CONFIG, item.type as DialobItemType);
+  const thisItemType = findItemTypeConfig(DEFAULT_ITEMTYPE_CONFIG, item.view ?? item.type);
   const options: { text: string, value: DialobItemTemplate }[] = [];
 
   if (thisItemType && thisItemType.convertible) {
@@ -229,11 +222,12 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
         <MenuItem key='hint' onClick={handleClose} disabled>
           <Typography><FormattedMessage id='menus.conversions.hint' /></Typography>
         </MenuItem>
-        {conversions.length > 0 && conversions.map((c, index) => (
-          <MenuItem key={index} onClick={(e) => handleConvert(e, c.value)}>
+        {conversions.length > 0 && conversions.map((c, index) => {
+          return (<MenuItem key={index} onClick={(e) => handleConvert(e, c.value)}>
             <Typography>{resolveTypeName(c.text)}</Typography>
           </MenuItem>
-        ))}
+          )
+        })}
       </Menu>
     </>
   );
