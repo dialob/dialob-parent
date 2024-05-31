@@ -19,7 +19,10 @@ const DefaultValueEditor: React.FC = () => {
   }, [item]);
 
   React.useEffect(() => {
-    if (item && defaultValue !== '' && defaultValue !== item?.defaultValue) {
+    if (item && defaultValue !== item?.defaultValue) {
+      if (defaultValue === '' && item?.defaultValue === undefined) {
+        return;
+      }
       const id = setTimeout(() => {
         updateItem(item?.id, 'defaultValue', defaultValue);
         setActiveItem({ ...item, defaultValue });

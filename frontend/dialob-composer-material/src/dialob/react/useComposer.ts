@@ -12,8 +12,8 @@ export const useComposer = () => {
     dispatch({ type: 'addItem', config: itemTemplate, parentItemId, afterItemId });
   };
 
-  const updateItem = (itemId: string, attribute: string, value: string, language?: string) => {
-    dispatch({ type: 'updateItem', itemId, attribute, value, language });
+  const updateItem = (itemId: string, attribute: string, value: string) => {
+    dispatch({ type: 'updateItem', itemId, attribute, value });
   };
 
   const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
