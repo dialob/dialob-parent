@@ -9,7 +9,7 @@ export const downloadValueSet = (valueSet?: ValueSet) => {
   const entries = valueSet?.entries;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result: { [key: string]: any }[] = [];
-  entries.forEach(e => {
+  entries?.forEach(e => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const entry: { [key: string]: any } = { ID: e.id };
     for (const lang in e.label) {

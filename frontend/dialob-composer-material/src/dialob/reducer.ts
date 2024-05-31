@@ -66,7 +66,6 @@ const updateItem = (state: ComposerState, itemId: string, attribute: string, val
   } else {
     state.data[itemId][attribute] = value;
   }
-  console.log('updateItem', itemId, attribute, value);
 }
 
 const updateLocalizedString = (state: ComposerState, itemId: string, attribute: string, value: LocalizedString, index?: number): void => {
@@ -281,7 +280,11 @@ const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: Valu
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
       const newEntry = entry ? entry : { id: '', label: {} };
-      state.valueSets[vsIdx].entries.push(newEntry);
+      if (state.valueSets[vsIdx].entries !== undefined) {
+        state.valueSets[vsIdx].entries!.push(newEntry);
+      } else {
+        state.valueSets[vsIdx].entries = [newEntry];
+      }
     }
   }
 }
@@ -293,7 +296,7 @@ const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      state.valueSets[vsIdx].entries[index] = entry;
+      state.valueSets[vsIdx].entries![index] = entry;
     }
   }
 }
@@ -303,7 +306,7 @@ const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, inde
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && text !== null) {
 
-      state.valueSets[vsIdx].entries[index].label[language] = text;
+      state.valueSets[vsIdx].entries![index].label[language] = text;
     }
   }
 }
@@ -315,7 +318,7 @@ const deleteValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      state.valueSets[vsIdx].entries.splice(index, 1);
+      state.valueSets[vsIdx].entries!.splice(index, 1);
     }
   }
 }
@@ -327,8 +330,8 @@ const moveValueSetEntry = (state: ComposerState, valueSetId: string, from: numbe
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      const newIndex = to > state.valueSets[vsIdx].entries.length ? state.valueSets[vsIdx].entries.length - 1 : to;
-      state.valueSets[vsIdx].entries.splice(newIndex, 0, state.valueSets[vsIdx].entries.splice(from, 1)[0]);
+      const newIndex = to > state.valueSets[vsIdx].entries!.length ? state.valueSets[vsIdx].entries!.length - 1 : to;
+      state.valueSets[vsIdx].entries!.splice(newIndex, 0, state.valueSets[vsIdx].entries!.splice(from, 1)[0]);
     }
   }
 }
@@ -465,7 +468,7 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
     // Valueset entry labels
     if (state.valueSets) {
       state.valueSets.forEach(vs => {
-        vs.entries.forEach(vse => {
+        vs.entries?.forEach(vse => {
           if (vse.label) {
             vse.label[language] = vse.label[copyFrom];
           }
@@ -502,7 +505,7 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
 
   if (state.valueSets) {
     state.valueSets.forEach(vs => {
-      vs.entries.forEach(vse => {
+      vs.entries?.forEach(vse => {
         if (vse.label[language]) {
           delete vse.label[language];
         }

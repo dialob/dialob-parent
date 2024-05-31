@@ -28,7 +28,7 @@ const ChoiceList: React.FC<{
   }, [valueSet]);
 
   const updateValueSetEntryId = (entry: ValueSetEntry, id: string) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const newEntry = { ...entry, id };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
@@ -37,7 +37,7 @@ const ChoiceList: React.FC<{
   }
 
   const updateValueSetEntryLabel = (entry: ValueSetEntry, label: LocalizedString) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const newEntry = { ...entry, label };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
@@ -46,7 +46,7 @@ const ChoiceList: React.FC<{
   }
 
   const updateValueSetEntryRule = (entry: ValueSetEntry, rule: string) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const newEntry = { ...entry, when: rule };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
@@ -55,7 +55,7 @@ const ChoiceList: React.FC<{
   }
 
   const onDeleteValueSetEntry = (entry: ValueSetEntry) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       deleteValueSetEntry(valueSet.id, idx);
       updateValueSet({ ...valueSet, entries: valueSet.entries.filter(e => e.id !== entry.id) });
@@ -78,7 +78,7 @@ const ChoiceList: React.FC<{
     <TableBody>
       <TableRow>
         <TableCell colSpan={2 + languageNo}>
-          {valueSet?.entries && valueSet.entries.length > 0 && <Tree
+          {valueSet?.entries && valueSet.entries?.length > 0 && <Tree
             tree={tree}
             renderItem={(props) => renderItem({
               ...props, valueSetId: valueSet?.id, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,

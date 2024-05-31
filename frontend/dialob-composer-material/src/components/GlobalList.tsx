@@ -27,7 +27,7 @@ const GlobalList: React.FC<{ entries?: ValueSetEntry[] }> = ({ entries }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {entries.map((entry) => (
+        {entries?.map((entry) => (
           <TableRow key={entry.id}>
             <TableCell sx={{ p: 1 }}>
               {entry.id}

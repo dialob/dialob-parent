@@ -20,7 +20,7 @@ import { BoldedMessage } from '../intl/BoldedMessage';
 interface GlobalValueSet {
   id: string;
   label?: string;
-  entries: ValueSetEntry[];
+  entries?: ValueSetEntry[];
 }
 
 const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
@@ -87,12 +87,21 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   const addEntry = () => {
     if (currentValueSet) {
-      const newEntry = {
-        id: 'choice' + (currentValueSet.entries.length + 1),
-        label: {},
-      };
-      addValueSetEntry(currentValueSet.id, newEntry);
-      setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      if (!currentValueSet.entries) {
+        const newEntry = {
+          id: 'choice1',
+          label: {}
+        }
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+      } else {
+        const newEntry = {
+          id: 'choice' + (currentValueSet.entries?.length + 1),
+          label: {},
+        };
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      }
     }
   }
 

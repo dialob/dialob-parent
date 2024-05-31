@@ -80,12 +80,17 @@ const UploadValuesetDialog: React.FC<{
         setCurrentValueSet({ ...currentValueSet, entries: newEntries });
         setValueSetEntries(currentValueSet.id, newEntries);
       } else if (uploadMode === 'append') {
-        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, ...newEntries] });
-        newEntries.forEach(e => addValueSetEntry(currentValueSet.id, e));
+        if (currentValueSet.entries) {
+          setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, ...newEntries] });
+          newEntries.forEach(e => addValueSetEntry(currentValueSet.id, e));
+        } else {
+          setCurrentValueSet({ ...currentValueSet, entries: newEntries });
+          setValueSetEntries(currentValueSet.id, newEntries);
+        }
       } else if (uploadMode === 'update') {
         const currentEntries = currentValueSet.entries;
         const appliedEntries: ValueSetEntry[] = [];
-        currentEntries.forEach(e => {
+        currentEntries?.forEach(e => {
           const newEntry = newEntries.find(ne => ne.id === e.id);
           if (newEntry) {
             appliedEntries.push(newEntry);

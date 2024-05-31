@@ -29,7 +29,7 @@ export type ValueSetEntry = {
 
 export type ValueSet = {
   id: string;
-  entries: ValueSetEntry[];
+  entries?: ValueSetEntry[];
 };
 
 export type DialobItemType =

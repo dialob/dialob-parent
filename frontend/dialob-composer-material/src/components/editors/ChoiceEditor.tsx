@@ -45,12 +45,21 @@ const ChoiceEditor: React.FC = () => {
 
   const handleAddValueSetEntry = () => {
     if (currentValueSet) {
-      const newEntry = {
-        id: 'choice' + (currentValueSet.entries.length + 1),
-        label: {},
-      };
-      addValueSetEntry(currentValueSet.id, newEntry);
-      setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      if (!currentValueSet.entries) {
+        const newEntry = {
+          id: 'choice1',
+          label: {}
+        }
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+      } else {
+        const newEntry = {
+          id: 'choice' + (currentValueSet.entries?.length + 1),
+          label: {},
+        };
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      }
     }
   }
 
@@ -69,7 +78,7 @@ const ChoiceEditor: React.FC = () => {
       const newGvsName = 'untitled' + (newGvsIndex + 1);
       const newGvsId = generateValueSetId(form);
       // remove rules when converting to global list
-      const newEntries = currentValueSet.entries.map(entry => { return { id: entry.id, label: entry.label } });
+      const newEntries = currentValueSet.entries?.map(entry => { return { id: entry.id, label: entry.label } });
       createValueSet(null, newEntries);
       if (newGvsId) {
         setGlobalValueSetName(newGvsId, newGvsName);

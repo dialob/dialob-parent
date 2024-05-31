@@ -191,7 +191,7 @@ export const getAllItemTranslations = (form: ComposerState): ItemTranslations =>
       }
       if (valueSet && valueSet.entries) {
         if (!isGlobalValueSet(globalValueSets, item.valueSetId)) {
-          valueSet.entries.forEach((entry, index) => {
+          valueSet.entries?.forEach((entry, index) => {
             const key = `v:${valueSet!.id}:${index}:${entry.id}`;
             translations[key] = entry.label;
             metadata.key[key] = { description: 'Valueset entry', pageId: pageId, parent: `${parent.id} ${parent.type}` };
@@ -232,7 +232,7 @@ export const getGlobalValueSetTranslations = (form: ComposerState): ItemTranslat
         valueSet = findValueset(form, globalValueSet.valueSetId);
       }
       if (valueSet && valueSet.entries) {
-        valueSet.entries.forEach((entry, index) => {
+        valueSet.entries?.forEach((entry, index) => {
           const key = `v:${valueSet!.id}:${index}:${entry.id}`;
           translations[key] = entry.label;
           metadata.key[key] = { description: 'Valueset entry', pageId: "Root", parent: "Global list" };
@@ -309,7 +309,7 @@ const getValueSetKeys = (form: ComposerState): string[] => {
   if (valueSets) {
     valueSets.forEach((valueSet) => {
       const resultingKey = `v:${valueSet.id}:`;
-      valueSet.entries.forEach((entry, index) => {
+      valueSet.entries?.forEach((entry, index) => {
         valueSetKeys.push(`${resultingKey}${index}:${entry.id}`)
       })
     })

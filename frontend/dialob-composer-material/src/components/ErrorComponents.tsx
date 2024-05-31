@@ -39,7 +39,7 @@ const extractCodeFromVariable = (variable: Variable, start: number, end: number)
 }
 
 const extractListError = (valueSet: ValueSet, index: number) => {
-  return valueSet.entries[index].id;
+  return valueSet.entries ? valueSet.entries[index]?.id : '';
 }
 
 export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {
