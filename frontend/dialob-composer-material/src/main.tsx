@@ -12,13 +12,15 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) 
 
   const FORM_ID = appConfig.formId;
 
+  const baseUrl = window.location.origin;
+
   const DIALOB_COMPOSER_CONFIG: DialobComposerConfig = {
     transport: {
       csrf: appConfig.csrfHeader ? {
         headerName: appConfig.csrfHeader,
         token: appConfig.csrf
       } : undefined,
-      apiUrl: appConfig.backend_api_url,
+      apiUrl: appConfig.backend_api_url.includes('://') ? appConfig.backend_api_url : baseUrl + appConfig.backend_api_url,
       previewUrl: appConfig.filling_app_url,
       tenantId: appConfig.tenantId || undefined,
       credentialMode: appConfig.credentialMode || undefined,
