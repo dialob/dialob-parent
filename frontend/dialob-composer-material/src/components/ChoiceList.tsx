@@ -47,7 +47,10 @@ const ChoiceList: React.FC<{
 
   const updateValueSetEntryRule = (entry: ValueSetEntry, rule: string) => {
     if (valueSet && valueSet.entries) {
-      const newEntry = { ...entry, when: rule };
+      const newEntry: ValueSetEntry = { ...entry, when: rule };
+      if (rule === '') {
+        delete newEntry.when;
+      }
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
       updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });

@@ -41,7 +41,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
   const { form } = useComposer();
   const { editor } = useEditor();
   const theme = useTheme();
-  const entry = item.data.entry;
+  const entry: ValueSetEntry = item.data.entry;
   const formLanguages = form.metadata.languages;
   const languageNo = formLanguages?.length || 0;
   const error = editor.errors?.find(e => e.itemId === valueSetId && e.index == item.data.index);
@@ -49,7 +49,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
   const backgroundColor = errorColor || theme.palette.background.paper;
   const [open, setOpen] = React.useState(false);
   const [idValue, setIdValue] = React.useState<string>(entry.id);
-  const [rule, setRule] = React.useState<string | undefined>(entry.when);
+  const [rule, setRule] = React.useState<string>(entry.when || '');
   const [expanded, setExpanded] = React.useState(false);
 
   React.useEffect(() => {
@@ -63,8 +63,12 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
   }, [idValue]);
 
   React.useEffect(() => {
-    if (rule && rule !== entry.when) {
+    if (rule !== entry.when) {
+      if (rule === '' && entry.when === undefined) {
+        return;
+      }
       const id = setTimeout(() => {
+        console.log('rule', rule)
         onRuleEdit(entry, rule);
       }, 1000);
       return () => clearTimeout(id);
