@@ -7,6 +7,7 @@ import { EditorState } from '../types';
 const INITIAL_EDITOR: EditorState = {
   activeFormLanguage: 'en',
   errors: [],
+  expandedChoiceItems: [],
 };
 
 export const EditorContext = React.createContext<{ state: EditorState, dispatch: Dispatch<EditorAction> }>({

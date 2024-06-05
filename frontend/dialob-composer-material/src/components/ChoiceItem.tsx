@@ -39,7 +39,7 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
 
 const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal }) => {
   const { form } = useComposer();
-  const { editor } = useEditor();
+  const { editor, addExpandedChoiceItem, removeExpandedChoiceItem } = useEditor();
   const theme = useTheme();
   const entry: ValueSetEntry = item.data.entry;
   const formLanguages = form.metadata.languages;
@@ -50,12 +50,22 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
   const [open, setOpen] = React.useState(false);
   const [idValue, setIdValue] = React.useState<string>(entry.id);
   const [rule, setRule] = React.useState<string>(entry.when || '');
-  const [expanded, setExpanded] = React.useState(false);
+  const expanded = React.useMemo(() => editor.expandedChoiceItems.includes(entry.id), [editor.expandedChoiceItems, entry.id]);
+
+  const toggleExpand = () => {
+    if (expanded) {
+      removeExpandedChoiceItem(entry.id);
+    } else {
+      addExpandedChoiceItem(entry.id);
+    }
+  }
 
   React.useEffect(() => {
     if (idValue !== entry.id) {
       const id = setTimeout(() => {
+        removeExpandedChoiceItem(entry.id);
         onUpdateId(entry, idValue);
+        addExpandedChoiceItem(idValue);
       }, 1000);
       return () => clearTimeout(id);
     }
@@ -68,7 +78,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
         return;
       }
       const id = setTimeout(() => {
-        console.log('rule', rule)
         onRuleEdit(entry, rule);
       }, 1000);
       return () => clearTimeout(id);
@@ -85,9 +94,9 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
         <TableBody>
           <TableRow key={entry.id} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
             <TableCell align='center' width='20%'>
-              <IconButton onClick={() => setExpanded(!expanded)}>{expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
+              <IconButton onClick={toggleExpand}>{expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
               <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
-              {!isGlobal && <IconButton onClick={() => setExpanded(true)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
+              {!isGlobal && <IconButton onClick={toggleExpand}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
             </TableCell>
             <TableCell width='30%' sx={{ p: 1 }}>
               <Typography>{idValue}</Typography>
