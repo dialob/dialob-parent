@@ -24,7 +24,7 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
 
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
-  const { form, setForm } = useComposer();
+  const { form, setForm, setRevision } = useComposer();
   const { changeItemId } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
@@ -46,8 +46,11 @@ const ItemOptionsDialog: React.FC = () => {
       setEditMode(false);
       setActiveTab('label');
     }
+  }, [editor.itemOptionsActiveTab, open]);
+
+  React.useEffect(() => {
     setId(item?.id || '');
-  }, [editor.itemOptionsActiveTab, open, item?.id]);
+  }, [item?.id]);
 
   const handleClose = () => {
     setItemOptionsActiveTab(undefined);
@@ -68,10 +71,13 @@ const ItemOptionsDialog: React.FC = () => {
             setForm(result.form);
             setErrors(result.errors);
             setIdError(false);
+            setRevision(result.rev);
+            setEditMode(false);
+            setActiveItem({ ...item, id: id });
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+            setEditMode(false);
           }
-          setEditMode(false);
         });
       } else {
         setIdError(true);

@@ -45,7 +45,7 @@ export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }>
 
 export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { changeItemId } = useBackend();
-  const { form, setForm } = useComposer();
+  const { form, setForm, setRevision } = useComposer();
   const { setErrors } = useEditor();
   const [editMode, setEditMode] = React.useState(false);
   const [idError, setIdError] = React.useState(false);
@@ -59,6 +59,7 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
             setForm(result.form);
             setErrors(result.errors);
             setIdError(false);
+            setRevision(result.rev);
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
           }
