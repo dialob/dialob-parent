@@ -22,7 +22,7 @@ const ChoiceTextEditor: React.FC<{
     if (localizedString && localizedString !== entry.label) {
       const id = setTimeout(() => {
         onUpdate(entry, localizedString)
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

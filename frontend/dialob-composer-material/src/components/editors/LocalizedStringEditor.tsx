@@ -39,7 +39,7 @@ const LocalizedStringEditor: React.FC<{
         } else {
           setActiveItem({ ...item, [type]: localizedString });
         }
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -66,7 +66,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
         removeExpandedChoiceItem(entry.id);
         onUpdateId(entry, idValue);
         addExpandedChoiceItem(idValue);
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,7 +79,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = ({ item, valueSetId, provided, onR
       }
       const id = setTimeout(() => {
         onRuleEdit(entry, rule);
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -53,7 +53,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     if (label && label !== form.metadata?.label) {
       const id = setTimeout(() => {
         setMetadataValue('label', label);
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

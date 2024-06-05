@@ -26,7 +26,7 @@ const DefaultValueEditor: React.FC = () => {
       const id = setTimeout(() => {
         updateItem(item?.id, 'defaultValue', defaultValue);
         setActiveItem({ ...item, defaultValue });
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

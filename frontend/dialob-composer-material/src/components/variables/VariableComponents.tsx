@@ -152,7 +152,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   React.useEffect(() => {
     const id = setTimeout(() => {
       updateContextVariable(variable.name, variable.contextType, defaultValue);
-    }, 1000);
+    }, 300);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
@@ -175,7 +175,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   React.useEffect(() => {
     const id = setTimeout(() => {
       updateExpressionVariable(variable.name, expression);
-    }, 1000);
+    }, 300);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expression]);

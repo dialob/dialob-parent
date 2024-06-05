@@ -72,7 +72,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       if (gvsName !== name) {
         const id = setTimeout(() => {
           setGlobalValueSetName(currentValueSet.id, name);
-        }, 1000);
+        }, 300);
         return () => clearTimeout(id);
       }
     }
