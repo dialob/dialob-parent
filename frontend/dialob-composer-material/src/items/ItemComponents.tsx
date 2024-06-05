@@ -1,5 +1,5 @@
 import React from "react";
-import { DialobItem, DialobItemTemplate, DialobItemType, useComposer } from "../dialob";
+import { DialobItem, DialobItemTemplate, useComposer } from "../dialob";
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,

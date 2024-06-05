@@ -18,6 +18,7 @@ const en = {
   'header.close': 'Close Composer',
 
   'page.label': 'Page label',
+  'page.none': 'No pages yet, click here to add one',
 
   'tree.expand': 'Expand all',
   'tree.collapse': 'Collapse all',
@@ -84,6 +85,10 @@ const en = {
   'dialogs.options.label.add': 'Add label translation',
   'dialogs.options.description.add': 'Add description translation',
   'dialogs.options.validations.add': 'Add validation message translation',
+  'dialogs.options.translation.en.add': 'Add English translation',
+  'dialogs.options.translation.fi.add': 'Add Finnish translation',
+  'dialogs.options.translation.sv.add': 'Add Swedish translation',
+  'dialogs.options.translation.et.add': 'Add Estonian translation',
   'dialogs.options.key': 'Key',
   'dialogs.options.value': 'Value',
   'dialogs.options.text': 'Text - {language}',

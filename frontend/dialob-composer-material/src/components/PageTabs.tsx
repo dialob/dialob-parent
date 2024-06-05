@@ -8,6 +8,7 @@ import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
 import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
+import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -138,7 +139,7 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
         <Box sx={{ flexGrow: 1 }} />
         {noPages ?
           <Button onClick={handleCreate} color='primary' endIcon={<Add />} variant='contained'>
-            <Typography textTransform='none'>No pages yet, click here to add one</Typography>
+            <Typography textTransform='none'><FormattedMessage id='page.none' /></Typography>
           </Button> :
           <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
             <Add color='primary' />
