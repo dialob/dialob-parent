@@ -59,28 +59,28 @@ public class SecurityDisabledConfiguration {
   }
 
   @Bean
-  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain filterChain(HttpSecurity http, TenantAccessEvaluator tenantPermissionEvaluator) throws Exception {
     LOGGER.warn("Security disabled!");
     http.securityMatcher("/**")
         .authorizeHttpRequests(customizer -> customizer.anyRequest().permitAll())
         .csrf(AbstractHttpConfigurer::disable)
         .cors(customizer -> customizer.configurationSource(request -> PERMIT_ALL_CORS))
         .headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
-    return configureRequestParameterTenantScopeFilter(http).build();
+    return configureRequestParameterTenantScopeFilter(http, tenantPermissionEvaluator).build();
   }
 
-  protected HttpSecurity configureRequestParameterTenantScopeFilter(HttpSecurity http) {
+  protected HttpSecurity configureRequestParameterTenantScopeFilter(HttpSecurity http, TenantAccessEvaluator tenantPermissionEvaluator) {
     // @formatter:off
-    getRequestParameterTenantScopeFilter()
+    getRequestParameterTenantScopeFilter(tenantPermissionEvaluator)
       .ifPresent(requestParameterTenantScopeFilter -> http.addFilterAfter(requestParameterTenantScopeFilter, ExceptionTranslationFilter.class));
     return http;
     // @formatter:on
   }
 
   @NonNull
-  protected Optional<RequestParameterTenantScopeFilter> getRequestParameterTenantScopeFilter() {
+  protected Optional<RequestParameterTenantScopeFilter> getRequestParameterTenantScopeFilter(TenantAccessEvaluator tenantPermissionEvaluator) {
     final RequestParameterTenantScopeFilter requestParameterTenantScopeFilter = new RequestParameterTenantScopeFilter(
-      getTenantPermissionEvaluator(),
+      tenantPermissionEvaluator,
       getDefaultTenantSupplier()
     );
     requestParameterTenantScopeFilter.setTenantRequiredMatcher(getTenantRequiredMatcher());
@@ -100,8 +100,8 @@ public class SecurityDisabledConfiguration {
     return request -> tenantSettings.getMode() == Mode.URL_PARAM;
   }
 
-  @NonNull
-  protected TenantAccessEvaluator getTenantPermissionEvaluator() {
+  @Bean
+  TenantAccessEvaluator tenantPermissionEvaluator() {
     return tenant -> true;
   }
 }

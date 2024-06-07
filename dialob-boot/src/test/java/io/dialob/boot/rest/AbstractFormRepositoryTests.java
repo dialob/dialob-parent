@@ -31,7 +31,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.api.rest.IdAndRevision;
 import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.integration.redis.ProvideTestRedis;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.SerializationUtils;
@@ -73,7 +72,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AbstractFormRepositoryTests implements ProvideTestRedis {
+public class AbstractFormRepositoryTests {
 
   public static final NoExceptionResponseErrorHandler NO_EXCEPTION_RESPONSE_ERROR_HANDLER = new NoExceptionResponseErrorHandler();
 

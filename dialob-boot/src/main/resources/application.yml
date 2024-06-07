@@ -1,5 +1,3 @@
-nodeId: "default"
-
 server:
   max-http-request-header-size: 64KB
   port: 8081
@@ -10,12 +8,11 @@ server:
       # never, on_trace_param ( url -> ?trace=true ), always
       include-stacktrace: always
 
-login.server.url: "https://login.example.com"
-
 spring:
   profiles:
     active:
-      - ui
+    - jdbc
+    - ui
   aop:
     proxy-target-class: false
   session:
@@ -28,27 +25,6 @@ spring:
       WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
     deserialization:
       READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
-  security:
-    oauth2:
-      client:
-        registration:
-          default:
-            provider: "oauth2-login-provider"
-            clientName: default
-            clientId: localhost
-            clientSecret: mysecret
-            authorizationGrantType: authorization_code
-            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope:
-              - openid   # We'll do authentication only (SSO)
-              - profile  # Triggers userinfo lookup
-        provider:
-          oauth2-login-provider:
-            authorizationUri: ${login.server.url}/oauth/authorize
-            tokenUri: ${login.server.url}/oauth/token
-            jwkSetUri: ${login.server.url}/token_keys
-            userNameAttribute: sub
-            userInfoUri: ${login.server.url}/userinfo
   cloud:
     gcp:
       core:
@@ -103,7 +79,7 @@ dialob:
       exposed-headers:
       max-age: 1800s
   security:
-    enabled: true
+    enabled: false
     audit:
       enabled: false
     groupPermissions:

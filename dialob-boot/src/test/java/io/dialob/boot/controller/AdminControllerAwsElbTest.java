@@ -50,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("aws")
 @SpringBootTest(webEnvironment = MOCK, properties = {
   "tenantId=itest",
+  "dialob.security.enabled=true",
   "dialob.security.authenticationMethod=AWSELB",
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",

@@ -17,7 +17,7 @@
 #!/usr/bin/env bash
 set -e
 
-mvn clean install -Pdialob-build -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+mvn clean install -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
 readonly local RELEASE_VERSION=latest
 readonly local DIALOB_BOOT_IMAGE=$DOCKER_REGISTRY/dialob/dialob-boot
