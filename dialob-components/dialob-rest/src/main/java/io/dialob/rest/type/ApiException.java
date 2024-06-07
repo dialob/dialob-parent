@@ -15,8 +15,8 @@
  */
 package io.dialob.rest.type;
 
-import io.dialob.api.rest.Errors;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.rest.Errors;
 
 public class ApiException extends RuntimeException {
 

@@ -16,6 +16,7 @@
 package io.dialob.questionnaire.service.rest;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
@@ -43,7 +44,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;

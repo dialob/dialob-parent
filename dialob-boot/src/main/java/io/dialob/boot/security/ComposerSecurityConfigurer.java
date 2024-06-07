@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
@@ -24,7 +25,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 

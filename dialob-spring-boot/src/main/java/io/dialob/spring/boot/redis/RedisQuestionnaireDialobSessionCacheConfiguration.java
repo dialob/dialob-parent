@@ -16,6 +16,7 @@
 package io.dialob.spring.boot.redis;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -31,7 +32,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Optional;
 

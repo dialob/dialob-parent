@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -24,7 +25,6 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.concurrent.ConcurrentHashMap;

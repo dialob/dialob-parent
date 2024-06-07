@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.ApiKeyAuthoritiesProvider;
@@ -31,7 +32,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;

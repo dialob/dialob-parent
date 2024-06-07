@@ -15,10 +15,10 @@
  */
 package io.dialob.db.spi.spring;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.support.AbstractEntityInformation;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;

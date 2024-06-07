@@ -16,11 +16,11 @@
 package io.dialob.security.aws.elb;
 
 import com.nimbusds.jwt.proc.JWTProcessor;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.spring.AuthenticationStrategy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;

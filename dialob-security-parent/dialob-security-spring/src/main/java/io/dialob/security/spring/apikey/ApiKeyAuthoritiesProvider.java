@@ -15,11 +15,10 @@
  */
 package io.dialob.security.spring.apikey;
 
-import java.util.Collection;
-
+import io.dialob.security.key.ApiKey;
 import org.springframework.security.core.GrantedAuthority;
 
-import io.dialob.security.key.ApiKey;
+import java.util.Collection;
 
 public interface ApiKeyAuthoritiesProvider {
   Collection<GrantedAuthority> loadAuthorities(ApiKey key);

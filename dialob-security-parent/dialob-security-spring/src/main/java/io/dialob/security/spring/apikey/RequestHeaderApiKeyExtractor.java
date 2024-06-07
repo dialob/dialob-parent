@@ -15,6 +15,7 @@
  */
 package io.dialob.security.spring.apikey;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.key.ApiKey;
 import io.dialob.security.key.ImmutableApiKey;
@@ -24,7 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.Arrays;

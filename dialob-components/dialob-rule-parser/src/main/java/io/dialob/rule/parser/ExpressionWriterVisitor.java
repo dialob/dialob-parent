@@ -15,8 +15,8 @@
  */
 package io.dialob.rule.parser;
 
-import io.dialob.rule.parser.node.*;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.node.*;
 
 public class ExpressionWriterVisitor implements ASTVisitor {
 

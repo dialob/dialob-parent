@@ -16,6 +16,7 @@
 package io.dialob.rule.parser;
 
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
@@ -26,7 +27,6 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.*;
 

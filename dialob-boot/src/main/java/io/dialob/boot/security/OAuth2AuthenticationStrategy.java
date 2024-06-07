@@ -15,8 +15,8 @@
  */
 package io.dialob.boot.security;
 
-import io.dialob.security.spring.AuthenticationStrategy;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.spring.AuthenticationStrategy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;

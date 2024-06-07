@@ -15,9 +15,9 @@
  */
 package io.dialob.rule.parser.function;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface FunctionRegistry {
 

@@ -15,10 +15,9 @@
  */
 package io.dialob.security.spring.apikey;
 
+import io.dialob.security.key.ApiKey;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-
-import io.dialob.security.key.ApiKey;
 
 @CacheConfig(cacheNames = Constants.API_KEY_VERIFY_CACHE_NAME)
 public interface ApiKeyValidator {

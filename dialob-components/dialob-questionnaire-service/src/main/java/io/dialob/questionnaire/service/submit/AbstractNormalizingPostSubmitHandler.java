@@ -15,10 +15,10 @@
  */
 package io.dialob.questionnaire.service.submit;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import lombok.extern.slf4j.Slf4j;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;

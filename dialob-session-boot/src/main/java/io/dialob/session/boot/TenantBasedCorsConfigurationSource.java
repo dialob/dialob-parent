@@ -15,10 +15,10 @@
  */
 package io.dialob.session.boot;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.CorsSettings;
 import jakarta.servlet.http.HttpServletRequest;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;

@@ -15,9 +15,9 @@
  */
 package io.dialob.rule.parser.analyze;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class NotExpressionVisitor implements ASTVisitor {
 

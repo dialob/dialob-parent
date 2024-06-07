@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.rest;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.api.rest.Errors;
 import io.dialob.boot.Application;
@@ -52,7 +53,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;

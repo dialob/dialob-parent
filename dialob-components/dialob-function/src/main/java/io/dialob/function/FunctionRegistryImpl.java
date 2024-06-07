@@ -17,6 +17,7 @@ package io.dialob.function;
 
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -28,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.task.TaskRejectedException;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

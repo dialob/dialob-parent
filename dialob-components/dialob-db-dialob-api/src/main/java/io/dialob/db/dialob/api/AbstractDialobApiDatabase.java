@@ -15,8 +15,8 @@
  */
 package io.dialob.db.dialob.api;
 
-import io.dialob.db.spi.spring.AbstractDocumentDatabase;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.db.spi.spring.AbstractDocumentDatabase;
 
 public abstract class AbstractDialobApiDatabase<T> extends AbstractDocumentDatabase<T> {
   private final DialobApiTemplate dialobApiTemplate;

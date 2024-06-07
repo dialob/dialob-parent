@@ -15,6 +15,7 @@
  */
 package io.dialob.form.service;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.rule.parser.DialobRuleLexer;
@@ -22,7 +23,6 @@ import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Vocabulary;
 import org.apache.commons.lang3.tuple.Pair;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

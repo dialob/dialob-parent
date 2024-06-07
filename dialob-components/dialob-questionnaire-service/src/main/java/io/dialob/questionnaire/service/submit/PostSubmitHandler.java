@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.submit;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 

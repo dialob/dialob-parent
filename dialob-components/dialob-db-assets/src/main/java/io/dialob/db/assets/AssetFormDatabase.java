@@ -15,6 +15,7 @@
  */
 package io.dialob.db.assets;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.db.assets.repository.AssetRepository;
 import io.dialob.db.assets.serialization.AssetFormDeserializer;
@@ -22,7 +23,6 @@ import io.dialob.db.assets.serialization.AssetFormMetadataRowDeserializer;
 import io.dialob.db.assets.serialization.AssetFormSerializer;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.function.Consumer;
 

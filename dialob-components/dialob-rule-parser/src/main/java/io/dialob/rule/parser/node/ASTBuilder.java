@@ -1,8 +1,8 @@
 package io.dialob.rule.parser.node;
 
-import io.dialob.rule.parser.api.ValueType;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.dialob.rule.parser.api.ValueType;
 
 import java.util.List;
 

@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.controller;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.security.ApiServiceSecurityConfigurer;
 import io.dialob.common.Permissions;
 import io.dialob.form.service.rest.FormsRestServiceController;
@@ -44,7 +45,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;

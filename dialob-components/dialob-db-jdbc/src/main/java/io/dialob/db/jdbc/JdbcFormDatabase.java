@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
@@ -29,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;

@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.rest;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
@@ -32,7 +33,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

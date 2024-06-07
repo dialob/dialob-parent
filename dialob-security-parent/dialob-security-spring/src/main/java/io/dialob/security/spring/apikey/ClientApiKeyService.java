@@ -15,12 +15,11 @@
  */
 package io.dialob.security.spring.apikey;
 
-import java.util.Optional;
-
+import io.dialob.security.key.ApiKey;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 
-import io.dialob.security.key.ApiKey;
+import java.util.Optional;
 
 @CacheConfig(cacheNames = Constants.API_KEY_CACHE_NAME)
 public interface ClientApiKeyService {

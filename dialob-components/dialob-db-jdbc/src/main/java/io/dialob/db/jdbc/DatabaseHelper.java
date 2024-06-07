@@ -17,9 +17,9 @@ package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.apache.commons.lang3.StringUtils;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.ByteArrayInputStream;

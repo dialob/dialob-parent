@@ -15,8 +15,8 @@
  */
 package io.dialob.security.spring.apikey;
 
-import io.dialob.security.key.ApiKey;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.key.ApiKey;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
