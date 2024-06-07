@@ -2,7 +2,6 @@
 
 ## Where's what
 
-* **db_data** - Postgres database files (local only), created on first run
 * **db_init** - Database initialization scripts (called from Docker Compose)
 * **dialob-boot-config** - Spring boot configuration files for Dialob API service
 * **dialob-session-config** - Spring boot configuration files for Dialob Session service
@@ -14,17 +13,18 @@
 ### Preparation
 Ensure that docker has enough memory, at least 3GB is needed to run profiling and dialob applications.
 
-### Create docker networks
-Check available docker networks:
-```bash
-docker network list
+#### Build java projects
+
+In project's root directory
+
+```shell
+./mvnw clean install
 ```
 
-If this does not show **application** and **backend** networks, then create them:
+## Build local container images
 
 ```bash
-docker network create application
-docker network create backend
+docker compose build
 ```
 
 ## Start environment
@@ -34,7 +34,7 @@ Start the environment:
 docker compose up
 ```
 
-This will start dialob database, backend and session services. Note that we use `docker compose`, not `docker-compose`!
+This will start dialob database, reverse proxy, backend and session services. Note that we use `docker compose`, not `docker-compose`!
 
 ## Database
 
@@ -56,6 +56,17 @@ Due to UI customization configuration peculiarities, project-specific Composer a
 (Opening composer from Admin UI will open built-in "vanilla" composer, **not** the live development environment for the customized version).
 
 ## Development tasks
+
+### Logging configuration
+
+Changes to logging configuration are automatically updated every 10 seconds. 
+
+ - `/dialob-session-config/logback.xml`
+ - `/dialob-boot-config/logback.xml`
+
+### Debugging
+
+`dialob-api` opens jwdp on port 5085 and `dialob-session` port 5085. You can connect java remote debugger on these ports. 
 
 ### Open form in composer
 
