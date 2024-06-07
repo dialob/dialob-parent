@@ -84,7 +84,7 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
   const rootItem = rootItemId ? items[rootItemId] : undefined;
-  const noPages = rootItem && !rootItem.items;
+  const noPages = rootItem && (!rootItem.items || rootItem.items.length === 0);
   const noActivePage = rootItem && rootItem.items && rootItem.items.length > 0 && !editor.activePage;
 
   React.useEffect(() => {
@@ -126,6 +126,16 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     return <CircularProgress />;
   }
 
+  if (noPages) {
+    return (
+      <Box sx={{ mb: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <Button onClick={handleCreate} color='primary' endIcon={<Add />} variant='contained'>
+          <Typography textTransform='none'><FormattedMessage id='page.none' /></Typography>
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ mb: 1 }}>
       <Box sx={{ display: 'flex' }}>
@@ -137,14 +147,9 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
           ))}
         </Grid>
         <Box sx={{ flexGrow: 1 }} />
-        {noPages ?
-          <Button onClick={handleCreate} color='primary' endIcon={<Add />} variant='contained'>
-            <Typography textTransform='none'><FormattedMessage id='page.none' /></Typography>
-          </Button> :
-          <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
-            <Add color='primary' />
-          </IconButton>
-        }
+        <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
+          <Add color='primary' />
+        </IconButton>
       </Box>
       <PageHeader item={editor.activePage} />
     </Box>
