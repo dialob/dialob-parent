@@ -44,15 +44,13 @@ On first startup, following databases are created using init scripts in `db_init
 |------------|----------|-----------|-------------------|
 | **dialob** | dialob   | dialob123 | Dialob database   |
 
-`db_data` directory will be created to contain database files. To reset database, remote this directory (owned by root).
-
 Postgres service is exposed on `localhost:5433`
 
 ### Dialob 
 
-Dialob Admin UI: http://localhost:8085/dialob/
-Dialob API: http://localhost:8085/dialob/api/
-Dialob Session API: http://localhost:8080/dialob/api/
+Dialob Admin UI: http://localhost:8080/dialob/
+Dialob API: http://localhost:8080/dialob/api/
+Dialob Session API: http://localhost:8080/session/
 
 Due to UI customization configuration peculiarities, project-specific Composer and Filling UI needs to be started separately and links from Admin UI should not be used. 
 (Opening composer from Admin UI will open built-in "vanilla" composer, **not** the live development environment for the customized version).

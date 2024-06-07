@@ -70,14 +70,14 @@ Dialob backend services
 
 For default configurations, see YML-s in **dialob-config-parent/dialob-settings**
 
+* **jdbc** - Form and questionnaire persistence - JDBC (enabled by default)
+* **ui** - Enable UI components (enabled by default)
 * **aws** - AWS environment: Enable AWS ELB authentication
 * **dialobapidb** - Form and questionnaire persistence - Dialob API
-* **elasticsearch** - (deprecated, not in use)
 * **filedb** - Form and questionnaire persistence - Filesystem
-* **jdbc** - Form and questionnaire persistence - JDBC
 * **mongodb** - Form and questionnaire persistence - MongoDb
 * **uaa** - Security implementation UAA
-* **ui** - Enable UI components (enabled by default)
+* **openid** - Enabled Open ID authentication
 
 ## Building tasks
 
@@ -112,7 +112,7 @@ See [Dockerfile](dialob-boot/Dockerfile)
 Implements REST service for form filling sessions (**dialob-session-boot**)
 
 ```shell
-docker pull resys/doalob-boot:latest
+docker pull resys/dialob-boot:latest
 ```
 
 See [docker image readme](docs/dialob-session-boot-docker.md)
@@ -125,30 +125,42 @@ See [Dockerfile](dialob-session-boot/Dockerfile)
 - [CSV data query api](docs/csv-api.md)
 
 
-### Migrated repositories for monorepo
+## Local development
 
-* https://gitlab.com/dialob/dialob-fill-api (master) migrated to frontend/dialob-fill-api
-* https://gitlab.com/dialob/dialob-fill-react (master) migrated to frontend/dialob-fill-react
-* https://gitlab.com/dialob/dialob-fill-demo-material (main) migrated to frontend/dialob-fill-demo-material
-* https://git.resys.io/dialob/dialob-fill-material (mui-next5) migrated to frontend/dialob-fill-material
-* https://git.resys.io/dialob/dialob-review-material (master) migrated to frontend/dialob-review-material
-* https://git.resys.io/dialob/dialob-composer-v2 (master) migrated to frontend/dialob-composer-semantic
-* https://git.resys.io/dialob/dialob-composer-generic-app (master) migrated to frontend/dialob-composer-semantic-app
+1. Build everything
 
----
+```shell
+./mvnw clean install
+```
 
-https://dialob.io
+2. Start local database server
+```shell
+docker run --name dialob-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password123 postgres
+```
+
+3. Start local services
+```shell
+cd dialob-boot
+mvn spring-boot:run
+```
+
+```shell
+cd dialob-session-boot
+mvn spring-boot:run
+```
+
+Open url http://localhost:8081/
+
+## Testing
 
 ### Running DB2 tests
+
+DB2 container startup is very slow and if you are using ARM based computer, it will be even slower. IBM does not provide
+ARM build of DB2.
 
 ```shell
 mvn clean test -D"groups=db2" -D"excludedGroups=postgresql,mysql"
 ```
 
-### Running locally
-
-1. Run local database server
-
-```shell
-docker run --name dialob-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password123 postgres
-```
+---
+https://dialob.io

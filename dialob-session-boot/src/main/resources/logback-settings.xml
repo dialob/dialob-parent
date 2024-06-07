@@ -4,7 +4,6 @@
   <logger name="org.springframework.io.dialob.boot.context" level="INFO"/>
   <logger name="org.springframework.security" level="INFO"/>
   <logger name="org.springframework.data" level="INFO"/>
-  <logger name="org.elasticsearch" level="INFO"/>
   <logger name="org.springframework.security.web" level="INFO"/>
   <logger name="org.springframework.integration" level="INFO"/>
   <logger name="org.springframework.web" level="INFO"/>
