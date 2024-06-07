@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout :: common_content(null,~{::applicationContent},null,null)">
+      th:replace="~{layout :: common_content(null,~{::applicationContent},null,null)}">
 <body>
 <div th:fragment="applicationContent">
   <div><span th:text="${status}">5xx</span> - <span th:text="${error}">error</span></div>
