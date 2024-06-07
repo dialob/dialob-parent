@@ -17,6 +17,9 @@
 FROM amazoncorretto:17
 ARG RELEASE_VERSION
 ENV BASH_ENV /etc/profile
+ENV JAVA_OPTS ""
+ENV JAR_FILE dialob-session-boot.jar
+
 RUN echo "java:x:2000:2000:Java:/java:/sbin/nologin:" >> /etc/passwd && \
     echo "java:x:2000:" >> /etc/group && \
     mkdir -p /java/agents /java/classpath
@@ -24,4 +27,6 @@ RUN chown -R java:java /java
 WORKDIR /java
 USER java
 ADD target/dialob-session-boot-$RELEASE_VERSION.jar /java/dialob-session-boot.jar
-ENTRYPOINT ["java", "-jar", "dialob-session-boot.jar"]
+CMD ["sh","-c","java $JAVA_OPTS -jar $JAR_FILE"]
+
+ 

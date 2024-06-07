@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Dialob API URL
-DIALOB_FORMS_URL=http://localhost:8085/dialob/api/forms
+DIALOB_FORMS_URL=http://localhost:8080/dialob/api/forms
 
 # Update or intall form file ($1)
 function updateForm () {
