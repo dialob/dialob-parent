@@ -1,11 +1,11 @@
 package io.dialob.rule.parser.node;
 
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.text.StringEscapeUtils;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.Objects;
 

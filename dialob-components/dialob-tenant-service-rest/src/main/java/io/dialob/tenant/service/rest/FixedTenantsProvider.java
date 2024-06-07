@@ -15,9 +15,9 @@
  */
 package io.dialob.tenant.service.rest;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.List;

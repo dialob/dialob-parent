@@ -15,6 +15,7 @@
  */
 package io.dialob.security.spring.tenant;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
@@ -25,7 +26,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;

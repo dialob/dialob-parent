@@ -15,10 +15,10 @@
  */
 package io.dialob.security.aws.elb;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

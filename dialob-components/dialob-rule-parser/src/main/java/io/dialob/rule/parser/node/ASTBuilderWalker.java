@@ -1,6 +1,8 @@
 package io.dialob.rule.parser.node;
 
 import com.google.common.base.CaseFormat;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.DialobRuleBaseListener;
 import io.dialob.rule.parser.DialobRuleParser;
 import io.dialob.rule.parser.ParserUtil;
@@ -12,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;

@@ -16,6 +16,7 @@
 package io.dialob.db.mongo.database;
 
 import com.mongodb.Function;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,6 @@ import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Optional;
 

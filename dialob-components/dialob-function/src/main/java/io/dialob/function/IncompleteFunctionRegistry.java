@@ -15,10 +15,10 @@
  */
 package io.dialob.function;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class IncompleteFunctionRegistry implements FunctionRegistry {
 

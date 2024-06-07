@@ -15,23 +15,16 @@
  */
 package io.dialob.security.spring.apikey;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.immutables.value.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import io.dialob.security.key.ApiKey;
 import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
 import lombok.Data;
+import org.immutables.value.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Value.Enclosing
 public class FixedClientApiKeyService implements ClientApiKeyService, ApiKeyAuthoritiesProvider {

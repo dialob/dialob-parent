@@ -15,6 +15,7 @@
  */
 package io.dialob.session.boot;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -22,7 +23,6 @@ import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Optional;
 

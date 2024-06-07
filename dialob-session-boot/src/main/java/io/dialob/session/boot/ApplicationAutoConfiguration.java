@@ -16,6 +16,7 @@
 package io.dialob.session.boot;
 
 import com.nimbusds.jwt.proc.JWTProcessor;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.questionnaire.service.sockjs.ExtractURIParametersToAttributesInterceptor;
 import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
@@ -35,7 +36,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;

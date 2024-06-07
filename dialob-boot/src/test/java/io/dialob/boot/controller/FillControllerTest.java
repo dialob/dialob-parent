@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.controller;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.boot.security.OAuth2AuthenticationStrategy;
 import io.dialob.boot.security.QuestionnaireSecurityConfigurer;
@@ -32,7 +33,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;

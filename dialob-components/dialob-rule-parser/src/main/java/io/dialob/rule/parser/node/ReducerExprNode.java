@@ -1,7 +1,7 @@
 package io.dialob.rule.parser.node;
 
-import lombok.EqualsAndHashCode;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true, of = {"nodeOperator", "arguments"})
 public class ReducerExprNode extends CallExprNode {

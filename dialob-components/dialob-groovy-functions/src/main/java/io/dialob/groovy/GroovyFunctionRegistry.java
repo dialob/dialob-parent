@@ -15,6 +15,7 @@
  */
 package io.dialob.groovy;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -22,7 +23,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -15,14 +15,13 @@
  */
 package io.dialob.security.spring.apikey;
 
-import java.util.Collection;
-import java.util.Objects;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.key.ApiKey;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-import io.dialob.security.key.ApiKey;
+import java.util.Collection;
+import java.util.Objects;
 
 public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
 

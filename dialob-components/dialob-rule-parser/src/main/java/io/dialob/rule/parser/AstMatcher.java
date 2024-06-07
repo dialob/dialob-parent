@@ -15,11 +15,11 @@
  */
 package io.dialob.rule.parser;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.Predicate;

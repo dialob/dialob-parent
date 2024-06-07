@@ -15,9 +15,9 @@
  */
 package io.dialob.rule.parser.api;
 
-import org.immutables.value.Value;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import org.immutables.value.Value;
 
 import java.util.Optional;
 

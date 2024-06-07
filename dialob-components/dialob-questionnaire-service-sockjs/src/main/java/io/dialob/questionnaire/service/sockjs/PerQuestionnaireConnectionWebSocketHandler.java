@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.sockjs;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
 import io.micrometer.core.instrument.Counter;
@@ -25,7 +26,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;

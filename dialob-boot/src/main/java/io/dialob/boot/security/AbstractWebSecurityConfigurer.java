@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.filter.MDCPrincipalFilter;
@@ -22,7 +23,6 @@ import io.dialob.security.spring.tenant.DefaultTenantGrantedAuthorityProvider;
 import io.dialob.security.spring.tenant.RequestParameterTenantScopeFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.apache.commons.lang3.StringUtils;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;

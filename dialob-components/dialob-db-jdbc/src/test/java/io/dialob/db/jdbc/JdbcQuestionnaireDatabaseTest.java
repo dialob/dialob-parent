@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.jdbc.core.JdbcTemplate;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.StringReader;
