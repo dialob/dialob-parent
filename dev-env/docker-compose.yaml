@@ -104,41 +104,11 @@ services:
       networks:
         - backend
 
-#          if ($request_method = 'OPTIONS') {
-#          add_header Access-Control-Allow-Origin 'http://localhost:3000';
-#          add_header Access-Control-Allow-Headers '*';
-#          add_header Access-Control-Allow-Methods '*';
-#          add_header Access-Control-Allow-Credentials 'true';
-#          return 204;
-#          }
-#          if ($request_method != 'OPTIONS') {
-#          add_header Access-Control-Allow-Origin 'http://localhost:3000' always;
-#          add_header Access-Control-Allow-Credentials 'true';
-#          }
 
 configs:
   nginx_config:
-    content: |
-        # Complete Nginx Docker reverse proxy config file
-        server {
-          listen 8080;
-          listen [::]:8080;
-          server_name localhost;
-          location /dialob {
-            proxy_pass http://dialob-api:8081/dialob;
-          }
-          location /session {
-            proxy_pass http://dialob-session:8080/session;
-          }
-          location / {
-            root /usr/share/nginx/html;
-            index index.html index.htm;
-          }
-          error_page 500 502 503 504 /50x.html;
-            location = /50x.html {
-            root /usr/share/nginx/html;
-          }
-        }
+    file: ./nginx.conf
+
 
 volumes:
   postgresql-data:
