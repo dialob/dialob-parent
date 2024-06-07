@@ -65,35 +65,35 @@
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <junit.platform.version>1.10.2</junit.platform.version>
 
-    <logback.version>1.4.14</logback.version>
+    <logback.version>1.5.6</logback.version>
     <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
-    <mockito.version>5.11.0</mockito.version>
-    <spring-boot.version>3.2.5</spring-boot.version>
-    <spring-integration.version>6.2.4</spring-integration.version>
-    <spring-security.version>6.2.4</spring-security.version>
-    <spring-session.version>3.2.2</spring-session.version>
+    <mockito.version>5.12.0</mockito.version>
+    <spring-boot.version>3.3.0</spring-boot.version>
+    <spring-integration.version>6.3.0</spring-integration.version>
+    <spring-security.version>6.3.0</spring-security.version>
+    <spring-session.version>3.3.0</spring-session.version>
     <swagger.version>2.2.21</swagger.version>
     <validation-api.version>3.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <caffeine.version>3.1.8</caffeine.version>
     <nosqlunit.version>1.0.0</nosqlunit.version>
-    <protobuf-java.version>4.26.1</protobuf-java.version>
+    <protobuf-java.version>4.27.1</protobuf-java.version>
     <lombok.version>1.18.32</lombok.version>
-    <commons-text.version>1.11.0</commons-text.version>
-    <commons-csv.version>1.10.0</commons-csv.version>
-    <commons-validator.version>1.8.0</commons-validator.version>
+    <commons-text.version>1.12.0</commons-text.version>
+    <commons-csv.version>1.11.0</commons-csv.version>
+    <commons-validator.version>1.9.0</commons-validator.version>
     <aws-java-sdk.version>2.25.13</aws-java-sdk.version>
-    <micrometer-registry-prometheus.version>1.12.4</micrometer-registry-prometheus.version>
-    <s3mock-junit5.version>3.5.2</s3mock-junit5.version>
-    <groovy.version>4.0.20</groovy.version>
-    <bcpkix-jdk18on.version>1.77</bcpkix-jdk18on.version>
+    <micrometer-registry-prometheus.version>1.13.0</micrometer-registry-prometheus.version>
+    <s3mock-junit5.version>3.9.1</s3mock-junit5.version>
+    <groovy.version>4.0.21</groovy.version>
+    <bcpkix-jdk18on.version>1.78.1</bcpkix-jdk18on.version>
     <spring-cloud-gcp.version>5.1.0</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
     <springdoc.version>1.8.0</springdoc.version>
-    <testcontainers.version>1.19.7</testcontainers.version>
-    <tomcat-embed-el.version>10.1.19</tomcat-embed-el.version>
-    <spotbugs-annotations.version>4.8.3</spotbugs-annotations.version>
+    <testcontainers.version>1.19.8</testcontainers.version>
+    <tomcat-embed-el.version>10.1.24</tomcat-embed-el.version>
+    <spotbugs-annotations.version>4.8.5</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
-    <commons-compress.version>1.26.1</commons-compress.version>
+    <commons-compress.version>1.26.2</commons-compress.version>
   </properties>
 
 

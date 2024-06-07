@@ -259,7 +259,13 @@ class FormsRestServiceControllerTest {
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "\"label\":\"Otsake\"}")
       .accept(MediaType.APPLICATION_JSON))
-      .andExpect(content().json("{\"status\":400,\"error\":\"Bad Request\",\"message\":\"com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.ImmutableFormMetadata$Json` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\\n at [Source: (String)\\\"\\\"label\\\":\\\"Otsake\\\"}\\\"; line: 1, column: 1]\"}"))
+      .andExpect(content().json("""
+        {
+          "status":400,
+          "error":"Bad Request",
+          "message":"com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.ImmutableFormMetadata$Json` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]"
+        }
+        """))
       .andExpect(status().isBadRequest());
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
   }
