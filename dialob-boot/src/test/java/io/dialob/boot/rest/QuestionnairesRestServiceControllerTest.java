@@ -77,8 +77,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = MOCK,
   properties = {
     "tenantId=itest",
+    "dialob.security.enabled=true",
     "dialob.db.database-type=none",
     "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+    "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+    "spring.autoconfigure.exclude[2]=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
+    "spring.autoconfigure.exclude[3]=org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
     "spring.security.oauth2.client.registration[0].provider=own",
     "spring.security.oauth2.client.registration[0].clientId=cl1",
     "spring.security.oauth2.client.registration[0].clientSecret=xxx",

@@ -26,8 +26,10 @@ import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.settings.DialobSettings;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -36,7 +38,8 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(value = "dialob.session.cache.type", matchIfMissing = false, havingValue = "REDIS")
+@ConditionalOnProperty(value = "dialob.session.cache.type", havingValue = "REDIS")
+@Import(RedisAutoConfiguration.class)
 public class RedisQuestionnaireDialobSessionCacheConfiguration {
 
   @Bean

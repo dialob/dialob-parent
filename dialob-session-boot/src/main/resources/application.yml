@@ -1,4 +1,5 @@
 nodeId: "default"
+host: "http://localhost:${server.port}"
 
 server:
   max-http-request-header-size: 64KB
@@ -14,16 +15,15 @@ management:
       exposure:
         include: '*'
 
-host: "http://localhost:${server.port}"
 
 spring:
+  profiles:
+    active:
+      - jdbc
   aop:
     proxy-target-class: false
   application:
     name: ${project.artifactId:}
-  profiles:
-    active:
-    - jdbc
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false

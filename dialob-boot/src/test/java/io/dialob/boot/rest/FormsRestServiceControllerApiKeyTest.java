@@ -30,7 +30,6 @@ import io.dialob.form.service.api.repository.FormListItem;
 import io.dialob.form.service.rest.DialobFormServiceRestAutoConfiguration;
 import io.dialob.integration.api.event.FormUpdatedEvent;
 import io.dialob.integration.queue.DialobIntegrationQueueAutoConfiguration;
-import io.dialob.integration.redis.ProvideTestRedis;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.rest.RestApiExceptionMapper;
@@ -88,6 +87,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
   "dialob.security.authenticationMethod=NONE",
+  "dialob.security.enabled=true",
   "dialob.db.database-type=none"
 })
 @ContextConfiguration(classes = {
@@ -111,7 +111,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   AdminApplicationSettings.class,
   ReviewApplicationSettings.class
 })
-public class FormsRestServiceControllerApiKeyTest implements ProvideTestRedis {
+public class FormsRestServiceControllerApiKeyTest {
 
   @MockBean
   private CurrentTenant currentTenant;

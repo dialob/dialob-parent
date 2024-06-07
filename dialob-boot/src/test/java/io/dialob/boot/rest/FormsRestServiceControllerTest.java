@@ -72,6 +72,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {
+  "dialob.security.enabled=true",
   "tenantId=itest",
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
