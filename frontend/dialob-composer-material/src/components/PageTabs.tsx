@@ -73,7 +73,7 @@ const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLEl
         color={highlighted ? 'info' : 'primary'}
         endIcon={<OptionsMenu item={item} isPage light={isActive} />}
       >
-        <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+        <Typography textTransform='none'>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
       </Button >
     </Box>
   );
