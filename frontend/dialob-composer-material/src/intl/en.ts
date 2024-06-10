@@ -12,6 +12,7 @@ const en = {
   'header.help': 'Dialob Composer User Guide',
   'header.search': 'Search',
   'header.search.hint': 'Enter search keyword',
+  'header.search.matches.none': 'No matches',
   'header.download': 'Download form as JSON',
   'header.status': 'Current form status: {status}',
   'header.preview': 'Preview form',
