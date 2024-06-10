@@ -1,7 +1,7 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Button, Typography, Box, TextareaAutosize, Menu, MenuItem } from '@mui/material';
-import { Add, Visibility } from '@mui/icons-material';
+import { Button, Typography, Box, TextareaAutosize, Menu, MenuItem, IconButton } from '@mui/material';
+import { Add, Delete, Translate, Visibility } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { LocalizedString, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
@@ -16,6 +16,7 @@ const LocalizedStringEditor: React.FC<{
 }> = ({ type, rule, setRule }) => {
   const { form, updateLocalizedString } = useComposer();
   const { editor, setActiveItem } = useEditor();
+  const activeLanguage = editor.activeFormLanguage;
   const item = editor.activeItem;
   const [preview, setPreview] = React.useState(false);
   const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
@@ -57,6 +58,12 @@ const LocalizedStringEditor: React.FC<{
     setLocalizedString({ ...localizedString, [language]: value });
   }
 
+  const handleDelete = (language: string) => {
+    const newLocalizedString = { ...localizedString };
+    delete newLocalizedString[language];
+    setLocalizedString(newLocalizedString);
+  }
+
   return (
     <>
       <Box display='flex'>
@@ -64,6 +71,11 @@ const LocalizedStringEditor: React.FC<{
         <Button variant={preview ? 'contained' : 'outlined'} endIcon={<Visibility />} onClick={() => setPreview(!preview)}>
           <FormattedMessage id='dialogs.options.preview' />
         </Button>
+        {(localizedString === undefined || localizedString[activeLanguage] === undefined) && <Button variant='outlined'
+          onClick={() => handleAdd(activeLanguage)} sx={{ textTransform: 'none', ml: 1 }} endIcon={<Translate />}
+          disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}>
+          <FormattedMessage id={`dialogs.options.translation.${activeLanguage}.add`} />
+        </Button>}
         <Button variant='outlined' onClick={(e) => setAnchorEl(e.currentTarget)}
           disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}
           sx={{ textTransform: 'none', ml: 1 }} endIcon={<Add />}>
@@ -87,7 +99,10 @@ const LocalizedStringEditor: React.FC<{
         const localizedText = localizedString[language];
         return (
           <Box key={language}>
-            <Typography color='text.hint'><FormattedMessage id={`locales.${language}`} /></Typography>
+            <Box display='flex' alignItems='center'>
+              <Typography color='text.hint'><FormattedMessage id={`locales.${language}`} /></Typography>
+              <IconButton size='small' onClick={() => handleDelete(language)} color='error'><Delete /></IconButton>
+            </Box>
             {preview ?
               <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}>
                 <Markdown skipHtml components={markdownComponents}>{localizedText}</Markdown>
