@@ -41,12 +41,13 @@ const HeaderButton: React.FC<{
   label: string,
   startIcon?: React.ReactElement,
   endIcon?: React.ReactElement,
+  disabled?: boolean,
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-}> = ({ label, startIcon, endIcon, onClick }) => {
+}> = ({ label, startIcon, endIcon, disabled, onClick }) => {
   const intl = useIntl();
   const stringExists = !!intl.messages[label];
   return (
-    <ResponsiveButton variant='text' color='inherit' startIcon={startIcon} endIcon={endIcon} onClick={onClick}>
+    <ResponsiveButton variant='text' color='inherit' startIcon={startIcon} endIcon={endIcon} disabled={disabled} onClick={onClick}>
       {stringExists ? <FormattedMessage id={label} /> : label}
     </ResponsiveButton>
   );
@@ -235,7 +236,8 @@ const MenuBar: React.FC = () => {
               {getStatusIcon(editor.errors)}
             </ResponsiveButton>
           </Tooltip>
-          <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
+          <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />}
+            onClick={handleLanguageMenuOpen} disabled={formLanguages.length <= 1} />
           <Menu open={Boolean(anchorElLanguage)} anchorEl={anchorElLanguage} onClose={() => setAnchorElLanguage(null)} disableScrollLock={true}>
             {formLanguages
               .filter((language) => language !== editor.activeFormLanguage)

@@ -18,6 +18,7 @@ const LocalizedStringEditor: React.FC<{
   const { editor, setActiveItem } = useEditor();
   const activeLanguage = editor.activeFormLanguage;
   const item = editor.activeItem;
+  const formLanguages = form.metadata.languages;
   const [preview, setPreview] = React.useState(false);
   const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -76,11 +77,11 @@ const LocalizedStringEditor: React.FC<{
           disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}>
           <FormattedMessage id={`dialogs.options.translation.${activeLanguage}.add`} />
         </Button>}
-        <Button variant='outlined' onClick={(e) => setAnchorEl(e.currentTarget)}
+        {formLanguages && formLanguages.length > 1 && <Button variant='outlined' onClick={(e) => setAnchorEl(e.currentTarget)}
           disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}
           sx={{ textTransform: 'none', ml: 1 }} endIcon={<Add />}>
           <FormattedMessage id={`dialogs.options.${type}.add`} />
-        </Button>
+        </Button>}
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
