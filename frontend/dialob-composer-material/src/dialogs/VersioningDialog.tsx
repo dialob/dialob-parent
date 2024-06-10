@@ -4,7 +4,7 @@ import {
   TableHead, TableRow, TableCell, TableBody, alpha, useTheme, IconButton,
   Tooltip
 } from "@mui/material";
-import { Close, ContentCopy, Download, EditNote, LocalOffer } from "@mui/icons-material";
+import { Close, ContentCopy, Download, EditNote, Help, LocalOffer } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import { ComposerTag, useComposer } from "../dialob";
 import { BorderedTable } from "../components/TableEditorComponents";
@@ -73,8 +73,12 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
+      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.versioning.title' />
+        <Button variant='outlined' endIcon={<Help />}
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lifecycle-management', "_blank")}>
+          <FormattedMessage id='buttons.help' />
+        </Button>
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
         <Box sx={{ p: 3 }}>

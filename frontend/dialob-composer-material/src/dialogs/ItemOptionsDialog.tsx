@@ -4,7 +4,7 @@ import {
   Dialog, DialogTitle, DialogContent, Button, Box, Tabs, Tab,
   DialogActions, Tooltip, styled, TextField, IconButton
 } from '@mui/material';
-import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel } from "@mui/icons-material";
+import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel, Help } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import { ConversionMenu } from '../items/ItemComponents';
@@ -21,6 +21,27 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
     marginLeft: theme.spacing(1),
   },
 }));
+
+const getHelpUrl = (activeTab: OptionsTabType) => {
+  switch (activeTab) {
+    case 'id':
+      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#unique-identifiers';
+    case 'label':
+      return 'https://www.markdownguide.org/basic-syntax/';
+    case 'description':
+      return 'https://www.markdownguide.org/basic-syntax/';
+    case 'rules':
+      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-05%E2%80%90Dialob-Expression-Language-%E2%80%93-DEL#visibility-and-requirement-rules';
+    case 'validations':
+      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-05%E2%80%90Dialob-Expression-Language-%E2%80%93-DEL#validation-rules';
+    case 'choices':
+      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#creating-a-local-list';
+    case 'defaults':
+      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-04%E2%80%90Input-and-output-types';
+    case 'properties':
+      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-08-customization';
+  }
+}
 
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
@@ -113,6 +134,10 @@ const ItemOptionsDialog: React.FC = () => {
           </Button>}
         <Box flexGrow={1} />
         <StyledButtonContainer>
+          <Button variant='outlined' endIcon={<Help />}
+            onClick={() => window.open(getHelpUrl(activeTab), "_blank")}>
+            <FormattedMessage id='buttons.help' />
+          </Button>
           <ConversionMenu item={item} />
           <Button color='error' endIcon={<Delete />} onClick={handleDelete}><FormattedMessage id='buttons.delete' /></Button>
         </StyledButtonContainer>

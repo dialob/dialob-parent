@@ -191,7 +191,7 @@ const MenuBar: React.FC = () => {
             </MenuItem>
           </Menu>
           <Tooltip title={<FormattedMessage id='header.help' />} placement='bottom'>
-            <ResponsiveButton onClick={() => window.open('https://docs.dialob.io/', "_blank")} variant='text' color='inherit' >
+            <ResponsiveButton onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-01%E2%80%90Introduction', "_blank")} variant='text' color='inherit' >
               <Support fontSize='small' />
             </ResponsiveButton>
           </Tooltip>

@@ -3,7 +3,7 @@ import {
   Dialog, DialogTitle, DialogContent, Button, DialogActions, Typography, TextField, Box, TextareaAutosize,
   Alert
 } from "@mui/material";
-import { Check, Close, Warning } from "@mui/icons-material";
+import { Check, Close, Help, Warning } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import { useComposer } from "../dialob";
 import { useBackend } from "../backend/useBackend";
@@ -57,8 +57,12 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
+      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.create.tag.title' />
+        <Button variant='outlined' endIcon={<Help />}
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#how-to-create-a-tag', "_blank")}>
+          <FormattedMessage id='buttons.help' />
+        </Button>
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '50vh' }}>
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', width: 1 }}>

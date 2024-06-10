@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Add, Close, Delete, Download, Upload, Visibility, Warning } from '@mui/icons-material';
+import { Add, Close, Delete, Download, Help, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
@@ -147,6 +147,10 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.lists.global.title' />
           <Box flexGrow={1} />
+          <Button variant='outlined' endIcon={<Help />}
+            onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lists', "_blank")}>
+            <FormattedMessage id='buttons.help' />
+          </Button>
           {globalValueSets && globalValueSets.length > 0 && <>
             <Typography sx={{ mr: 2 }}><BoldedMessage id='dialogs.lists.global.users' values={{ count: users ? users.length : 0 }} /></Typography>
             {users &&
