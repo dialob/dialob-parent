@@ -113,7 +113,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
         return response.getActions();
       } catch (Exception e) {
         numberOfFailures.increment();
-        LOGGER.error("Action processing failure on questionnaireId : {}", questionnaireId, e);
+        LOGGER.error("Action processing failure on questionnaireId {} error: {}", questionnaireId, e.getMessage(), e);
         throw e;
       }
     });
