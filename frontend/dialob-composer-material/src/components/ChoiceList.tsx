@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Tree, { moveItemOnTree, TreeData, TreeSourcePosition, TreeDestinationPosition } from '@atlaskit/tree';
 import { TableBody, TableCell, TableRow } from "@mui/material";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
@@ -7,10 +7,11 @@ import { INIT_TREE, buildTreeFromValueSet } from "../utils/TreeUtils";
 
 
 const renderItem = (props: ChoiceItemProps) => {
-  const { item, valueSetId, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal } = props;
+  const { item, valueSetId, provided, isGlobal, expanded, onToggleExpand, onRuleEdit, onTextEdit, onDelete, onUpdateId } = props;
   return (
-    <ChoiceItem item={item} valueSetId={valueSetId} provided={provided} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
-      onDelete={onDelete} onUpdateId={onUpdateId} isGlobal={isGlobal} />
+    <ChoiceItem item={item} valueSetId={valueSetId} provided={provided} isGlobal={isGlobal} expanded={expanded}
+      onToggleExpand={onToggleExpand} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
+      onDelete={onDelete} onUpdateId={onUpdateId} />
   );
 }
 
@@ -21,6 +22,7 @@ const ChoiceList: React.FC<{
 }> = ({ valueSet, updateValueSet, isGlobal }) => {
   const { form, moveValueSetEntry, deleteValueSetEntry, updateValueSetEntry } = useComposer();
   const [tree, setTree] = React.useState<TreeData>(INIT_TREE);
+  const [expanded, setExpanded] = React.useState<string[]>([]);
   const languageNo = form.metadata.languages?.length || 0;
 
   React.useEffect(() => {
@@ -33,6 +35,15 @@ const ChoiceList: React.FC<{
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
       updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
+      setExpanded(prevExpanded => {
+        const idx = prevExpanded.indexOf(entry.id);
+        if (idx > -1) {
+          const newExpanded = [...prevExpanded];
+          newExpanded[idx] = id;
+          return newExpanded;
+        }
+        return prevExpanded;
+      })
     }
   }
 
@@ -65,6 +76,14 @@ const ChoiceList: React.FC<{
     }
   }
 
+  const toggleExpand = (id: string) => {
+    if (expanded.includes(id)) {
+      setExpanded(prevExpanded => prevExpanded.filter(exp => exp !== id));
+    } else {
+      setExpanded(prevExpanded => [...prevExpanded, id]);
+    }
+  }
+
   const onDragEnd = (
     source: TreeSourcePosition,
     destination?: TreeDestinationPosition,
@@ -84,8 +103,9 @@ const ChoiceList: React.FC<{
           {valueSet?.entries && valueSet.entries?.length > 0 && <Tree
             tree={tree}
             renderItem={(props) => renderItem({
-              ...props, valueSetId: valueSet?.id, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
-              onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId, isGlobal: isGlobal
+              ...props, valueSetId: valueSet?.id, isGlobal: isGlobal, expanded: expanded, onToggleExpand: toggleExpand,
+              onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
+              onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId
             })}
             onDragEnd={onDragEnd}
             isDragEnabled

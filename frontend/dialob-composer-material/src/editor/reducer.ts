@@ -43,14 +43,6 @@ const setActiveVariableTab = (state: EditorState, tab?: VariableTabType): void =
   state.activeVariableTab = tab;
 }
 
-const addExpandedChoiceItem = (state: EditorState, itemId: string): void => {
-  state.expandedChoiceItems.push(itemId);
-}
-
-const removeExpandedChoiceItem = (state: EditorState, itemId: string): void => {
-  state.expandedChoiceItems = state.expandedChoiceItems.filter(id => id !== itemId);
-}
-
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -73,10 +65,6 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setActiveList(state, action.listId);
     } else if (action.type === 'setActiveVariableTab') {
       setActiveVariableTab(state, action.tab);
-    } else if (action.type === 'addExpandedChoiceItem') {
-      addExpandedChoiceItem(state, action.itemId);
-    } else if (action.type === 'removeExpandedChoiceItem') {
-      removeExpandedChoiceItem(state, action.itemId);
     }
   });
   return newState;

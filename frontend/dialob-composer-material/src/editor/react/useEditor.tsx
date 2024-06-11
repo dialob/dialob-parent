@@ -46,14 +46,6 @@ export const useEditor = () => {
     dispatch({ type: 'setActiveVariableTab', tab });
   }
 
-  const addExpandedChoiceItem = (itemId: string): void => {
-    dispatch({ type: 'addExpandedChoiceItem', itemId });
-  }
-
-  const removeExpandedChoiceItem = (itemId: string): void => {
-    dispatch({ type: 'removeExpandedChoiceItem', itemId });
-  }
-
   return {
     editor: state,
     setActivePage,
@@ -66,7 +58,5 @@ export const useEditor = () => {
     setHighlightedItem,
     setActiveList,
     setActiveVariableTab,
-    addExpandedChoiceItem,
-    removeExpandedChoiceItem,
   };
 }

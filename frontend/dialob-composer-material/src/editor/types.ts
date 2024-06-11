@@ -27,5 +27,4 @@ export type EditorState = {
   highlightedItem?: DialobItem;
   activeList?: string;
   activeVariableTab?: VariableTabType;
-  expandedChoiceItems: string[];
 };
