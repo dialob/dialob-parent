@@ -82,8 +82,7 @@
     <commons-text.version>1.12.0</commons-text.version>
     <commons-csv.version>1.11.0</commons-csv.version>
     <commons-validator.version>1.9.0</commons-validator.version>
-    <aws-java-sdk.version>2.25.13</aws-java-sdk.version>
-    <micrometer-registry-prometheus.version>1.13.0</micrometer-registry-prometheus.version>
+    <aws-java-sdk.version>2.25.69</aws-java-sdk.version>
     <s3mock-junit5.version>3.9.1</s3mock-junit5.version>
     <groovy.version>4.0.21</groovy.version>
     <bcpkix-jdk18on.version>1.78.1</bcpkix-jdk18on.version>
@@ -501,14 +500,9 @@
         <version>${feign.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-registry-prometheus</artifactId>
-        <version>${micrometer-registry-prometheus.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.jetbrains</groupId>
         <artifactId>annotations</artifactId>
-        <version>19.0.0</version>
+        <version>24.1.0</version>
       </dependency>
       <dependency>
         <groupId>com.adobe.testing</groupId>

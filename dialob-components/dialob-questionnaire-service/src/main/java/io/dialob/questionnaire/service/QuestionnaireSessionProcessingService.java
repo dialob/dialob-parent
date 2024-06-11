@@ -31,8 +31,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
@@ -48,6 +46,8 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   private final Timer processingTime;
 
   private final Counter numberOfFailures;
+
+  private final Counter numberOfExecutions;
 
   private final Timer updateTime;
 
@@ -71,6 +71,11 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
       .description("Number of failed actions")
       .register(meterRegistry);
 
+    this.numberOfExecutions = Counter
+      .builder("dialob.session.actions.count")
+      .description("Number of action executions")
+      .register(meterRegistry);
+
     this.processingTime = Timer
       .builder("dialob.session.actions.processingTime")
       .description("Actions processing time")
@@ -92,6 +97,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   @Override
   @Deprecated
   public Actions answerQuestion(@NonNull final String questionnaireId, String revision, @NonNull final List<Action> actions) {
+    this.numberOfExecutions.increment();
     return this.processingTime.record(() -> {
       try {
         int retries = 5;
