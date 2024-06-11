@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.dialob.api.proto.Action;
@@ -124,6 +125,8 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
       return ResponseEntity.ok(answerQuestion(sessionId, actions.getRev(), actions.getActions()));
     } catch(DocumentNotFoundException e) {
       return createQuestionnaireNotFoundResponse(sessionId, e);
+    } catch(DocumentConflictException e) {
+      return createUpdateConflictResponse(sessionId, e);
     } catch(Exception e) {
       LOGGER.error("Dialog {} update failed: {}", sessionId, e.getMessage(), e);
       return createServiceErrorResponse(e);
@@ -146,13 +149,23 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     return questionnaireSession;
   }
 
-  protected ResponseEntity<Actions> createQuestionnaireNotFoundResponse(String sessionId, DocumentNotFoundException e) {
+  protected ResponseEntity<Actions> createQuestionnaireNotFoundResponse(String sessionId, @Nullable DocumentNotFoundException e) {
     LOGGER.debug("Action QUESTIONNAIRE_NOT_FOUND: backend response '{}'", e != null ? e.getMessage() : "Security block");
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
       ImmutableActions.builder().addActions(ImmutableAction.builder()
         .type(Action.Type.SERVER_ERROR)
         .serverEvent(true)
         .message("not found")
+        .id(sessionId).build()).build());
+  }
+
+  protected ResponseEntity<Actions> createUpdateConflictResponse(String sessionId, @NonNull DocumentConflictException e) {
+    LOGGER.debug("Action UPDATE_CONFLICT: backend response '{}'", e.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(
+      ImmutableActions.builder().addActions(ImmutableAction.builder()
+        .type(Action.Type.SERVER_ERROR)
+        .serverEvent(true)
+        .message(e.getMessage())
         .id(sessionId).build()).build());
   }
 

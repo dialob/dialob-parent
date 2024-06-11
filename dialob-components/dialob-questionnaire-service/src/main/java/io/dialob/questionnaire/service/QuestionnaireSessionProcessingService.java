@@ -19,6 +19,7 @@ import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableActions;
 import io.dialob.common.Constants;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -28,6 +29,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -39,9 +41,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@Slf4j
 public class QuestionnaireSessionProcessingService implements ActionProcessingService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessingService.class);
 
   private final QuestionnaireSessionService questionnaireSessionService;
 
@@ -94,29 +95,48 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   public Actions answerQuestion(@NonNull final String questionnaireId, String revision, @NonNull final List<Action> actions) {
     return this.processingTime.record(() -> {
       try {
-        final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);
-        if (session == null) {
-          throw new DocumentNotFoundException(String.format("Could not find questionnaire %s", questionnaireId));
-        }
-        if (session.isCompleted()) {
-          return ImmutableActions.builder().rev(session.getRev()).build();
-        }
-        final QuestionnaireSession.DispatchActionsResult response = session.dispatchActions(revision, actions);
-        if (response.isDidComplete()) {
-          // when completed Note! save method updates also cache
-          questionnaireSessionSaveService.save(session);
-          session.getSessionId().ifPresent(sessionId -> eventPublisher.completed(session.getTenantId(), sessionId));
-        } else {
-          // normal
-          this.storeSessionIntoCache(questionnaireId, session);
-        }
-        return response.getActions();
+        int retries = 5;
+        Actions returnActions = null;
+        do {
+          try {
+            returnActions = runUpdate(questionnaireId, revision, actions);
+            break;
+          } catch (DocumentConflictException e) {
+            LOGGER.warn("Update conflict on {}.. retry update {}", questionnaireId, retries);
+            if (--retries <= 0) {
+              throw e;
+            }
+          } catch (Exception e) {
+            throw e;
+          }
+        } while (retries > 0);
+        return returnActions;
       } catch (Exception e) {
         numberOfFailures.increment();
         LOGGER.error("Action processing failure on questionnaireId {} error: {}", questionnaireId, e.getMessage(), e);
         throw e;
       }
     });
+  }
+
+  private Actions runUpdate(String questionnaireId, String revision, List<Action> actions) {
+    final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);
+    if (session == null) {
+      throw new DocumentNotFoundException(String.format("Could not find questionnaire %s", questionnaireId));
+    }
+    if (session.isCompleted()) {
+      return ImmutableActions.builder().rev(session.getRev()).build();
+    }
+    final QuestionnaireSession.DispatchActionsResult response = session.dispatchActions(revision, actions);
+    if (response.isDidComplete()) {
+      // when completed Note! save method updates also cache
+      questionnaireSessionSaveService.save(session);
+      session.getSessionId().ifPresent(sessionId -> eventPublisher.completed(session.getTenantId(), sessionId));
+      return response.getActions();
+    }
+    // normal
+    this.storeSessionIntoCache(questionnaireId, session);
+    return response.getActions();
   }
 
   @Nonnull
