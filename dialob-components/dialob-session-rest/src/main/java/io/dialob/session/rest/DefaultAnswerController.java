@@ -15,23 +15,12 @@
  */
 package io.dialob.session.rest;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Optional;
-
-import io.dialob.db.spi.exceptions.DocumentConflictException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.RestController;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableAction;
 import io.dialob.api.proto.ImmutableActions;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.FormActions;
@@ -51,7 +40,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@RestController
 public class DefaultAnswerController implements AnswerController, QuestionnaireActionsService {
 
   private final QuestionnaireSessionService questionnaireSessionService;
