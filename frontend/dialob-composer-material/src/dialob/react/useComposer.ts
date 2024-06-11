@@ -2,14 +2,14 @@ import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, ComposerState
+  Variable, ComposerState, ComposerCallbacks
 } from "../types";
 
 export const useComposer = () => {
   const { state, dispatch } = useContext(ComposerContext);
 
-  const addItem = (itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string): void => {
-    dispatch({ type: 'addItem', config: itemTemplate, parentItemId, afterItemId });
+  const addItem = (itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks): void => {
+    dispatch({ type: 'addItem', config: itemTemplate, parentItemId, afterItemId, callbacks });
   };
 
   const updateItem = (itemId: string, attribute: string, value: string) => {

@@ -40,3 +40,12 @@ export const scrollToItem = (itemId: string, items: DialobItem[], activePage: Di
     smooth: true,
   }), timeout);
 }
+
+export const scrollToAddedItem = (item: DialobItem) => {
+  const viewportOffset = window.innerHeight - MENU_HEIGHT;
+  setTimeout(() => scroller.scrollTo(item.id, {
+    offset: -(viewportOffset / 2),
+    duration: 500,
+    smooth: true,
+  }), 500);
+}

@@ -127,5 +127,4 @@ export const INIT_STATE: ComposerState = {
 
 export type ComposerCallbacks = {
   onAddItem?: (state: ComposerState, item: DialobItem) => void;
-  onSave?: (state: ComposerState) => Promise<string>;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { DialobItem, DialobItemTemplate, useComposer } from "../dialob";
+import { ComposerState, DialobItem, DialobItemTemplate, useComposer } from "../dialob";
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
@@ -10,6 +10,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { OptionsTabType, useEditor } from "../editor";
 import * as Defaults from "../defaults";
 import { isPage } from "../utils/ItemUtils";
+import { scrollToAddedItem } from "../utils/ScrollUtils";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -235,7 +236,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?: boolean }> = ({ item, isPage, light }) => {
   const { form, addItem } = useComposer();
-  const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab } = useEditor();
+  const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab, setHighlightedItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -301,8 +302,13 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
     e.stopPropagation();
     const items = Object.values(form.data);
     const parentItemId = items.find(i => i.items && i.items.includes(item.id))!.id;
-    addItem(itemTemplate, parentItemId, item.id);
+    addItem(itemTemplate, parentItemId, item.id, { onAddItem: postCreate });
     handleCloseAll();
+  }
+
+  const postCreate = (_state: ComposerState, item: DialobItem) => {
+    scrollToAddedItem(item);
+    setHighlightedItem(item);
   }
 
   return (
@@ -353,6 +359,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
 
 export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { addItem } = useComposer();
+  const { setHighlightedItem } = useEditor();
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
   const [chosenCategory, setChosenCategory] = React.useState<string | null>('');
@@ -378,7 +385,12 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
   const handleCreate = (e: React.MouseEvent<HTMLElement>, itemTemplate: DialobItemTemplate) => {
     handleClose(e);
-    addItem(itemTemplate, item.id);
+    addItem(itemTemplate, item.id, undefined, { onAddItem: postCreate });
+  }
+
+  const postCreate = (_state: ComposerState, item: DialobItem) => {
+    scrollToAddedItem(item);
+    setHighlightedItem(item);
   }
 
   return (

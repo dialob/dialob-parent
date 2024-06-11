@@ -543,7 +543,7 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
 
   const newState = produce(state, state => {
     if (action.type === 'addItem') {
-      addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
+      addItem(state, action.config, action.parentItemId, action.afterItemId, action.callbacks ?? callbacks);
     } else if (action.type === 'updateItem') {
       updateItem(state, action.itemId, action.attribute, action.value);
     } else if (action.type === 'updateLocalizedString') {
