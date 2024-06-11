@@ -15,7 +15,19 @@
  */
 package io.dialob.session.rest;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Optional;
+
+import io.dialob.db.spi.exceptions.DocumentConflictException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableAction;
@@ -39,6 +51,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@RestController
 public class DefaultAnswerController implements AnswerController, QuestionnaireActionsService {
 
   private final QuestionnaireSessionService questionnaireSessionService;
@@ -119,7 +132,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     } catch(DocumentNotFoundException e) {
       return createQuestionnaireNotFoundResponse(sessionId, e);
     } catch(Exception e) {
-      LOGGER.error(String.format("Dialog update failed: %s", e.getMessage()), e);
+      LOGGER.error("Dialog {} update failed: {}", sessionId, e.getMessage(), e);
       return createServiceErrorResponse(e);
     } finally {
       long time = System.nanoTime() - start;
@@ -163,6 +176,10 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
       e.printStackTrace(new PrintWriter(sw));
       action.message(e.getMessage());
       action.trace(sw.toString());
+    } else {
+      if (e instanceof DocumentConflictException) {
+        action.message(e.getMessage());
+      }
     }
     return action.build();
   }

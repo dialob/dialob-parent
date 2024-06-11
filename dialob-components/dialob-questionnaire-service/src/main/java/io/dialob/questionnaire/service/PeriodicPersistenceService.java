@@ -56,7 +56,7 @@ public class PeriodicPersistenceService {
     this.scheduler = taskScheduler;
     this.settings = settings;
     this.currentTenant = currentTenant;
-    LOGGER.debug("Periodic Persistence Service: activated");
+    LOGGER.info("Periodic Persistence Service: activated");
   }
 
   @EventListener

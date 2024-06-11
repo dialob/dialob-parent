@@ -93,9 +93,9 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
   public Form save(String tenantId, @NonNull Form document) {
     return doTransaction(template -> {
       final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-      byte[] oid = Utils.toOID(id(document));
+      var dId = id(document);
+      byte[] oid = Utils.toOID(dId);
       Integer revision = getRevision(document);
-      String label = getLabel(document);
       // TODO update tenantId to metadata?
       Object data = getDatabaseHelper().jsonObject(objectMapper, document);
       int updated;
@@ -114,14 +114,10 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
         updated = template.update("insert into " + tableName + " (id,rev,tenant_id,created,updated,data) values (?,?,?,?,?," + jsonToBson("?") + ")", toJdbcId(oid), revision, tenantId, timestamp, timestamp, data);
       }
       if (updated == 0) {
-        throw new DocumentConflictException("concurrent document update");
+        throw new DocumentConflictException(String.format("Conflict during form document %s rev %d update.", dId, revision));
       }
       return updatedDocument(document, oid, revision, timestamp, tenantId);
     });
-  }
-
-  protected String getLabel(@NonNull Form document) {
-      return document.getMetadata().getLabel();
   }
 
   protected Form toObject(byte[] oid, int objectRev, String tenantId, Timestamp created, Timestamp updated, Reader reader) {
