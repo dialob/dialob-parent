@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Tree, { moveItemOnTree, TreeData, TreeSourcePosition, TreeDestinationPosition } from '@atlaskit/tree';
 import { TableBody, TableCell, TableRow } from "@mui/material";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
