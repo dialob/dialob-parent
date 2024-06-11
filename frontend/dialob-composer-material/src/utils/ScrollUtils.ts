@@ -49,3 +49,14 @@ export const scrollToAddedItem = (item: DialobItem) => {
     smooth: true,
   }), 500);
 }
+
+export const scrollToChoiceItem = () => {
+  const dialogContent = document.querySelector('.MuiDialogContent-root');
+  if (dialogContent) {
+    dialogContent.scrollTo({
+      top: dialogContent.scrollHeight,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }
+}

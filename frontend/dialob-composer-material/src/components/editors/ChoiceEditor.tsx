@@ -16,6 +16,7 @@ import GlobalList from '../GlobalList';
 import { downloadValueSet } from '../../utils/ParseUtils';
 import { ErrorMessage } from '../ErrorComponents';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
+import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 
 
 const ChoiceEditor: React.FC = () => {
@@ -52,6 +53,7 @@ const ChoiceEditor: React.FC = () => {
         }
         addValueSetEntry(currentValueSet.id, newEntry);
         setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+        scrollToChoiceItem();
       } else {
         const newEntry = {
           id: 'choice' + (currentValueSet.entries?.length + 1),
@@ -59,6 +61,7 @@ const ChoiceEditor: React.FC = () => {
         };
         addValueSetEntry(currentValueSet.id, newEntry);
         setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+        scrollToChoiceItem();
       }
     }
   }
