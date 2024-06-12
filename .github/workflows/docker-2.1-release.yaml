@@ -3,7 +3,7 @@ on:
     tags:
       - '2.1.**'
 
-name: docker - build - deploy
+name: docker-2.1 - build - deploy
 
 jobs:
   build:
