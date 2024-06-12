@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - dev
+      - dev-2.1
 
 name: dev-2.1 - build - deploy
 

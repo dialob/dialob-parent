@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - main-2.1
 
 name: main-2.1 - release - java 11
 jobs:
