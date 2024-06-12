@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-      - '2.2.**'
+      - '2.1.**'
 
 name: docker - build - deploy
 
