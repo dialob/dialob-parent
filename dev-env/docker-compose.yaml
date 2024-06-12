@@ -1,47 +1,75 @@
 services:
+  nginx:
+    image: nginx
+    ports:
+      - "8080:8080"
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/conf.d/default.conf
+    depends_on:
+      - dialob-api
+      - dialob-session
+    links:
+      - dialob-api:dialob-api
+      - dialob-session:dialob-session
+    networks:
+      - application
 
   dialob-api:
-    image: resys/dialob-boot:2.1.19
+    # image: resys/dialob-boot:2.1.19
+    build:
+      context: ../dialob-boot
+      dockerfile: Dockerfile
+      args:
+        RELEASE_VERSION: 999-SNAPSHOT
     ports:
       - "8085:8081"
+      - "5085:5085"
+    env_file:
+      - .env
+      - .env.db
+      - .env.api
     environment:
-      - SPRING_REDIS_HOST=redis
-      - SPRING_PROFILES_ACTIVE=ui,jdbc,cors,pim
-      - SPRING_SESSION_STORE_TYPE=redis
-      - SPRING_SESSION_REDIS_NAMESPACE=dialobServiceSession
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql/dialob
-      - SPRING_DATASOURCE_USERNAME=dialob
-      - SPRING_DATASOURCE_PASSWORD=dialob123
-      - ADMIN_VERSIONING=true
-      - DIALOB_SESSION_POSTSUBMITHANDLER_ENABLED=true
-      - DIALOB_SECURITY_ENABLED=false
-      - SERVER_SERVLET_CONTEXTPATH=/dialob
-      - LOGGING_LEVEL_IO_DIALOB=INFO
-      - QUESTIONNAIRE_REST_URL=http://localhost:8080/session/dialob
-      - QUESTIONNAIRE_TENANTS_DEFAULT_TEMPLATE=https://cdn.resys.io/op-wealthub/questionnaire-mngmnt-fill-ui/main/index.html
-      - COMPOSER_TENANTS_DEFAULT_TEMPLATE=https://cdn.resys.io/op-wealthub/questionnaire-mngmnt-composer/main/index.html
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5085"
     volumes:
       - ./dialob-boot-config:/java/config/
     networks:
       - application
       - backend
+    healthcheck:
+      test: "curl -f http://localhost:8081/dialob/manage/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     links:
       - postgresql:postgresql
       - redis:redis
+    depends_on:
+      - postgresql
 
   dialob-session:
-    image: resys/dialob-session-boot:2.1.19
-    ports:
-      - "8080:8080"
+    # image: resys/dialob-session-boot:2.1.19
+    build:
+      context: ../dialob-session-boot
+      dockerfile: Dockerfile
+      args:
+        RELEASE_VERSION: 999-SNAPSHOT
     environment:
-      - SERVER_PORT=8080
-      - SPRING_REDIS_HOST=redis
-      - SPRING_PROFILES_ACTIVE=jdbc,cors,pim
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql/dialob
-      - SPRING_DATASOURCE_USERNAME=dialob
-      - SPRING_DATASOURCE_PASSWORD=dialob123
-      - DIALOB_SESSION_POSTSUBMITHANDLER_ENABLED=true
-      - DIALOB_SECURITY_ENABLED=false
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5084"
+    healthcheck:
+      test: "curl -f http://localhost:8080/dialob/manage/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    env_file:
+      - .env
+      - .env.db
+      - .env.session
+    ports:
+      - "8084:8080"
+      - "5084:5084"
     volumes:
       - ./dialob-session-config:/java/config/
     links:
@@ -50,6 +78,8 @@ services:
     networks:
       - application
       - backend
+    depends_on:
+      - postgresql
 
   postgresql:
     image: postgres:latest
@@ -62,21 +92,28 @@ services:
       - TZ=Europe/Helsinki
     volumes:
       - ./db_init/postgresql:/docker-entrypoint-initdb.d
-      - ./db_data:/var/lib/postgresql/data
+      - postgresql-data:/var/lib/postgresql/data:rw
     networks:
       - backend
 
   redis:
-      image: redis:4.0-alpine
+      image: redis:7
       restart: always
       ports:
-          - "6379:6379"
+        - "6379:6379"
       networks:
-          - backend
+        - backend
+
+
+configs:
+  nginx_config:
+    file: ./nginx.conf
+
+
+volumes:
+  postgresql-data:
 
 networks:
   backend:
-    external: true
   application:
-    external: true
 
