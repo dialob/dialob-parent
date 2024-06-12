@@ -1,9 +1,9 @@
 on:
   push:
     branches:
-      - dev
+      - dev-2.1
 
-name: dev - build - deploy
+name: dev-2.1 - build - deploy
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '17'
+          java-version: '11'
           cache: 'maven'
 
       - name: Docker Registry login

@@ -1,9 +1,9 @@
 on:
   push:
     branches:
-      - main
+      - main-2.1
 
-name: main - release - java 17
+name: main-2.1 - release - java 11
 jobs:
   build:
     name: Releasing branch - main
@@ -23,7 +23,7 @@ jobs:
     - uses: actions/setup-java@v4
       with:
         distribution: 'corretto'
-        java-version: '17'
+        java-version: '11'
         gpg-private-key: ${{ secrets.DIALOB_GPG_KEY }}
         server-id: oss.sonatype.org
         server-username: OSSRH_USER
