@@ -23,7 +23,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
   const [tree, setTree] = React.useState<TreeData>(INIT_TREE);
 
   React.useEffect(() => {
-    const expressionVariables = form.variables?.filter(v => !isContextVariable(v)) as Variable[];
+    const expressionVariables = form.variables ? form.variables?.filter(v => !isContextVariable(v)) as Variable[] : [];
     setTree(buildTreeFromVariables(expressionVariables));
   }, [form.variables]);
 

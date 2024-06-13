@@ -9,7 +9,7 @@ const RulesEditor: React.FC = () => {
     <>
       <Box sx={{ display: 'flex' }}>
         <Box flexGrow={1} />
-        <Button variant='outlined' endIcon={<Help />} onClick={() => window.open('https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del', "_blank")}>
+        <Button variant='outlined' endIcon={<Help />} onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-05%E2%80%90Dialob-Expression-Language-%E2%80%93-DEL', "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </Box>

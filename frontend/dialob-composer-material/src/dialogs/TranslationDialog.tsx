@@ -14,7 +14,7 @@ const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.translations.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://docs.dialob.io/#/200_advanced_operations/500_translations', "_blank")}>
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#localisation', "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>

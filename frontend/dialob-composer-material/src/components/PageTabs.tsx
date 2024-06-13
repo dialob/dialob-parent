@@ -8,6 +8,7 @@ import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
 import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
+import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -72,7 +73,7 @@ const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLEl
         color={highlighted ? 'info' : 'primary'}
         endIcon={<OptionsMenu item={item} isPage light={isActive} />}
       >
-        <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+        <Typography textTransform='none'>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
       </Button >
     </Box>
   );
@@ -83,6 +84,8 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
   const rootItem = rootItemId ? items[rootItemId] : undefined;
+  const noPages = rootItem && (!rootItem.items || rootItem.items.length === 0);
+  const noActivePage = rootItem && rootItem.items && rootItem.items.length > 0 && !editor.activePage;
 
   React.useEffect(() => {
     const defaultActivePage = rootItem && rootItem.items ? items[rootItem.items[0]] : undefined;
@@ -119,9 +122,20 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
       );
     });
 
-  if (editor.activePage === undefined) {
+  if (noActivePage) {
     return <CircularProgress />;
   }
+
+  if (noPages) {
+    return (
+      <Box sx={{ mb: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <Button onClick={handleCreate} color='primary' endIcon={<Add />} variant='contained'>
+          <Typography textTransform='none'><FormattedMessage id='page.none' /></Typography>
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ mb: 1 }}>
       <Box sx={{ display: 'flex' }}>

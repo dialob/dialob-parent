@@ -24,16 +24,19 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const { editor, setActiveItem } = useEditor();
   const item = editor.activeItem;
   const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
-  const [ruleCode, setRuleCode] = React.useState<string | undefined>(undefined);
+  const [ruleCode, setRuleCode] = React.useState<string>('');
 
   React.useEffect(() => {
     if (item) {
-      setRuleCode(item[resolveRulePropName(type)]);
+      setRuleCode(item[resolveRulePropName(type)] || '');
     }
   }, [item, type]);
 
   React.useEffect(() => {
-    if (item && ruleCode && ruleCode !== item[resolveRulePropName(type)]) {
+    if (item && ruleCode !== item[resolveRulePropName(type)]) {
+      if (ruleCode === '' && item[resolveRulePropName(type)] === undefined) {
+        return;
+      }
       const id = setTimeout(() => {
         updateItem(item.id, resolveRulePropName(type), ruleCode);
         setActiveItem({ ...item, [resolveRulePropName(type)]: ruleCode });

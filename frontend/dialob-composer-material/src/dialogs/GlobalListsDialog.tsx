@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Add, Close, Delete, Download, Upload, Visibility, Warning } from '@mui/icons-material';
+import { Add, Close, Delete, Download, Help, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
@@ -20,7 +20,7 @@ import { BoldedMessage } from '../intl/BoldedMessage';
 interface GlobalValueSet {
   id: string;
   label?: string;
-  entries: ValueSetEntry[];
+  entries?: ValueSetEntry[];
 }
 
 const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
@@ -72,7 +72,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       if (gvsName !== name) {
         const id = setTimeout(() => {
           setGlobalValueSetName(currentValueSet.id, name);
-        }, 1000);
+        }, 300);
         return () => clearTimeout(id);
       }
     }
@@ -87,12 +87,21 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   const addEntry = () => {
     if (currentValueSet) {
-      const newEntry = {
-        id: 'choice' + (currentValueSet.entries.length + 1),
-        label: {},
-      };
-      addValueSetEntry(currentValueSet.id, newEntry);
-      setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      if (!currentValueSet.entries) {
+        const newEntry = {
+          id: 'choice1',
+          label: {}
+        }
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+      } else {
+        const newEntry = {
+          id: 'choice' + (currentValueSet.entries?.length + 1),
+          label: {},
+        };
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      }
     }
   }
 
@@ -163,6 +172,10 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               </>
             }
           </>}
+          <Button variant='outlined' sx={{ ml: 2 }} endIcon={<Help />}
+            onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lists', "_blank")}>
+            <FormattedMessage id='buttons.help' />
+          </Button>
           <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}><FormattedMessage id='dialogs.lists.global.add' /></Button>
         </DialogTitle>
         <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0 }}>

@@ -53,6 +53,7 @@ const NavigationTreeView: React.FC = () => {
   const { form, moveItem } = useComposer();
   const { editor } = useEditor();
   const [tree, setTree] = useState<TreeData>(INIT_TREE);
+  const [expanded, setExpanded] = useState<boolean>(true);
 
   React.useEffect(() => {
     setTree(buildTreeFromForm(form.data, editor.activeFormLanguage));
@@ -86,6 +87,15 @@ const NavigationTreeView: React.FC = () => {
     });
   };
 
+  const toggleExpand = () => {
+    if (expanded) {
+      collapseAll();
+    } else {
+      expandAll();
+    }
+    setExpanded(!expanded);
+  }
+
   const onDragEnd = (
     source: TreeSourcePosition,
     destination?: TreeDestinationPosition,
@@ -111,8 +121,9 @@ const NavigationTreeView: React.FC = () => {
   return (
     <Box>
       <Paper elevation={3} sx={{ my: 1, p: 1, display: 'flex', justifyContent: 'space-evenly' }}>
-        <Button variant='text' onClick={expandAll} endIcon={<KeyboardArrowDown />}><FormattedMessage id='tree.expand' /></Button>
-        <Button variant='text' onClick={collapseAll} endIcon={<KeyboardArrowRight />}><FormattedMessage id='tree.collapse' /></Button>
+        <Button variant='text' onClick={toggleExpand} endIcon={expanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}>
+          <FormattedMessage id={expanded ? 'tree.collapse' : 'tree.expand'} />
+        </Button>
       </Paper>
       <Tree
         tree={tree}

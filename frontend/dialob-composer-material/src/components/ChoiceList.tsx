@@ -7,10 +7,11 @@ import { INIT_TREE, buildTreeFromValueSet } from "../utils/TreeUtils";
 
 
 const renderItem = (props: ChoiceItemProps) => {
-  const { item, valueSetId, provided, onRuleEdit, onTextEdit, onDelete, onUpdateId, isGlobal } = props;
+  const { item, valueSetId, provided, isGlobal, expanded, onToggleExpand, onRuleEdit, onTextEdit, onDelete, onUpdateId } = props;
   return (
-    <ChoiceItem item={item} valueSetId={valueSetId} provided={provided} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
-      onDelete={onDelete} onUpdateId={onUpdateId} isGlobal={isGlobal} />
+    <ChoiceItem item={item} valueSetId={valueSetId} provided={provided} isGlobal={isGlobal} expanded={expanded}
+      onToggleExpand={onToggleExpand} onRuleEdit={onRuleEdit} onTextEdit={onTextEdit}
+      onDelete={onDelete} onUpdateId={onUpdateId} />
   );
 }
 
@@ -21,6 +22,7 @@ const ChoiceList: React.FC<{
 }> = ({ valueSet, updateValueSet, isGlobal }) => {
   const { form, moveValueSetEntry, deleteValueSetEntry, updateValueSetEntry } = useComposer();
   const [tree, setTree] = React.useState<TreeData>(INIT_TREE);
+  const [expanded, setExpanded] = React.useState<string[]>([]);
   const languageNo = form.metadata.languages?.length || 0;
 
   React.useEffect(() => {
@@ -28,16 +30,25 @@ const ChoiceList: React.FC<{
   }, [valueSet]);
 
   const updateValueSetEntryId = (entry: ValueSetEntry, id: string) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const newEntry = { ...entry, id };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
       updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
+      setExpanded(prevExpanded => {
+        const idx = prevExpanded.indexOf(entry.id);
+        if (idx > -1) {
+          const newExpanded = [...prevExpanded];
+          newExpanded[idx] = id;
+          return newExpanded;
+        }
+        return prevExpanded;
+      })
     }
   }
 
   const updateValueSetEntryLabel = (entry: ValueSetEntry, label: LocalizedString) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const newEntry = { ...entry, label };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
@@ -46,8 +57,11 @@ const ChoiceList: React.FC<{
   }
 
   const updateValueSetEntryRule = (entry: ValueSetEntry, rule: string) => {
-    if (valueSet) {
-      const newEntry = { ...entry, when: rule };
+    if (valueSet && valueSet.entries) {
+      const newEntry: ValueSetEntry = { ...entry, when: rule };
+      if (rule === '') {
+        delete newEntry.when;
+      }
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
       updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
@@ -55,10 +69,18 @@ const ChoiceList: React.FC<{
   }
 
   const onDeleteValueSetEntry = (entry: ValueSetEntry) => {
-    if (valueSet) {
+    if (valueSet && valueSet.entries) {
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       deleteValueSetEntry(valueSet.id, idx);
       updateValueSet({ ...valueSet, entries: valueSet.entries.filter(e => e.id !== entry.id) });
+    }
+  }
+
+  const toggleExpand = (id: string) => {
+    if (expanded.includes(id)) {
+      setExpanded(prevExpanded => prevExpanded.filter(exp => exp !== id));
+    } else {
+      setExpanded(prevExpanded => [...prevExpanded, id]);
     }
   }
 
@@ -78,11 +100,12 @@ const ChoiceList: React.FC<{
     <TableBody>
       <TableRow>
         <TableCell colSpan={2 + languageNo}>
-          {valueSet?.entries && valueSet.entries.length > 0 && <Tree
+          {valueSet?.entries && valueSet.entries?.length > 0 && <Tree
             tree={tree}
             renderItem={(props) => renderItem({
-              ...props, valueSetId: valueSet?.id, onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
-              onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId, isGlobal: isGlobal
+              ...props, valueSetId: valueSet?.id, isGlobal: isGlobal, expanded: expanded, onToggleExpand: toggleExpand,
+              onRuleEdit: updateValueSetEntryRule, onTextEdit: updateValueSetEntryLabel,
+              onDelete: onDeleteValueSetEntry, onUpdateId: updateValueSetEntryId
             })}
             onDragEnd={onDragEnd}
             isDragEnabled

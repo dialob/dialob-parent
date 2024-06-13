@@ -45,7 +45,7 @@ export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }>
 
 export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { changeItemId } = useBackend();
-  const { form, setForm } = useComposer();
+  const { form, setForm, setRevision } = useComposer();
   const { setErrors } = useEditor();
   const [editMode, setEditMode] = React.useState(false);
   const [idError, setIdError] = React.useState(false);
@@ -59,6 +59,7 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
             setForm(result.form);
             setErrors(result.errors);
             setIdError(false);
+            setRevision(result.rev);
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
           }
@@ -151,7 +152,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   React.useEffect(() => {
     const id = setTimeout(() => {
       updateContextVariable(variable.name, variable.contextType, defaultValue);
-    }, 1000);
+    }, 300);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
@@ -174,7 +175,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   React.useEffect(() => {
     const id = setTimeout(() => {
       updateExpressionVariable(variable.name, expression);
-    }, 1000);
+    }, 300);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expression]);

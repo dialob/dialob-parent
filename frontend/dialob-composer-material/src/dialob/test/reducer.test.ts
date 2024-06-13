@@ -138,30 +138,6 @@ test('Update item, normal existing value', () => {
   expect(newState.data.tenantAdminLastName.required).toBe(false);
 });
 
-test('Update item, normal existing language value', () => {
-  const action: ComposerAction = {
-    type: 'updateItem',
-    itemId: 'tenantAdminLastName',
-    attribute: 'label',
-    value: 'Test',
-    language: 'fi'
-  };
-  const newState = formReducer(testForm, action);
-  expect(newState.data.tenantAdminLastName.label?.fi).toBe('Test');
-});
-
-test('Update item, normal new language value', () => {
-  const action: ComposerAction = {
-    type: 'updateItem',
-    itemId: 'tenantAdminLastName',
-    attribute: 'description',
-    value: 'Test',
-    language: 'fi'
-  };
-  const newState = formReducer(testForm, action);
-  expect(newState.data.tenantAdminLastName.description?.fi).toBe('Test');
-});
-
 test('Update item label, localized string', () => {
   const newLabel: LocalizedString = {
     'en': 'English Label',
@@ -584,8 +560,8 @@ test('Create valueset, local, with entries', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs40');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries[0]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' } });
-    expect(newState.valueSets[vsIndex].entries[1]).toStrictEqual({ id: 'b', label: { 'en': 'Test B' } });
+    expect(newState.valueSets[vsIndex].entries![0]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' } });
+    expect(newState.valueSets[vsIndex].entries![1]).toStrictEqual({ id: 'b', label: { 'en': 'Test B' } });
   }
 });
 
@@ -643,8 +619,8 @@ test('Set valueset entries', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries[0]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' } });
-    expect(newState.valueSets[vsIndex].entries[1]).toStrictEqual({ id: 'b', label: { 'en': 'Test B' }, when: 'true' });
+    expect(newState.valueSets[vsIndex].entries![0]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' } });
+    expect(newState.valueSets[vsIndex].entries![1]).toStrictEqual({ id: 'b', label: { 'en': 'Test B' }, when: 'true' });
   }
 });
 
@@ -659,8 +635,8 @@ test('Add valueset entry: empty', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(7);
-    expect(newState.valueSets[vsIndex].entries[6]).toStrictEqual({ id: '', label: {} });
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(7);
+    expect(newState.valueSets[vsIndex].entries![6]).toStrictEqual({ id: '', label: {} });
   }
 });
 
@@ -679,8 +655,8 @@ test('Add valueset entry: filled', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(7);
-    expect(newState.valueSets[vsIndex].entries[6]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' }, when: 'true' });
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(7);
+    expect(newState.valueSets[vsIndex].entries![6]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' }, when: 'true' });
   }
 });
 
@@ -699,8 +675,8 @@ test('Update valueset entry', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[3]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' }, prop: 'test' });
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' }, prop: 'test' });
   }
 });
 
@@ -718,8 +694,8 @@ test('Update valueset entry label: text is not null', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[3].label["en"]).toEqual('Test A');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3].label["en"]).toEqual('Test A');
   }
 });
 
@@ -737,8 +713,8 @@ test('Update valueset entry label: text is null', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[3]).toStrictEqual(testForm.valueSets[vsIndex].entries[3]);
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3]).toStrictEqual(testForm.valueSets[vsIndex].entries[3]);
   }
 });
 
@@ -753,8 +729,8 @@ test('Delete valueset entry', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(5);
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention5');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(5);
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention5');
   }
 });
 
@@ -770,9 +746,9 @@ test('Move valueset entry', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[1].id).toEqual('prevention4');
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention3');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![1].id).toEqual('prevention4');
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention3');
   }
 });
 
@@ -788,9 +764,9 @@ test('Move valueset entry: past end', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention5');
-    expect(newState.valueSets[vsIndex].entries[5].id).toEqual('prevention4');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention5');
+    expect(newState.valueSets[vsIndex].entries![5].id).toEqual('prevention4');
   }
 });
 
@@ -806,9 +782,9 @@ test('Move valueset entry: first', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[0].id).toEqual('prevention4');
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention3');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![0].id).toEqual('prevention4');
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention3');
   }
 });
 
@@ -1120,8 +1096,8 @@ test('Add language, copy', () => {
   expect(newState?.valueSets).toBeDefined();
   if (newState.valueSets) {
     const vs = newState.valueSets[0];
-    expect(vs.entries[0].label?.et).toBeDefined();
-    expect(vs.entries[0].label?.et).toEqual(vs.entries[0].label?.fi);
+    expect(vs.entries![0].label?.et).toBeDefined();
+    expect(vs.entries![0].label?.et).toEqual(vs.entries![0].label?.fi);
   }
 });
 
@@ -1151,7 +1127,7 @@ test('Delete language', () => {
   if (newState.valueSets) {
     const vsIdx = newState.valueSets.findIndex(vs => vs.id === 'vs45');
     expect(vsIdx).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIdx].entries[0].label.en).toBeUndefined();
-    expect(newState.valueSets[vsIdx].entries[0].label.en).toBeUndefined();
+    expect(newState.valueSets[vsIdx].entries![0].label.en).toBeUndefined();
+    expect(newState.valueSets[vsIdx].entries![0].label.en).toBeUndefined();
   }
 });

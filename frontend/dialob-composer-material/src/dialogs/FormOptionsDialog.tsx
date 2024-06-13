@@ -3,7 +3,7 @@ import {
   Dialog, DialogTitle, DialogContent, Button, Typography, Select, MenuItem,
   Alert, DialogActions, Checkbox, Box, TextField, Tooltip, IconButton
 } from "@mui/material";
-import { Close, ContentCopy } from "@mui/icons-material";
+import { Close, ContentCopy, Help } from "@mui/icons-material";
 import { VisibilityType, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { version } from "../../package.json";
@@ -53,7 +53,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     if (label && label !== form.metadata?.label) {
       const id = setTimeout(() => {
         setMetadataValue('label', label);
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,8 +77,12 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
+      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.form.options.title' />
+        <Button variant='outlined' endIcon={<Help />}
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-06%E2%80%90Options-and-settings#dialog-options', "_blank")}>
+          <FormattedMessage id='buttons.help' />
+        </Button>
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
         <Box sx={{ width: '50%', p: 3 }}>

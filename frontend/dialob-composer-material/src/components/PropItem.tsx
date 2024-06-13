@@ -15,7 +15,7 @@ const PropItem: React.FC<{
     if (value !== '' && value !== prop.value) {
       const id = setTimeout(() => {
         onEdit(prop.key, value);
-      }, 1000);
+      }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

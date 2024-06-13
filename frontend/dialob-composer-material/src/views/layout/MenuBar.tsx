@@ -41,12 +41,13 @@ const HeaderButton: React.FC<{
   label: string,
   startIcon?: React.ReactElement,
   endIcon?: React.ReactElement,
+  disabled?: boolean,
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-}> = ({ label, startIcon, endIcon, onClick }) => {
+}> = ({ label, startIcon, endIcon, disabled, onClick }) => {
   const intl = useIntl();
   const stringExists = !!intl.messages[label];
   return (
-    <ResponsiveButton variant='text' color='inherit' startIcon={startIcon} endIcon={endIcon} onClick={onClick}>
+    <ResponsiveButton variant='text' color='inherit' startIcon={startIcon} endIcon={endIcon} disabled={disabled} onClick={onClick}>
       {stringExists ? <FormattedMessage id={label} /> : label}
     </ResponsiveButton>
   );
@@ -73,7 +74,7 @@ const MenuBar: React.FC = () => {
   const [anchorElVersion, setAnchorElVersion] = React.useState<null | HTMLElement>(null);
   const [searchAnchor, setSearchAnchor] = React.useState<null | HTMLElement>(null);
   const [searchKeyword, setSearchKeyword] = React.useState('');
-  const [searchMatches, setSearchMatches] = React.useState<SearchMatch[]>([]);
+  const [searchMatches, setSearchMatches] = React.useState<SearchMatch[] | undefined>(undefined);
 
   const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElLanguage(event.currentTarget);
@@ -134,7 +135,7 @@ const MenuBar: React.FC = () => {
 
   React.useEffect(() => {
     if (searchKeyword.length === 0) {
-      setSearchMatches([]);
+      setSearchMatches(undefined);
       return;
     }
     const id = setTimeout(() => {
@@ -191,7 +192,7 @@ const MenuBar: React.FC = () => {
             </MenuItem>
           </Menu>
           <Tooltip title={<FormattedMessage id='header.help' />} placement='bottom'>
-            <ResponsiveButton onClick={() => window.open('https://docs.dialob.io/', "_blank")} variant='text' color='inherit' >
+            <ResponsiveButton onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-01%E2%80%90Introduction', "_blank")} variant='text' color='inherit' >
               <Support fontSize='small' />
             </ResponsiveButton>
           </Tooltip>
@@ -209,10 +210,13 @@ const MenuBar: React.FC = () => {
             horizontal: 'left',
           }} disableAutoFocus disableScrollLock>
             <List sx={{ maxHeight: '50vh', ...SCROLL_SX }}>
-              {searchMatches.length === 0 && <MenuItem>
+              {searchKeyword.length === 0 && <MenuItem>
                 <Typography color='text.hint'><FormattedMessage id='header.search.hint' /></Typography>
               </MenuItem>}
-              {searchMatches
+              {searchMatches && searchMatches.length === 0 && <MenuItem>
+                <Typography color='text.hint'><FormattedMessage id='header.search.matches.none' /></Typography>
+              </MenuItem>}
+              {searchMatches && searchMatches
                 .sort((a, b) => a.type.localeCompare(b.type))
                 .map((match) => (
                   <MenuItem key={match.id} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }} onClick={() => handleMatchClick(match)}>
@@ -232,7 +236,8 @@ const MenuBar: React.FC = () => {
               {getStatusIcon(editor.errors)}
             </ResponsiveButton>
           </Tooltip>
-          <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} />
+          <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />}
+            onClick={handleLanguageMenuOpen} disabled={formLanguages.length <= 1} />
           <Menu open={Boolean(anchorElLanguage)} anchorEl={anchorElLanguage} onClose={() => setAnchorElLanguage(null)} disableScrollLock={true}>
             {formLanguages
               .filter((language) => language !== editor.activeFormLanguage)

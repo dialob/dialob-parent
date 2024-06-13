@@ -22,7 +22,7 @@ const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [tree, setTree] = React.useState<TreeData>(INIT_TREE);
 
   React.useEffect(() => {
-    const contextVariables = form.variables?.filter(v => isContextVariable(v)) as ContextVariable[];
+    const contextVariables = form.variables ? form.variables.filter(v => isContextVariable(v)) as ContextVariable[] : [];
     setTree(buildTreeFromVariables(contextVariables));
   }, [form.variables]);
 

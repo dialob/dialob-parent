@@ -21,7 +21,7 @@ const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, valu
       if (editableValue !== '' && editableValue !== value) {
         setContextValue(name, editableValue)
       }
-    }, 1000);
+    }, 300);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editableValue]);

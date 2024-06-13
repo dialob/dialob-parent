@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, Button, CircularProgress, Typography, Select, MenuItem, Alert } from "@mui/material";
-import { Upload, Warning } from "@mui/icons-material";
+import { Help, Upload, Warning } from "@mui/icons-material";
 import { DialogActionButtons } from "./DialogComponents";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
@@ -80,12 +80,17 @@ const UploadValuesetDialog: React.FC<{
         setCurrentValueSet({ ...currentValueSet, entries: newEntries });
         setValueSetEntries(currentValueSet.id, newEntries);
       } else if (uploadMode === 'append') {
-        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, ...newEntries] });
-        newEntries.forEach(e => addValueSetEntry(currentValueSet.id, e));
+        if (currentValueSet.entries) {
+          setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, ...newEntries] });
+          newEntries.forEach(e => addValueSetEntry(currentValueSet.id, e));
+        } else {
+          setCurrentValueSet({ ...currentValueSet, entries: newEntries });
+          setValueSetEntries(currentValueSet.id, newEntries);
+        }
       } else if (uploadMode === 'update') {
         const currentEntries = currentValueSet.entries;
         const appliedEntries: ValueSetEntry[] = [];
-        currentEntries.forEach(e => {
+        currentEntries?.forEach(e => {
           const newEntry = newEntries.find(ne => ne.id === e.id);
           if (newEntry) {
             appliedEntries.push(newEntry);
@@ -103,8 +108,12 @@ const UploadValuesetDialog: React.FC<{
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
+      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.upload.valueset.title' />
+        <Button variant='outlined' endIcon={<Help />}
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#step-by-step-walkthrough-of-single-language-list-building-with-csv', "_blank")}>
+          <FormattedMessage id='buttons.help' />
+        </Button>
       </DialogTitle>
       <DialogContent>
         <Button variant='contained' color='inherit' startIcon={<Upload />} onClick={() => ref.current?.click()} sx={{ mb: 2 }}>

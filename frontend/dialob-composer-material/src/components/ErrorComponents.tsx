@@ -28,7 +28,7 @@ const extractCodeFromItem = (item: DialobItem, start: number, end: number, type:
     case 'REQUIREMENT':
       return item.required ? item.required.substring(start, end + 1) : '';
     case 'VALIDATION':
-      return (item.validations && item.validations[0].rule) ? item.validations[0].rule.substring(start, end + 1) : '';
+      return (item.validations && item.validations[0] && item.validations[0].rule) ? item.validations[0].rule.substring(start, end + 1) : '';
     default:
       return '';
   }
@@ -39,7 +39,7 @@ const extractCodeFromVariable = (variable: Variable, start: number, end: number)
 }
 
 const extractListError = (valueSet: ValueSet, index: number) => {
-  return valueSet.entries[index].id;
+  return valueSet.entries ? valueSet.entries[index]?.id : '';
 }
 
 export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {

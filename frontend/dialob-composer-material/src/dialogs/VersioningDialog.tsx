@@ -4,20 +4,21 @@ import {
   TableHead, TableRow, TableCell, TableBody, alpha, useTheme, IconButton,
   Tooltip
 } from "@mui/material";
-import { Close, ContentCopy, Download, EditNote, LocalOffer } from "@mui/icons-material";
+import { Close, ContentCopy, Download, EditNote, Help, LocalOffer } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import { ComposerTag, useComposer } from "../dialob";
 import { BorderedTable } from "../components/TableEditorComponents";
 import { downloadForm } from "../utils/ParseUtils";
 import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
+import { SaveResult } from "../backend/types";
 
 
 const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const theme = useTheme();
   const { form, setForm } = useComposer();
-  const { getTags, loadForm } = useBackend();
-  const { clearErrors } = useEditor();
+  const { getTags, loadForm, saveForm } = useBackend();
+  const { setErrors, clearErrors } = useEditor();
   const [tags, setTags] = React.useState<ComposerTag[]>([]);
 
   const LATEST_TAG: ComposerTag = React.useMemo(() => ({
@@ -35,8 +36,27 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
 
   const handleLoadVersion = (tag: ComposerTag) => {
     loadForm(tag.formId, tag.name).then(form => {
-      setForm(form, tag.name);
-      clearErrors();
+      if (tag.name === 'LATEST') {
+        saveForm(form, true)
+          .then(saveResponse => {
+            if (saveResponse.success && saveResponse.result) {
+              const result = saveResponse.result as SaveResult;
+              const errors = result.errors?.map(e => {
+                if (e.itemId && e.itemId.includes(':')) {
+                  const itemId = e.itemId.split(':')[0];
+                  return { ...e, itemId: itemId };
+                }
+                return e;
+              });
+              setErrors(errors);
+            } else if (saveResponse.apiError) {
+              setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
+            }
+          });
+      } else {
+        setForm(form, tag.name);
+        clearErrors();
+      }
       onClose();
     });
   }
@@ -53,8 +73,12 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
+      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.versioning.title' />
+        <Button variant='outlined' endIcon={<Help />}
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lifecycle-management', "_blank")}>
+          <FormattedMessage id='buttons.help' />
+        </Button>
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
         <Box sx={{ p: 3 }}>

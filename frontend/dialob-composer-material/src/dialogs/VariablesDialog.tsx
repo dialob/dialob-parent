@@ -30,7 +30,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.variables.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://docs.dialob.io/#/200_advanced_operations/700_custom_variables', "_blank")}>
+          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#custom-variables-and-expressions', "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>
