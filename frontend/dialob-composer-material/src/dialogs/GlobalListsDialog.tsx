@@ -147,10 +147,6 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.lists.global.title' />
           <Box flexGrow={1} />
-          <Button variant='outlined' endIcon={<Help />}
-            onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lists', "_blank")}>
-            <FormattedMessage id='buttons.help' />
-          </Button>
           {globalValueSets && globalValueSets.length > 0 && <>
             <Typography sx={{ mr: 2 }}><BoldedMessage id='dialogs.lists.global.users' values={{ count: users ? users.length : 0 }} /></Typography>
             {users &&
@@ -176,6 +172,10 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               </>
             }
           </>}
+          <Button variant='outlined' sx={{ ml: 2 }} endIcon={<Help />}
+            onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lists', "_blank")}>
+            <FormattedMessage id='buttons.help' />
+          </Button>
           <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}><FormattedMessage id='dialogs.lists.global.add' /></Button>
         </DialogTitle>
         <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0 }}>
