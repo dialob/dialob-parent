@@ -525,8 +525,7 @@ const setRevision = (state: ComposerState, revision: string): void => {
   state._rev = revision;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const setForm = (state: ComposerState, form: ComposerState, tagName?: string, _save?: boolean): void => {
+const setForm = (state: ComposerState, form: ComposerState, tagName?: string): void => {
   Object.assign(state, form);
   if (tagName && tagName !== 'LATEST') {
     state._tag = tagName;
@@ -536,7 +535,7 @@ const setForm = (state: ComposerState, form: ComposerState, tagName?: string, _s
 }
 
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
-  if (state._tag && (action.type === 'setForm' ? action.tagName !== 'LATEST' : true)) {
+  if (state._tag && action.type !== 'setForm') {
     // if a version tag is loaded, then it's in read-only mode
     return state;
   }

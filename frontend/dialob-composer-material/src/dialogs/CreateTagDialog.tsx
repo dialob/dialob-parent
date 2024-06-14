@@ -20,11 +20,18 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   const [name, setName] = React.useState<string>('');
   const [desc, setDesc] = React.useState<string>('');
 
+  React.useEffect(() => {
+    if (!open) {
+      setName('');
+      setDesc('');
+    }
+  }, [open]);
+
   const handleCreate = () => {
     createTag({ name, description: desc, formName: form.name })
       .then((res) => {
         if (res.success) {
-          if (tagErrors.length > 0) {
+          if (tagErrors && tagErrors.length > 0) {
             saveForm(form, true)
               .then(saveResponse => {
                 if (saveResponse.success && saveResponse.result) {
