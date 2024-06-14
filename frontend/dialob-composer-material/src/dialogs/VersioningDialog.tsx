@@ -37,6 +37,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   const handleLoadVersion = (tag: ComposerTag) => {
     loadForm(tag.formId, tag.name).then(form => {
       if (tag.name === 'LATEST') {
+        setForm(form);
         saveForm(form, true)
           .then(saveResponse => {
             if (saveResponse.success && saveResponse.result) {
