@@ -58,13 +58,21 @@ const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentI
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any): void => {
+const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any, language?: string): void => {
   // TODO: Sanity: item exists
   // TODO: Sanity: attribute is not an id or type
-  if (value === '') {
-    delete state.data[itemId][attribute];
+  if (language) {
+    if (state.data[itemId][attribute] === undefined) {
+      state.data[itemId][attribute] = { [language]: value };
+    } else {
+      state.data[itemId][attribute][language] = value;
+    }
   } else {
-    state.data[itemId][attribute] = value;
+    if (value === '') {
+      delete state.data[itemId][attribute];
+    } else {
+      state.data[itemId][attribute] = value;
+    }
   }
 }
 
@@ -544,7 +552,7 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     if (action.type === 'addItem') {
       addItem(state, action.config, action.parentItemId, action.afterItemId, action.callbacks ?? callbacks);
     } else if (action.type === 'updateItem') {
-      updateItem(state, action.itemId, action.attribute, action.value);
+      updateItem(state, action.itemId, action.attribute, action.value, action.language);
     } else if (action.type === 'updateLocalizedString') {
       updateLocalizedString(state, action.itemId, action.attribute, action.value, action.index);
     } else if (action.type === 'changeItemType') {
