@@ -7,7 +7,7 @@ import {
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { type: 'updateItem', itemId: string, attribute: string, value: any }
+  | { type: 'updateItem', itemId: string, attribute: string, value: any, language?: string }
   | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate }
   | { type: 'deleteItem', itemId: string }
