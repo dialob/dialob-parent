@@ -352,6 +352,12 @@ const deleteGlobalValueSet = (state: ComposerState, valueSetId: string): void =>
   }
 }
 
+const deleteLocalValueSet = (state: ComposerState, valueSetId: string): void => {
+  if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined) {
+    state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setMetadataValue = (state: ComposerState, attr: string, value: any): void => {
   // TODO: Sanity: Prevent overwriting certain critical attributes
@@ -583,6 +589,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       setGlobalValueSetName(state, action.valueSetId, action.name);
     } else if (action.type === 'deleteGlobalValueSet') {
       deleteGlobalValueSet(state, action.valueSetId);
+    } else if (action.type === 'deleteLocalValueSet') {
+      deleteLocalValueSet(state, action.valueSetId);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'setContextValue') {

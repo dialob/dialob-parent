@@ -30,6 +30,7 @@ export type ComposerAction =
   | { type: 'moveValueSetEntry', valueSetId: string, from: number, to: number }
   | { type: 'setGlobalValueSetName', valueSetId: string, name: string }
   | { type: 'deleteGlobalValueSet', valueSetId: string }
+  | { type: 'deleteLocalValueSet', valueSetId: string }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setMetadataValue', attr: string, value: any }
