@@ -53,10 +53,10 @@ export const scrollToAddedItem = (item: DialobItem) => {
 export const scrollToChoiceItem = () => {
   const dialogContent = document.querySelector('.MuiDialogContent-root');
   if (dialogContent) {
-    dialogContent.scrollTo({
+    setTimeout(() => dialogContent.scrollTo({
       top: dialogContent.scrollHeight,
       left: 0,
       behavior: 'smooth'
-    });
+    }), 500);
   }
 }

@@ -75,6 +75,7 @@ export interface TransportConfig {
 
 export interface DialobComposerConfig {
   transport: TransportConfig;
+  documentationUrl?: string;
   closeHandler: () => void;
 }
 

@@ -8,6 +8,7 @@ import { VisibilityType, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { version } from "../../package.json";
 import { useBackend } from "../backend/useBackend";
+import { useDocs } from "../utils/DocsUtils";
 
 const visibilityModeOptions = [
   { value: 'ONLY_ENABLED' as VisibilityType, label: 'dialogs.form.options.visibility.ONLY_ENABLED' },
@@ -28,6 +29,7 @@ const CopyToClipboardButton: React.FC<{ text: string }> = ({ text }) => {
 const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form, setMetadataValue } = useComposer();
   const { getBuildInfo } = useBackend();
+  const docsUrl = useDocs('options');
   const [label, setLabel] = React.useState<string | undefined>();
   const [visibilityMode, setVisibilityMode] = React.useState<VisibilityType | undefined>();
   const [required, setRequired] = React.useState<boolean>(false);
@@ -80,7 +82,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.form.options.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-06%E2%80%90Options-and-settings#dialog-options', "_blank")}>
+          onClick={() => window.open(docsUrl, "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>

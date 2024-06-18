@@ -5,6 +5,7 @@ import { DialogActionButtons } from "./DialogComponents";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { parseCsvFile } from "../utils/ParseUtils";
+import { useDocs } from "../utils/DocsUtils";
 
 type UploadMode = 'replace' | 'append' | 'update';
 const UPLOAD_MODES: UploadMode[] = ['replace', 'append', 'update'];
@@ -16,6 +17,7 @@ const UploadValuesetDialog: React.FC<{
   setCurrentValueSet: React.Dispatch<React.SetStateAction<ValueSet | undefined>>
 }> = ({ open, onClose, currentValueSet, setCurrentValueSet }) => {
   const { addValueSetEntry, setValueSetEntries } = useComposer();
+  const docsUrl = useDocs('valuesets');
   const [error, setError] = React.useState<string | null>(null);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [uploadMode, setUploadMode] = React.useState<UploadMode>('replace');
@@ -111,7 +113,7 @@ const UploadValuesetDialog: React.FC<{
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.upload.valueset.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#step-by-step-walkthrough-of-single-language-list-building-with-csv', "_blank")}>
+          onClick={() => window.open(docsUrl, "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>

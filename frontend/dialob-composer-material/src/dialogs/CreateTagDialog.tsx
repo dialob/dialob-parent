@@ -11,11 +11,13 @@ import { useEditor } from "../editor";
 import { ErrorMessage } from "../components/ErrorComponents";
 import { getErrorSeverity } from "../utils/ErrorUtils";
 import { SaveResult } from "../backend/types";
+import { useDocs } from "../utils/DocsUtils";
 
 const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form } = useComposer();
   const { createTag, saveForm } = useBackend();
   const { editor, setErrors } = useEditor();
+  const docsUrl = useDocs('tagging');
   const tagErrors = editor.errors?.filter(e => e.type === 'TAG_ERROR');
   const [name, setName] = React.useState<string>('');
   const [desc, setDesc] = React.useState<string>('');
@@ -67,7 +69,7 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.create.tag.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#how-to-create-a-tag', "_blank")}>
+          onClick={() => window.open(docsUrl, "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>
