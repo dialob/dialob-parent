@@ -19,6 +19,7 @@ import { scrollToItem } from '../../utils/ScrollUtils';
 import { useBackend } from '../../backend/useBackend';
 import { CreateSessionResult } from '../../backend/types';
 import { isContextVariable } from '../../utils/ItemUtils';
+import { useDocs } from '../../utils/DocsUtils';
 
 interface SearchMatch {
   type: 'item' | 'variable';
@@ -59,6 +60,7 @@ const MenuBar: React.FC = () => {
   const { form } = useComposer();
   const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab, setErrors } = useEditor();
   const { config, createPreviewSession } = useBackend();
+  const docsUrl = useDocs('general');
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const currentTag = form._tag ?? 'LATEST';
@@ -192,7 +194,7 @@ const MenuBar: React.FC = () => {
             </MenuItem>
           </Menu>
           <Tooltip title={<FormattedMessage id='header.help' />} placement='bottom'>
-            <ResponsiveButton onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-01%E2%80%90Introduction', "_blank")} variant='text' color='inherit' >
+            <ResponsiveButton onClick={() => window.open(docsUrl, "_blank")} variant='text' color='inherit' >
               <Support fontSize='small' />
             </ResponsiveButton>
           </Tooltip>

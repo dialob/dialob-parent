@@ -16,6 +16,7 @@ import { scrollToItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
 import { BoldedMessage } from '../intl/BoldedMessage';
+import { useDocs } from '../utils/DocsUtils';
 
 interface GlobalValueSet {
   id: string;
@@ -26,6 +27,7 @@ interface GlobalValueSet {
 const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet } = useComposer();
   const { editor, setActiveList, setActivePage, setHighlightedItem } = useEditor();
+  const docsUrl = useDocs('lists');
   const dialogOpen = open || editor.activeList !== undefined;
   const formLanguages = form.metadata.languages;
   const [globalValueSets, setGlobalValueSets] = React.useState<GlobalValueSet[] | undefined>(undefined);
@@ -173,7 +175,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
             }
           </>}
           <Button variant='outlined' sx={{ ml: 2 }} endIcon={<Help />}
-            onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lists', "_blank")}>
+            onClick={() => window.open(docsUrl, "_blank")}>
             <FormattedMessage id='buttons.help' />
           </Button>
           <Button onClick={addNewList} endIcon={<Add />} sx={{ ml: 2 }}><FormattedMessage id='dialogs.lists.global.add' /></Button>

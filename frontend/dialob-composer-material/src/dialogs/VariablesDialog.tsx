@@ -5,9 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import ExpressionVariables from '../components/variables/ExpressionVariables';
 import ContextVariables from '../components/variables/ContextVariables';
 import { VariableTabType, useEditor } from '../editor';
+import { useDocs } from '../utils/DocsUtils';
 
 const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { editor, setActiveVariableTab } = useEditor();
+  const docsUrl = useDocs('variables');
   const dialogOpen = open || editor.activeVariableTab !== undefined;
   const [activeTab, setActiveTab] = React.useState<VariableTabType>(editor.activeVariableTab || 'context');
 
@@ -30,7 +32,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.variables.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#custom-variables-and-expressions', "_blank")}>
+          onClick={() => window.open(docsUrl, "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>

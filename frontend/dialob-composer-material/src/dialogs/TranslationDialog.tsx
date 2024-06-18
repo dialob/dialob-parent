@@ -3,18 +3,20 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Ta
 import { Close, Help, Translate, UploadFile, Warning } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import Translations from "../components/translations";
+import { useDocs } from "../utils/DocsUtils";
 
 type TranslationTabType = 'files' | 'languages' | 'missing';
 
 const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const [activeTab, setActiveTab] = React.useState<TranslationTabType>('files');
+  const docsUrl = useDocs('translations');
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.translations.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#localisation', "_blank")}>
+          onClick={() => window.open(docsUrl, "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>

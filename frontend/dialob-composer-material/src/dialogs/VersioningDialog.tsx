@@ -12,6 +12,7 @@ import { downloadForm } from "../utils/ParseUtils";
 import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
 import { SaveResult } from "../backend/types";
+import { useDocs } from "../utils/DocsUtils";
 
 
 const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
@@ -19,6 +20,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   const { form, setForm } = useComposer();
   const { getTags, loadForm, saveForm } = useBackend();
   const { setErrors, clearErrors } = useEditor();
+  const docsUrl = useDocs('versioning');
   const [tags, setTags] = React.useState<ComposerTag[]>([]);
 
   const LATEST_TAG: ComposerTag = React.useMemo(() => ({
@@ -76,7 +78,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.versioning.title' />
         <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open('https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#lifecycle-management', "_blank")}>
+          onClick={() => window.open(docsUrl, "_blank")}>
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>

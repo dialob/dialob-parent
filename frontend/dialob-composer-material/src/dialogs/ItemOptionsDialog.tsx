@@ -13,6 +13,7 @@ import { useBackend } from '../backend/useBackend';
 import { useComposer } from '../dialob';
 import { ChangeIdResult } from '../backend/types';
 import { validateId } from '../utils/ValidateUtils';
+import { useDocs } from '../utils/DocsUtils';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -21,27 +22,6 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
     marginLeft: theme.spacing(1),
   },
 }));
-
-const getHelpUrl = (activeTab: OptionsTabType) => {
-  switch (activeTab) {
-    case 'id':
-      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#unique-identifiers';
-    case 'label':
-      return 'https://www.markdownguide.org/basic-syntax/';
-    case 'description':
-      return 'https://www.markdownguide.org/basic-syntax/';
-    case 'rules':
-      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-05%E2%80%90Dialob-Expression-Language-%E2%80%93-DEL#visibility-and-requirement-rules';
-    case 'validations':
-      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-05%E2%80%90Dialob-Expression-Language-%E2%80%93-DEL#validation-rules';
-    case 'choices':
-      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#creating-a-local-list';
-    case 'defaults':
-      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-04%E2%80%90Input-and-output-types';
-    case 'properties':
-      return 'https://github.com/dialob/dialob-parent/wiki/Dialob-composer:-08-customization';
-  }
-}
 
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
@@ -55,6 +35,7 @@ const ItemOptionsDialog: React.FC = () => {
   const [id, setId] = React.useState<string>(item?.id || '');
   const [idError, setIdError] = React.useState<boolean>(false);
   const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
+  const docsUrl = useDocs(activeTab);
 
   React.useEffect(() => {
     if (editor.itemOptionsActiveTab) {
@@ -135,7 +116,7 @@ const ItemOptionsDialog: React.FC = () => {
         <Box flexGrow={1} />
         <StyledButtonContainer>
           <Button variant='outlined' endIcon={<Help />}
-            onClick={() => window.open(getHelpUrl(activeTab), "_blank")}>
+            onClick={() => window.open(docsUrl, "_blank")}>
             <FormattedMessage id='buttons.help' />
           </Button>
           <ConversionMenu item={item} />
