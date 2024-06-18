@@ -20,7 +20,7 @@ import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 
 
 const ChoiceEditor: React.FC = () => {
-  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem } = useComposer();
+  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteLocalValueSet } = useComposer();
   const { editor, setActiveItem, setItemOptionsActiveTab, setActiveList } = useEditor();
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
@@ -83,6 +83,7 @@ const ChoiceEditor: React.FC = () => {
       // remove rules when converting to global list
       const newEntries = currentValueSet.entries?.map(entry => { return { id: entry.id, label: entry.label } });
       createValueSet(null, newEntries);
+      deleteLocalValueSet(currentValueSet.id);
       if (newGvsId) {
         setGlobalValueSetName(newGvsId, newGvsName);
         updateItem(item?.id, 'valueSetId', newGvsId);

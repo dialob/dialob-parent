@@ -93,6 +93,10 @@ export const useComposer = () => {
     dispatch({ type: 'deleteGlobalValueSet', valueSetId });
   }
 
+  const deleteLocalValueSet = (valueSetId: string) => {
+    dispatch({ type: 'deleteLocalValueSet', valueSetId });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setMetadataValue = (attr: string, value: any) => {
     dispatch({ type: 'setMetadataValue', attr, value });
@@ -165,6 +169,7 @@ export const useComposer = () => {
     moveValueSetEntry,
     setGlobalValueSetName,
     deleteGlobalValueSet,
+    deleteLocalValueSet,
     setMetadataValue,
     setContextValue,
     createVariable,
