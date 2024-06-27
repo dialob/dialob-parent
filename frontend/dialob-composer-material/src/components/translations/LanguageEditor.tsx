@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   Box, Button, Table, TableContainer, TableHead, TableRow, TableCell, styled,
-  Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton
+  Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton, Divider, TextField
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Add, ContentCopy, Delete } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
-import { DEFAULT_LANGUAGE_CONFIG } from '../../defaults';
+import { ISO_LANGUAGES, MOST_USED_LANGUAGES } from '../../defaults';
 import LanguageDeleteConfirmation from './LanguageDeleteConfirmation';
 
 export const LanguagesTable = styled(Table)(({ theme }) => ({
@@ -23,8 +23,10 @@ const LanguageEditor: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [copyFrom, setCopyFrom] = React.useState<string | undefined>();
   const [deleteLanguage, setDeleteLanguage] = React.useState<string | undefined>();
+  const [search, setSearch] = React.useState<string>('');
   const currentLanguages = form.metadata.languages || [];
-  const newLanguages = DEFAULT_LANGUAGE_CONFIG.filter(lang => !currentLanguages.includes(lang.code));
+  const allLanguages = [...Object.entries({...MOST_USED_LANGUAGES, ...ISO_LANGUAGES})];
+  const newLanguages = allLanguages.filter(([code, _language]) => !currentLanguages.includes(code));
 
   const handleAddLanguage = (code: string) => {
     setAnchorEl(null);
@@ -39,14 +41,23 @@ const LanguageEditor: React.FC = () => {
   return (
     <>
       <LanguageDeleteConfirmation language={deleteLanguage} onClose={() => setDeleteLanguage(undefined)} />
-      <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
-        horizontal: 'left',
-        vertical: 'bottom',
-      }}>
+      <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}
+        sx={{ maxHeight: '70vh' }}
+        anchorOrigin={{
+          horizontal: 'left',
+          vertical: 'bottom',
+        }}
+      >
         <List>
-          {newLanguages.map(lang => (
-            <ListItemButton key={lang.code} onClick={() => handleAddLanguage(lang.code)}>
-              <FormattedMessage id={`locales.${lang.code}`} />
+          <TextField id='search' label={<FormattedMessage id='dialogs.translations.languages.search' />}
+            value={search} onChange={(e) => setSearch(e.target.value)} sx={{ m: 1, mt: 0 }} />
+          <Divider />
+          {newLanguages
+            .filter(([code, language]) => !currentLanguages.includes(code) && 
+              search === '' || language.name.toLowerCase().includes(search.toLowerCase()))
+            .map(([code, language]) => (
+            <ListItemButton key={code} onClick={() => handleAddLanguage(code)}>
+              {language.name}
             </ListItemButton>
           ))}
         </List>
@@ -71,7 +82,7 @@ const LanguageEditor: React.FC = () => {
           <TableBody>
             {currentLanguages.map(lang => (
               <TableRow key={lang}>
-                <TableCell width='70%'><FormattedMessage id={`locales.${lang}`} /></TableCell>
+                <TableCell width='70%'>{MOST_USED_LANGUAGES[lang]?.name || ISO_LANGUAGES[lang]?.name || lang}</TableCell>
                 <TableCell align='center'>
                   <IconButton id='copy' onClick={(e) => handleCopyLanguage(e, lang)}><ContentCopy /></IconButton>
                 </TableCell>

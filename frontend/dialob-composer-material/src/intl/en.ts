@@ -137,6 +137,7 @@ const en = {
   'dialogs.translations.languages.title': 'Manage languages',
   'dialogs.translations.languages.add': 'Add language',
   'dialogs.translations.languages.add.desc': 'Add a new empty language to the translations',
+  'dialogs.translations.languages.search': 'Search languages',
   'dialogs.translations.languages.language': 'Language',
   'dialogs.translations.languages.delete': 'Delete',
   'dialogs.translations.languages.delete.confirm.title': 'Delete language',
