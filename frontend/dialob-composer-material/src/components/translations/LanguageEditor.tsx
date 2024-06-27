@@ -1,8 +1,7 @@
 import React from 'react';
 import {
   Box, Button, Table, TableContainer, TableHead, TableRow, TableCell, styled,
-  Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton,
-  Divider
+  Tooltip, TableBody, IconButton, Switch, Popover, List, ListItemButton, Divider, TextField
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Add, ContentCopy, Delete } from '@mui/icons-material';
@@ -24,6 +23,7 @@ const LanguageEditor: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [copyFrom, setCopyFrom] = React.useState<string | undefined>();
   const [deleteLanguage, setDeleteLanguage] = React.useState<string | undefined>();
+  const [search, setSearch] = React.useState<string>('');
   const currentLanguages = form.metadata.languages || [];
   const allLanguages = [...Object.entries({...MOST_USED_LANGUAGES, ...ISO_LANGUAGES})];
   const newLanguages = allLanguages.filter(([code, _language]) => !currentLanguages.includes(code));
@@ -41,21 +41,20 @@ const LanguageEditor: React.FC = () => {
   return (
     <>
       <LanguageDeleteConfirmation language={deleteLanguage} onClose={() => setDeleteLanguage(undefined)} />
-      <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{
-        horizontal: 'left',
-        vertical: 'bottom',
-      }}>
+      <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}
+        sx={{ maxHeight: '70vh' }}
+        anchorOrigin={{
+          horizontal: 'left',
+          vertical: 'bottom',
+        }}
+      >
         <List>
-          {Object.entries(MOST_USED_LANGUAGES)
-            .filter(([code, _language]) => !currentLanguages.includes(code))
-            .map(([code, language]) => (
-            <ListItemButton key={code} onClick={() => handleAddLanguage(code)}>
-              {language.name}
-            </ListItemButton>
-          ))}
+          <TextField id='search' label={<FormattedMessage id='dialogs.translations.languages.search' />}
+            value={search} onChange={(e) => setSearch(e.target.value)} sx={{ m: 1, mt: 0 }} />
           <Divider />
-          {Object.entries(ISO_LANGUAGES)
-            .filter(([code, _language]) => !currentLanguages.includes(code))
+          {newLanguages
+            .filter(([code, language]) => !currentLanguages.includes(code) && 
+              search === '' || language.name.toLowerCase().includes(search.toLowerCase()))
             .map(([code, language]) => (
             <ListItemButton key={code} onClick={() => handleAddLanguage(code)}>
               {language.name}
