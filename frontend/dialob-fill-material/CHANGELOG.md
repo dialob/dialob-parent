@@ -1,3 +1,7 @@
+# 1.5.2
+
+* Malay locale and UI translation
+
 # 1.5.1
 
 * Changed the positioning of Info Icon used in Description component.
