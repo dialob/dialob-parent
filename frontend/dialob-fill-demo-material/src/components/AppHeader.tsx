@@ -5,7 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { THEMES } from '../theme';
 
-const UI_LANGUAGES = ['en', 'fi', 'sv', 'et'];
+const UI_LANGUAGES = ['en', 'fi', 'sv', 'et', 'ms'];
 
 interface AppHeaderProps {
   setLocale: (locale: string) => void;
