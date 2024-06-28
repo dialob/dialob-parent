@@ -6,7 +6,7 @@ const ms = {
   'form.completed': 'Borang telah siap diisi!',
   'page.previous': 'Halaman sebelumnya',
   'page.next': 'Muka surat seterusnya',
-  'complete': 'Lengkap,
+  'complete': 'Lengkap',
   'complete.confirmation.title': 'Adakan anda pasti untuk menglengkapkan dialog ini?',
   'complete.confirmation.message': 'Anda tidak dapat menukar jawapan and selepas selesai',
   'complete.confirmation.cancel': 'Batal',
