@@ -11,12 +11,14 @@ import svLocale from 'date-fns/locale/sv';
 import fiLocale from 'date-fns/locale/fi';
 import etLocale from 'date-fns/locale/et';
 import enLocale from 'date-fns/locale/en-GB';
+import msLocale from 'date-fns/locale/ms';
 
 const localeMap = {
   en: enLocale,
   et: etLocale,
   fi: fiLocale,
   sv: svLocale,
+	ms: msLocale,
 };
 
 import { FormattedMessage } from 'react-intl';
