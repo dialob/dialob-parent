@@ -1,0 +1,37 @@
+{
+  "name": "dialob-material-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "vite --config vite.config.ts --port 3000",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@mui/icons-material": "^5.1.0",
+    "@mui/material": "^5.1.0",
+    "@mui/x-date-pickers": "^6.5.0",
+    "@mui/system": "^5.11.0",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^20.14.6",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "file-saver": "^2.0.5",
+    "formik": "^2.2.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-intl": "^5.20.10",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1",
+    "yup": "^1.1.1"
+  }
+}
