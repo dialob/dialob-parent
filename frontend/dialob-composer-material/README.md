@@ -76,7 +76,7 @@ Builds static package under dist folder.
 ## Building and deploying to demo.dialob.io
 
 ```bash
-yarn build
+yarn build-aws
 aws sso login
 ./aws-deploy.sh
 ```

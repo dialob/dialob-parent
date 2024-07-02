@@ -21,6 +21,7 @@ export const THEMES = [
   name: 'Alternative',
   theme: appTheme
  },
+ /* -- some themes hidden
  {
   name: 'HB',
   theme: hbTheme
@@ -33,4 +34,5 @@ export const THEMES = [
   name: 'POP',
   theme: popTheme
  }
+ */
 ];

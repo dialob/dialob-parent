@@ -1,5 +1,16 @@
 # Dialob Material UI Fill: Generic App
 
+## Building and deploying to demo.dialob.io
+
+```bash
+yarn build-aws
+aws sso login
+./aws-deploy.sh
+```
+
+This will build and deploy artifacts to AWS S3, making the template available with url: https://s3.eu-central-1.amazonaws.com/cdn.resys.io/dialob/dialob-fill-demo-material/main/index.html
+
+
 ---
 
 ## Contents: Material UI theming for Dialob
