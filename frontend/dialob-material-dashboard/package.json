@@ -1,13 +1,20 @@
 {
-  "name": "dialob-material-dashboard",
+  "name": "@dialob/dashboard-material",
   "version": "1.0.0",
-  "description": "",
+  "description": "Material UI dashboard component for Dialob",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "always-auth": true
+  },
+  "files": [
+	 "dist"
+  ],
   "scripts": {
     "dev": "vite --config vite.config.ts --port 3000",
     "build": "vite build && tsc --emitDeclarationOnly"
   },
   "keywords": [],
-  "license": "ISC",
+  "license": "Apache-2.0",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
