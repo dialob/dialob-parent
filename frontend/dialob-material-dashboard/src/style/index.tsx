@@ -13,13 +13,13 @@ export const StyledTagEditDialogButton = styled(Button)(({ theme }) => ({
 		backgroundColor: theme.palette.success.dark,
 		color: theme.palette.common.white,
 	},
-}))
+})) as typeof Button
 
 // SvgIcons
 
 export const StyledIcon = styled(SvgIcon)(({ theme }) => ({
-	color: theme.palette.text.primary,
-}))
+	color: theme.palette.text.primary
+})) as unknown as typeof SvgIcon;
 
 // IconButtons
 
@@ -31,7 +31,7 @@ export const StyledIconButton = styled(IconButton)(({ theme }) => ({
 			color: theme.palette.common.white
 		}
 	}
-}))
+})) as typeof IconButton
 
 export const ActionIconButton = styled(IconButton)(({ theme }) => ({
 	borderRadius: '5px',
@@ -44,7 +44,7 @@ export const ActionIconButton = styled(IconButton)(({ theme }) => ({
 			color: theme.palette.common.white
 		}
 	}
-}))
+})) as typeof IconButton
 
 // TableCells
 
@@ -63,7 +63,7 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
 		fontSize: theme.spacing(2),
 		fontFamily: "Campton-Light, Arial, sans-serif",
 	},
-}));
+})) as typeof TableCell;
 
 // TableRows
 
@@ -71,7 +71,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 	'&:nth-of-type(even)': {
 		backgroundColor: theme.palette.text.disabled,
 	},
-}));
+})) as typeof TableRow;
 
 // OutlineInput
 
@@ -83,7 +83,7 @@ export const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
 	"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
 		border: `1px solid ${theme.palette.success.main}`,
 	},
-}))
+})) as unknown as typeof OutlinedInput;
 
 // Dialogs
 
@@ -94,7 +94,7 @@ export const StyledDialog = styled(Dialog)(({ theme }) => ({
 		height: "50%",
 		top: theme.spacing(9)
 	},
-}));
+})) as typeof Dialog;
 
 // Typographies
 
@@ -102,4 +102,4 @@ export const StyledModalTypography = styled(Typography)(({ theme }) => ({
 	fontSize: "22px",
 	fontWeight: 500,
 	color: theme.palette.text.primary,
-}));
+})) as typeof Typography;
