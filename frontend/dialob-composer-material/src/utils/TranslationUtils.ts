@@ -1,6 +1,7 @@
 import Papa from "papaparse";
 import { ComposerState, DialobItem, LocalizedString, ValueSet } from "../dialob";
 import FileSaver from "file-saver";
+import { ISO_LANGUAGES, MOST_USED_LANGUAGES } from "../defaults";
 
 export type TranslationType = 'label' | 'description' | 'valueset' | 'validation';
 
@@ -419,4 +420,8 @@ export const overwiewTextFormatter = (key: string) => {
     // valueSet
     return `Valueset entry[${keys[2]}] for ${id}`;
   }
+}
+
+export const getLanguageName = (language: string) => {
+  return MOST_USED_LANGUAGES[language]?.name || ISO_LANGUAGES[language]?.name || language;
 }

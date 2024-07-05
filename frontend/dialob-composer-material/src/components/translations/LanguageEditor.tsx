@@ -9,6 +9,7 @@ import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { ISO_LANGUAGES, MOST_USED_LANGUAGES } from '../../defaults';
 import LanguageDeleteConfirmation from './LanguageDeleteConfirmation';
+import { getLanguageName } from '../../utils/TranslationUtils';
 
 export const LanguagesTable = styled(Table)(({ theme }) => ({
   '& .MuiTableCell-root': {
@@ -82,7 +83,7 @@ const LanguageEditor: React.FC = () => {
           <TableBody>
             {currentLanguages.map(lang => (
               <TableRow key={lang}>
-                <TableCell width='70%'>{MOST_USED_LANGUAGES[lang]?.name || ISO_LANGUAGES[lang]?.name || lang}</TableCell>
+                <TableCell width='70%'>{getLanguageName(lang)}</TableCell>
                 <TableCell align='center'>
                   <IconButton id='copy' onClick={(e) => handleCopyLanguage(e, lang)}><ContentCopy /></IconButton>
                 </TableCell>

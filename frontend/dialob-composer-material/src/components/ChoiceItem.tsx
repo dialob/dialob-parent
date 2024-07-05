@@ -9,6 +9,7 @@ import { FormattedMessage } from "react-intl";
 import { useErrorColor } from "../utils/ErrorUtils";
 import { useEditor } from "../editor";
 import CodeMirror from "./code/CodeMirror";
+import { getLanguageName } from "../utils/TranslationUtils";
 
 
 export interface ChoiceItemProps {
@@ -130,7 +131,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                     const localizedText = localizedString ? localizedString[language] : '';
                     return (
                       <Grid item xs={4} key={language} sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Typography color='text.hint' variant='caption'><FormattedMessage id={`locales.${language}`} /></Typography>
+                        <Typography color='text.hint' variant='caption'>{getLanguageName(language)}</Typography>
                         <TextField value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />
                       </Grid>
                     );

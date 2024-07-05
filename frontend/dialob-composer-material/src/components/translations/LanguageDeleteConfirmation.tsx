@@ -3,11 +3,12 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useComposer } from '../../dialob';
 import { DialogActionButtons } from '../../dialogs/DialogComponents';
+import { getLanguageName } from '../../utils/TranslationUtils';
 
 const LanguageDeleteConfirmation: React.FC<{ language?: string, onClose: () => void }> = ({ language, onClose }) => {
   const { deleteLanguage } = useComposer();
   const intl = useIntl();
-  const lang = language ? intl.formatMessage({ id: `locales.${language}` }) : '';
+  const lang = language ? getLanguageName(language) : '';
 
   const handleClick = () => {
     if (language) {

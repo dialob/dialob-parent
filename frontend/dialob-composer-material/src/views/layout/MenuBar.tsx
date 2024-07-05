@@ -20,6 +20,7 @@ import { useBackend } from '../../backend/useBackend';
 import { CreateSessionResult } from '../../backend/types';
 import { isContextVariable } from '../../utils/ItemUtils';
 import { useDocs } from '../../utils/DocsUtils';
+import { getLanguageName } from '../../utils/TranslationUtils';
 
 interface SearchMatch {
   type: 'item' | 'variable';
@@ -238,14 +239,14 @@ const MenuBar: React.FC = () => {
               {getStatusIcon(editor.errors)}
             </ResponsiveButton>
           </Tooltip>
-          <HeaderButton label={'locales.' + editor.activeFormLanguage} endIcon={<ArrowDropDown />}
+          <HeaderButton label={getLanguageName(editor.activeFormLanguage)} endIcon={<ArrowDropDown />}
             onClick={handleLanguageMenuOpen} disabled={formLanguages.length <= 1} />
           <Menu open={Boolean(anchorElLanguage)} anchorEl={anchorElLanguage} onClose={() => setAnchorElLanguage(null)} disableScrollLock={true}>
             {formLanguages
               .filter((language) => language !== editor.activeFormLanguage)
               .map((language) => (
                 <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
-                  <FormattedMessage id={`locales.${language}`} />
+                  {getLanguageName(language)}
                 </MenuItem>
               ))}
           </Menu>
