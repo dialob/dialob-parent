@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableContainer, TableHead, TableRow, TableCell, TableBody, Typography, Box, IconButton, Button, Alert } from '@mui/material';
 import { LanguagesTable } from './LanguageEditor';
-import { MissingTranslation, TranslationType, getMissingTranslations } from '../../utils/TranslationUtils';
+import { MissingTranslation, TranslationType, getLanguageName, getMissingTranslations } from '../../utils/TranslationUtils';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import { CheckCircle, Error, KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
@@ -53,7 +53,7 @@ const MissingTranslationsCategory: React.FC<{ type: TranslationType, translation
               {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
               <TableCell width='70%' sx={{ fontWeight: 'bold' }}>ID</TableCell>
               {languages.map(lang => (
-                <TableCell key={lang} align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id={`locales.${lang}`} /></TableCell>
+                <TableCell key={lang} align='center' sx={{ fontWeight: 'bold' }}>{getLanguageName(lang)}</TableCell>
               ))}
             </TableRow>
           </TableHead>

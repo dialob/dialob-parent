@@ -7,6 +7,7 @@ import { LocalizedString, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { markdownComponents } from '../../defaults/markdown';
 import { IndexedRule } from './ValidationRuleEditor';
+import { getLanguageName } from '../../utils/TranslationUtils';
 
 
 const LocalizedStringEditor: React.FC<{
@@ -92,7 +93,7 @@ const LocalizedStringEditor: React.FC<{
               <MenuItem key={language} onClick={() => {
                 handleAdd(language);
                 setAnchorEl(null);
-              }}><FormattedMessage id={`locales.${language}`} /></MenuItem>
+              }}>{getLanguageName(language)}</MenuItem>
             ))}
         </Menu>
       </Box>
@@ -101,7 +102,7 @@ const LocalizedStringEditor: React.FC<{
         return (
           <Box key={language}>
             <Box display='flex' alignItems='center'>
-              <Typography color='text.hint'><FormattedMessage id={`locales.${language}`} /></Typography>
+              <Typography color='text.hint'>{getLanguageName(language)}</Typography>
               <IconButton size='small' onClick={() => handleDelete(language)} color='error'><Delete /></IconButton>
             </Box>
             {preview ?
