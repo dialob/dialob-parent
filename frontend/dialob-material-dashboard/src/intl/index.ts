@@ -1,5 +1,6 @@
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
-export default {
+
+const messages: {[key: string]: any}  = {
 	"en": {
 		"error.valueRequired": "Enter value",
 		"error.invalidFormName": "Invalid form name",
@@ -87,4 +88,6 @@ export default {
 		"adminUI.table.tooltip.copy": "Copy dialog",
 		"adminUI.table.tooltip.delete": "Delete"
 	}
-}
+};
+
+export default messages;

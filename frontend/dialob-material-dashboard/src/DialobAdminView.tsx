@@ -6,22 +6,19 @@ import { StyledTableCell, StyledTableRow, StyledIcon, StyledIconButton, StyledOu
 import { checkHttpResponse, handleRejection } from './middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters } from './types';
 import { addAdminFormConfiguration, editAdminFormConfiguration, getAdminFormConfiguration, getAdminFormConfigurationList } from './backend';
-import { FormattedMessage, IntlProvider, IntlShape, MessageFormatElement } from 'react-intl';
+import { FormattedMessage,  useIntl } from 'react-intl';
 import { CreateDialog } from './components/CreateDialog';
 import { DeleteDialog } from './components/DeleteDialog';
 import { TagTableRow } from './components/TagTableRow';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DownloadIcon from '@mui/icons-material/Download';
 import { downloadAsJSON } from './util/helperFunctions';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { DialobAdminConfig } from './index';
-import localeData from './intl/index';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-interface DialobAdminViewProps {
+export interface DialobAdminViewProps {
 	config: DialobAdminConfig;
 	showSnackbar?: (message: string, severity: 'success' | 'error') => void;
-	intl: IntlShape;
 }
 
 const getDatePickerSx = (theme: any) => {
@@ -38,7 +35,7 @@ const getDatePickerSx = (theme: any) => {
 	}
 }
 
-export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSnackbar, intl }) => {
+export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSnackbar }) => {
 	const [formConfigurations, setFormConfigurations] = useState<FormConfiguration[]>([]);
 	const [selectedFormConfiguration, setSelectedFormConfiguration] = useState<FormConfiguration | undefined>();
 	const [dialobForms, setDialobForms] = useState<any>([]);
@@ -48,8 +45,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 	const [fetchAgain, setFetchAgain] = useState<boolean>(false);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const theme = useTheme();
-	const languageWithoutRegionCode = config.language.toLowerCase().split(/[_-]+/)[0];
-	const messages: Record<string, string> | Record<string, MessageFormatElement[]> | undefined = (localeData as any)[languageWithoutRegionCode] || (localeData as any)[config.language] || localeData.en;
+	const intl = useIntl();
 
 	const handleCreateModalClose = () => {
 		setSelectedFormConfiguration(undefined);
@@ -211,8 +207,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 	};
 
 	return (
-		<LocalizationProvider dateAdapter={AdapterDateFns}>
-			<IntlProvider locale={intl.locale || 'en'} messages={messages}>
 				<Box pt={6}>
 					{formConfigurations ? (
 						<Box sx={{ padding: "0 50px" }}>
@@ -358,7 +352,5 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 						<Spinner />
 					)}
 				</Box>
-			</IntlProvider>
-		</LocalizationProvider>
 	);
 }

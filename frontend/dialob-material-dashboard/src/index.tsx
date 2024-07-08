@@ -11,4 +11,4 @@ export interface DialobAdminConfig {
 	csrf: CsrfShape;
 }
 
-export { DialobAdminView } from './DialobAdminView';
+export { DialobAdmin } from './DialobAdmin';
