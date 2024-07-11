@@ -29,7 +29,7 @@ const ItemOptionsDialog: React.FC = () => {
   const { changeItemId } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
-  const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice');
+  const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice' || item.type === 'surveygroup');
   const [activeTab, setActiveTab] = React.useState<OptionsTabType>('label');
   const [editMode, setEditMode] = React.useState(false);
   const [id, setId] = React.useState<string>(item?.id || '');
