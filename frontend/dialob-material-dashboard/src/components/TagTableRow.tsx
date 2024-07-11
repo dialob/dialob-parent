@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { Theme, Tooltip } from '@mui/material';
-import { StyledTableCell, StyledTableRow, StyledIcon, StyledIconButton } from '../style';
+import { IconButton, SvgIcon, TableCell, TableRow, Theme, Tooltip } from '@mui/material';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormConfigurationTag } from '../types';
 import { getAdminFormConfigurationTags } from '../backend';
@@ -12,6 +11,7 @@ import { dateOptions } from '../util/constants';
 import { downloadAsJSON, extractDate } from '../util/helperFunctions';
 import DownloadIcon from '@mui/icons-material/Download';
 import { DialobAdminConfig } from '..';
+import { format } from 'date-fns';
 
 interface TagTableRowProps {
 	filters: FormConfigurationFilters;
@@ -108,61 +108,61 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 	return (
 		<>
 			{filteredRow && (
-				<StyledTableRow key={formConfiguration.id}>
-					<StyledTableCell sx={{ textAlign: "center" }}>
+				<TableRow>
+					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.edit" })} placement='top-end' arrow>
-							<StyledIconButton
+							<IconButton
 								onClick={function (e: any) {
 									e.preventDefault();
 									window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}`);
 								}}
 							>
-								<StyledIcon fontSize="small"><EditIcon /></StyledIcon>
-							</StyledIconButton>
+								<SvgIcon fontSize="small"><EditIcon /></SvgIcon>
+							</IconButton>
 						</Tooltip>
-					</StyledTableCell>
-					<StyledTableCell sx={{ textAlign: "center" }}>
+					</TableCell>
+					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.copy" })} placement='top-end' arrow>
-							<StyledIconButton
+							<IconButton
 								onClick={function (e: any) {
 									e.preventDefault();
 									copyFormConfiguration(formConfiguration)
 								}}
 							>
-								<StyledIcon fontSize="small"><ContentCopyIcon /></StyledIcon>
-							</StyledIconButton>
+								<SvgIcon fontSize="small"><ContentCopyIcon /></SvgIcon>
+							</IconButton>
 						</Tooltip>
-					</StyledTableCell>
-					<StyledTableCell>{formConfiguration.metadata.label || intl.formatMessage({ id: "adminUI.dialog.emptyTitle" })}</StyledTableCell>
-					<StyledTableCell>{latestTag?.latestTagName}</StyledTableCell>
-					<StyledTableCell>{latestTag && new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(latestTag.latestTagDate))}</StyledTableCell>
-					<StyledTableCell>{new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration.metadata.lastSaved))}</StyledTableCell>
-					<StyledTableCell sx={{ textAlign: "center" }}>
+					</TableCell>
+					<TableCell>{formConfiguration.metadata.label || intl.formatMessage({ id: "adminUI.dialog.emptyTitle" })}</TableCell>
+					<TableCell>{latestTag?.latestTagName}</TableCell>
+					<TableCell>{latestTag && new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(latestTag.latestTagDate))}</TableCell>
+					<TableCell>{new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration.metadata.lastSaved))}</TableCell>
+					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>
-							<StyledIconButton
+							<IconButton
 								onClick={function (e: any) {
 									e.preventDefault();
 									deleteFormConfiguration(formConfiguration);
 								}}
 								sx={{ '&:hover': { backgroundColor: (theme: Theme) => theme.palette.error.main } }}
 							>
-								<StyledIcon fontSize="small"><CloseIcon /></StyledIcon>
-							</StyledIconButton>
+								<SvgIcon fontSize="small"><CloseIcon /></SvgIcon>
+							</IconButton>
 						</Tooltip>
-					</StyledTableCell>
-					<StyledTableCell sx={{ textAlign: "center" }}>
+					</TableCell>
+					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "download" })} placement='top-end' arrow>
-							<StyledIconButton
+							<IconButton
 								onClick={function (e: any) {
 									e.preventDefault();
 									downloadFormConfiguration();
 								}}
 							>
-								<StyledIcon fontSize="small"><DownloadIcon /></StyledIcon>
-							</StyledIconButton>
+								<SvgIcon fontSize="small"><DownloadIcon /></SvgIcon>
+							</IconButton>
 						</Tooltip>
-					</StyledTableCell>
-				</StyledTableRow>
+					</TableCell>
+				</TableRow>
 			)}
 		</>
 	);

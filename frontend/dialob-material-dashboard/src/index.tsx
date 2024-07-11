@@ -1,9 +1,11 @@
+import { DialobAdmin } from './DialobAdmin'
+
 interface CsrfShape {
 	'key': string,
 	'value': string
 }
 
-export interface DialobAdminConfig {
+interface DialobAdminConfig {
 	dialobApiUrl: string;
 	setLoginRequired: () => void;
 	setTechnicalError: () => void;
@@ -11,4 +13,4 @@ export interface DialobAdminConfig {
 	csrf: CsrfShape;
 }
 
-export { DialobAdmin } from './DialobAdmin';
+export { DialobAdmin, type DialobAdminConfig }

@@ -1,7 +1,6 @@
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
-import { DialogContent, DialogTitle, Box, TextField, Divider, Typography, FormHelperText, Theme } from '@mui/material';
-import { StyledDialog, StyledModalTypography, StyledTagEditDialogButton } from '../style';
+import { DialogContent, DialogTitle, Box, TextField, Divider, Typography, FormHelperText, Button, Dialog } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { addAdminFormConfiguration, getAdminFormConfiguration } from '../backend';
@@ -91,16 +90,22 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 
 	return (
 		<Box>
-			<StyledDialog
+			<Dialog
+				sx={{    
+					padding: '0 20px 20px 20px',
+					border: 'none',
+					height: '50%',
+					top: "20%"
+				}}
 				open={createModalOpen}
 				onClose={handleCreateModalClose}
 				maxWidth={'lg'}
 			>
 				<DialogTitle sx={{ m: 0, py: 2, px: 4 }}>
 					{formConfiguration ? (
-						<StyledModalTypography><FormattedMessage id='heading.copyDialog' /></StyledModalTypography>
+						<Typography variant="h4"><FormattedMessage id='heading.copyDialog' /></Typography>
 					) : (
-						<StyledModalTypography><FormattedMessage id='heading.addDialog' /></StyledModalTypography>
+						<Typography variant="h4"><FormattedMessage id='heading.addDialog' /></Typography>
 					)}
 				</DialogTitle>
 				<Divider />
@@ -115,7 +120,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 						}}
 						validationSchema={tagFormSchema}
 					>
-						{({ isSubmitting, dirty, isValid, touched, errors, submitForm, values, setFieldValue }) => (
+						{({ isSubmitting, dirty, isValid, errors, submitForm, values, setFieldValue }) => (
 							<Form>
 								<Box sx={{ px: 3, pt: 1, pb: 2, display: "flex", flexDirection: "column" }}>
 									<Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -138,15 +143,15 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 										/>
 									</Box>
 									<Box sx={{ display: "flex", mt: 2, justifyContent: "space-between" }}>
-										<StyledTagEditDialogButton onClick={handleCreateModalClose}><FormattedMessage id={'button.cancel'} /></StyledTagEditDialogButton>
-										<StyledTagEditDialogButton onClick={submitForm} disabled={!dirty || (isSubmitting || !isValid)}><FormattedMessage id={'button.accept'} /></StyledTagEditDialogButton>
+										<Button onClick={handleCreateModalClose}><FormattedMessage id={'button.cancel'} /></Button>
+										<Button onClick={submitForm} disabled={!dirty || (isSubmitting || !isValid)}><FormattedMessage id={'button.accept'} /></Button>
 									</Box>
 								</Box>
 							</Form>
 						)}
 					</Formik>
 				</DialogContent>
-			</StyledDialog>
+			</Dialog>
 		</Box>
 	)
 }

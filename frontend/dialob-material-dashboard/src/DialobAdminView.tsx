@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
-import { Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody, Tooltip, useTheme } from '@mui/material';
+import { Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody, Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button } from '@mui/material';
 import { Spinner } from './components/Spinner';
-import { StyledTableCell, StyledTableRow, StyledIcon, StyledIconButton, StyledOutlinedInput, ActionIconButton } from './style';
 import { checkHttpResponse, handleRejection } from './middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters } from './types';
 import { addAdminFormConfiguration, editAdminFormConfiguration, getAdminFormConfiguration, getAdminFormConfigurationList } from './backend';
-import { FormattedMessage,  useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { CreateDialog } from './components/CreateDialog';
 import { DeleteDialog } from './components/DeleteDialog';
 import { TagTableRow } from './components/TagTableRow';
@@ -21,17 +20,9 @@ export interface DialobAdminViewProps {
 	showSnackbar?: (message: string, severity: 'success' | 'error') => void;
 }
 
-const getDatePickerSx = (theme: any) => {
-	return {
-		"& .MuiInputBase-root, MuiOutlinedInput-root": {
-			height: "40px",
-			'&: hover .MuiOutlinedInput-notchedOutline': {
-				borderColor: theme.palette.success.main,
-			},
-			"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-				border: `1px solid ${theme.palette.success.main}`,
-			}
-		}
+const datePickerSx = {
+	"& .MuiInputBase-root, MuiOutlinedInput-root": {
+		height: "40px"
 	}
 }
 
@@ -44,7 +35,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 	const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [fetchAgain, setFetchAgain] = useState<boolean>(false);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
-	const theme = useTheme();
 	const intl = useIntl();
 
 	const handleCreateModalClose = () => {
@@ -207,150 +197,153 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 	};
 
 	return (
-				<Box pt={6}>
-					{formConfigurations ? (
-						<Box sx={{ padding: "0 50px" }}>
-							<Box sx={{ display: "flex", justifyContent: "space-between" }}>
-								<Typography sx={{ mb: 4 }} variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
-								<Box>
-									<Tooltip title={intl.formatMessage({ id: "upload" })} placement='top-end' arrow>
-										<ActionIconButton onClick={handleUploadClick}>
-											<StyledIcon fontSize="small" >
-												<FileUploadIcon />
-											</StyledIcon>
-										</ActionIconButton>
-									</Tooltip>
-									<input
-										ref={fileInputRef}
-										type='file'
-										accept='.json'
-										hidden
-										onChange={(e) => uploadDialogForm(e)}
-									/>
-								</Box>
-							</Box>
-							<TableContainer>
-								<Table size="small" sx={{ borderCollapse: 'separate', borderSpacing: '2px 2px' }}>
-									<TableHead>
-										<TableRow>
-											<StyledTableCell width="3%" sx={{ border: 'none', textAlign: "center" }}>
-												<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.add" })} placement='top-end' arrow>
-													<StyledIconButton
-														onClick={function (e: any) {
-															e.preventDefault();
-															addFormConfiguration();
-														}}
-													>
-														<StyledIcon fontSize="medium"><AddIcon /></StyledIcon>
-													</StyledIconButton>
-												</Tooltip>
-											</StyledTableCell>
-											<StyledTableCell width="3%" sx={{ border: 'none' }}></StyledTableCell>
-											<StyledTableCell width="25%" sx={{ border: 'none' }}>
-												<FormattedMessage id={"adminUI.formConfiguration.label"} />
-											</StyledTableCell>
-											<StyledTableCell width="25%" sx={{ border: 'none' }}>
-												<FormattedMessage id={"adminUI.formConfiguration.latestTagName"} />
-											</StyledTableCell>
-											<StyledTableCell width="19%" sx={{ border: 'none' }}>
-												<FormattedMessage id={"adminUI.formConfiguration.latestTagDate"} />
-											</StyledTableCell>
-											<StyledTableCell width="19%" sx={{ border: 'none' }}>
-												<FormattedMessage id={"adminUI.formConfiguration.lastSaved"} />
-											</StyledTableCell>
-											<StyledTableCell width="3%" sx={{ border: 'none' }} />
-											<StyledTableCell width="3%" sx={{ border: 'none', textAlign: "center" }}>
-												<Tooltip title={intl.formatMessage({ id: "download.all" })} placement='top-end' arrow>
-													<StyledIconButton
-														onClick={function (e: any) {
-															e.preventDefault();
-															downloadAllFormConfigurations();
-														}}
-													>
-														<StyledIcon fontSize="small"><DownloadIcon /></StyledIcon>
-													</StyledIconButton>
-												</Tooltip>
-											</StyledTableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										<StyledTableRow>
-											<StyledTableCell />
-											<StyledTableCell />
-											<StyledTableCell>
-												<StyledOutlinedInput
-													name='label'
-													onChange={handleChangeInput}
-													value={filters.label}
-												/>
-											</StyledTableCell>
-											<StyledTableCell>
-												<StyledOutlinedInput
-													name='latestTagName'
-													onChange={handleChangeInput}
-													value={filters.latestTagName}
-												/>
-											</StyledTableCell>
-											<StyledTableCell>
-												<DatePicker
-													value={filters.latestTagDate}
-													onChange={(date: Date | null) => handleDateChange('latestTagDate', date)}
-													sx={getDatePickerSx(theme)}
-													slotProps={{
-														field: {
-															clearable: true,
-															onClear: () => handleDateClear("latestTagDate")
-														}
-													}}
-												/>
-											</StyledTableCell>
-											<StyledTableCell>
-												<DatePicker
-													value={filters.lastSaved}
-													onChange={(date: Date | null) => handleDateChange('lastSaved', date)}
-													sx={getDatePickerSx(theme)}
-													slotProps={{
-														field: {
-															clearable: true,
-															onClear: () => handleDateClear("lastSaved")
-														}
-													}}
-												/>
-											</StyledTableCell>
-											<StyledTableCell />
-											<StyledTableCell />
-										</StyledTableRow>
-										{formConfigurations.map((formConfiguration: FormConfiguration) =>
-											<TagTableRow
-												filters={filters}
-												formConfiguration={formConfiguration}
-												deleteFormConfiguration={deleteFormConfiguration}
-												copyFormConfiguration={copyFormConfiguration}
-												dialobForm={dialobForms.find((dialobForm: any) => dialobForm.name === formConfiguration.id)}
-												config={config}
-											/>
-										)}
-									</TableBody>
-								</Table>
-							</TableContainer>
-							<CreateDialog
-								createModalOpen={createModalOpen}
-								handleCreateModalClose={handleCreateModalClose}
-								setFetchAgain={setFetchAgain}
-								formConfiguration={selectedFormConfiguration}
-								config={config}
-							/>
-							<DeleteDialog
-								deleteModalOpen={deleteModalOpen}
-								handleDeleteModalClose={handleDeleteModalClose}
-								setFetchAgain={setFetchAgain}
-								formConfiguration={selectedFormConfiguration}
-								config={config}
+		<Box pt={6}>
+			{formConfigurations ? (
+				<Box sx={{ padding: "0 50px" }}>
+					<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+						<Typography sx={{ mb: 4 }} variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
+						<Box>
+							<Tooltip title={intl.formatMessage({ id: "upload" })} placement='top-end' arrow>
+								<Button onClick={handleUploadClick} sx={{ width: '50px', height: '50px' }}>
+									<SvgIcon fontSize="small" >
+										<FileUploadIcon />
+									</SvgIcon>
+								</Button>
+							</Tooltip>
+							<input
+								ref={fileInputRef}
+								type='file'
+								accept='.json'
+								hidden
+								onChange={(e) => uploadDialogForm(e)}
 							/>
 						</Box>
-					) : (
-						<Spinner />
-					)}
+					</Box>
+					<TableContainer>
+						<Table size="small">
+							<TableHead>
+								<TableRow>
+									<TableCell width="3%" sx={{ textAlign: "center" }}>
+										<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.add" })} placement='top-end' arrow>
+											<IconButton
+												onClick={function (e: any) {
+													e.preventDefault();
+													addFormConfiguration();
+												}}
+											>
+												<SvgIcon fontSize="medium"><AddIcon /></SvgIcon>
+											</IconButton>
+										</Tooltip>
+									</TableCell>
+									<TableCell width="3%"></TableCell>
+									<TableCell width="25%">
+										<FormattedMessage id={"adminUI.formConfiguration.label"} />
+									</TableCell>
+									<TableCell width="25%">
+										<FormattedMessage id={"adminUI.formConfiguration.latestTagName"} />
+									</TableCell>
+									<TableCell width="19%">
+										<FormattedMessage id={"adminUI.formConfiguration.latestTagDate"} />
+									</TableCell>
+									<TableCell width="19%">
+										<FormattedMessage id={"adminUI.formConfiguration.lastSaved"} />
+									</TableCell>
+									<TableCell width="3%" />
+									<TableCell width="3%" sx={{ textAlign: "center" }}>
+										<Tooltip title={intl.formatMessage({ id: "download.all" })} placement='top-end' arrow>
+											<IconButton
+												onClick={function (e: any) {
+													e.preventDefault();
+													downloadAllFormConfigurations();
+												}}
+											>
+												<SvgIcon fontSize="small"><DownloadIcon /></SvgIcon>
+											</IconButton>
+										</Tooltip>
+									</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								<TableRow>
+									<TableCell />
+									<TableCell />
+									<TableCell>
+										<OutlinedInput
+											sx={{ height: '40px' }}
+											name='label'
+											onChange={handleChangeInput}
+											value={filters.label}
+										/>
+									</TableCell>
+									<TableCell>
+										<OutlinedInput
+											sx={{ height: '40px' }}
+											name='latestTagName'
+											onChange={handleChangeInput}
+											value={filters.latestTagName}
+										/>
+									</TableCell>
+									<TableCell>
+										<DatePicker
+											value={filters.latestTagDate}
+											onChange={(date: Date | null) => handleDateChange('latestTagDate', date)}
+											sx={datePickerSx}
+											slotProps={{
+												field: {
+													clearable: true,
+													onClear: () => handleDateClear("latestTagDate")
+												}
+											}}
+										/>
+									</TableCell>
+									<TableCell>
+										<DatePicker
+											value={filters.lastSaved}
+											onChange={(date: Date | null) => handleDateChange('lastSaved', date)}
+											sx={datePickerSx}
+											slotProps={{
+												field: {
+													clearable: true,
+													onClear: () => handleDateClear("lastSaved")
+												}
+											}}
+										/>
+									</TableCell>
+									<TableCell />
+									<TableCell />
+								</TableRow>
+								{formConfigurations.map((formConfiguration: FormConfiguration, index: number) =>
+									<TagTableRow
+										key={index}
+										filters={filters}
+										formConfiguration={formConfiguration}
+										deleteFormConfiguration={deleteFormConfiguration}
+										copyFormConfiguration={copyFormConfiguration}
+										dialobForm={dialobForms.find((dialobForm: any) => dialobForm.name === formConfiguration.id)}
+										config={config}
+									/>
+								)}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					<CreateDialog
+						createModalOpen={createModalOpen}
+						handleCreateModalClose={handleCreateModalClose}
+						setFetchAgain={setFetchAgain}
+						formConfiguration={selectedFormConfiguration}
+						config={config}
+					/>
+					<DeleteDialog
+						deleteModalOpen={deleteModalOpen}
+						handleDeleteModalClose={handleDeleteModalClose}
+						setFetchAgain={setFetchAgain}
+						formConfiguration={selectedFormConfiguration}
+						config={config}
+					/>
 				</Box>
+			) : (
+				<Spinner />
+			)}
+		</Box>
 	);
 }
