@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
 import { Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody, Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button } from '@mui/material';
 import { Spinner } from './components/Spinner';
@@ -9,21 +9,15 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { CreateDialog } from './components/CreateDialog';
 import { DeleteDialog } from './components/DeleteDialog';
 import { TagTableRow } from './components/TagTableRow';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DownloadIcon from '@mui/icons-material/Download';
 import { downloadAsJSON } from './util/helperFunctions';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { DialobAdminConfig } from './index';
+import CustomDatePicker from './components/CustomDatePicker';
 
 export interface DialobAdminViewProps {
 	config: DialobAdminConfig;
 	showSnackbar?: (message: string, severity: 'success' | 'error') => void;
-}
-
-const datePickerSx = {
-	"& .MuiInputBase-root, MuiOutlinedInput-root": {
-		height: "40px"
-	}
 }
 
 export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSnackbar }) => {
@@ -75,26 +69,26 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 		setDeleteModalOpen(true);
 	}
 
-	const handleChangeInput = useCallback((e: any) => {
+	const handleChangeInput = (e: any) => {
 		setFilters(prevFilters => ({
 			...prevFilters,
 			[e.target.name]: e.target.value
 		}));
-	}, [])
+	}
 
-	const handleDateChange = useCallback((name: string, date: Date | null) => {
+	const handleDateChange = (name: string, date: Date | null) => {
 		setFilters(prevFilters => ({
 			...prevFilters,
-			[name]: date instanceof Date ? date.toISOString() : date
+			[name]: date
 		}));
-	}, []);
+	};
 
-	const handleDateClear = useCallback((name: string) => {
+	const handleDateClear = (name: string) => {
 		setFilters(prevFilters => ({
 			...prevFilters,
 			[name]: null
 		}));
-	}, []);
+	};
 
 	useEffect(() => {
 		let isCancelled = false;
@@ -284,29 +278,17 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 										/>
 									</TableCell>
 									<TableCell>
-										<DatePicker
+										<CustomDatePicker
 											value={filters.latestTagDate}
-											onChange={(date: Date | null) => handleDateChange('latestTagDate', date)}
-											sx={datePickerSx}
-											slotProps={{
-												field: {
-													clearable: true,
-													onClear: () => handleDateClear("latestTagDate")
-												}
-											}}
+											onChange={(date) => handleDateChange('latestTagDate', date)}
+											handleDateClear={() => handleDateClear('latestTagDate')}
 										/>
 									</TableCell>
 									<TableCell>
-										<DatePicker
+										<CustomDatePicker
 											value={filters.lastSaved}
-											onChange={(date: Date | null) => handleDateChange('lastSaved', date)}
-											sx={datePickerSx}
-											slotProps={{
-												field: {
-													clearable: true,
-													onClear: () => handleDateClear("lastSaved")
-												}
-											}}
+											onChange={(date) => handleDateChange('lastSaved', date)}
+											handleDateClear={() => handleDateClear('lastSaved')}
 										/>
 									</TableCell>
 									<TableCell />

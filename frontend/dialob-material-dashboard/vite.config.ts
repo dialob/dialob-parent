@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import commonjs from '@rollup/plugin-commonjs';
 
 export default defineConfig(({ command, mode }) => {
 	if (command === 'serve') {
 		return {
-			plugins: [react(), commonjs()],
+			plugins: [react()],
 			root: path.resolve(__dirname, 'dev'),
 			build: {
 				outDir: path.resolve(__dirname, 'dist'),
@@ -14,7 +13,7 @@ export default defineConfig(({ command, mode }) => {
 		};
 	} else {
 		return {
-			plugins: [react(), commonjs()],
+			plugins: [react()],
 			build: {
 				lib: {
 					entry: path.resolve(__dirname, 'src/index.tsx'),
