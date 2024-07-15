@@ -24,11 +24,16 @@
   "module": "dist/index.es.js",
   "types": "dist/types/index.d.ts",
   "peerDependencies": {
-    "react": "^18.*",
-    "react-dom": "^18.*",
-    "react-intl": "^5.*",
-    "@types/react": "^18.*",
-    "@types/react-dom": "^18.*"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^5.20.10",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.9",
+    "date-fns": "^2.30.0",
+    "@mui/material": "^5.1.0",
+    "@mui/icons-material": "^5.1.0",
+    "@mui/x-date-pickers": "^6.5.0",
+    "@mui/system": "^5.11.0"
   },
   "devDependencies": {
     "@emotion/react": "^11.10.5",
@@ -43,7 +48,7 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.9",
     "@vitejs/plugin-react": "^4.3.1",
-    "date-fns": "~2.x",
+    "date-fns": "^2.30.0",
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "react": "^18.2.0",
