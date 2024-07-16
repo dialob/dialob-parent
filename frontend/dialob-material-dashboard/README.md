@@ -2,12 +2,7 @@
 This package provides a Dialob Admin UI View which enables users to easily interact with the Dialob forms.
 
 ## Install
-Installation depends on package manager you are using.
 
-```sh
-yarn add @dialob/dashboard-material 
-```
-or
 ```sh
 pnpm add @dialob/dashboard-material 
 ```
@@ -21,7 +16,7 @@ import { DialobAdmin, DialobAdminConfig } from "@dialob/dashboard-material";
 const config: DialobAdminConfig = {
 	csrf : {
 		key : 'X-CSRF-TOKEN',													 
-		value : '6cf7b545-6d09-4a95-b8ad-85afad13af7c'
+		value : '<csrf token value>'
 	},
 	dialobApiUrl: 'http://localhost:8085/dialob',
 	setLoginRequired: cfg.setLoginRequired,
@@ -60,15 +55,15 @@ interface CsrfShape {
 
 interface DialobAdminConfig {
 	dialobApiUrl: string; // base url for Dialob Api
-	setLoginRequired: () => void; // used by POP, but can be set as a function that does nothing if not needed
-	setTechnicalError: () => void; // used by POP, but can be set as a function that does nothing if not needed
-	language: string; // Current locale used in your application
+	setLoginRequired: () => void; // function used for requesting possible authentication
+	setTechnicalError: () => void; // function used for reporting technical errors
+	language: string; // Current locale used by your application in ISO language code format ("en","sv","fi" and similar)
 	csrf: CsrfShape; // Adjust according to your application csrf settings
 }
 
 interface DialobAdminViewProps {
 	config: DialobAdminConfig;
-	showSnackbar?: (message: string, severity: 'success' | 'error') => void;
+	showNotification?: (message: string, severity: 'success' | 'error') => void;
 }
 ```
 
@@ -76,8 +71,8 @@ interface DialobAdminViewProps {
 If you want your Dialob Admin view to look good in your application you have to use a ThemeProvier and set styles inside the theme 
 for these components: Table, TableRow, TableCell, OutlinedInput, SvgIcon, IconButton, Button
 
-DialobAdmin component can also take the showSnackbar hook as property, which needs to be defined in a SnackbarContext,
-in order to view snackbars after a successful or unsuccessful RESTful APIs calls
+Dialob Admin component can also take the showNotification callback function,
+This function is used for viewing snackbars after a successful or unsuccessful RESTful APIs calls.
 
 ```jsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
@@ -86,7 +81,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useTheme, Theme } from '@mui/material/styles';
 
 interface SnackbarContextType {
-  showSnackbar: (message: string, severity: 'success' | 'error') => void;
+  showNotification: (message: string, severity: 'success' | 'error') => void;
 }
 
 const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
@@ -113,7 +108,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) 
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const theme = useTheme<Theme>();
 
-  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+  const showNotification = (message: string, severity: 'success' | 'error') => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
@@ -124,7 +119,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) 
   };
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
+    <SnackbarContext.Provider value={{ showNotification }}>
       {children}
       <Snackbar
         open={snackbarOpen}

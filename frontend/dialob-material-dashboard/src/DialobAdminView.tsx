@@ -17,10 +17,10 @@ import CustomDatePicker from './components/CustomDatePicker';
 
 export interface DialobAdminViewProps {
 	config: DialobAdminConfig;
-	showSnackbar?: (message: string, severity: 'success' | 'error') => void;
+	showNotification?: (message: string, severity: 'success' | 'error') => void;
 }
 
-export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSnackbar }) => {
+export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNotification }) => {
 	const [formConfigurations, setFormConfigurations] = useState<FormConfiguration[]>([]);
 	const [selectedFormConfiguration, setSelectedFormConfiguration] = useState<FormConfiguration | undefined>();
 	const [dialobForms, setDialobForms] = useState<any>([]);
@@ -149,32 +149,32 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showSn
 							const response = await uploadPromise;
 							await checkHttpResponse(response, config.setLoginRequired);
 							await response.json();
-							if (showSnackbar) {
-								showSnackbar(`Uploaded ${formNamesList.includes(json.name) ? 'an existing' : 'a new'} form successfully.`, 'success');
+							if (showNotification) {
+								showNotification(`Uploaded ${formNamesList.includes(json.name) ? 'an existing' : 'a new'} form successfully.`, 'success');
 							}
 							setFetchAgain((prevState) => !prevState);
 						} catch (ex: any) {
-							if (showSnackbar) {
-								showSnackbar(`Error while uploading ${formNamesList.includes(json.name) ? 'an existing' : 'a new'} form: ${ex}`, 'error');
+							if (showNotification) {
+								showNotification(`Error while uploading ${formNamesList.includes(json.name) ? 'an existing' : 'a new'} form: ${ex}`, 'error');
 							}
 							handleRejection(ex, config.setTechnicalError);
 						}
 					} else {
-						if (showSnackbar) {
-							showSnackbar(`JSON needs to contain an object, not an array.`, 'error');
+						if (showNotification) {
+							showNotification(`JSON needs to contain an object, not an array.`, 'error');
 						}
 					}
 				} catch (error: any) {
-					if (showSnackbar) {
-						showSnackbar(`Error parsing JSON: ${error.message}`, 'error');
+					if (showNotification) {
+						showNotification(`Error parsing JSON: ${error.message}`, 'error');
 					}
 				}
 			}
 		};
 
 		const handleFileError = () => {
-			if (showSnackbar) {
-				showSnackbar(`Error reading file.`, 'error');
+			if (showNotification) {
+				showNotification(`Error reading file.`, 'error');
 			}
 		};
 
