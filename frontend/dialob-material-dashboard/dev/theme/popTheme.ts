@@ -126,6 +126,14 @@ export const popTheme = createTheme({
 			}
 		},
 		MuiIconButton: {
+			variants: [
+				{
+					props: { color: 'error' },
+					style: {
+						'&:hover': { backgroundColor: palette.error.main }
+					}
+				}
+			],
 			styleOverrides: {
 				root: {
 					borderRadius: '5px',
@@ -160,6 +168,15 @@ export const popTheme = createTheme({
 			}
 		},
 		MuiButton: {
+			variants: [
+				{
+					props: { color: 'error' },
+					style: {
+						color: palette.common.white,
+						backgroundColor: palette.error.main,
+					}
+				}
+			],
 			styleOverrides: {
 				root: {
 					fontSize: "16px",
@@ -170,7 +187,7 @@ export const popTheme = createTheme({
 					'&:hover': {
 						backgroundColor: palette.success.dark,
 						color: palette.common.white,
-					},
+					}
 				}
 			}
 		},

@@ -60,7 +60,7 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
 				<DialogActions sx={{ display: "flex", justifyContent: "space-between", padding: "12px" }}>
 					<Button onClick={handleDeleteModalClose}><FormattedMessage id={'button.cancel'} /></Button>
 					<Button
-						sx={{ backgroundColor: (theme: Theme) => theme.palette.error.main, color: (theme: Theme) => theme.palette.common.white }}
+						color='error'
 						onClick={() => deleteDialog()}
 					>
 						<FormattedMessage id={'button.accept'} />

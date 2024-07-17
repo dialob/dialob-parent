@@ -144,7 +144,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 									e.preventDefault();
 									deleteFormConfiguration(formConfiguration);
 								}}
-								sx={{ '&:hover': { backgroundColor: (theme: Theme) => theme.palette.error.main } }}
+								color='error'
 							>
 								<SvgIcon fontSize="small"><CloseIcon /></SvgIcon>
 							</IconButton>
