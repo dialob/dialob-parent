@@ -1,6 +1,6 @@
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 
-const messages: {[key: string]: any}  = {
+const messages: { [key: string]: any } = {
 	"en": {
 		"error.valueRequired": "Enter value",
 		"error.invalidFormName": "Invalid form name",
@@ -31,62 +31,60 @@ const messages: {[key: string]: any}  = {
 		"adminUI.table.tooltip.delete": "Delete"
 	},
 	"fi": {
-		"error.valueRequired": "Enter value",
-		"error.invalidFormName": "Invalid form name",
+		"error.valueRequired": "Anna arvo",
+		"error.invalidFormName": "Virheellinen lomakkeen nimi",
 
-		"download.all": "Download all",
-		"download": "Download",
-		"upload": "Upload",
+		"download.all": "Lataa kaikki",
+		"download": "Lataa",
+		"upload": "Ladata ylös",
 
-		"heading.copyDialog": "Create copy",
-		"heading.addDialog": "Create new form",
-		"heading.deleteDialog": "Confirm",
+		"heading.copyDialog": "Luo kopio",
+		"heading.addDialog": "Luo uusi lomake",
+		"heading.deleteDialog": "Vahvista",
 
-		"button.accept": "Accept",
-		"button.cancel": "Cancel",
+		"button.accept": "Hyväksy",
+		"button.cancel": "Takaisin",
 
-		'adminUI.formConfiguration.label': "Title",
-		'adminUI.formConfiguration.lastSaved': "Modified",
-		'adminUI.formConfiguration.latestTagDate': "Latest tag",
-		'adminUI.formConfiguration.latestTagName': "Latest tag name",
-		'adminUI.dialog.formName': "Form name",
-		'adminUI.dialog.formLabel': "Form title",
-		'adminUI.dialog.emptyTitle': "(Untitled)",
-		'adminUI.dialog.heading': "Dialogs",
-		"adminUI.dialog.deleteQuestion": "Do you want to delete the dialog",
-		"adminUI.table.tooltip.add": "Add new dialog",
-		"adminUI.table.tooltip.edit": "Edit in Composer",
-		"adminUI.table.tooltip.copy": "Copy dialog",
-		"adminUI.table.tooltip.delete": "Delete"
+		'adminUI.formConfiguration.label': "Otsikko",
+		'adminUI.formConfiguration.created': "Luotu",
+		'adminUI.formConfiguration.lastSaved': "Muokattu",
+		'adminUI.dialog.formName': "Lomakkeen nimi",
+		'adminUI.dialog.formLabel': "Lomakkeen otsikko",
+		'adminUI.dialog.emptyTitle': "(Nimetön)",
+		'adminUI.dialog.heading': "Lomakkeet",
+		"adminUI.dialog.deleteQuestion": "Haluatko poistaa lomakkeen",
+		"adminUI.table.tooltip.add": "Lisää uusi lomake",
+		"adminUI.table.tooltip.edit": "Muokkaa Composerissa",
+		"adminUI.table.tooltip.copy": "Kopioi lomake",
+		"adminUI.table.tooltip.delete": "Poista",
 	},
 	"sv": {
-		"error.valueRequired": "Enter value",
-		"error.invalidFormName": "Invalid form name",
+		"error.valueRequired": "Ange värde",
+		"error.invalidFormName": "Ogiltigt formulärnamn",
 
-		"download.all": "Download all",
-		"download": "Download",
-		"upload": "Upload",
+		"download.all": "Ladda ner alla",
+		"download": "Ladda ner",
+		"upload": "Ladda upp",
 
-		"heading.copyDialog": "Create copy",
-		"heading.addDialog": "Create new form",
-		"heading.deleteDialog": "Confirm",
+		"heading.copyDialog": "Skapa kopia",
+		"heading.addDialog": "Skapa nytt formulär",
+		"heading.deleteDialog": "Bekräfta",
 
-		"button.accept": "Accept",
-		"button.cancel": "Cancel",
+		"button.accept": "Acceptera",
+		"button.cancel": "Avbryt",
 
-		'adminUI.formConfiguration.label': "Title",
-		'adminUI.formConfiguration.lastSaved': "Modified",
-		'adminUI.formConfiguration.latestTagDate': "Latest tag",
-		'adminUI.formConfiguration.latestTagName': "Latest tag name",
-		'adminUI.dialog.formName': "Form name",
-		'adminUI.dialog.formLabel': "Form title",
-		'adminUI.dialog.emptyTitle': "(Untitled)",
-		'adminUI.dialog.heading': "Dialogs",
-		"adminUI.dialog.deleteQuestion": "Do you want to delete the dialog",
-		"adminUI.table.tooltip.add": "Add new dialog",
-		"adminUI.table.tooltip.edit": "Edit in Composer",
-		"adminUI.table.tooltip.copy": "Copy dialog",
-		"adminUI.table.tooltip.delete": "Delete"
+		'adminUI.formConfiguration.label': "Titel",
+		'adminUI.formConfiguration.created': "Skapad",
+		'adminUI.formConfiguration.lastSaved': "Ändrad",
+		'adminUI.dialog.formName': "Formulärnamn",
+		'adminUI.dialog.formLabel': "Formulärtitel",
+		'adminUI.dialog.emptyTitle': "(Otitulerad)",
+		'adminUI.dialog.heading': "Dialoger",
+		'adminUI.dialog.deleteQuestion': "Vill du radera dialogen",
+		'adminUI.table.tooltip.add': "Lägg till ny dialog",
+		'adminUI.table.tooltip.edit': "Redigera i Composer",
+		'adminUI.table.tooltip.copy': "Kopiera dialog",
+		'adminUI.table.tooltip.delete': "Radera"
 	}
 };
 
