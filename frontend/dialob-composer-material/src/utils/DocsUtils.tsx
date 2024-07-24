@@ -5,7 +5,7 @@ export type DocsType = OptionsTabType | 'options' | 'lists' | 'translations' | '
 
 export const useDocs = (type: DocsType): string => {
   const { config } = useBackend();
-  let docsBaseUrl = config.documentationUrl;
+  const docsBaseUrl = config.documentationUrl;
 
   if (docsBaseUrl && !docsBaseUrl.includes('dialob-parent/wiki')) {
     return docsBaseUrl;

@@ -27,6 +27,7 @@ const LanguageEditor: React.FC = () => {
   const [search, setSearch] = React.useState<string>('');
   const currentLanguages = form.metadata.languages || [];
   const allLanguages = [...Object.entries({...MOST_USED_LANGUAGES, ...ISO_LANGUAGES})];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const newLanguages = allLanguages.filter(([code, _language]) => !currentLanguages.includes(code));
 
   const handleAddLanguage = (code: string) => {
