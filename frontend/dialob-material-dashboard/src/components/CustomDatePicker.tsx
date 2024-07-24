@@ -19,8 +19,8 @@ const datePickerSx = {
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, handleDateClear }) => {
 	return (
 		<DatePicker
-			value={value}
 			onChange={onChange}
+			value={value}
 			slots={{
 				textField: (params) => (
 					<TextField
@@ -30,9 +30,8 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, ha
 							...params.InputProps,
 							endAdornment: (
 								<InputAdornment position="end">
-									{!value ? (
-										params.InputProps?.endAdornment
-									) : (
+									{params.InputProps?.endAdornment}
+									{value && (
 										<IconButton onClick={handleDateClear}>
 											<ClearIcon />
 										</IconButton>
