@@ -8,6 +8,7 @@ export interface FormConfigurationFilters {
 	latestTagDate: Date | undefined;
 	lastSaved: Date | undefined;
 	latestTagName: string | undefined;
+	labels: string | undefined;
 }
 
 export interface FormConfigurationTag {
@@ -68,5 +69,6 @@ export const DEFAULT_CONFIGURATION_FILTERS: FormConfigurationFilters = {
 	label: undefined,
 	latestTagDate: undefined,
 	lastSaved: undefined,
-	latestTagName: undefined
+	latestTagName: undefined,
+	labels: undefined
 }

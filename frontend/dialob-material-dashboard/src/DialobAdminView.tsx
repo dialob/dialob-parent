@@ -230,17 +230,20 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 										</Tooltip>
 									</TableCell>
 									<TableCell width="3%"></TableCell>
-									<TableCell width="25%">
+									<TableCell width="20%">
 										<FormattedMessage id={"adminUI.formConfiguration.label"} />
 									</TableCell>
-									<TableCell width="25%">
+									<TableCell width="20%">
 										<FormattedMessage id={"adminUI.formConfiguration.latestTagName"} />
 									</TableCell>
-									<TableCell width="19%">
+									<TableCell width="15%">
 										<FormattedMessage id={"adminUI.formConfiguration.latestTagDate"} />
 									</TableCell>
-									<TableCell width="19%">
+									<TableCell width="15%">
 										<FormattedMessage id={"adminUI.formConfiguration.lastSaved"} />
+									</TableCell>
+									<TableCell width="18%">
+										<FormattedMessage id={"adminUI.formConfiguration.labels"} />
 									</TableCell>
 									<TableCell width="3%" />
 									<TableCell width="3%" sx={{ textAlign: "center" }}>
@@ -289,6 +292,14 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 											value={filters.lastSaved}
 											onChange={(date) => handleDateChange('lastSaved', date)}
 											handleDateClear={() => handleDateClear('lastSaved')}
+										/>
+									</TableCell>
+									<TableCell>
+										<OutlinedInput
+											sx={{ height: '40px' }}
+											name='labels'
+											onChange={handleChangeInput}
+											value={filters.labels}
 										/>
 									</TableCell>
 									<TableCell />

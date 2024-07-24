@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, SvgIcon, TableCell, TableRow, Theme, Tooltip } from '@mui/material';
+import { Box, Chip, IconButton, SvgIcon, TableCell, TableRow, Theme, Tooltip } from '@mui/material';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormConfigurationTag } from '../types';
 import { getAdminFormConfigurationTags } from '../backend';
@@ -32,6 +32,19 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 }) => {
 	const [tags, setTags] = useState<FormConfigurationTag[]>([]);
 	const intl = useIntl();
+
+	const LabelChips = ({ labels }: { labels: any }) => {
+		if (labels && labels.length > 0)
+			return (
+				<Box display="flex" flexWrap="wrap" gap={1}>
+					{labels.map((label: any, index: number) => (
+						<Chip key={index} label={label} />
+					))}
+				</Box>
+			);
+		else
+			return undefined;
+	};
 
 	useEffect(() => {
 		getAdminFormConfigurationTags(config, formConfiguration.id)
@@ -67,7 +80,8 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 			lastSaved: formConfiguration.metadata.lastSaved,
 			label: formConfiguration.metadata.label || "",
 			latestTagName: latestTag?.latestTagName || "",
-			latestTagDate: latestTag?.latestTagDate
+			latestTagDate: latestTag?.latestTagDate,
+			labels: ""
 		};
 
 		if (filters.label && !result.label?.toLowerCase().includes(filters.label.toLowerCase())) {
@@ -94,6 +108,20 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 			const filterDate = extractDate(filters.lastSaved);
 			const savedDate = extractDate(formConfiguration.metadata.lastSaved);
 			if (filterDate && savedDate && filterDate.getTime() !== savedDate.getTime()) {
+				return undefined;
+			}
+		}
+
+		if (filters.labels) {
+			let exists = false;
+			if (dialobForm?.metadata.labels) {
+				dialobForm.metadata.labels.forEach((label: any) => {
+					if (label.toLowerCase().includes(filters.labels!.toLowerCase())) {
+						exists = true;
+					}
+				})
+			}
+			if (!exists) {
 				return undefined;
 			}
 		}
@@ -137,6 +165,11 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 					<TableCell>{latestTag?.latestTagName}</TableCell>
 					<TableCell>{latestTag && new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(latestTag.latestTagDate))}</TableCell>
 					<TableCell>{new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration.metadata.lastSaved))}</TableCell>
+					<TableCell>
+						{dialobForm?.metadata.labels && (
+							<LabelChips labels={dialobForm.metadata.labels} />
+						)}
+					</TableCell>
 					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>
 							<IconButton
