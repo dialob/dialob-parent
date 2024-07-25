@@ -1,25 +1,25 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Chip, IconButton, SvgIcon, TableCell, TableRow, Theme, Tooltip } from '@mui/material';
+import { IconButton, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
-import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormConfigurationTag } from '../types';
-import { getAdminFormConfigurationTags } from '../backend';
+import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormConfigurationTag, LabelAction } from '../types';
+import { editAdminFormConfiguration, getAdminFormConfigurationTags } from '../backend';
 import { useIntl } from 'react-intl';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { dateOptions } from '../util/constants';
 import { downloadAsJSON, extractDate } from '../util/helperFunctions';
 import DownloadIcon from '@mui/icons-material/Download';
 import { DialobAdminConfig } from '..';
-import { format } from 'date-fns';
+import { LabelChips } from './LabelChips';
 
 interface TagTableRowProps {
 	filters: FormConfigurationFilters;
 	formConfiguration: FormConfiguration;
 	deleteFormConfiguration: (formConfiguration: FormConfiguration) => void;
 	copyFormConfiguration: (formConfiguration: FormConfiguration) => void;
-	dialobForm: any;
 	config: DialobAdminConfig;
+	getDialobForm: (formName: string) => Promise<any>;
 }
 
 export const TagTableRow: React.FC<TagTableRowProps> = ({
@@ -27,24 +27,26 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 	formConfiguration,
 	copyFormConfiguration,
 	deleteFormConfiguration,
-	dialobForm,
-	config
+	config,
+	getDialobForm
 }) => {
 	const [tags, setTags] = useState<FormConfigurationTag[]>([]);
+	const [dialobForm, setDialobForm] = useState<any>(undefined);
+	const [fetchAgain, setFetchAgain] = useState<boolean>(false);
 	const intl = useIntl();
 
-	const LabelChips = ({ labels }: { labels: any }) => {
-		if (labels && labels.length > 0)
-			return (
-				<Box display="flex" flexWrap="wrap" gap={1}>
-					{labels.map((label: any, index: number) => (
-						<Chip key={index} label={label} />
-					))}
-				</Box>
-			);
-		else
-			return undefined;
-	};
+	useEffect(() => {
+		const fetchForm = async () => {
+			try {
+				const form = await getDialobForm(formConfiguration.id);
+				setDialobForm(form);
+			} catch (error) {
+				console.error("Error fetching the form:", error);
+			}
+		};
+
+		fetchForm();
+	}, [formConfiguration.id, fetchAgain]);
 
 	useEffect(() => {
 		getAdminFormConfigurationTags(config, formConfiguration.id)
@@ -127,15 +129,42 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 		}
 
 		return result;
-	}, [filters, formConfiguration.metadata.label, formConfiguration.metadata.lastSaved, latestTag]);
+	}, [filters, formConfiguration.metadata.label, formConfiguration.metadata.lastSaved, latestTag, dialobForm]);
 
 	const downloadFormConfiguration = () => {
 		downloadAsJSON(dialobForm);
 	}
 
+	const updateLabels = async (label: any, action: LabelAction) => {
+		try {
+			const updatedLabels =
+				action === LabelAction.DELETE
+					? dialobForm.metadata.labels.filter((l: any) => l !== label)
+					: [...(dialobForm.metadata.labels || []), label];
+
+			const json = {
+				...dialobForm,
+				metadata: {
+					...dialobForm.metadata,
+					labels: updatedLabels,
+				},
+			};
+
+			delete json._id;
+			delete json._rev;
+
+			const response = await editAdminFormConfiguration(json, config);
+			await checkHttpResponse(response, config.setLoginRequired);
+			await response.json();
+			setFetchAgain((prevState) => !prevState);
+		} catch (ex: any) {
+			handleRejection(ex, config.setTechnicalError);
+		}
+	};
+
 	return (
 		<>
-			{filteredRow && (
+			{filteredRow && dialobForm && (
 				<TableRow>
 					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.edit" })} placement='top-end' arrow>
@@ -166,9 +195,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 					<TableCell>{latestTag && new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(latestTag.latestTagDate))}</TableCell>
 					<TableCell>{new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration.metadata.lastSaved))}</TableCell>
 					<TableCell>
-						{dialobForm?.metadata.labels && (
-							<LabelChips labels={dialobForm.metadata.labels} />
-						)}
+						<LabelChips labels={dialobForm?.metadata.labels} onUpdate={updateLabels} />
 					</TableCell>
 					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>

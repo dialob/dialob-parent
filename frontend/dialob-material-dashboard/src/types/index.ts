@@ -72,3 +72,8 @@ export const DEFAULT_CONFIGURATION_FILTERS: FormConfigurationFilters = {
 	latestTagName: undefined,
 	labels: undefined
 }
+
+export enum LabelAction {
+	ADD = 'ADD',
+	DELETE = 'DELETE',
+}
