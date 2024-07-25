@@ -148,7 +148,9 @@ const en = {
   'dialogs.translations.missing.none': 'No missing translations',
 
   'dialogs.form.options.title': 'Form options',
-  'dialogs.form.options.label': 'Form label',
+  'dialogs.form.options.name': 'Form name',
+  'dialogs.form.options.labels': 'Form labels',
+  'dialogs.form.options.labels.add': 'Add form label',
   'dialogs.form.options.visibility': 'Question visibility during filling',
   'dialogs.form.options.visibility.ONLY_ENABLED': 'Show only active questions',
   'dialogs.form.options.visibility.SHOW_DISABLED': 'Show inactive pages',

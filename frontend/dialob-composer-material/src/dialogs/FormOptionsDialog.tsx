@@ -1,9 +1,9 @@
 import React from "react";
 import {
   Dialog, DialogTitle, DialogContent, Button, Typography, Select, MenuItem,
-  Alert, DialogActions, Checkbox, Box, TextField, Tooltip, IconButton
+  Alert, DialogActions, Checkbox, Box, TextField, Tooltip, IconButton, Chip
 } from "@mui/material";
-import { Close, ContentCopy, Help } from "@mui/icons-material";
+import { Add, Close, ContentCopy, Help } from "@mui/icons-material";
 import { VisibilityType, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { version } from "../../package.json";
@@ -26,11 +26,47 @@ const CopyToClipboardButton: React.FC<{ text: string }> = ({ text }) => {
   );
 }
 
+const FormLabels: React.FC = () => {
+  const { form, setMetadataValue } = useComposer();
+  const formLabels = form.metadata?.labels || [];
+  const [label, setLabel] = React.useState<string>('');
+
+  const handleAdd = () => {
+    if (label && label.length > 0 && !formLabels.includes(label) ) {
+      setMetadataValue('labels', [...formLabels, label]);
+      setLabel('');
+    }
+  };
+
+  const handleDelete = (label: string) => {
+    const filteredLabels = formLabels.filter(l => l !== label);
+    setMetadataValue('labels', filteredLabels);
+  };
+
+  return (
+    <>
+      <Typography fontWeight='bold' sx={{ mt: 2 }}><FormattedMessage id='dialogs.form.options.labels' /></Typography>
+      {formLabels.length > 0 && <Box sx={{ mb: 1 }}>
+        {formLabels.map((label) => (
+          <Chip sx={{ mr: 1 }} label={label} onDelete={() => handleDelete(label)}/>
+        ))}
+      </Box>}
+      <TextField
+        value={label}
+        label={<FormattedMessage id='dialogs.form.options.labels.add' />}
+        onChange={(e) => setLabel(e.target.value)} fullWidth
+        InputProps={{
+        endAdornment: <IconButton onClick={handleAdd}><Add /></IconButton>
+      }} />
+    </>
+  )
+}
+
 const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form, setMetadataValue } = useComposer();
   const { getBuildInfo } = useBackend();
   const docsUrl = useDocs('options');
-  const [label, setLabel] = React.useState<string | undefined>();
+  const [name, setName] = React.useState<string | undefined>();
   const [visibilityMode, setVisibilityMode] = React.useState<VisibilityType | undefined>();
   const [required, setRequired] = React.useState<boolean>(false);
   const [backendVersion, setBackendVersion] = React.useState<string>('0.0.0');
@@ -47,19 +83,19 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         (form.metadata?.showDisabled ? 'SHOW_DISABLED' : 'ONLY_ENABLED');
       setVisibilityMode(visibility);
       setRequired(form.metadata?.answersRequiredByDefault || false);
-      setLabel(form.metadata?.label);
+      setName(form.metadata?.label);
     }
   }, [form.metadata, open]);
 
   React.useEffect(() => {
-    if (label && label !== form.metadata?.label) {
+    if (name && name !== form.metadata?.label) {
       const id = setTimeout(() => {
-        setMetadataValue('label', label);
+        setMetadataValue('label', name);
       }, 300);
       return () => clearTimeout(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [label, setMetadataValue]);
+  }, [name, setMetadataValue]);
 
   React.useEffect(() => {
     const visibility = form.metadata?.questionClientVisibility ||
@@ -88,8 +124,9 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
         <Box sx={{ width: '50%', p: 3 }}>
-          <Typography fontWeight='bold'><FormattedMessage id='dialogs.form.options.label' /></Typography>
-          <TextField value={label || ''} onChange={(e) => setLabel(e.target.value)} fullWidth />
+          <Typography fontWeight='bold'><FormattedMessage id='dialogs.form.options.name' /></Typography>
+          <TextField value={name || ''} onChange={(e) => setName(e.target.value)} fullWidth />
+          <FormLabels />
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.visibility' /></Typography>
           <Select value={visibilityMode || ''} onChange={(e) => setVisibilityMode(e.target.value as VisibilityType)} fullWidth>
             {visibilityModeOptions.map(option => <MenuItem key={option.value} value={option.value}>

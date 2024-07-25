@@ -93,6 +93,7 @@ export type ComposerState = {
   valueSets?: ValueSet[];
   metadata: {
     label?: string;
+    labels?: string[];
     showDisabled?: boolean;
     questionClientVisibility?: VisibilityType;
     answersRequiredByDefault?: boolean;
