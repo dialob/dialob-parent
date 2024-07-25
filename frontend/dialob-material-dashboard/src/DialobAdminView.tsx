@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
 import { Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody, Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button } from '@mui/material';
 import { Spinner } from './components/Spinner';
@@ -23,7 +23,6 @@ export interface DialobAdminViewProps {
 export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNotification }) => {
 	const [formConfigurations, setFormConfigurations] = useState<FormConfiguration[]>([]);
 	const [selectedFormConfiguration, setSelectedFormConfiguration] = useState<FormConfiguration | undefined>();
-	const [dialobForms, setDialobForms] = useState<any>([]);
 	const [filters, setFilters] = useState<FormConfigurationFilters>(DEFAULT_CONFIGURATION_FILTERS);
 	const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
 	const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -90,37 +89,36 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 		}));
 	};
 
-	useEffect(() => {
-		let isCancelled = false;
-		setDialobForms([]);
+	const getDialobForm = async (formName: string) => {
+		try {
+			const response = await getAdminFormConfiguration(formName, config);
+			await checkHttpResponse(response, config.setLoginRequired);
+			const form = await response.json();
+			return form;
+		} catch (ex) {
+			handleRejection(ex, config.setTechnicalError);
+		}
+	}
+
+	const downloadAllFormConfigurations = useCallback(() => {
 		const formNamesList = formConfigurations?.map((formConfiguration: FormConfiguration) => formConfiguration.id) || [];
 
 		const fetchForms = async () => {
-			const forms = [];
-			for (const formName of formNamesList) {
-				try {
-					const response = await getAdminFormConfiguration(formName, config);
-					await checkHttpResponse(response, config.setLoginRequired);
-					const form = await response.json();
-					forms.push(form);
-				} catch (ex) {
-					handleRejection(ex, config.setTechnicalError);
-				}
-			}
-			if (!isCancelled) {
-				setDialobForms(forms);
+			try {
+				const forms = await Promise.all(
+					formNamesList.map(async (formName) => {
+						const form = await getDialobForm(formName);
+						return form;
+					})
+				);
+				downloadAsJSON(forms);
+			} catch (error) {
+				console.error("Error fetching forms:", error);
 			}
 		};
+
 		fetchForms();
-
-		return () => {
-			isCancelled = true;
-		};
-	}, [config, config.setLoginRequired, config.setTechnicalError, formConfigurations]);
-
-	const downloadAllFormConfigurations = () => {
-		downloadAsJSON(dialobForms);
-	}
+	}, [formConfigurations]);
 
 	const handleUploadClick = () => {
 		if (fileInputRef.current) {
@@ -230,17 +228,20 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 										</Tooltip>
 									</TableCell>
 									<TableCell width="3%"></TableCell>
-									<TableCell width="25%">
+									<TableCell width="20%">
 										<FormattedMessage id={"adminUI.formConfiguration.label"} />
 									</TableCell>
-									<TableCell width="25%">
+									<TableCell width="20%">
 										<FormattedMessage id={"adminUI.formConfiguration.latestTagName"} />
 									</TableCell>
-									<TableCell width="19%">
+									<TableCell width="15%" sx={{ minWidth: "220px" }}>
 										<FormattedMessage id={"adminUI.formConfiguration.latestTagDate"} />
 									</TableCell>
-									<TableCell width="19%">
+									<TableCell width="15%" sx={{ minWidth: "220px" }}>
 										<FormattedMessage id={"adminUI.formConfiguration.lastSaved"} />
+									</TableCell>
+									<TableCell width="18%">
+										<FormattedMessage id={"adminUI.formConfiguration.labels"} />
 									</TableCell>
 									<TableCell width="3%" />
 									<TableCell width="3%" sx={{ textAlign: "center" }}>
@@ -291,6 +292,14 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 											handleDateClear={() => handleDateClear('lastSaved')}
 										/>
 									</TableCell>
+									<TableCell>
+										<OutlinedInput
+											sx={{ height: '40px' }}
+											name='labels'
+											onChange={handleChangeInput}
+											value={filters.labels}
+										/>
+									</TableCell>
 									<TableCell />
 									<TableCell />
 								</TableRow>
@@ -301,7 +310,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 										formConfiguration={formConfiguration}
 										deleteFormConfiguration={deleteFormConfiguration}
 										copyFormConfiguration={copyFormConfiguration}
-										dialobForm={dialobForms.find((dialobForm: any) => dialobForm.name === formConfiguration.id)}
+										getDialobForm={getDialobForm}
 										config={config}
 									/>
 								)}
