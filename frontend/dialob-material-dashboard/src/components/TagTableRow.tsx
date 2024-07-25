@@ -164,7 +164,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 
 	return (
 		<>
-			{filteredRow && dialobForm && (
+			{filteredRow && (
 				<TableRow>
 					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.edit" })} placement='top-end' arrow>
