@@ -58,7 +58,7 @@ public interface LocalizedLabelOperator extends Expression {
           String format = matcher.group(2);
           if (StringUtils.isNotBlank(format)) {
             // Drop leading ':'
-            format = format.substring(1);
+            format = StringUtils.removeStart(format, ":");
             switch (format) {
               case "key":
                 expressions.add(ImmutableToStringOperator.of(variableReference));

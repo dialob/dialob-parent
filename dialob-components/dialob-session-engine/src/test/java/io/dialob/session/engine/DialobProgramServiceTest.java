@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.time.Clock;
 import java.util.Optional;
 
@@ -74,7 +75,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
     sessionUpdater.dispatchActions(answer(toRef("question1"), "35"));
-    assertValueEquals(dialobSession,toRef("question1"),35);
+    assertValueEquals(dialobSession,toRef("question1"), BigInteger.valueOf(35));
 
     sessionUpdater.dispatchActions(answer(toRef("question3"), "true"));
     assertActive(dialobSession, toRef("question3"));
@@ -83,7 +84,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     assertValueEquals(dialobSession,toRef("question4"),true);
 
     sessionUpdater.dispatchActions(answer(toRef("question5"), "30001"));
-    assertValueEquals(dialobSession,toRef("question5"),30001);
+    assertValueEquals(dialobSession,toRef("question5"),BigInteger.valueOf(30001));
 
     sessionUpdater.dispatchActions(answer(toRef("question6"), "opt2"))
       .accept(visitor);

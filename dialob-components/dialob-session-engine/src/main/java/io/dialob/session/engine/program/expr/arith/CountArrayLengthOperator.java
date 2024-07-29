@@ -24,6 +24,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Set;
 
@@ -35,20 +36,20 @@ public interface CountArrayLengthOperator extends Expression {
   ItemId getItemId();
 
   @Override
-  default Integer eval(@Nonnull EvalContext evalContext) {
+  default BigInteger eval(@Nonnull EvalContext evalContext) {
     return evalContext.getItemState(this.getItemId()).map(itemState -> {
       Object value = itemState.getValue();
       if (value == null) {
-        return 0;
+        return BigInteger.ZERO;
       }
       if (value.getClass().isArray()) {
-        return ((Object[]) value).length;
+        return BigInteger.valueOf(((Object[]) value).length);
       }
       if (value instanceof Collection) {
-        return ((Collection) value).size();
+        return BigInteger.valueOf(((Collection) value).size());
       }
-      return 0;
-    }).orElse(0);
+      return BigInteger.ZERO;
+    }).orElse(BigInteger.ZERO);
   }
 
   @Nonnull

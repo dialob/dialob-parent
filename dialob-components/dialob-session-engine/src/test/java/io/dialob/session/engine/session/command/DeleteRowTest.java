@@ -21,6 +21,7 @@ import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ class DeleteRowTest {
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
-      .setValue(Arrays.asList(1))
+      .setValue(Arrays.asList(BigInteger.ONE))
       .get();
 
     itemState = deleteRow.update(context, itemState);

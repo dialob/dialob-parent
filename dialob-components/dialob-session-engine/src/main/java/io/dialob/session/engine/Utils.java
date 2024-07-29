@@ -36,6 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -284,7 +285,7 @@ public class Utils {
       if (value instanceof String) {
         output.write((byte) 1);
         output.writeStringNoTag((String) value);
-      } else if (value instanceof Integer) {
+      } else if (value instanceof BigInteger) {
         output.write((byte) 2);
         output.writeInt32NoTag((Integer) value);
       } else if (value instanceof Boolean) {
@@ -306,11 +307,11 @@ public class Utils {
           for (String s : (List<String>)listValue) {
             output.writeStringNoTag(s);
           }
-        } else if (listValue.get(0) instanceof Integer) {
+        } else if (listValue.get(0) instanceof BigInteger) {
           output.write((byte) 0x82);
           output.writeInt32NoTag(size);
-          for (Integer i : (List<Integer>)listValue) {
-            output.writeInt32NoTag(i);
+          for (BigInteger i : (List<BigInteger>)listValue) {
+            writeBigInteger(output, i);
           }
         }
       } else {
@@ -319,6 +320,11 @@ public class Utils {
     }
   }
 
+  public static void writeBigInteger(@Nonnull CodedOutputStream output, @Nonnull BigInteger value) throws IOException {
+    var bytes = value.toByteArray();
+    output.writeInt32NoTag(bytes.length);
+    output.writeRawBytes(bytes);
+  }
 
   public static Object readObjectValue(@Nonnull CodedInputStream input) throws IOException {
     if (input.readBool()) {
@@ -344,14 +350,20 @@ public class Utils {
           return ImmutableList.copyOf(strings);
         case (byte) 0x82:
           count = input.readInt32();
-          Integer[] integers = new Integer[count];
+          BigInteger[] integers = new BigInteger[count];
           for (int i = 0; i < count; ++i) {
-            integers[i] = input.readInt32();
+            integers[i] = readBigInteger(input);
           }
           return ImmutableList.copyOf(integers);
       }
     }
     return null;
+  }
+
+  public static BigInteger readBigInteger(@Nonnull CodedInputStream input) throws IOException {
+    var size = input.readInt32();
+    var bytes = input.readRawBytes(size);
+    return new BigInteger(bytes);
   }
 
   public static Object validateDefaultValue(String id, ValueType valueType, Object value, Consumer<FormValidationError> errorListener) {

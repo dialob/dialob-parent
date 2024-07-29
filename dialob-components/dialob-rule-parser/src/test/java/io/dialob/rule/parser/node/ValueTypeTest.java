@@ -5,15 +5,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
 import java.util.Arrays;
 
+import static java.math.BigInteger.TWO;
+import static java.math.BigInteger.ZERO;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTypeTest {
+
+  public static final BigInteger ONE = BigInteger.ONE;
 
   @Test
   public void booleanIsParseAble() throws Exception {
@@ -34,17 +39,17 @@ public class ValueTypeTest {
   @Test
   public void integerIsParseable() throws Exception {
     assertNull(ValueType.INTEGER.parseFromString(null));
-    Assertions.assertEquals(0, ValueType.INTEGER.parseFromString("0"));
+    Assertions.assertEquals(ZERO, ValueType.INTEGER.parseFromString("0"));
   }
 
   @Test
   public void integerReduction() {
-    assertEquals((Integer) 6, Arrays.asList(1, 2, 3).stream().reduce(ValueType.INTEGER.multOp()).get());
-    assertEquals((Integer) 6, Arrays.asList(1, 2, 3).stream().reduce(ValueType.INTEGER.sumOp()).get());
-    assertEquals((Integer) 24, Arrays.asList(1, 2, 3, 4).stream().reduce(ValueType.INTEGER.multOp()).get());
-    assertEquals((Integer) 10, Arrays.asList(1, 2, 3, 4).stream().reduce(ValueType.INTEGER.sumOp()).get());
-    assertEquals((Integer) 0, Arrays.asList(1, 2, 3, 4, 0).stream().reduce(ValueType.INTEGER.multOp()).get());
-    assertEquals((Integer) 10, Arrays.asList(1, 2, 3, 4, 0).stream().reduce(ValueType.INTEGER.sumOp()).get());
+    assertEquals(BigInteger.valueOf(6), Arrays.asList(ONE, TWO, BigInteger.valueOf(3)).stream().reduce(ValueType.INTEGER.multOp()).get());
+    assertEquals(BigInteger.valueOf(6), Arrays.asList(ONE, TWO, BigInteger.valueOf(3)).stream().reduce(ValueType.INTEGER.sumOp()).get());
+    assertEquals(BigInteger.valueOf(24), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).stream().reduce(ValueType.INTEGER.multOp()).get());
+    assertEquals(BigInteger.valueOf(10), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).stream().reduce(ValueType.INTEGER.sumOp()).get());
+    assertEquals(BigInteger.valueOf(0), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4), ZERO).stream().reduce(ValueType.INTEGER.multOp()).get());
+    assertEquals(BigInteger.valueOf(10), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4), ZERO).stream().reduce(ValueType.INTEGER.sumOp()).get());
   }
 
 

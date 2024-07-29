@@ -26,6 +26,7 @@ import io.dialob.session.engine.session.command.event.ImmutableValueSetUpdatedEv
 import io.dialob.session.engine.session.model.*;
 
 import javax.annotation.Nonnull;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -231,7 +232,7 @@ public final class CommandFactory {
     return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) ImmutableDeleteRow.of(parent, toBeRemoved, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> ImmutableNopCommand.of(toBeRemoved, emptyList()));
   }
 
-  public static SetRows addRows(@Nonnull ItemId id, @Nonnull List<Integer> ids) {
+  public static SetRows addRows(@Nonnull ItemId id, @Nonnull List<BigInteger> ids) {
     return ImmutableSetRows.of(id, ids, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED)));
   }
 
