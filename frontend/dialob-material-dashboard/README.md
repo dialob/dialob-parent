@@ -58,7 +58,7 @@ interface DialobAdminConfig {
 	setLoginRequired: () => void; // function used for requesting possible authentication
 	setTechnicalError: () => void; // function used for reporting technical errors
 	language: string; // Current locale used by your application in ISO language code format ("en","sv","fi" and similar)
-	csrf: CsrfShape; // Adjust according to your application csrf settings
+	csrf: CsrfShape | undefined; // Adjust according to your application csrf settings
 }
 
 interface DialobAdminViewProps {
