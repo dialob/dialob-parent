@@ -10,7 +10,7 @@ interface DialobAdminConfig {
 	setLoginRequired: () => void;
 	setTechnicalError: () => void;
 	language: string;
-	csrf: CsrfShape;
+	csrf: CsrfShape | undefined;
 }
 
 export { DialobAdmin, type DialobAdminConfig }
