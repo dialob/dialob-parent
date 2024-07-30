@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM amazoncorretto:11
+FROM amazoncorretto:17
 ARG RELEASE_VERSION
 ENV BASH_ENV /etc/profile
 ENV JAVA_OPTS ""
