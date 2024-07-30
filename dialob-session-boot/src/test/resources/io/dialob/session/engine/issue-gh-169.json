@@ -1,0 +1,61 @@
+{
+  "_id": "2fa3ecee4de63a06a9c1d9493fe2397d",
+  "_rev": "1",
+  "name": "vvBigNumber",
+  "data": {
+    "note1": {
+      "id": "note1",
+      "type": "note",
+      "label": {
+        "en": "Integer {number1}"
+      }
+    },
+    "group1": {
+      "id": "group1",
+      "type": "group",
+      "items": [
+        "group2"
+      ],
+      "props": {
+        "columns": 1
+      }
+    },
+    "group2": {
+      "id": "group2",
+      "type": "group",
+      "items": [
+        "number1",
+        "note1"
+      ],
+      "props": {
+        "columns": 1
+      }
+    },
+    "number1": {
+      "id": "number1",
+      "type": "number",
+      "label": {
+        "en": "Integer"
+      }
+    },
+    "questionnaire": {
+      "id": "questionnaire",
+      "type": "questionnaire",
+      "items": [
+        "group1"
+      ]
+    }
+  },
+  "metadata": {
+    "label": "VVBigNumber",
+    "created": "2024-06-27T09:09:19.712+00:00",
+    "lastSaved": "2024-07-03T05:00:14.303+00:00",
+    "valid": true,
+    "creator": "3caa74e7-0182-4afa-aadb-8b968984d768",
+    "tenantId": "7c0161b5-2956-48c0-8aad-36b5763d560e",
+    "savedBy": "3caa74e7-0182-4afa-aadb-8b968984d768",
+    "languages": [
+      "en"
+    ]
+  }
+}

@@ -23,6 +23,7 @@ import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 
 @Value.Immutable
 public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
@@ -34,9 +35,10 @@ public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, Ite
   @Nonnull
   default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
     if (canUpdate(context, itemState)) {
+      Object answer = getAnswer();
       return itemState.update()
-        .setAnswer(getAnswer())
-        .setValue(Utils.parse(itemState.getType(), getAnswer())).get();
+        .setAnswer(answer)
+        .setValue(Utils.parse(itemState.getType(), answer)).get();
     }
     return itemState;
   }

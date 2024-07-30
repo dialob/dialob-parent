@@ -24,12 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.stream.Stream;
 
 @Value.Immutable
 public interface ArrayReducerOperator<T> extends Expression {
@@ -70,13 +69,13 @@ public interface ArrayReducerOperator<T> extends Expression {
 
   BinaryOperator<Object> ANSWER_COUNT = (result, element) -> {
     if (element != null) {
-      return result == null ? 1 : ((Integer)result) + 1;
+      return result == null ? 1 : ((BigInteger)result).add(BigInteger.ONE);
     }
     return result;
   };
-  BinaryOperator<Integer> INTEGER_SUM = (result, element) -> {
+  BinaryOperator<BigInteger> INTEGER_SUM = (result, element) -> {
     if (element != null) {
-      return result == null ? element : result + element;
+      return result == null ? element : result.add(element);
     }
     return result;
   };
@@ -86,9 +85,9 @@ public interface ArrayReducerOperator<T> extends Expression {
     }
     return result;
   };
-  BinaryOperator<Integer> INTEGER_MIN = (result, element) -> {
+  BinaryOperator<BigInteger> INTEGER_MIN = (result, element) -> {
     if (element != null) {
-      return result == null ? element : Math.min(result, element);
+      return result == null ? element : result.min(element);
     }
     return result;
   };
@@ -98,9 +97,9 @@ public interface ArrayReducerOperator<T> extends Expression {
     }
     return result;
   };
-  BinaryOperator<Integer> INTEGER_MAX = (result, element) -> {
+  BinaryOperator<BigInteger> INTEGER_MAX = (result, element) -> {
     if (element != null) {
-      return result == null ? element : Math.max(result, element);
+      return result == null ? element : result.max(element);
     }
     return result;
   };

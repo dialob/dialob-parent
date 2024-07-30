@@ -30,6 +30,7 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,8 +50,8 @@ public interface CollectRowFieldsOperator extends Expression {
   @Override
   default Object eval(@NotNull EvalContext evalContext) {
     return getItemId().getParent().flatMap(ItemId::getParent)
-      .map(rgId -> (List<Integer>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
-      .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber))
+      .map(rgId -> (List<BigInteger>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
+      .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber.intValue()))
     .map(evalContext::getItemValue).collect(toList());
   }
 

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -107,7 +108,7 @@ public interface ValueType extends Serializable {
     if (returnType == Period.class) {
       return PERIOD;
     }
-    if (returnType == Integer.class || returnType == int.class ) {
+    if (returnType == Integer.class || returnType == int.class || returnType == BigInteger.class ) {
       return INTEGER;
     }
     if (returnType == BigDecimal.class) {

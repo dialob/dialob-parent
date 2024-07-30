@@ -23,7 +23,8 @@ import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
 import javax.annotation.Nonnull;
- import java.util.Collections;
+import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,11 +38,11 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
   @Nonnull
   @Override
   default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
-    List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
+    List<BigInteger> rowNumbers = (List<BigInteger>) itemState.getValue();
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
-    List<ItemId> newItems = rowNumbers.stream().map(row -> ImmutableItemIndex.of(row, Optional.of(getTargetId()))).collect(Collectors.toList());
+    List<ItemId> newItems = rowNumbers.stream().map(row -> ImmutableItemIndex.of(row.intValue(), Optional.of(getTargetId()))).collect(Collectors.toList());
     return itemState.update()
       .setItems(newItems)
       .get();
