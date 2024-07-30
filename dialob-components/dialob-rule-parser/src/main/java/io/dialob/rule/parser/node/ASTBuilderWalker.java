@@ -1,20 +1,22 @@
 package io.dialob.rule.parser.node;
 
 import com.google.common.base.CaseFormat;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.DialobRuleBaseListener;
 import io.dialob.rule.parser.DialobRuleParser;
 import io.dialob.rule.parser.ParserUtil;
-import io.dialob.rule.parser.api.*;
+import io.dialob.rule.parser.api.CompilerErrorCode;
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.rule.parser.api.VariableFinder;
+import io.dialob.rule.parser.api.VariableNotDefinedException;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,11 +66,11 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   };
 
-  public ASTBuilderWalker(@NotNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
+  public ASTBuilderWalker(@NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
     this(null, variableFinder, asyncFunctionVariables);
   }
 
-  ASTBuilderWalker(String namespace, @NotNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
+  ASTBuilderWalker(String namespace, @NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
     this.namespace = namespace;
     this.variableFinder = variableFinder;
     this.builder = new ASTBuilder();
@@ -527,7 +529,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     builder = builder.constExprNode(text, ctx.unit != null ? ctx.unit.getText() : null, ctx.type, Span.of(ctx));
   }
 
-  protected boolean isQuoted(@NotNull String text) {
+  protected boolean isQuoted(@NonNull String text) {
     return text.startsWith("'") && text.endsWith("'")
      || text.startsWith("\"") && text.endsWith("\"");
   }

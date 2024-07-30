@@ -1,16 +1,19 @@
 import React from 'react';
-import RuleEditor from './RuleEditor';
+import { RuleEditor } from './RuleEditor';
 import { FormattedMessage } from 'react-intl';
 import { Box, Button } from '@mui/material';
 import { Help } from '@mui/icons-material';
+import { useDocs } from '../../utils/DocsUtils';
 
 const RulesEditor: React.FC = () => {
+  const docsUrl = useDocs('del');
+
   return (
     <>
       <Box sx={{ display: 'flex' }}>
         <Box flexGrow={1} />
-        <Button variant='outlined' endIcon={<Help />} onClick={() => window.open('https://docs.dialob.io/#/400_dialob_expression_language:_DEL/100_basic_del', "_blank")}>
-          <FormattedMessage id='help' />
+        <Button variant='outlined' endIcon={<Help />} onClick={() => window.open(docsUrl, "_blank")}>
+          <FormattedMessage id='buttons.help' />
         </Button>
       </Box>
       <RuleEditor type='visibility' />
@@ -19,4 +22,4 @@ const RulesEditor: React.FC = () => {
   );
 }
 
-export default RulesEditor;
+export { RulesEditor };

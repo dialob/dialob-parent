@@ -1,14 +1,18 @@
 import { produce } from 'immer';
 import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
-import { ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable, isContextVariable, ValidationRule, LocalizedString } from './types';
+import {
+  ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable,
+  ValidationRule, LocalizedString
+} from './types';
+import { isContextVariable } from '../utils/ItemUtils';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
   const matcher = `^(${prefix})(\\d*)$`;
   const existing = idList.filter(id => {
-      const r = RegExp(matcher);
-      return r.test(id);
+    const r = RegExp(matcher);
+    return r.test(id);
   });
   let idx = 1;
   while (existing.findIndex(v => v === `${prefix}${idx}`) > -1) {
@@ -30,13 +34,13 @@ export const generateValueSetId = (state: ComposerState, prefix = 'vs'): string 
   return `${prefix}${idx}`;
 }
 
-const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks ?: ComposerCallbacks): void => {
+const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks): void => {
   const id = generateItemId(state, itemTemplate);
   const newItem = {
     ...itemTemplate,
     id: generateItemId(state, itemTemplate),
   }
-  state.data[id] = Object.assign(newItem, {id});
+  state.data[id] = Object.assign(newItem, { id });
   // TODO: Sanity check if parentItemId exists in form
   const newIndex = state.data[parentItemId].items?.findIndex(i => i === afterItemId);
   if (newIndex === undefined) {
@@ -53,18 +57,22 @@ const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentI
   }
 }
 
-const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any, language ?: string, ): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any, language?: string): void => {
   // TODO: Sanity: item exists
-  // TODO: Sanity: language exists in form level
   // TODO: Sanity: attribute is not an id or type
   if (language) {
     if (state.data[itemId][attribute] === undefined) {
-      state.data[itemId][attribute] = {[language]: value};
+      state.data[itemId][attribute] = { [language]: value };
     } else {
       state.data[itemId][attribute][language] = value;
     }
   } else {
-    state.data[itemId][attribute] = value;
+    if (value === '') {
+      delete state.data[itemId][attribute];
+    } else {
+      state.data[itemId][attribute] = value;
+    }
   }
 }
 
@@ -72,7 +80,7 @@ const updateLocalizedString = (state: ComposerState, itemId: string, attribute: 
   const item = state.data[itemId];
   if (item && (attribute === 'label' || attribute === 'description')) {
     item[attribute] = value;
-  } else if (attribute === 'validations' && index !== undefined){
+  } else if (attribute === 'validations' && index !== undefined) {
     const validations = state.data[itemId].validations;
     if (validations) {
       const rule = validations[index];
@@ -108,7 +116,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   // TODO: Sanity: item exists
 
   // Collect item and children to delete
-  const collect = (target:string):string[] => {
+  const collect = (target: string): string[] => {
     const subItems = state.data[target].items;
     if (subItems) {
       return [target].concat(subItems.reduce((l, i) => l.concat(collect(i)), [] as string[]));
@@ -123,7 +131,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   const valueSets = toDelete.map(iid => state.data[iid].valueSetId)
     .filter(vsId => vsId)
     .filter(vsId => globalValueSets.findIndex(gvs => gvs.valueSetId === vsId) === -1)
-    
+
   // Delete items
   toDelete.forEach(itemId => {
     delete state.data[itemId];
@@ -138,6 +146,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   });
 
   // Delete parent ref
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [parentItemId, item] of Object.entries(state.data)) {
     const itemIndex = item.items ? item.items.findIndex(i => i === itemId) : -1;
     if (itemIndex > -1 && item.items) {
@@ -147,14 +156,15 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setItemProp = (state: ComposerState, itemId: string, key: string, value: any): void => {
   // TODO: Sanity: item exists
   if (state.data[itemId].props === undefined) {
-    state.data[itemId].props = {[key]: value};
+    state.data[itemId].props = { [key]: value };
   } else {
     const props = state.data[itemId].props;
     if (props !== undefined) {
-     props[key] = value;
+      props[key] = value;
     }
   }
 }
@@ -171,8 +181,8 @@ const deleteItemProp = (state: ComposerState, itemId: string, key: string): void
   }
 }
 
-const createValidation = (state: ComposerState, itemId: string, rule ?: ValidationRule): void => {
-  const emptyRule: ValidationRule = {message: {}, rule: ''};
+const createValidation = (state: ComposerState, itemId: string, rule?: ValidationRule): void => {
+  const emptyRule: ValidationRule = { message: {}, rule: '' };
 
   // TODO: Sanity: item exists
   if (state.data[itemId].validations === undefined) {
@@ -190,7 +200,7 @@ const setValidationMessage = (state: ComposerState, itemId: string, index: numbe
       return;
     }
     if (!rule.message) {
-      rule.message = {[language]: message};
+      rule.message = { [language]: message };
     } else {
       rule.message[language] = message;
     }
@@ -204,7 +214,7 @@ const setValidationExpression = (state: ComposerState, itemId: string, index: nu
     if (!rule) {
       return;
     }
-   rule.rule = expression;
+    rule.rule = expression;
   }
 }
 
@@ -215,11 +225,11 @@ const deleteValidation = (state: ComposerState, itemId: string, index: number): 
     if (!rule) {
       return;
     }
-   validations.splice(index, 1);
+    validations.splice(index, 1);
   }
 }
 
-const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent:string): void => {
+const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string): void => {
   // TODO: Sanity: item exists
   // TODO: Ergonomics: fromParent and fromIndex can be computed by itemId and not needed in function parameters
   state.data[fromParent]?.items?.splice(fromIndex, 1);
@@ -230,7 +240,7 @@ const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toInd
   }
 }
 
-const createValueSet = (state: ComposerState, itemId: string | null,  entries?: ValueSetEntry[]): void => {
+const createValueSet = (state: ComposerState, itemId: string | null, entries?: ValueSetEntry[]): void => {
   // TODO: Sanity: item exists if not null
 
   const valueSetId = generateValueSetId(state, 'vs');
@@ -256,7 +266,7 @@ const createValueSet = (state: ComposerState, itemId: string | null,  entries?: 
     if (!state.metadata.composer.globalValueSets) {
       state.metadata.composer.globalValueSets = [];
     }
-    state.metadata.composer.globalValueSets.push({valueSetId, label: ''})
+    state.metadata.composer.globalValueSets.push({ valueSetId, label: '' })
   }
 }
 
@@ -267,7 +277,7 @@ const setValueSetEntries = (state: ComposerState, valueSetId: string, entries: V
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
       state.valueSets[vsIdx].entries = entries;
-    } 
+    }
   }
 }
 
@@ -278,7 +288,11 @@ const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: Valu
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
       const newEntry = entry ? entry : { id: '', label: {} };
-      state.valueSets[vsIdx].entries.push(newEntry);
+      if (state.valueSets[vsIdx].entries !== undefined) {
+        state.valueSets[vsIdx].entries!.push(newEntry);
+      } else {
+        state.valueSets[vsIdx].entries = [newEntry];
+      }
     }
   }
 }
@@ -290,7 +304,17 @@ const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      state.valueSets[vsIdx].entries[index] = entry;
+      state.valueSets[vsIdx].entries![index] = entry;
+    }
+  }
+}
+
+const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, index: number, text: string | null, language: string): void => {
+  if (state.valueSets) {
+    const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
+    if (vsIdx > -1 && text !== null) {
+
+      state.valueSets[vsIdx].entries![index].label[language] = text;
     }
   }
 }
@@ -302,7 +326,7 @@ const deleteValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      state.valueSets[vsIdx].entries.splice(index, 1);
+      state.valueSets[vsIdx].entries!.splice(index, 1);
     }
   }
 }
@@ -314,8 +338,8 @@ const moveValueSetEntry = (state: ComposerState, valueSetId: string, from: numbe
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      const newIndex = to > state.valueSets[vsIdx].entries.length ? state.valueSets[vsIdx].entries.length - 1 : to;
-      state.valueSets[vsIdx].entries.splice(newIndex, 0, state.valueSets[vsIdx].entries.splice(from, 1)[0]);
+      const newIndex = to > state.valueSets[vsIdx].entries!.length ? state.valueSets[vsIdx].entries!.length - 1 : to;
+      state.valueSets[vsIdx].entries!.splice(newIndex, 0, state.valueSets[vsIdx].entries!.splice(from, 1)[0]);
     }
   }
 }
@@ -336,16 +360,32 @@ const deleteGlobalValueSet = (state: ComposerState, valueSetId: string): void =>
   }
 }
 
+const deleteLocalValueSet = (state: ComposerState, valueSetId: string): void => {
+  if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined) {
+    state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setMetadataValue = (state: ComposerState, attr: string, value: any): void => {
   // TODO: Sanity: Prevent overwriting certain critical attributes
 
   state.metadata[attr] = value;
 }
 
+const setContextValue = (state: ComposerState, name: string, value: string): void => {
+  if (state.metadata.composer) {
+    if (!state.metadata.composer?.contextValues) {
+      state.metadata.composer.contextValues = {};
+    }
+    state.metadata.composer.contextValues[name] = value;
+  }
+}
+
 const createVariable = (state: ComposerState, context: boolean): void => {
   const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
-  const variable = context ? {
+  const variable: ContextVariable | Variable = context ? {
     name: variableId,
     context: true,
     contextType: 'text'
@@ -353,7 +393,7 @@ const createVariable = (state: ComposerState, context: boolean): void => {
     name: variableId,
     expression: ''
   };
-  
+
   if (!Array.isArray(state.variables)) {
     state.variables = [variable];
   } else {
@@ -361,7 +401,8 @@ const createVariable = (state: ComposerState, context: boolean): void => {
   }
 }
 
-const updateContextVariable = (state: ComposerState, variableId: string, contextType ?: ContextVariableType, defaultValue ?: any): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType | string, defaultValue?: any): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => isContextVariable(v) && v.name === variableId);
     if (varIdx > -1) {
@@ -393,15 +434,33 @@ const deleteVariable = (state: ComposerState, variableId: string): void => {
   }
 }
 
+const updateVariablePublishing = (state: ComposerState, variableId: string, published: boolean): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => v.name === variableId);
+    if (varIdx > -1) {
+      (state.variables[varIdx]).published = published;
+    }
+  }
+}
+
+const moveVariable = (state: ComposerState, origin: ContextVariable | Variable, destination: ContextVariable | Variable): void => {
+  const originIdx = state.variables?.findIndex(v => v.name === origin.name);
+  const destinationIdx = state.variables?.findIndex(v => v.name === destination.name);
+  if (originIdx !== undefined && destinationIdx !== undefined && originIdx > -1 && destinationIdx > -1 && state.variables) {
+    [state.variables[originIdx], state.variables[destinationIdx]] = [state.variables[destinationIdx], state.variables[originIdx]];
+  }
+}
+
 const addLanguage = (state: ComposerState, language: string, copyFrom?: string): void => {
   if (state.metadata.languages && state.metadata.languages.indexOf(language) > -1) {
     // Already exists, NO-OP
     return;
   }
-  
+
   // Copy language
   if (copyFrom && copyFrom !== language) {
     // Items
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [itemId, item] of Object.entries(state.data)) {
       // Item label
       if (item.label) {
@@ -423,7 +482,7 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
     // Valueset entry labels
     if (state.valueSets) {
       state.valueSets.forEach(vs => {
-        vs.entries.forEach(vse => {
+        vs.entries?.forEach(vse => {
           if (vse.label) {
             vse.label[language] = vse.label[copyFrom];
           }
@@ -441,6 +500,7 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
 }
 
 const deleteLanguage = (state: ComposerState, language: string): void => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [itemId, item] of Object.entries(state.data)) {
     if (item.label) {
       delete item.label[language];
@@ -459,10 +519,10 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
 
   if (state.valueSets) {
     state.valueSets.forEach(vs => {
-      vs.entries.forEach(vse => {
+      vs.entries?.forEach(vse => {
         if (vse.label[language]) {
           delete vse.label[language];
-        }        
+        }
       });
     });
   }
@@ -475,10 +535,28 @@ const deleteLanguage = (state: ComposerState, language: string): void => {
   }
 }
 
-export const formReducer = (state: ComposerState, action: ComposerAction, callbacks ?: ComposerCallbacks): ComposerState => {
+const setRevision = (state: ComposerState, revision: string): void => {
+  state._rev = revision;
+}
+
+const setForm = (state: ComposerState, form: ComposerState, tagName?: string): void => {
+  Object.assign(state, form);
+  if (tagName && tagName !== 'LATEST') {
+    state._tag = tagName;
+  } else {
+    state._tag = undefined;
+  }
+}
+
+export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
+  if (state._tag && action.type !== 'setForm') {
+    // if a version tag is loaded, then it's in read-only mode
+    return state;
+  }
+
   const newState = produce(state, state => {
     if (action.type === 'addItem') {
-      addItem(state, action.config, action.parentItemId, action.afterItemId, callbacks);
+      addItem(state, action.config, action.parentItemId, action.afterItemId, action.callbacks ?? callbacks);
     } else if (action.type === 'updateItem') {
       updateItem(state, action.itemId, action.attribute, action.value, action.language);
     } else if (action.type === 'updateLocalizedString') {
@@ -509,6 +587,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       addValueSetEntry(state, action.valueSetId, action.entry);
     } else if (action.type === 'updateValueSetEntry') {
       updateValueSetEntry(state, action.valueSetId, action.index, action.entry);
+    } else if (action.type === 'updateValueSetEntryLabel') {
+      updateValueSetEntryLabel(state, action.valueSetId, action.index, action.text, action.language);
     } else if (action.type === 'deleteValueSetentry') {
       deleteValueSetEntry(state, action.valueSetId, action.index);
     } else if (action.type === 'moveValueSetEntry') {
@@ -517,22 +597,35 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       setGlobalValueSetName(state, action.valueSetId, action.name);
     } else if (action.type === 'deleteGlobalValueSet') {
       deleteGlobalValueSet(state, action.valueSetId);
+    } else if (action.type === 'deleteLocalValueSet') {
+      deleteLocalValueSet(state, action.valueSetId);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
+    } else if (action.type === 'setContextValue') {
+      setContextValue(state, action.name, action.value);
     } else if (action.type === 'createVariable') {
       createVariable(state, action.context);
     } else if (action.type === 'updateContextVariable') {
       updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
     } else if (action.type === 'updateExpressionVariable') {
       updateExpressionVariable(state, action.variableId, action.expression);
+    } else if (action.type === 'updateVariablePublishing') {
+      updateVariablePublishing(state, action.variableId, action.published);
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
+    } else if (action.type === 'moveVariable') {
+      moveVariable(state, action.origin, action.destination);
     } else if (action.type === 'addLanguage') {
       addLanguage(state, action.language, action.copyFrom);
     } else if (action.type === 'deleteLanguage') {
       deleteLanguage(state, action.language);
+    } else if (action.type === 'setRevision') {
+      console.log('>> SET REV', action.revision);
+      setRevision(state, action.revision);
+    } else if (action.type === 'setForm') {
+      setForm(state, action.form, action.tagName);
     }
   });
-  // Extension point in procude...
+
   return newState;
 }

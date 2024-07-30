@@ -15,14 +15,14 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.model.ItemId;
 
-import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
 public class ItemIdMatchers {
 
-  public static Predicate<ItemId> idIs(@Nonnull ItemId itemId) {
+  public static Predicate<ItemId> idIs(@NonNull ItemId itemId) {
     return id -> id.equals(itemId);
   }
 

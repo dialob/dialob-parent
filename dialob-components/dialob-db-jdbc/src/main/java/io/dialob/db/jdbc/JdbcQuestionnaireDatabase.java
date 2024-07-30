@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
@@ -33,7 +34,6 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -88,10 +88,10 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
 
   @NonNull
   public Questionnaire findOne(@NonNull String tenantId, @NonNull String id, String rev) {
+    LOGGER.debug("{} - findOne questionnaire {} rev {}", tenantId, id, rev);
     Integer revision = Utils.validateRevValue(rev);
     byte[] oid = Utils.toOID(id);
     return doTransaction(template -> {
-      Questionnaire object;
       RowMapper<Questionnaire> rowMapper = (resultSet, i) -> {
         int objectRev = resultSet.getInt(1);
         String rsTenantId = StringUtils.trim(resultSet.getString(2));
@@ -115,7 +115,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         sql.append(" and tenant_id = ?");
       }
       try {
-        return template.queryForObject(sql.toString(), sqlParameters.toArray(), rowMapper);
+        return template.queryForObject(sql.toString(), rowMapper, sqlParameters.toArray());
       } catch (EmptyResultDataAccessException e) {
         throw new DocumentNotFoundException(id + " not found");
       }
@@ -165,12 +165,13 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         if (oid == null) {
           oid = Utils.generateOID();
         }
-        LOGGER.debug("{} - persisting new document {} to rev {}", tenantId, dId, revision);
+        LOGGER.debug("{} - persisting a new document {} to rev {}", tenantId, dId, revision);
         documentNew = updatedDocument(documentNew, oid, revision, timestamp, tenantId);
         updated = template.update("insert into " + tableName + " (id,rev,tenant_id,form_document_id,status,created,updated,owner,data) values (?,?,?,?,?,?,?,?," + getDatabaseHelper().jsonToBson("?") + ")", toJdbcId(oid), revision, tenantId, toJdbcId(formId), status, timestamp, timestamp, owner, getDatabaseHelper().jsonObject(objectMapper, documentNew));
       }
       if (updated == 0) {
-        throw new DocumentConflictException("concurrent document update");
+        LOGGER.debug("{} - persisting document {} to rev {} failed (CONFLICT)", tenantId, dId, revision);
+        throw new DocumentConflictException(String.format("Conflict during questionnaire document %s rev %d update.", dId, revision));
       }
       return documentNew;
     });
@@ -227,6 +228,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
                               Questionnaire.Metadata.Status status,
                               @NonNull Consumer<MetadataRow> consumer)
   {
+    LOGGER.debug("{} - findAllMetadata ownerId = {}, formId = {}, formName = {}, formTag = {}, status = {}", tenantId, ownerId, formId, formName, formTag, status);
     transactionTemplate.execute(transactionStatus -> {
       boolean distinct = false;
       List<String> sqlConditions = new ArrayList<>();
@@ -293,7 +295,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
 
   private void metadataQuery(boolean distinct, String from, String where, List<Object> sqlParameters, @NonNull Consumer<MetadataRow> consumer) {
     String select = distinct ? "select distinct " : "select ";
-    jdbcTemplate.query(select + tableName+".tenant_id, "+tableName+".id, "+tableName+".form_document_id, "+tableName+".status, "+tableName+".created, "+tableName+".updated, "+tableName+".owner from " + from + where, sqlParameters.toArray(), resultSet -> {
+    jdbcTemplate.query(select + tableName+".tenant_id, "+tableName+".id, "+tableName+".form_document_id, "+tableName+".status, "+tableName+".created, "+tableName+".updated, "+tableName+".owner from " + from + where, resultSet -> {
       String tId = StringUtils.trim(resultSet.getString(1));
       byte[] idBytes = databaseHelper.fromJdbcId(resultSet.getBytes(2));
       byte[] formIdBytes = databaseHelper.fromJdbcId(resultSet.getBytes(3));
@@ -309,7 +311,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         .owner(owner)
         .tenantId(tId)
         .build()));
-    });
+    }, sqlParameters.toArray());
   }
 
   @NonNull

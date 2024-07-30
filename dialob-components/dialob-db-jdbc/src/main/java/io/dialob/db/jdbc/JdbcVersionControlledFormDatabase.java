@@ -16,21 +16,21 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.db.spi.exceptions.*;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.form.service.api.ImmutableFormMetadataRow;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Nonnull;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -203,7 +203,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         }
         return Optional.empty();
       });
-    } catch (DuplicateKeyException exception) {
+    } catch (DataIntegrityViolationException exception) {
       throw new DocumentConflictException("Form \"" + formName + "\" tag \"" + tag + "\" exists already.");
     }
   }
@@ -404,7 +404,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
 
   @NonNull
   @Override
-  public Form findOne(@Nonnull String tenantId, @Nonnull String id, String rev) {
+  public Form findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     if (StringUtils.isBlank(rev)) {
       return findOne(tenantId, id);
     }
@@ -413,12 +413,12 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
 
   @NonNull
   @Override
-  public Form findOne(@Nonnull String tenantId, @Nonnull String id) {
+  public Form findOne(@NonNull String tenantId, @NonNull String id) {
     return formDatabase.findOne(tenantId, findFormDocumentId(tenantId, id, null));
   }
 
   @Override
-  public boolean exists(@Nonnull String tenantId, @Nonnull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     assertTenantContextDefined(tenantId);
     boolean exists = doTransaction(template -> {
       Integer count = template.queryForObject("select count(*) from " + formTableName + " where name = ? and tenant_id = ?", Integer.class, id, tenantId);

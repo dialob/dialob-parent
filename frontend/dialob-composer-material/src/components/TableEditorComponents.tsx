@@ -1,6 +1,6 @@
 import { Table, TextField, styled } from "@mui/material";
 
-export const StyledTable = styled(Table)(({ theme }) => ({
+export const BorderedTable = styled(Table)(({ theme }) => ({
   '& .MuiTableCell-root': {
     border: `1px solid ${theme.palette.divider}`,
   },

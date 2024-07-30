@@ -16,13 +16,13 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,17 +34,17 @@ public interface ConcatOperator extends Expression {
   List<Expression> getExpressions();
 
   @Override
-  default String eval(@Nonnull EvalContext context) {
+  default String eval(@NonNull EvalContext context) {
     return getExpressions().stream().map(expression -> (String) expression.eval(context)).collect(Collectors.joining());
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.STRING;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getExpressions().stream().map(Expression::getEvalRequiredConditions).reduce(Sets::union).orElse(Collections.emptySet());

@@ -15,37 +15,7 @@
  */
 package io.dialob.session.boot.websocket;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import javax.inject.Inject;
-
-import io.dialob.session.boot.ProvideTestRedis;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.test.util.AopTestUtils;
-import org.springframework.web.socket.WebSocketSession;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.ImmutableForm;
@@ -59,24 +29,50 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.sockjs.WebSocketRequestTestTemplate;
 import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.session.boot.ProvideTestRedis;
+import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.test.util.AopTestUtils;
+import org.springframework.web.socket.WebSocketSession;
 
+import java.util.*;
+import java.util.function.Consumer;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+
+@Slf4j
 public class AbstractWebSocketTests implements ProvideTestRedis {
 
+  String tenantId = "00000000-0000-0000-0000-000000000000";
+
+  @MockBean
+  CurrentTenant currentTenant;
+
+  @MockBean
+  QuestionnaireDatabase questionnaireDatabase;
+  @MockBean
+  FormDatabase formDatabase;
+
+  @BeforeEach
+  void setupCurrentTenant() {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+    defineInMemoryPersistence(questionnaireDatabase);
+  }
+
   public static class TestConfiguration {
-
-    @Bean
-    @Primary
-    public QuestionnaireDatabase questionnaireDatabase() {
-      QuestionnaireDatabase questionnaireDatabase = Mockito.mock(QuestionnaireDatabase.class);
-      defineInMemoryPersistence(questionnaireDatabase);
-      return questionnaireDatabase;
-    }
-
-    @Bean
-    @Primary
-    public FormDatabase formDatabase() {
-      return Mockito.mock(FormDatabase.class);
-    }
 
     @Bean
     @Primary
@@ -139,29 +135,8 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
     return "ws://localhost:" + port + "/session/socket";
   }
 
-  @Inject
-  protected QuestionnaireDatabase questionnaireDatabase;
 
-  @Inject
-  CurrentTenant currentTenant;
 
-  @MockBean
-  protected FormDatabase formDatabase;
-
-  String tenantId = "00000000-0000-0000-0000-000000000000";
-
-  @BeforeEach
-  public void resetMocks() {
-    final QuestionnaireDatabase questionnaireDatabaseMock = AopTestUtils.getTargetObject(questionnaireDatabase);
-    if (Mockito.mockingDetails(questionnaireDatabaseMock).isMock()) {
-      Mockito.reset(questionnaireDatabaseMock);
-      defineInMemoryPersistence(questionnaireDatabaseMock);
-
-    }
-    if (Mockito.mockingDetails(formDatabase).isMock()) {
-      Mockito.reset(formDatabase);
-    }
-  }
 
   protected Form shouldFindForm(Form form) {
     when(formDatabase.findOne(eq(tenantId), eq(form.getId()))).thenReturn(form);
@@ -227,7 +202,7 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
 
   protected WebSocketRequestTestTemplate.ExpectionBuilder openSession(String questionnaireId) {
     String tenantId = "-";
-    WebSocketRequestTestTemplate webSocketRequestTestTemplate = new WebSocketRequestTestTemplate(objectMapper, uri() + "/" + tenantId + "/" + questionnaireId, null);
+    WebSocketRequestTestTemplate webSocketRequestTestTemplate = new WebSocketRequestTestTemplate(objectMapper, uri() + "?tenantId=" + tenantId + "&sessionId=" + questionnaireId, null);
     return webSocketRequestTestTemplate
       .steps().when(new WebSocketRequestTestTemplate.WhenMessage("openSession(" + questionnaireId + ")") {
         @Override

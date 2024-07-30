@@ -15,10 +15,11 @@
  */
 package io.dialob.boot.controller;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.security.ApiServiceSecurityConfigurer;
 import io.dialob.common.Permissions;
-import io.dialob.form.service.rest.FormsRestService;
-import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
+import io.dialob.form.service.rest.FormsRestServiceController;
+import io.dialob.questionnaire.service.rest.QuestionnairesRestServiceController;
 import io.dialob.security.key.ApiKey;
 import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
@@ -30,6 +31,7 @@ import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -52,7 +53,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -127,10 +127,10 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   public TenantAccessEvaluator tenantAccessEvaluator;
 
   @MockBean
-  public FormsRestService formsRestServiceController;
+  public FormsRestServiceController formsRestServiceController;
 
   @MockBean
-  public QuestionnairesRestService questionnairesRestServiceController;
+  public QuestionnairesRestServiceController questionnairesRestServiceController;
 
   @MockBean
   public ClientApiKeyService clientApiKeyService;

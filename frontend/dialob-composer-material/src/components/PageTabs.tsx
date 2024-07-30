@@ -1,15 +1,17 @@
 import React from "react";
-import { Menu, MenuItem, Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography, Paper, TableCell, Grid } from '@mui/material';
-import { Add, Close, ContentCopy, Key, Menu as MenuIcon, Tune } from '@mui/icons-material';
+import {
+  Button, IconButton, Box, Table, TableRow, TableBody, TableContainer, CircularProgress, Typography,
+  Paper, TableCell, Grid
+} from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { DialobItem, DialobItems, useComposer } from "../dialob";
 import { useEditor } from "../editor";
-import { LabelField, VisibilityField } from "../items/ItemComponents";
+import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
 import { FormattedMessage } from "react-intl";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
-const MAX_PAGES_PER_ROW = 5;
 
 const getPageTabTitle = (item: DialobItem, language: string): string => {
   const rawLabel = item.label ? item.label[language] : null;
@@ -47,58 +49,32 @@ const PageHeader: React.FC<{ item?: DialobItem }> = ({ item }) => {
   );
 }
 
-const PageMenuButton: React.FC<{ item: DialobItem }> = ({ item }) => {
-  const { setConfirmationDialogType, setActiveItem } = useEditor();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLElement>) => void }> = ({ item, onClick }) => {
+  const { editor } = useEditor();
+  const isActive = item.id === editor.activePage?.id;
+  const variant = isActive ? 'contained' : 'text';
+  const [highlighted, setHighlighted] = React.useState<boolean>(false);
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setAnchorEl(null);
-  };
-
-  const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    handleClose(e);
-    setConfirmationDialogType('delete');
-    setActiveItem(item);
-  }
-
-  const handleDuplicate = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    handleClose(e);
-    setConfirmationDialogType('duplicate');
-    setActiveItem(item);
-  }
+  React.useEffect(() => {
+    if (editor?.highlightedItem?.id === item.id) {
+      setHighlighted(true);
+    }
+    const id = setTimeout(() => {
+      setHighlighted(false);
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [editor.highlightedItem, item.id])
 
   return (
-    <Box>
-      <IconButton onClick={handleClick} component='span' sx={{ ml: 1 }}>
-        <MenuIcon />
-      </IconButton>
-      <Menu open={open} onClose={handleClose} anchorEl={anchorEl} disableScrollLock={true}>
-        <MenuItem onClick={handleClose}>
-          <Tune sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.options' />
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Key sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.change.id' />
-        </MenuItem>
-        <MenuItem onClick={handleDelete}>
-          <Close sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.delete' />
-        </MenuItem>
-        <MenuItem onClick={handleDuplicate}>
-          <ContentCopy sx={{ mr: 1 }} fontSize='small' />
-          <FormattedMessage id='menus.duplicate' />
-        </MenuItem>
-      </Menu>
+    <Box sx={{ border: 1, borderColor: 'divider' }}>
+      <Button
+        onClick={onClick}
+        variant={variant}
+        color={highlighted ? 'info' : 'primary'}
+        endIcon={<OptionsMenu item={item} isPage light={isActive} />}
+      >
+        <Typography textTransform='none'>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+      </Button >
     </Box>
   );
 }
@@ -108,6 +84,8 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   const { editor, setActivePage } = useEditor();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
   const rootItem = rootItemId ? items[rootItemId] : undefined;
+  const noPages = rootItem && (!rootItem.items || rootItem.items.length === 0);
+  const noActivePage = rootItem && rootItem.items && rootItem.items.length > 0 && !editor.activePage;
 
   React.useEffect(() => {
     const defaultActivePage = rootItem && rootItem.items ? items[rootItem.items[0]] : undefined;
@@ -135,24 +113,29 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     rootItem.items &&
     rootItem.items.map((itemId: string, index: number) => {
       const item = items[itemId];
-      const isActive = item.id === editor.activePage?.id;
-      const variant = isActive ? 'contained' : 'text';
       return (
-        <Button
-          onClick={(e) => handlePageClick(e, itemId)}
-          variant={variant}
-          color='inherit'
+        <PageTab
           key={index}
-        >
-          <Typography>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
-          < PageMenuButton item={item} />
-        </Button >
+          item={item}
+          onClick={(e) => handlePageClick(e, itemId)}
+        />
       );
     });
 
-  if (editor.activePage === undefined) {
+  if (noActivePage) {
     return <CircularProgress />;
   }
+
+  if (noPages) {
+    return (
+      <Box sx={{ mb: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <Button onClick={handleCreate} color='primary' endIcon={<Add />} variant='contained'>
+          <Typography textTransform='none'><FormattedMessage id='page.none' /></Typography>
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ mb: 1 }}>
       <Box sx={{ display: 'flex' }}>
@@ -165,7 +148,7 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
         </Grid>
         <Box sx={{ flexGrow: 1 }} />
         <IconButton sx={{ alignSelf: 'center' }} onClick={handleCreate}>
-          <Add />
+          <Add color='primary' />
         </IconButton>
       </Box>
       <PageHeader item={editor.activePage} />

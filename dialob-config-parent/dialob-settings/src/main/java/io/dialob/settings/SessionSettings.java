@@ -15,9 +15,9 @@
  */
 package io.dialob.settings;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +82,7 @@ public class SessionSettings {
     private UrlAttributes urlAttributes = new UrlAttributes();
 
     @NotEmpty
-    private String contextPath = "/socket/{tenantId}/{sessionId}";
+    private String contextPath = "/socket";
 
     private int maxTextMessageBufferSize = 65536;
 

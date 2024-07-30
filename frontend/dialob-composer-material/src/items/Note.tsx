@@ -5,11 +5,12 @@ import { DialobItem } from '../dialob';
 import { IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
-  const hasIndicators = item.description || item.valueSetId || item.validations;
+  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue || item.activeWhen;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
@@ -22,7 +23,7 @@ const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
       setHighlighted(false);
     }, 3000);
     return () => clearTimeout(id);
-  }, [editor.highlightedItem])
+  }, [editor.highlightedItem, item.id])
 
   return (
     <Element name={item.id}>

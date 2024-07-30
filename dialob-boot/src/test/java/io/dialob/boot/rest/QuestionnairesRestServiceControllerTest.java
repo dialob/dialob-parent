@@ -15,24 +15,28 @@
  */
 package io.dialob.boot.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Iterator;
-
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.boot.ApplicationAutoConfiguration;
+import io.dialob.boot.settings.AdminApplicationSettings;
+import io.dialob.boot.settings.ComposerApplicationSettings;
+import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
+import io.dialob.questionnaire.service.api.session.FormFinder;
+import io.dialob.questionnaire.service.rest.DialobQuestionnaireServiceRestAutoConfiguration;
+import io.dialob.rest.RestApiExceptionMapper;
+import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.settings.DialobSettings;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -44,30 +48,41 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.questionnaire.service.api.session.FormFinder;
-import io.dialob.security.tenant.CurrentTenant;
+import java.util.Iterator;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK,
   properties = {
     "tenantId=itest",
+    "dialob.security.enabled=true",
     "dialob.db.database-type=none",
+    "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+    "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+    "spring.autoconfigure.exclude[2]=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
+    "spring.autoconfigure.exclude[3]=org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
     "spring.security.oauth2.client.registration[0].provider=own",
     "spring.security.oauth2.client.registration[0].clientId=cl1",
     "spring.security.oauth2.client.registration[0].clientSecret=xxx",
@@ -81,11 +96,39 @@ import io.dialob.security.tenant.CurrentTenant;
   },
   classes = {
     AbstractSecuredRestTests.TestConfiguration.class,
-    QuestionnairesRestServiceControllerTest.TestConfiguration.class
+    QuestionnairesRestServiceControllerTest.TestConfiguration.class,
+    DialobQuestionnaireServiceRestAutoConfiguration.class,
+    DialobSessionEngineAutoConfiguration.class,
+    ApplicationAutoConfiguration.class,
+    RestApiExceptionMapper.class,
   })
-@EnableConfigurationProperties(ServerProperties.class)
+@EnableConfigurationProperties({
+  ServerProperties.class,
+  DialobSettings.class,
+  ComposerApplicationSettings.class,
+  QuestionnaireApplicationSettings.class,
+  AdminApplicationSettings.class,
+  ReviewApplicationSettings.class
+})
+@EnableWebSecurity
 public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
+  @MockBean
+  private CurrentTenant currentTenant;
+
+  @MockBean
+  private FunctionRegistry functionRegistry;
+
+  @MockBean
+  private QuestionnaireEventPublisher questionnaireEventPublisher;
+
+  public String tenantId = "00000000-0000-0000-0000-000000000000";
+
+  @BeforeEach
+  void setupTenant() {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+  }
 
   @Value("${server.servlet.context-path:/}")
   protected String contextPath;
@@ -200,6 +243,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest","questionnaires.delete"})
   public void canDeleteQuestionnairesWithAuthority() throws Exception {
+    doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
     mockMvc.perform(delete(uri("api", "questionnaires", "toberemoved")).params(tenantParam).with(csrf()))
       .andExpect(status().isOk());
     verify(questionnaireDatabaseMock()).delete(tenantId, "toberemoved");

@@ -17,10 +17,19 @@ package io.dialob.common;
 
 public final class Constants {
 
+  // Questionnaire cache (depends on redis)
   public static final String QUESTIONNAIRE_CACHE_NAME = "questionnaireCache";
+
+  // Form model cache
   public static final String FORM_CACHE_NAME = "formCache";
+
+  // Compiled Dialob forms cache
   public static final String PROGRAM_CACHE_NAME = "dialobProgramsCache";
+
+  // Session state cache
   public static final String SESSION_CACHE_NAME = "sessionCache";
+
+  // Cache session access permissions per user
   public static final String SESSION_ACCESS_CACHE_NAME = "sessionAccessCache";
 
   public static final String QUESTIONNAIRE_CACHE_MANAGER_BEAN = QUESTIONNAIRE_CACHE_NAME + "Manager";

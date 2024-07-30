@@ -1,6 +1,7 @@
 import { DialobItem } from "../dialob";
 import { DEFAULT_ITEM_CONFIG } from "../defaults";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const itemFactory = (item: DialobItem, props?: any) => {
   if (!item) {
     return null;

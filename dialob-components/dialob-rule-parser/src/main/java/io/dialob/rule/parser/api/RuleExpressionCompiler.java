@@ -15,7 +15,7 @@
  */
 package io.dialob.rule.parser.api;
 
-import org.jetbrains.annotations.NotNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.function.UnaryOperator;
 
@@ -32,7 +32,7 @@ public interface RuleExpressionCompiler {
     @Deprecated
     boolean compile(String expression, VariableFinder variableFinder, RuleExpressionCompilerCallback compilationResultListener);
 
-    @NotNull
+    @NonNull
     UnaryOperator<String> createIdRenamer(String oldId, String newId);
 
 }

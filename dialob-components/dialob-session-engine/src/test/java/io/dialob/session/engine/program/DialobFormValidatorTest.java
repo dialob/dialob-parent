@@ -23,7 +23,6 @@ import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobProgramFromFormCompiler;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

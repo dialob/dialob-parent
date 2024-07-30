@@ -15,33 +15,24 @@
  */
 package io.dialob.boot.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.inject.Inject;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.form.*;
+import io.dialob.api.rest.Errors;
+import io.dialob.boot.Application;
+import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.form.service.DialobFormServiceAutoConfiguration;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.form.service.api.FormVersionControlDatabase;
+import io.dialob.form.service.rest.DialobFormServiceRestAutoConfiguration;
+import io.dialob.integration.api.event.FormUpdatedEvent;
+import io.dialob.integration.queue.DialobIntegrationQueueAutoConfiguration;
+import io.dialob.questionnaire.service.api.session.FormFinder;
+import io.dialob.rest.RestApiExceptionMapper;
+import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
+import jakarta.inject.Inject;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -51,6 +42,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,27 +53,26 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableFormTag;
-import io.dialob.api.rest.Errors;
-import io.dialob.boot.Application;
-import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.integration.api.event.FormUpdatedEvent;
-import io.dialob.questionnaire.service.api.session.FormFinder;
-import io.dialob.security.tenant.CurrentTenant;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {
+  "dialob.security.enabled=true",
   "tenantId=itest",
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
@@ -98,15 +89,21 @@ import io.dialob.security.tenant.CurrentTenant;
   "spring.security.oauth2.client.provider[own].tokenUri=http://localhost:880",
   "spring.security.oauth2.client.provider[own].jwkSetUri=http://localhost:880",
   "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
-  "spring.autoconfigure.exclude[1]=io.dialob.db.sp.DialobDbSpAutoConfiguration",
-  "spring.autoconfigure.exclude[2]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+  "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
   "spring.data.redis.repositories.enabled=false",
   "management.health.db.enabled=false"
 })
 @ContextConfiguration(classes = {
   AbstractSecuredRestTests.TestConfiguration.class,
   Application.class,
-  FormsRestServiceControllerTest.TestConfiguration.class})
+  FormsRestServiceControllerTest.TestConfiguration.class,
+  DialobFormServiceRestAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  DialobFormServiceAutoConfiguration.class,
+  DialobIntegrationQueueAutoConfiguration.class,
+  ValidationAutoConfiguration.class,
+  RestApiExceptionMapper.class
+})
 @EnableConfigurationProperties(ServerProperties.class)
 public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
@@ -136,7 +133,11 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   private ListenerMock listenerMock;
 
   @MockBean
+  private CurrentTenant currentTenant;
+  @MockBean
   private FormVersionControlDatabase formVersionControlDatabase;
+  @MockBean
+  private FunctionRegistry functionRegistry;
 
   @BeforeEach
   public void resetMocks() {
@@ -145,6 +146,12 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Value("${server.context-path:/}")
   protected String contextPath;
+
+  @BeforeEach
+  void setupTenant() {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+  }
 
   @Override
   public String getContextPath() {
@@ -328,6 +335,8 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldAcceptUpdateByNameWhenForced() throws Exception {
+    doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
+
     Form formDocument = ImmutableForm.builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
@@ -393,6 +402,8 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldBeAbleToPutLatestTag() throws Exception {
+    when(currentTenant.getId()).thenReturn(tenantId);
+    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(true);
 
     // We need to return cfrs token on update action
@@ -413,6 +424,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldNotModifyIfUpdateIsNotDone() throws Exception {
+    when(currentTenant.getId()).thenReturn(tenantId);
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(false);
 
     // We need to return cfrs token on update action

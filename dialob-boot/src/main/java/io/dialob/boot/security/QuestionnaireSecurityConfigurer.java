@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.RequestParameterTenantScopeFilter;
@@ -23,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -43,9 +43,7 @@ public class QuestionnaireSecurityConfigurer extends WebUISecurityConfigurer {
     // @formatter:off
     return http
       .securityMatcher(requestMatcher())
-      .authorizeHttpRequests()
-        .anyRequest().permitAll()
-        .and();
+      .authorizeHttpRequests(customizer -> customizer.anyRequest().permitAll());
     // @formatter:on
   }
 

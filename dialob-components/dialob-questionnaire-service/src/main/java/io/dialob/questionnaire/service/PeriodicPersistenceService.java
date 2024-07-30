@@ -15,14 +15,7 @@
  */
 package io.dialob.questionnaire.service;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.springframework.context.event.EventListener;
-import org.springframework.lang.NonNull;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -31,6 +24,12 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class PeriodicPersistenceService {
@@ -57,7 +56,7 @@ public class PeriodicPersistenceService {
     this.scheduler = taskScheduler;
     this.settings = settings;
     this.currentTenant = currentTenant;
-    LOGGER.debug("Periodic Persistence Service: activated");
+    LOGGER.info("Periodic Persistence Service: activated");
   }
 
   @EventListener

@@ -15,10 +15,12 @@
  */
 package io.dialob.questionnaire.service;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableActions;
 import io.dialob.common.Constants;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -28,26 +30,24 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@Slf4j
 public class QuestionnaireSessionProcessingService implements ActionProcessingService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessingService.class);
 
   private final QuestionnaireSessionService questionnaireSessionService;
 
   private final Timer processingTime;
 
   private final Counter numberOfFailures;
+
+  private final Counter numberOfExecutions;
 
   private final Timer updateTime;
 
@@ -71,6 +71,11 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
       .description("Number of failed actions")
       .register(meterRegistry);
 
+    this.numberOfExecutions = Counter
+      .builder("dialob.session.actions.count")
+      .description("Number of action executions")
+      .register(meterRegistry);
+
     this.processingTime = Timer
       .builder("dialob.session.actions.processingTime")
       .description("Actions processing time")
@@ -92,36 +97,56 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   @Override
   @Deprecated
   public Actions answerQuestion(@NonNull final String questionnaireId, String revision, @NonNull final List<Action> actions) {
+    this.numberOfExecutions.increment();
     return this.processingTime.record(() -> {
       try {
-        final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);
-        if (session == null) {
-          throw new DocumentNotFoundException(String.format("Could not find questionnaire %s", questionnaireId));
-        }
-        if (session.isCompleted()) {
-          return ImmutableActions.builder().rev(session.getRev()).build();
-        }
-        final QuestionnaireSession.DispatchActionsResult response = session.dispatchActions(revision, actions);
-        if (response.isDidComplete()) {
-          // when completed Note! save method updates also cache
-          questionnaireSessionSaveService.save(session);
-          session.getSessionId().ifPresent(sessionId -> eventPublisher.completed(session.getTenantId(), sessionId));
-        } else {
-          // normal
-          this.storeSessionIntoCache(questionnaireId, session);
-        }
-        return response.getActions();
+        int retries = 5;
+        Actions returnActions = null;
+        do {
+          try {
+            returnActions = runUpdate(questionnaireId, revision, actions);
+            break;
+          } catch (DocumentConflictException e) {
+            LOGGER.warn("Update conflict on {}.. retry update {}", questionnaireId, retries);
+            if (--retries <= 0) {
+              throw e;
+            }
+          } catch (Exception e) {
+            throw e;
+          }
+        } while (retries > 0);
+        return returnActions;
       } catch (Exception e) {
         numberOfFailures.increment();
-        LOGGER.error("Action processing failure on questionnaireId {} message: {}", questionnaireId, e.getMessage(), e);
+        LOGGER.error("Action processing failure on questionnaireId {} error: {}", questionnaireId, e.getMessage(), e);
         throw e;
       }
     });
   }
 
-  @Nonnull
+  private Actions runUpdate(String questionnaireId, String revision, List<Action> actions) {
+    final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);
+    if (session == null) {
+      throw new DocumentNotFoundException(String.format("Could not find questionnaire %s", questionnaireId));
+    }
+    if (session.isCompleted()) {
+      return ImmutableActions.builder().rev(session.getRev()).build();
+    }
+    final QuestionnaireSession.DispatchActionsResult response = session.dispatchActions(revision, actions);
+    if (response.isDidComplete()) {
+      // when completed Note! save method updates also cache
+      questionnaireSessionSaveService.save(session);
+      session.getSessionId().ifPresent(sessionId -> eventPublisher.completed(session.getTenantId(), sessionId));
+      return response.getActions();
+    }
+    // normal
+    this.storeSessionIntoCache(questionnaireId, session);
+    return response.getActions();
+  }
+
+  @NonNull
   @Override
-  public QuestionnaireSession computeSessionUpdate(@Nonnull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession, QuestionnaireSession> updateFunction) {
+  public QuestionnaireSession computeSessionUpdate(@NonNull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession, QuestionnaireSession> updateFunction) {
     return this.updateTime.record(() -> {
       try {
         final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);

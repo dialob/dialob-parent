@@ -1,13 +1,17 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Alert, Box, TextField, Typography } from "@mui/material";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useEditor } from "../../editor";
 import { useComposer } from "../../dialob";
+import { getErrorSeverity } from "../../utils/ErrorUtils";
+import { Warning } from "@mui/icons-material";
+import { ErrorMessage } from "../ErrorComponents";
 
 const DefaultValueEditor: React.FC = () => {
-  const { editor } = useEditor();
+  const { editor, setActiveItem } = useEditor();
   const { updateItem } = useComposer();
   const item = editor.activeItem;
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.message === 'INVALID_DEFAULT_VALUE');
   const [defaultValue, setDefaultValue] = React.useState<string>(item?.defaultValue || '');
 
   React.useEffect(() => {
@@ -15,12 +19,17 @@ const DefaultValueEditor: React.FC = () => {
   }, [item]);
 
   React.useEffect(() => {
-    if (item && defaultValue !== '') {
+    if (item && defaultValue !== item?.defaultValue) {
+      if (defaultValue === '' && item?.defaultValue === undefined) {
+        return;
+      }
       const id = setTimeout(() => {
         updateItem(item?.id, 'defaultValue', defaultValue);
-      }, 1000);
+        setActiveItem({ ...item, defaultValue });
+      }, 300);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   if (!item) {
@@ -31,8 +40,11 @@ const DefaultValueEditor: React.FC = () => {
     <Box>
       <Typography><FormattedMessage id='dialogs.options.default.set' /></Typography>
       <TextField variant='outlined' value={defaultValue} onChange={(e) => setDefaultValue(e.target.value)} />
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      </Alert>)}
     </Box>
   );
 }
 
-export default DefaultValueEditor;
+export { DefaultValueEditor };

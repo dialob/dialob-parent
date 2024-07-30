@@ -15,16 +15,15 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface NeOperator<T> extends EqOperator<T> {
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     Boolean result = EqOperator.super.eval(evalContext);
     if (result == null) {
       return null;

@@ -15,20 +15,19 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 
 @Value.Immutable
 public interface NegOperatorDecimal extends NegOperator {
-  default Object neg(@NotNull Object value) {
+  default Object neg(@NonNull Object value) {
     return ((BigDecimal)value).negate();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.DECIMAL;

@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.ApiKeyAuthoritiesProvider;
@@ -31,9 +32,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
@@ -119,20 +121,18 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
   protected HttpSecurity configureAuthentication(HttpSecurity http) throws Exception {
     // Disable authentication
     return http
-      .sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and()
-      .logout().disable();
+      .sessionManagement((configurer) -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .logout(AbstractHttpConfigurer::disable);
   }
 
   @Override
   protected HttpSecurity configureCsrf(HttpSecurity http) throws Exception {
-    return http.csrf().disable();
+    return http.csrf(AbstractHttpConfigurer::disable);
   }
 
   @Override
   protected HttpSecurity configureFrameOptions(HttpSecurity http) throws Exception {
-    return http.headers().frameOptions().disable().and();
+    return http.headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
   }
 
   @Override

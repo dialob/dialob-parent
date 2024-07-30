@@ -15,13 +15,12 @@
  */
 package io.dialob.tenant.service.rest;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.lang.NonNull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
+
+import java.util.Arrays;
+import java.util.List;
 
 class FixedTenantsProvider implements TenantsProvider {
 

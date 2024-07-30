@@ -15,11 +15,11 @@
  */
 package io.dialob.integration.api.event;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface FormEvent extends TenantScopedEvent {
 
-  @Nonnull
+  @NonNull
   String getFormId();
 
 }

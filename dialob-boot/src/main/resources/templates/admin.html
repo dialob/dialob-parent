@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout :: common_content(null,~{::applicationContent},null,~{::script})">
+      th:replace="~{layout :: common_content(null,~{::applicationContent},null,~{::script})}">
 <body>
   <div th:fragment="applicationContent" id="root">
     <div class="ui">
@@ -13,6 +13,6 @@
 </body>
 
 <script th:each="javascriptFile: ${javascriptFiles}" type="text/javascript" th:src="${javascriptFile.value}"></script>
-<script type="text/javascript" th:replace="assetManifestLoader :: assetLoading"></script>
+<script type="text/javascript" th:replace="~{assetManifestLoader :: assetLoading}"></script>
 
 </html>

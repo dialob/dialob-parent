@@ -11,6 +11,7 @@ export const COPY_ITEM = 'composer/COPY_ITEM';
 export const SHOW_ITEM_OPTIONS = 'composer/SHOW_ITEM_OPTIONS';
 export const HIDE_ITEM_OPTIONS = 'composer/HIDE_ITEM_OPTIONS';
 export const CREATE_VALUESET = 'composer/CREATE_VALUESET';
+export const DELETE_VALUESET = 'composer/DELETE_VALUESET';
 export const MAKE_VALUESET_GLOBAL = 'composer/MAKE_VALUESET_GLOBAL';
 export const COPY_VALUESET_LOCAL = 'composer/COPY_VALUESET_LOCAL';
 export const CREATE_VALUESET_ENTRY = 'composer/CREATE_VALUESET_ENTRY';

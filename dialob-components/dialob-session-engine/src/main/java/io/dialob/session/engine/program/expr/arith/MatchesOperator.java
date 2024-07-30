@@ -15,17 +15,16 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface MatchesOperator extends InfixOperator<Boolean> {
 
   @Override
-  default Boolean eval(@Nonnull EvalContext evalContext) {
+  default Boolean eval(@NonNull EvalContext evalContext) {
     String match = (String) getLhs().eval(evalContext);
     String pattern = (String) getRhs().eval(evalContext);
     if (match == null || pattern == null) {
@@ -34,7 +33,7 @@ public interface MatchesOperator extends InfixOperator<Boolean> {
     return match.matches(pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { EditorAction } from './actions';
-import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType} from './types';
+import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType, VariableTabType } from './types';
 import { DialobItem } from '../dialob';
 
 const setActivePage = (state: EditorState, page: DialobItem): void => {
@@ -12,7 +12,7 @@ const setActiveFormLanguage = (state: EditorState, language: string): void => {
 }
 
 const setErrors = (state: EditorState, errors: EditorError[]): void => {
-  state.errors.push(...errors);
+  state.errors = errors;
 }
 
 const clearErrors = (state: EditorState): void => {
@@ -39,6 +39,10 @@ const setActiveList = (state: EditorState, listId?: string): void => {
   state.activeList = listId;
 }
 
+const setActiveVariableTab = (state: EditorState, tab?: VariableTabType): void => {
+  state.activeVariableTab = tab;
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -59,6 +63,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setHighlightedItem(state, action.item);
     } else if (action.type === 'setActiveList') {
       setActiveList(state, action.listId);
+    } else if (action.type === 'setActiveVariableTab') {
+      setActiveVariableTab(state, action.tab);
     }
   });
   return newState;

@@ -1,31 +1,35 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Papa from 'papaparse';
-import FileSaver from 'file-saver';
 import { Add, Download, Edit, KeyboardArrowDown, Refresh, Upload, Warning } from '@mui/icons-material';
-import { Alert, AlertColor, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem, Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Alert, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem,
+  Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography
+} from '@mui/material';
 import { useEditor } from '../../editor';
 import { ValueSet, useComposer } from '../../dialob';
 import { generateValueSetId } from '../../dialob/reducer';
-import { StyledTable } from '../TableEditorComponents';
+import { BorderedTable } from '../TableEditorComponents';
 import ChoiceList from '../ChoiceList';
 import ConvertConfirmationDialog from '../../dialogs/ConvertConfirmationDialog';
 import UploadValuesetDialog from '../../dialogs/UploadValuesetDialog';
 import GlobalList from '../GlobalList';
-import { ErrorMessage } from '../../utils/ErrorUtils';
+import { downloadValueSet } from '../../utils/ParseUtils';
+import { ErrorMessage } from '../ErrorComponents';
+import { getErrorSeverity } from '../../utils/ErrorUtils';
+import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 
 
 const ChoiceEditor: React.FC = () => {
-  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem } = useComposer();
+  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteLocalValueSet } = useComposer();
   const { editor, setActiveItem, setItemOptionsActiveTab, setActiveList } = useEditor();
   const item = editor.activeItem;
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const formLanguages = form.metadata.languages;
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.valueSetId);
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
-  const itemErrors = editor.errors.filter(e => e.itemId === item?.id);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
@@ -42,12 +46,23 @@ const ChoiceEditor: React.FC = () => {
 
   const handleAddValueSetEntry = () => {
     if (currentValueSet) {
-      const newEntry = {
-        id: 'choice' + (currentValueSet.entries.length + 1),
-        label: {},
-      };
-      addValueSetEntry(currentValueSet.id, newEntry);
-      setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+      if (!currentValueSet.entries) {
+        const newEntry = {
+          id: 'choice1',
+          label: {}
+        }
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+        scrollToChoiceItem();
+      } else {
+        const newEntry = {
+          id: 'choice' + (currentValueSet.entries?.length + 1),
+          label: {},
+        };
+        addValueSetEntry(currentValueSet.id, newEntry);
+        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+        scrollToChoiceItem();
+      }
     }
   }
 
@@ -66,8 +81,9 @@ const ChoiceEditor: React.FC = () => {
       const newGvsName = 'untitled' + (newGvsIndex + 1);
       const newGvsId = generateValueSetId(form);
       // remove rules when converting to global list
-      const newEntries = currentValueSet.entries.map(entry => { return { id: entry.id, label: entry.label } });
+      const newEntries = currentValueSet.entries?.map(entry => { return { id: entry.id, label: entry.label } });
       createValueSet(null, newEntries);
+      deleteLocalValueSet(currentValueSet.id);
       if (newGvsId) {
         setGlobalValueSetName(newGvsId, newGvsName);
         updateItem(item?.id, 'valueSetId', newGvsId);
@@ -94,24 +110,6 @@ const ChoiceEditor: React.FC = () => {
     }
   }
 
-  const downloadValueSet = () => {
-    if (!currentValueSet) {
-      return;
-    }
-    const entries = currentValueSet?.entries;
-    const result: { [key: string]: any }[] = [];
-    entries.forEach(e => {
-      let entry: { [key: string]: any } = { ID: e.id };
-      for (const lang in e.label) {
-        entry[lang] = e.label[lang];
-      }
-      result.push(entry);
-    });
-    const csv = Papa.unparse(result);
-    const blob = new Blob([csv], { type: 'text/csv' });
-    FileSaver.saveAs(blob, `valueSet-${currentValueSet.id}.csv`);
-  }
-
   const editGlobalList = (listId?: string) => {
     setActiveItem(undefined);
     setItemOptionsActiveTab(undefined);
@@ -130,7 +128,8 @@ const ChoiceEditor: React.FC = () => {
 
   return (
     <>
-      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
+      <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
+        currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
       <ConvertConfirmationDialog
         type={dialogType}
         onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
@@ -164,7 +163,7 @@ const ChoiceEditor: React.FC = () => {
                 setAnchorEl(null);
               }}>
                 <Add fontSize='small' color='success' />
-                <Typography>Add new list</Typography>
+                <Typography><FormattedMessage id='dialogs.options.choices.create.global' /></Typography>
               </ListItemButton>
             </List>
           </Popover>
@@ -173,26 +172,28 @@ const ChoiceEditor: React.FC = () => {
           </Button>
         </Box>
         <TableContainer>
-          <StyledTable>
+          <BorderedTable>
             <TableHead>
               <TableRow>
                 <TableCell width='20%' align='center'>
                   <IconButton onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
                   <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                  <IconButton onClick={downloadValueSet}><Download /></IconButton>
+                  <IconButton onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
                 </TableCell>
-                <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+                <TableCell width='30%' sx={{ p: 1 }}>
+                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography>
+                </TableCell>
                 {formLanguages?.map(lang => (
                   <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
                     <Typography fontWeight='bold'>
-                      <FormattedMessage id='dialogs.options.text' /> - <FormattedMessage id={`locales.${lang}`} />
+                      <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                     </Typography>
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
-          </StyledTable>
+          </BorderedTable>
         </TableContainer>
       </> : <Box>
         <Typography><FormattedMessage id='dialogs.options.choices.select.global' /></Typography>
@@ -215,13 +216,11 @@ const ChoiceEditor: React.FC = () => {
         </Button>
       </Box>
       }
-      {
-        itemErrors.map((error, index) => <Alert key={index} severity={error.severity.toLowerCase() as AlertColor} sx={{ mt: 2 }} icon={<Warning />}>
-          <Typography><ErrorMessage error={error} /></Typography>
-        </Alert>)
-      }
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      </Alert>)}
     </>
   );
 }
 
-export default ChoiceEditor;
+export { ChoiceEditor };

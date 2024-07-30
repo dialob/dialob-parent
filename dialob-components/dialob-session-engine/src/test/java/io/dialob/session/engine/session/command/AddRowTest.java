@@ -21,6 +21,7 @@ import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,15 +39,15 @@ public class AddRowTest {
     assertNull(itemState.getValue());
 
     itemState = addRow.update(context, itemState);
-    assertEquals(1, ((List<Integer>)itemState.getValue()).size());
-    org.assertj.core.api.Assertions.assertThat(((List<Integer>)itemState.getValue())).containsExactly(
-      0
+    assertEquals(1, ((List<BigInteger>)itemState.getValue()).size());
+    org.assertj.core.api.Assertions.assertThat(((List<BigInteger>)itemState.getValue())).containsExactly(
+      BigInteger.ZERO
     );
 
     itemState = addRow.update(context, itemState);
-    org.assertj.core.api.Assertions.assertThat(((List<Integer>)itemState.getValue())).containsExactly(
-      0,
-      1
+    org.assertj.core.api.Assertions.assertThat(((List<BigInteger>)itemState.getValue())).containsExactly(
+      BigInteger.ZERO,
+      BigInteger.ONE
     );
   }
 

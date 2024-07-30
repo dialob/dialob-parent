@@ -15,17 +15,16 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
-import java.net.InetAddress;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Actions;
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
+
+import java.net.InetAddress;
+import java.util.Optional;
 
 public class QuestionnaireEventPublisher {
 
@@ -48,33 +47,33 @@ public class QuestionnaireEventPublisher {
     return ResysSecurityConstants.DEFAULT_TENANT;
   }
 
-  public QuestionnaireEventPublisher(@Nonnull EventPublisher applicationEventPublisher, CurrentTenant currentTenant) {
+  public QuestionnaireEventPublisher(@NonNull EventPublisher applicationEventPublisher, CurrentTenant currentTenant) {
     this.applicationEventPublisher = applicationEventPublisher;
     this.currentTenant = currentTenant;
   }
 
-  public void opened(@Nonnull String questionnaireId) {
+  public void opened(@NonNull String questionnaireId) {
     applicationEventPublisher.publish(ImmutableQuestionnaireOpenedEvent.builder()
       .tenant(getTenant())
       .questionnaireId(questionnaireId)
       .build());
   }
 
-  public void created(@Nonnull String questionnaireId) {
+  public void created(@NonNull String questionnaireId) {
     applicationEventPublisher.publish(ImmutableQuestionnaireCreatedEvent.builder()
       .tenant(getTenant())
       .questionnaireId(questionnaireId)
       .build());
   }
 
-  public void completed(String tenantId, @Nonnull String questionnaireId) {
+  public void completed(String tenantId, @NonNull String questionnaireId) {
     applicationEventPublisher.publish(ImmutableQuestionnaireCompletedEvent.builder()
       .tenant(getTenant(tenantId))
       .questionnaireId(questionnaireId)
       .build());
   }
 
-  public void actions(@Nonnull String questionnaireId, @Nonnull Actions actions) {
+  public void actions(@NonNull String questionnaireId, @NonNull Actions actions) {
     applicationEventPublisher.publish(ImmutableQuestionnaireActionsEvent.builder()
       .tenant(getTenant())
       .questionnaireId(questionnaireId)
@@ -82,7 +81,7 @@ public class QuestionnaireEventPublisher {
       .build());
   }
 
-  public void clientConnected(@Nonnull String questionnaireId, InetAddress client) {
+  public void clientConnected(@NonNull String questionnaireId, InetAddress client) {
     applicationEventPublisher.publish(ImmutableQuestionnaireClientConnectedEvent.builder()
       .tenant(getTenant())
       .questionnaireId(questionnaireId)
@@ -90,7 +89,7 @@ public class QuestionnaireEventPublisher {
       .build());
   }
 
-  public void clientDisconnected(@Nonnull String questionnaireId, InetAddress client, int closeStatus) {
+  public void clientDisconnected(@NonNull String questionnaireId, InetAddress client, int closeStatus) {
     applicationEventPublisher.publish(ImmutableQuestionnaireClientDisconnectedEvent.builder()
       .tenant(getTenant())
       .questionnaireId(questionnaireId)

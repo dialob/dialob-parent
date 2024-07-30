@@ -15,30 +15,24 @@
  */
 package io.dialob.boot.rest;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import javax.inject.Inject;
-
-import io.dialob.integration.redis.ProvideTestRedis;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.proto.Action;
+import io.dialob.api.proto.ActionsFactory;
+import io.dialob.api.proto.ImmutableAction;
+import io.dialob.api.questionnaire.ContextValue;
+import io.dialob.api.questionnaire.ImmutableQuestionnaire;
+import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.api.rest.IdAndRevision;
+import io.dialob.common.Constants;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import jakarta.inject.Inject;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,26 +55,24 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.util.*;
+import java.util.function.Consumer;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.proto.Action;
-import io.dialob.api.proto.ActionsFactory;
-import io.dialob.api.proto.ImmutableAction;
-import io.dialob.api.questionnaire.ContextValue;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.api.rest.IdAndRevision;
-import io.dialob.common.Constants;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AbstractFormRepositoryTests implements ProvideTestRedis {
+public class AbstractFormRepositoryTests {
 
   public static final NoExceptionResponseErrorHandler NO_EXCEPTION_RESPONSE_ERROR_HANDLER = new NoExceptionResponseErrorHandler();
 

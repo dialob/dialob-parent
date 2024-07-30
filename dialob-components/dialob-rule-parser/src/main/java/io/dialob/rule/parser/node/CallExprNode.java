@@ -1,10 +1,10 @@
 package io.dialob.rule.parser.node;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,25 +16,25 @@ public class CallExprNode extends NodeBase {
 
   private List<NodeBase> arguments = new ArrayList<>();
 
-  @NotNull
+  @NonNull
   private final NodeOperator nodeOperator;
 
-  public CallExprNode(NodeBase parent, @NotNull NodeOperator nodeOperator, Span span) {
+  public CallExprNode(NodeBase parent, @NonNull NodeOperator nodeOperator, Span span) {
     this(parent, nodeOperator, null, span);
   }
 
-  public CallExprNode(NodeBase parent, @NotNull NodeOperator nodeOperator, ValueType type, Span span) {
+  public CallExprNode(NodeBase parent, @NonNull NodeOperator nodeOperator, ValueType type, Span span) {
     super(parent, span, type);
     this.nodeOperator = Objects.requireNonNull(nodeOperator);
   }
 
-  public CallExprNode addSubnode(@NotNull NodeBase node) {
+  public CallExprNode addSubnode(@NonNull NodeBase node) {
     node.setParent(this);
     arguments.add(node);
     return this;
   }
 
-  @NotNull
+  @NonNull
   public NodeOperator getNodeOperator() {
     return nodeOperator;
   }
@@ -75,12 +75,12 @@ public class CallExprNode extends NodeBase {
   }
 
   @Override
-  @NotNull
+  @NonNull
   public List<NodeBase> getSubnodes() {
     return arguments;
   }
 
-  public NodeBase accept(@NotNull ASTVisitor visitor) {
+  public NodeBase accept(@NonNull ASTVisitor visitor) {
     ASTVisitor subvisitor = visitor.visitCallExpr(this);
     if (subvisitor != null) {
       int i = 0;
@@ -102,7 +102,7 @@ public class CallExprNode extends NodeBase {
   }
 
   @Override
-  @NotNull
+  @NonNull
   public Map<String, ValueType> getDependencies() {
     Map<String, ValueType> dependencies = new HashMap<>();
     for (NodeBase argument : arguments) {

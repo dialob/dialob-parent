@@ -15,19 +15,17 @@
  */
 package io.dialob.security.spring.filter;
 
-import static java.util.Objects.requireNonNull;
-
-import java.io.IOException;
-import java.util.Collections;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.key.ApiKey;
+import io.dialob.security.key.ServletRequestApiKeyExtractor;
+import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
+import io.dialob.security.spring.apikey.ApiKeyAuthenticationToken;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,10 +36,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ServletRequestApiKeyExtractor;
-import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
-import io.dialob.security.spring.apikey.ApiKeyAuthenticationToken;
+import java.io.IOException;
+import java.util.Collections;
+
+import static java.util.Objects.requireNonNull;
 
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 

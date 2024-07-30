@@ -15,18 +15,16 @@
  */
 package io.dialob.session.boot;
 
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.NonNull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 public class SessionRestTenantFromRequestResolver implements TenantFromRequestResolver {
 
@@ -38,25 +36,27 @@ public class SessionRestTenantFromRequestResolver implements TenantFromRequestRe
 
   @Override
   public Optional<Tenant> resolveTenantFromRequest(HttpServletRequest request) {
-    String pathInfo = request.getRequestURI();
-    if (StringUtils.isNotBlank(pathInfo)) {
-      String sessionId = getSessionId(pathInfo);
+    String sessionId = getSessionId(request);
+    if (StringUtils.isNotBlank(sessionId)) {
       try {
         return getQuestionnaireSession(sessionId)
           .map(QuestionnaireSession::getTenantId).map(tId -> ImmutableTenant.of(tId, Optional.empty()));
-      } catch(DocumentNotFoundException dnfe) {
-        return Optional.empty();
+      } catch (DocumentNotFoundException dnfe) {
+        /* fall throught */;
       }
     }
     return Optional.empty();
   }
 
-  protected String getSessionId(String pathInfo) {
-    if(pathInfo.startsWith("/session/socket/-/")) {
-      pathInfo = pathInfo.substring(18);
-      return StringUtils.substringBefore(pathInfo, "/");
+  protected String getSessionId(HttpServletRequest request) {
+    var sessionId = request.getParameter("sessionId");
+    if (StringUtils.isBlank(sessionId)) {
+      sessionId = StringUtils.substringAfterLast(request.getPathInfo(), "/");
     }
-    return StringUtils.substringAfterLast(pathInfo, "/");
+    if (!StringUtils.containsOnly(sessionId, "0123456789abcdefABCDEF")) {
+      return null;
+    }
+    return sessionId;
   }
 
   @NonNull

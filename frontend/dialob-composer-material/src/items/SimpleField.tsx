@@ -6,13 +6,13 @@ import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, Visibilit
 import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
-  const hasIndicators = item.description || item.valueSetId || item.validations;
+  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
@@ -25,7 +25,7 @@ const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props 
       setHighlighted(false);
     }, 3000);
     return () => clearTimeout(id);
-  }, [editor.highlightedItem])
+  }, [editor.highlightedItem, item.id])
 
   return (
     <Element name={item.id}>

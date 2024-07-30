@@ -1,48 +1,17 @@
 import React from "react";
-import { useTheme } from "@mui/material";
-import { EditorError, ErrorSeverity } from "../editor";
-import { DialobItem } from "../dialob";
+import { AlertColor, useTheme } from "@mui/material";
+import { ComposerStatus, EditorError, ErrorSeverity } from "../editor";
 import { Check, Info, Warning } from "@mui/icons-material";
-import { useIntl } from "react-intl";
-import { PreTextIcon } from "../views/tree/NavigationTreeItem";
+import { PreTextIcon } from "../components/tree/NavigationTreeItem";
 
-export const ErrorType: React.FC<{ error: EditorError }> = ({ error }) => {
-  const intl = useIntl();
-  const resolveType = () => {
-    if (error.type === 'GENERAL') {
-      if (error.message === 'INVALID_DEFAULT_VALUE') {
-        return intl.formatMessage({ id: 'errors.type.DEFAULT_VALUE' });
-      }
-      return '';
-    }
-    const label = `errors.type.${error.type}`;
-    const stringExists = !!intl.messages[label];
-    if (stringExists) {
-      return intl.formatMessage({ id: label });
-    }
-    return error.type;
+const getDominantSeverity = (errors: EditorError[] | undefined): ErrorSeverity | undefined => {
+  if (!errors || errors.length === 0) {
+    return undefined;
   }
-  return <>{resolveType() + ' ' + intl.formatMessage({ id: 'errors.title' })}</>;
-}
-
-export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {
-  const intl = useIntl();
-  if (error.message === 'VALUESET_DUPLICATE_KEY') {
-    return intl.formatMessage({ id: 'errors.message.VALUESET_DUPLICATE_KEY' }, { expression: error.expression });
-  }
-  const label = `errors.message.${error.message}`;
-  const stringExists = !!intl.messages[label];
-  if (stringExists) {
-    return intl.formatMessage({ id: label });
-  }
-  return error.message;
-}
-
-const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined => {
-  const hasFatal = errors.some(error => error.severity === 'FATAL');
-  const hasError = errors.some(error => error.severity === 'ERROR');
-  const hasWarning = errors.some(error => error.severity === 'WARNING');
-  const hasInfo = errors.some(error => error.severity === 'INFO');
+  const hasFatal = errors.some(error => error.level === 'FATAL');
+  const hasError = errors.some(error => error.level === 'ERROR');
+  const hasWarning = errors.some(error => error.level === 'WARNING');
+  const hasInfo = errors.some(error => error.level === 'INFO');
   if (hasFatal) {
     return 'FATAL';
   }
@@ -58,12 +27,27 @@ const getDominantSeverity = (errors: EditorError[]): ErrorSeverity | undefined =
   return undefined;
 }
 
-const getItemErrorSeverity = (errors: EditorError[], itemId: string): ErrorSeverity | undefined => {
-  const itemErrors = errors.filter(error => error.itemId === itemId);
+const getItemErrorSeverity = (errors: EditorError[] | undefined, itemId: string): ErrorSeverity | undefined => {
+  const itemErrors = errors?.filter(error => error.itemId === itemId);
   return getDominantSeverity(itemErrors);
 }
 
-export const getErrorColor = (errors: EditorError[], itemId: string) => {
+export const getErrorSeverity = (error: EditorError): AlertColor => {
+  switch (error.level) {
+    case 'FATAL':
+      return 'error';
+    case 'ERROR':
+      return 'error';
+    case 'WARNING':
+      return 'warning';
+    case 'INFO':
+      return 'info';
+    default:
+      return 'info';
+  }
+}
+
+export const getItemErrorColor = (errors: EditorError[] | undefined, itemId: string) => {
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':
@@ -79,7 +63,7 @@ export const getErrorColor = (errors: EditorError[], itemId: string) => {
   }
 }
 
-export const useErrorColorSx = (errors: EditorError[], itemId: string): string | undefined => {
+export const useErrorColorSx = (errors: EditorError[] | undefined, itemId: string): string | undefined => {
   const theme = useTheme();
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
@@ -96,7 +80,24 @@ export const useErrorColorSx = (errors: EditorError[], itemId: string): string |
   }
 }
 
-export const getErrorIcon = (errors: EditorError[], itemId: string): React.ReactNode | undefined => {
+export const useErrorColor = (error: EditorError | undefined): string | undefined => {
+  const theme = useTheme();
+  if (error === undefined) {
+    return undefined;
+  }
+  switch (error.level) {
+    case 'FATAL':
+      return theme.palette.error.main;
+    case 'ERROR':
+      return theme.palette.error.main;
+    case 'WARNING':
+      return theme.palette.warning.main;
+    case 'INFO':
+      return theme.palette.info.main;
+  }
+}
+
+export const getErrorIcon = (errors: EditorError[] | undefined, itemId: string): React.ReactNode | undefined => {
   const itemErrorSeverity = getItemErrorSeverity(errors, itemId);
   switch (itemErrorSeverity) {
     case 'FATAL':
@@ -112,7 +113,7 @@ export const getErrorIcon = (errors: EditorError[], itemId: string): React.React
   }
 }
 
-export const getStatusIcon = (errors: EditorError[]): React.ReactElement => {
+export const getStatusIcon = (errors: EditorError[] | undefined): React.ReactElement => {
   const dominantSeverity = getDominantSeverity(errors);
   switch (dominantSeverity) {
     case 'FATAL':
@@ -125,5 +126,21 @@ export const getStatusIcon = (errors: EditorError[]): React.ReactElement => {
       return <Info color='info' fontSize='small' />;
     default:
       return <Check color='success' fontSize='small' />;
+  }
+}
+
+export const getStatus = (errors: EditorError[] | undefined): ComposerStatus => {
+  const dominantSeverity = getDominantSeverity(errors);
+  switch (dominantSeverity) {
+    case 'FATAL':
+      return 'FATAL';
+    case 'ERROR':
+      return 'ERROR';
+    case 'WARNING':
+      return 'WARNING';
+    case 'INFO':
+      return 'INFO';
+    default:
+      return 'OK';
   }
 }

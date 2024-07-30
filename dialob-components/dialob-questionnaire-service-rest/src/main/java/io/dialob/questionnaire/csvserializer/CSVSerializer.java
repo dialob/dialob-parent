@@ -15,31 +15,21 @@
  */
 package io.dialob.questionnaire.csvserializer;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.ArrayUtils;
-
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormItem;
-import io.dialob.api.form.FormValueSet;
-import io.dialob.api.form.FormValueSetEntry;
-import io.dialob.api.form.Variable;
+import io.dialob.api.form.*;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class CSVSerializer {

@@ -15,7 +15,7 @@ const ChoiceDeleteDialog: React.FC<{
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.confirmation.delete.choice.title' />
       </DialogTitle>
       <DialogContent>

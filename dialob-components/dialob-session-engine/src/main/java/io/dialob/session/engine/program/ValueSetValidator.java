@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.form.service.api.validation.FormValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,7 +74,7 @@ public class ValueSetValidator implements FormValidator {
     return result;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<FormValidationError> validate(Form form) {
     return form.getValueSets().stream().map(this::checkValueSet).flatMap(List::stream).collect(Collectors.toList());

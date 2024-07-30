@@ -15,15 +15,14 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.expr.OutputFormatter;
 import io.dialob.session.engine.session.AsyncFunctionCall;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
@@ -33,20 +32,20 @@ import java.util.stream.Stream;
 
 public interface EvalContext {
 
-  @Nonnull
-  Optional<ItemState> getItemState(@Nonnull ItemId itemId);
+  @NonNull
+  Optional<ItemState> getItemState(@NonNull ItemId itemId);
 
-  @Nonnull
-  Optional<ItemState> getOriginalItemState(@Nonnull ItemId itemId);
+  @NonNull
+  Optional<ItemState> getOriginalItemState(@NonNull ItemId itemId);
 
-  @Nonnull
-  Optional<ItemState> findPrototype(@Nonnull ItemId itemId);
+  @NonNull
+  Optional<ItemState> findPrototype(@NonNull ItemId itemId);
 
-  @Nonnull
-  Stream<ErrorState> findErrorPrototypes(@Nonnull ItemId itemId);
+  @NonNull
+  Stream<ErrorState> findErrorPrototypes(@NonNull ItemId itemId);
 
-  @Nonnull
-  Optional<ValueSetState> getValueSetState(@Nonnull ValueSetId valueSetId);
+  @NonNull
+  Optional<ValueSetState> getValueSetState(@NonNull ValueSetId valueSetId);
 
   @Nullable
   Object getItemValue(ItemId itemId);
@@ -59,36 +58,33 @@ public interface EvalContext {
 
   void registerUpdate(ErrorState newState, ErrorState oldState);
 
-  void registerUpdate(@Nonnull ValueSetState newState, ValueSetState oldState);
+  void registerUpdate(@NonNull ValueSetState newState, ValueSetState oldState);
 
-  void accept(@Nonnull UpdatedItemsVisitor visitor);
+  void accept(@NonNull UpdatedItemsVisitor visitor);
 
   String getLanguage();
 
   void setLanguage(String language);
 
-  @Nonnull
+  @NonNull
   Consumer<Event> getEventsConsumer();
 
   Collection<ErrorState> getErrorStates();
 
-  @Nonnull
+  @NonNull
   FunctionRegistry getFunctionRegistry();
 
-  @Nonnull
+  @NonNull
   default LocalDate today() {
-    return LocalDate.now(getClock());
+    return LocalDate.now();
   }
 
-  @Nonnull
+  @NonNull
   default LocalTime now() {
-    return LocalTime.now(getClock());
+    return LocalTime.now();
   }
 
-  @Nonnull
-  Clock getClock();
-
-  @Nonnull
+  @NonNull
   OutputFormatter getOutputFormatter();
 
   boolean isActivating();
@@ -101,7 +97,6 @@ public interface EvalContext {
 
   /**
    *
-   * @param targetId
    * @param asyncFunctionCall
    * @return id of update
    */
@@ -111,7 +106,7 @@ public interface EvalContext {
 
     @FunctionalInterface
     interface UpdatedSessionStateVisitor {
-      void visitLanguageChange(@Nonnull String original, @Nonnull String updated);
+      void visitLanguageChange(@NonNull String original, @NonNull String updated);
       default void end() {}
     }
 
@@ -137,7 +132,7 @@ public interface EvalContext {
 
     @FunctionalInterface
     interface AsyncFunctionCallVisitor {
-      void visitAsyncFunctionCall(@Nonnull AsyncFunctionCall asyncFunctionCall);
+      void visitAsyncFunctionCall(@NonNull AsyncFunctionCall asyncFunctionCall);
       default void end() {}
     }
 

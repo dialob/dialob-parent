@@ -15,8 +15,8 @@
  */
 package io.dialob.rule.parser;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.node.*;
-import org.jetbrains.annotations.NotNull;
 
 public class CloneVisitor implements ASTVisitor {
 
@@ -33,28 +33,28 @@ public class CloneVisitor implements ASTVisitor {
 
 
     @Override
-    public ASTVisitor visitCallExpr(@NotNull CallExprNode node) {
+    public ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
         builder = builder.callExprNode(node);
         return this;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public NodeBase endCallExpr(@NotNull CallExprNode node) {
+    public NodeBase endCallExpr(@NonNull CallExprNode node) {
         builder = builder.closeExpr();
         return node;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public NodeBase visitConstExpr(@NotNull ConstExprNode node) {
+    public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
         builder = builder.constExprNode(node).closeExpr();
         return node;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public NodeBase visitIdExpr(@NotNull IdExprNode node) {
+    public NodeBase visitIdExpr(@NonNull IdExprNode node) {
         builder = builder.idExprNode(node).closeExpr();
         return node;
     }

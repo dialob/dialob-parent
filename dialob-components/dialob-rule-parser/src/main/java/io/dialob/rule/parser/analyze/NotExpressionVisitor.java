@@ -15,23 +15,23 @@
  */
 package io.dialob.rule.parser.analyze;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.*;
-import org.jetbrains.annotations.NotNull;
 
 public class NotExpressionVisitor implements ASTVisitor {
 
     @Override
-    public ASTVisitor visitCallExpr(@NotNull CallExprNode node) {
+    public ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
         if (node.getNodeOperator().isNotOp()) {
             return null;
         }
         return this;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public NodeBase endCallExpr(@NotNull final CallExprNode node) {
+    public NodeBase endCallExpr(@NonNull final CallExprNode node) {
         if (node.getNodeOperator().isRelation() || node.getNodeOperator().isLogical() || node.getNodeOperator().getCategory() == NodeOperator.Category.FUNCTION) {
             if (node.getNodeOperator().getOperator().equals("not")) {
                 return node.getLhs();
@@ -47,9 +47,9 @@ public class NotExpressionVisitor implements ASTVisitor {
         return node;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public NodeBase visitConstExpr(@NotNull ConstExprNode node) {
+    public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
         if (node.getValueType() == ValueType.BOOLEAN) {
             Boolean value = (Boolean) node.getAsValueType();
             value = !value;
@@ -58,9 +58,9 @@ public class NotExpressionVisitor implements ASTVisitor {
         return node;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public NodeBase visitIdExpr(@NotNull IdExprNode node) {
+    public NodeBase visitIdExpr(@NonNull IdExprNode node) {
         if (node.getValueType() == ValueType.BOOLEAN) {
             return new ASTBuilder()
                     .callExprNode(NodeOperator.createNodeOperator("not"), ValueType.BOOLEAN, node.getSpan())

@@ -15,20 +15,7 @@
  */
 package io.dialob.boot.security;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-
 import com.nimbusds.jwt.proc.JWTProcessor;
-
 import io.dialob.boot.settings.AdminApplicationSettings;
 import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
@@ -38,12 +25,21 @@ import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.ApiKeyRequestMatcher;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class SecurityConfigurationTest {
 
 
-  @Configuration(proxyBeanMethods = false)
+  @org.springframework.boot.test.context.TestConfiguration(proxyBeanMethods = false)
   @EnableConfigurationProperties(ReviewApplicationSettings.class)
   public static class MockConfiguration {
 

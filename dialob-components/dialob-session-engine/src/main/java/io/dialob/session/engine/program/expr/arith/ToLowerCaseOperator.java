@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 @Value.Immutable
@@ -32,7 +32,7 @@ public interface ToLowerCaseOperator extends Expression {
   Expression getExpression();
 
   @Override
-  default String eval(@Nonnull EvalContext context) {
+  default String eval(@NonNull EvalContext context) {
     Object eval = getExpression().eval(context);
     if (eval == null) {
       return null;
@@ -40,13 +40,13 @@ public interface ToLowerCaseOperator extends Expression {
     return eval.toString().toLowerCase();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.STRING;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getExpression().getEvalRequiredConditions();

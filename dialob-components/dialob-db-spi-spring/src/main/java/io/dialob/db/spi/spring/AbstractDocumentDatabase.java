@@ -15,8 +15,8 @@
  */
 package io.dialob.db.spi.spring;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.springframework.data.annotation.Version;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 

@@ -15,35 +15,36 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.CannotReduceTypeException;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Period;
 
 public class Reducers {
 
-  public static final OperatorTemplate<Integer> INTEGER_OPERATOR_TEMPLATE = new OperatorTemplate<Integer>() {
+  public static final OperatorTemplate<BigInteger> INTEGER_OPERATOR_TEMPLATE = new OperatorTemplate<>() {
     @Override
-    public Reducer<Integer> add() {
+    public Reducer<BigInteger> add() {
       return Int.ADD;
     }
 
     @Override
-    public Reducer<Integer> sub() {
+    public Reducer<BigInteger> sub() {
       return Int.SUB;
     }
 
     @Override
-    public Reducer<Integer> mult() {
+    public Reducer<BigInteger> mult() {
       return Int.MULT;
     }
 
     @Override
-    public Reducer<Integer> div() {
+    public Reducer<BigInteger> div() {
       return Int.DIV;
     }
   };
@@ -121,8 +122,8 @@ public class Reducers {
     Reducer<T> div();
   }
 
-  @Nonnull
-  public static OperatorTemplate<?> ofType(@Nonnull ValueType valueType) {
+  @NonNull
+  public static OperatorTemplate<?> ofType(@NonNull ValueType valueType) {
     if (valueType == ValueType.DECIMAL) {
       return DECIMAL_OPERATOR_TEMPLATE;
     }
@@ -153,7 +154,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.PERIOD;
@@ -174,7 +175,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.DURATION;
@@ -207,40 +208,40 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.DECIMAL;
     }
   }
 
-  public enum Int implements Reducer<Integer> {
+  public enum Int implements Reducer<BigInteger> {
     ADD {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i + t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.add(t2);
       }
     },
     SUB {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i - t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.subtract(t2);
       }
     },
     DIV {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i / t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.divide(t2);
       }
     },
     MULT {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i * t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.multiply(t2);
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.INTEGER;
@@ -261,7 +262,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.BOOLEAN;
@@ -276,7 +277,7 @@ public class Reducers {
       }
     };
 
-    @Nonnull
+    @NonNull
     @Override
     public ValueType getValueType() {
       return ValueType.STRING;

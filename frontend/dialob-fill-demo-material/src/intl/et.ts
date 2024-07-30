@@ -5,6 +5,7 @@ const et = {
   'locale.sv': 'Svenska',
   'locale.en': 'English',
   'locale.et': 'Eesti',
+  'locale.ms': 'Malay',
 
   'theme': 'Teema'
 };

@@ -15,18 +15,17 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.AdminApplicationSettings;
 import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -36,32 +35,26 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Profile("ui")
 public class AdminSecurityConfigurer extends WebUISecurityConfigurer {
 
-  private final ApplicationEventPublisher applicationEventPublisher;
-
   public AdminSecurityConfigurer(@NonNull AdminApplicationSettings settings,
-                                 @NonNull ApplicationEventPublisher applicationEventPublisher,
                                  @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                  @NonNull AuthenticationStrategy authenticationStrategy) {
     super(settings.getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
-    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
     // @formatter:off
-    String contextPath = getContextPath();
-    contextPath = StringUtils.removeEnd(contextPath, "/");
+    var contextPath = StringUtils.removeEnd(getContextPath(), "/");
     return http
       .securityMatcher(requestMatcher())
-      .authorizeHttpRequests()
-      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger/**")).permitAll()
-      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources")).permitAll()
-      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources/**")).permitAll()
-      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-ui/**")).permitAll()
-      .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/webjars/**")).permitAll()
-      .requestMatchers(antMatcher(HttpMethod.GET,  "/_uuids")).hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
-      .requestMatchers(antMatcher(HttpMethod.GET,contextPath + "**")).hasAuthority(Permissions.MANAGER_VIEW)
-      .anyRequest().denyAll()
-      .and();
+      .authorizeHttpRequests(customizer -> customizer
+        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger/**")).permitAll()
+        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources")).permitAll()
+        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources/**")).permitAll()
+        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-ui/**")).permitAll()
+        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/webjars/**")).permitAll()
+        .requestMatchers(antMatcher(HttpMethod.GET,  "/_uuids")).hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
+        .requestMatchers(antMatcher(HttpMethod.GET,contextPath + "**")).hasAuthority(Permissions.MANAGER_VIEW)
+        .anyRequest().denyAll());
     // @formatter:on
   }
 

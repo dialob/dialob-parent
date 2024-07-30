@@ -19,11 +19,10 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.settings.CorsSettings;
 import io.dialob.settings.SessionSettings;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.cors.CorsConfiguration;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +42,8 @@ class TenantBasedCorsConfigurationSourceTest {
 
     assertNull(source.getCorsConfiguration(request));
 
-    verify(request).getRequestURI();
+    verify(request).getParameter("sessionId");
+    verify(request).getPathInfo();
     verifyNoMoreInteractions(request, questionnaireSessionService);
   }
 
@@ -66,7 +66,8 @@ class TenantBasedCorsConfigurationSourceTest {
     assertNotNull(corsConfiguration);
     assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
 
-    verify(request).getRequestURI();
+    verify(request).getParameter("sessionId");
+    verify(request).getPathInfo();
     verifyNoMoreInteractions(request, questionnaireSessionService);
   }
 
@@ -86,16 +87,16 @@ class TenantBasedCorsConfigurationSourceTest {
     TenantBasedCorsConfigurationSource source = new TenantBasedCorsConfigurationSource(sessionSettings.getRest().getCors()::get, tenantFromRequestResolver);
 
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn("/session-id");
-    when(questionnaireSessionService.findOne("session-id")).thenReturn(questionnaireSession);
+    when(request.getParameter("sessionId")).thenReturn("aabb2233");
+    when(questionnaireSessionService.findOne("aabb2233")).thenReturn(questionnaireSession);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id");
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
     assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
 
-    verify(request).getRequestURI();
-    verify(questionnaireSessionService).findOne("session-id");
+    verify(request).getParameter("sessionId");
+    verify(questionnaireSessionService).findOne("aabb2233");
     verify(questionnaireSession).getTenantId();
     verifyNoMoreInteractions(request, questionnaireSessionService,questionnaireSession);
   }
@@ -115,15 +116,15 @@ class TenantBasedCorsConfigurationSourceTest {
     TenantBasedCorsConfigurationSource source = new TenantBasedCorsConfigurationSource(sessionSettings.getRest().getCors()::get, tenantFromRequestResolver);
 
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn("/session-id");
-    when(questionnaireSessionService.findOne("session-id")).thenReturn(questionnaireSession);
+    when(request.getParameter("sessionId")).thenReturn("abc123");
+    when(questionnaireSessionService.findOne("abc123")).thenReturn(questionnaireSession);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id-unk");
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNull(corsConfiguration);
 
-    verify(request).getRequestURI();
-    verify(questionnaireSessionService).findOne("session-id");
+    verify(request).getParameter("sessionId");
+    verify(questionnaireSessionService).findOne("abc123");
     verify(questionnaireSession).getTenantId();
     verifyNoMoreInteractions(request, questionnaireSessionService,questionnaireSession);
   }
@@ -146,16 +147,16 @@ class TenantBasedCorsConfigurationSourceTest {
     TenantBasedCorsConfigurationSource source = new TenantBasedCorsConfigurationSource(sessionSettings.getRest().getCors()::get, tenantFromRequestResolver);
 
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn("/session-id");
-    when(questionnaireSessionService.findOne("session-id")).thenReturn(questionnaireSession);
+    when(request.getParameter("sessionId")).thenReturn("123abc");
+    when(questionnaireSessionService.findOne("123abc")).thenReturn(questionnaireSession);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id-none");
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
     assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
 
-    verify(request).getRequestURI();
-    verify(questionnaireSessionService).findOne("session-id");
+    verify(request).getParameter("sessionId");
+    verify(questionnaireSessionService).findOne("123abc");
     verify(questionnaireSession).getTenantId();
     verifyNoMoreInteractions(request, questionnaireSessionService,questionnaireSession);
   }

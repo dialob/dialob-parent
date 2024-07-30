@@ -1,0 +1,10 @@
+<configuration scan="true" scanPeriod="10 seconds" debug="false">
+  <include file="/java/config/defaults.xml"/>
+
+  <logger name="org.springframework" level="INFO"/>
+  <logger name="io.dialob" level="INFO"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+  </root>
+</configuration>

@@ -16,6 +16,7 @@
 package io.dialob.boot.security;
 
 import com.nimbusds.jwt.proc.JWTProcessor;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
 import io.dialob.security.aws.elb.ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
@@ -28,14 +29,15 @@ import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.DelegateCurrentUserProvider;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
@@ -110,6 +112,12 @@ public class SecurityConfiguration {
       dialobSettings.getAws().getElb().getPrincipalRequestHeader().ifPresent(elbAuthenticationStrategy::setPrincipalRequestHeader);
       dialobSettings.getAws().getElb().getCredentialsRequestHeader().ifPresent(elbAuthenticationStrategy::setCredentialsRequestHeader);
       return elbAuthenticationStrategy;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AuthenticationStrategy.class)
+    AuthenticationStrategy authenticationStrategyNone() {
+      return (HttpSecurity http) -> http;
     }
 
     @Bean

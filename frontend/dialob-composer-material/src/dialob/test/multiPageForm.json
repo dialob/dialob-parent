@@ -2258,7 +2258,7 @@
     },
     {
       "name": "forestLoB",
-      "expression": "lob1 matches '^02\\d{3}'"
+      "expression": "lob1 matches '^02\\d{3}' test test test test test test"
     }
   ],
   "valueSets": [
@@ -3611,8 +3611,7 @@
         {
           "id": "surveyYes",
           "label": {
-            "en": "Yes",
-            "fi": "Kyllä"
+            "en": "Yes"
           }
         },
         {

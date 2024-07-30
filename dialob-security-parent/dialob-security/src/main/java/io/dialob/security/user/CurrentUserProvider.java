@@ -15,11 +15,11 @@
  */
 package io.dialob.security.user;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface CurrentUserProvider {
 
-  @Nonnull
+  @NonNull
   CurrentUser get();
 
   default String getUserId() {

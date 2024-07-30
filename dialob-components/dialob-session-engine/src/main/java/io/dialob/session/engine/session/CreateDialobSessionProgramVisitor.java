@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
 import io.dialob.session.engine.program.model.*;
@@ -27,7 +28,7 @@ import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
 
-import javax.annotation.Nonnull;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -109,7 +110,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   }
 
   @Override
-  public void startProgram(@Nonnull Program program) {
+  public void startProgram(@NonNull Program program) {
     this.program = program;
   }
 
@@ -120,12 +121,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
 
       @Override
-      public void visitVariableItem(@Nonnull VariableItem item) {
+      public void visitVariableItem(@NonNull VariableItem item) {
         items.add(createItemState(item.getId(), item, item.isPublished()));
       }
 
       @Override
-      public void visitDisplayItem(@Nonnull DisplayItem displayItem) {
+      public void visitDisplayItem(@NonNull DisplayItem displayItem) {
         ItemState itemState = createItemState(displayItem.getId(), displayItem, true);
         if (displayItem.isPrototype()) {
           prototypeItems.add(itemState);
@@ -135,7 +136,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
       }
 
       @Override
-      public void visitGroup(@Nonnull Group group) {
+      public void visitGroup(@NonNull Group group) {
         ItemState itemState = createItemState(group.getId(), group, true);
         if (group.isPrototype()) {
           prototypeItems.add(itemState);
@@ -177,8 +178,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     });
   }
 
-  @Nonnull
-  private ItemState createItemState(@Nonnull final ItemId itemId, @Nonnull final Item item, boolean published) {
+  @NonNull
+  private ItemState createItemState(@NonNull final ItemId itemId, @NonNull final Item item, boolean published) {
     Object defaultValue = null;
     Object answer = null;
     Object value = null;
@@ -243,12 +244,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     rowGroups
       .stream()
       .flatMap(rowGroup -> {
-        List<Integer> rowNumbers = ((List<Integer>)rowGroup.getValue());
+        List<BigInteger> rowNumbers = ((List<BigInteger>)rowGroup.getValue());
         if (rowNumbers == null) {
           return Stream.empty();
         }
         return rowNumbers.stream().flatMap(rowNumber -> {
-          final ItemId rowId = ImmutableItemIndex.of(rowNumber, Optional.of(rowGroup.getId()));
+          final ItemId rowId = ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()));
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
@@ -295,9 +296,9 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         if (rowGroup.getValue() != null) {
           return rowGroup
             .update().setItems(
-              ((List<Integer>) rowGroup.getValue())
+              ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> ImmutableItemIndex.of(rowNumber, Optional.of(rowGroup.getId()))).collect(toList())
+                .map(rowNumber -> ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).collect(toList())
             ).get();
         }
         return rowGroup;

@@ -16,8 +16,7 @@
 package io.dialob.questionnaire.service.api.session;
 
 
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -30,8 +29,8 @@ public abstract class AbstractQuestionnaireSessionService implements Questionnai
   private final QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory;
   private final CurrentTenant currentTenant;
 
-  protected AbstractQuestionnaireSessionService(@Nonnull QuestionnaireDatabase questionnaireDatabase,
-                                                @Nonnull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory, CurrentTenant currentTenant) {
+  protected AbstractQuestionnaireSessionService(@NonNull QuestionnaireDatabase questionnaireDatabase,
+                                                @NonNull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory, CurrentTenant currentTenant) {
     this.questionnaireDatabase = questionnaireDatabase;
     this.questionnaireSessionBuilderFactory = questionnaireSessionBuilderFactory;
     this.currentTenant = currentTenant;
@@ -42,13 +41,22 @@ public abstract class AbstractQuestionnaireSessionService implements Questionnai
   }
 
   protected QuestionnaireSession restore(Questionnaire questionnaire) {
+    LOGGER.debug("Restoring questionnaire session {} rev {}", questionnaire.getId(), questionnaire.getRev());
     return questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
       .setQuestionnaire(questionnaire)
       .build();
   }
 
+  /**
+   * This implementation returns a session from cache if it's present and adds a new session to cache if requested.
+   * Requires cache configuration.
+   *
+   * @param questionnaireId
+   * @param openIfClosed create a new session if not present
+   * @return a new session or nothing
+   */
   @Override
-  public QuestionnaireSession findOne(@Nonnull String questionnaireId, boolean openIfClosed) {
+  public QuestionnaireSession findOne(@NonNull String questionnaireId, boolean openIfClosed) {
     if (openIfClosed) {
       return restore(questionnaireId);
     }

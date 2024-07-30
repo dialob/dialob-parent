@@ -1,12 +1,13 @@
 import React from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
 import { useEditor } from '../../editor';
 import { ValidationRule, useComposer } from '../../dialob';
-import LocalizedStringEditor from './LocalizedStringEditor';
+import { LocalizedStringEditor } from './LocalizedStringEditor';
+import { ErrorMessage } from '../ErrorComponents';
+import CodeMirror from '../code/CodeMirror';
+import { getErrorSeverity } from '../../utils/ErrorUtils';
 
 
 export interface IndexedRule {
@@ -17,10 +18,9 @@ export interface IndexedRule {
 const ValidationRuleEditor: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression } = useComposer();
   const { editor, setActiveItem } = useEditor();
-  const intl = useIntl();
   const item = editor.activeItem;
+  const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === 'VALIDATION');
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
-  const [errors, setErrors] = React.useState<string[]>([]);
   const [activeRule, setActiveRule] = React.useState<IndexedRule | undefined>(undefined);
 
   React.useEffect(() => {
@@ -29,34 +29,15 @@ const ValidationRuleEditor: React.FC = () => {
       validationRules.push({ index, validationRule: rule })
     });
     setRules(validationRules);
-    console.log('activeRule', validationRules, Object.values(activeRule?.validationRule || {}));
-    if (activeRule === undefined) {
+    if (activeRule === undefined || !validationRules.some((r) => r.index === activeRule.index)) {
       setActiveRule(validationRules.length > 0 ? validationRules[0] : undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
-
   React.useEffect(() => {
-    // 3 seconds after every code change, check if rule is valid and set error message
-    if (activeRule && activeRule.validationRule.rule && activeRule?.validationRule.rule.length > 0) {
-      // TODO add rule error check
-      // random boolean for now
-      const invalid = Math.random() < 0.5;
-      if (invalid) {
-        const id = setTimeout(() => {
-          setErrors([intl.formatMessage({ id: 'dialogs.rules.error' }, { rule: activeRule.validationRule.rule })]);
-        }, 1000);
-        return () => clearTimeout(id);
-      } else {
-        setErrors([]);
-      }
-    } else {
-      setErrors([]);
-    }
-  }, [activeRule]);
-
-  React.useEffect(() => {
-    if (item && activeRule && activeRule.validationRule.rule) {
+    if (item && activeRule && activeRule.validationRule.rule && item.validations?.[activeRule.index] &&
+      activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule) {
       const expression = activeRule.validationRule.rule;
       const id = setTimeout(() => {
         const validations = [...item.validations || []];
@@ -66,6 +47,7 @@ const ValidationRuleEditor: React.FC = () => {
       }, 300);
       return () => clearTimeout(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRule?.validationRule.rule]);
 
   if (!item) {
@@ -102,9 +84,6 @@ const ValidationRuleEditor: React.FC = () => {
       newRules[activeRule.index] = newRule;
       setRules(newRules);
       setActiveRule({ ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } });
-      /* const validations: ValidationRule[] = item.validations || [];
-      validations[activeRule.index] = newRule.validationRule;
-      setActiveItem({ ...item, validations: validations }); */
     }
   }
 
@@ -132,16 +111,16 @@ const ValidationRuleEditor: React.FC = () => {
         </Button>
       </Box>
       {rules.length > 0 && activeRule !== undefined && <Box sx={{ mt: 2 }}>
-        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} extensions={[javascript({ jsx: true })]} />
+        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} errors={itemErrors} />
       </Box>}
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
       </Box>
-      {errors.length > 0 && <Alert severity='error' sx={{ mt: 2 }} icon={<Warning />}>
-        {errors.map((error, index) => <Typography key={index} color='error'>{error}</Typography>)}
-      </Alert>}
+      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      </Alert>)}
     </>
   );
 }
 
-export default ValidationRuleEditor;
+export { ValidationRuleEditor };

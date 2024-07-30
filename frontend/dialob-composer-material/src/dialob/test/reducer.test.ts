@@ -1,4 +1,4 @@
-import {generateItemId, formReducer} from '../reducer';
+import { generateItemId, formReducer } from '../reducer';
 import testForm from './testForm.json';
 import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
@@ -39,17 +39,17 @@ test('Add new item, afterCertain', () => {
   expect(newState.data.text1).toBeDefined();
   expect(newState.data.group15.items).toStrictEqual(
     ['exposeCompanyExists',
-    'companyName',
-    'companyID',
-    'newCompany',
-    'numberOfEmployees',
-    'lob1',
-    'text1',
-    'otherBL',
-    'nameOfOtherBL',
-    'facilityType',
-    'propertyInCar',
-    'evaluatedRiskType']);
+      'companyName',
+      'companyID',
+      'newCompany',
+      'numberOfEmployees',
+      'lob1',
+      'text1',
+      'otherBL',
+      'nameOfOtherBL',
+      'facilityType',
+      'propertyInCar',
+      'evaluatedRiskType']);
 });
 
 test('Add new item 1, at end', () => {
@@ -65,17 +65,17 @@ test('Add new item 1, at end', () => {
   expect(newState.data.text1).toBeDefined();
   expect(newState.data.group15.items).toStrictEqual(
     ['exposeCompanyExists',
-    'companyName',
-    'companyID',
-    'newCompany',
-    'numberOfEmployees',
-    'lob1',
-    'otherBL',
-    'nameOfOtherBL',
-    'facilityType',
-    'propertyInCar',
-    'evaluatedRiskType',
-    'text1']);
+      'companyName',
+      'companyID',
+      'newCompany',
+      'numberOfEmployees',
+      'lob1',
+      'otherBL',
+      'nameOfOtherBL',
+      'facilityType',
+      'propertyInCar',
+      'evaluatedRiskType',
+      'text1']);
 });
 
 test('Add new item, at end', () => {
@@ -91,17 +91,17 @@ test('Add new item, at end', () => {
   expect(newState.data.text1).toBeDefined();
   expect(newState.data.group15.items).toStrictEqual(
     ['exposeCompanyExists',
-    'companyName',
-    'companyID',
-    'newCompany',
-    'numberOfEmployees',
-    'lob1',
-    'otherBL',
-    'nameOfOtherBL',
-    'facilityType',
-    'propertyInCar',
-    'evaluatedRiskType',
-    'text1']);
+      'companyName',
+      'companyID',
+      'newCompany',
+      'numberOfEmployees',
+      'lob1',
+      'otherBL',
+      'nameOfOtherBL',
+      'facilityType',
+      'propertyInCar',
+      'evaluatedRiskType',
+      'text1']);
 });
 
 test('Add new item, callback', () => {
@@ -136,30 +136,6 @@ test('Update item, normal existing value', () => {
   };
   const newState = formReducer(testForm, action);
   expect(newState.data.tenantAdminLastName.required).toBe(false);
-});
-
-test('Update item, normal existing language value', () => {
-  const action: ComposerAction = {
-    type: 'updateItem',
-    itemId: 'tenantAdminLastName',
-    attribute: 'label',
-    value: 'Test',
-    language: 'fi'
-  };
-  const newState = formReducer(testForm, action);
-  expect(newState.data.tenantAdminLastName.label?.fi).toBe('Test');
-});
-
-test('Update item, normal new language value', () => {
-  const action: ComposerAction = {
-    type: 'updateItem',
-    itemId: 'tenantAdminLastName',
-    attribute: 'description',
-    value: 'Test',
-    language: 'fi'
-  };
-  const newState = formReducer(testForm, action);
-  expect(newState.data.tenantAdminLastName.description?.fi).toBe('Test');
 });
 
 test('Update item label, localized string', () => {
@@ -209,7 +185,6 @@ test('Update validation message, localized string', () => {
     index: 0
   };
   const newState = formReducer(testForm, action);
-  console.log('new state', newState.data.companyID.validations);
   expect(newState.data.companyID.validations).toBeDefined();
   expect(newState.data.companyID.validations?.[0]).toBeDefined();
   expect(newState.data.companyID.validations?.[0].message?.en).toBe('English Label');
@@ -230,7 +205,7 @@ test('Change item type with merging the props #1', () => {
   };
   const newState = formReducer(testForm, action);
   expect(newState.data.riskTrainingTypes.type).toBe('list');
-  expect(newState.data.riskTrainingTypes.props).toStrictEqual({display: 'dropdown', notscored: true});
+  expect(newState.data.riskTrainingTypes.props).toStrictEqual({ display: 'dropdown', notscored: true });
   expect(newState.data.riskTrainingTypes.className).toStrictEqual(['a', 'b']);
 });
 
@@ -259,7 +234,7 @@ test('Delete item, with local valueset', () => {
   expect(newState.data.accidentHistory).toBeUndefined();
   expect(newState.valueSets).toBeDefined();
   if (newState.valueSets) {
-   expect(newState.valueSets.findIndex(vs => vs.id === 'vs1')).toEqual(-1);
+    expect(newState.valueSets.findIndex(vs => vs.id === 'vs1')).toEqual(-1);
   }
   expect(newState.data.generalGroup.items).not.toContain('accidentHistory');
 });
@@ -292,8 +267,8 @@ test('Delete item, delete children', () => {
   expect(newState.valueSets).toBeDefined();
   if (newState.valueSets) {
     expect(newState.valueSets.findIndex(vs => vs.id === 'vs45')).toBeGreaterThan(-1); // Keep global VS
-    expect(newState.valueSets.findIndex(vs => vs.id === 'vs53')).toEqual(-1); 
-    expect(newState.valueSets.findIndex(vs => vs.id === 'vs54')).toEqual(-1); 
+    expect(newState.valueSets.findIndex(vs => vs.id === 'vs53')).toEqual(-1);
+    expect(newState.valueSets.findIndex(vs => vs.id === 'vs54')).toEqual(-1);
   }
   expect(newState.data.vehicleGroup.items).not.toContain('group6');
 });
@@ -314,10 +289,10 @@ test('Set item prop, new prop', () => {
     type: 'setItemProp',
     itemId: 'tenantAdminLastName',
     key: 'testKey',
-    value: {test: 'value', z: 'x'}
+    value: { test: 'value', z: 'x' }
   };
   const newState = formReducer(testForm, action);
-  expect(newState.data.tenantAdminLastName?.props?.testKey).toStrictEqual({test: 'value', z: 'x'});
+  expect(newState.data.tenantAdminLastName?.props?.testKey).toStrictEqual({ test: 'value', z: 'x' });
 });
 
 test('Delete item prop, one of many', () => {
@@ -445,7 +420,7 @@ test('Create validation rule, empty', () => {
   expect(newState.data.workRelatedRiskAnalysis.validations).toBeDefined();
   if (newState.data.workRelatedRiskAnalysis.validations) {
     expect(newState.data.workRelatedRiskAnalysis.validations.length).toEqual(2);
-    expect(newState.data.workRelatedRiskAnalysis.validations[1]).toStrictEqual({message: {}, rule: ''});
+    expect(newState.data.workRelatedRiskAnalysis.validations[1]).toStrictEqual({ message: {}, rule: '' });
   }
 });
 
@@ -458,7 +433,7 @@ test('Create validation rule, empty, new', () => {
   expect(newState.data.accidentHistory.validations).toBeDefined();
   if (newState.data.accidentHistory.validations) {
     expect(newState.data.accidentHistory.validations.length).toEqual(1);
-    expect(newState.data.accidentHistory.validations[0]).toStrictEqual({message: {}, rule: ''});
+    expect(newState.data.accidentHistory.validations[0]).toStrictEqual({ message: {}, rule: '' });
   }
 });
 
@@ -467,7 +442,7 @@ test('Create validation rule, preset', () => {
     type: 'createValidation',
     itemId: 'accidentHistory',
     rule: {
-      message: { 'en': 'test'},
+      message: { 'en': 'test' },
       rule: 'true'
     }
   };
@@ -476,9 +451,9 @@ test('Create validation rule, preset', () => {
   if (newState.data.accidentHistory.validations) {
     expect(newState.data.accidentHistory.validations.length).toEqual(1);
     expect(newState.data.accidentHistory.validations[0]).toStrictEqual({
-                  message: { 'en': 'test'},
-                  rule: 'true'
-                });
+      message: { 'en': 'test' },
+      rule: 'true'
+    });
   }
 });
 
@@ -573,8 +548,8 @@ test('Create valueset, local, with entries', () => {
     type: 'createValueSet',
     itemId: 'list15nvs',
     entries: [
-      {id: 'a', label: {'en': 'Test A'}},
-      {id: 'b', label: {'en': 'Test B'}}
+      { id: 'a', label: { 'en': 'Test A' } },
+      { id: 'b', label: { 'en': 'Test B' } }
     ]
   }
 
@@ -585,8 +560,8 @@ test('Create valueset, local, with entries', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs40');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries[0]).toStrictEqual({id: 'a', label: {'en': 'Test A'}});
-    expect(newState.valueSets[vsIndex].entries[1]).toStrictEqual({id: 'b', label: {'en': 'Test B'}});
+    expect(newState.valueSets[vsIndex].entries![0]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' } });
+    expect(newState.valueSets[vsIndex].entries![1]).toStrictEqual({ id: 'b', label: { 'en': 'Test B' } });
   }
 });
 
@@ -633,8 +608,8 @@ test('Set valueset entries', () => {
     type: 'setValueSetEntries',
     valueSetId: 'vs2',
     entries: [
-      {id: 'a', label: {'en': 'Test A'}},
-      {id: 'b', label: {'en': 'Test B'}, when: 'true'}
+      { id: 'a', label: { 'en': 'Test A' } },
+      { id: 'b', label: { 'en': 'Test B' }, when: 'true' }
     ]
   };
 
@@ -644,8 +619,8 @@ test('Set valueset entries', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries[0]).toStrictEqual({id: 'a', label: {'en': 'Test A'}});
-    expect(newState.valueSets[vsIndex].entries[1]).toStrictEqual({id: 'b', label: {'en': 'Test B'}, when: 'true'});
+    expect(newState.valueSets[vsIndex].entries![0]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' } });
+    expect(newState.valueSets[vsIndex].entries![1]).toStrictEqual({ id: 'b', label: { 'en': 'Test B' }, when: 'true' });
   }
 });
 
@@ -660,8 +635,8 @@ test('Add valueset entry: empty', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(7);
-    expect(newState.valueSets[vsIndex].entries[6]).toStrictEqual({id: '', label: {}});
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(7);
+    expect(newState.valueSets[vsIndex].entries![6]).toStrictEqual({ id: '', label: {} });
   }
 });
 
@@ -671,7 +646,7 @@ test('Add valueset entry: filled', () => {
     type: 'addValueSetEntry',
     valueSetId: 'vs2',
     entry: {
-      id: 'a', label: {'en': 'Test A'}, when: 'true'
+      id: 'a', label: { 'en': 'Test A' }, when: 'true'
     }
   };
   const newState = formReducer(testForm, action);
@@ -680,8 +655,8 @@ test('Add valueset entry: filled', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(7);
-    expect(newState.valueSets[vsIndex].entries[6]).toStrictEqual({id: 'a', label: {'en': 'Test A'}, when: 'true'});
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(7);
+    expect(newState.valueSets[vsIndex].entries![6]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' }, when: 'true' });
   }
 });
 
@@ -691,7 +666,7 @@ test('Update valueset entry', () => {
     valueSetId: 'vs2',
     index: 3,
     entry: {
-      id: 'a', label: {'en': 'Test A'}, prop: 'test'
+      id: 'a', label: { 'en': 'Test A' }, prop: 'test'
     }
   };
   const newState = formReducer(testForm, action);
@@ -700,8 +675,46 @@ test('Update valueset entry', () => {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
     expect(newState.valueSets[vsIndex].entries).toBeDefined();
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6); 
-    expect(newState.valueSets[vsIndex].entries[3]).toStrictEqual({id: 'a', label: {'en': 'Test A'}, prop: 'test'});
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3]).toStrictEqual({ id: 'a', label: { 'en': 'Test A' }, prop: 'test' });
+  }
+});
+
+test('Update valueset entry label: text is not null', () => {
+  const action: ComposerAction = {
+    type: 'updateValueSetEntryLabel',
+    valueSetId: 'vs2',
+    index: 3,
+    text: 'Test A',
+    language: 'en'
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.valueSets).toBeDefined();
+  if (newState.valueSets) {
+    const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
+    expect(vsIndex).toBeGreaterThan(-1);
+    expect(newState.valueSets[vsIndex].entries).toBeDefined();
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3].label["en"]).toEqual('Test A');
+  }
+});
+
+test('Update valueset entry label: text is null', () => {
+  const action: ComposerAction = {
+    type: 'updateValueSetEntryLabel',
+    valueSetId: 'vs2',
+    index: 3,
+    text: null,
+    language: 'en'
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.valueSets).toBeDefined();
+  if (newState.valueSets) {
+    const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
+    expect(vsIndex).toBeGreaterThan(-1);
+    expect(newState.valueSets[vsIndex].entries).toBeDefined();
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3]).toStrictEqual(testForm.valueSets[vsIndex].entries[3]);
   }
 });
 
@@ -716,8 +729,8 @@ test('Delete valueset entry', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(5);
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention5');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(5);
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention5');
   }
 });
 
@@ -733,9 +746,9 @@ test('Move valueset entry', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[1].id).toEqual('prevention4');
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention3');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![1].id).toEqual('prevention4');
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention3');
   }
 });
 
@@ -751,9 +764,9 @@ test('Move valueset entry: past end', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention5');
-    expect(newState.valueSets[vsIndex].entries[5].id).toEqual('prevention4');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention5');
+    expect(newState.valueSets[vsIndex].entries![5].id).toEqual('prevention4');
   }
 });
 
@@ -769,9 +782,9 @@ test('Move valueset entry: first', () => {
   if (newState.valueSets) {
     const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
     expect(vsIndex).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIndex].entries.length).toEqual(6);
-    expect(newState.valueSets[vsIndex].entries[0].id).toEqual('prevention4');
-    expect(newState.valueSets[vsIndex].entries[3].id).toEqual('prevention3');
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(6);
+    expect(newState.valueSets[vsIndex].entries![0].id).toEqual('prevention4');
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention3');
   }
 });
 
@@ -829,10 +842,34 @@ test('Set form metadata value', () => {
   };
   const newState = formReducer(testForm, action);
   expect(newState.metadata.test).toStrictEqual({
-                                    some: {
-                                      struct: 1
-                                    }
-                                  });
+    some: {
+      struct: 1
+    }
+  });
+});
+
+test('Set context value, first time', () => {
+  const action: ComposerAction = {
+    type: 'setContextValue',
+    name: 'test',
+    value: 'testing123'
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.metadata.composer?.contextValues).toBeDefined();
+  expect(newState.metadata.composer?.contextValues?.['test']).toBe('testing123');
+});
+
+test('Set context value', () => {
+  const action: ComposerAction = {
+    type: 'setContextValue',
+    name: 'test2',
+    value: 'testing2-123'
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.metadata.composer?.contextValues).toBeDefined();
+  if (newState.metadata.composer?.contextValues) {
+    expect(newState.metadata.composer?.contextValues['test2']).toBe('testing2-123');
+  }
 });
 
 test('Create context variable', () => {
@@ -845,7 +882,7 @@ test('Create context variable', () => {
   if (newState.variables) {
     const vIndex = newState.variables.findIndex(v => v.name === 'context1');
     expect(vIndex).toBeGreaterThan(-1);
-    expect(newState.variables[vIndex]).toStrictEqual({name: 'context1', context: true, contextType: 'text'});
+    expect(newState.variables[vIndex]).toStrictEqual({ name: 'context1', context: true, contextType: 'text' });
   }
 });
 
@@ -859,7 +896,7 @@ test('Create expression variable', () => {
   if (newState.variables) {
     const vIndex = newState.variables.findIndex(v => v.name === 'var1');
     expect(vIndex).toBeGreaterThan(-1);
-    expect(newState.variables[vIndex]).toStrictEqual({name: 'var1', expression: ''});
+    expect(newState.variables[vIndex]).toStrictEqual({ name: 'var1', expression: '' });
   }
 });
 
@@ -873,7 +910,7 @@ test('Create expression variable, clean form', () => {
   if (newState.variables) {
     const vIndex = newState.variables.findIndex(v => v.name === 'var1');
     expect(vIndex).toBeGreaterThan(-1);
-    expect(newState.variables[vIndex]).toStrictEqual({name: 'var1', expression: ''});
+    expect(newState.variables[vIndex]).toStrictEqual({ name: 'var1', expression: '' });
   }
 });
 
@@ -888,7 +925,7 @@ test('Update context variable, default value', () => {
   if (newState.variables) {
     const vIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyID');
     expect(vIndex).toBeGreaterThan(-1);
-    expect(newState.variables[vIndex]).toStrictEqual({name: 'prefilledCompanyID', context: true, defaultValue: 'test', contextType: 'text'});
+    expect(newState.variables[vIndex]).toStrictEqual({ name: 'prefilledCompanyID', context: true, defaultValue: 'test', contextType: 'text' });
   }
 });
 
@@ -904,7 +941,7 @@ test('Update context variable, update all attributes', () => {
   if (newState.variables) {
     const vIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyID');
     expect(vIndex).toBeGreaterThan(-1);
-    expect(newState.variables[vIndex]).toStrictEqual({name: 'prefilledCompanyID', context: true, defaultValue: 105, contextType: 'number'});
+    expect(newState.variables[vIndex]).toStrictEqual({ name: 'prefilledCompanyID', context: true, defaultValue: 105, contextType: 'number' });
   }
 });
 
@@ -919,7 +956,37 @@ test('Update expression variable', () => {
   if (newState.variables) {
     const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
     expect(vIndex).toBeGreaterThan(-1);
-    expect(newState.variables[vIndex]).toStrictEqual({name: 'companyMainBL', expression: '\'a\' = \'a\''});
+    expect(newState.variables[vIndex]).toStrictEqual({ name: 'companyMainBL', expression: '\'a\' = \'a\'' });
+  }
+});
+
+test('Publish variable', () => {
+  const action: ComposerAction = {
+    type: 'updateVariablePublishing',
+    variableId: 'companyMainBL',
+    published: true
+  }
+  const newState = formReducer(testForm, action);
+  expect(newState.variables).toBeDefined();
+  if (newState.variables) {
+    const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
+    expect(vIndex).toBeGreaterThan(-1);
+    expect(newState.variables[vIndex].published).toBe(true);
+  }
+});
+
+test('Unpublish variable', () => {
+  const action: ComposerAction = {
+    type: 'updateVariablePublishing',
+    variableId: 'companyMainBL',
+    published: false
+  }
+  const newState = formReducer(testForm, action);
+  expect(newState.variables).toBeDefined();
+  if (newState.variables) {
+    const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
+    expect(vIndex).toBeGreaterThan(-1);
+    expect(newState.variables[vIndex].published).toBe(false);
   }
 });
 
@@ -934,6 +1001,31 @@ test('Delete variable', () => {
     expect(newState.variables.length).toEqual(4);
     const vIndex = newState.variables.findIndex(v => v.name === 'companyMainBL');
     expect(vIndex).toEqual(-1);
+  }
+});
+
+test('Move variable (swap)', () => {
+  expect(testForm.variables).toBeDefined();
+  const originIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyName');
+  expect(originIndex).toBeGreaterThan(-1);
+  const origin = testForm.variables[originIndex];
+  const destinationIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyID');
+  expect(destinationIndex).toBeGreaterThan(-1);
+  const destination = testForm.variables[destinationIndex];
+  const action: ComposerAction = {
+    type: 'moveVariable',
+    origin: origin,
+    destination: destination
+  }
+  const newState = formReducer(testForm, action);
+  expect(newState.variables).toBeDefined();
+  if (newState.variables) {
+    const nameIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyName');
+    expect(nameIndex).toBeGreaterThan(-1);
+    expect(nameIndex).toBe(destinationIndex);
+    const idIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyID');
+    expect(idIndex).toBeGreaterThan(-1);
+    expect(idIndex).toBe(originIndex);
   }
 });
 
@@ -1001,12 +1093,12 @@ test('Add language, copy', () => {
     expect(val[0].message?.et).toEqual(val[0].message?.fi);
   }
 
-  expect(newState?.valueSets).toBeDefined(); 
+  expect(newState?.valueSets).toBeDefined();
   if (newState.valueSets) {
     const vs = newState.valueSets[0];
-    expect(vs.entries[0].label?.et).toBeDefined();
-    expect(vs.entries[0].label?.et).toEqual(vs.entries[0].label?.fi);
-  }  
+    expect(vs.entries![0].label?.et).toBeDefined();
+    expect(vs.entries![0].label?.et).toEqual(vs.entries![0].label?.fi);
+  }
 });
 
 test('Delete language', () => {
@@ -1015,7 +1107,7 @@ test('Delete language', () => {
     language: 'en'
   };
   const newState = formReducer(testForm, action);
-    
+
   expect(newState.metadata.languages).toBeDefined();
   if (newState.metadata.languages) {
     expect(newState.metadata.languages.length).toEqual(1);
@@ -1031,11 +1123,11 @@ test('Delete language', () => {
     expect(val[0].message?.en).toBeUndefined();
   }
 
-  expect(newState?.valueSets).toBeDefined(); 
+  expect(newState?.valueSets).toBeDefined();
   if (newState.valueSets) {
     const vsIdx = newState.valueSets.findIndex(vs => vs.id === 'vs45');
     expect(vsIdx).toBeGreaterThan(-1);
-    expect(newState.valueSets[vsIdx].entries[0].label.en).toBeUndefined();
-    expect(newState.valueSets[vsIdx].entries[0].label.en).toBeUndefined();
-  }  
+    expect(newState.valueSets[vsIdx].entries![0].label.en).toBeUndefined();
+    expect(newState.valueSets[vsIdx].entries![0].label.en).toBeUndefined();
+  }
 });

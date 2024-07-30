@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.submit;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
-import org.springframework.lang.NonNull;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -85,7 +85,7 @@ public class PostSubmitHandler implements AnswerSubmitHandler {
   public RestTemplate createRestTemplate(String username, String password) {
     final RestTemplate restTemplate = requestFactory != null ? new RestTemplate(requestFactory) : new RestTemplate();
     if (username != null && password != null) {
-      restTemplate.setInterceptors(Collections.singletonList(new BasicAuthorizationInterceptor(username, password)));
+      restTemplate.setInterceptors(Collections.singletonList(new BasicAuthenticationInterceptor(username, password)));
     }
     return restTemplate;
   }

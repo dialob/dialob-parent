@@ -15,16 +15,15 @@
  */
 package io.dialob.security.aws.elb;
 
-import org.springframework.lang.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.user.CurrentUser;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-
-import io.dialob.security.user.CurrentUser;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 
 public class PreAuthenticatedCurrentUserProvider implements CurrentUserProvider {
   @NonNull

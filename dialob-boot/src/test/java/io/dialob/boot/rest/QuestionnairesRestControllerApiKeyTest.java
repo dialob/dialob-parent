@@ -15,38 +15,43 @@
  */
 package io.dialob.boot.rest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import javax.inject.Inject;
-
-import io.dialob.integration.redis.ProvideTestRedis;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.boot.Application;
+import io.dialob.boot.security.SecurityConfiguration;
+import io.dialob.boot.settings.AdminApplicationSettings;
+import io.dialob.boot.settings.ComposerApplicationSettings;
+import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.form.service.api.FormDatabase;
+import io.dialob.form.service.api.repository.FormListItem;
+import io.dialob.integration.api.event.FormUpdatedEvent;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.questionnaire.service.api.session.FormFinder;
+import io.dialob.questionnaire.service.rest.DialobQuestionnaireServiceRestAutoConfiguration;
+import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.UUIDUtils;
+import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
+import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.user.CurrentUser;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.settings.DialobSettings;
+import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.ParameterizedTypeReference;
@@ -54,28 +59,22 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.boot.Application;
-import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.repository.FormListItem;
-import io.dialob.integration.api.event.FormUpdatedEvent;
-import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.questionnaire.service.api.session.FormFinder;
-import io.dialob.security.UUIDUtils;
-import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.user.CurrentUser;
-import io.dialob.security.user.CurrentUserProvider;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
@@ -84,17 +83,32 @@ import io.dialob.security.user.CurrentUserProvider;
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+  "dialob.security.enabled=true",
+  "dialob.security.authenticationMethod=NONE",
   "dialob.db.database-type=none"
+}, classes = {
+  Application.class,
+  QuestionnairesRestControllerApiKeyTest.TestConfiguration.class,
+  DialobQuestionnaireServiceRestAutoConfiguration.class,
+  DialobSessionEngineAutoConfiguration.class,
+  SecurityConfiguration.class
 })
-@ContextConfiguration(classes = {Application.class, QuestionnairesRestControllerApiKeyTest.TestConfiguration.class})
-public class QuestionnairesRestControllerApiKeyTest implements ProvideTestRedis {
+@EnableConfigurationProperties({
+  DialobSettings.class,
+  ComposerApplicationSettings.class,
+  QuestionnaireApplicationSettings.class,
+  AdminApplicationSettings.class,
+  ReviewApplicationSettings.class
+})
+public class QuestionnairesRestControllerApiKeyTest {
 
   public interface ListenerMock {
     @EventListener
     void onFormUpdatedEvent(FormUpdatedEvent event);
   }
 
-  @Configuration
+  @org.springframework.boot.test.context.TestConfiguration
   public static class TestConfiguration {
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
@@ -144,6 +158,12 @@ public class QuestionnairesRestControllerApiKeyTest implements ProvideTestRedis 
   RestTemplate restTemplate = new RestTemplate();
 
   @MockBean
+  private FunctionRegistry functionRegistry;
+
+  @MockBean
+  private CurrentTenant currentTenant;
+
+  @MockBean
   private CurrentUserProvider currentUserProvider;
 
   @BeforeEach
@@ -169,6 +189,7 @@ public class QuestionnairesRestControllerApiKeyTest implements ProvideTestRedis 
 
   @Test
   public void shouldLookupQuestionnairesFromRepository() throws Exception {
+    doReturn("testTenant").when(currentTenant).getId();
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = (Consumer<QuestionnaireDatabase.MetadataRow>) invocation.getArguments()[6];
       consumer.accept(new QuestionnaireDatabase.MetadataRow() {

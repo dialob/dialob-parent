@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -31,7 +32,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
@@ -63,7 +63,7 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    when(jdbcTemplate.queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), eq(new Object[] {new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, ""}), any(RowMapper.class)))
+    when(jdbcTemplate.queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), any(RowMapper.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq("")))
       .thenThrow(EmptyResultDataAccessException.class);
 
     JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
@@ -73,7 +73,7 @@ public abstract class JdbcBackendDatabaseTest {
     Assertions.assertThatThrownBy(() -> jdbcBackendDatabase.findOne("", "1230", null)).isInstanceOf(DocumentNotFoundException.class);
 
     //
-    verify(jdbcTemplate).queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), eq(new Object[] {new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, ""}), any(RowMapper.class));
+    verify(jdbcTemplate).queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), any(RowMapper.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(""));
     verify(connection).rollback();
     verifyNoMoreInteractions(jdbcTemplate);
   }
@@ -112,9 +112,9 @@ public abstract class JdbcBackendDatabaseTest {
     when(resultSet.getCharacterStream(7)).thenReturn(new StringReader("{\"_id\":\"1230\",\"_rev\":\"2\",\"metadata\":{\"formId\":\"shouldReturnFoundObject\"}}"));
 
     doAnswer(invocation -> {
-      RowMapper rowMapper = invocation.getArgument(2);
+      RowMapper rowMapper = invocation.getArgument(1);
       return rowMapper.mapRow(resultSet, 1);
-    }).when(jdbcTemplate).queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), eq(new Object[] {new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, ""}), any(RowMapper.class));
+    }).when(jdbcTemplate).queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), any(RowMapper.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(""));
     //
     Object document = jdbcBackendDatabase.findOne("", "1230", null);
 
@@ -122,7 +122,7 @@ public abstract class JdbcBackendDatabaseTest {
       "12300000000000000000000000000000", "3");
 
     //
-    verify(jdbcTemplate).queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), eq(new Object[] {new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, ""}), any(RowMapper.class));
+    verify(jdbcTemplate).queryForObject(eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and tenant_id = ?"), any(RowMapper.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(""));
     verify(connection).commit();
     verifyNoMoreInteractions(jdbcTemplate);
   }
@@ -317,16 +317,16 @@ public abstract class JdbcBackendDatabaseTest {
 
     doReturn(ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build()).when(jdbcTemplate).queryForObject(
       eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and rev = ? and tenant_id = ?"),
-      eq(new Object[] {new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, Integer.valueOf(1), ""}),
-      any(RowMapper.class)
+      any(RowMapper.class),
+      eq(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(Integer.valueOf(1)), eq("")
     );
 
     Object found = jdbcBackendDatabase.findOne("", "00000000000000000000000000000000", "1");
     Assertions.assertThat(found).isNotNull();
     verify(jdbcTemplate).queryForObject(
       eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and rev = ? and tenant_id = ?"),
-      eq(new Object[] {new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, Integer.valueOf(1), ""}),
-      any(RowMapper.class)
+      any(RowMapper.class),
+      eq(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(Integer.valueOf(1)), eq("")
     );
     verify(connection).commit();
     verifyNoMoreInteractions(jdbcTemplate);

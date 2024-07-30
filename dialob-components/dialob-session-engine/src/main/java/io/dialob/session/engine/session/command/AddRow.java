@@ -15,12 +15,13 @@
  */
 package io.dialob.session.engine.session.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,19 +30,19 @@ import java.util.List;
 public interface AddRow extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
   @Override
-  @Nonnull
-  default ItemState update(@Nonnull EvalContext context, @Nonnull ItemState itemState) {
+  @NonNull
+  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (itemState.isRowsCanBeAdded()) {
       // calculate id for a new row
-      List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
+      List<BigInteger> rowNumbers = (List<BigInteger>) itemState.getValue();
       if (rowNumbers == null) {
         rowNumbers = Collections.emptyList();
       }
       rowNumbers = new ArrayList<>(rowNumbers);
-      int newRowId = rowNumbers.stream()
-        .reduce(Math::max)
-        .map(i -> i + 1)
-        .orElse(0);
+      BigInteger newRowId = rowNumbers.stream()
+        .reduce(BigInteger::max)
+        .map(i -> i.add(BigInteger.ONE))
+        .orElse(BigInteger.ZERO);
       rowNumbers.add(newRowId);
       return itemState.update()
         .setAnswer(rowNumbers)

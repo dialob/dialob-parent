@@ -1,0 +1,51 @@
+on:
+  push:
+    branches:
+      - main-2.1
+
+name: main-2.1 - release - java 11
+jobs:
+  build:
+    name: Releasing branch - main
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+#          - linux/arm64
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.ref }}
+        fetch-depth: 0
+
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'corretto'
+        java-version: '11'
+        gpg-private-key: ${{ secrets.DIALOB_GPG_KEY }}
+        server-id: oss.sonatype.org
+        server-username: OSSRH_USER
+        server-password: OSSRH_PASS
+
+    - name: Docker Hub login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_HUB_USER }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: tag - release - upload
+      run: ./dialob-build-parent/release.sh
+      env:
+        CI: false
+        BOT_NAME: "info"
+        BOT_EMAIL: "info@dialob.io"
+        GITHUB_SHA: ${GITHUB_SHA}
+        GITHUB_REF: ${GITHUB_REF}
+        GITHUB_REF_NAME: ${{ env.GITHUB_REF_NAME }}
+        GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+        GPG_KEY_ID: ${{ secrets.DIALOB_GPG_KEY_ID }}
+        GPG_PASSPHRASE: ${{ secrets.DIALOB_GPG_SEC }}
+        OSSRH_USER: ${{ secrets.OSSRH_USER }}
+        OSSRH_PASS: ${{ secrets.OSSRH_PASS }}

@@ -25,7 +25,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
@@ -36,8 +35,6 @@ import java.util.function.Predicate;
 @Slf4j
 public class ScheduledSessionEvictionPolicy {
 
-  private final Clock clock;
-
   private final QuestionnaireSessionCache cache;
 
   private final Optional<QuestionnaireSessionSaveService> sessionService;
@@ -46,12 +43,10 @@ public class ScheduledSessionEvictionPolicy {
 
   private final Integer ttl;
 
-  public ScheduledSessionEvictionPolicy(Clock clock,
-                                        QuestionnaireSessionCache cache,
+  public ScheduledSessionEvictionPolicy(QuestionnaireSessionCache cache,
                                         Optional<QuestionnaireSessionSaveService> sessionService,
                                         Optional<CacheManager> cacheManager,
                                         Integer ttl) {
-    this.clock = clock;
     this.cache = cache;
     this.sessionService = sessionService;
     this.cacheManager = cacheManager;
@@ -62,7 +57,7 @@ public class ScheduledSessionEvictionPolicy {
   @Scheduled(fixedRate = 2000)
   public void evictQuietSessions() {
     LOGGER.debug("evictQuietSessions");
-    final Instant now = clock.instant();
+    final Instant now = Instant.now();
     evictWhen(session -> session.getStatus() == Questionnaire.Metadata.Status.COMPLETED || Duration.between(session.getLastUpdate(), now).toMillis() > ttl);
   }
 

@@ -15,19 +15,18 @@
  */
 package io.dialob.session.engine;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.FormActions;
-
-import javax.annotation.Nonnull;
 
 public abstract class AbstractFormActionsVisitor {
 
   protected final FormActions formActions;
 
-  public AbstractFormActionsVisitor(@Nonnull FormActions formActions) {
+  public AbstractFormActionsVisitor(@NonNull FormActions formActions) {
     this.formActions = formActions;
   }
 
-  @Nonnull
+  @NonNull
   public FormActions getFormActions() {
     return formActions;
   }

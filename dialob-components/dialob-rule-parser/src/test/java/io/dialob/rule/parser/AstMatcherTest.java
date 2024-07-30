@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 
+import java.math.BigInteger;
 import java.util.function.UnaryOperator;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -67,7 +68,7 @@ public class AstMatcherTest {
         // when
         final AstMatcher matcher = new AstMatcher() {{
             whenMatches(constNode(stringValue(is("3"))), constNode3FunctionMock);
-            whenMatches(constNode(value(is(1))), constNode1FunctionMock);
+            whenMatches(constNode(value(is(BigInteger.ONE))), constNode1FunctionMock);
             whenMatches(idNode(valueType(isNull())), idANodeFunctionMock);
         }};
         expression.getAst().accept(matcher);

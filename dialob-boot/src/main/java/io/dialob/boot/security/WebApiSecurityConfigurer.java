@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
@@ -22,7 +23,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -42,7 +42,7 @@ public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
   protected HttpSecurity configureCors(HttpSecurity http) {
     return settings.getApi().getCors().toCorsConfiguration().map(corsConfiguration -> {
       try {
-        return http.cors().configurationSource(request -> corsConfiguration).and();
+        return http.cors(customizer -> customizer.configurationSource(request -> corsConfiguration));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

@@ -21,6 +21,7 @@ import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.boot.settings.ReviewApplicationSettings;
 import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,8 +38,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
-import javax.servlet.http.Cookie;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.mockito.Mockito.mock;
@@ -51,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("aws")
 @SpringBootTest(webEnvironment = MOCK, properties = {
   "tenantId=itest",
+  "dialob.security.enabled=true",
   "dialob.security.authenticationMethod=AWSELB",
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
@@ -67,7 +67,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ReviewApplicationSettings.class,
   DialobSecurityAwsAutoConfiguration.class,
   AdminControllerAwsElbTest.TestConfiguration.class,
-  DialobSecurityAwsAutoConfiguration.class
 })
 class AdminControllerAwsElbTest extends AbstractUIControllerTest {
 

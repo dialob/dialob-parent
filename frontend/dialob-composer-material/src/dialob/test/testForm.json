@@ -351,8 +351,7 @@
       "activeWhen": "createRHTenant = true and companyExists = false",
       "validations": [
         {
-          "message": {
-          },
+          "message": {},
           "rule": ""
         }
       ]
@@ -1048,7 +1047,10 @@
       "required": "true",
       "activeWhen": "'clientVisit'= usedChannel and newCompany = false and numberOfEmployees not in ('One') and lob1 = '49410' and 'vehicle' in evaluatedRiskType and annualSurvey = false\n\nor 'clientVisit'= usedChannel and newCompany = false and numberOfEmployees not in ('One') and lob1 = '49410' and 'logistics' in evaluatedRiskType and annualSurvey = false",
       "valueSetId": "vs27",
-      "className": ["a", "c"]
+      "className": [
+        "a",
+        "c"
+      ]
     },
     "boolean9": {
       "id": "boolean9",
@@ -2186,11 +2188,6 @@
           "type": "text",
           "view": "text"
         }
-      },
-      "contextValues": {
-        "companyExists": "true",
-        "prefilledCompanyID": "Mika",
-        "prefilledCompanyName": "lindholm"
       },
       "globalValueSets": [
         {

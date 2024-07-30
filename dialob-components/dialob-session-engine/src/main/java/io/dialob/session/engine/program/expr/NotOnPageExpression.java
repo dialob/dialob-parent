@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -25,7 +26,6 @@ import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 // Note! negative expression, because used to update page.whenDisabledUpdatedEvent field
@@ -36,17 +36,17 @@ public interface NotOnPageExpression extends Expression {
   ItemId getPage();
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     return evalContext.getItemState(DialobSession.QUESTIONNAIRE_REF).map(itemState -> !itemState.getActivePage().map(activePage -> activePage.equals(this.getPage())).orElse(false)).orElse(false);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return ImmutableSet.of(EventMatchers.whenActivePageUpdated());

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import java.time.Clock;
+import java.math.BigInteger;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +46,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
     AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);;
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     QuestionnaireDialobProgramService service = QuestionnaireDialobProgramService.newBuilder().setFormDatabase(formFinder).setProgramFromFormCompiler(programFromFormCompiler).build();
 //    Form formDocument = Mockito.mock(Form.class);
     String formFile = "form.json";
@@ -74,7 +74,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
     sessionUpdater.dispatchActions(answer(toRef("question1"), "35"));
-    assertValueEquals(dialobSession,toRef("question1"),35);
+    assertValueEquals(dialobSession,toRef("question1"), BigInteger.valueOf(35));
 
     sessionUpdater.dispatchActions(answer(toRef("question3"), "true"));
     assertActive(dialobSession, toRef("question3"));
@@ -83,7 +83,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     assertValueEquals(dialobSession,toRef("question4"),true);
 
     sessionUpdater.dispatchActions(answer(toRef("question5"), "30001"));
-    assertValueEquals(dialobSession,toRef("question5"),30001);
+    assertValueEquals(dialobSession,toRef("question5"),BigInteger.valueOf(30001));
 
     sessionUpdater.dispatchActions(answer(toRef("question6"), "opt2"))
       .accept(visitor);

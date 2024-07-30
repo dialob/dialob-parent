@@ -17,7 +17,6 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.rule.parser.node.NodeOperator;
 import io.dialob.session.engine.program.ProgramBuilderException;
 
 import java.util.Arrays;

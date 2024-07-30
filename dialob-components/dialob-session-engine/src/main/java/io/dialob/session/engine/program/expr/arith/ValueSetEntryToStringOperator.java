@@ -15,6 +15,8 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -24,8 +26,6 @@ import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public interface ValueSetEntryToStringOperator extends Expression {
 
   @Override
   @Nullable
-  default String eval(@Nonnull EvalContext context) {
+  default String eval(@NonNull EvalContext context) {
     Object eval = getExpression().eval(context);
     if (eval == null) {
       return null;
@@ -57,7 +57,7 @@ public interface ValueSetEntryToStringOperator extends Expression {
           }
         }
         return (String) eval;
-      } else if (eval instanceof List) { // For multichoice (answer is a list)
+      } else if (eval instanceof List<?>) { // For multichoice (answer is a list)
         return valueSetState1.getEntries().stream().filter(entry -> ((List<?>) eval).contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
       }
       return null;
@@ -65,13 +65,13 @@ public interface ValueSetEntryToStringOperator extends Expression {
   }
 
   @Override
-  @Nonnull
+  @NonNull
   default ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @Override
-  @Nonnull
+  @NonNull
   default Set<EventMatcher> getEvalRequiredConditions() {
     final Set<EventMatcher> deps = new HashSet<>();
     deps.addAll(getExpression().getEvalRequiredConditions());

@@ -16,8 +16,9 @@
 package io.dialob.session.boot;
 
 import com.nimbusds.jwt.proc.JWTProcessor;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.questionnaire.service.sockjs.ExtractURITemplateVariablesToAttributesInterceptor;
+import io.dialob.questionnaire.service.sockjs.ExtractURIParametersToAttributesInterceptor;
 import io.dialob.security.aws.elb.ElbAuthenticationStrategy;
 import io.dialob.security.aws.elb.ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import io.dialob.security.aws.elb.PreAuthenticatedCurrentUserProvider;
@@ -35,13 +36,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.lang.NonNull;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
@@ -83,14 +84,13 @@ public class ApplicationAutoConfiguration {
         .securityMatcher(AnyRequestMatcher.INSTANCE);
       if (authenticationStrategy.isPresent()) {
         authenticationStrategy.get().configureAuthentication(http);
-
       }
       if (this.sessionSettings.getRest().isRequireAuthenticated()) {
-        http = http.authorizeHttpRequests().anyRequest().authenticated().and();
+        http = http.authorizeHttpRequests(configurer -> configurer.anyRequest().authenticated());
       }
       http
-        .cors().configurationSource(corsConfigurationSource()).and()
-        .csrf().disable();
+        .cors(configurer -> configurer.configurationSource(corsConfigurationSource()))
+        .csrf(AbstractHttpConfigurer::disable);
       return http.build();
     }
 
@@ -163,7 +163,7 @@ public class ApplicationAutoConfiguration {
           .withSockJS()
           .setClientLibraryUrl(settings.getLibraryUrl())
           .setWebSocketEnabled(settings.isWebSocketEnabled())
-          .setInterceptors(new ExtractURITemplateVariablesToAttributesInterceptor(
+          .setInterceptors(new ExtractURIParametersToAttributesInterceptor(
             StringUtils.defaultString(settings.getUrlAttributes().getSessionId(), "sessionId"),
             StringUtils.defaultString(settings.getUrlAttributes().getTenantId(), "tenantId")
           ))
@@ -181,9 +181,9 @@ public class ApplicationAutoConfiguration {
       container.setMaxBinaryMessageBufferSize(settings.getMaxBinaryMessageBufferSize());
       return container;
     }
-
-
   }
+
+
 
   @Bean
   public AuthenticationManager authenticationManager(List<AuthenticationProvider> providerList) {

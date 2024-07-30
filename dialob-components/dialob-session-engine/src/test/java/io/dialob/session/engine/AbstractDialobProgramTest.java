@@ -29,7 +29,6 @@ import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 

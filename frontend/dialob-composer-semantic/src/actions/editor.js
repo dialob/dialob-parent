@@ -25,6 +25,17 @@ export function addItem(config, parentItemId, afterItemId = null) {
   };
 }
 
+export function addItemWithIdPrefix(config, parentItemId, idPrefix, afterItemId = null) {
+  return {
+    type: Actions.ADD_ITEM,
+    config,
+    parentItemId,
+    afterItemId,
+    idPrefix,
+    saveNeeded: true
+  };
+}
+
 export function changeItemType(config, itemId) {
   return {
     type: Actions.CHANGE_ITEM_TYPE,
@@ -93,6 +104,15 @@ export function createValueset(forItem = null, entries = null) {
     type: Actions.CREATE_VALUESET,
     forItem,
     entries,
+    saveNeeded: true
+  };
+}
+
+export function deleteValueset(itemId) {
+  return {
+    type: Actions.DELETE_VALUESET,
+    itemId,
+    confirm: true,
     saveNeeded: true
   };
 }

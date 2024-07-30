@@ -15,12 +15,15 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.session.engine.program.model.*;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.program.model.ImmutableValueSet;
+import io.dialob.session.engine.program.model.Value;
+import io.dialob.session.engine.program.model.ValueSet;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +62,7 @@ public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, Progra
   }
 
   @Override
-  public boolean compile(@NotNull ItemId itemId, @NotNull String expression, @NotNull AliasesProvider aliasesProvider, @NotNull Consumer<Expression> consumer, @NotNull FormValidationError.Type type, Optional<Integer> index) {
+  public boolean compile(@NonNull ItemId itemId, @NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> consumer, @NonNull FormValidationError.Type type, Optional<Integer> index) {
     return getParent().compile(itemId, expression, aliasesProvider, consumer, type, index);
   }
 }

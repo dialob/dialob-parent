@@ -16,6 +16,7 @@
 package io.dialob.db.sp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.assets.AssetFormDatabase;
 import io.dialob.db.assets.repository.AssetRepository;
 import io.dialob.db.assets.repository.GenericAssetRepository;
@@ -52,7 +53,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
@@ -70,7 +70,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * NB! Conditional property prefixes and names should follow canonical naming, 
+ * NB! Conditional property prefixes and names should follow canonical naming,
  * see https://github.com/spring-projects/spring-boot/wiki/Canonical-properties
  * to enable these properties configuration through environment variables.
  */
@@ -80,6 +80,10 @@ import java.util.function.Predicate;
 public class DialobDbSpAutoConfiguration {
 
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
+  @Import({
+    org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class,
+    org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration.class
+  })
   @EnableMongoRepositories
   public static class DialobDbMongoAutoConfiguration {
 

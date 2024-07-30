@@ -15,11 +15,11 @@
  */
 package io.dialob.rule.parser;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -38,15 +38,15 @@ public class AstMatcher implements ASTVisitor {
   }
 
   @Override
-  public ASTVisitor visitCallExpr(@NotNull CallExprNode node) {
+  public ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
     checkMatchingBefore(node);
     return this;
   }
 
 
   @Override
-  @NotNull
-  public NodeBase endCallExpr(@NotNull CallExprNode node) {
+  @NonNull
+  public NodeBase endCallExpr(@NonNull CallExprNode node) {
     NodeBase nodeBase = checkMatching(node);
     if (nodeBase.getParent() == null) {
       // Last visit
@@ -60,16 +60,16 @@ public class AstMatcher implements ASTVisitor {
   }
 
   @Override
-  @NotNull
-  public NodeBase visitConstExpr(@NotNull ConstExprNode node) {
+  @NonNull
+  public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
     NodeBase nodeBase = checkMatching(node);
     checkIsThisLast(node);
     return nodeBase;
   }
 
   @Override
-  @NotNull
-  public NodeBase visitIdExpr(@NotNull IdExprNode node) {
+  @NonNull
+  public NodeBase visitIdExpr(@NonNull IdExprNode node) {
     NodeBase nodeBase = checkMatching(node);
     checkIsThisLast(node);
     return nodeBase;
@@ -79,7 +79,7 @@ public class AstMatcher implements ASTVisitor {
     // placeholder
   }
 
-  @NotNull
+  @NonNull
   protected NodeBase checkMatching(final NodeBase node) {
     for (final Pair<Predicate<NodeBase>, UnaryOperator<NodeBase>> pair : matchers) {
       if (pair.getKey().test(node)) {
@@ -93,7 +93,7 @@ public class AstMatcher implements ASTVisitor {
     return Objects::isNull;
   }
 
-  public static <T> Predicate<T> is(@NotNull T equalsTo) {
+  public static <T> Predicate<T> is(@NonNull T equalsTo) {
     return object -> equalsTo == object || equalsTo.equals(object);
   }
 
@@ -258,7 +258,7 @@ public class AstMatcher implements ASTVisitor {
     return callNode(any());
   }
 
-  public static Predicate<NodeBase> callNode(@NotNull Predicate<NodeBase> predicate) {
+  public static Predicate<NodeBase> callNode(@NonNull Predicate<NodeBase> predicate) {
     return node -> node instanceof CallExprNode && predicate.test(node);
   }
 
@@ -267,7 +267,7 @@ public class AstMatcher implements ASTVisitor {
     return idNode(any());
   }
 
-  public static Predicate<NodeBase> idNode(@NotNull Predicate<NodeBase> predicate) {
+  public static Predicate<NodeBase> idNode(@NonNull Predicate<NodeBase> predicate) {
     return node -> node instanceof IdExprNode && predicate.test(node);
   }
 
@@ -283,7 +283,7 @@ public class AstMatcher implements ASTVisitor {
     return constNode(any());
   }
 
-  public static Predicate<NodeBase> constNode(@NotNull Predicate<NodeBase> predicate) {
+  public static Predicate<NodeBase> constNode(@NonNull Predicate<NodeBase> predicate) {
     return node -> node instanceof ConstExprNode && predicate.test(node);
   }
 
@@ -291,7 +291,7 @@ public class AstMatcher implements ASTVisitor {
     return anyNode(any());
   }
 
-  public static Predicate<NodeBase> anyNode(@NotNull Predicate<NodeBase> predicate) {
+  public static Predicate<NodeBase> anyNode(@NonNull Predicate<NodeBase> predicate) {
     return node -> node != null && predicate.test(node);
   }
 

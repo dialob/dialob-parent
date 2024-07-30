@@ -15,12 +15,9 @@
  */
 package io.dialob.session.rest;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.Optional;
-
+import io.dialob.questionnaire.service.api.ActionProcessingService;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.security.user.CurrentUserProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,9 +33,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.dialob.questionnaire.service.api.ActionProcessingService;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.security.user.CurrentUserProvider;
+import java.util.Optional;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DefaultAnswerControllerTest.TestConfiguration.class})

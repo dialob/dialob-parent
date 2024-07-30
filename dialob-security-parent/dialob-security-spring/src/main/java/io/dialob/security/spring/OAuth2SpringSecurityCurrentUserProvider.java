@@ -15,17 +15,16 @@
  */
 package io.dialob.security.spring;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.user.CurrentUser;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-import io.dialob.security.user.CurrentUser;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 
 import java.util.Map;
 

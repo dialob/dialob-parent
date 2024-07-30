@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.controller;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.boot.security.OAuth2AuthenticationStrategy;
 import io.dialob.boot.security.QuestionnaireSecurityConfigurer;
@@ -32,7 +33,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -82,11 +82,6 @@ class FillControllerTest extends AbstractUIControllerTest {
   @Configuration(proxyBeanMethods = false)
   @Import(QuestionnaireSecurityConfigurer.class)
   public static class Config {
-//    @Bean
-//    public QuestionnaireSecurityConfigurer questionnaireSecurityConfigurer(@NonNull TenantAccessEvaluator tenantPermissionEvaluator,
-//                                                                           @NonNull AuthenticationStrategy authenticationStrategy) {
-//      return new QuestionnaireSecurityConfigurer("/", tenantPermissionEvaluator, authenticationStrategy);
-//    }
 
     @Bean
     public TenantAccessEvaluator tenantAccessEvaluator() {

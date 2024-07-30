@@ -15,6 +15,7 @@
  */
 package io.dialob.db.mongo.database;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.ModifiableQuestionnaire;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.mongo.MongoQuestionnaireIdObfuscator;
@@ -24,7 +25,6 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 
 import java.util.function.Consumer;
 

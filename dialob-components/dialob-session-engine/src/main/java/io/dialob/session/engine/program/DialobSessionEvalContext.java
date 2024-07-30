@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.program.expr.OutputFormatter;
@@ -24,8 +25,6 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
-import javax.annotation.Nonnull;
-import java.time.Clock;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -56,8 +55,6 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private final Map<ItemId, AsyncFunctionCall> pendingUpdates;
 
-  private final Clock clock;
-
   private final boolean activating;
 
   private boolean didComplete;
@@ -67,10 +64,9 @@ public class DialobSessionEvalContext implements EvalContext {
   private String originalLanguage;
 
   DialobSessionEvalContext(
-    @Nonnull FunctionRegistry functionRegistry,
-    @Nonnull DialobSession dialobSession,
-    @Nonnull Consumer<Event> updatesConsumer,
-    @Nonnull Clock clock,
+    @NonNull FunctionRegistry functionRegistry,
+    @NonNull DialobSession dialobSession,
+    @NonNull Consumer<Event> updatesConsumer,
     boolean activating,
     DialobSessionUpdateHook dialobSessionUpdateHook)
   {
@@ -79,7 +75,6 @@ public class DialobSessionEvalContext implements EvalContext {
     this.functionRegistry = functionRegistry;
     this.dialobSession = dialobSession;
     this.updatesConsumer = updatesConsumer;
-    this.clock = clock;
     this.activating = activating;
     this.originalStates = ImmutableItemStates.builder().from(dialobSession).build();
     this.pendingUpdates = new HashMap<>();
@@ -91,14 +86,13 @@ public class DialobSessionEvalContext implements EvalContext {
   }
 
 
-  private DialobSessionEvalContext(@Nonnull DialobSessionEvalContext parent, @Nonnull Scope scope)
+  private DialobSessionEvalContext(@NonNull DialobSessionEvalContext parent, @NonNull Scope scope)
   {
     this.parent = parent;
     this.scope = scope;
     this.functionRegistry = parent.functionRegistry;
     this.dialobSession = parent.dialobSession;
     this.updatesConsumer = parent.updatesConsumer;
-    this.clock = parent.clock;
     this.activating = parent.activating;
     this.originalStates = parent.originalStates;
     this.pendingUpdates = parent.pendingUpdates;
@@ -109,7 +103,7 @@ public class DialobSessionEvalContext implements EvalContext {
   }
 
 
-  public void applyAction(@Nonnull Command<?> action) {
+  public void applyAction(@NonNull Command<?> action) {
     dialobSessionUpdateHook.hookAction(dialobSession, action, a -> this.dialobSession.applyUpdate(this, a));
   }
 
@@ -123,18 +117,18 @@ public class DialobSessionEvalContext implements EvalContext {
     return parent;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public Optional<ItemState> getItemState(@Nonnull ItemId itemId) {
+  public Optional<ItemState> getItemState(@NonNull ItemId itemId) {
     if (IdUtils.QUESTIONNAIRE_ID.equals(itemId)) {
       return Optional.of(this.dialobSession.getRootItem());
     }
     return this.dialobSession.getItemState(scope(itemId, false));
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public Optional<ItemState> getOriginalItemState(@Nonnull ItemId itemId) {
+  public Optional<ItemState> getOriginalItemState(@NonNull ItemId itemId) {
     final ItemId scopedId = scope(itemId, false);
     ItemState originalState = this.originalStates.getItemStates().get(scopedId);
     if (originalState != null) {
@@ -143,21 +137,21 @@ public class DialobSessionEvalContext implements EvalContext {
     return Optional.empty();
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public Optional<ItemState> findPrototype(@Nonnull ItemId itemId) {
+  public Optional<ItemState> findPrototype(@NonNull ItemId itemId) {
     return dialobSession.findPrototype(itemId);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public Stream<ErrorState> findErrorPrototypes(@Nonnull ItemId itemId) {
+  public Stream<ErrorState> findErrorPrototypes(@NonNull ItemId itemId) {
     return dialobSession.findErrorPrototypes(itemId);
   }
 
   @Override
-  @Nonnull
-  public Optional<ValueSetState> getValueSetState(@Nonnull ValueSetId valueSetId) {
+  @NonNull
+  public Optional<ValueSetState> getValueSetState(@NonNull ValueSetId valueSetId) {
     return this.dialobSession.getValueSetState(valueSetId);
   }
 
@@ -165,8 +159,8 @@ public class DialobSessionEvalContext implements EvalContext {
     return getItemState(scope(itemId, false)).map(ItemState::getValue).orElse(null);
   }
 
-  @Nonnull
-  private ItemId scope(@Nonnull ItemId itemId, boolean ignoreScopeItems) {
+  @NonNull
+  private ItemId scope(@NonNull ItemId itemId, boolean ignoreScopeItems) {
     if (scope != null) {
       return scope.mapTo(itemId, ignoreScopeItems);
     }
@@ -200,7 +194,7 @@ public class DialobSessionEvalContext implements EvalContext {
   }
 
   @Override
-  public void registerUpdate(@Nonnull ValueSetState newState, ValueSetState oldState) {
+  public void registerUpdate(@NonNull ValueSetState newState, ValueSetState oldState) {
     if (newState != oldState) {
       ValueSetId id;
       if (oldState != null) {
@@ -212,7 +206,7 @@ public class DialobSessionEvalContext implements EvalContext {
     }
   }
 
-  public void accept(@Nonnull UpdatedItemsVisitor visitor) {
+  public void accept(@NonNull UpdatedItemsVisitor visitor) {
     visitor.start();
     if (originalLanguage != null) {
       visitor.visitSession().ifPresent(sessionUpdatesVisitor -> {
@@ -277,7 +271,7 @@ public class DialobSessionEvalContext implements EvalContext {
     this.dialobSession.setLanguage(language);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Consumer<Event> getEventsConsumer() {
     return this.updatesConsumer;
@@ -288,21 +282,14 @@ public class DialobSessionEvalContext implements EvalContext {
     return this.dialobSession.getErrorStates().values();
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public FunctionRegistry getFunctionRegistry() {
     return this.functionRegistry;
   }
 
-  @Nonnull
   @Override
-  public Clock getClock() {
-    return this.clock;
-  }
-
-
-  @Override
-  @Nonnull
+  @NonNull
   public OutputFormatter getOutputFormatter() {
     return new OutputFormatter(dialobSession.getLanguage());
   }

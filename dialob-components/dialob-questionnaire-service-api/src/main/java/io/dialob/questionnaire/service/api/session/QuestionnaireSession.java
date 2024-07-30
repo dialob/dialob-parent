@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.Actions;
@@ -25,7 +26,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.api.questionnaire.VariableValue;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -56,48 +56,48 @@ public interface QuestionnaireSession {
    * choose to send updates or full form
    */
   @Deprecated
-  @Nonnull
-  DispatchActionsResult dispatchActions(String revision, @Nonnull Collection<Action> actions);
+  @NonNull
+  DispatchActionsResult dispatchActions(String revision, @NonNull Collection<Action> actions);
 
-  @Nonnull
-  DispatchActionsResult dispatchActions(@Nonnull Collection<Action> actions);
+  @NonNull
+  DispatchActionsResult dispatchActions(@NonNull Collection<Action> actions);
 
-  @Nonnull
+  @NonNull
   Questionnaire getQuestionnaire();
 
-  @Nonnull
+  @NonNull
   String getRevision();
 
   String getRev();
 
   String getOwner();
 
-  @Nonnull
+  @NonNull
   Instant getLastUpdate();
 
   Optional<String> getActiveItem();
 
-  @Nonnull
+  @NonNull
   List<ValueSet> getValueSets();
 
-  @Nonnull
+  @NonNull
   List<Error> getErrors();
 
-  @Nonnull
+  @NonNull
   List<ActionItem> getItems();
 
-  Optional<ActionItem> getItemById(@Nonnull String itemId);
+  Optional<ActionItem> getItemById(@NonNull String itemId);
 
-  @Nonnull
+  @NonNull
   List<ActionItem> getVisibleItems();
 
-  @Nonnull
+  @NonNull
   List<Answer> getAnswers();
 
-  @Nonnull
+  @NonNull
   List<VariableValue> getVariableValues();
 
-  void buildFullForm(@Nonnull UpdatesCallback updatesCallback);
+  void buildFullForm(@NonNull UpdatesCallback updatesCallback);
 
   Optional<String> getSessionId();
 
@@ -113,7 +113,7 @@ public interface QuestionnaireSession {
 
   boolean usesLastestFormRevision();
 
-  @Nonnull
+  @NonNull
   String getFormId();
 
   Optional<Locale> getLocale();
@@ -122,7 +122,7 @@ public interface QuestionnaireSession {
 
   QuestionnaireSession withIdAndRev(String id, String rev);
 
-  @Nonnull
+  @NonNull
   Questionnaire.Metadata.Status getStatus();
 
   enum State {
@@ -132,45 +132,45 @@ public interface QuestionnaireSession {
     PASSIVE,
     COMPLETED;
 
-    @Nonnull
-    public State to(@Nonnull State next) {
+    @NonNull
+    public State to(@NonNull State next) {
       return next;
     }
   }
 
   interface UpdatesCallback {
-    @Nonnull
-    UpdatesCallback questionAdded(@Nonnull ActionItem item);
+    @NonNull
+    UpdatesCallback questionAdded(@NonNull ActionItem item);
 
-    @Nonnull
-    UpdatesCallback questionUpdated(@Nonnull ActionItem item);
+    @NonNull
+    UpdatesCallback questionUpdated(@NonNull ActionItem item);
 
-    @Nonnull
-    UpdatesCallback questionRemoved(@Nonnull String itemId);
+    @NonNull
+    UpdatesCallback questionRemoved(@NonNull String itemId);
 
-    @Nonnull
-    UpdatesCallback errorAdded(@Nonnull Error error);
+    @NonNull
+    UpdatesCallback errorAdded(@NonNull Error error);
 
-    @Nonnull
-    UpdatesCallback errorRemoved(@Nonnull Error error);
+    @NonNull
+    UpdatesCallback errorRemoved(@NonNull Error error);
 
-    @Nonnull
+    @NonNull
     UpdatesCallback removeAll();
 
-    @Nonnull
+    @NonNull
     UpdatesCallback locale(Locale locale);
 
-    @Nonnull
+    @NonNull
     UpdatesCallback completed();
 
-    @Nonnull
-    UpdatesCallback valueSetAdded(@Nonnull ValueSet valueSet);
+    @NonNull
+    UpdatesCallback valueSetAdded(@NonNull ValueSet valueSet);
 
-    @Nonnull
-    UpdatesCallback valueSetUpdated(@Nonnull ValueSet valueSet);
+    @NonNull
+    UpdatesCallback valueSetUpdated(@NonNull ValueSet valueSet);
 
-    @Nonnull
-    UpdatesCallback valueSetRemoved(@Nonnull String valueSetId);
+    @NonNull
+    UpdatesCallback valueSetRemoved(@NonNull String valueSetId);
 
   }
 

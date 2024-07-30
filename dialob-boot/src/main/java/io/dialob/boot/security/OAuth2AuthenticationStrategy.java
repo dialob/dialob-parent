@@ -15,8 +15,8 @@
  */
 package io.dialob.boot.security;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.spring.AuthenticationStrategy;
-import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -39,18 +39,14 @@ public class OAuth2AuthenticationStrategy implements AuthenticationStrategy {
   @Override
   public HttpSecurity configureAuthentication(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
-    http = http
-      .oauth2Login()
-      .tokenEndpoint()
-      .accessTokenResponseClient(accessTokenResponseClient).and()
-      .loginPage(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/default") // Skip login provider selection
-      .userInfoEndpoint()
-      .userAuthoritiesMapper(grantedAuthoritiesMapper)
-      .and()
-      .and();
-    return http.sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-      .and();
+    return http
+      .oauth2Login(login -> login
+        .tokenEndpoint(customizer -> customizer.accessTokenResponseClient(accessTokenResponseClient))
+        .loginPage(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/default") // Skip login provider selection
+        .userInfoEndpoint(customizer -> customizer
+          .userAuthoritiesMapper(grantedAuthoritiesMapper)))
+      .sessionManagement(customizer -> customizer
+        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
     // @formatter:on
   }
 

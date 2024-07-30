@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.sp;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
@@ -35,7 +36,6 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ValueSetState;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -55,12 +55,12 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
 
   private final AsyncFunctionInvoker asyncFunctionInvoker;
 
-  public DialobQuestionnaireSessionBuilder(@Nonnull QuestionnaireEventPublisher eventPublisher,
-                                           @Nonnull DialobProgramService dialobProgramService,
-                                           @Nonnull FormFinder formFinder,
-                                           @Nonnull QuestionnaireSessionSaveService questionnaireSessionSaveService,
-                                           @Nonnull DialobSessionEvalContextFactory sessionContextFactory,
-                                           @Nonnull AsyncFunctionInvoker asyncFunctionInvoker) {
+  public DialobQuestionnaireSessionBuilder(@NonNull QuestionnaireEventPublisher eventPublisher,
+                                           @NonNull DialobProgramService dialobProgramService,
+                                           @NonNull FormFinder formFinder,
+                                           @NonNull QuestionnaireSessionSaveService questionnaireSessionSaveService,
+                                           @NonNull DialobSessionEvalContextFactory sessionContextFactory,
+                                           @NonNull AsyncFunctionInvoker asyncFunctionInvoker) {
     super(formFinder);
     this.eventPublisher = requireNonNull(eventPublisher);
     this.dialobProgramService = requireNonNull(dialobProgramService);
@@ -69,9 +69,9 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
     this.asyncFunctionInvoker = requireNonNull(asyncFunctionInvoker);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  protected QuestionnaireSession createQuestionnaireSession(boolean newSession, @Nonnull Form formDocument) {
+  protected QuestionnaireSession createQuestionnaireSession(boolean newSession, @NonNull Form formDocument) {
     Questionnaire questionnaire = getQuestionnaire();
     DialobProgram dialobProgram;
     dialobProgram = dialobProgramService.findByFormIdAndRev(formDocument.getId(), formDocument.getRev());
@@ -142,7 +142,7 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
     }
   }
 
-  @Nonnull
+  @NonNull
   protected DialobQuestionnaireSession save(DialobQuestionnaireSession dialobQuestionnaireSession) {
     return (DialobQuestionnaireSession) questionnaireSessionSaveService.save(dialobQuestionnaireSession);
   }

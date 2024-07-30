@@ -16,13 +16,13 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,17 +34,17 @@ public interface ConditionalListOperator<T> extends Expression {
   List<Pair<Expression, T>> getItems();
 
   @Override
-  default Object eval(@Nonnull EvalContext evalContext) {
+  default Object eval(@NonNull EvalContext evalContext) {
     return getItems().stream().filter(item -> (Boolean) item.getLeft().eval(evalContext)).map(Pair::getRight).collect(Collectors.toList());
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getItems().stream().map(Pair::getLeft).map(Expression::getEvalRequiredConditions).reduce(Sets::union).orElse(Collections.emptySet());

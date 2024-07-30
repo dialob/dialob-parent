@@ -1,10 +1,10 @@
 package io.dialob.rule.parser.node;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class IdExprNode extends NodeBase {
 
   private final Map<String, ValueType> idSet;
 
-  public IdExprNode(NodeBase parent, @Nullable String namespace, @Nullable String scopeId, @NotNull String id, @Nullable ValueType valueType, @NotNull Span span) {
+  public IdExprNode(NodeBase parent, @Nullable String namespace, @Nullable String scopeId, @NonNull String id, @Nullable ValueType valueType, @NonNull Span span) {
     super(parent, span, valueType);
     this.id = Objects.requireNonNull(id);
     this.namespace = StringUtils.defaultString(namespace);
@@ -34,7 +34,7 @@ public class IdExprNode extends NodeBase {
     this.scopeId = scopeId;
   }
 
-  @NotNull
+  @NonNull
   public String getId() {
     return id;
   }
@@ -62,17 +62,17 @@ public class IdExprNode extends NodeBase {
     return id + "[" + getValueType() + "]";
   }
 
-  public NodeBase accept(@NotNull ASTVisitor visitor) {
+  public NodeBase accept(@NonNull ASTVisitor visitor) {
     return visitor.visitIdExpr(this);
   }
 
   @Override
-  @NotNull
+  @NonNull
   public Map<String, ValueType> getDependencies() {
     return idSet;
   }
 
-  @NotNull
+  @NonNull
   @Override
   public NodeOperator getNodeOperator() {
     return NodeOperator.ID;

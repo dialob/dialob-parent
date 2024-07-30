@@ -6,7 +6,7 @@
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
     "@dialob/fill-api": "^1.4.7",
-    "@dialob/fill-material": "^1.4.0",
+    "@dialob/fill-material": "^1.5.0",
     "@dialob/fill-react": "^3.1.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
@@ -43,6 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-aws": "export PUBLIC_URL=\"//cdn.resys.io/dialob/dialob-fill-demo-material/main\"; react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006",

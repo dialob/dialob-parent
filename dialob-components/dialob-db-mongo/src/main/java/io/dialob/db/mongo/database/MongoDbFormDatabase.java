@@ -15,12 +15,12 @@
  */
 package io.dialob.db.mongo.database;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ModifiableForm;
 import io.dialob.db.mongo.repository.FormRepository;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.ImmutableFormMetadataRow;
-import org.springframework.lang.NonNull;
 
 import java.util.function.Consumer;
 

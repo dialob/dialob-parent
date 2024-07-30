@@ -17,14 +17,15 @@ package io.dialob.boot.controller;
 
 import io.dialob.boot.security.WebApiSecurityConfigurer;
 import io.dialob.common.Permissions;
-import io.dialob.form.service.rest.FormsRestService;
-import io.dialob.questionnaire.service.rest.QuestionnairesRestService;
+import io.dialob.form.service.rest.FormsRestServiceController;
+import io.dialob.questionnaire.service.rest.QuestionnairesRestServiceController;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
 import io.dialob.tenant.service.rest.TenantsRestController;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,14 +36,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -60,6 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "dialob.db.database-type=none",
+  "dialob.security.enabled=true",
   "dialob.api.contextPath=/api"
 })
 @ContextConfiguration(classes = {
@@ -71,7 +71,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableConfigurationProperties(DialobSettings.class)
 public class ApiControllerTest extends AbstractControllerTest {
 
-  @Configuration(proxyBeanMethods = false)
+  @org.springframework.boot.test.context.TestConfiguration(proxyBeanMethods = false)
   public static class TestConfiguration {
 
     @Bean
@@ -93,10 +93,10 @@ public class ApiControllerTest extends AbstractControllerTest {
   public TenantAccessEvaluator tenantAccessEvaluator;
 
   @MockBean
-  public FormsRestService formsRestServiceController;
+  public FormsRestServiceController formsRestServiceController;
 
   @MockBean
-  public QuestionnairesRestService questionnairesRestServiceController;
+  public QuestionnairesRestServiceController questionnairesRestServiceController;
 
   @BeforeEach
   public void resetMocks() {

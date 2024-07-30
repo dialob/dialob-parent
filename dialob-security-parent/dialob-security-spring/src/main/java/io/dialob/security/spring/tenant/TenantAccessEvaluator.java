@@ -15,8 +15,7 @@
  */
 package io.dialob.security.spring.tenant;
 
-import org.springframework.lang.NonNull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.Tenant;
 
 public interface TenantAccessEvaluator {

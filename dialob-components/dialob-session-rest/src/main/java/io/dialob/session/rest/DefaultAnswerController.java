@@ -15,22 +15,13 @@
  */
 package io.dialob.session.rest;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.RestController;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableAction;
 import io.dialob.api.proto.ImmutableActions;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.FormActions;
@@ -40,11 +31,17 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-@RestController
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 public class DefaultAnswerController implements AnswerController, QuestionnaireActionsService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAnswerController.class);
 
   private final QuestionnaireSessionService questionnaireSessionService;
   private final boolean returnStackTrace;
@@ -123,8 +120,10 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
       return ResponseEntity.ok(answerQuestion(sessionId, actions.getRev(), actions.getActions()));
     } catch(DocumentNotFoundException e) {
       return createQuestionnaireNotFoundResponse(sessionId, e);
+    } catch(DocumentConflictException e) {
+      return createUpdateConflictResponse(sessionId, e);
     } catch(Exception e) {
-      LOGGER.error(String.format("Dialog update failed: %s", e.getMessage()), e);
+      LOGGER.error("Dialog {} update failed: {}", sessionId, e.getMessage(), e);
       return createServiceErrorResponse(e);
     } finally {
       long time = System.nanoTime() - start;
@@ -145,13 +144,23 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     return questionnaireSession;
   }
 
-  protected ResponseEntity<Actions> createQuestionnaireNotFoundResponse(String sessionId, DocumentNotFoundException e) {
+  protected ResponseEntity<Actions> createQuestionnaireNotFoundResponse(String sessionId, @Nullable DocumentNotFoundException e) {
     LOGGER.debug("Action QUESTIONNAIRE_NOT_FOUND: backend response '{}'", e != null ? e.getMessage() : "Security block");
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
       ImmutableActions.builder().addActions(ImmutableAction.builder()
         .type(Action.Type.SERVER_ERROR)
         .serverEvent(true)
         .message("not found")
+        .id(sessionId).build()).build());
+  }
+
+  protected ResponseEntity<Actions> createUpdateConflictResponse(String sessionId, @NonNull DocumentConflictException e) {
+    LOGGER.debug("Action UPDATE_CONFLICT: backend response '{}'", e.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(
+      ImmutableActions.builder().addActions(ImmutableAction.builder()
+        .type(Action.Type.SERVER_ERROR)
+        .serverEvent(true)
+        .message(e.getMessage())
         .id(sessionId).build()).build());
   }
 
@@ -168,6 +177,10 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
       e.printStackTrace(new PrintWriter(sw));
       action.message(e.getMessage());
       action.trace(sw.toString());
+    } else {
+      if (e instanceof DocumentConflictException) {
+        action.message(e.getMessage());
+      }
     }
     return action.build();
   }

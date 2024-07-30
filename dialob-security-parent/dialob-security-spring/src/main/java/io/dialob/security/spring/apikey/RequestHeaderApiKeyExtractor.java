@@ -15,23 +15,21 @@
  */
 package io.dialob.security.spring.apikey;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Objects;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.key.ApiKey;
 import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
+
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Objects;
 
 
 public class RequestHeaderApiKeyExtractor implements ServletRequestApiKeyExtractor {

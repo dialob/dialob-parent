@@ -15,7 +15,7 @@
  */
 package io.dialob.security.user;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class UnauthenticatedCurrentUserProvider implements CurrentUserProvider {
 
@@ -28,7 +28,7 @@ public class UnauthenticatedCurrentUserProvider implements CurrentUserProvider {
   private UnauthenticatedCurrentUserProvider() {
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public CurrentUser get() {
     return UNAUTHENTICATED_USER;

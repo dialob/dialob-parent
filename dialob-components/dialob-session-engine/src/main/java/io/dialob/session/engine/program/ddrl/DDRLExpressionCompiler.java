@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.ddrl;
 
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.VariableFinder;
@@ -29,7 +30,6 @@ import io.dialob.session.engine.program.expr.arith.TimeOperators;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.IdUtils;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,16 +46,16 @@ public class DDRLExpressionCompiler {
 
   private final Map<NodeBase,String> asyncFunctionVariables;
 
-  public DDRLExpressionCompiler(@Nonnull OperatorFactory operatorFactory) {
+  public DDRLExpressionCompiler(@NonNull OperatorFactory operatorFactory) {
     this.operatorFactory = requireNonNull(operatorFactory);
     this.asyncFunctionVariables = Maps.newHashMap();
   }
 
-  @Nonnull
+  @NonNull
   public <T> Optional<Expression> compile(
-    @Nonnull VariableFinder variableFinder,
-    @Nonnull String expressionString,
-    @Nonnull Consumer<RuleExpressionCompilerError> errorConsumer)
+    @NonNull VariableFinder variableFinder,
+    @NonNull String expressionString,
+    @NonNull Consumer<RuleExpressionCompilerError> errorConsumer)
   {
     final io.dialob.rule.parser.Expression expression = createExpression(variableFinder, asyncFunctionVariables, expressionString);
     expression.getErrors().forEach(errorConsumer::accept);
@@ -76,8 +76,8 @@ public class DDRLExpressionCompiler {
     return Optional.empty();
   }
 
-  @Nonnull
-  private Expression convertToImmutableExpression(@Nonnull NodeBase ast) {
+  @NonNull
+  private Expression convertToImmutableExpression(@NonNull NodeBase ast) {
     ASTVisitorBuilder visitorBuilder = new ASTVisitorBuilder();
     ast.accept(visitorBuilder);
     final List<Expression> expressions = visitorBuilder.getExpressions();
@@ -96,20 +96,20 @@ public class DDRLExpressionCompiler {
 
     private ASTVisitorBuilder builder;
 
-    @Nonnull
+    @NonNull
     public List<Expression> getExpressions() {
       return expressions;
     }
 
     @Override
-    public ASTVisitor visitCallExpr(@Nonnull CallExprNode node) {
+    public ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
       this.builder = new ASTVisitorBuilder();
       return builder;
     }
 
     @Override
-    @Nonnull
-    public NodeBase endCallExpr(@Nonnull CallExprNode node) {
+    @NonNull
+    public NodeBase endCallExpr(@NonNull CallExprNode node) {
       try {
         final Expression operator = operatorFactory.createOperator(
           requireNonNull(node.getValueType()),
@@ -125,15 +125,15 @@ public class DDRLExpressionCompiler {
     }
 
     @Override
-    @Nonnull
-    public NodeBase visitConstExpr(@Nonnull ConstExprNode node) {
+    @NonNull
+    public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
       expressions.add(ImmutableConstant.builder().valueType(requireNonNull(node.getValueType())).value(node.getAsValueType()).build());
       return node;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public NodeBase visitIdExpr(@Nonnull IdExprNode node) {
+    public NodeBase visitIdExpr(@NonNull IdExprNode node) {
       switch (node.getId()) {
         case "today":
           expressions.add(TimeOperators.today());

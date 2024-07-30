@@ -3,6 +3,7 @@ import { DialogActions, Button, Menu, MenuItem } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { ArrowDropDown, Help } from '@mui/icons-material';
 import { useComposer } from '../dialob';
+import { getLanguageName } from '../utils/TranslationUtils';
 
 export const DialogActionButtons: React.FC<{ handleClose: () => void, handleClick: () => void }> = ({ handleClose, handleClick }) => {
   return (
@@ -16,7 +17,7 @@ export const DialogActionButtons: React.FC<{ handleClose: () => void, handleClic
 export const DialogHelpButton: React.FC<{ helpUrl: string }> = ({ helpUrl }) => {
   return (
     <Button color='inherit' variant='contained' endIcon={<Help />} onClick={() => window.open(helpUrl, "_blank")}>
-      <FormattedMessage id='help' />
+      <FormattedMessage id='buttons.help' />
     </Button>
   );
 }
@@ -39,14 +40,14 @@ export const DialogLanguageMenu: React.FC<{ activeLanguage: string, setActiveLan
   return (
     <>
       <Button endIcon={<ArrowDropDown />} onClick={handleLanguageMenuOpen} color='inherit' variant='contained'>
-        <FormattedMessage id={'locales.' + activeLanguage} />
+        {getLanguageName(activeLanguage)}
       </Button>
       <Menu open={languageMenuOpen} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} disableScrollLock={true}>
         {formLanguages
           .filter((language) => language !== activeLanguage)
           .map((language) => (
             <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
-              <FormattedMessage id={'locales.' + language} />
+              {getLanguageName(language)}
             </MenuItem>
           ))}
       </Menu>

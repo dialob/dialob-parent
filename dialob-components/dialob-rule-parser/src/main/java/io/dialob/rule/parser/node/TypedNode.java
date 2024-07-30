@@ -1,7 +1,7 @@
 package io.dialob.rule.parser.node;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
-import org.jetbrains.annotations.Nullable;
 
 
 public interface TypedNode {

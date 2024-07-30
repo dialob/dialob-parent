@@ -15,7 +15,7 @@
  */
 package io.dialob.questionnaire.service.api.session;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface QuestionnaireSessionBuilderFactory {
 
@@ -23,7 +23,7 @@ public interface QuestionnaireSessionBuilderFactory {
    * Builder built session is not cached automatically.
    * @return session builder
    */
-  @Nonnull
+  @NonNull
   QuestionnaireSessionBuilder createQuestionnaireSessionBuilder();
 
 }

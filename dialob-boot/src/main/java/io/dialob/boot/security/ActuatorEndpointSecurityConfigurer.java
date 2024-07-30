@@ -37,11 +37,11 @@ public class ActuatorEndpointSecurityConfigurer {
   @Order(0)
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(EndpointRequest.toAnyEndpoint())
-      .authorizeHttpRequests()
-      .requestMatchers(new AndRequestMatcher(
-        EndpointRequest.to(HealthEndpoint.class),
-        GET_REQUEST)).permitAll()
-      .anyRequest().hasAuthority(Permissions.AUDIT);
+      .authorizeHttpRequests(customizer -> customizer
+        .requestMatchers(new AndRequestMatcher(
+          EndpointRequest.to(HealthEndpoint.class),
+          GET_REQUEST)).permitAll()
+        .anyRequest().hasAuthority(Permissions.AUDIT));
     return http.build();
   }
 

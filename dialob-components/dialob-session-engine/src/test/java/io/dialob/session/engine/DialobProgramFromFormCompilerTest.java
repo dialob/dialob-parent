@@ -20,7 +20,6 @@ import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableValidation;
 import io.dialob.api.proto.Action;
-import io.dialob.api.questionnaire.Answer;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
@@ -31,11 +30,10 @@ import io.dialob.session.engine.session.model.ItemId;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.time.Clock;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
@@ -47,7 +45,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   @Test
   public void shouldSetRequiredOnForAllQuestionsOfRequired() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
     DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
@@ -115,7 +113,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   @Test
   public void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
     DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
@@ -179,7 +177,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   @Test
   public void testIsBlankAndIsNullOperators() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
     DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
@@ -253,7 +251,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   @Test
   public void testLocaleUpdateEffectOnErrors() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
     DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
@@ -304,7 +302,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   @Test
   public void shouldInactivateNestedGroups() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
     DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
@@ -367,7 +365,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   @Test
   public void shouldSubSequentPagesShouldNotPreventNextPage() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, Clock.systemDefaultZone(), null);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
     DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()

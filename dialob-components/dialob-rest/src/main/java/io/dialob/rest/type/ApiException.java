@@ -15,8 +15,8 @@
  */
 package io.dialob.rest.type;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.rest.Errors;
-import org.springframework.lang.NonNull;
 
 public class ApiException extends RuntimeException {
 

@@ -1360,10 +1360,10 @@
   dependencies:
     immer "^9.0.1"
 
-"@dialob/fill-material@^1.4.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@dialob/fill-material/-/fill-material-1.5.0.tgz#b9f223b82339471489905cc507197ab18f0c8bbc"
-  integrity sha512-FAmXjZN/JDvcwAhNRgJ7Cp4T8FD1OrGBzmcxT6EJqGHBlOWh4FmnqQSqOA5+0exLS/jsPB+plqz9JTPgL8TdmQ==
+"@dialob/fill-material@^1.5.0":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@dialob/fill-material/-/fill-material-1.5.2.tgz#78cb6d73298b4166cf7c247bc57acea8bcd4866f"
+  integrity sha512-DEjWoby0ZAktUTMVeDlTkp3XUwwmaAgTMBxlJHPpo4JX7UQhVDgPCzbYI+qxfaDjhzmzZl58x+/LdGmJk938Ig==
 
 "@dialob/fill-react@^3.1.0":
   version "3.1.0"

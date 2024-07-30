@@ -15,11 +15,10 @@
  */
 package io.dialob.security.tenant;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.slf4j.MDC;
+
+import java.util.Objects;
 
 public class TenantContextHolderCurrentTenant implements CurrentTenant {
 
@@ -29,7 +28,7 @@ public class TenantContextHolderCurrentTenant implements CurrentTenant {
 
   protected TenantContextHolderCurrentTenant() {}
 
-  public static void runInTenantContext(@Nonnull Tenant tenant, @Nonnull Runnable runnable) {
+  public static void runInTenantContext(@NonNull Tenant tenant, @NonNull Runnable runnable) {
     Tenant originalTenant = TENANT_THREAD_LOCAL.get();
     TENANT_THREAD_LOCAL.set(Objects.requireNonNull(tenant));
     MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, tenant.getId());

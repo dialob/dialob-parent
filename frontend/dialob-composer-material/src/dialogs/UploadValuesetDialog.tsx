@@ -1,10 +1,11 @@
 import React from "react";
-import Papa from "papaparse";
 import { Dialog, DialogTitle, DialogContent, Button, CircularProgress, Typography, Select, MenuItem, Alert } from "@mui/material";
-import { Upload, Warning } from "@mui/icons-material";
+import { Help, Upload, Warning } from "@mui/icons-material";
 import { DialogActionButtons } from "./DialogComponents";
 import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
+import { parseCsvFile } from "../utils/ParseUtils";
+import { useDocs } from "../utils/DocsUtils";
 
 type UploadMode = 'replace' | 'append' | 'update';
 const UPLOAD_MODES: UploadMode[] = ['replace', 'append', 'update'];
@@ -16,6 +17,7 @@ const UploadValuesetDialog: React.FC<{
   setCurrentValueSet: React.Dispatch<React.SetStateAction<ValueSet | undefined>>
 }> = ({ open, onClose, currentValueSet, setCurrentValueSet }) => {
   const { addValueSetEntry, setValueSetEntries } = useComposer();
+  const docsUrl = useDocs('valuesets');
   const [error, setError] = React.useState<string | null>(null);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [uploadMode, setUploadMode] = React.useState<UploadMode>('replace');
@@ -39,23 +41,6 @@ const UploadValuesetDialog: React.FC<{
     onClose();
   }
 
-  const parse = (inputFile: File): Promise<Papa.ParseResult<any>> => {
-    return new Promise((resolve, reject) => {
-      Papa.parse(inputFile, {
-        header: true,
-        transformHeader: h => h.trim(),
-        skipEmptyLines: true,
-        error: (error) => {
-          console.error('CSV Parse error', error);
-          reject(error);
-        },
-        complete: (results: Papa.ParseResult<any>) => {
-          resolve(results);
-        }
-      });
-    });
-  };
-
   const handleUpload = async () => {
     if (!selectedFile) {
       setError('No file selected');
@@ -64,7 +49,7 @@ const UploadValuesetDialog: React.FC<{
     setLoading(true);
     setError(null);
 
-    const csvResult = await parse(selectedFile);
+    const csvResult = await parseCsvFile(selectedFile);
     if (!csvResult.meta.fields) {
       setError('Invalid CSV format');
       setLoading(false);
@@ -81,7 +66,7 @@ const UploadValuesetDialog: React.FC<{
       setError('Invalid CSV format');
     } else {
       const newEntries: ValueSetEntry[] = csvResult.data.map(d => {
-        let label: LocalizedString = {};
+        const label: LocalizedString = {};
         csvResult.meta.fields?.filter(f => f !== 'ID').forEach(f => {
           label[f] = d[f];
         });
@@ -97,12 +82,17 @@ const UploadValuesetDialog: React.FC<{
         setCurrentValueSet({ ...currentValueSet, entries: newEntries });
         setValueSetEntries(currentValueSet.id, newEntries);
       } else if (uploadMode === 'append') {
-        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, ...newEntries] });
-        newEntries.forEach(e => addValueSetEntry(currentValueSet.id, e));
+        if (currentValueSet.entries) {
+          setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, ...newEntries] });
+          newEntries.forEach(e => addValueSetEntry(currentValueSet.id, e));
+        } else {
+          setCurrentValueSet({ ...currentValueSet, entries: newEntries });
+          setValueSetEntries(currentValueSet.id, newEntries);
+        }
       } else if (uploadMode === 'update') {
         const currentEntries = currentValueSet.entries;
         const appliedEntries: ValueSetEntry[] = [];
-        currentEntries.forEach(e => {
+        currentEntries?.forEach(e => {
           const newEntry = newEntries.find(ne => ne.id === e.id);
           if (newEntry) {
             appliedEntries.push(newEntry);
@@ -120,12 +110,16 @@ const UploadValuesetDialog: React.FC<{
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>
-        Upload Valueset
+      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
+        <FormattedMessage id='dialogs.upload.valueset.title' />
+        <Button variant='outlined' endIcon={<Help />}
+          onClick={() => window.open(docsUrl, "_blank")}>
+          <FormattedMessage id='buttons.help' />
+        </Button>
       </DialogTitle>
       <DialogContent>
         <Button variant='contained' color='inherit' startIcon={<Upload />} onClick={() => ref.current?.click()} sx={{ mb: 2 }}>
-          Choose File
+          <FormattedMessage id='dialogs.upload.valueset.file' />
         </Button>
         <input type='file' hidden ref={ref} accept='text/csv' onChange={onFileChange} />
         {selectedFile && <Typography sx={{ mb: 2 }}>{selectedFile.name}</Typography>}

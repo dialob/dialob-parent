@@ -15,24 +15,24 @@
  */
 package io.dialob.rule.parser.function;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
-import org.jetbrains.annotations.NotNull;
 
 public interface FunctionRegistry {
 
-  @NotNull
-  ValueType returnTypeOf(@NotNull String functionName, ValueType... argTypes) throws VariableNotDefinedException;
+  @NonNull
+  ValueType returnTypeOf(@NonNull String functionName, ValueType... argTypes) throws VariableNotDefinedException;
 
   boolean isAsyncFunction(String functionName);
 
-  void invokeFunction(FunctionRegistry.FunctionCallback callback, @NotNull String functionName, Object... args);
+  void invokeFunction(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, Object... args);
 
-  void invokeFunctionAsync(FunctionRegistry.FunctionCallback callback, @NotNull String functionName, Object... args);
+  void invokeFunctionAsync(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, Object... args);
 
-  void configureFunction(@NotNull String functionName, @NotNull String implementationName, @NotNull Class<?> implementationClass, boolean async);
+  void configureFunction(@NonNull String functionName, @NonNull String implementationName, @NonNull Class<?> implementationClass, boolean async);
 
-  default void configureFunction(@NotNull String functionName, @NotNull Class<?> implementationClass, boolean async) {
+  default void configureFunction(@NonNull String functionName, @NonNull Class<?> implementationClass, boolean async) {
     configureFunction(functionName, functionName, implementationClass, async);
   }
 
@@ -47,6 +47,6 @@ public interface FunctionRegistry {
        * Called if there was error in function execution
        * @param error error message from execution
        */
-    void failed(@NotNull String error);
+    void failed(@NonNull String error);
   }
 }

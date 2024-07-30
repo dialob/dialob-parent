@@ -15,31 +15,64 @@
  */
 package io.dialob.session.boot;
 
+import com.redis.testcontainers.RedisContainer;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
 public interface ProvideTestRedis {
-  GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7.0"))
-    .withExposedPorts(6379);
+  RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7.0"));
 
   @DynamicPropertySource
   static void redisProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.redis.host", redis::getHost);
-    registry.add("spring.redis.port", () -> redis.getMappedPort(6379));
+    registry.add("spring.data.redis.host", redis::getHost);
+    registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
   }
 
   @BeforeAll
   static void startRedis() {
     redis.start();
-  }
+    var port = redis.getMappedPort(RedisContainer.REDIS_PORT);
+    Socket socket = null;
+    InetSocketAddress endpoint = new InetSocketAddress(redis.getHost(), port);
+    int i = 1000;
+    while (--i > 0) {
+      try {
+        socket = new Socket();
+        socket.connect(endpoint);
+        LoggerFactory.getLogger(ProvideTestRedis.class)
+          .info("Redis running at {}:{}", redis.getHost(), port);
+        return;
+      } catch (ConnectException e) {
+        try {
+          Thread.sleep(100L);
+        } catch (InterruptedException ex) {
+          throw new RuntimeException(ex);
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      } finally {
+        IOUtils.closeQuietly(socket);
+      }
+    }
+    LoggerFactory.getLogger(ProvideTestRedis.class)
+      .info("Redis didn't respond at {}:{}", redis.getHost(), port);
 
+  }
   @AfterAll
   static void stopRedis() {
     redis.stop();
+    LoggerFactory.getLogger(ProvideTestRedis.class)
+      .info("Redis stopped");
   }
 
 }

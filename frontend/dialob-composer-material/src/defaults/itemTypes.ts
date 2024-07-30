@@ -15,6 +15,7 @@ export interface ItemTypeConfig {
       propEditors?: {
         [key: string]: {
           component: React.FC,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           props?: any
         }
       },
@@ -33,7 +34,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         {
           title: 'Group',
           optionEditors: [
-            {name: 'Additional option', editor: Editor}
+            { name: 'Additional option', editor: Editor }
           ],
           propEditors: {
             columns: {
@@ -107,16 +108,16 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
           convertible: ['text', 'textBox'],
           propEditors: {
             country: {
-            component: Editor,
-            props: {
-              allowAdditions: true,
-              options: [
-                {key: 'fi', label: 'Finland'},
-                {key: 'sv', label: 'Sweden'},
-                {key: 'ee', label: 'Estonia'}
-              ]
+              component: Editor,
+              props: {
+                allowAdditions: true,
+                options: [
+                  { key: 'fi', label: 'Finland' },
+                  { key: 'sv', label: 'Sweden' },
+                  { key: 'ee', label: 'Estonia' }
+                ]
+              }
             }
-          }
           },
           config: {
             type: 'text',

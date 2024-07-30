@@ -15,15 +15,14 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Actions;
 import org.immutables.value.Value;
-
-import javax.annotation.Nonnull;
 
 @Value.Immutable
 public interface QuestionnaireActionsEvent extends QuestionnaireEvent {
 
-  @Nonnull
+  @NonNull
   Actions getActions();
 
 }

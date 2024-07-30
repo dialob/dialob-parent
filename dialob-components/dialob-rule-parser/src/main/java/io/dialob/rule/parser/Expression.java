@@ -16,6 +16,7 @@
 package io.dialob.rule.parser;
 
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
@@ -26,7 +27,6 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -38,11 +38,11 @@ public class Expression implements ErrorLogger {
 
   private List<RuleExpressionCompilerError> errors = new ArrayList<>();
 
-  private Expression(@NotNull String expression) {
+  private Expression(@NonNull String expression) {
     this(ASTBuilderWalker.DUMMY_VARIABLE_FINDER, Maps.newHashMap(), expression);
   }
 
-  private Expression(@NotNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables, @NotNull String expression) {
+  private Expression(@NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables, @NonNull String expression) {
     this.expression = Objects.requireNonNull(expression, "expression may not be null");
     ParseTree parseTree = parseExpression(expression);
     if (!hasErrors()) {
@@ -54,18 +54,18 @@ public class Expression implements ErrorLogger {
     }
   }
 
-  @NotNull
-  public static Expression createExpression(@NotNull String expression) {
+  @NonNull
+  public static Expression createExpression(@NonNull String expression) {
     return new Expression(expression);
   }
 
-  @NotNull
-  public static Expression createExpression(VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables, @NotNull String expression) {
+  @NonNull
+  public static Expression createExpression(VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables, @NonNull String expression) {
     return new Expression(variableFinder, asyncFunctionVariables, expression);
   }
 
-  @NotNull
-  private ParseTree parseExpression(@NotNull String expression) {
+  @NonNull
+  private ParseTree parseExpression(@NonNull String expression) {
     DialobRuleLexer dialobRuleLexer = new DialobRuleLexer(CharStreams.fromString(expression));
     final ErrorListener errorListener = new ErrorListener(this);
     dialobRuleLexer.addErrorListener(errorListener);
@@ -107,7 +107,7 @@ public class Expression implements ErrorLogger {
 
 
     @Override
-    public int compareTo(@NotNull StringOper o) {
+    public int compareTo(@NonNull StringOper o) {
       // We want reverse order
       return o.span.getStartIndex() - span.getStartIndex();
     }
@@ -117,8 +117,8 @@ public class Expression implements ErrorLogger {
     final Set<String> ids = new HashSet<>();
     ast.accept(new ASTVisitor() {
       @Override
-      @NotNull
-      public NodeBase visitIdExpr(@NotNull IdExprNode node) {
+      @NonNull
+      public NodeBase visitIdExpr(@NonNull IdExprNode node) {
         ids.add(node.getId());
         return node;
       }
@@ -130,8 +130,8 @@ public class Expression implements ErrorLogger {
     List<StringOper> opes = new ArrayList<>();
     ast.accept(new ASTVisitor() {
       @Override
-      @NotNull
-      public NodeBase visitIdExpr(@NotNull IdExprNode node) {
+      @NonNull
+      public NodeBase visitIdExpr(@NonNull IdExprNode node) {
         if (node.getId().equals(from)) {
           opes.add(new StringOper(node.getSpan()));
         }

@@ -26,7 +26,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration(proxyBeanMethods = false)
-@EnableAutoConfiguration
+@EnableAutoConfiguration(excludeName = {
+  "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+  "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
+  "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
+})
 @EnableScheduling
 @EnableAsync
 @EnableIntegration

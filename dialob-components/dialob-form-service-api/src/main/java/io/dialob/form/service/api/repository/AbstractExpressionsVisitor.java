@@ -15,10 +15,10 @@
  */
 package io.dialob.form.service.api.repository;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormItem;
 import io.dialob.form.service.api.type.ValidationVisitor;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public abstract class AbstractExpressionsVisitor implements FormVisitor {
@@ -49,37 +49,37 @@ public abstract class AbstractExpressionsVisitor implements FormVisitor {
       }
 
       @Override
-      public void visitQuestionnaireItem(@Nonnull FormItem formItem) {
+      public void visitQuestionnaireItem(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
 
       @Override
-      public void visitGroup(@Nonnull FormItem formItem) {
+      public void visitGroup(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
 
       @Override
-      public void visitSurveyGroup(@Nonnull FormItem formItem) {
+      public void visitSurveyGroup(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
 
       @Override
-      public void visitRowGroup(@Nonnull FormItem formItem) {
+      public void visitRowGroup(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
 
       @Override
-      public void visitPage(@Nonnull FormItem formItem) {
+      public void visitPage(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
 
       @Override
-      public void visitQuestion(@Nonnull FormItem formItem) {
+      public void visitQuestion(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
 
       @Override
-      public void visitNote(@Nonnull FormItem formItem) {
+      public void visitNote(@NonNull FormItem formItem) {
         this.formItem = formItem;
       }
     });
