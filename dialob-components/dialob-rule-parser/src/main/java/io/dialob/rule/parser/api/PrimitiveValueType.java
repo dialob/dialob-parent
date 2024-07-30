@@ -20,6 +20,7 @@ import com.google.protobuf.CodedOutputStream;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -396,12 +397,12 @@ public enum PrimitiveValueType implements ValueType {
   },
   INTEGER {
     @Override
-    public Comparator<Integer> getComparator() {
+    public Comparator<BigInteger> getComparator() {
       return Comparator.naturalOrder();
     }
 
     @Override
-    public BinaryOperator<Integer> sumOp() {
+    public BinaryOperator<BigInteger> sumOp() {
       return (identity, element) -> {
         if (identity == null) {
           return element;
@@ -409,12 +410,12 @@ public enum PrimitiveValueType implements ValueType {
         if (element == null) {
           return identity;
         }
-        return identity + element;
+        return identity.add(element);
       };
     }
 
     @Override
-    public BinaryOperator<Integer> multOp() {
+    public BinaryOperator<BigInteger> multOp() {
       return (identity, element) -> {
         if (identity == null) {
           return element;
@@ -422,21 +423,21 @@ public enum PrimitiveValueType implements ValueType {
         if (element == null) {
           return identity;
         }
-        return identity * element;
+        return identity.multiply(element);
       };
     }
 
     @Override
     public Class<?> getTypeClass() {
-      return Integer.class;
+      return BigInteger.class;
     }
 
     @Override
-    public Integer parseFromString(String string) {
+    public BigInteger parseFromString(String string) {
       if (isBlank(string)) {
         return null;
       }
-      return Integer.valueOf(string);
+      return new BigInteger(string);
     }
 
     @Override
@@ -446,7 +447,10 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object negate(Object value) {
-      return -((Integer) value);
+      if (value instanceof BigInteger) {
+        return ((BigInteger) value).negate();
+      }
+      return value;
     }
 
     protected boolean isNumberType(ValueType rhs) {
@@ -497,8 +501,14 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object coerseFrom(Object value) {
+      if (value instanceof BigInteger) {
+        return value;
+      }
+      if (value instanceof BigDecimal) {
+        return ((BigDecimal) value).toBigInteger();
+      }
       if (value instanceof Number) {
-        return ((Number) value).intValue();
+        return BigInteger.valueOf(((Number) value).longValue());
       }
       return null;
     }
@@ -508,14 +518,19 @@ public enum PrimitiveValueType implements ValueType {
       boolean present = value != null;
       output.writeBoolNoTag(present);
       if (present) {
-        output.writeInt32NoTag((Integer) value);
+        BigInteger bi = (BigInteger) value;
+        byte[] byteArray = bi.toByteArray();
+        output.writeInt32NoTag(byteArray.length);
+        output.writeRawBytes(byteArray);
       }
     }
 
     @Override
     public Object readFrom(CodedInputStream input) throws IOException {
       if (input.readBool()) {
-        return input.readInt32();
+        int size = input.readInt32();
+        var bytes = input.readRawBytes(size);
+        return new BigInteger(bytes);
       }
       return null;
     }

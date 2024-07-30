@@ -30,6 +30,7 @@ import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -135,7 +136,7 @@ class CreateDialobSessionProgramVisitorTest {
 
 
 
-    assertEquals(1, dialobSession.getItemState(IdUtils.toId("rg.0.q1")).get().getValue());
+    assertEquals(BigInteger.ONE, dialobSession.getItemState(IdUtils.toId("rg.0.q1")).get().getValue());
     assertEquals(BigDecimal.valueOf(1.0), dialobSession.getItemState(IdUtils.toId("rg.0.q2")).get().getValue());
 
     EvalContext context = contextFactory.createDialobSessionEvalContext(dialobSession, event -> {}, false);
@@ -148,7 +149,7 @@ class CreateDialobSessionProgramVisitorTest {
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
-    assertEquals(3, ImmutableArrayReducerOperator.of(
+    assertEquals(BigInteger.valueOf(3), ImmutableArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_SUM,
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
@@ -163,7 +164,7 @@ class CreateDialobSessionProgramVisitorTest {
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
-    assertEquals(1, ImmutableArrayReducerOperator.of(
+    assertEquals(BigInteger.valueOf(1), ImmutableArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MIN,
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
@@ -178,7 +179,7 @@ class CreateDialobSessionProgramVisitorTest {
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
-    assertEquals(2, ImmutableArrayReducerOperator.of(
+    assertEquals(BigInteger.valueOf(2), ImmutableArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MAX,
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
@@ -188,15 +189,15 @@ class CreateDialobSessionProgramVisitorTest {
       ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
-    assertEquals(2, ImmutableArrayReducerOperator.builder()
+    assertEquals(BigInteger.valueOf(2), ImmutableArrayReducerOperator.builder()
       .reducer(ArrayReducerOperator.ANSWER_COUNT)
       .arrayExpression(ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"), ValueType.INTEGER))
-      .placeholderValue(0)
+      .placeholderValue(BigInteger.ZERO)
       .build().eval(context));
-    assertEquals(0, ImmutableArrayReducerOperator.builder()
+    assertEquals(BigInteger.valueOf(0), ImmutableArrayReducerOperator.builder()
       .reducer(ArrayReducerOperator.ANSWER_COUNT)
       .arrayExpression(ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"), ValueType.INTEGER))
-      .placeholderValue(0)
+      .placeholderValue(BigInteger.ZERO)
       .build().eval(context));
   }
 
@@ -224,7 +225,7 @@ class CreateDialobSessionProgramVisitorTest {
       .build();
 
 
-    Mockito.when(initialValueResolver.apply(itemId, rowgroup)).thenReturn(Optional.of(Arrays.asList(1,2,3)));
+    Mockito.when(initialValueResolver.apply(itemId, rowgroup)).thenReturn(Optional.of(Arrays.asList(BigInteger.ONE,BigInteger.TWO,BigInteger.valueOf(3))));
 
 
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
@@ -242,7 +243,7 @@ class CreateDialobSessionProgramVisitorTest {
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     final ItemState rg = dialobSession.getItemState(Operators.ref("rg")).get();
-    assertEquals(Arrays.asList(1,2,3), rg.getValue());
+    assertEquals(Arrays.asList(BigInteger.ONE,BigInteger.TWO,BigInteger.valueOf(3)), rg.getValue());
     assertTrue(dialobSession.findPrototype(IdUtils.toId("rg.*")).isPresent());
 
     verify(initialValueResolver).apply(itemId, rowgroup);

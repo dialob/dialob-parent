@@ -25,6 +25,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -44,8 +45,8 @@ public interface CollectRowFieldsOperator extends Expression {
   @Override
   default Object eval(@NonNull EvalContext evalContext) {
     return getItemId().getParent().flatMap(ItemId::getParent)
-      .map(rgId -> (List<Integer>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
-      .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber))
+      .map(rgId -> (List<BigInteger>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
+      .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber.intValue()))
     .map(evalContext::getItemValue).collect(toList());
   }
 

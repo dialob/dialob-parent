@@ -33,9 +33,10 @@ public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, Ite
   @NonNull
   default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (canUpdate(context, itemState)) {
+      Object answer = getAnswer();
       return itemState.update()
-        .setAnswer(getAnswer())
-        .setValue(Utils.parse(itemState.getType(), getAnswer())).get();
+        .setAnswer(answer)
+        .setValue(Utils.parse(itemState.getType(), answer)).get();
     }
     return itemState;
   }

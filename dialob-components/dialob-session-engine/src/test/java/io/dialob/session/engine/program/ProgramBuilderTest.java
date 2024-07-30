@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -535,8 +536,8 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertValueEquals(session, toRef("question1"), null);
     assertValueEquals(session, toRef("var1"), null);
     dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "1"));
-    assertValueEquals(session, toRef("question1"), 1);
-    assertValueEquals(session, toRef("var1"), 2);
+    assertValueEquals(session, toRef("question1"), BigInteger.valueOf(1));
+    assertValueEquals(session, toRef("var1"), BigInteger.valueOf(2));
   }
 
   @Test

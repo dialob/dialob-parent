@@ -28,6 +28,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.time.*;
 import java.util.Map;
 import java.util.Optional;
@@ -59,7 +60,7 @@ public class DDRLExpressionCompilerTest {
 
     assertThat(expression.getEvalRequiredConditions()).doesNotContainNull();
 
-    assertEquals(0, expression.eval(evalContext));
+    assertEquals(BigInteger.ZERO, expression.eval(evalContext));
 
     verifyNoMoreInteractions(variableFinder, evalContext, errorConsumer);
   }

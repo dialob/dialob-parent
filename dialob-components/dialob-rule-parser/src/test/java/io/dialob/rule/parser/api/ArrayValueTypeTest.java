@@ -18,6 +18,7 @@ package io.dialob.rule.parser.api;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,7 +32,7 @@ public class ArrayValueTypeTest {
 
   @Test
   public void shouldGetArrayClassOfValueType() {
-    assertSame(Integer[].class, ValueType.arrayOf(ValueType.INTEGER).getTypeClass());
+    assertSame(BigInteger[].class, ValueType.arrayOf(ValueType.INTEGER).getTypeClass());
     assertSame(String[].class, ValueType.arrayOf(ValueType.STRING).getTypeClass());
     assertSame(LocalDate[].class, ValueType.arrayOf(ValueType.DATE).getTypeClass());
     assertSame(LocalTime[].class, ValueType.arrayOf(ValueType.TIME).getTypeClass());
@@ -43,11 +44,11 @@ public class ArrayValueTypeTest {
 
   @Test
   public void shouldGetArrayClassOfArray() {
-    assertSame(Integer[][].class, ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER)).getTypeClass());
+    assertSame(BigInteger[][].class, ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER)).getTypeClass());
   }
 
   @Test
   public void shouldParseArrayStrings() {
-    assertArrayEquals(new Integer[] {1,2,3}, (Integer[]) ValueType.arrayOf(ValueType.INTEGER).parseFromString("[1,2,3]"));
+    assertArrayEquals(new BigInteger[] {BigInteger.valueOf(1),BigInteger.valueOf(2),BigInteger.valueOf(3)}, (BigInteger[]) ValueType.arrayOf(ValueType.INTEGER).parseFromString("[1,2,3]"));
   }
 }
