@@ -41,10 +41,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -180,7 +177,7 @@ public class Utils {
       return valueType.coerseFrom(value);
     }
     if (value instanceof Collection) {
-      return Lists.newArrayList((Collection)value);
+      return ((Collection)value).stream().map(i -> i instanceof Integer ? BigInteger.valueOf((Integer)i) : i).collect(Collectors.toList());
     }
     // TODO handle array answers
     return null;
