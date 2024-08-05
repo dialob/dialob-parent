@@ -15,6 +15,9 @@
  */
 package io.dialob.session.engine.session.model;
 
+import io.dialob.session.engine.spi.SessionWriter;
+
+import java.io.IOException;
 import java.io.Serializable;
 
 public interface SessionObject extends Serializable {
@@ -33,4 +36,5 @@ public interface SessionObject extends Serializable {
     return false;
   }
 
+  void writeTo(SessionWriter writer) throws IOException;
 }

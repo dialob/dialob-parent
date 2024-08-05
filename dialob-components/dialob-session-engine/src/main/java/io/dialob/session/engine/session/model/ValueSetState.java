@@ -16,9 +16,10 @@
 package io.dialob.session.engine.session.model;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.engine.spi.SessionWriter;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
 public class ValueSetState implements SessionObject {
 
   private static final long serialVersionUID = 6040009682715910439L;
@@ -118,10 +120,6 @@ public class ValueSetState implements SessionObject {
     return new ValueSetState.UpdateBuilder();
   }
 
-  public ValueSetState(@NonNull ValueSetId id) {
-    this.id = id;
-  }
-
   public ValueSetState(@NonNull String id) {
     this.id = ImmutableValueSetId.of(id);
   }
@@ -146,29 +144,27 @@ public class ValueSetState implements SessionObject {
     return entries;
   }
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    output.writeStringNoTag(getId().getValueSetId());
-    output.writeInt32NoTag(entries.size());
+  public void writeTo(SessionWriter writer) throws IOException {
+    writer.writeString(getId().getValueSetId());
+    writer.writeInt32(entries.size());
     for (Entry entry :  entries) {
-      output.writeStringNoTag(entry.getId());
-      output.writeStringNoTag(entry.getLabel());
-      output.writeBoolNoTag(entry.isProvided());
+      writer.writeString(entry.getId());
+      writer.writeString(entry.getLabel());
+      writer.writeBool(entry.isProvided());
     }
   }
 
-  public static ValueSetState readFrom(CodedInputStream input) throws IOException {
-    String id = input.readString();
-    ValueSetState state = new ValueSetState(id);
-    int count = input.readInt32();
+  public static ValueSetState readFrom(SessionReader reader) throws IOException {
+    String id = reader.readString();
+    int count = reader.readInt32();
     Entry[] entries = new Entry[count];
     for ( int i = 0; i < count; i++) {
-      String key = input.readString();
-      String label = input.readString();
-      boolean provided = input.readBool();
+      String key = reader.readString();
+      String label = reader.readString();
+      boolean provided = reader.readBool();
       entries[i] = new Entry(key, label, provided);
     }
-    state.entries = ImmutableList.copyOf(entries);
-    return state;
+    return new ValueSetState(ImmutableValueSetId.of(id), ImmutableList.copyOf(entries));
   }
 
 

@@ -17,8 +17,6 @@ package io.dialob.session.engine.session.model;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
@@ -26,6 +24,9 @@ import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.*;
+import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.engine.spi.SessionWriter;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +39,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static io.dialob.session.engine.Utils.*;
-
 @EqualsAndHashCode
 @ToString
 @Slf4j
+@AllArgsConstructor
 public class DialobSession implements ItemStates, Serializable {
 
   private static final long serialVersionUID = 1180110179877247767L;
@@ -78,81 +78,99 @@ public class DialobSession implements ItemStates, Serializable {
   // TODO move this to DialobProgram
   private Map<ErrorId,ErrorState> errorPrototypes = new HashMap<>();
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    writeNullableString(output, tenantId);
-    writeNullableString(output, id);
-    output.writeStringNoTag(revision);
-    output.writeStringNoTag(language);
-    output.writeInt64NoTag(lastUpdate.getTime());
-    writeNullableDate(output, completed);
-    writeNullableDate(output, opened);
-    output.writeInt32NoTag(asyncUpdateCount);
+  public void writeTo(SessionWriter writer) throws IOException {
+    writer.writeNullableString(tenantId);
+    writer.writeNullableString(id);
+    writer.writeString(revision);
+    writer.writeString(language);
+    writer.writeInt64(lastUpdate.getTime());
+    writer.writeNullableDate(completed);
+    writer.writeNullableDate(opened);
+    writer.writeInt32(asyncUpdateCount);
 
-    output.writeInt32NoTag(itemStates.size());
+    writer.writeInt32(itemStates.size());
     for (ItemState itemState : itemStates.values()) {
-      itemState.writeTo(output);
+      itemState.writeTo(writer);
     }
 
-    output.writeInt32NoTag(itemPrototypes.size());
+    writer.writeInt32(itemPrototypes.size());
     for (ItemState itemState : itemPrototypes.values()) {
-      itemState.writeTo(output);
+      itemState.writeTo(writer);
     }
 
-    output.writeInt32NoTag(valueSetStates.size());
+    writer.writeInt32(valueSetStates.size());
     for (ValueSetState valueSetState : valueSetStates.values()) {
-      valueSetState.writeTo(output);
+      valueSetState.writeTo(writer);
     }
 
-    output.writeInt32NoTag(errorStates.size());
+    writer.writeInt32(errorStates.size());
     for (ErrorState errorState : errorStates.values()) {
-      errorState.writeTo(output);
+      errorState.writeTo(writer);
     }
 
-    output.writeInt32NoTag(errorPrototypes.size());
+    writer.writeInt32(errorPrototypes.size());
     for (ErrorState state : errorPrototypes.values()) {
-      state.writeTo(output);
+      state.writeTo(writer);
     }
-
   }
 
-  public static DialobSession readFrom(CodedInputStream input) throws IOException {
-    String tenantId = readNullableString(input);
-    String id = readNullableString(input);
-    DialobSession session = new DialobSession(tenantId, id);
-    session.revision = input.readString();
-    session.language = input.readString();
-    session.lastUpdate = new Date(input.readInt64());
-    session.completed = readNullableDate(input);
-    session.opened = readNullableDate(input);
-    session.asyncUpdateCount = input.readInt32();
+  public static DialobSession readFrom(SessionReader reader) throws IOException {
+    var tenantId = reader.readNullableString();
+    var id = reader.readNullableString();
 
-    int count = input.readInt32();
-    for (int i = 0; i < count; ++i) {
-      final ItemState state = ItemState.readFrom(input);
-      session.itemStates.put(state.getId(), state);
-    }
-    count = input.readInt32();
-    for (int i = 0; i < count; ++i) {
-      final ItemState state = ItemState.readFrom(input);
-      session.itemPrototypes.put(state.getId(), state);
-    }
-    count = input.readInt32();
-    for (int i = 0; i < count; ++i) {
-      final ValueSetState state = ValueSetState.readFrom(input);
-      session.valueSetStates.put(state.getId(), state);
-    }
-    count = input.readInt32();
-    for (int i = 0; i < count; ++i) {
-      final ErrorState state = ErrorState.readFrom(input);
-      session.errorStates.put(state.getId(), state);
-    }
-    count = input.readInt32();
-    for (int i = 0; i < count; ++i) {
-      final ErrorState state = ErrorState.readFrom(input);
-      session.errorPrototypes.put(state.getId(), state);
-    }
+    var revision = reader.readString();
+    var language = reader.readString();
+    var lastUpdate = new Date(reader.readInt64());
+    var completed = reader.readNullableDate();
+    var opened = reader.readNullableDate();
+    var asyncUpdateCount = reader.readInt32();
 
-    return session;
+    var itemStates = new HashMap<ItemId, ItemState>();
+    var itemPrototypes = new HashMap<ItemId, ItemState>();
+    var valueSetStates = new HashMap<ValueSetId, ValueSetState>();
+    var errorStates = new HashMap<ErrorId, ErrorState>();
+    var errorPrototypes = new HashMap<ErrorId, ErrorState>();
+
+    int count = reader.readInt32();
+    for (int i = 0; i < count; ++i) {
+      final ItemState state = ItemState.readFrom(reader);
+      itemStates.put(state.getId(), state);
+    }
+    count = reader.readInt32();
+    for (int i = 0; i < count; ++i) {
+      final ItemState state = ItemState.readFrom(reader);
+      itemPrototypes.put(state.getId(), state);
+    }
+    count = reader.readInt32();
+    for (int i = 0; i < count; ++i) {
+      final ValueSetState state = ValueSetState.readFrom(reader);
+      valueSetStates.put(state.getId(), state);
+    }
+    count = reader.readInt32();
+    for (int i = 0; i < count; ++i) {
+      final ErrorState state = ErrorState.readFrom(reader);
+      errorStates.put(state.getId(), state);
+    }
+    count = reader.readInt32();
+    for (int i = 0; i < count; ++i) {
+      final ErrorState state = ErrorState.readFrom(reader);
+      errorPrototypes.put(state.getId(), state);
+    }
+    return new DialobSession(
+      tenantId,
+      id,
+      asyncUpdateCount,
+      revision,
+      lastUpdate,
+      completed,
+      opened,
+      language,
+      itemStates,
+      itemPrototypes,
+      valueSetStates,
+      errorStates,
+      errorPrototypes
+    );
   }
 
 
