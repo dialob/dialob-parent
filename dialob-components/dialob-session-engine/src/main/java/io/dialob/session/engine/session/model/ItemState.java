@@ -17,14 +17,13 @@ package io.dialob.session.engine.session.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
-import io.dialob.rule.parser.api.PrimitiveValueType;
-import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
+import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.engine.spi.SessionWriter;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
@@ -32,12 +31,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.*;
 
-import static io.dialob.session.engine.Utils.readNullableString;
-import static io.dialob.session.engine.Utils.writeNullableString;
-
 
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
 public class ItemState implements SessionObject {
 
   private static final long serialVersionUID = -3974128908954128671L;
@@ -74,7 +71,6 @@ public class ItemState implements SessionObject {
   private static final int INVALID_ANSWERS_BIT = 1 << 6;
   private static final int HAS_CUSTOM_PROPS_BIT = 1 << 7;
 
-
   private final ItemId id;
 
   private final ItemId prototypeId;
@@ -85,6 +81,7 @@ public class ItemState implements SessionObject {
 
   private final String valueSetId;
 
+  @NonNull
   private Status status = Status.NEW;
 
   private Object answer;
@@ -99,17 +96,20 @@ public class ItemState implements SessionObject {
 
   private String description;
 
-  // indicates whethet questionnaire is completed
+  @NonNull
+  private List<String> classNames = Collections.emptyList();
 
-  private List<String> classNames = ImmutableList.of();
+  @NonNull
+  private List<ItemId> items = Collections.emptyList();
 
-  private List<ItemId> items = ImmutableList.of();
+  @NonNull
+  private List<ItemId> availableItems = Collections.emptyList();
 
-  private List<ItemId> availableItems = ImmutableList.of();
+  @NonNull
+  private Map<String, Object> props = Collections.emptyMap();
 
-  private Map<String, Object> props = new HashMap<>();
-
-  private Set<Action.Type> allowedActions = ImmutableSet.of();
+  @NonNull
+  private Set<Action.Type> allowedActions = Collections.emptySet();
 
   private ItemId activePage;
 
@@ -120,6 +120,7 @@ public class ItemState implements SessionObject {
       resetBits(bit);
     }
   }
+
   protected void setBits(int bit) {
     bits = bits | bit;
   }
@@ -133,136 +134,90 @@ public class ItemState implements SessionObject {
     return (bits & bit) != 0;
   }
 
-  public static ItemState readFrom(CodedInputStream input) throws IOException {
-    final ItemId id = IdUtils.readIdFrom(input);
-    final ItemId prototypeId = IdUtils.readIdFrom(input);
-    final String type = input.readString();
-    final String view = readNullableString(input);
-    final String valueSetId = readNullableString(input);
+  public static ItemState readFrom(SessionReader reader) throws IOException {
+    final var id = reader.readId();
+    final var prototypeId = reader.readId();
+    final var type = reader.readString();
+    final var view = reader.readNullableString();
+    final var valueSetId = reader.readNullableString();
 
-    ItemState state = new ItemState(id, prototypeId, type, view, valueSetId);
-    state.activePage = IdUtils.readIdFrom(input);
-    state.status = Status.values()[input.readRawByte()];
-    state.bits = input.readInt32();
-    state.label = readNullableString(input);
-    state.description = readNullableString(input);
+    final var activePage = reader.readId();
+    final var status = Status.values()[reader.readRawByte()];
+    final var bits = reader.readInt32();
+    final var label = reader.readNullableString();
+    final var description = reader.readNullableString();
 
-    state.answer = Utils.readObjectValue(input);
-    state.value = readValue(input);
-    state.defaultValue = readValue(input);
+    final var answer = reader.readObjectValue();
+    final var value = reader.readValue();
+    final var defaultValue = reader.readValue();
 
-    state.classNames = readStringList(input);
-    state.items = readIdList(input);
-    state.availableItems = readIdList(input);
+    final var classNames = reader.readStringList();
+    final var items = reader.readIdList();
+    final var availableItems = reader.readIdList();
 
-    int count = input.readInt32();
-    if ( count >  0) {
-      Action.Type[] types = new Action.Type[count];
-      for (int i = 0; i < count; i++ ){
-        types[i] = Action.Type.values()[input.readInt32()];
+    final var props = new HashMap<String, Object>();
+    Set<Action.Type> allowedActions;
+
+    int count = reader.readInt32();
+    if (count > 0) {
+      var types = new Action.Type[count];
+      for (int i = 0; i < count; i++) {
+        types[i] = Action.Type.values()[reader.readInt32()];
       }
-      state.allowedActions = ImmutableSet.copyOf(types);
+      allowedActions = ImmutableSet.copyOf(types);
     } else {
-      state.allowedActions = ImmutableSet.of();
+      allowedActions = Collections.emptySet();
     }
-    return state;
+    return new ItemState(
+      id,
+      prototypeId,
+      type,
+      view,
+      valueSetId,
+      status,
+      answer,
+      value,
+      defaultValue,
+      bits,
+      label,
+      description,
+      classNames,
+      items,
+      availableItems,
+      props,
+      allowedActions,
+      activePage
+    );
   }
 
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    IdUtils.writeIdTo(id, output);
-    IdUtils.writeIdTo(prototypeId, output);
-    output.writeStringNoTag(type);
-    writeNullableString(output, view);
-    writeNullableString(output, valueSetId);
+  public void writeTo(SessionWriter writer) throws IOException {
+    writer.writeId(id);
+    writer.writeId(prototypeId);
+    writer.writeString(type);
+    writer.writeNullableString(view);
+    writer.writeNullableString(valueSetId);
 
-    IdUtils.writeIdTo(activePage, output);
-    output.writeRawByte(status.ordinal());
-    output.writeInt32NoTag(bits);
-    writeNullableString(output, label);
-    writeNullableString(output, description);
+    writer.writeId(activePage);
+    writer.writeRawByte(status.ordinal());
+    writer.writeInt32(bits);
+    writer.writeNullableString(label);
+    writer.writeNullableString(description);
 
-    Utils.writeObjectValue(output, answer);
-    writeValue(output, Utils.mapQuestionTypeToValueType(type).orElse(null), value);
-    writeValue(output, Utils.mapQuestionTypeToValueType(type).orElse(null), defaultValue);
+    writer.writeObjectValue(answer);
+    var valueType = Utils.mapQuestionTypeToValueType(type).orElse(null);
+    writer.writeValue(valueType, value);
+    writer.writeValue(valueType, defaultValue);
 
-    writeStringList(output, classNames);
-    writeIdList(output, items);
-    writeIdList(output, availableItems);
+    writer.writeStringList(classNames);
+    writer.writeIdList(items);
+    writer.writeIdList(availableItems);
 
-    output.writeInt32NoTag(allowedActions.size());
-    for (Action.Type actionType: allowedActions) {
-      output.writeInt32NoTag(actionType.ordinal());
+    writer.writeInt32(allowedActions.size());
+    for (Action.Type actionType : allowedActions) {
+      writer.writeInt32(actionType.ordinal());
     }
   }
-
-
-
-  private void writeValue(CodedOutputStream output, ValueType type, Object value) throws IOException {
-    final boolean present = value != null && type != null;
-    output.writeBoolNoTag(present);
-    if (present) {
-      output.writeRawByte(type.getTypeCode());
-      type.writeTo(output, value);
-    }
-  }
-
-  private static Object readValue(CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      byte typeCode = input.readRawByte();
-      ValueType valueType;
-      if ((0x80 & typeCode) != 0) {
-        typeCode = (byte) (typeCode & 0x7f);
-        valueType = ValueType.arrayOf(PrimitiveValueType.values()[typeCode]);
-      } else {
-        valueType = PrimitiveValueType.values()[typeCode];
-      }
-      return valueType.readFrom(input);
-    }
-    return null;
-  }
-
-
-  private void writeIdList(CodedOutputStream output, List<ItemId> itemIds) throws IOException {
-    output.writeInt32NoTag(itemIds.size());
-    for (ItemId s : itemIds) {
-      IdUtils.writeIdTo(s, output);
-    }
-  }
-
-  private void writeStringList(CodedOutputStream output, List<String> stringList) throws IOException {
-    output.writeInt32NoTag(stringList.size());
-    for (String s : stringList) {
-      output.writeStringNoTag(s);
-    }
-  }
-
-
-  private static List<ItemId> readIdList(CodedInputStream input) throws IOException {
-    int count = input.readInt32();
-    if (count > 0) {
-      ItemId[] ids = new ItemId[count];
-      for (int i = 0; i < count; i++) {
-        ids[i] = IdUtils.readIdFrom(input);
-      }
-      return ImmutableList.copyOf(ids);
-    }
-    return ImmutableList.of();
-  }
-
-  private static List<String> readStringList(CodedInputStream input) throws IOException {
-    int count = input.readInt32();
-    if (count > 0) {
-      String[] ids = new String[count];
-      for (int i = 0; i < count; i++) {
-        ids[i] = input.readString();
-      }
-      return ImmutableList.copyOf(ids);
-    }
-    return ImmutableList.of();
-  }
-
-
 
   public ItemState(@NonNull ItemId id, ItemId prototypeId, @NonNull String type, String view, String valueSetId) {
     this.id = id;
@@ -362,7 +317,7 @@ public class ItemState implements SessionObject {
   }
 
   public boolean isBlank() {
-    return isNull() || value instanceof CharSequence && StringUtils.isBlank((CharSequence)value);
+    return isNull() || value instanceof CharSequence && StringUtils.isBlank((CharSequence) value);
   }
 
   public boolean isNull() {

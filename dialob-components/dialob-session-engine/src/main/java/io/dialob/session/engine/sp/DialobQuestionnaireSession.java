@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.sp;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.*;
@@ -38,6 +36,8 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.engine.spi.SessionWriter;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static io.dialob.session.engine.Utils.*;
+import static io.dialob.session.engine.Utils.isQuestionType;
 
 @Slf4j
 @EqualsAndHashCode(exclude = {"eventPublisher", "state"})
@@ -145,29 +145,29 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     return new Builder();
   }
 
-  public void writeTo(@NonNull CodedOutputStream output) throws IOException {
-    writeNullableString(output, rev);
-    output.writeInt32NoTag(questionClientVisibility.ordinal());
-    output.writeInt32NoTag(state.get().ordinal());
+  public void writeTo(@NonNull SessionWriter writer) throws IOException {
+    writer.writeNullableString(rev);
+    writer.writeInt32(questionClientVisibility.ordinal());
+    writer.writeInt32(state.get().ordinal());
 
-    output.writeStringNoTag(metadata.getStatus().name());
-    output.writeStringNoTag(metadata.getFormId());
-    writeNullableString(output, metadata.getFormRev());
-    writeNullableString(output, metadata.getLanguage());
-    writeNullableString(output, metadata.getLabel());
-    writeNullableDate(output, metadata.getCreated());
-    writeNullableDate(output, metadata.getLastAnswer());
-    writeNullableString(output, metadata.getCreator());
-    writeNullableString(output, metadata.getOwner());
-    writeNullableString(output, metadata.getTenantId());
-    writeNullableString(output, metadata.getSubmitUrl());
+    writer.writeString(metadata.getStatus().name());
+    writer.writeString(metadata.getFormId());
+    writer.writeNullableString(metadata.getFormRev());
+    writer.writeNullableString(metadata.getLanguage());
+    writer.writeNullableString(metadata.getLabel());
+    writer.writeNullableDate(metadata.getCreated());
+    writer.writeNullableDate(metadata.getLastAnswer());
+    writer.writeNullableString(metadata.getCreator());
+    writer.writeNullableString(metadata.getOwner());
+    writer.writeNullableString(metadata.getTenantId());
+    writer.writeNullableString(metadata.getSubmitUrl());
 
-    output.writeInt32NoTag(metadata.getAdditionalProperties().size());
+    writer.writeInt32(metadata.getAdditionalProperties().size());
     for (Map.Entry<String, Object> entry : metadata.getAdditionalProperties().entrySet()) {
-      output.writeStringNoTag(entry.getKey());
-      Utils.writeObjectValue(output, entry.getValue());
+      writer.writeString(entry.getKey());
+      writer.writeObjectValue(entry.getValue());
     }
-    dialobSession.writeTo(output);
+    dialobSession.writeTo(writer);
   }
 
   public static class Builder {
@@ -190,33 +190,33 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
     private Questionnaire.Metadata metadata;
 
-    public Builder readFrom(@NonNull CodedInputStream input) throws IOException {
-      rev = readNullableString(input);
-      questionClientVisibility = QuestionClientVisibility.values()[input.readInt32()];
-      state = State.values()[input.readInt32()];
+    public Builder readFrom(@NonNull SessionReader reader) throws IOException {
+      rev = reader.readNullableString();
+      questionClientVisibility = QuestionClientVisibility.values()[reader.readInt32()];
+      state = State.values()[reader.readInt32()];
 
       ImmutableQuestionnaireMetadata.Builder metadataBuilder = ImmutableQuestionnaireMetadata.builder()
-        .status(Questionnaire.Metadata.Status.valueOf(input.readString()))
-        .formId(input.readString())
-        .formRev(readNullableString(input))
-        .language(readNullableString(input))
-        .label(readNullableString(input))
-        .created(readNullableDate(input))
-        .lastAnswer(readNullableDate(input))
-        .creator(readNullableString(input))
-        .owner(readNullableString(input))
-        .tenantId(readNullableString(input))
-        .submitUrl(readNullableString(input));
+        .status(Questionnaire.Metadata.Status.valueOf(reader.readString()))
+        .formId(reader.readString())
+        .formRev(reader.readNullableString())
+        .language(reader.readNullableString())
+        .label(reader.readNullableString())
+        .created(reader.readNullableDate())
+        .lastAnswer(reader.readNullableDate())
+        .creator(reader.readNullableString())
+        .owner(reader.readNullableString())
+        .tenantId(reader.readNullableString())
+        .submitUrl(reader.readNullableString());
 
-      int additionalPropertiesCount = input.readInt32();
+      int additionalPropertiesCount = reader.readInt32();
       for (int i = 0; i < additionalPropertiesCount; ++i) {
-        String key = input.readString();
-        Object value = Utils.readObjectValue(input);
+        String key = reader.readString();
+        Object value = reader.readObjectValue();
         metadataBuilder.putAdditionalProperties(key, value);
       }
 
       metadata = metadataBuilder.build();
-      dialobSession = DialobSession.readFrom(input);
+      dialobSession = DialobSession.readFrom(reader);
       return this;
     }
 

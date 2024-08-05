@@ -24,7 +24,10 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
+import io.dialob.session.engine.sp.CodedInputStreamSessionReader;
+import io.dialob.session.engine.sp.CodedOutputStreamSessionWriter;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
+import io.dialob.session.engine.spi.SessionReader;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.noop.NoopTimer;
@@ -41,6 +44,7 @@ import java.util.Optional;
 @Slf4j
 public class QuestionnaireDialobSessionRedisSerializer implements RedisSerializer<DialobQuestionnaireSession> {
 
+  public static final int REVISION = 1;
   private final QuestionnaireSessionService questionnaireSessionService;
 
   private final QuestionnaireEventPublisher eventPublisher;
@@ -84,7 +88,7 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
       final ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
       CodedOutputStream output = CodedOutputStream.newInstance(byteBuffer);
       try {
-        dialobQuestionnaireSession.writeTo(output);
+        dialobQuestionnaireSession.writeTo(new CodedOutputStreamSessionWriter(output, REVISION));
         output.flush();
       } catch (IOException e) {
         throw new SerializationException("ProtoBuf serialization failed. Session " + dialobQuestionnaireSession.getSessionId(), e);
@@ -104,7 +108,7 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
     return deserializationTimer.record(() -> {
       CodedInputStream input = CodedInputStream.newInstance(bytes);
       try {
-        return restoreSessionFrom(input);
+        return restoreSessionFrom(new CodedInputStreamSessionReader(input));
       } catch (IOException e) {
         throw new SerializationException("ProtoBuf deserialization failed", e);
       }
@@ -112,12 +116,12 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
   }
 
   @NonNull
-  protected DialobQuestionnaireSession restoreSessionFrom(@NonNull CodedInputStream input) throws IOException {
+  protected DialobQuestionnaireSession restoreSessionFrom(@NonNull SessionReader reader) throws IOException {
     DialobQuestionnaireSession.Builder builder = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)
       .asyncFunctionInvoker(asyncFunctionInvoker)
-      .readFrom(input);
+      .readFrom(reader);
     Questionnaire.Metadata metadata = builder.getMetadata();
     return builder
       .dialobProgram(dialobProgramService.findByFormIdAndRev(metadata.getFormId(), metadata.getFormRev()))

@@ -15,10 +15,6 @@
  */
 package io.dialob.session.engine;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
@@ -34,14 +30,14 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetState;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -51,12 +47,10 @@ public class Utils {
   public static Optional<ValueType> mapQuestionTypeToValueType(String type) {
     if (type != null) {
       switch (type) {
-        case "text":
+        case "text", "list", "survey":
           return Optional.of(ValueType.STRING);
         case "boolean":
           return Optional.of(ValueType.BOOLEAN);
-        case "list":
-          return Optional.of(ValueType.STRING);
         case "date":
           return Optional.of(ValueType.DATE);
         case "time":
@@ -69,8 +63,6 @@ public class Utils {
           return Optional.of(ValueType.arrayOf(ValueType.STRING));
         case "rowgroup":
           return Optional.of(ValueType.arrayOf(ValueType.INTEGER));
-        case "survey":
-          return Optional.of(ValueType.STRING);
         case "row":
         case "note":
         case "group":
@@ -238,129 +230,6 @@ public class Utils {
       post.apply(actionItemBuilder);
     }
     return actionItemBuilder.build();
-  }
-
-  public static void writeNullableString(@NonNull CodedOutputStream output, String string) throws IOException {
-    if (string == null) {
-      output.writeBoolNoTag(false);
-    } else {
-      output.writeBoolNoTag(true);
-      output.writeStringNoTag(string);
-    }
-  }
-
-  @Nullable
-  public static String readNullableString(@NonNull CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      return input.readString();
-    }
-    return null;
-  }
-
-
-  public static void writeNullableDate(@NonNull CodedOutputStream output, Date date) throws IOException {
-    if (date == null) {
-      output.writeBoolNoTag(false);
-    } else {
-      output.writeBoolNoTag(true);
-      output.writeInt64NoTag(date.getTime());
-    }
-  }
-
-  public static Date readNullableDate(@NonNull CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      return new Date(input.readInt64());
-    }
-    return null;
-  }
-
-
-  public static void writeObjectValue(@NonNull CodedOutputStream output, Object value) throws IOException {
-    final boolean present = value != null;
-    output.writeBoolNoTag(present);
-    if (present) {
-      if (value instanceof String) {
-        output.write((byte) 1);
-        output.writeStringNoTag((String) value);
-      } else if (value instanceof BigInteger) {
-        output.write((byte) 2);
-        output.writeInt32NoTag((Integer) value);
-      } else if (value instanceof Boolean) {
-        output.write((byte) 3);
-        output.writeBoolNoTag((Boolean) value);
-      } else if (value instanceof Double) {
-        output.write((byte) 4);
-        output.writeDoubleNoTag((Double) value);
-      } else if (value instanceof List) {
-        List listValue = (List) value;
-        final int size = listValue.size();
-        if (size == 0) {
-          output.write((byte) 0x80); // empty list
-          return;
-        }
-        if (listValue.get(0) instanceof String) {
-          output.write((byte) 0x81);
-          output.writeInt32NoTag(size);
-          for (String s : (List<String>)listValue) {
-            output.writeStringNoTag(s);
-          }
-        } else if (listValue.get(0) instanceof BigInteger) {
-          output.write((byte) 0x82);
-          output.writeInt32NoTag(size);
-          for (BigInteger i : (List<BigInteger>)listValue) {
-            writeBigInteger(output, i);
-          }
-        }
-      } else {
-        throw new RuntimeException("Unknown answer value: " + value.getClass());
-      }
-    }
-  }
-
-  public static void writeBigInteger(@NonNull CodedOutputStream output, @NonNull BigInteger value) throws IOException {
-    var bytes = value.toByteArray();
-    output.writeInt32NoTag(bytes.length);
-    output.writeRawBytes(bytes);
-  }
-
-  public static Object readObjectValue(@NonNull CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      byte answerType = input.readRawByte();
-      int count;
-      switch(answerType) {
-        case 1:
-          return input.readString();
-        case 2:
-          return input.readInt32();
-        case 3:
-          return input.readBool();
-        case 4:
-          return input.readDouble();
-        case (byte) 0x80:
-          return ImmutableList.of();
-        case (byte) 0x81:
-          count = input.readInt32();
-          String[] strings = new String[count];
-          for (int i = 0; i < count; ++i) {
-            strings[i] = input.readString();
-          }
-          return ImmutableList.copyOf(strings);
-        case (byte) 0x82:
-          count = input.readInt32();
-          BigInteger[] integers = new BigInteger[count];
-          for (int i = 0; i < count; ++i) {
-            integers[i] = readBigInteger(input);
-          }
-          return ImmutableList.copyOf(integers);
-      }
-    }
-    return null;
-  }
-
-  public static BigInteger readBigInteger(@NonNull CodedInputStream input) throws IOException {
-    var size = input.readInt32();
-    var bytes = input.readRawBytes(size);
-    return new BigInteger(bytes);
   }
 
   public static Object validateDefaultValue(String id, ValueType valueType, Object value, Consumer<FormValidationError> errorListener) {

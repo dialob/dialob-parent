@@ -47,10 +47,7 @@ import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.sp.AsyncFunctionInvoker;
-import io.dialob.session.engine.sp.DialobQuestionnaireSession;
-import io.dialob.session.engine.sp.DialobQuestionnaireSessionSaveService;
-import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
+import io.dialob.session.engine.sp.*;
 import jakarta.inject.Inject;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractIterableAssert;
@@ -848,13 +845,13 @@ public class DialobQuestionnaireSessionServiceTest {
           final ByteBuffer byteBuffer = ByteBuffer.allocate(65536);
           CodedOutputStream codedOutputStream = CodedOutputStream.newInstance(byteBuffer);
           timeStart = System.nanoTime();
-          dialobSession.writeTo(codedOutputStream);
+          dialobSession.writeTo(new CodedOutputStreamSessionWriter(codedOutputStream, 1));
           codedOutputStream.flush();
           System.out.println("protobuf session serialize time " + (System.nanoTime() - timeStart) / 1e6 + ", size " + codedOutputStream.getTotalBytesWritten());
           sessionData = byteBuffer.array();
 
 
-          CodedInputStream input = CodedInputStream.newInstance(sessionData);
+          var input = new CodedInputStreamSessionReader(CodedInputStream.newInstance(sessionData));
           timeStart = System.nanoTime();
           DialobSession readSession = DialobSession.readFrom(input);
           System.out.println("protobuf session deserialize time " + (System.nanoTime() - timeStart) / 1e6);

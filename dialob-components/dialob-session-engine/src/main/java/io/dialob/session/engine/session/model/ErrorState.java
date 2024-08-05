@@ -15,11 +15,13 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.engine.spi.SessionWriter;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -27,12 +29,14 @@ import java.util.Objects;
 
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
 public class ErrorState implements SessionObject {
 
   private static final long serialVersionUID = -6652593868401573582L;
 
   private final ErrorId targetId;
 
+  @Getter
   private String label;
 
   private boolean active;
@@ -121,10 +125,6 @@ public class ErrorState implements SessionObject {
     return targetId.getCode();
   }
 
-  public String getLabel() {
-    return label;
-  }
-
   @Override
   public boolean isActive() {
     return active;
@@ -140,30 +140,20 @@ public class ErrorState implements SessionObject {
     return true;
   }
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    IdUtils.writeIdTo(targetId.getItemId(), output);
-    if (targetId.getCode() == null) {
-      output.writeBoolNoTag(false);
-    } else {
-      output.writeBoolNoTag(true);
-      output.writeStringNoTag(targetId.getCode());
-    }
-    output.writeStringNoTag(label);
-    output.writeBoolNoTag(active);
-    output.writeBoolNoTag(disabled);
-
+  public void writeTo(SessionWriter writer) throws IOException {
+    writer.writeId(targetId.getItemId());
+    writer.writeNullableString(targetId.getCode());
+    writer.writeString(label);
+    writer.writeBool(active);
+    writer.writeBool(disabled);
   }
 
-  public static ErrorState readFrom(CodedInputStream input) throws IOException {
-    ItemId itemId  = Objects.requireNonNull(IdUtils.readIdFrom(input));
-    String code = null;
-    if (input.readBool()) {
-      code = input.readString();
-    }
-    String label = input.readString();
-    ErrorState state = new ErrorState(itemId, code, label);
-    state.active = input.readBool();
-    state.disabled = input.readBool();
-    return state;
+  public static ErrorState readFrom(SessionReader reader) throws IOException {
+    var itemId  = reader.readId();
+    var code = reader.readNullableString();
+    var label = reader.readString();
+    var active = reader.readBool();
+    var disabled = reader.readBool();
+    return new ErrorState(ImmutableErrorId.of(itemId, code), label, active, disabled);
   }
 }
