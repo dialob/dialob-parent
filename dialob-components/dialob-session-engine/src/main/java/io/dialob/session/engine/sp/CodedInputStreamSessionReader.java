@@ -19,8 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.*;
 import io.dialob.session.engine.spi.SessionReader;
 import lombok.Getter;
 
@@ -42,7 +41,20 @@ public class CodedInputStreamSessionReader implements SessionReader {
 
   @Override
   public ItemId readId() throws IOException {
-    return IdUtils.readIdFrom(this.input);
+    if (this.input.readBool()) {
+      byte type = this.input.readRawByte();
+      switch (type) {
+        case 1:
+          return ImmutableItemRef.of(this.input.readString(), Optional.ofNullable(readId()));
+        case 2:
+          return ImmutableItemIdPartial.of(Optional.ofNullable(readId()));
+        case 3:
+          return ImmutableItemIndex.of(this.input.readInt32(), Optional.ofNullable(readId()));
+        default:
+          throw new RuntimeException("unknown id type " + type);
+      }
+    }
+    return null;
   }
 
   @Override
@@ -162,7 +174,7 @@ public class CodedInputStreamSessionReader implements SessionReader {
     if (count > 0) {
       ItemId[] ids = new ItemId[count];
       for (int i = 0; i < count; i++) {
-        ids[i] = IdUtils.readIdFrom(input);
+        ids[i] = readId();
       }
       return ImmutableList.copyOf(ids);
     }

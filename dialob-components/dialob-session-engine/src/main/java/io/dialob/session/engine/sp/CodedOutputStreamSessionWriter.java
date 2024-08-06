@@ -18,8 +18,7 @@ package io.dialob.session.engine.sp;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.*;
 import io.dialob.session.engine.spi.SessionWriter;
 import lombok.Getter;
 
@@ -44,7 +43,25 @@ public class CodedOutputStreamSessionWriter implements SessionWriter {
 
   @Override
   public SessionWriter writeId(ItemId id) throws IOException  {
-    IdUtils.writeIdTo(id, this.output);
+    if (id == null) {
+      this.output.writeBoolNoTag(false);
+    } else {
+      this.output.writeBoolNoTag(true);
+      if (id instanceof ItemRef) {
+        ItemRef itemRef = (ItemRef) id;
+        this.output.write((byte) 1);
+        this.output.writeStringNoTag(itemRef.getValue());
+      } else if (id instanceof ItemIdPartial) {
+        this.output.write((byte) 2);
+      } else if (id instanceof ItemIndex) {
+        this.output.write((byte) 3);
+        ItemIndex itemRef = (ItemIndex) id;
+        this.output.writeInt32NoTag(itemRef.getIndex());
+      } else {
+        throw new RuntimeException("unknown id type " + id);
+      }
+      writeId(id.getParent().orElse(null));
+    }
     return this;
   }
 

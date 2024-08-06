@@ -16,14 +16,11 @@
 package io.dialob.session.engine.session.model;
 
 import com.google.common.collect.Lists;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.util.*;
 
 public class IdUtils {
@@ -131,43 +128,4 @@ public class IdUtils {
     return false;
   }
 
-  public static void writeIdTo(@Nullable ItemId id, CodedOutputStream output) throws IOException {
-    if (id == null) {
-      output.writeBoolNoTag(false);
-      return;
-    }
-    output.writeBoolNoTag(true);
-    if (id instanceof ItemRef) {
-      ItemRef itemRef = (ItemRef) id;
-      output.write((byte) 1);
-      output.writeStringNoTag(itemRef.getValue());
-    } else if (id instanceof ItemIdPartial) {
-      output.write((byte) 2);
-    } else if (id instanceof ItemIndex) {
-      output.write((byte) 3);
-      ItemIndex itemRef = (ItemIndex) id;
-      output.writeInt32NoTag(itemRef.getIndex());
-    } else {
-      throw new RuntimeException("unknown id type " + id);
-    }
-    writeIdTo(id.getParent().orElse(null), output);
-  }
-
-  @Nullable
-  public static ItemId readIdFrom(CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      byte type = input.readRawByte();
-      switch (type) {
-        case 1:
-          return ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
-        case 2:
-          return ImmutableItemIdPartial.of(Optional.ofNullable(readIdFrom(input)));
-        case 3:
-          return ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
-        default:
-          throw new RuntimeException("unknown id type " + type);
-      }
-    }
-    return null;
-  }
 }
