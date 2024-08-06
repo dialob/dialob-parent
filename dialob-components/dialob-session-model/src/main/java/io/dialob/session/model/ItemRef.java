@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.session.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface ItemIdPartial extends ItemId {
+public interface ItemRef extends ItemId {
 
-  @Override
-  default boolean isPartial() {
-    return true;
-  }
+  @Value.Parameter(order = 0)
+  @NonNull
+  String getId();
 
   default String getValue() {
-    return "*";
+    return getId();
   }
 
 }

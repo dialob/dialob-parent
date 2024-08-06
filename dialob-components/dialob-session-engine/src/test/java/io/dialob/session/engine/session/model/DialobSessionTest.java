@@ -21,6 +21,7 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.SessionUpdateCommand;
 import io.dialob.session.engine.session.command.Trigger;
+import io.dialob.session.model.IdUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

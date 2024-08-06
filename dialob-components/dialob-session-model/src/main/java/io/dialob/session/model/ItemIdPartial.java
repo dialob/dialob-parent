@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.session.model;
 
 import org.immutables.value.Value;
 
-import java.io.Serializable;
-import java.util.Optional;
+@Value.Immutable
+public interface ItemIdPartial extends ItemId {
 
-public interface ItemId extends Serializable {
-
-  @Value.Parameter(order = 1)
-  Optional<ItemId> getParent();
-
-  String getValue();
-
+  @Override
   default boolean isPartial() {
-    return getParent().map(ItemId::isPartial).orElse(false);
+    return true;
   }
 
-  default <I extends ItemId> ItemId withParent(I parent) {
-    return this;
-  }
-
-  default ItemId withParent(Optional<? extends ItemId> parent) {
-    return this;
+  default String getValue() {
+    return "*";
   }
 
 }

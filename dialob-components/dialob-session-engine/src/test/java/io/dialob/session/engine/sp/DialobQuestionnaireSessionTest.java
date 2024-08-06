@@ -24,7 +24,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.SessionObject;
 import org.assertj.core.groups.Tuple;

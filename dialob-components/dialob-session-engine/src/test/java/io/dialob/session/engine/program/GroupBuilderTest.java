@@ -19,7 +19,7 @@ import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.program.expr.arith.ImmutableRowItemsExpression;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.Item;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

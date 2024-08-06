@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 
 import java.util.ArrayList;
 import java.util.Collection;

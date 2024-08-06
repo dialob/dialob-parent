@@ -18,9 +18,9 @@ package io.dialob.session.engine.session.command;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.model.ItemId;
 import org.immutables.value.Value;
 
 import java.util.List;

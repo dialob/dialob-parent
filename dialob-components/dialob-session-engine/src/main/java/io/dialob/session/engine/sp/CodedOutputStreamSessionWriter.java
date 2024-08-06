@@ -18,8 +18,11 @@ package io.dialob.session.engine.sp;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.session.model.*;
 import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.model.ItemId;
+import io.dialob.session.model.ItemIdPartial;
+import io.dialob.session.model.ItemIndex;
+import io.dialob.session.model.ItemRef;
 import lombok.Getter;
 
 import java.io.IOException;

@@ -22,9 +22,9 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
 import io.dialob.session.engine.session.command.*;
-import io.dialob.session.engine.session.model.ErrorId;
-import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ValueSetId;
+import io.dialob.session.model.ErrorId;
+import io.dialob.session.model.ItemId;
+import io.dialob.session.model.ValueSetId;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;

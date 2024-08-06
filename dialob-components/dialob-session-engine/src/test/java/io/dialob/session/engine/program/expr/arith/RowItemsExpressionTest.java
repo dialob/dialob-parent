@@ -16,8 +16,8 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;

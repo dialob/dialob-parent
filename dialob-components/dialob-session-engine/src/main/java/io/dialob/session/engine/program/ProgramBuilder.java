@@ -33,10 +33,10 @@ import io.dialob.session.engine.program.ddrl.UnknownValueTypeException;
 import io.dialob.session.engine.program.expr.DDRLOperatorFactory;
 import io.dialob.session.engine.program.expr.OperatorFactory;
 import io.dialob.session.engine.program.model.*;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import io.dialob.session.model.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.Value;
 

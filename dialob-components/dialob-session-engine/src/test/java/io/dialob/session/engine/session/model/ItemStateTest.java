@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.model;
 
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.model.IdUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

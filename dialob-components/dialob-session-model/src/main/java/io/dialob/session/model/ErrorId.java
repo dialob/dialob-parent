@@ -13,20 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface ItemRef extends ItemId {
+import java.util.Optional;
 
-  @Value.Parameter(order = 0)
+@Value.Immutable
+public interface ErrorId extends ItemId {
+
+  @Value.Parameter
   @NonNull
-  String getId();
+  ItemId getItemId();
+
+  @Value.Parameter
+  @Nullable
+  String getCode();
 
   default String getValue() {
-    return getId();
+    // TODO
+    return getCode();
   }
 
+  ErrorId withItemId(ItemId value);
+
+  default Optional<ItemId> getParent() {
+    return Optional.of(getItemId());
+  }
+
+  @Override
+  default boolean isPartial() {
+    return getItemId().isPartial();
+  }
 }
+

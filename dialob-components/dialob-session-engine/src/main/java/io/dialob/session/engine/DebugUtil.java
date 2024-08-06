@@ -18,8 +18,8 @@ package io.dialob.session.engine;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 

@@ -21,7 +21,7 @@ import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 
 import java.util.Iterator;
 import java.util.List;

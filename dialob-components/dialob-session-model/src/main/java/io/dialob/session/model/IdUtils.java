@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.session.model;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
@@ -38,7 +37,7 @@ public class IdUtils {
     if (itemId == null) {
       return null;
     }
-    List<String> idChain = Lists.newArrayList();
+    List<String> idChain = new ArrayList<>();
     Optional<ItemId> id = Optional.of(itemId);
     while (id.isPresent()) {
       itemId = id.get();
@@ -53,7 +52,8 @@ public class IdUtils {
       }
       id = itemId.getParent();
     }
-    return StringUtils.join(Lists.reverse(idChain),".");
+    Collections.reverse(idChain);
+    return StringUtils.join(idChain, ".");
   }
 
   @Nullable
@@ -63,8 +63,6 @@ public class IdUtils {
     }
     return toId(itemId);
   }
-
-
 
   @NonNull
   public static ItemId toId(@Nullable String scopeId, @NonNull String itemId) {
@@ -94,14 +92,6 @@ public class IdUtils {
       throw new IllegalArgumentException(itemId + " is not valid id");
     }
     return id;
-  }
-
-  public static Collection<ItemId> toIds(Iterable<String> itemIds) {
-    List<ItemId> itemIdList = new ArrayList<>();
-    for (String id : itemIds) {
-      itemIdList.add(toId(id));
-    }
-    return itemIdList;
   }
 
   public static ItemId withIndex(ItemId itemId, int index) {

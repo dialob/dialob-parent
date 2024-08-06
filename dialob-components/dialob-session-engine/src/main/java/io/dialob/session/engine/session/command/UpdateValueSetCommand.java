@@ -20,8 +20,8 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.ConditionalValue;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
-import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
+import io.dialob.session.model.ValueSetId;
 
 import java.util.List;
 import java.util.Objects;

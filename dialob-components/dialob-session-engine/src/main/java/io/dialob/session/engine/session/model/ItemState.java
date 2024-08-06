@@ -23,6 +23,7 @@ import io.dialob.api.proto.Action;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.spi.SessionReader;
 import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.model.ItemId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

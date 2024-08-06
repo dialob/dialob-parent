@@ -20,6 +20,7 @@ import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.ImmutableError;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.session.engine.session.model.*;
+import io.dialob.session.model.IdUtils;
 
 import java.util.Locale;
 import java.util.function.Function;

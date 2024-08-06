@@ -20,9 +20,9 @@ import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ImmutableItemStates;
-import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
+import io.dialob.session.model.ItemId;
 import org.immutables.value.Value;
 
 import java.util.Objects;

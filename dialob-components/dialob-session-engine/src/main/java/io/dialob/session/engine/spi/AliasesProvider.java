@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.spi;
 
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 
 import java.util.Map;
 

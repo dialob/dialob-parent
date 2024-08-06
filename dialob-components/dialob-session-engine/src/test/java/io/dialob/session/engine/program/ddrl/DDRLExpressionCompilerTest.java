@@ -24,8 +24,8 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.expr.DDRLOperatorFactory;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ImmutableItemRef;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;

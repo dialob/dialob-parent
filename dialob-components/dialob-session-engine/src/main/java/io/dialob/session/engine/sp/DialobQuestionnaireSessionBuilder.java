@@ -32,7 +32,7 @@ import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.model.VariableItem;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ValueSetState;
 import lombok.extern.slf4j.Slf4j;
 

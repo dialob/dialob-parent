@@ -22,12 +22,12 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.arith.BooleanOperators;
 import io.dialob.session.engine.program.expr.arith.LocalizedLabelOperator;
 import io.dialob.session.engine.program.model.*;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import io.dialob.session.model.ImmutableItemIdPartial;
+import io.dialob.session.model.ImmutableItemRef;
+import io.dialob.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

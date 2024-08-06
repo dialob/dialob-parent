@@ -16,6 +16,9 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ImmutableItemRef;
+import io.dialob.session.model.ItemId;
 import org.immutables.value.Value;
 
 import java.io.Serializable;

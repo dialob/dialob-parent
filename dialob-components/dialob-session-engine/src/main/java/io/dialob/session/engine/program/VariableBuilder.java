@@ -22,8 +22,8 @@ import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.ImmutableContextVariableReference;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.ImmutableVariableItem;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
 
 import java.util.Optional;
 import java.util.function.Consumer;

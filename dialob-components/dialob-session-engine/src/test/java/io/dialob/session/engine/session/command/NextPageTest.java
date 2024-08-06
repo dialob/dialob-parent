@@ -18,7 +18,7 @@ package io.dialob.session.engine.session.command;
 import com.google.common.collect.Sets;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static io.dialob.session.engine.session.model.IdUtils.toId;
+import static io.dialob.session.model.IdUtils.toId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 

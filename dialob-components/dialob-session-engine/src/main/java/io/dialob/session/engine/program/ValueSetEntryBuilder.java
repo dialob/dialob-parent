@@ -19,7 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.model.*;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 
 import java.util.Objects;
 import java.util.Optional;

@@ -16,7 +16,7 @@
 package io.dialob.session.engine.program.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 
 import java.util.function.Predicate;
 

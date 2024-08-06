@@ -26,7 +26,7 @@ import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ErrorState;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

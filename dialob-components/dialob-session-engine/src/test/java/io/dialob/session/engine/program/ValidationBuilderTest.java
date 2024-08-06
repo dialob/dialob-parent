@@ -17,8 +17,8 @@ package io.dialob.session.engine.program;
 
 import com.google.common.collect.ImmutableMap;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

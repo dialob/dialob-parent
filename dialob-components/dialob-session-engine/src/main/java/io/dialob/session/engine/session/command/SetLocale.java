@@ -19,8 +19,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.model.ItemId;
 import org.immutables.value.Value;
 
 @Value.Immutable

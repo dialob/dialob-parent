@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.program.model;
 
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

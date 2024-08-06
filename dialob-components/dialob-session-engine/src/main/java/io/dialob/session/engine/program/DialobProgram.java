@@ -25,8 +25,8 @@ import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.command.*;
 import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.ErrorId;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ErrorId;
+import io.dialob.session.model.ItemId;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 

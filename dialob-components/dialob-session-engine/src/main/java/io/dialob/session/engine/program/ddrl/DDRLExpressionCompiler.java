@@ -28,7 +28,7 @@ import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.expr.arith.StringOperators;
 import io.dialob.session.engine.program.expr.arith.TimeOperators;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 
 import java.util.ArrayList;
 import java.util.List;

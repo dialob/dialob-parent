@@ -21,7 +21,7 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.ItemIdMatchers;
 import io.dialob.session.engine.program.model.Program;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableScope;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

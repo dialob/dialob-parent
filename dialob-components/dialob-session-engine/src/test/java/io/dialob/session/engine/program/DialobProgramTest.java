@@ -23,9 +23,9 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.command.event.ImmutableActiveUpdatedEvent;
 import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ImmutableItemIdPartial;
+import io.dialob.session.model.ImmutableItemRef;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

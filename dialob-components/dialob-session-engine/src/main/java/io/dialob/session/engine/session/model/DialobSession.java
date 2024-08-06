@@ -26,6 +26,7 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.*;
 import io.dialob.session.engine.spi.SessionReader;
 import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.model.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

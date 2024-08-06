@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 import org.immutables.value.Value;
 
 @Value.Immutable

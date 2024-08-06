@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.model;
 
 import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.model.ItemId;
 
 import java.io.IOException;
 import java.io.Serializable;

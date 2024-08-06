@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import io.dialob.session.engine.session.model.ValueSetId;
+import io.dialob.session.model.ValueSetId;
 import org.immutables.value.Value;
 
 public interface ValueSetEvent extends Event {

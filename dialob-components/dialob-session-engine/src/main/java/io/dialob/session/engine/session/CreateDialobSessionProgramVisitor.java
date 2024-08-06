@@ -27,6 +27,7 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
+import io.dialob.session.model.*;
 
 import java.math.BigInteger;
 import java.util.*;

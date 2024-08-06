@@ -17,7 +17,7 @@ package io.dialob.session.engine.spi;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.ItemId;
 
 import java.io.IOException;
 import java.math.BigInteger;

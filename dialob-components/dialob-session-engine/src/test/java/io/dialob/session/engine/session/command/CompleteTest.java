@@ -16,7 +16,7 @@
 package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

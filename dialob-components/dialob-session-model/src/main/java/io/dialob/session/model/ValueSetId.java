@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.session.model;
 
 import org.immutables.value.Value;
 

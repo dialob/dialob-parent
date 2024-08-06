@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.session.model;
 
+import io.dialob.session.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

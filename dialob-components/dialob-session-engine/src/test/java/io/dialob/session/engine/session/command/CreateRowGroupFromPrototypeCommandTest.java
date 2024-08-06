@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.event.ImmutableItemsChangedEvent;
 import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
 import org.junit.jupiter.api.Assertions;

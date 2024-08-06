@@ -21,9 +21,9 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.ImmutableValueSet;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
-import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import io.dialob.session.model.ItemId;
 
 import java.util.ArrayList;
 import java.util.List;

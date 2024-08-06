@@ -17,8 +17,8 @@ package io.dialob.session.engine.program.model;
 
 import com.google.common.collect.Streams;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
 import org.immutables.value.Value;
 
 import java.util.ArrayList;

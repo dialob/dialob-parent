@@ -26,10 +26,10 @@ import io.dialob.session.engine.program.model.ImmutableError;
 import io.dialob.session.engine.program.model.ImmutableFormItem;
 import io.dialob.session.engine.program.model.ImmutableLabel;
 import io.dialob.session.engine.session.command.EventMatchers;
-import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemRef;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import io.dialob.session.model.ItemId;
+import io.dialob.session.model.ItemRef;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;

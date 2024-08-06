@@ -30,6 +30,7 @@ import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
+import io.dialob.session.model.IdUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -24,6 +24,10 @@ import io.dialob.session.engine.session.ImmutableAsyncFunctionCall;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
+import io.dialob.session.model.ErrorId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
+import io.dialob.session.model.ValueSetId;
 
 import java.util.*;
 import java.util.function.Consumer;

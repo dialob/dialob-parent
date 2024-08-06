@@ -15,8 +15,8 @@
  */
 package io.dialob.session.engine.session.command;
 
-import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.model.ItemId;
 
 public interface ItemUpdateCommand extends UpdateCommand<ItemId,ItemState> {
 

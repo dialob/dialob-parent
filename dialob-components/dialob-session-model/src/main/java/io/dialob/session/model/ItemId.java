@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.session.model;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface ItemIndex extends ItemId {
+import java.io.Serializable;
+import java.util.Optional;
 
-  @Value.Parameter(order = 0)
-  @NonNull
-  Integer getIndex();
+public interface ItemId extends Serializable {
 
-  default String getValue() {
-    return Integer.toString(getIndex());
+  @Value.Parameter(order = 1)
+  Optional<ItemId> getParent();
+
+  String getValue();
+
+  default boolean isPartial() {
+    return getParent().map(ItemId::isPartial).orElse(false);
+  }
+
+  default <I extends ItemId> ItemId withParent(I parent) {
+    return this;
+  }
+
+  default ItemId withParent(Optional<? extends ItemId> parent) {
+    return this;
   }
 
 }

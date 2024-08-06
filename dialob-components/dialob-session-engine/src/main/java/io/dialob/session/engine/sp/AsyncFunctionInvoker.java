@@ -21,7 +21,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.model.IdUtils;
 
 import java.util.Collections;
 

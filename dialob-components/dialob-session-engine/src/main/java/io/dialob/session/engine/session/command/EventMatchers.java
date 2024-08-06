@@ -17,10 +17,10 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.*;
-import io.dialob.session.engine.session.model.ErrorId;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ValueSetId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ErrorId;
+import io.dialob.session.model.ItemId;
+import io.dialob.session.model.ValueSetId;
 import org.immutables.value.Value;
 
 @Value.Enclosing

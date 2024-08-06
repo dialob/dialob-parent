@@ -25,8 +25,8 @@ import io.dialob.session.engine.program.expr.arith.ImmutableIsDisabledOperator;
 import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.ImmutableError;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;

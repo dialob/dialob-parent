@@ -19,6 +19,8 @@ import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.spi.SessionReader;
 import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.model.ImmutableValueSetId;
+import io.dialob.session.model.ValueSetId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

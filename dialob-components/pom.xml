@@ -52,6 +52,7 @@
     <module>dialob-db-file</module>
     <module>dialob-tenant</module>
     <module>dialob-service-common</module>
+    <module>dialob-session-model</module>
     <module>dialob-session-engine</module>
     <module>dialob-db-dialob-api</module>
     <module>dialob-db-spi</module>

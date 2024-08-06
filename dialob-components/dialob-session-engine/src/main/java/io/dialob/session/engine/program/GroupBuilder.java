@@ -23,10 +23,10 @@ import io.dialob.session.engine.program.expr.ImmutableNotOnPageExpression;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.ImmutableGroup;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.model.IdUtils;
+import io.dialob.session.model.ImmutableItemIdPartial;
+import io.dialob.session.model.ImmutableItemRef;
+import io.dialob.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
