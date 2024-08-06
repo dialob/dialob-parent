@@ -21,16 +21,14 @@ import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 
+@Slf4j
 public class UpdateQuestionnaireInCacheOnActionsEventHandler {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(UpdateQuestionnaireInCacheOnActionsEventHandler.class);
 
   private final Cache questionnaireCache;
 

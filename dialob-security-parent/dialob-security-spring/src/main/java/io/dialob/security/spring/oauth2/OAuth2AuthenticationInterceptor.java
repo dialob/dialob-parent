@@ -22,14 +22,12 @@ import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import io.dialob.security.spring.oauth2.model.Token;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 
+@Slf4j
 public class OAuth2AuthenticationInterceptor implements RequestInterceptor {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2AuthenticationInterceptor.class);
 
   private final OAuth2TokenService oAuth2TokenService;
 

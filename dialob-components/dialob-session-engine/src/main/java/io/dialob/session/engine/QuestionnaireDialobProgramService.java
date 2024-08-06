@@ -22,12 +22,10 @@ import io.dialob.questionnaire.service.api.FormDataMissingException;
 import io.dialob.questionnaire.service.api.InvalidFormException;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.session.engine.program.DialobProgram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class QuestionnaireDialobProgramService implements DialobProgramService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(QuestionnaireDialobProgramService.class);
 
   private final FormFinder formFinder;
 

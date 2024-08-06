@@ -24,8 +24,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -35,9 +34,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {
-
-  public static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterTenantScopeFilter.class);
 
   public static final String CURRENT_TENANT_ATTR = "CURRENT_TENANT_ATTR";
 

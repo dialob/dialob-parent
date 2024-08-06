@@ -15,18 +15,16 @@
  */
 package io.dialob.security.spring.tenant;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+@Slf4j
 public class MapTenantGroupToTenantGrantedAuthority implements UnaryOperator<Stream<? extends GrantedAuthority>> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MapTenantGroupToTenantGrantedAuthority.class);
 
   private final String envPrefix;
 
