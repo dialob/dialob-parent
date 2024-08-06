@@ -356,19 +356,6 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public Questionnaire getQuestionnaire() {
-    Questionnaire.Metadata.Status status;
-    if (dialobSession.isCompleted()) {
-      status = Questionnaire.Metadata.Status.COMPLETED;
-    } else {
-      switch (state.get()) {
-        case ACTIVATING:
-        case NEW:
-          status = Questionnaire.Metadata.Status.NEW;
-          break;
-        default:
-          status = Questionnaire.Metadata.Status.OPEN;
-      }
-    }
     return ImmutableQuestionnaire.builder()
       .id(dialobSession.getId())
       .rev(this.rev)
@@ -378,16 +365,31 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       .variableValues(getVariableValues())
       .activeItem(getActiveItem().orElse(null)) // deprecated
       .valueSets(getProvidedValueSets())
-      .metadata(ImmutableQuestionnaireMetadata.builder()
-        .from(metadata)
-        .lastAnswer(new Date(dialobSession.getLastUpdate().toEpochMilli()))
-        .completed(dialobSession.getCompleted() != null ? new Date(dialobSession.getCompleted().toEpochMilli()) : null)
-        .opened(dialobSession.getOpened() != null ? new Date(dialobSession.getOpened().toEpochMilli()) : null)
-        .status(status)
-        .language(dialobSession.getLanguage())
-        .tenantId(dialobSession.getTenantId())
-        .build()
-      ).build();
+      .metadata(getQuestionnaireMetadata())
+      .build();
+  }
+
+  @Override
+  @NonNull
+  public Questionnaire.Metadata getQuestionnaireMetadata() {
+    Questionnaire.Metadata.Status status;
+    if (dialobSession.isCompleted()) {
+      status = Questionnaire.Metadata.Status.COMPLETED;
+    } else {
+      status = switch (state.get()) {
+        case ACTIVATING, NEW -> Questionnaire.Metadata.Status.NEW;
+        default -> Questionnaire.Metadata.Status.OPEN;
+      };
+    }
+    return ImmutableQuestionnaireMetadata.builder()
+      .from(metadata)
+      .lastAnswer(new Date(dialobSession.getLastUpdate().toEpochMilli()))
+      .completed(dialobSession.getCompleted() != null ? new Date(dialobSession.getCompleted().toEpochMilli()) : null)
+      .opened(dialobSession.getOpened() != null ? new Date(dialobSession.getOpened().toEpochMilli()) : null)
+      .status(status)
+      .language(dialobSession.getLanguage())
+      .tenantId(dialobSession.getTenantId())
+      .build();
   }
 
   private Iterable<? extends ValueSet> getProvidedValueSets() {
@@ -424,6 +426,11 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @Override
   public String getRevision() {
     return dialobSession.getRevision();
+  }
+
+  @Override
+  public String getId() {
+    return dialobSession.getId();
   }
 
   @Override
@@ -672,7 +679,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   }
 
   Predicate<SessionObject> getIsVisiblePredicate() {
-    switch(questionClientVisibility) {
+    switch (questionClientVisibility) {
       case ALL:
         return itemState -> itemState != null && itemState.isDisplayItem();
       case SHOW_DISABLED:

@@ -119,19 +119,19 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
         .status(HttpStatus.UNPROCESSABLE_ENTITY.value()).build());
     }
     final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
-      .setCreateOnly(true)
-      .setFormId(formId)
-      .setFormRev(formRev)
-      .setCreator(currentUserProvider.getUserId())
-      .setOwner(owner)
-      .setSubmitUrl(submitUrl)
-      .setContextValues(questionnaire.getContext())
-      .setAnswers(questionnaire.getAnswers())
-      .setLanguage(language)
-      .setStatus(status)
-      .setActiveItem(questionnaire.getActiveItem())
-      .setValueSets(questionnaire.getValueSets())
-      .setAdditionalProperties(metadata.getAdditionalProperties())
+      .createOnly(true)
+      .formId(formId)
+      .formRev(formRev)
+      .creator(currentUserProvider.getUserId())
+      .owner(owner)
+      .submitUrl(submitUrl)
+      .contextValues(questionnaire.getContext())
+      .answers(questionnaire.getAnswers())
+      .language(language)
+      .status(status)
+      .activeItem(questionnaire.getActiveItem())
+      .valueSets(questionnaire.getValueSets())
+      .additionalProperties(metadata.getAdditionalProperties())
       .build();
     final Questionnaire sessionQuestionnaire = session.getQuestionnaire();
     String sessionId = sessionQuestionnaire.getId();

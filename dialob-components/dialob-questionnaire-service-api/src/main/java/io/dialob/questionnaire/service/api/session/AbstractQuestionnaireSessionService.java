@@ -43,7 +43,7 @@ public abstract class AbstractQuestionnaireSessionService implements Questionnai
   protected QuestionnaireSession restore(Questionnaire questionnaire) {
     LOGGER.debug("Restoring questionnaire session {} rev {}", questionnaire.getId(), questionnaire.getRev());
     return questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
-      .setQuestionnaire(questionnaire)
+      .questionnaire(questionnaire)
       .build();
   }
 

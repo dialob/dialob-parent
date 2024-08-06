@@ -89,7 +89,7 @@ public class DialobQuestionnaireSessionBuilderTest {
             sessionContextFactory,
       asyncFunctionInvoker);
 
-    QuestionnaireSession session = builder.setFormId("123").setActiveItem("page3").setCreateOnly(true).build();
+    QuestionnaireSession session = builder.formId("123").activeItem("page3").createOnly(true).build();
 
     assertNotNull(session);
     assertEquals("page3", session.getQuestionnaire().getActiveItem());

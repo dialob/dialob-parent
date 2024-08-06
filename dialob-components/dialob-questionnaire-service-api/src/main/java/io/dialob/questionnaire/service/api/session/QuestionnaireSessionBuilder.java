@@ -30,44 +30,44 @@ public interface QuestionnaireSessionBuilder {
   QuestionnaireSession build();
 
   @NonNull
-  QuestionnaireSessionBuilder setCreateOnly(boolean createOnly);
+  QuestionnaireSessionBuilder createOnly(boolean createOnly);
 
   @NonNull
-  QuestionnaireSessionBuilder setActiveItem(String activeItem);
+  QuestionnaireSessionBuilder activeItem(String activeItem);
 
   @NonNull
-  QuestionnaireSessionBuilder setFormId(String formId);
+  QuestionnaireSessionBuilder formId(String formId);
 
   @NonNull
-  QuestionnaireSessionBuilder setFormRev(String formRev);
+  QuestionnaireSessionBuilder formRev(String formRev);
 
   @NonNull
-  QuestionnaireSessionBuilder setCreator(String owner);
+  QuestionnaireSessionBuilder creator(String owner);
 
   @NonNull
-  QuestionnaireSessionBuilder setOwner(String owner);
+  QuestionnaireSessionBuilder owner(String owner);
 
   @NonNull
-  QuestionnaireSessionBuilder setSubmitUrl(String submitUrl);
+  QuestionnaireSessionBuilder submitUrl(String submitUrl);
 
   @NonNull
-  QuestionnaireSessionBuilder setLanguage(String language);
+  QuestionnaireSessionBuilder language(String language);
 
   @NonNull
-  QuestionnaireSessionBuilder setStatus(Questionnaire.Metadata.Status status);
+  QuestionnaireSessionBuilder status(Questionnaire.Metadata.Status status);
 
   @NonNull
-  QuestionnaireSessionBuilder setAdditionalProperties(Map<String, Object> additionalProperties);
+  QuestionnaireSessionBuilder additionalProperties(Map<String, Object> additionalProperties);
 
   @NonNull
-  QuestionnaireSessionBuilder setQuestionnaire(Questionnaire questionnaire);
+  QuestionnaireSessionBuilder questionnaire(Questionnaire questionnaire);
 
   @NonNull
-  QuestionnaireSessionBuilder setContextValues(List<ContextValue> contextValues);
+  QuestionnaireSessionBuilder contextValues(List<ContextValue> contextValues);
 
   @NonNull
-  QuestionnaireSessionBuilder setAnswers(List<Answer> answers);
+  QuestionnaireSessionBuilder answers(List<Answer> answers);
 
   @NonNull
-  QuestionnaireSessionBuilder setValueSets(List<ValueSet> valueSets);
+  QuestionnaireSessionBuilder valueSets(List<ValueSet> valueSets);
 }

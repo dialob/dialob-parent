@@ -37,6 +37,7 @@ import io.dialob.session.engine.session.model.ValueSetState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -114,19 +115,19 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
     }
     DialobQuestionnaireSession dialobQuestionnaireSession = null;
     try {
-      dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
-        .eventPublisher(eventPublisher)
-        .sessionContextFactory(sessionContextFactory)
-        .asyncFunctionInvoker(asyncFunctionInvoker)
-        .dialobSession(dialobSession)
-        .dialobProgram(dialobProgram)
-        .rev(questionnaire.getRev())
-        .metadata(questionnaire.getMetadata())
-        .questionClientVisibility(getQuestionClientVisibility(formDocument))
+      dialobQuestionnaireSession = applyFormSettings(
+        DialobQuestionnaireSession.builder()
+          .eventPublisher(eventPublisher)
+          .sessionContextFactory(sessionContextFactory)
+          .asyncFunctionInvoker(asyncFunctionInvoker)
+          .dialobSession(dialobSession)
+          .dialobProgram(dialobProgram)
+          .rev(questionnaire.getRev())
+          .metadata(questionnaire.getMetadata()), formDocument.getMetadata().getAdditionalProperties())
         .build();
 
       if (newSession) {
-        // We need questionnaire Id
+        // We need a new questionnaireId
         dialobQuestionnaireSession = save(dialobQuestionnaireSession);
         if (!isCreateOnly()) {
           dialobQuestionnaireSession.initialize();
@@ -147,28 +148,41 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
     return (DialobQuestionnaireSession) questionnaireSessionSaveService.save(dialobQuestionnaireSession);
   }
 
-  private QuestionnaireSession.QuestionClientVisibility getQuestionClientVisibility(Form formDocument) {
-    QuestionnaireSession.QuestionClientVisibility questionClientVisibility = QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED;
-    Object o = formDocument.getMetadata().getAdditionalProperties().get("questionClientVisibility");
+  private DialobQuestionnaireSession.Builder applyFormSettings(DialobQuestionnaireSession.Builder builder, Map<String, Object> additionalProperties) {
+    builder.questionClientVisibility(getQuestionClientVisibility(additionalProperties));
+    return builder;
+  }
+
+  private QuestionnaireSession.QuestionClientVisibility getQuestionClientVisibility(Map<String, Object> additionalProperties) {
+    return
+      parseEnum(QuestionnaireSession.QuestionClientVisibility.class, additionalProperties.get("questionClientVisibility"))
+        .or(() -> {
+          if (parseBoolean(additionalProperties.get("showDisabled"))) {
+            return Optional.of(QuestionnaireSession.QuestionClientVisibility.SHOW_DISABLED);
+          }
+          return Optional.empty();
+        })
+        .orElse(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED);
+  }
+
+  private static <T extends Enum<T>> Optional<T> parseEnum(Class<T> enumClass, Object o) {
     if (o instanceof String) {
       try {
-        return QuestionnaireSession.QuestionClientVisibility.valueOf((String) o);
+        return Optional.of(Enum.valueOf(enumClass, (String) o));
       } catch (IllegalArgumentException e) {
         LOGGER.error("Unknown question client visibility {}", o);
       }
     }
-    o = formDocument.getMetadata().getAdditionalProperties().get("showDisabled");
-    if (o != null) {
-      boolean showDisabled = false;
-      if (o instanceof String) {
-        showDisabled = Boolean.parseBoolean((String) o);
-      } else if (o instanceof Boolean) {
-        showDisabled = (Boolean) o;
-      }
-      if (showDisabled) {
-        questionClientVisibility = QuestionnaireSession.QuestionClientVisibility.SHOW_DISABLED;
-      }
+    return Optional.empty();
+  }
+
+  private static boolean parseBoolean(Object o) {
+    boolean showDisabled = false;
+    if (o instanceof String) {
+      showDisabled = Boolean.parseBoolean((String) o);
+    } else if (o instanceof Boolean) {
+      showDisabled = (Boolean) o;
     }
-    return questionClientVisibility;
+    return showDisabled;
   }
 }

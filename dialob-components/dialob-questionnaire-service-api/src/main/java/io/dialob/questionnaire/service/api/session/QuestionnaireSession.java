@@ -35,6 +35,8 @@ import java.util.Optional;
 @Value.Enclosing
 public interface QuestionnaireSession {
 
+  String getId();
+
   enum QuestionClientVisibility {
     ALL,
     SHOW_DISABLED, //
@@ -64,6 +66,9 @@ public interface QuestionnaireSession {
 
   @NonNull
   Questionnaire getQuestionnaire();
+
+  @NonNull
+  Questionnaire.Metadata getQuestionnaireMetadata();
 
   @NonNull
   String getRevision();
