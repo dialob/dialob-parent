@@ -96,6 +96,8 @@ const en = {
   'dialogs.options.rule': 'Rule',
   'dialogs.options.rules.requirement': 'Requirement',
   'dialogs.options.rules.visibility': 'Visibility',
+  'dialogs.options.rules.canaddrow': 'Add row when',
+  'dialogs.options.rules.canremoverow': 'Remove row when',
   'dialogs.options.validations.rule.tab': 'Rule {index}',
   'dialogs.options.validations.rule.delete': 'Delete rule',
   'dialogs.options.validations.rule.add': 'Add rule',
