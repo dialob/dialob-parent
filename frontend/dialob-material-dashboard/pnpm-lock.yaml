@@ -7,7 +7,7 @@ settings:
 importers:
 
   .:
-    devDependencies:
+    dependencies:
       '@emotion/react':
         specifier: ^11.10.5
         version: 11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1)
@@ -29,6 +29,7 @@ importers:
       '@mui/x-date-pickers':
         specifier: ^6.5.0
         version: 6.20.2(@emotion/react@11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.10.5(@babel/core@7.24.7)(@emotion/react@11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(@mui/material@5.1.0(@emotion/react@11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.10.5(@babel/core@7.24.7)(@emotion/react@11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@5.11.0(@emotion/react@11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.10.5(@babel/core@7.24.7)(@emotion/react@11.10.5(@babel/core@7.24.7)(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(date-fns@2.30.0)(dayjs@1.11.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    devDependencies:
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
@@ -45,7 +46,7 @@ importers:
         specifier: ^4.3.1
         version: 4.3.1(vite@5.3.2(@types/node@20.14.9))
       date-fns:
-        specifier: ~2.x
+        specifier: ^2.30.0
         version: 2.30.0
       file-saver:
         specifier: ^2.0.5
