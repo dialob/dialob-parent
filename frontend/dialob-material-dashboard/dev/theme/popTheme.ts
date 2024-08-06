@@ -1,6 +1,6 @@
-import { tableCellClasses } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { PaletteOptions } from '@mui/material/styles/createPalette';
+import { tableCellClasses } from '@mui/material';
 
 const palette = {
 	type: 'light',
@@ -36,45 +36,39 @@ const palette = {
 
 export const popTheme = createTheme({
 	palette: palette as PaletteOptions,
+	spacing: 8,
 	typography: {
 		fontFamily: "Campton-Light, Arial, sans-serif",
 		body1: {
 			fontSize: 18,
 			color: palette.text.primary,
-			fontFamily: "Campton-Light, Arial, sans-serif",
 		},
 		subtitle1: {
 			fontSize: 18,
 			color: palette.text.primary,
 			textTransform: "none",
-			fontFamily: "Campton-Light, Arial, sans-serif",
 		},
 		h1: {
 			fontSize: 44,
 			color: palette.text.primary,
-			margin: "22px 0px",
 			fontFamily: "Campton-SemiBold, Arial, sans-serif",
 		},
 		h2: {
 			fontSize: 36,
 			color: palette.text.primary,
-			margin: "16px 0px 18px",
 			fontFamily: "Campton-SemiBold, Arial, sans-serif",
 		},
 		h3: {
 			fontSize: 30,
 			color: palette.text.primary,
-			fontFamily: "Campton-Light, Arial, sans-serif",
 		},
 		h4: {
 			fontSize: 26,
 			color: palette.text.primary,
-			margin: "16px 0px 12px",
 			fontFamily: "Campton-SemiBold, Arial, sans-serif",
 		},
 		h6: {
 			fontSize: 16,
-			margin: "16px 0px 8px 16px",
 			color: palette.text.primary,
 			fontFamily: "Campton-SemiBold, Arial, sans-serif",
 		},
@@ -84,7 +78,7 @@ export const popTheme = createTheme({
 			styleOverrides: {
 				"@font-face": {
 					fontFamily: "Campton-SemiBold, Campton-Light",
-					src: 'url("/fonts/CamptonSemiBold.otf"), url("/fonts/CamptonLight.otf")',
+					src: 'url("/CamptonSemiBold.otf"), url("/CamptonLight.otf")',
 				},
 			}
 		},
@@ -132,6 +126,25 @@ export const popTheme = createTheme({
 					style: {
 						'&:hover': { backgroundColor: palette.error.main }
 					}
+				},
+				{
+					props: { color: 'secondary' },
+					style: {
+						backgroundColor: palette.success.main
+					}
+				},
+				{
+					props: { color: 'warning' },
+					style: {
+						background: palette.common.white,
+						color: palette.text.primary,
+						"&:hover": {
+							background: palette.common.white,
+							'& > svg > svg': {
+								color: palette.text.primary
+							}
+						}
+					}
 				}
 			],
 			styleOverrides: {
@@ -167,6 +180,70 @@ export const popTheme = createTheme({
 				}
 			}
 		},
+		MuiTabs: {
+			styleOverrides: {
+				root: {
+					'& .MuiTabs-indicator': {
+						backgroundColor: palette.success.main,
+					},
+					"& .MuiTab-root.Mui-selected": {
+						color: palette.success.main
+					}
+				}
+			}
+		},
+		MuiTab: {
+			styleOverrides: {
+				root: {
+					fontSize: 15,
+					fontWeight: 550,
+					color: palette.text.primary,
+					'&:hover': {
+						backgroundColor: palette.text.disabled,
+						color: palette.success.main,
+					},
+				}
+			}
+		},
+		MuiStepper: {
+			styleOverrides: {
+				root: {
+					margin: "0px 24px",
+					"& .MuiSvgIcon-root.MuiStepIcon-root.Mui-active": {
+						color: palette.secondary.dark,
+					},
+					"& .MuiSvgIcon-root.MuiStepIcon-root.Mui-completed": {
+						color: palette.success.dark,
+					}
+				}
+			}
+		},
+		MuiListItemButton: {
+			styleOverrides: {
+				root: {
+					paddingRight: 0,
+					"&:hover": {
+						backgroundColor: palette.secondary.dark,
+						"&>div>svg, &>div>span": {
+							color: palette.common.white
+						},
+					},
+					"&.Mui-selected": {
+						backgroundColor: palette.common.white,
+						"&:hover": {
+							backgroundColor: palette.secondary.dark,
+						}
+					}
+				}
+			}
+		},
+		MuiListItemText: {
+			styleOverrides: {
+				root: {
+					paddingTop: "4px"
+				}
+			}
+		},
 		MuiButton: {
 			variants: [
 				{
@@ -187,10 +264,38 @@ export const popTheme = createTheme({
 					'&:hover': {
 						backgroundColor: palette.success.dark,
 						color: palette.common.white,
+						'& .MuiSvgIcon-root': {
+							color: palette.common.white,
+						}
+					},
+					'&.Mui-disabled': {
+						backgroundColor: palette.primary.light,
+						color: palette.text.primary,
 					}
 				}
 			}
 		},
+		MuiLink: {
+			variants: [
+				{
+					props: { color: 'secondary' },
+					style: {
+						color: palette.secondary.main,
+						'&:hover': {
+							color: palette.secondary.dark,
+						},
+					}
+				}
+			],
+			styleOverrides: {
+				root: {
+					textDecoration: 'none',
+					color: palette.text.primary,
+					'&:hover': {
+						color: palette.success.main,
+					},
+				}
+			}
+		}
 	},
-	spacing: [1, 2, 4, 6, 8, 12, 16, 24, 36, 48, 64, 72],
 });

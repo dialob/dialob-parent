@@ -24,25 +24,21 @@
   "module": "dist/index.es.js",
   "types": "dist/types/index.d.ts",
   "peerDependencies": {
-    "@mui/icons-material": "^5.1.0",
-    "@mui/material": "^5.1.0",
-    "@mui/system": "^5.11.0",
-    "@mui/x-date-pickers": "^6.5.0",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.9",
     "date-fns": "^2.30.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^5.20.10"
-  },
-  "devDependencies": {
+    "react-intl": "^5.20.10",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.1.0",
     "@mui/material": "^5.1.0",
     "@mui/styles": "^5.10.15",
     "@mui/system": "^5.11.0",
-    "@mui/x-date-pickers": "^6.5.0",
+    "@mui/x-date-pickers": "^6.5.0"
+  },
+  "devDependencies": {
     "@types/file-saver": "^2.0.7",
     "@types/node": "^20.14.6",
     "@types/react": "^18.0.9",

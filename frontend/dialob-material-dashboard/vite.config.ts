@@ -22,11 +22,25 @@ export default defineConfig(({ command, mode }) => {
 					fileName: (format) => `index.${format}.js`
 				},
 				rollupOptions: {
-					external: ['react', 'react-dom'],
+					external: [
+						'react',
+						'react-dom',
+						"@emotion/react",
+						"@emotion/styled",
+						"@mui/icons-material",
+						"@mui/material",
+						"@mui/styles",
+						"@mui/system",
+						"@mui/x-date-pickers"
+					],
 					output: {
 						globals: {
 							react: 'React',
-							'react-dom': 'ReactDOM'
+							'react-dom': 'ReactDOM',
+							'@mui/material': 'MaterialUI',
+							'@mui/system': 'MaterialUISystem',
+							'@mui/icons-material': 'MaterialUIIcons',
+							'@mui/x-date-pickers': 'MUIXDatePickers'
 						}
 					}
 				}
