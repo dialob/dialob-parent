@@ -27,7 +27,7 @@ import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.CodedInputStreamSessionReader;
 import io.dialob.session.engine.sp.CodedOutputStreamSessionWriter;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
-import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.spi.SessionReader;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.noop.NoopTimer;

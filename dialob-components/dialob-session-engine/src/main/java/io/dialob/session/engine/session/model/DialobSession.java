@@ -24,7 +24,7 @@ import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.*;
-import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.spi.SessionReader;
 import io.dialob.session.engine.spi.SessionWriter;
 import io.dialob.session.model.*;
 import lombok.AllArgsConstructor;

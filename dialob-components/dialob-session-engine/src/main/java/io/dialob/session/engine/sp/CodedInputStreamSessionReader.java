@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.spi.SessionReader;
+import io.dialob.session.spi.SessionReader;
 import io.dialob.session.model.ImmutableItemIdPartial;
 import io.dialob.session.model.ImmutableItemIndex;
 import io.dialob.session.model.ImmutableItemRef;
