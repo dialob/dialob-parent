@@ -102,11 +102,11 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   protected void beforeExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     super.beforeExpressionCompilation(errorConsumer);
     getDefaultValue().map(defaultValue -> {
-      if (!getValueType().isPresent()) {
+      if (getValueType().isEmpty()) {
         return Utils.createError(getIdStr(), "VALUE_TYPE_NOT_SET");
       }
       Utils.validateDefaultValue(getIdStr(), getValueType().get(), defaultValue, errorConsumer::accept);
-      return (FormValidationError) null;
+      return null;
     }).ifPresent(errorConsumer);
   }
 

@@ -37,7 +37,7 @@ import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
 import io.dialob.session.spi.SessionReader;
-import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.spi.SessionWriter;
 import io.dialob.session.model.IdUtils;
 import io.dialob.session.model.ItemId;
 import lombok.EqualsAndHashCode;

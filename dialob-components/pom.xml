@@ -34,6 +34,7 @@
     <module>dialob-db-spi-spring</module>
     <module>dialob-form-service</module>
     <module>dialob-rule-parser</module>
+    <module>dialob-rule-parser-api</module>
     <module>dialob-form-service-api</module>
     <module>dialob-questionnaire-service</module>
     <module>dialob-questionnaire-service-api</module>

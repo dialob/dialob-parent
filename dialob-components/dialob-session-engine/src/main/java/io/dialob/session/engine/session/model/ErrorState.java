@@ -18,7 +18,7 @@ package io.dialob.session.engine.session.model;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.spi.SessionReader;
-import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.spi.SessionWriter;
 import io.dialob.session.model.ErrorId;
 import io.dialob.session.model.ImmutableErrorId;
 import io.dialob.session.model.ItemId;

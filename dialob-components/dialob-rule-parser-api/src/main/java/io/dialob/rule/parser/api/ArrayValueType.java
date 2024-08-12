@@ -15,7 +15,6 @@
  */
 package io.dialob.rule.parser.api;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -23,9 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BinaryOperator;
@@ -211,12 +208,11 @@ public class ArrayValueType implements ValueType {
       } else {
         valueType = PrimitiveValueType.values()[typeCode];
       }
-      ImmutableList.Builder<Object> objectBuilder = ImmutableList.builder();
-
+      var list = new ArrayList<>();
       for(int i = 0; i < count; i++) {
-        objectBuilder.add(valueType.readFrom(input));
+        list.add(valueType.readFrom(input));
       }
-      return objectBuilder.build();
+      return Collections.unmodifiableList(list);
     }
     return null;
   }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.spi;
+package io.dialob.session.spi;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
@@ -55,6 +55,6 @@ public interface SessionWriter {
 
   SessionWriter writeStringList(List<String> strings) throws IOException;
 
-  SessionWriter writeValue(ValueType valueType, Object value) throws IOException;
+  SessionWriter writeValue(@NonNull ValueType valueType, Object value) throws IOException;
 
 }

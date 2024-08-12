@@ -15,24 +15,10 @@
  */
 package io.dialob.rule.parser.api;
 
-import io.dialob.rule.parser.node.Span;
-import org.immutables.value.Value;
+public interface Span {
 
-import java.io.Serializable;
-import java.util.Optional;
+  int getStartIndex();
 
-@Value.Immutable
-public interface RuleExpressionCompilerError extends Serializable {
-
-  @Value.Parameter
-  String getErrorCode();
-
-  Optional<Object[]> getArgs();
-
-  @Value.Parameter
-  @Value.Default
-  default Span getSpan() {
-    return Span.undefined();
-  }
+  int getStopIndex();
 
 }

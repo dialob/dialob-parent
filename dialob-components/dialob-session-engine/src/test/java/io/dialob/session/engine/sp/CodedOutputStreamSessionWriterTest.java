@@ -19,7 +19,7 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import io.dialob.session.model.IdUtils;
 import io.dialob.session.spi.SessionReader;
-import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.spi.SessionWriter;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

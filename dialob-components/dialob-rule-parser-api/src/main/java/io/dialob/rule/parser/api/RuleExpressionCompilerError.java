@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.session.model;
+package io.dialob.rule.parser.api;
 
-import io.dialob.session.spi.SessionWriter;
-import io.dialob.session.model.ItemId;
+import org.immutables.value.Value;
 
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.Optional;
 
-public interface SessionObject extends Serializable {
+@Value.Immutable
+public interface RuleExpressionCompilerError extends Serializable {
 
-  <I extends ItemId> I getId();
+  @Value.Parameter
+  String getErrorCode();
 
-  default boolean isActive() {
-    return true;
-  }
+  Optional<Object[]> getArgs();
 
-  default boolean isDisabled() {
-    return false;
-  }
+  @Value.Parameter
+  Span getSpan();
 
-  default boolean isDisplayItem() {
-    return false;
-  }
-
-  void writeTo(SessionWriter writer) throws IOException;
 }

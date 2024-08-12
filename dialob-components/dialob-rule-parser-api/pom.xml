@@ -17,21 +17,21 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>dialob-components</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>dialob-session-model</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>dialob-rule-parser-api</artifactId>
   <dependencies>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-rule-parser-api</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-common</artifactId>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
     </dependency>
   </dependencies>
 </project>

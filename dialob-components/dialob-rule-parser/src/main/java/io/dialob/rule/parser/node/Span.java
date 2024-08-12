@@ -7,7 +7,7 @@ import org.immutables.value.Value;
 import java.io.Serializable;
 
 @Value.Immutable
-public interface Span extends Serializable {
+public interface Span extends Serializable, io.dialob.rule.parser.api.Span {
 
   Span UNDEFINED_SPAN = ImmutableSpan.of(-1, -1);
 

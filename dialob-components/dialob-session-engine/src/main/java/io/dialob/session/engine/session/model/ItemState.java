@@ -22,7 +22,7 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.spi.SessionReader;
-import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.spi.SessionWriter;
 import io.dialob.session.model.ItemId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -207,6 +207,7 @@ public class ItemState implements SessionObject {
 
     writer.writeObjectValue(answer);
     var valueType = Utils.mapQuestionTypeToValueType(type).orElse(null);
+    assert valueType != null || value == null;
     writer.writeValue(valueType, value);
     writer.writeValue(valueType, defaultValue);
 

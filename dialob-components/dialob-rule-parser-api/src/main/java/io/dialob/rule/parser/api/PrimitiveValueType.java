@@ -17,6 +17,7 @@ package io.dialob.rule.parser.api;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,8 +29,6 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.function.BinaryOperator;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum PrimitiveValueType implements ValueType {
   TIME {
@@ -45,7 +44,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public LocalTime parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return LocalTime.parse(string);
@@ -134,7 +133,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Duration parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return Duration.parse(string);
@@ -225,7 +224,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public LocalDate parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return LocalDate.parse(string);
@@ -332,7 +331,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Period parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return Period.parse(string);
@@ -434,7 +433,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public BigInteger parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return new BigInteger(string);
@@ -576,7 +575,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public BigDecimal parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return BigDecimal.valueOf(Double.parseDouble(string));
@@ -699,7 +698,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Boolean parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return Boolean.valueOf(string);
@@ -803,7 +802,7 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object parseFromString(String string) {
-      if (isBlank(string)) {
+      if (StringUtils.isBlank(string)) {
         return null;
       }
       return BigDecimal.valueOf(Double.parseDouble(string));

@@ -18,7 +18,7 @@ package io.dialob.session.engine.sp;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.spi.SessionWriter;
+import io.dialob.session.spi.SessionWriter;
 import io.dialob.session.model.ItemId;
 import io.dialob.session.model.ItemIdPartial;
 import io.dialob.session.model.ItemIndex;
@@ -148,8 +148,8 @@ public class CodedOutputStreamSessionWriter implements SessionWriter {
   }
 
   @Override
-  public SessionWriter writeValue(ValueType type, Object value) throws IOException {
-    final boolean present = value != null && type != null;
+  public SessionWriter writeValue(@NonNull ValueType type, Object value) throws IOException {
+    final boolean present = value != null;
     output.writeBoolNoTag(present);
     if (present) {
       this.output.writeRawByte(type.getTypeCode());
@@ -159,7 +159,7 @@ public class CodedOutputStreamSessionWriter implements SessionWriter {
   }
 
   @Override
-  public SessionWriter writeStringMap(Map<String, Object> map) throws IOException {
+  public SessionWriter writeStringMap(@NonNull Map<String, Object> map) throws IOException {
     writeInt32(map.size());
     for (Map.Entry<String,Object> entry : map.entrySet()) {
       writeString(entry.getKey());
