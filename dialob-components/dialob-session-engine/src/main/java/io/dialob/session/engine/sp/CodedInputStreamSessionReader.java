@@ -15,15 +15,14 @@
  */
 package io.dialob.session.engine.sp;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.spi.SessionReader;
 import io.dialob.session.model.ImmutableItemIdPartial;
 import io.dialob.session.model.ImmutableItemIndex;
 import io.dialob.session.model.ImmutableItemRef;
 import io.dialob.session.model.ItemId;
+import io.dialob.session.spi.SessionReader;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -46,16 +45,12 @@ public class CodedInputStreamSessionReader implements SessionReader {
   public ItemId readId() throws IOException {
     if (this.input.readBool()) {
       byte type = this.input.readRawByte();
-      switch (type) {
-        case 1:
-          return ImmutableItemRef.of(this.input.readString(), Optional.ofNullable(readId()));
-        case 2:
-          return ImmutableItemIdPartial.of(Optional.ofNullable(readId()));
-        case 3:
-          return ImmutableItemIndex.of(this.input.readInt32(), Optional.ofNullable(readId()));
-        default:
-          throw new RuntimeException("unknown id type " + type);
-      }
+      return switch (type) {
+        case 1 -> ImmutableItemRef.of(this.input.readString(), Optional.ofNullable(readId()));
+        case 2 -> ImmutableItemIdPartial.of(Optional.ofNullable(readId()));
+        case 3 -> ImmutableItemIndex.of(this.input.readInt32(), Optional.ofNullable(readId()));
+        default -> throw new RuntimeException("unknown id type " + type);
+      };
     }
     return null;
   }
@@ -105,21 +100,21 @@ public class CodedInputStreamSessionReader implements SessionReader {
         case 4:
           return this.input.readDouble();
         case (byte) 0x80:
-          return ImmutableList.of();
+          return Collections.emptyList();
         case (byte) 0x81:
           count = this.input.readInt32();
           String[] strings = new String[count];
           for (int i = 0; i < count; ++i) {
             strings[i] = this.input.readString();
           }
-          return ImmutableList.copyOf(strings);
+          return List.of(strings);
         case (byte) 0x82:
           count = this.input.readInt32();
           BigInteger[] integers = new BigInteger[count];
           for (int i = 0; i < count; ++i) {
             integers[i] = readBigInteger();
           }
-          return ImmutableList.copyOf(integers);
+          return List.of(integers);
       }
     }
     return null;
@@ -151,9 +146,9 @@ public class CodedInputStreamSessionReader implements SessionReader {
       for (int i = 0; i < count; i++) {
         ids[i] = input.readString();
       }
-      return ImmutableList.copyOf(ids);
+      return List.of(ids);
     }
-    return ImmutableList.of();
+    return Collections.emptyList();
   }
 
   @Override
@@ -179,9 +174,9 @@ public class CodedInputStreamSessionReader implements SessionReader {
       for (int i = 0; i < count; i++) {
         ids[i] = readId();
       }
-      return ImmutableList.copyOf(ids);
+      return List.of(ids);
     }
-    return ImmutableList.of();
+    return Collections.emptyList();
   }
 
   @Override
