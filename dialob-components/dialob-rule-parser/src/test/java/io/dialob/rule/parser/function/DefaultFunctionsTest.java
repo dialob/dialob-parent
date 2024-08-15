@@ -17,8 +17,9 @@ package io.dialob.rule.parser.function;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultFunctionsTest {
   @Test
@@ -45,10 +46,23 @@ public class DefaultFunctionsTest {
     assertFalse(DefaultFunctions.isHetu("010170AA55D"));
     assertTrue(DefaultFunctions.isHetu("010170+555D"));
     assertFalse(DefaultFunctions.isHetu("010170#555D"));
+    assertTrue(DefaultFunctions.isHetu("010170A555D"));
+    assertTrue(DefaultFunctions.isHetu("010170B555D"));
+    assertTrue(DefaultFunctions.isHetu("010170C555D"));
+    assertTrue(DefaultFunctions.isHetu("010170D555D"));
+    assertTrue(DefaultFunctions.isHetu("010170E555D"));
+    assertTrue(DefaultFunctions.isHetu("010170F555D"));
+    assertFalse(DefaultFunctions.isHetu("010170G555D"));
+    assertTrue(DefaultFunctions.isHetu("010170Y555D"));
+    assertTrue(DefaultFunctions.isHetu("010170X555D"));
+    assertTrue(DefaultFunctions.isHetu("010170W555D"));
+    assertTrue(DefaultFunctions.isHetu("010170V555D"));
+    assertTrue(DefaultFunctions.isHetu("010170U555D"));
+    assertFalse(DefaultFunctions.isHetu("010170Z555D"));
   }
 
   @Test
-  public void testIsIban() {
+  void testIsIban() {
     assertTrue(DefaultFunctions.isIban("DE91100000000123456789"));
     assertTrue(DefaultFunctions.isIban("BR1500000000000010932840814P2"));
     assertTrue(DefaultFunctions.isIban("SE45 5000 0000 0583 9825 7466"));
@@ -58,6 +72,25 @@ public class DefaultFunctionsTest {
     assertFalse(DefaultFunctions.isIban(""));
     assertFalse(DefaultFunctions.isIban(null));
     assertFalse(DefaultFunctions.isIban("foo"));
+  }
+
+  @Test
+  void testBirthDateFromHetu() {
+    assertEquals(LocalDate.of(1870, 1, 1), DefaultFunctions.birthDateFromHetu("010170+555D"));
+    assertEquals(LocalDate.of(1970, 1, 1), DefaultFunctions.birthDateFromHetu("010170-555D"));
+    assertEquals(LocalDate.of(1970, 1, 1), DefaultFunctions.birthDateFromHetu("010170Y555D"));
+    assertEquals(LocalDate.of(1970, 1, 1), DefaultFunctions.birthDateFromHetu("010170X555D"));
+    assertEquals(LocalDate.of(1970, 1, 1), DefaultFunctions.birthDateFromHetu("010170W555D"));
+    assertEquals(LocalDate.of(1970, 1, 1), DefaultFunctions.birthDateFromHetu("010170V555D"));
+    assertEquals(LocalDate.of(1970, 1, 1), DefaultFunctions.birthDateFromHetu("010170U555D"));
+    assertNull(DefaultFunctions.birthDateFromHetu("010170Z555D"));
+    assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170A555D"));
+    assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170B555D"));
+    assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170C555D"));
+    assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170D555D"));
+    assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170E555D"));
+    assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170F555D"));
+    assertNull(DefaultFunctions.birthDateFromHetu("010170G555D"));
   }
 
 
