@@ -22,6 +22,7 @@ import io.dialob.rule.parser.DialobRuleLexer;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Vocabulary;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     // Item label refs
     if (!item.getLabel().isEmpty()) {
       item.getLabel().forEach((l, m) -> {
-        String newLabel = m.replaceAll("\\{(" + oldId + ")}", "{" + newId + "}");
+        String newLabel = StringUtils.replace(m, "{" + oldId + "}", "{" + newId + "}");
         builder.putLabel(l, newLabel);
       });
     }
