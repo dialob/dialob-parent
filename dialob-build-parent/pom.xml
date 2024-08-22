@@ -598,6 +598,18 @@
                 <goal>build</goal>
               </goals>
               <configuration>
+                <from>
+                  <platforms>
+                    <platform>
+                      <architecture>amd64</architecture>  
+                      <os>linux</os>  
+                    </platform>
+                    <platform>
+                      <architecture>arm64</architecture>  
+                      <os>linux</os>  
+                    </platform>
+                  </platforms>
+                </from>
                 <to>
                   <image>${jib.to.imagePath}/${project.artifactId}</image>
                 </to>
