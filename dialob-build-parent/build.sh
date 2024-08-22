@@ -17,9 +17,12 @@
 #!/usr/bin/env bash
 set -e
 
+export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
+
 mvn -B clean install \
 		-Pjib \
     -Dmaven.javadoc.skip=false \
     -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Djib.to.imagePath=$DOCKER_REGISTRY/dialob
+    -Djib.to.imagePath=$DOCKER_REGISTRY/dialob \
+    -DbranchName=$GITHUB_REF_NAME
 

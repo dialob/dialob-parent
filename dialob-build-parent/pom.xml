@@ -607,6 +607,11 @@
             </from>
             <to>
               <image>${jib.to.imagePath}/${project.artifactId}</image>
+              <tags>
+                <tag>latest</tag>
+                <tag>${project.version}</tag>
+                <tag>${branchName}</tag>
+              </tags>
             </to>
             <container>
               <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
