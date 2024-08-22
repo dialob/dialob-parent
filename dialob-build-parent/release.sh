@@ -65,7 +65,7 @@ export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
 		-Prelease,jib \
     -Dmaven.javadoc.skip=false \
     -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Djib.to.imagePath=$DOCKER_REGISTRY/dialob \
+    -Djib.to.imagePath=$DOCKER_REGISTRY \
     -DbranchName=$GITHUB_REF_NAME
 
 ./mvnw versions:set -DnewVersion=${PROJECT_VERSION}
