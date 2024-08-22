@@ -38,7 +38,7 @@ jobs:
     - name: tag - release - upload
       run: ./dialob-build-parent/release.sh
       env:
-        CI: false
+        CI: true
         BOT_NAME: "info"
         BOT_EMAIL: "info@dialob.io"
         GITHUB_SHA: ${GITHUB_SHA}
@@ -49,3 +49,4 @@ jobs:
         GPG_PASSPHRASE: ${{ secrets.DIALOB_GPG_SEC }}
         OSSRH_USER: ${{ secrets.OSSRH_USER }}
         OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+        DOCKER_REGISTRY: docker.io

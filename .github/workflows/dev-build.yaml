@@ -32,7 +32,7 @@ jobs:
       - name: tag - upload
         run: ./dialob-build-parent/build.sh
         env:
-          CI: false
+          CI: true
           DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}
 
 
