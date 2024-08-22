@@ -44,6 +44,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,6 +77,11 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
   private FunctionRegistry functionRegistry;
 
   public static String testFunction(String input) {
+    try {
+      Thread.sleep(200L);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     return "got it " + input;
   }
 
@@ -134,7 +140,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
       Assertions.assertThat(actions.getActions())
         .extracting("type","item.id",        "item.label", "ids")
         .containsOnly(
-          tuple(Action.Type.REMOVE_ITEMS,        null,                    null, Arrays.asList("note2")),
+          tuple(Action.Type.REMOVE_ITEMS,        null,                    null, List.of("note2")),
           tuple(Action.Type.ITEM,     "note1", "got it not more Weird",         null)
         );
     })

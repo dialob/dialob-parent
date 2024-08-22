@@ -257,7 +257,7 @@ public class WebSocketRequestTestTemplate {
     public ExpectionBuilder expectActions(String name, Consumer<Actions> expectConsumer) {
       return expect(name, webSocketMessage -> {
         TextMessage textMessage = (TextMessage) webSocketMessage;
-        Actions actions = null;
+        Actions actions;
         try {
           String message = textMessage.getPayload();
           actions = objectMapper.readValue(message, Actions.class);
