@@ -33,7 +33,7 @@ jobs:
         run: ./dialob-build-parent/build.sh
         env:
           CI: true
-          DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}/dialob
+          DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
 
 
