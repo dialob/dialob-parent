@@ -47,7 +47,6 @@ management:
   endpoints:
     enabled-by-default: true
     web:
-      base-path: /manage
       exposure:
         include: '*'
 
