@@ -54,7 +54,7 @@
     <assertj-core.version>3.25.3</assertj-core.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
 
-    <guava.version>33.1.0-jre</guava.version>
+    <guava.version>33.3.0-jre</guava.version>
     <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
     <immutables.version>2.10.1</immutables.version>
     <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
@@ -62,7 +62,7 @@
     <jsoup.version>1.18.1</jsoup.version>
     <feign.version>13.3</feign.version>
 
-    <junit.jupiter.version>5.10.3</junit.jupiter.version>
+    <junit.jupiter.version>5.11.0</junit.jupiter.version>
     <junit.platform.version>1.10.2</junit.platform.version>
 
     <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
@@ -70,7 +70,7 @@
     <spring-boot.version>3.3.2</spring-boot.version>
     <spring-integration.version>6.3.3</spring-integration.version>
     <spring-security.version>6.3.3</spring-security.version>
-    <spring-session.version>3.3.1</spring-session.version>
+    <spring-session.version>3.3.2</spring-session.version>
     <swagger.version>2.2.21</swagger.version>
     <validation-api.version>3.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
