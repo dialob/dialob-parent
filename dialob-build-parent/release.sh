@@ -54,7 +54,7 @@ PROJECT_VERSION=$(./mvnw -q -Dexec.executable=echo -Dexec.args='${project.versio
 echo "Dev version: '${PROJECT_VERSION}' release version: '${RELEASE_VERSION}'"
 
 ./mvnw versions:set -DnewVersion=${RELEASE_VERSION}
-git commit -am "Release: ${RELEASE_VERSION}"
+git commit -am "Release ${RELEASE_VERSION}"
 git tag -a ${RELEASE_VERSION} -m "release ${RELEASE_VERSION}"
 
 
@@ -69,7 +69,7 @@ export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
     -DbranchName=$GITHUB_REF_NAME
 
 ./mvnw versions:set -DnewVersion=${PROJECT_VERSION}
-git commit -am "Release: ${RELEASE_VERSION}"
+git commit -am "Prepare ${NEXT_RELEASE_VERSION} development"
 git push
 git push origin ${RELEASE_VERSION}
 
