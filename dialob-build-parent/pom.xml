@@ -90,7 +90,7 @@
     <tomcat-embed-el.version>10.1.26</tomcat-embed-el.version>
     <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
-    <commons-compress.version>1.26.2</commons-compress.version>
+    <commons-compress.version>1.27.1</commons-compress.version>
   </properties>
 
 
