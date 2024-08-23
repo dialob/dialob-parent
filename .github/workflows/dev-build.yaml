@@ -36,5 +36,8 @@ jobs:
           DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
 
-
-
+      - name: upload image metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: jib-image
+          path: '**/target/jib-image.*'
