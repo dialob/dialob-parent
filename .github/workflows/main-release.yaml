@@ -50,3 +50,9 @@ jobs:
         OSSRH_USER: ${{ secrets.OSSRH_USER }}
         OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
         DOCKER_REGISTRY: docker.io/resys
+
+    - name: upload image metadata
+      uses: actions/upload-artifact@v4
+      with:
+        name: jib-image
+        path: '**/target/jib-image.*'
