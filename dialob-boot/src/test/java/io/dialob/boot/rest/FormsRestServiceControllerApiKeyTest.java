@@ -86,6 +86,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+  "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
   "dialob.security.authenticationMethod=NONE",
   "dialob.security.enabled=true",
   "dialob.db.database-type=none"
