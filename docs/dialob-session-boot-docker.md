@@ -8,7 +8,7 @@ API Service component for Dialob filling session ( https://github.com/dialob/dia
 
 ## Configuration options
 
-- SPRING_REDIS_HOST=redis
+- SPRING_DATA_REDIS_HOST=redis
 - SPRING_PROFILES_ACTIVE=jdbc
 - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql/dialob
 - SPRING_DATASOURCE_USERNAME=dialob

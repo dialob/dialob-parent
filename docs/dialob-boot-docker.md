@@ -8,7 +8,7 @@ API Service component for Dialob ( https://github.com/dialob/dialob-parent )
 
 ## Configuration options
 
-- SPRING_REDIS_HOST=redis
+- SPRING_DATA_REDIS_HOST=redis
 - SPRING_PROFILES_ACTIVE=ui,jdbc
 - SPRING_SESSION_STORE_TYPE=redis
 - SPRING_SESSION_REDIS_NAMESPACE=dialobServiceSession
