@@ -87,12 +87,9 @@ public class SecurityConfiguration {
     WebApiSecurityConfigurer.class,
     ComposerSecurityConfigurer.class,
     ReviewSecurityConfigurer.class,
+    ActuatorEndpointSecurityConfiguration.class,
   })
   public static class DialobSecurityConfigurerConfiguration {
-    @Bean
-    public ActuatorEndpointSecurityConfigurer actuatorEndpointSecurityConfigurer() {
-      return new ActuatorEndpointSecurityConfigurer();
-    }
 
     @Bean
     @ConditionalOnProperty(name = "dialob.security.authenticationMethod", havingValue = "OAUTH2", matchIfMissing = true)

@@ -21,17 +21,16 @@ import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
-public class ActuatorEndpointSecurityConfigurer {
+public class ActuatorEndpointSecurityConfiguration {
 
-  private int order;
-
-  private final RequestMatcher GET_REQUEST = request -> "GET".equals(request.getMethod());
+  private final RequestMatcher GET_REQUEST = request -> HttpMethod.GET.matches(request.getMethod());
 
   @Bean
   @Order(0)
