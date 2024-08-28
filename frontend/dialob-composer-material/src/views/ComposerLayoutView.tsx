@@ -57,11 +57,9 @@ const ComposerLayoutView: React.FC = () => {
             <NavigationPane />
           </Box>
         </Drawer>
-        <Container>
-          <Box sx={{ mt: `${MENU_HEIGHT}px` }}>
-            <EditorArea />
-          </Box>
-        </Container>
+        <Box sx={{ mt: `${MENU_HEIGHT}px`, width: 1 }}>
+          <EditorArea />
+        </Box>
         {hasErrors && <Drawer variant="permanent" anchor="right">
           <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }}>
             <ErrorPane />
