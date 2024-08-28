@@ -4,7 +4,7 @@ import Editor from '../../components/Editor';
 
 const EditorArea: React.FC = () => {
   return (
-    <Box sx={{ pt: 2 }}>
+    <Box sx={{ p: 2 }}>
       <Editor />
     </Box>
   );
