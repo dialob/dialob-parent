@@ -87,7 +87,7 @@
     <spring-cloud-gcp.version>5.5.1</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
     <springdoc.version>1.8.0</springdoc.version>
     <testcontainers.version>1.20.1</testcontainers.version>
-    <tomcat-embed-el.version>10.1.26</tomcat-embed-el.version>
+    <tomcat-embed-el.version>10.1.28</tomcat-embed-el.version>
     <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
     <commons-compress.version>1.27.1</commons-compress.version>
