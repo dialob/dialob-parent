@@ -1,7 +1,7 @@
 import { ItemAction } from '@dialob/fill-api';
 import { useFillActions, useFillSession } from '@dialob/fill-react';
 import React, {useContext, useState} from 'react';
-import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper } from '@mui/material';
+import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper, Theme } from '@mui/material';
 import { Remove } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { RowGroupContext } from '../context/RowGroupContext';
@@ -39,10 +39,12 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
     deleteRow(row.id);
   };
   let responsiveProps = {};
+	const backgroundColor = row.props?.color;
   const spacesTop = parseInt(row.props?.spacesTop ?? undefined);
   const spacesBottom = parseInt(row.props?.spacesBottom ?? undefined);
   const paperSx = {
     p: 1,
+		...(backgroundColor && { backgroundColor: (theme: Theme) => theme.palette.background.default }),
     ...(spacesTop && { marginTop: spacesTop }),
     ...(spacesBottom && { marginBottom: spacesBottom })
   }
