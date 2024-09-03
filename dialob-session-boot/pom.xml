@@ -50,6 +50,10 @@
             <goals>
               <goal>repackage</goal>
             </goals>
+            <configuration>
+              <classifier>full</classifier>
+              <attach>false</attach>
+            </configuration>
           </execution>
         </executions>
       </plugin>
