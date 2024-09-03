@@ -20,8 +20,7 @@ import io.dialob.integration.api.ImmutableNodeId;
 import io.dialob.integration.api.NodeId;
 import io.dialob.integration.queue.redis.DistributedEventBridge;
 import jakarta.inject.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -37,9 +36,8 @@ import java.util.UUID;
 
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(name = "io.dialob.integration.redis.DialobIntegrationRedisAutoConfiguration")
+@Slf4j
 public class DialobIntegrationQueueAutoConfiguration {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DialobIntegrationQueueAutoConfiguration.class);
 
   @Bean
   public NodeId nodeId(ServerProperties serverProperties) throws UnknownHostException {

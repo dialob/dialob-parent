@@ -204,11 +204,11 @@ public class FillAssertionBuilder {
 
     final QuestionnaireSessionBuilder questionnaireSessionBuilder = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder();
     if (this.questionnaire == null) {
-      questionnaireSessionBuilder.setFormId(this.formId);
+      questionnaireSessionBuilder.formId(this.formId);
     } else {
       questionnaireSessionBuilder
-        .setLanguage("en")
-        .setQuestionnaire(questionnaire);
+        .language("en")
+        .questionnaire(questionnaire);
     }
     QuestionnaireSession session = questionnaireSessionBuilder.build();
 

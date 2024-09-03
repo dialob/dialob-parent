@@ -53,6 +53,8 @@ export type DialobItemTemplate = {
   required?: string;
   valueSetId?: string;
   activeWhen?: string;
+  canAddRowWhen?: string;
+  canRemoveRowWhen?: string;
   items?: string[];
   className?: string[];
   props?: {

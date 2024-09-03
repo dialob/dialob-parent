@@ -18,8 +18,7 @@ package io.dialob.integration.redis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
@@ -27,9 +26,8 @@ import org.springframework.messaging.support.GenericMessage;
 
 import java.io.IOException;
 
+@Slf4j
 public class JsonMessageConverter<T> implements MessageConverter {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(JsonMessageConverter.class);
 
   private final ObjectMapper mapper;
 

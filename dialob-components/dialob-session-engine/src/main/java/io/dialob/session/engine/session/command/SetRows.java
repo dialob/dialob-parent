@@ -21,13 +21,14 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Value.Immutable
 public interface SetRows extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @Value.Parameter(order = 1)
-  List<Integer> getIds();
+  List<BigInteger> getIds();
 
   @NonNull
   @Override

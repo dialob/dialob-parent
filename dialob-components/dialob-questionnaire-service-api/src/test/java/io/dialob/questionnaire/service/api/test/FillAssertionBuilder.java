@@ -149,10 +149,10 @@ public class FillAssertionBuilder {
     QuestionnaireSessionBuilder questionnaireSessionBuilder = questionnaireSessionBuilderFactory.get();
     if (this.questionnaire != null) {
       questionnaireSessionBuilder = questionnaireSessionBuilder
-        .setQuestionnaire(questionnaire);
+        .questionnaire(questionnaire);
     } else if (this.formId != null) {
       questionnaireSessionBuilder = questionnaireSessionBuilder
-        .setFormId(this.formId);
+        .formId(this.formId);
     } else {
       org.junit.jupiter.api.Assertions.fail("define formId or questionnaire");
     }

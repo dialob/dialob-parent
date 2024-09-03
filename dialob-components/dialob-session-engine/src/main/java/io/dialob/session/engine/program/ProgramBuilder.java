@@ -37,9 +37,8 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.Value;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -48,9 +47,8 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Value.Enclosing
+@Slf4j
 public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builder<Program> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProgramBuilder.class);
 
   private final FunctionRegistry functionRegistry;
 

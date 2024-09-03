@@ -20,15 +20,13 @@ import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Error;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Locale;
 
 
+@Slf4j
 public class FormActionsUpdatesCallback implements QuestionnaireSession.UpdatesCallback {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(FormActionsUpdatesCallback.class);
 
   private final FormActions formActions;
 

@@ -21,10 +21,9 @@ import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,9 +39,8 @@ import java.util.Arrays;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
+@Slf4j
 public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSecuredRestTests.class);
 
   protected MultiValueMap<String, String> tenantParam = new LinkedMultiValueMap<>();
 

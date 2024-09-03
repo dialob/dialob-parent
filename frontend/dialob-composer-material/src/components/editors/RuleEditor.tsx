@@ -9,12 +9,14 @@ import CodeMirror from '../code/CodeMirror';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 
-type RuleType = 'visibility' | 'requirement';
+type RuleType = 'visibility' | 'requirement' | 'canaddrow' | 'canremoverow';
 
 const resolveRulePropName = (ruleType: RuleType): string => {
   switch (ruleType) {
     case 'visibility': return 'activeWhen';
     case 'requirement': return 'required';
+    case 'canaddrow': return 'canAddRowWhen';
+    case 'canremoverow': return 'canRemoveRowWhen';
     default: return '';
   }
 }
@@ -51,6 +53,10 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   }
 
   if (!DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.find(i => i.config.type === item.type) && type === 'requirement') {
+    return null;
+  }
+
+  if (item.type !== 'rowgroup' && (type === 'canaddrow' || type === 'canremoverow')) {
     return null;
   }
 

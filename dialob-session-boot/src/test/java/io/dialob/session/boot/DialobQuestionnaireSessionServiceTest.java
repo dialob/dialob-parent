@@ -70,6 +70,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.SerializationUtils;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.util.*;
@@ -123,9 +124,9 @@ public class DialobQuestionnaireSessionServiceTest {
         FunctionRegistry.FunctionCallback cb = invocation.getArgument(0);
         String string = invocation.getArgument(2);
         if (string == null) {
-          cb.succeeded(0);
+          cb.succeeded(BigInteger.ZERO);
         } else {
-          cb.succeeded(string.length());
+          cb.succeeded(BigInteger.valueOf(string.length()));
         }
         return null;
       }).when(functionRegistry).invokeFunction(any(), eq("lengthOf"), any());
@@ -882,7 +883,7 @@ public class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, "rg1.0", null, false),
           tuple(ITEM, "survey1", null, false),
           tuple(ITEM, "list1", null, false),
-          tuple(ITEM, "rg1", Arrays.asList(0), true),
+          tuple(ITEM, "rg1", Arrays.asList(BigInteger.ZERO), true),
           tuple(ITEM, "questionnaire", null, false),
           tuple(ITEM, "multichoice1", Arrays.asList("a", "c"), true),
           tuple(ITEM, "decimal1", 3.141, true),
@@ -1328,7 +1329,7 @@ public class DialobQuestionnaireSessionServiceTest {
       .answer("qq", 6)
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "var",11)
+          tuple(ITEM, null, "var", BigInteger.valueOf(11))
         ))
       .apply();
   }
@@ -1387,21 +1388,21 @@ public class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
           tuple(ITEM, null, "rg.0.qq", null),
           tuple(ITEM, null, "rg.0", null),
-          tuple(ITEM, null, "rg", Arrays.asList(0))
+          tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ZERO))
         ))
       .addRow("rg")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
           tuple(ITEM, null, "rg.1.qq", null),
           tuple(ITEM, null, "rg.1", null),
-          tuple(ITEM, null, "rg", Arrays.asList(0,1))
+          tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ZERO,BigInteger.ONE))
         ))
       .addRow("rg")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
           tuple(ITEM, null, "rg.2.qq", null),
           tuple(ITEM, null, "rg.2", null),
-          tuple(ITEM, null, "rg", Arrays.asList(0,1,2))
+          tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ZERO,BigInteger.ONE,BigInteger.TWO))
         ))
       .answer("rg.0.qq", 50)
       .assertThat(assertion -> assertion
@@ -1416,7 +1417,7 @@ public class DialobQuestionnaireSessionServiceTest {
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("rg.0.qq", "rg.0", "note1"), null, null),
-          tuple(ITEM, null, "rg", Arrays.asList(1,2))
+          tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ONE,BigInteger.TWO))
         ))
       .apply();
   }
@@ -1929,6 +1930,50 @@ public class DialobQuestionnaireSessionServiceTest {
 
       .apply();
   }
+
+
+  @Test
+  public void issuegh169() throws Exception {
+    fillForm("io/dialob/session/engine/issue-gh-169.json")
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null),
+            tuple(LOCALE, null, null, null, null),
+            tuple(ITEM, null, "group1", null, null),
+            tuple(ITEM, null, "group2", null, null),
+            tuple(ITEM, null, "questionnaire", "VVBigNumber", null),
+            tuple(ITEM, null, "number1", "Integer", null)
+          );
+      })
+      .answer("number1","1000")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "Integer 1,000")
+        ))
+      .answer("number1", Integer.toString(Integer.MAX_VALUE))
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "Integer 2,147,483,647")
+        ))
+      .answer("number1", "2147483648")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "Integer 2,147,483,648")
+        ))
+      .answer("number1", "10000000000")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "Integer 10,000,000,000")
+        ))
+      .answer("number1", "-10000000000")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "Integer -10,000,000,000")
+        ))
+      .apply();
+  }
+
 
 
 

@@ -28,6 +28,7 @@ import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -243,12 +244,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     rowGroups
       .stream()
       .flatMap(rowGroup -> {
-        List<Integer> rowNumbers = ((List<Integer>)rowGroup.getValue());
+        List<BigInteger> rowNumbers = ((List<BigInteger>)rowGroup.getValue());
         if (rowNumbers == null) {
           return Stream.empty();
         }
         return rowNumbers.stream().flatMap(rowNumber -> {
-          final ItemId rowId = ImmutableItemIndex.of(rowNumber, Optional.of(rowGroup.getId()));
+          final ItemId rowId = ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()));
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
@@ -295,9 +296,9 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         if (rowGroup.getValue() != null) {
           return rowGroup
             .update().setItems(
-              ((List<Integer>) rowGroup.getValue())
+              ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> ImmutableItemIndex.of(rowNumber, Optional.of(rowGroup.getId()))).collect(toList())
+                .map(rowNumber -> ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).collect(toList())
             ).get();
         }
         return rowGroup;

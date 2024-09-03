@@ -22,15 +22,13 @@ import io.dialob.db.mongo.MongoQuestionnaireIdObfuscator;
 import io.dialob.db.mongo.repository.QuestionnaireRepository;
 import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
+@Slf4j
 public class MongoDbQuestionnaireDatabase extends BaseMongoDbDatabase<Questionnaire, ModifiableQuestionnaire, QuestionnaireRepository> implements QuestionnaireDatabase {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MongoDbQuestionnaireDatabase.class);
 
   private final MongoQuestionnaireIdObfuscator mongoQuestionnaireIdObfuscator;
 

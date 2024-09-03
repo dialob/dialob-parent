@@ -23,10 +23,7 @@ import io.dialob.questionnaire.service.api.FormDataMissingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSessionBuilder {
@@ -61,7 +58,7 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   private Questionnaire.Metadata.Status status;
 
-  private Map<String,Object> additionalProperties;
+  private Map<String, Object> additionalProperties;
 
   protected BaseQuestionnaireSessionBuilder(@NonNull FormFinder formFinder) {
     this.formFinder = formFinder;
@@ -69,59 +66,61 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setActiveItem(String activeItem) {
+  public QuestionnaireSessionBuilder activeItem(String activeItem) {
     this.activeItem = activeItem;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setFormId(String formId) {
+  public QuestionnaireSessionBuilder formId(String formId) {
     this.formId = formId;
     return this;
   }
 
-  public QuestionnaireSessionBuilder setCreator(String creator) {
+  @NonNull
+  public QuestionnaireSessionBuilder creator(String creator) {
     this.creator = creator;
     return this;
   }
 
-  public QuestionnaireSessionBuilder setOwner(String owner) {
+  @NonNull
+  public QuestionnaireSessionBuilder owner(String owner) {
     this.owner = owner;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setFormRev(String formRev) {
+  public QuestionnaireSessionBuilder formRev(String formRev) {
     this.formRev = formRev;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setSubmitUrl(String submitUrl) {
+  public QuestionnaireSessionBuilder submitUrl(String submitUrl) {
     this.submitUrl = submitUrl;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setContextValues(List<ContextValue> contextValues) {
+  public QuestionnaireSessionBuilder contextValues(List<ContextValue> contextValues) {
     this.contextValues = contextValues;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setCreateOnly(boolean createOnly) {
+  public QuestionnaireSessionBuilder createOnly(boolean createOnly) {
     this.createOnly = createOnly;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setLanguage(String language) {
+  public QuestionnaireSessionBuilder language(String language) {
     this.language = language;
     if (StringUtils.isBlank(language)) {
       this.language = "en";
@@ -131,98 +130,86 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setStatus(Questionnaire.Metadata.Status status) {
+  public QuestionnaireSessionBuilder status(Questionnaire.Metadata.Status status) {
     this.status = status;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setAnswers(List<Answer> answers) {
+  public QuestionnaireSessionBuilder answers(List<Answer> answers) {
     this.answers = answers;
     return this;
   }
 
   @NonNull
   @Override
-  public QuestionnaireSessionBuilder setValueSets(List<ValueSet> valueSets) {
+  public QuestionnaireSessionBuilder valueSets(List<ValueSet> valueSets) {
     this.valueSets = valueSets;
     return this;
   }
 
   @NonNull
   @Override
-  public QuestionnaireSessionBuilder setAdditionalProperties(Map<String,Object> additionalProperties) {
+  public QuestionnaireSessionBuilder additionalProperties(Map<String, Object> additionalProperties) {
     this.additionalProperties = additionalProperties;
     return this;
   }
 
   @Override
   @NonNull
-  public QuestionnaireSessionBuilder setQuestionnaire(Questionnaire questionnaire) {
+  public QuestionnaireSessionBuilder questionnaire(Questionnaire questionnaire) {
     this.questionnaire = questionnaire;
     if (this.questionnaire != null) {
       final Questionnaire.Metadata metadata = this.questionnaire.getMetadata();
       if (activeItem == null) {
-        setActiveItem(this.questionnaire.getActiveItem());
+        activeItem(this.questionnaire.getActiveItem());
       }
       if (formId == null) {
-        setFormId(metadata.getFormId());
+        formId(metadata.getFormId());
       }
       if (formRev == null) {
-        setFormRev(metadata.getFormRev());
+        formRev(metadata.getFormRev());
       }
       if (owner == null) {
-        setOwner(metadata.getOwner());
+        owner(metadata.getOwner());
       }
       if (creator == null) {
-        setCreator(metadata.getCreator());
+        creator(metadata.getCreator());
       }
       if (additionalProperties == null) {
-        setAdditionalProperties(metadata.getAdditionalProperties());
+        additionalProperties(metadata.getAdditionalProperties());
       }
-      setLanguage(metadata.getLanguage());
+      language(metadata.getLanguage());
     }
     return this;
   }
 
   @NonNull
   protected Questionnaire createNewQuestionnaire(@NonNull String formId, String formRev, String formName, String label, String submitUrl, String creator, String owner, Map<String, Object> additionalProperties, boolean useLatest) {
-    final ImmutableQuestionnaire.Builder questionnaire = ImmutableQuestionnaire.builder();
-    final ImmutableQuestionnaireMetadata.Builder metadata = ImmutableQuestionnaireMetadata.builder();
+    final ImmutableQuestionnaire.Builder questionnaire = ImmutableQuestionnaire.builder()
+      .metadata(ImmutableQuestionnaireMetadata.builder()
+        .formId(formId)
+        .formName(formName)
+        .formRev(useLatest ? LATEST_REV : formRev)
+        .label(label)
+        .creator(creator)
+        .owner(StringUtils.defaultString(owner, creator))
+        .status(status != null ? status : Questionnaire.Metadata.Status.NEW)
+        .created(new Date())
+        .language(getLanguage())
+        .submitUrl(this.submitUrl != null ? this.submitUrl : submitUrl)
+        .additionalProperties(additionalProperties != null ? additionalProperties : Collections.emptyMap())
+        .build());
 
-    if (additionalProperties != null) {
-      metadata.putAllAdditionalProperties(additionalProperties);
+    if (contextValues != null) {
+      questionnaire.context(contextValues);
     }
-    metadata.formId(formId);
-    metadata.formName(formName);
-    metadata.label(label);
-    metadata.creator(creator);
-    metadata.owner(StringUtils.defaultString(owner, creator));
-    metadata.status(getStatus() != null ? getStatus() : Questionnaire.Metadata.Status.NEW );
-    if (useLatest) {
-      metadata.formRev(LATEST_REV);
-    } else {
-      metadata.formRev(formRev);
+    if (answers != null) {
+      questionnaire.answers(answers);
     }
-    metadata.created(new Date());
-    if (getSubmitUrl() != null) {
-      metadata.submitUrl(getSubmitUrl());
-    } else {
-      metadata.submitUrl(submitUrl);
-    }
-    metadata.language(getLanguage());
-
-    questionnaire.metadata(metadata.build());
-
-    if (this.getContextValues() != null) {
-      questionnaire.context(this.getContextValues());
-    }
-    if (this.getAnswers() != null) {
-      questionnaire.answers(getAnswers());
-    }
-    if (this.getValueSets() != null) {
-      questionnaire.valueSets(getValueSets());
+    if (valueSets != null) {
+      questionnaire.valueSets(valueSets);
     }
     questionnaire.activeItem(this.activeItem);
     return questionnaire.build();
@@ -233,28 +220,28 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   @NonNull
   public QuestionnaireSession build() {
-    Objects.requireNonNull(getFormId(), "QuestionnaireSessionBuilder.formId is required");
+    Objects.requireNonNull(formId, "QuestionnaireSessionBuilder.formId is required");
 
-    boolean useLatest = LATEST_REV.equals(this.getFormRev());
+    boolean useLatest = LATEST_REV.equals(formRev);
     boolean newSession = getQuestionnaire() == null;
     String formRev = null;
 
     if (!useLatest) {
-      formRev = this.getFormRev();
+      formRev = this.formRev;
     }
     Form formDocument;
     try {
-      formDocument = formFinder.findForm(this.getFormId(), formRev);
+      formDocument = formFinder.findForm(formId, formRev);
     } catch (io.dialob.db.spi.exceptions.DatabaseException e) {
-      LOGGER.debug("Could not load form {}: {}", this.getFormId(), e.getMessage());
-      throw new FormDataMissingException(this.getFormId(), formRev);
+      LOGGER.debug("Could not load form {}: {}", formId, e.getMessage());
+      throw new FormDataMissingException(formId, formRev);
     }
     if (newSession) {
       Form.Metadata metadata = formDocument.getMetadata();
       final String formId = formDocument.getId();
       String formName = null;
-      if (!formId.equals(this.getFormId())) {
-        formName = this.getFormId();
+      if (!formId.equals(this.formId)) {
+        formName = this.formId;
       }
       this.questionnaire = createNewQuestionnaire(formId, formDocument.getRev(), formName, metadata.getLabel(), metadata.getDefaultSubmitUrl(), creator, owner, additionalProperties, useLatest);
     }
@@ -270,39 +257,8 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
     return questionnaire;
   }
 
-  protected String getFormRev() {
-    return formRev;
-  }
-
-  protected String getActiveItem() {
-    return activeItem;
-  }
-
-  protected String getFormId() {
-    return formId;
-  }
-
-  protected String getSubmitUrl() {
-    return submitUrl;
-  }
-
-  protected List<ContextValue> getContextValues() {
-    return contextValues;
-  }
-
   protected String getLanguage() {
     return language;
   }
 
-  protected List<Answer> getAnswers() {
-    return answers;
-  }
-
-  protected List<ValueSet> getValueSets() {
-    return valueSets;
-  }
-
-  protected Questionnaire.Metadata.Status getStatus() {
-    return status;
-  }
 }

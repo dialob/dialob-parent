@@ -19,8 +19,7 @@ import io.dialob.integration.api.Constants;
 import io.dialob.integration.api.NodeId;
 import io.dialob.integration.api.event.DistributedEvent;
 import jakarta.inject.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -28,9 +27,8 @@ import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageDeliveryException;
 
+@Slf4j
 public class DistributedEventBridge {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DistributedEventBridge.class);
 
   private final MessageChannel messageChannel;
 

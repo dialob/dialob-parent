@@ -43,6 +43,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Consumer;
@@ -98,7 +99,7 @@ public class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
     shouldFindForm(form);
 
     Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .addAnswers(ImmutableAnswer.of("g1", Arrays.asList(2,1)))
+      .addAnswers(ImmutableAnswer.of("g1", Arrays.asList(BigInteger.TWO,BigInteger.ONE)))
       .addAnswers(ImmutableAnswer.of("g1.1.q1", "Hello"))
       .addAnswers(ImmutableAnswer.of("g1.1.q2", "correct answer"))
       .addAnswers(ImmutableAnswer.of("g1.2.q2", "wrong answer"))

@@ -155,8 +155,8 @@ class QuestionnaireDialobSessionRedisSerializerTest {
 
     //     return ;
     final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
-      .setFormId("test-form")
-      .setQuestionnaire(ImmutableQuestionnaire.builder()
+      .formId("test-form")
+      .questionnaire(ImmutableQuestionnaire.builder()
         .id("questionnaire-12")
         .metadata(ImmutableQuestionnaireMetadata.builder()
           .formId("test-form")

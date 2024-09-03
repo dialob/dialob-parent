@@ -21,9 +21,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.db.spi.spring.AbstractDocumentDatabase;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -35,9 +34,8 @@ import java.io.InputStream;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+@Slf4j
 public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractS3Database.class);
 
   private final S3Client s3Client;
   private final ObjectMapper objectMapper;

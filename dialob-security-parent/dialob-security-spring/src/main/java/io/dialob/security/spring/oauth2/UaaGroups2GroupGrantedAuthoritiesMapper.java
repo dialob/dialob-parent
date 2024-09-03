@@ -17,8 +17,7 @@ package io.dialob.security.spring.oauth2;
 
 import io.dialob.security.spring.oauth2.model.Group;
 import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 
@@ -27,9 +26,8 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+@Slf4j
 public class UaaGroups2GroupGrantedAuthoritiesMapper implements UnaryOperator<Stream<? extends GrantedAuthority>> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(UaaGroups2GroupGrantedAuthoritiesMapper.class);
 
   private final UsersAndGroupsService usersAndGroupsService;
 

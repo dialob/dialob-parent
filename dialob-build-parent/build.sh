@@ -17,13 +17,12 @@
 #!/usr/bin/env bash
 set -e
 
-mvn clean install -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
 
-readonly local RELEASE_VERSION=latest
-readonly local DIALOB_BOOT_IMAGE=$DOCKER_REGISTRY/dialob/dialob-boot
-readonly local DIALOB_SESSION_IMAGE=$DOCKER_REGISTRY/dialob/dialob-session-boot
+mvn -B clean install \
+		-Pjib \
+    -Dmaven.javadoc.skip=false \
+    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+    -Djib.to.imagePath=$DOCKER_REGISTRY \
+    -DbranchName=$GITHUB_REF_NAME
 
-docker image build -t ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=999-SNAPSHOT dialob-boot/
-docker image build -t ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION} --build-arg RELEASE_VERSION=999-SNAPSHOT dialob-session-boot/
-docker push ${DIALOB_SESSION_IMAGE}:${RELEASE_VERSION}
-docker push ${DIALOB_BOOT_IMAGE}:${RELEASE_VERSION}

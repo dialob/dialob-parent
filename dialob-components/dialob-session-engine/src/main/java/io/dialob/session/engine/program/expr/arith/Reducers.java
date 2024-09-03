@@ -20,30 +20,31 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.CannotReduceTypeException;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Period;
 
 public class Reducers {
 
-  public static final OperatorTemplate<Integer> INTEGER_OPERATOR_TEMPLATE = new OperatorTemplate<Integer>() {
+  public static final OperatorTemplate<BigInteger> INTEGER_OPERATOR_TEMPLATE = new OperatorTemplate<>() {
     @Override
-    public Reducer<Integer> add() {
+    public Reducer<BigInteger> add() {
       return Int.ADD;
     }
 
     @Override
-    public Reducer<Integer> sub() {
+    public Reducer<BigInteger> sub() {
       return Int.SUB;
     }
 
     @Override
-    public Reducer<Integer> mult() {
+    public Reducer<BigInteger> mult() {
       return Int.MULT;
     }
 
     @Override
-    public Reducer<Integer> div() {
+    public Reducer<BigInteger> div() {
       return Int.DIV;
     }
   };
@@ -214,29 +215,29 @@ public class Reducers {
     }
   }
 
-  public enum Int implements Reducer<Integer> {
+  public enum Int implements Reducer<BigInteger> {
     ADD {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i + t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.add(t2);
       }
     },
     SUB {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i - t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.subtract(t2);
       }
     },
     DIV {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i / t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.divide(t2);
       }
     },
     MULT {
       @Override
-      public Integer reduce(Integer i, Integer t2) {
-        return i * t2;
+      public BigInteger reduce(BigInteger i, BigInteger t2) {
+        return i.multiply(t2);
       }
     };
 

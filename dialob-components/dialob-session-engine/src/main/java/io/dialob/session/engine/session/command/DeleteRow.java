@@ -22,6 +22,7 @@ import io.dialob.session.engine.session.model.ItemIndex;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,7 @@ public interface DeleteRow extends AbstractUpdateCommand<ItemId, ItemState>, Ite
   @Override
   @NonNull
   default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    List<Integer> rowNumbers = (List<Integer>) itemState.getValue();
+    List<BigInteger> rowNumbers = (List<BigInteger>) itemState.getValue();
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
@@ -47,9 +48,9 @@ public interface DeleteRow extends AbstractUpdateCommand<ItemId, ItemState>, Ite
       return itemState;
     }
 
-    Integer rowToRemove = null;
+    BigInteger rowToRemove = null;
     if (toBeRemoved instanceof ItemIndex) {
-      rowToRemove = ((ItemIndex) toBeRemoved).getIndex();
+      rowToRemove = BigInteger.valueOf(((ItemIndex) toBeRemoved).getIndex());
     }
     rowNumbers.remove(rowToRemove);
     return itemState.update()

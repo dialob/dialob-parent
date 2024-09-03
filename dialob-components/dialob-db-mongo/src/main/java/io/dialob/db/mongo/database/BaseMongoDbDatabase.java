@@ -18,8 +18,7 @@ package io.dialob.db.mongo.database;
 import com.mongodb.Function;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
@@ -31,9 +30,8 @@ import java.util.Optional;
  * @param <T> mongo persistent type
  * @param <R> mongo repository type
  */
+@Slf4j
 public abstract class BaseMongoDbDatabase<T, M extends T, R extends MongoRepository<M, String>> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(BaseMongoDbDatabase.class);
 
   protected final R repository;
 

@@ -22,9 +22,8 @@ import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 
 import java.util.Arrays;
@@ -32,9 +31,8 @@ import java.util.Base64;
 import java.util.Objects;
 
 
+@Slf4j
 public class RequestHeaderApiKeyExtractor implements ServletRequestApiKeyExtractor {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(RequestHeaderApiKeyExtractor.class);
 
   public static final String REQUEST_APIKEY_ATTRIBUTE = ApiKey.class.getCanonicalName();
 

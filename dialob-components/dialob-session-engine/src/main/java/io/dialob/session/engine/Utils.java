@@ -36,14 +36,12 @@ import io.dialob.session.engine.session.model.ValueSetState;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -179,7 +177,7 @@ public class Utils {
       return valueType.coerseFrom(value);
     }
     if (value instanceof Collection) {
-      return Lists.newArrayList((Collection)value);
+      return ((Collection)value).stream().map(i -> i instanceof Integer ? BigInteger.valueOf((Integer)i) : i).collect(Collectors.toList());
     }
     // TODO handle array answers
     return null;
@@ -284,7 +282,7 @@ public class Utils {
       if (value instanceof String) {
         output.write((byte) 1);
         output.writeStringNoTag((String) value);
-      } else if (value instanceof Integer) {
+      } else if (value instanceof BigInteger) {
         output.write((byte) 2);
         output.writeInt32NoTag((Integer) value);
       } else if (value instanceof Boolean) {
@@ -306,11 +304,11 @@ public class Utils {
           for (String s : (List<String>)listValue) {
             output.writeStringNoTag(s);
           }
-        } else if (listValue.get(0) instanceof Integer) {
+        } else if (listValue.get(0) instanceof BigInteger) {
           output.write((byte) 0x82);
           output.writeInt32NoTag(size);
-          for (Integer i : (List<Integer>)listValue) {
-            output.writeInt32NoTag(i);
+          for (BigInteger i : (List<BigInteger>)listValue) {
+            writeBigInteger(output, i);
           }
         }
       } else {
@@ -319,6 +317,11 @@ public class Utils {
     }
   }
 
+  public static void writeBigInteger(@NonNull CodedOutputStream output, @NonNull BigInteger value) throws IOException {
+    var bytes = value.toByteArray();
+    output.writeInt32NoTag(bytes.length);
+    output.writeRawBytes(bytes);
+  }
 
   public static Object readObjectValue(@NonNull CodedInputStream input) throws IOException {
     if (input.readBool()) {
@@ -344,14 +347,20 @@ public class Utils {
           return ImmutableList.copyOf(strings);
         case (byte) 0x82:
           count = input.readInt32();
-          Integer[] integers = new Integer[count];
+          BigInteger[] integers = new BigInteger[count];
           for (int i = 0; i < count; ++i) {
-            integers[i] = input.readInt32();
+            integers[i] = readBigInteger(input);
           }
           return ImmutableList.copyOf(integers);
       }
     }
     return null;
+  }
+
+  public static BigInteger readBigInteger(@NonNull CodedInputStream input) throws IOException {
+    var size = input.readInt32();
+    var bytes = input.readRawBytes(size);
+    return new BigInteger(bytes);
   }
 
   public static Object validateDefaultValue(String id, ValueType valueType, Object value, Consumer<FormValidationError> errorListener) {

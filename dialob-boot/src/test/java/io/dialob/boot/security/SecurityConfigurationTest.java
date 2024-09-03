@@ -86,7 +86,7 @@ class SecurityConfigurationTest {
       .run(context -> {
         assertThat(context)
           .doesNotHaveBean(SecurityConfiguration.class)
-          .doesNotHaveBean(ActuatorEndpointSecurityConfigurer.class)
+          .doesNotHaveBean(ActuatorEndpointSecurityConfiguration.class)
           .doesNotHaveBean(ReviewSecurityConfigurer.class)
           .doesNotHaveBean(QuestionnaireSecurityConfigurer.class)
           .doesNotHaveBean(ComposerSecurityConfigurer.class)
@@ -115,7 +115,7 @@ class SecurityConfigurationTest {
       .run(context -> {
         assertThat(context)
           .hasSingleBean(SecurityConfiguration.class)
-          .hasSingleBean(ActuatorEndpointSecurityConfigurer.class)
+          .hasSingleBean(ActuatorEndpointSecurityConfiguration.class)
           .hasSingleBean(ReviewSecurityConfigurer.class)
           .hasSingleBean(QuestionnaireSecurityConfigurer.class)
           .hasSingleBean(ComposerSecurityConfigurer.class)
@@ -141,7 +141,7 @@ class SecurityConfigurationTest {
       .run(context -> {
         assertThat(context)
           .hasSingleBean(SecurityConfiguration.class)
-          .hasSingleBean(ActuatorEndpointSecurityConfigurer.class)
+          .hasSingleBean(ActuatorEndpointSecurityConfiguration.class)
           .hasSingleBean(ApiServiceSecurityConfigurer.class)
           .doesNotHaveBean(ReviewSecurityConfigurer.class)
           .doesNotHaveBean(QuestionnaireSecurityConfigurer.class)
@@ -175,7 +175,7 @@ class SecurityConfigurationTest {
       .run(context -> {
         assertThat(context)
           .hasSingleBean(SecurityConfiguration.class)
-          .hasSingleBean(ActuatorEndpointSecurityConfigurer.class)
+          .hasSingleBean(ActuatorEndpointSecurityConfiguration.class)
           .hasSingleBean(ReviewSecurityConfigurer.class)
           .hasSingleBean(QuestionnaireSecurityConfigurer.class)
           .hasSingleBean(ComposerSecurityConfigurer.class)

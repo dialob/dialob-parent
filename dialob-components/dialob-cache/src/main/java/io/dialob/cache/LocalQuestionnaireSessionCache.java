@@ -20,8 +20,7 @@ import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -30,9 +29,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Slf4j
 public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(LocalQuestionnaireSessionCache.class);
 
   private final ConcurrentMap<String, QuestionnaireSession> sessionCache = new ConcurrentHashMap<>();
 

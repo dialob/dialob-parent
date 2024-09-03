@@ -9,6 +9,11 @@ server:
       include-stacktrace: always
 
 spring:
+  autoconfigure:
+    exclude:
+    - "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration"
+    - "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"
+    - "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"
   profiles:
     active:
     - jdbc
@@ -47,7 +52,6 @@ management:
   endpoints:
     enabled-by-default: true
     web:
-      base-path: /manage
       exposure:
         include: '*'
 

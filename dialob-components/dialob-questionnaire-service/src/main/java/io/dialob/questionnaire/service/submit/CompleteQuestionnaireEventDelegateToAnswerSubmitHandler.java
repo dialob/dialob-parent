@@ -76,7 +76,7 @@ public class CompleteQuestionnaireEventDelegateToAnswerSubmitHandler {
     if (questionnaireSession != null) {
       createSubmitHandler(submitHandlerSettings)
         .ifPresent(answerSubmitHandler -> {
-          LOGGER.debug("call submit handler {} for {}", submitHandlerSettings.getBeanName(), questionnaireSession.getQuestionnaire().getId());
+          LOGGER.debug("call submit handler {} for {}", submitHandlerSettings.getBeanName(), questionnaireSession.getId());
           answerSubmitHandler.submit(submitHandlerSettings, questionnaireSession.getQuestionnaire());
         });
     } else {

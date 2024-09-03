@@ -58,9 +58,7 @@ public class DatabaseExceptionMapper {
 
   @ExceptionHandler
   public ResponseEntity<Errors> invalidDefinitionException(InvalidDefinitionException exception) {
-    if (exception.getCause() instanceof ConstraintViolationException) {
-      ConstraintViolationException constraintViolationException = (ConstraintViolationException) exception.getCause();
-
+    if (exception.getCause() instanceof ConstraintViolationException constraintViolationException) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(
         ImmutableErrors.builder().error(HttpStatus.BAD_REQUEST.getReasonPhrase())
           .status(HttpStatus.BAD_REQUEST.value())
@@ -77,30 +75,29 @@ public class DatabaseExceptionMapper {
     return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
-
   @ExceptionHandler
-  public ResponseEntity handleDatabaseServiceDownException(DatabaseServiceDownException exception) {
+  public ResponseEntity<Errors> handleDatabaseServiceDownException(DatabaseServiceDownException exception) {
     return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDocumentCorruptedException(DocumentCorruptedException exception) {
+  public ResponseEntity<Errors> handleDocumentCorruptedException(DocumentCorruptedException exception) {
     LOGGER.error("Data corrupt exception: {}", exception.getMessage(), exception);
     return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleTenantContextRequiredException(TenantContextRequiredException exception) {
+  public ResponseEntity<Errors> handleTenantContextRequiredException(TenantContextRequiredException exception) {
     return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDatabaseException(DatabaseException exception) {
+  public ResponseEntity<Errors> handleDatabaseException(DatabaseException exception) {
     return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
   }
 
   protected ResponseEntity<Errors> buildResponse(HttpStatus httpStatus, String reason) {
-    LOGGER.error("Data access error ("+ httpStatus.value()+ "): " + reason);
+    LOGGER.error("Data access error ({}): {}", httpStatus.value(), reason);
     return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(
       ImmutableErrors.builder().error(httpStatus.getReasonPhrase())
         .status(httpStatus.value())

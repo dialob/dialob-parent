@@ -18,6 +18,7 @@ package io.dialob.rule.parser.function;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -45,11 +46,11 @@ public class DefaultFunctions {
     return !isIban(iban);
   }
 
-  public static Integer lengthOf(String s) {
+  public static BigInteger lengthOf(String s) {
     if (s == null) {
-      return 0;
+      return BigInteger.ZERO;
     }
-    return s.length();
+    return BigInteger.valueOf(s.length());
   }
 
   public static boolean isNotLyt(String lyt) {
@@ -134,10 +135,10 @@ public class DefaultFunctions {
       char middlechar = hetu.charAt(6);
       if (middlechar == '+') {
         year += 1800;
-      } else if (middlechar == '-') {
+      } else if (middlechar == '-' || (middlechar >= 'U' && middlechar <= 'Y')) {
         year += 1900;
-      } else if (middlechar >= 'A' && middlechar <= 'Z') {
-        year += ((middlechar - 'A') * 100 + 2000);
+      } else if (middlechar >= 'A' && middlechar <= 'F') {
+        year += 2000;
       } else {
         return null;
       }
