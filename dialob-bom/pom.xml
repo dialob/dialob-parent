@@ -17,7 +17,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -37,6 +37,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>io.dialob</groupId>
+        <artifactId>dialob-boot</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>io.dialob</groupId>
         <artifactId>dialob-common</artifactId>
@@ -246,6 +251,11 @@
       <dependency>
         <groupId>io.dialob</groupId>
         <artifactId>dialob-settings</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dialob</groupId>
+        <artifactId>dialob-session-boot</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
