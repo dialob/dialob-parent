@@ -61,7 +61,7 @@ git tag -a ${RELEASE_VERSION} -m "release ${RELEASE_VERSION}"
 # https://issues.sonatype.org/browse/NEXUS-27902
 export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
 
-./mvnw -B clean install \
+./mvnw -B clean deploy \
 		-Prelease,jib \
     -Dmaven.javadoc.skip=false \
     -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
