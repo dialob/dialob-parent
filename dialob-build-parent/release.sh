@@ -17,6 +17,8 @@
 #!/usr/bin/env bash
 set -e
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 # No changes, skip release
 readonly local last_release_commit_hash=$(git log --author="$BOT_NAME" --pretty=format:"%H" -1)
 echo "Last commit:    ${last_release_commit_hash} by $BOT_NAME"
@@ -26,16 +28,15 @@ if [[ "${last_release_commit_hash}" = "${GITHUB_SHA}" ]]; then
      #exit 0
 fi
 
-echo "JAVA_HOME=$JAVA_HOME"
-
 # Config GIT
 echo "Setup git user name to '$BOT_NAME' and email to '$BOT_EMAIL' GPG key ID $GPG_KEY_ID"
 git config --global user.name "$BOT_NAME";
 git config --global user.email "$BOT_EMAIL";
 
 echo "Git checkout refname: '${refname}' branch: '${branch}' commit: '${GITHUB_SHA}'"
+
 # Current and next version
-RELEASE_VERSION=$(cat dialob-build-parent/next-release.version)
+RELEASE_VERSION=$(cat $SCRIPT_DIR/next-release.version | xargs)
 if [[ $RELEASE_VERSION =~ ([0-9]+)$ ]]; then
   MINOR_VERSION=${BASH_REMATCH[1]}
   echo "Releasing   : '${RELEASE_VERSION}'"
@@ -48,7 +49,7 @@ else
   exit 1
 fi
 
-echo -n ${NEXT_RELEASE_VERSION} > dialob-build-parent/next-release.version
+echo -n ${NEXT_RELEASE_VERSION} > $SCRIPT_DIR/next-release.version
 
 PROJECT_VERSION=$(./mvnw -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 echo "Dev version: '${PROJECT_VERSION}' release version: '${RELEASE_VERSION}'"
