@@ -1,6 +1,9 @@
 Dialob backend services
 =======================
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.dialob/dialob-db-s3.svg?label=Maven%20Central&style=for-the-badge)](https://search.maven.org/artifact/io.dialob/dialob-bom)
+![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License&style=for-the-badge)
+
 ## Where's what
 
 * **dev-env** - Local development docker-compose configuration for front end development 
