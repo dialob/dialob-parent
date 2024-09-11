@@ -34,7 +34,6 @@ import io.dialob.session.boot.ProvideTestRedis;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -236,6 +235,6 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   protected WebSocketRequestTestTemplate.ExpectionBuilder createAndOpenSession(Form formDocument) {
-    return createAndOpenSession(formDocument.getId(), StringUtils.defaultString(formDocument.getRev(), "LATEST"));
+    return createAndOpenSession(formDocument.getId(), Objects.toString(formDocument.getRev(), "LATEST"));
   }
 }

@@ -32,6 +32,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public abstract class AbstractWebSecurityConfigurer {
@@ -49,7 +50,7 @@ public abstract class AbstractWebSecurityConfigurer {
   public AbstractWebSecurityConfigurer(String contextPath,
                                        TenantAccessEvaluator tenantPermissionEvaluator,
                                        AuthenticationStrategy authenticationStrategy) {
-    this.contextPath = StringUtils.defaultString(contextPath, "/");
+    this.contextPath = Objects.toString(contextPath, "/");
     this.tenantPermissionEvaluator = tenantPermissionEvaluator;
     this.authenticationStrategy = authenticationStrategy;
   }

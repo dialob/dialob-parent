@@ -43,7 +43,6 @@ import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.DialobSettings.DatabaseType;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -253,7 +252,7 @@ public class DialobDbSpAutoConfiguration {
     public FormDatabase formDatabase(S3Client s3Client, ObjectMapper objectMapper, DialobSettings settings) {
       return new FormS3Database(s3Client, objectMapper,
         Objects.requireNonNull(settings.getFormDatabase().getS3().getBucket(), "Define S3 bucket for forms"),
-        StringUtils.defaultString(settings.getFormDatabase().getS3().getPrefix(), "forms/")
+        Objects.toString(settings.getFormDatabase().getS3().getPrefix(), "forms/")
       );
     }
 
@@ -262,7 +261,7 @@ public class DialobDbSpAutoConfiguration {
     public QuestionnaireDatabase questionnaireDatabase(S3Client s3Client, ObjectMapper objectMapper, DialobSettings settings) {
       return new QuestionnaireS3Database(s3Client, objectMapper,
         Objects.requireNonNull(settings.getFormDatabase().getS3().getBucket(), "Define S3 bucket for questionnaires"),
-        StringUtils.defaultString(settings.getQuestionnaireDatabase().getS3().getPrefix(), "questionnaires/")
+        Objects.toString(settings.getQuestionnaireDatabase().getS3().getPrefix(), "questionnaires/")
       );
     }
   }

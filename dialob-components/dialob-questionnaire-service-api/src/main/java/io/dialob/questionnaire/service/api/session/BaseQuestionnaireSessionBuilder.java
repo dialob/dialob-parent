@@ -194,7 +194,7 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
         .formRev(useLatest ? LATEST_REV : formRev)
         .label(label)
         .creator(creator)
-        .owner(StringUtils.defaultString(owner, creator))
+        .owner(Objects.toString(owner, creator))
         .status(status != null ? status : Questionnaire.Metadata.Status.NEW)
         .created(new Date())
         .language(getLanguage())

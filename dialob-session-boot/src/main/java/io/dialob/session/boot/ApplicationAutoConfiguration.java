@@ -31,7 +31,6 @@ import io.dialob.session.rest.SessionPermissionEvaluator;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.SessionSettings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +54,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Configuration(proxyBeanMethods = false)
@@ -88,10 +88,10 @@ public class ApplicationAutoConfiguration {
       if (this.sessionSettings.getRest().isRequireAuthenticated()) {
         http = http.authorizeHttpRequests(configurer -> configurer.anyRequest().authenticated());
       }
-      http
+      return http
         .cors(configurer -> configurer.configurationSource(corsConfigurationSource()))
-        .csrf(AbstractHttpConfigurer::disable);
-      return http.build();
+        .csrf(AbstractHttpConfigurer::disable)
+        .build();
     }
 
     CorsConfigurationSource corsConfigurationSource() {
@@ -164,8 +164,8 @@ public class ApplicationAutoConfiguration {
           .setClientLibraryUrl(settings.getLibraryUrl())
           .setWebSocketEnabled(settings.isWebSocketEnabled())
           .setInterceptors(new ExtractURIParametersToAttributesInterceptor(
-            StringUtils.defaultString(settings.getUrlAttributes().getSessionId(), "sessionId"),
-            StringUtils.defaultString(settings.getUrlAttributes().getTenantId(), "tenantId")
+            Objects.toString(settings.getUrlAttributes().getSessionId(), "sessionId"),
+            Objects.toString(settings.getUrlAttributes().getTenantId(), "tenantId")
           ))
           .setTaskScheduler(taskScheduler);
         if (settings.isWebSocketEnabled()) {
