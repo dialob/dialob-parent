@@ -78,4 +78,6 @@ public interface DatabaseHelper {
   String getSchema();
 
   String jsonContains(String path);
+
+  String extractJsonArray(String columnName);
 }

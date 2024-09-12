@@ -89,6 +89,11 @@ public abstract class JdbcBackendDatabaseTest {
       public String jsonContains(String path) {
         return "data->'" + path + "' @> ?";
       }
+
+      @Override
+      public String extractJsonArray(String columnName) {
+        return String.format (" data->'metadata'->'%s'#>>'{}' ", columnName);
+      }
     };
   }
 

@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -168,16 +169,28 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
       if (StringUtils.isNotBlank(where)) {
         where = " where " + where;
       }
-      jdbcTemplate.query("select tenant_id, id, created, updated from " + tableName + where, resultSet -> {
+      jdbcTemplate.query("select tenant_id, id, created, updated, " + databaseHelper.extractJsonArray("labels") + " from " + tableName + where, resultSet -> {
         String tId = StringUtils.trim(resultSet.getString(1));
         byte[] id = getDatabaseHelper().fromJdbcId(resultSet.getBytes(2));
         Timestamp created = resultSet.getTimestamp(3);
         Timestamp updated = resultSet.getTimestamp(4);
-        consumer.accept(ImmutableFormMetadataRow.of(toId(id), ImmutableFormMetadata.builder()
+        //Array labels = resultSet.getArray(5);
+        String labels = resultSet.getString(5);
+
+        ImmutableFormMetadata.Builder metadataBuilder = ImmutableFormMetadata.builder()
           .tenantId(tId)
           .created(new Date(created.getTime()))
-          .lastSaved(new Date(updated.getTime()))
-          .build()));
+          .lastSaved(new Date(updated.getTime()));
+
+        if (labels != null) {
+          try {
+            String[] labelArray = objectMapper.readValue(labels, String[].class);
+            metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
+          } catch (Exception e) {
+            throw new RuntimeException("Unable to parse label array", e);
+          }
+        }
+        consumer.accept(ImmutableFormMetadataRow.of(toId(id), metadataBuilder.build()));
       }, params.toArray());
       return null;
     });

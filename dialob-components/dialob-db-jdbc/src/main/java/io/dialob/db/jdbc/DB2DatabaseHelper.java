@@ -69,4 +69,9 @@ public class DB2DatabaseHelper extends AbstractDatabaseHelper {
   public Reader extractStream(ResultSet rs, int i) throws SQLException {
     return rs.getClob(i).getCharacterStream();
   }
+
+  @Override
+  public String extractJsonArray(String columnName) {
+    return  String.format(" JSON_QUERY(data, '$.metadata.%s') ", columnName);
+  }
 }

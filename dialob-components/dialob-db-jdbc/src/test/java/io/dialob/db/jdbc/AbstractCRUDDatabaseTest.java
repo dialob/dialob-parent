@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +79,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   public void saveAndFetchList() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
     form2 = ImmutableForm.builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
@@ -93,6 +94,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
     assertEquals(1, list.size());
     assertEquals(32, list.get(0).getId().length());
+    assertEquals(2, list.get(0).getValue().getLabels().size());
   }
 
 
