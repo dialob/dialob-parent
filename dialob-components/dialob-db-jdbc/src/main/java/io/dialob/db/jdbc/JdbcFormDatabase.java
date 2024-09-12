@@ -174,7 +174,6 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
         byte[] id = getDatabaseHelper().fromJdbcId(resultSet.getBytes(2));
         Timestamp created = resultSet.getTimestamp(3);
         Timestamp updated = resultSet.getTimestamp(4);
-        //Array labels = resultSet.getArray(5);
         String labels = resultSet.getString(5);
 
         ImmutableFormMetadata.Builder metadataBuilder = ImmutableFormMetadata.builder()
