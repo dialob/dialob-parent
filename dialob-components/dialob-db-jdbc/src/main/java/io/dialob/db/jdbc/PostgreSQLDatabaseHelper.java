@@ -87,4 +87,9 @@ public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
   public String jsonContains(String path) {
     return "data->'" + path + "' @> ?";
   }
+
+  @Override
+  public String extractMetadataJsonArray(String columnName) {
+    return String.format (" data->'metadata'->'%s'#>>'{}' ", columnName);
+  }
 }

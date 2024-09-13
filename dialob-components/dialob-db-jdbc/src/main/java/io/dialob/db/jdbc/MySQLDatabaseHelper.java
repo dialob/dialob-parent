@@ -36,4 +36,9 @@ public class MySQLDatabaseHelper extends AbstractDatabaseHelper {
     return new InputStreamReader(rs.getBinaryStream(i), StandardCharsets.UTF_8);
   }
 
+  @Override
+  public String extractMetadataJsonArray(String columnName) {
+    return String.format(" JSON_EXTRACT(CONVERT(data using utf8),  '$.metadata.%s') ", columnName);
+  }
+
 }
