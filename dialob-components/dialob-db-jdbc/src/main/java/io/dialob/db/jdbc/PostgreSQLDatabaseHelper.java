@@ -89,7 +89,7 @@ public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
   }
 
   @Override
-  public String extractJsonArray(String columnName) {
+  public String extractMetadataJsonArray(String columnName) {
     return String.format (" data->'metadata'->'%s'#>>'{}' ", columnName);
   }
 }

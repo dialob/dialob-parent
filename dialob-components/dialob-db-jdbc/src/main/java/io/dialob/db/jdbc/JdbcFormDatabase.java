@@ -169,7 +169,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
       if (StringUtils.isNotBlank(where)) {
         where = " where " + where;
       }
-      jdbcTemplate.query("select tenant_id, id, created, updated, " + databaseHelper.extractJsonArray("labels") + " from " + tableName + where, resultSet -> {
+      jdbcTemplate.query("select tenant_id, id, created, updated, " + databaseHelper.extractMetadataJsonArray("labels") + " from " + tableName + where, resultSet -> {
         String tId = StringUtils.trim(resultSet.getString(1));
         byte[] id = getDatabaseHelper().fromJdbcId(resultSet.getBytes(2));
         Timestamp created = resultSet.getTimestamp(3);

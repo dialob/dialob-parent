@@ -79,5 +79,5 @@ public interface DatabaseHelper {
 
   String jsonContains(String path);
 
-  String extractJsonArray(String columnName);
+  String extractMetadataJsonArray(String columnName);
 }
