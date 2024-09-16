@@ -45,6 +45,16 @@
               <goal>build-info</goal>
             </goals>
           </execution>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <attach>false</attach>
+              <classifier>full</classifier>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
