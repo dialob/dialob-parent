@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -40,7 +41,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
 
     setActiveTenant("12341234-1234-1234-1234-123412341236");
 
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     form = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
     Form form2 = ImmutableForm.builder().from(form).putData("questionnaire", ImmutableFormItem.builder()
@@ -63,6 +64,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
     getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form.getId(), rows.get(0).getId());
+    assertEquals(2, rows.get(0).getValue().getLabels().size());
     rows.clear();
 
 
