@@ -494,7 +494,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
               String[] labelArray = objectMapper.readValue(labels, String[].class);
               metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
             } catch (Exception e) {
-              throw new RuntimeException("Unable to parse label array", e);
+              throw new RuntimeException(String.format("Unable to parse label array formName = %s, TenantId = %s", name, tId), e);
             }
           }
           consumer.accept(ImmutableFormMetadataRow.of(name, metadataBuilder.build()));
