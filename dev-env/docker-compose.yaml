@@ -37,7 +37,7 @@ services:
       - application
       - backend
     healthcheck:
-      test: "curl -f http://localhost:8081/dialob/manage/health || exit 1"
+      test: "curl -f http://localhost:8081/dialob/actuator/health || exit 1"
       interval: 30s
       timeout: 10s
       retries: 3
@@ -58,7 +58,7 @@ services:
     environment:
       JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5084"
     healthcheck:
-      test: "curl -f http://localhost:8080/dialob/manage/health || exit 1"
+      test: "curl -f http://localhost:8080/dialob/actuator/health || exit 1"
       interval: 30s
       timeout: 10s
       retries: 3
