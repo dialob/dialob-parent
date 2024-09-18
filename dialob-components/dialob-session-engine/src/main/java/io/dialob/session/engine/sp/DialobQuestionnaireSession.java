@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.sp;
 
+import com.google.common.collect.Streams;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -39,6 +40,7 @@ import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -188,6 +190,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
     private QuestionClientVisibility questionClientVisibility = QuestionClientVisibility.ONLY_ENABLED;
 
+    @Getter
     private Questionnaire.Metadata metadata;
 
     public Builder readFrom(@NonNull CodedInputStream input) throws IOException {
@@ -265,10 +268,6 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       return this;
     }
 
-    public Questionnaire.Metadata getMetadata() {
-      return metadata;
-    }
-
     public DialobQuestionnaireSession build() {
       return new DialobQuestionnaireSession(
         Objects.requireNonNull(eventPublisher, "eventPublisher is null"),
@@ -287,34 +286,29 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public DispatchActionsResult dispatchActions(String revision, @NonNull Collection<Action> actions) {
-    ImmutableQuestionnaireSession.DispatchActionsResult.Builder result = ImmutableQuestionnaireSession
+    var actionsResultBuilder = ImmutableQuestionnaireSession
       .DispatchActionsResult.builder()
       .isDidComplete(false);
+    var prevRevision = dialobSession.getRevision();
     if (isCompleted()) {
-      return result
+      return actionsResultBuilder
         .actions(ImmutableActions.builder()
-          .rev(dialobSession.getRevision())
+          .rev(prevRevision)
           .build())
         .build();
     }
     final FormActions formActions = new FormActions();
     try {
-      MDC.put(Constants.QUESTIONNAIRE, getSessionId().orElse("no-session-id"));
-      boolean revisionMatch = revision != null && revision.equals(dialobSession.getRevision());
-      LOGGER.debug("revision comparison: {} vs. {} == {}", revision, dialobSession.getRevision(), revisionMatch);
-      final DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession);
-      // broadcast user actions to other nodes
-      final List<Action> userActions = actions.stream()
-        .filter(action -> action.getType().isClientAction())
-        .collect(Collectors.toList());
-      final FormActionsUpdatesItemsVisitor actionsUpdatesItemsVisitor = new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this.toActionItemFunction);
-      sessionUpdater.dispatchActions(actions, state.get() == State.ACTIVATING)
-        .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(actionsUpdatesItemsVisitor) {
+      MDC.put(Constants.QUESTIONNAIRE, getSessionId().orElse("new-session"));
+      boolean revisionMatch = revision != null && revision.equals(prevRevision);
+      LOGGER.debug("revision comparison: {} vs. {} == {}", revision,prevRevision, revisionMatch);
+      sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession)
+        .dispatchActions(actions, state.get() == State.ACTIVATING)
+        .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this.toActionItemFunction)) {
           @Override
           public void visitCompleted() {
             super.visitCompleted();
-            result.isDidComplete(true);
-            getSessionId().ifPresent(sessionId -> eventPublisher.completed(getDialobSession().getTenantId(), sessionId));
+            actionsResultBuilder.isDidComplete(true);
           }
 
           @Override
@@ -322,29 +316,41 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
             return getSessionId().map(asyncFunctionInvoker::createVisitor);
           }
         });
-      List<Action> updateActions = new ArrayList<>(userActions);
-      List<Action> broadcastActions = updateActions;
-      updateActions.addAll(formActions.getActions());
-
+      // broadcast user actions to other nodes, but do not return user actions back to original client
+      List<Action> broadcastActions;
       if (!revisionMatch) {
         // reset updates and build form from ground up
         formActions.clear();
         buildFullForm(new FormActionsUpdatesCallback(formActions));
         broadcastActions = formActions.getActions();
+      } else {
+        // Merge user actions with updates for a broadcast
+        broadcastActions = Streams.concat(
+          actions
+            .stream()
+            .filter(action -> action.getType().isClientAction()),
+          formActions
+            .getActions()
+            .stream()
+        ).toList();
       }
-      if (!updateActions.isEmpty() && isActive()) {
-        publishQuestionnaireActions(dialobSession.getRevision(), broadcastActions);
+      String newRevision = dialobSession.getRevision();
+      if (!broadcastActions.isEmpty() && isActive()) {
+        publishQuestionnaireActions(newRevision, broadcastActions);
       }
+      var actionsResult = actionsResultBuilder
+        .actions(ImmutableActions.builder()
+          .actions(formActions.getActions())
+          .rev(newRevision)
+          .build())
+        .build();
+      if (actionsResult.isDidComplete()) {
+        getSessionId().ifPresent(sessionId -> eventPublisher.completed(getDialobSession().getTenantId(), sessionId));
+      }
+      return actionsResult;
     } finally {
       MDC.remove(Constants.QUESTIONNAIRE);
     }
-    // But we wont return user actions back to original client
-    return result
-      .actions(ImmutableActions.builder()
-        .actions(formActions.getActions())
-        .rev(dialobSession.getRevision())
-        .build())
-      .build();
   }
 
   @NonNull
@@ -467,7 +473,6 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         ).build()));
       }
     });
-
     return valueSets;
   }
 
@@ -679,15 +684,12 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   }
 
   Predicate<SessionObject> getIsVisiblePredicate() {
-    switch (questionClientVisibility) {
-      case ALL:
-        return itemState -> itemState != null && itemState.isDisplayItem();
-      case SHOW_DISABLED:
-        return itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive();
-      case ONLY_ENABLED:
-      default:
-        return itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive() && !itemState.isDisabled();
-    }
+    return switch (questionClientVisibility) {
+      case ALL -> itemState -> itemState != null && itemState.isDisplayItem();
+      case SHOW_DISABLED -> itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive();
+      default ->
+        itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive() && !itemState.isDisabled();
+    };
   }
 
   private void publishQuestionnaireActions(String nextRevision, List<Action> actionQueue) {
