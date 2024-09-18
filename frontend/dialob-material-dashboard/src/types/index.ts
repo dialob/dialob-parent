@@ -22,7 +22,8 @@ export interface Metadata {
 	lastSaved: Date,
 	tenantId: string,
 	modified: string,
-	modifiedBy: string
+	modifiedBy: string,
+	labels: string[]
 }
 
 export interface DefaultForm {
