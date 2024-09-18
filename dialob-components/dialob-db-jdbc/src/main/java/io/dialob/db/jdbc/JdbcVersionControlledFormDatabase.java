@@ -32,10 +32,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,6 +53,8 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
   protected final FormDatabase formDatabase;
 
   protected String formTableName;
+
+  protected String formDocumentTableName;
 
   protected String formRevTableName;
 
@@ -88,6 +87,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     this.formDatabase = requireNonNull(formDatabase);
     this.formTableName = this.databaseHelper.tableName(schema, "form");
     this.formRevTableName = this.databaseHelper.tableName(schema, "form_rev");
+    this.formDocumentTableName = this.databaseHelper.tableName(schema, "form_document");
     this.isAnyTenantPredicate = requireNonNull(isAnyTenantPredicate);
     this.objectMapper = objectMapper;
   }
@@ -474,19 +474,30 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       if (StringUtils.isNotBlank(where)) {
         where = " where " + where;
       }
-      template.query("select tenant_id, name, created, updated, label from " + formTableName + where, rs -> {
+      template.query("select f.tenant_id, f.name, f.created, f.updated, f.label, " +  getDatabaseHelper().extractMetadataJsonArray("labels") + " from " + formTableName + " f left join " + formDocumentTableName + " fd on f.latest_form_id = fd.id " + where, rs -> {
         while(rs.next()) {
           String tId = rs.getString(1);
           String name = rs.getString(2);
           Timestamp created = rs.getTimestamp(3);
           Timestamp updated = rs.getTimestamp(4);
           String label = rs.getString(5);
-          consumer.accept(ImmutableFormMetadataRow.of(name, ImmutableFormMetadata.builder()
+          String labels = rs.getString(6);
+
+          ImmutableFormMetadata.Builder metadataBuilder = ImmutableFormMetadata.builder()
+            .tenantId(tId)
             .created(new Date(created.getTime()))
             .lastSaved(new Date(updated.getTime()))
-            .label(label)
-            .tenantId(tId)
-            .build()));
+            .label(label);
+
+          if (labels != null) {
+            try {
+              String[] labelArray = objectMapper.readValue(labels, String[].class);
+              metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
+            } catch (Exception e) {
+              throw new RuntimeException(String.format("Unable to parse label array formName = %s, TenantId = %s", name, tId), e);
+            }
+          }
+          consumer.accept(ImmutableFormMetadataRow.of(name, metadataBuilder.build()));
         }
         return null;
       }, params.toArray());
