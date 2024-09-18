@@ -604,9 +604,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     getSessionId().ifPresent(eventPublisher::created);
   }
 
-  public void activate() {
+  public boolean activate() {
     if (!state.compareAndSet(State.PASSIVE, State.ACTIVATING) && !state.compareAndSet(State.NEW, State.ACTIVATING)) {
-      return;
+      return false;
     }
 
     List<Action> restoreActions = new ArrayList<>();
@@ -618,6 +618,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     dispatchActions(restoreActions);
     state.set(State.ACTIVE);
     getSessionId().ifPresent(eventPublisher::opened);
+    return true;
   }
 
   @NonNull
@@ -629,13 +630,12 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       .map(matcher -> matcher.group(1) + "." + matcher.group(2)).toArray(String[]::new);
   }
 
-
   @Override
-  public void passivate() {
+  public boolean passivate() {
     if (!state.compareAndSet(State.ACTIVE, State.PASSIVATING)) {
-      return;
+      return false;
     }
-    state.compareAndSet(State.PASSIVATING, State.PASSIVE);
+    return state.compareAndSet(State.PASSIVATING, State.PASSIVE);
   }
 
   @Override

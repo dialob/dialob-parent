@@ -108,9 +108,15 @@ public interface QuestionnaireSession {
 
   String getTenantId();
 
-  void activate();
+  /**
+   * @return true when session activation succeeded.
+   */
+  boolean activate();
 
-  void passivate();
+  /**
+   * @return true when session passivation succeeded.
+   */
+  boolean passivate();
 
   boolean isActive();
 
