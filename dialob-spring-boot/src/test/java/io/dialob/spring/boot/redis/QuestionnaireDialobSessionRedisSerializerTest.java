@@ -150,8 +150,8 @@ class QuestionnaireDialobSessionRedisSerializerTest {
     when(formDatabase.findOne(eq(tenantId), eq("test-form"), isNull())).thenReturn(form);
     when(dialobProgramService.findByFormIdAndRev(eq("test-form"), isNull())).thenReturn(dialobProgram);
 
-    when(sessionContextFactory.createSessionUpdater(same(dialobProgram), any()))
-      .thenAnswer(invocation -> new ActiveDialobSessionUpdater((DialobSessionEvalContextFactory) invocation.getMock(), dialobProgram, invocation.getArgument(1)));
+    when(sessionContextFactory.createSessionUpdater(same(dialobProgram), any(), any()))
+      .thenAnswer(invocation -> new ActiveDialobSessionUpdater((DialobSessionEvalContextFactory) invocation.getMock(), dialobProgram, invocation.getArgument(1), false));
 
     //     return ;
     final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
@@ -180,7 +180,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
     verify(dialobProgramService, times(2)).findByFormIdAndRev("test-form", null);
     verify(eventPublisher).opened(any());
     verify(formDatabase).findOne(tenantId, "test-form", null);
-    verify(sessionContextFactory).createSessionUpdater(same(dialobProgram), any());
+    verify(sessionContextFactory).createSessionUpdater(same(dialobProgram), any(), any());
     verify(sessionContextFactory, times(2)).createDialobSessionEvalContext(any(), any(), anyBoolean());
 
     Mockito.verifyNoMoreInteractions(dialobProgramService,

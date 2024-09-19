@@ -146,7 +146,7 @@ public class DialobProgram implements Serializable {
     final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, null, null, null);
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
-    new ActiveDialobSessionUpdater(sessionContextFactory, this, dialobSession) {
+    new ActiveDialobSessionUpdater(sessionContextFactory, this, dialobSession, true) {
       @Override
       protected void applyUpdates(@NonNull Iterable<Action> actions) {
         createDialobSessionProgramVisitor.getUpdates().forEach(this::queueCommand);

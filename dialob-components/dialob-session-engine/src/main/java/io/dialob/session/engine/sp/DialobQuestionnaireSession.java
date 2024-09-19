@@ -63,7 +63,7 @@ import static io.dialob.session.engine.Utils.*;
 @ToString
 public class DialobQuestionnaireSession implements QuestionnaireSession {
 
-  enum State {
+  public enum State {
     NEW,
     ACTIVATING,
     ACTIVE,
@@ -297,13 +297,14 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
           .build())
         .build();
     }
-    final FormActions formActions = new FormActions();
     try {
       MDC.put(Constants.QUESTIONNAIRE, getSessionId().orElse("new-session"));
       boolean revisionMatch = revision != null && revision.equals(prevRevision);
       LOGGER.debug("revision comparison: {} vs. {} == {}", revision,prevRevision, revisionMatch);
-      sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession)
-        .dispatchActions(actions, state.get() == State.ACTIVATING)
+      DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, state.get());
+      final FormActions formActions = new FormActions();
+      sessionUpdater
+        .dispatchActions(actions)
         .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this.toActionItemFunction)) {
           @Override
           public void visitCompleted() {
