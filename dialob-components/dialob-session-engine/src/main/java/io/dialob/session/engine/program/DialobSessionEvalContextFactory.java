@@ -22,6 +22,7 @@ import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.DialobSession;
+import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 
 import java.util.function.Consumer;
 
@@ -45,11 +46,11 @@ public class DialobSessionEvalContextFactory {
   }
 
 
-  public DialobSessionUpdater createSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession) {
+  public DialobSessionUpdater createSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession, DialobQuestionnaireSession.State state) {
     if (dialobSession.isCompleted()) {
       return DialobSessionUpdater.NOOP_UPDATER;
     }
-    return new ActiveDialobSessionUpdater(this, dialobProgram, dialobSession);
+    return new ActiveDialobSessionUpdater(this, dialobProgram, dialobSession, state == DialobQuestionnaireSession.State.ACTIVATING);
   }
 
 }
