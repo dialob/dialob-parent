@@ -67,7 +67,7 @@
 
     <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     <mockito.version>5.12.0</mockito.version>
-    <spring-boot.version>3.3.3</spring-boot.version>
+    <spring-boot.version>3.3.4</spring-boot.version>
     <spring-integration.version>6.3.3</spring-integration.version>
     <spring-security.version>6.3.3</spring-security.version>
     <spring-session.version>3.3.2</spring-session.version>
