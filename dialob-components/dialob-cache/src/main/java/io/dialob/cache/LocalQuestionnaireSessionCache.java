@@ -77,10 +77,9 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
           try {
             questionnaireSessionToEvict = beforeCloseCallback.apply(questionnaireSessionToEvict);
           } catch (DocumentConflictException dc) {
-            LOGGER.warn("Conflict on session {} persist. Data may have been lost! Evicting session anyway.", sessionId);
+            LOGGER.warn("Conflict on session {} persist. Evicting session anyway.", sessionId);
           } catch (Exception e) {
             LOGGER.error("Eviction callback failed: {}", e.getMessage());
-            throw e;
           }
           revAfterCallback = questionnaireSessionToEvict.getRev();
         }
