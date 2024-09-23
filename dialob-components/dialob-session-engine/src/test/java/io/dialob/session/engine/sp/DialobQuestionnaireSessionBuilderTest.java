@@ -29,10 +29,8 @@ import io.dialob.session.engine.DialobProgramFromFormCompiler;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
 import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.DialobSessionEvalContext;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import org.junit.jupiter.api.Test;
@@ -51,17 +49,16 @@ public class DialobQuestionnaireSessionBuilderTest {
 
   @Test
   public void shouldInitializeSessionWithCorrectActiveItem() {
-    final QuestionnaireEventPublisher questionnaireEventPublisher = mock(QuestionnaireEventPublisher.class);
-    final FormFinder formFinder = mock(FormFinder.class);
-    final FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    final QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
-    final QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    final DialobProgram dialobProgram = mock(DialobProgram.class);
-    final DialobSession dialobSession = mock(DialobSession.class);
-    final DialobSessionUpdater dialobSessionUpdater = mock(ActiveDialobSessionUpdater.class);
-    final DialobSessionEvalContext sessionEvalContext = mock(DialobSessionEvalContext.class);
-    final Consumer<EvalContext.UpdatedItemsVisitor> consumer = mock(Consumer.class);
-    final AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
+    final QuestionnaireEventPublisher questionnaireEventPublisher = mock();
+    final FormFinder formFinder = mock();
+    final FunctionRegistry functionRegistry = mock();
+    final QuestionnaireSessionService questionnaireSessionService = mock();
+    final QuestionnaireSessionSaveService questionnaireSessionSaveService = mock();
+    final DialobProgram dialobProgram = mock();
+    final DialobSession dialobSession = mock();
+    final DialobSessionUpdater dialobSessionUpdater = mock();
+    final Consumer<EvalContext.UpdatedItemsVisitor> consumer = mock();
+    final AsyncFunctionInvoker asyncFunctionInvoker = mock();
 
     final DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
     final DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
@@ -78,7 +75,6 @@ public class DialobQuestionnaireSessionBuilderTest {
     when(formFinder.findForm("123", null)).thenReturn(form);
     when(dialobProgram.createSession(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(dialobSession);
     when(questionnaireSessionSaveService.save(any())).then(AdditionalAnswers.returnsFirstArg());
-//    when(sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession)).thenReturn(dialobSessionUpdater);
     when(dialobSessionUpdater.dispatchActions(any())).thenReturn(consumer);
     when(dialobSession.getLastUpdate()).thenReturn(Instant.now());
 
@@ -86,7 +82,7 @@ public class DialobQuestionnaireSessionBuilderTest {
       dialobProgramService,
       formFinder,
       questionnaireSessionSaveService,
-            sessionContextFactory,
+      sessionContextFactory,
       asyncFunctionInvoker);
 
     QuestionnaireSession session = builder.formId("123").activeItem("page3").createOnly(true).build();
@@ -94,15 +90,8 @@ public class DialobQuestionnaireSessionBuilderTest {
     assertNotNull(session);
     assertEquals("page3", session.getQuestionnaire().getActiveItem());
 
-//    verify(questionnaireEventPublisher).activated("123");
     verify(formFinder, times(2)).findForm("123", null); // TODO twice??
     verify(questionnaireSessionSaveService).save(any(QuestionnaireSession.class));
-//    verify(dialobProgram).createSession(eq(sessionContextFactory),isNull(),eq("en"), eq("page3"), any());
-//    verify(dialobProgram).createSessionUpdater(sessionContextFactory, dialobSession);
-//    verify(dialobSession).getRevision();
-//    verify(dialobSession, times(6)).accept(any());
-//    verify(dialobSession).isCompleted();
-//    verify(dialobSession).getLastUpdate();
 
     Mockito.verifyNoMoreInteractions(
       questionnaireEventPublisher,

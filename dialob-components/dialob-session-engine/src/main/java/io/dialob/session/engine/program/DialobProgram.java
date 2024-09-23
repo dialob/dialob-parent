@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.model.Item;
@@ -28,8 +27,10 @@ import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ItemId;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
@@ -40,8 +41,10 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 public class DialobProgram implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 2922819825920407874L;
 
+  @Getter
   private final Program program;
 
   private final Map<EventMatcher,List<Command<?>>> inputUpdates;
@@ -81,32 +84,30 @@ public class DialobProgram implements Serializable {
   }
 
   private <T, C extends Command<T>> Stream<C> mapTo(Event event, C command) {
-    if (command instanceof ErrorUpdateCommand) {
-      final ErrorUpdateCommand updateCommand = (ErrorUpdateCommand) command;
+    if (command instanceof ErrorUpdateCommand updateCommand) {
       // TODO remove instanceof checks
       final ErrorId errorId = updateCommand.getTargetId();
-      if (event instanceof ItemAddedEvent) {
-        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(((ItemAddedEvent)event).getAddItemId())));
+      if (event instanceof ItemAddedEvent itemAddedEvent) {
+        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(itemAddedEvent.getAddItemId())));
       }
-      if (event instanceof ItemRemovedEvent) {
-        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(((ItemRemovedEvent)event).getRemoveItemId())));
+      if (event instanceof ItemRemovedEvent itemRemovedEvent) {
+        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(itemRemovedEvent.getRemoveItemId())));
       }
-      if (event instanceof RowGroupItemsInitEvent) {
-        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(((RowGroupItemsInitEvent)event).getGroupId())));
+      if (event instanceof RowGroupItemsInitEvent rowGroupItemsInitEvent) {
+        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(rowGroupItemsInitEvent.getGroupId())));
       }
-      if (errorId.isPartial() && event instanceof TargetEvent) {
-        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(errorId.getItemId().withParent(((TargetEvent)event).getTargetId().getParent()))));
+      if (errorId.isPartial() && event instanceof TargetEvent targetEvent) {
+        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(errorId.getItemId().withParent(targetEvent.getTargetId().getParent()))));
       }
-    } else if (command instanceof UpdateCommand) {
-      final UpdateCommand updateCommand = (UpdateCommand) command;
-      if (event instanceof ItemAddedEvent) {
-        return Stream.of((C) updateCommand.withTargetId(((ItemAddedEvent)event).getAddItemId()));
+    } else if (command instanceof UpdateCommand updateCommand) {
+      if (event instanceof ItemAddedEvent itemAddedEvent) {
+        return Stream.of((C) updateCommand.withTargetId(itemAddedEvent.getAddItemId()));
       }
-      if (event instanceof ItemRemovedEvent) {
-        return Stream.of((C) updateCommand.withTargetId(((ItemRemovedEvent)event).getRemoveItemId()));
+      if (event instanceof ItemRemovedEvent itemRemovedEvent) {
+        return Stream.of((C) updateCommand.withTargetId(itemRemovedEvent.getRemoveItemId()));
       }
-      if (event instanceof RowGroupItemsInitEvent) {
-        return Stream.of((C) updateCommand.withTargetId(((RowGroupItemsInitEvent)event).getGroupId()));
+      if (event instanceof RowGroupItemsInitEvent rowGroupItemsInitEvent) {
+        return Stream.of((C) updateCommand.withTargetId(rowGroupItemsInitEvent.getGroupId()));
       }
     }
     return Stream.of(command);
@@ -143,7 +144,7 @@ public class DialobProgram implements Serializable {
                                      Date opened,
                                      Date lastAnswer)
   {
-    final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, null, null, null);
+    final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, completed, opened, lastAnswer);
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     new ActiveDialobSessionUpdater(sessionContextFactory, this, dialobSession, true) {
@@ -160,10 +161,6 @@ public class DialobProgram implements Serializable {
     return dialobSession;
   }
 
-  public Program getProgram() {
-    return program;
-  }
-
   @Override
   public String toString() {
     return program.toString();
@@ -175,12 +172,6 @@ public class DialobProgram implements Serializable {
 
   public Set<Command<?>> getCommandsToCommands(Command<?> updateCommand) {
     return commandsToCommands.getOrDefault(updateCommand, Collections.emptySet());
-  }
-
-  private <T> List<T> merge(List<T> o, List<T> o1) {
-    final ArrayList<T> list = Lists.newArrayList(o);
-    list.addAll(o1);
-    return list;
   }
 
 }

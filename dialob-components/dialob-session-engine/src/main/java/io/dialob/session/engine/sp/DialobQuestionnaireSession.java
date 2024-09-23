@@ -64,11 +64,17 @@ import static io.dialob.session.engine.Utils.*;
 public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   public enum State {
-    NEW,
-    ACTIVATING,
-    ACTIVE,
-    PASSIVATING,
-    PASSIVE
+    NEW(false),
+    ACTIVATING(true),
+    ACTIVE(true),
+    PASSIVATING(false),
+    PASSIVE(false);
+
+    final boolean updatable;
+
+    State(boolean updatable) {
+      this.updatable = updatable;
+    }
   }
 
 
