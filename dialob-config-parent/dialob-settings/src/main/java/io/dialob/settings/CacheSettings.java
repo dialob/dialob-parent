@@ -34,4 +34,7 @@ public class CacheSettings {
 
   private int evictRate;
 
+  private boolean persistOnEviction = true;
+
+
 }

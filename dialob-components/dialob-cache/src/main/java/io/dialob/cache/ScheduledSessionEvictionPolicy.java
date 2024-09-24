@@ -19,7 +19,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.common.Constants;
 import io.dialob.integration.api.event.FormUpdatedEvent;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
@@ -28,8 +27,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -37,24 +38,23 @@ public class ScheduledSessionEvictionPolicy {
 
   private final QuestionnaireSessionCache cache;
 
-  private final Optional<QuestionnaireSessionSaveService> sessionService;
+  private final Function<QuestionnaireSession,QuestionnaireSession> sessionEvictionCallback;
 
   private final Optional<CacheManager> cacheManager;
 
   private final Integer ttl;
 
   public ScheduledSessionEvictionPolicy(QuestionnaireSessionCache cache,
-                                        Optional<QuestionnaireSessionSaveService> sessionService,
+                                        Function<QuestionnaireSession,QuestionnaireSession> sessionEvictionCallback,
                                         Optional<CacheManager> cacheManager,
                                         Integer ttl) {
     this.cache = cache;
-    this.sessionService = sessionService;
+    this.sessionEvictionCallback = Objects.requireNonNullElseGet(sessionEvictionCallback, Function::identity);
     this.cacheManager = cacheManager;
     this.ttl = ttl != null ? ttl: 60000;
   }
 
-  // TODO evictWhen sessions here. Currently schedule once per minute.
-  @Scheduled(fixedRate = 2000)
+  @Scheduled(fixedRateString = "${dialob.session.cache.evict-rate:2000}")
   public void evictQuietSessions() {
     LOGGER.debug("evictQuietSessions");
     final Instant now = Instant.now();
@@ -68,12 +68,12 @@ public class ScheduledSessionEvictionPolicy {
         session.getSessionId().ifPresent(sessionsToEvict::add);
       }
     });
-    sessionsToEvict.stream().forEach(this::evict);
+    sessionsToEvict.forEach(this::evict);
   }
 
 
   protected void evict(String sessionId) {
-    sessionService.ifPresent(questionnaireSessionService -> cache.evict(sessionId, questionnaireSessionService::save));
+    cache.evict(sessionId, sessionEvictionCallback);
   }
 
   @EventListener
