@@ -135,10 +135,10 @@ public class DefaultFunctions {
       char middlechar = hetu.charAt(6);
       if (middlechar == '+') {
         year += 1800;
-      } else if (middlechar == '-') {
+      } else if (middlechar == '-' || (middlechar >= 'U' && middlechar <= 'Y')) {
         year += 1900;
-      } else if (middlechar >= 'A' && middlechar <= 'Z') {
-        year += ((middlechar - 'A') * 100 + 2000);
+      } else if (middlechar >= 'A' && middlechar <= 'F') {
+        year += 2000;
       } else {
         return null;
       }

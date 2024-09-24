@@ -18,6 +18,7 @@ package io.dialob.cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableSet;
 import io.dialob.common.Constants;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.settings.DialobSettings;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static io.dialob.common.Constants.QUESTIONNAIRE_CACHE_NAME;
 
@@ -67,8 +69,16 @@ public class DialobCacheAutoConfiguration {
       return new ScheduledSessionEvictionPolicy(
         clock,
         questionnaireSessionCache,
-        sessionService,
+        sessionEvictionCallback(sessionService, dialobSettings),
         cacheManager, dialobSettings.getSession().getCache().getTimeToLive());
+    }
+
+    Function<QuestionnaireSession, QuestionnaireSession> sessionEvictionCallback(Optional<QuestionnaireSessionSaveService> sessionService, DialobSettings dialobSettings) {
+      if (dialobSettings.getSession().getCache().isPersistOnEviction()) {
+        return sessionService.map(ss -> (Function<QuestionnaireSession, QuestionnaireSession>) ss::save).orElseGet(Function::identity);
+      }
+      // Do nothing
+      return Function.identity();
     }
   }
 
