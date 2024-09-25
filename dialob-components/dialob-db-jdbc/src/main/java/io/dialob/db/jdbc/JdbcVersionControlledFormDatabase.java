@@ -463,7 +463,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       List<Object> params = new ArrayList<>();
       List<String> conditions = new ArrayList<>();
       if (notAnyTenant(tenantId)) {
-        conditions.add("tenant_id = ?");
+        conditions.add("f.tenant_id = ?");
         params.add(tenantId);
       }
       if (metadata != null) {
