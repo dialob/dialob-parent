@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "jest && tsc && vite build",
+    "build:items": "tsc && vite build --config vite.config.items.ts",
     "build-aws": "vite build --base=https://cdn.resys.io/dialob-composer-material/dev/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -37,7 +38,8 @@
     "react-markdown": "^9.0.1",
     "react-scroll": "^1.9.0",
     "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "vite-plugin-dts": "^4.2.2"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.7",
