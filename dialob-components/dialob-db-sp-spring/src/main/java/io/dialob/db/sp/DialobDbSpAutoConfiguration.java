@@ -15,6 +15,7 @@
  */
 package io.dialob.db.sp;
 
+import com.azure.storage.blob.BlobServiceClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.assets.AssetFormDatabase;
@@ -23,6 +24,8 @@ import io.dialob.db.assets.repository.GenericAssetRepository;
 import io.dialob.db.assets.serialization.AssetFormDeserializer;
 import io.dialob.db.assets.serialization.AssetFormMetadataRowDeserializer;
 import io.dialob.db.assets.serialization.AssetFormSerializer;
+import io.dialob.db.azure.blob.storage.FormBlobStorageDatabase;
+import io.dialob.db.azure.blob.storage.QuestionnaireBlobStorageDatabase;
 import io.dialob.db.dialob.api.DialobApiDbSettings;
 import io.dialob.db.dialob.api.DialobApiFormDatabase;
 import io.dialob.db.dialob.api.DialobApiQuestionnaireDatabase;
@@ -265,6 +268,33 @@ public class DialobDbSpAutoConfiguration {
       );
     }
   }
+
+  @Configuration(proxyBeanMethods = false)
+  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.AZURE_BLOB_STORAGE)
+  public static class DialobDbAzureBlobStorageAutoConfiguration {
+
+    @Bean
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "AZURE_BLOB_STORAGE", matchIfMissing = true)
+    public FormDatabase formDatabase(BlobServiceClient blobServiceClient, ObjectMapper objectMapper, DialobSettings settings) {
+      var containerName = Objects.requireNonNull(settings.getFormDatabase().getAzureBlobStorage().getContainerName(), "Define Blob Storage container name for forms");
+      return new FormBlobStorageDatabase(blobServiceClient.getBlobContainerClient(containerName), objectMapper,
+        Objects.toString(settings.getQuestionnaireDatabase().getAzureBlobStorage().getPrefix(), "forms/")
+      );
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "AZURE_BLOB_STORAGE", matchIfMissing = true)
+    public QuestionnaireDatabase questionnaireDatabase(BlobServiceClient blobServiceClient, ObjectMapper objectMapper, DialobSettings settings) {
+      var containerName = Objects.requireNonNull(settings.getQuestionnaireDatabase().getAzureBlobStorage().getContainerName(), "Define Blob Storage container name for questionnaires");
+      return new QuestionnaireBlobStorageDatabase(blobServiceClient.getBlobContainerClient(containerName), objectMapper,
+        Objects.toString(settings.getQuestionnaireDatabase().getAzureBlobStorage().getPrefix(), "questionnaires/")
+      );
+    }
+  }
+
+
+
+
 
   @Configuration(proxyBeanMethods = false)
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.DIALOBAPIDB)

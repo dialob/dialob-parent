@@ -23,36 +23,19 @@
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>dialob-db-sp-spring</artifactId>
+  <artifactId>dialob-cloud-azure</artifactId>
   <dependencies>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-mongo</artifactId>
+      <groupId>com.azure</groupId>
+      <artifactId>azure-identity</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.azure</groupId>
+      <artifactId>azure-storage-blob</artifactId>
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-file</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-jdbc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-assets</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-s3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-azure-blob-storage</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-dialob-api</artifactId>
+      <artifactId>dialob-questionnaire-service</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -65,14 +48,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
 </project>
