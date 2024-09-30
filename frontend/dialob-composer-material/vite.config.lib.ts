@@ -4,13 +4,19 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [dts({
-    include: 'src/items/**',  // Only include the folder being built
+    include: [
+      'src/components/**/*',
+      'src/defaults/**/*', 
+      'src/dialogs/**/*', 
+      'src/items/**/*',
+      'src/App.tsx',
+      'src/main.tsx',
+    ],
   })],
   build: {
-    outDir: 'src/items/dist', // Output to a dist folder within the folder being built
+    outDir: 'src/dist-lib',
     lib: {
-      entry: path.resolve(__dirname, 'src/items/index.ts'), // Set entry point to the index file
-      fileName: (format) => `items.${format}.js`,
+      entry: path.resolve(__dirname, 'src/lib/index.ts'), // Set entry point to the index file
       formats: ['es'], // Format as ES module
     },
     rollupOptions: {

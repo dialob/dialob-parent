@@ -1,12 +1,12 @@
 {
-  "name": "dialob-composer-material",
+  "name": "@dialob/dialob-composer-material",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "jest && tsc && vite build",
-    "build:items": "tsc && vite build --config vite.config.items.ts",
+    "build:lib": "tsc && vite build --config vite.config.lib.ts",
     "build-aws": "vite build --base=https://cdn.resys.io/dialob-composer-material/dev/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",

@@ -1,11 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { siteTheme } from './theme/siteTheme'
-import { BackendProvider } from './backend/BackendContext'
-import { EditorProvider } from './editor'
 import { AppConfig, DialobComposerConfig } from './backend/types'
+import DialobComposer from './dialob/DialobComposer'
 
 
 const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) => {
@@ -33,11 +31,7 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) 
     <React.StrictMode>
       <ThemeProvider theme={siteTheme}>
         <CssBaseline />
-        <BackendProvider config={DIALOB_COMPOSER_CONFIG} formId={FORM_ID}>
-          <EditorProvider>
-            <App />
-          </EditorProvider>
-        </BackendProvider>
+        <DialobComposer config={DIALOB_COMPOSER_CONFIG} formId={FORM_ID} />
       </ThemeProvider>
     </React.StrictMode>,
   )
