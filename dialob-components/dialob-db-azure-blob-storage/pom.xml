@@ -16,7 +16,8 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>dialob-components</artifactId>
     <groupId>io.dialob</groupId>
@@ -24,55 +25,57 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>dialob-db-sp-spring</artifactId>
+  <artifactId>dialob-db-azure-blob-storage</artifactId>
   <dependencies>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-mongo</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-file</artifactId>
+      <artifactId>dialob-form-service-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-jdbc</artifactId>
+      <artifactId>dialob-questionnaire-service-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-assets</artifactId>
+      <artifactId>dialob-db-spi-spring</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-s3</artifactId>
+      <groupId>com.azure</groupId>
+      <artifactId>azure-storage-blob</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-azure-blob-storage</artifactId>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-dialob-api</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-test</artifactId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
 </project>
