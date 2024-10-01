@@ -3,21 +3,13 @@ import path from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [dts({
-    include: [
-      'src/components/**/*',
-      'src/defaults/**/*', 
-      'src/dialogs/**/*', 
-      'src/items/**/*',
-      'src/App.tsx',
-      'src/main.tsx',
-    ],
-  })],
+  plugins: [dts({ rollupTypes: true })], // Use dts plugin to generate type definitions
   build: {
     outDir: 'src/dist-lib',
     lib: {
-      entry: path.resolve(__dirname, 'src/lib/index.ts'), // Set entry point to the index file
-      formats: ['es'], // Format as ES module
+      entry: path.resolve(__dirname, 'src/lib/index.ts'), // Set entry point to the lib index file
+      name: '@dialob/dialob-composer-material',
+      fileName: 'dialob-composer-material',
     },
     rollupOptions: {
       // Exclude dependencies that shouldn't be bundled (since they will be used from the parent app)

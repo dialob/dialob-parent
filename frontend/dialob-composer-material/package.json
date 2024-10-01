@@ -3,6 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "src/dist-lib/dialob-composer-material.cjs",
+  "module": "src/dist-lib/dialob-composer-material.js",
+  "types": "src/dist-lib/dialob-composer-material.d.ts",
+  "files": ["src/dist-lib"],
+  "exports": {
+    ".": {
+      "import": "./src/dist-lib/dialob-composer-material.js",
+      "require": "./src/dist-lib/dialob-composer-material.cjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "jest && tsc && vite build",
@@ -56,5 +66,13 @@
     "eslint-plugin-react-refresh": "^0.4.4",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^6.6.2",
+    "react-scroll": "^1.9.0",
+    "@mui/material": "^5.14.20",
+    "@mui/icons-material": "^5.14.19"
   }
 }
