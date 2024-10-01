@@ -3,14 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "src/dist-lib/dialob-composer-material.cjs",
-  "module": "src/dist-lib/dialob-composer-material.js",
-  "types": "src/dist-lib/dialob-composer-material.d.ts",
-  "files": ["src/dist-lib"],
+  "main": "dist-lib/index.cjs",
+  "module": "dist-lib/index.js",
+  "types": "dist-lib/index.d.ts",
+  "files": ["dist-lib"],
   "exports": {
     ".": {
-      "import": "./src/dist-lib/dialob-composer-material.js",
-      "require": "./src/dist-lib/dialob-composer-material.cjs"
+      "import": "./dist-lib/index.js",
+      "require": "./dist-lib/index.cjs"
     }
   },
   "scripts": {
