@@ -3,16 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist-lib/index.cjs",
-  "module": "dist-lib/index.js",
+  "main": "dist-lib/index.js",
   "types": "dist-lib/index.d.ts",
   "files": ["dist-lib"],
-  "exports": {
-    ".": {
-      "import": "./dist-lib/index.js",
-      "require": "./dist-lib/index.cjs"
-    }
-  },
   "scripts": {
     "dev": "vite",
     "build": "jest && tsc && vite build",
