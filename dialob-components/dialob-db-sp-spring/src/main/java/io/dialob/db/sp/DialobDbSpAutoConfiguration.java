@@ -46,6 +46,7 @@ import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.DialobSettings.DatabaseType;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -80,6 +81,17 @@ import java.util.function.Predicate;
 @EnableConfigurationProperties(DialobSettings.class)
 @Import(DatabaseExceptionMapper.class)
 public class DialobDbSpAutoConfiguration {
+
+  /**
+   * If forms do not share same JDBC database with questionnaires, we drop constraint to form document.
+   */
+  @Bean
+  @ConditionalOnExpression("#{'${dialob.questionnaire-database.database-type:}' == 'JDBC' && '${dialob.form-database.database-type:}' != '${dialob.questionnaire-database.database-type:}'}")
+  public DropQuestionnaireToFormDocumentConstraint dropQuestionnaireToFormDocumentConstraint(DialobSettings settings, DataSource dataSource) {
+    DatabaseHelper databaseHelper = databaseHandler(dataSource, settings.getDb().getJdbc());
+    return new DropQuestionnaireToFormDocumentConstraint(databaseHelper, settings.getDb().getJdbc().getSchema(), null);
+  }
+
 
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
   @Import({
@@ -146,26 +158,6 @@ public class DialobDbSpAutoConfiguration {
     }
 
 
-    DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
-      try (Connection connection = dataSource.getConnection()) {
-        String databaseProductName = connection.getMetaData().getDatabaseProductName();
-        if (databaseProductName.startsWith("DB2/")) {
-          databaseProductName = "DB2";
-        }
-        switch (databaseProductName) {
-          case "PostgreSQL":
-            return new PostgreSQLDatabaseHelper(settings.getSchema());
-          case "MySQL":
-            return new MySQLDatabaseHelper(settings.getSchema());
-          case "DB2":
-            return new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
-          default:
-            throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
-        }
-      } catch (SQLException e) {
-        throw new IllegalStateException(e);
-      }
-    }
 
     @Bean
     @ConditionalOnMissingBean(PlatformTransactionManager.class)
@@ -220,6 +212,9 @@ public class DialobDbSpAutoConfiguration {
     public QuestionnaireDatabase questionnaireDatabase() {
       return this.jdbcQuestionnaireDatabase;
     }
+
+
+
   }
 
   @Configuration(proxyBeanMethods = false)
@@ -227,8 +222,8 @@ public class DialobDbSpAutoConfiguration {
   public static class DialobDbFileAutoConfiguration {
 
     private String directory(@NonNull String baseDirectory, @NonNull String type) {
-      final File directory = new File(baseDirectory);
-      Assert.isTrue(directory.exists(), "File db directory " + baseDirectory + " do not exists");
+      final File directory = new File(Objects.requireNonNull(baseDirectory, "property dialob.db.file.directory not set"));
+      Assert.isTrue(directory.exists(), "File db directory " + baseDirectory + " does not exists");
       Assert.isTrue(directory.isDirectory(), "File db directory " + baseDirectory + " is not directory");
       return directory.toPath().resolve(type).toString();
     }
@@ -339,4 +334,23 @@ public class DialobDbSpAutoConfiguration {
       return new AssetFormDatabase(assetRepository, assetFormSerializer, assetFormDeserializer, assetFormMetadataRowDeserializer);
     }
   }
+
+  static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
+    try (Connection connection = dataSource.getConnection()) {
+      String databaseProductName = connection.getMetaData().getDatabaseProductName();
+      if (databaseProductName.startsWith("DB2/")) {
+        databaseProductName = "DB2";
+      }
+      return switch (databaseProductName) {
+        case "PostgreSQL" -> new PostgreSQLDatabaseHelper(settings.getSchema());
+        case "MySQL" -> new MySQLDatabaseHelper(settings.getSchema());
+        case "DB2" -> new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
+        default ->
+          throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
+      };
+    } catch (SQLException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
 }
