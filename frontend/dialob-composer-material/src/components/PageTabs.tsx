@@ -9,6 +9,7 @@ import { useEditor } from "../editor";
 import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
 import { FormattedMessage } from "react-intl";
+import { useBackend } from "../backend/useBackend";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -82,6 +83,7 @@ const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLEl
 const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   const { addItem } = useComposer();
   const { editor, setActivePage } = useEditor();
+  const { config } = useBackend();
   const rootItemId = Object.values(items).find((item: DialobItem) => item.type === 'questionnaire')?.id;
   const rootItem = rootItemId ? items[rootItemId] : undefined;
   const noPages = rootItem && (!rootItem.items || rootItem.items.length === 0);
@@ -104,7 +106,8 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
 
   const handleCreate = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    const groupTemplate = DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'structure')!.items.find(i => i.config.type === 'group')!.config;
+    const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
+    const groupTemplate = resolvedConfig.categories.find(c => c.type === 'structure')!.items.find(i => i.config.type === 'group')!.config;
     addItem(groupTemplate, 'questionnaire');
   }
 

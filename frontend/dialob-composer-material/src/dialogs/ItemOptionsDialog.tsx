@@ -26,7 +26,7 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
   const { form, setForm, setRevision } = useComposer();
-  const { changeItemId } = useBackend();
+  const { changeItemId, config } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
   const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice' || item.type === 'surveygroup');
@@ -34,7 +34,8 @@ const ItemOptionsDialog: React.FC = () => {
   const [editMode, setEditMode] = React.useState(false);
   const [id, setId] = React.useState<string>(item?.id || '');
   const [idError, setIdError] = React.useState<boolean>(false);
-  const isInputType = item && DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
+  const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
+  const isInputType = item && resolvedConfig.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
   const docsUrl = useDocs(activeTab);
 
   React.useEffect(() => {

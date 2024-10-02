@@ -41,6 +41,9 @@ import VariablesDialog from "../dialogs/VariablesDialog";
 import VersioningDialog from "../dialogs/VersioningDialog";
 import { DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS } from "../defaults";
 import DialobComposer from "../dialob/DialobComposer";
+import * as BackendTypes from "../backend/types";
+import * as DialobTypes from "../dialob/types";
+import * as DefaultTypes from "../defaults/types";
 
 // export for building the library
 export {
@@ -56,3 +59,7 @@ export {
   DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS, // defaults
   DialobComposer, // composer
 };
+
+export type {
+  BackendTypes, DialobTypes, DefaultTypes
+}
