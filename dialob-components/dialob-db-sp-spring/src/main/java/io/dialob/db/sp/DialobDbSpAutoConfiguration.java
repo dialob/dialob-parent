@@ -81,6 +81,7 @@ import java.util.function.Predicate;
 @Import(DatabaseExceptionMapper.class)
 public class DialobDbSpAutoConfiguration {
 
+
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
   @Import({
     org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class,
@@ -146,26 +147,6 @@ public class DialobDbSpAutoConfiguration {
     }
 
 
-    DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
-      try (Connection connection = dataSource.getConnection()) {
-        String databaseProductName = connection.getMetaData().getDatabaseProductName();
-        if (databaseProductName.startsWith("DB2/")) {
-          databaseProductName = "DB2";
-        }
-        switch (databaseProductName) {
-          case "PostgreSQL":
-            return new PostgreSQLDatabaseHelper(settings.getSchema());
-          case "MySQL":
-            return new MySQLDatabaseHelper(settings.getSchema());
-          case "DB2":
-            return new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
-          default:
-            throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
-        }
-      } catch (SQLException e) {
-        throw new IllegalStateException(e);
-      }
-    }
 
     @Bean
     @ConditionalOnMissingBean(PlatformTransactionManager.class)
@@ -220,6 +201,9 @@ public class DialobDbSpAutoConfiguration {
     public QuestionnaireDatabase questionnaireDatabase() {
       return this.jdbcQuestionnaireDatabase;
     }
+
+
+
   }
 
   @Configuration(proxyBeanMethods = false)
@@ -227,8 +211,8 @@ public class DialobDbSpAutoConfiguration {
   public static class DialobDbFileAutoConfiguration {
 
     private String directory(@NonNull String baseDirectory, @NonNull String type) {
-      final File directory = new File(baseDirectory);
-      Assert.isTrue(directory.exists(), "File db directory " + baseDirectory + " do not exists");
+      final File directory = new File(Objects.requireNonNull(baseDirectory, "property dialob.db.file.directory not set"));
+      Assert.isTrue(directory.exists(), "File db directory " + baseDirectory + " does not exists");
       Assert.isTrue(directory.isDirectory(), "File db directory " + baseDirectory + " is not directory");
       return directory.toPath().resolve(type).toString();
     }
@@ -339,4 +323,23 @@ public class DialobDbSpAutoConfiguration {
       return new AssetFormDatabase(assetRepository, assetFormSerializer, assetFormDeserializer, assetFormMetadataRowDeserializer);
     }
   }
+
+  static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
+    try (Connection connection = dataSource.getConnection()) {
+      String databaseProductName = connection.getMetaData().getDatabaseProductName();
+      if (databaseProductName.startsWith("DB2/")) {
+        databaseProductName = "DB2";
+      }
+      return switch (databaseProductName) {
+        case "PostgreSQL" -> new PostgreSQLDatabaseHelper(settings.getSchema());
+        case "MySQL" -> new MySQLDatabaseHelper(settings.getSchema());
+        case "DB2" -> new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
+        default ->
+          throw new IllegalStateException("Unsupported database product %s".formatted(connection.getMetaData().getDatabaseProductName()));
+      };
+    } catch (SQLException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
 }
