@@ -1,1 +1,2 @@
 io.dialob.db.sp.DialobDbSpAutoConfiguration
+io.dialob.db.sp.DialobDbJdbcAutoConfiguration

@@ -46,7 +46,6 @@ import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.DialobSettings.DatabaseType;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -81,16 +80,6 @@ import java.util.function.Predicate;
 @EnableConfigurationProperties(DialobSettings.class)
 @Import(DatabaseExceptionMapper.class)
 public class DialobDbSpAutoConfiguration {
-
-  /**
-   * If forms do not share same JDBC database with questionnaires, we drop constraint to form document.
-   */
-  @Bean
-  @ConditionalOnExpression("#{'${dialob.questionnaire-database.database-type:}' == 'JDBC' && '${dialob.form-database.database-type:}' != '${dialob.questionnaire-database.database-type:}'}")
-  public DropQuestionnaireToFormDocumentConstraint dropQuestionnaireToFormDocumentConstraint(DialobSettings settings, DataSource dataSource) {
-    DatabaseHelper databaseHelper = databaseHandler(dataSource, settings.getDb().getJdbc());
-    return new DropQuestionnaireToFormDocumentConstraint(databaseHelper, settings.getDb().getJdbc().getSchema(), null);
-  }
 
 
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
@@ -346,7 +335,7 @@ public class DialobDbSpAutoConfiguration {
         case "MySQL" -> new MySQLDatabaseHelper(settings.getSchema());
         case "DB2" -> new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
         default ->
-          throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
+          throw new IllegalStateException("Unsupported database product %s".formatted(connection.getMetaData().getDatabaseProductName()));
       };
     } catch (SQLException e) {
       throw new IllegalStateException(e);

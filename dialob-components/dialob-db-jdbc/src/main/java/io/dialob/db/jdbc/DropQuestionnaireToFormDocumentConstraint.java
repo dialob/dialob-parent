@@ -51,7 +51,7 @@ public class DropQuestionnaireToFormDocumentConstraint extends BaseCallback {
         stmt.execute();
         LOGGER.info("constraint {} removed", this.constraintName);
       } catch (SQLException e) {
-        LOGGER.warn("Could not remove constraint {} (this is ok if doesn't exist anymore): {}", this.constraintName, e.getMessage());
+        LOGGER.warn("Could not remove constraint {} (This is ok, if it is already removed): {}", this.constraintName, e.getMessage());
       }
     }
   }

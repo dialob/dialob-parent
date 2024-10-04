@@ -113,7 +113,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.db.jdbc.schema=dialob"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -133,7 +133,7 @@ class DialobDbJdbcAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.db.database-type=MONGODB")
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -147,7 +147,7 @@ class DialobDbJdbcAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.db.database-type=ASSETS")
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -163,7 +163,7 @@ class DialobDbJdbcAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.db.database-type=FILEDB", "dialob.db.file.directory=src")
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -180,7 +180,7 @@ class DialobDbJdbcAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.db.database-type=MONGODB")
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -206,7 +206,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.db.jdbc.schema=filetest"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         ApplicationContextAssert contextAssert = Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -238,7 +238,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.questionnaireDatabase.database-type=JDBC"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         ApplicationContextAssert contextAssert = Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -264,7 +264,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.questionnaireDatabase.database-type=JDBC"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         ApplicationContextAssert contextAssert = Assertions.assertThat(context)
           .hasSingleBean(FormDatabase.class)
@@ -289,7 +289,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.questionnaireDatabase.database-type=JDBC"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(DropQuestionnaireToFormDocumentConstraint.class);
@@ -303,7 +303,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.questionnaireDatabase.database-type=JDBC"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .hasSingleBean(DropQuestionnaireToFormDocumentConstraint.class);
@@ -317,7 +317,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.questionnaireDatabase.database-type=FILEDB"
       )
       .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
       .run(context -> {
         Assertions.assertThat(context)
           .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
@@ -333,7 +333,7 @@ class DialobDbJdbcAutoConfigurationTest {
 //        "dialob.questionnaireDatabase.database-type=FILEDB"
 //      )
 //      .withUserConfiguration(MockConfigurations.class)
-//      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class))
+//      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
 //      .run(context -> {
 //        Assertions.assertThat(context)
 //          .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
