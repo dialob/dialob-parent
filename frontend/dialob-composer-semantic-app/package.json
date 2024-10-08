@@ -11,10 +11,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@resys/dialob-composer": "2.10.2-1",
-    "immutable": "3.8.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@resys/dialob-composer": "2.10.4-1",
+    "immutable": "4.3.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "semantic-ui-css": "^2.5.0",
     "semantic-ui-react": "^2.1.5"
   },
@@ -22,13 +22,13 @@
   "license": "MIT",
   "repository": "",
   "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.12",
     "vite": "^5.0.8"
   }
 }
