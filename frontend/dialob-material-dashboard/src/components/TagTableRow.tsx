@@ -20,6 +20,7 @@ interface TagTableRowProps {
 	copyFormConfiguration: (formConfiguration: FormConfiguration) => void;
 	config: DialobAdminConfig;
 	getDialobForm: (formName: string) => Promise<any>;
+	setFetchAgain: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TagTableRow: React.FC<TagTableRowProps> = ({
@@ -28,53 +29,37 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 	copyFormConfiguration,
 	deleteFormConfiguration,
 	config,
-	getDialobForm
+	getDialobForm,
+	setFetchAgain
 }) => {
 	const [tags, setTags] = useState<FormConfigurationTag[]>([]);
-	const [dialobForm, setDialobForm] = useState<any>(undefined);
-	const [fetchAgain, setFetchAgain] = useState<boolean>(false);
 	const intl = useIntl();
 
 	useEffect(() => {
-		const fetchForm = async () => {
+		const fetchTags = async () => {
 			try {
-				const form = await getDialobForm(formConfiguration.id);
-				setDialobForm(form);
-			} catch (error) {
-				console.error("Error fetching the form:", error);
+				const response = await getAdminFormConfigurationTags(config, formConfiguration.id);
+				checkHttpResponse(response, config.setLoginRequired);
+				const data = await response.json();
+				const mappedTags = data?.map((tag: any) => ({
+					latestTagDate: tag.created,
+					latestTagName: tag.name,
+				}));
+				setTags(mappedTags || []);
+			} catch (ex) {
+				handleRejection(ex, config.setTechnicalError);
 			}
 		};
 
-		fetchForm();
-	}, [formConfiguration.id, fetchAgain]);
+		fetchTags();
+	}, [config, formConfiguration.id]);
 
-	useEffect(() => {
-		getAdminFormConfigurationTags(config, formConfiguration.id)
-			.then((response: Response) => checkHttpResponse(response, config.setLoginRequired))
-			.then((response: { json: () => any; }) => response.json())
-			.then((tags: any) => {
-				setTags(tags?.map((tag: any) => {
-					return {
-						latestTagDate: tag.created,
-						latestTagName: tag.name
-					}
-				}))
-			})
-			.catch((ex: any) => {
-				handleRejection(ex, config.setTechnicalError);
-			});
-	},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[])
+	const latestTag = useMemo(() => {
+		if (tags.length === 0) return undefined;
 
-	const latestTag: FormConfigurationTag | undefined = useMemo(() => {
-		if (tags.length === 0) {
-			return undefined;
-		} else {
-			tags.sort((a, b) => { return new Date(b.latestTagDate).getTime() - new Date(a.latestTagDate).getTime() });
-			return tags[0];
-		}
-	}, [tags])
+		const sortedTags = [...tags].sort((a, b) => new Date(b.latestTagDate).getTime() - new Date(a.latestTagDate).getTime());
+		return sortedTags[0];
+	}, [tags]);
 
 	const filteredRow: FormConfigurationFilters | undefined = useMemo(() => {
 		const result: FormConfigurationFilters = {
@@ -116,8 +101,8 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 
 		if (filters.labels) {
 			let exists = false;
-			if (dialobForm?.metadata.labels) {
-				dialobForm.metadata.labels.forEach((label: any) => {
+			if (formConfiguration.metadata.labels) {
+				formConfiguration.metadata.labels.forEach((label: any) => {
 					if (label.toLowerCase().includes(filters.labels!.toLowerCase())) {
 						exists = true;
 					}
@@ -129,34 +114,39 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 		}
 
 		return result;
-	}, [filters, formConfiguration.metadata.label, formConfiguration.metadata.lastSaved, latestTag, dialobForm]);
+	}, [filters, formConfiguration.metadata.label, formConfiguration.metadata.lastSaved, latestTag]);
 
-	const downloadFormConfiguration = () => {
-		downloadAsJSON(dialobForm);
+	const downloadFormConfiguration = async () => {
+		try {
+			const form = await getDialobForm(formConfiguration.id);
+			downloadAsJSON(form);
+		} catch (error) {
+			console.error("Error fetching the form:", error);
+		}
 	}
 
 	const updateLabels = async (label: any, action: LabelAction) => {
+		const updatedLabels =
+			action === LabelAction.DELETE
+				? formConfiguration.metadata.labels.filter((l: any) => l !== label)
+				: [...(formConfiguration.metadata.labels || []), label];
+
+		const form = await getDialobForm(formConfiguration.id);
+		const json = {
+			...form,
+			metadata: {
+				...form.metadata,
+				labels: updatedLabels,
+			},
+		};
+		delete json._id;
+		delete json._rev;
+
 		try {
-			const updatedLabels =
-				action === LabelAction.DELETE
-					? dialobForm.metadata.labels.filter((l: any) => l !== label)
-					: [...(dialobForm.metadata.labels || []), label];
-
-			const json = {
-				...dialobForm,
-				metadata: {
-					...dialobForm.metadata,
-					labels: updatedLabels,
-				},
-			};
-
-			delete json._id;
-			delete json._rev;
-
 			const response = await editAdminFormConfiguration(json, config);
 			await checkHttpResponse(response, config.setLoginRequired);
 			await response.json();
-			setFetchAgain((prevState) => !prevState);
+			setFetchAgain(prevState => !prevState);
 		} catch (ex: any) {
 			handleRejection(ex, config.setTechnicalError);
 		}
@@ -195,7 +185,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
 					<TableCell>{latestTag && new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(latestTag.latestTagDate))}</TableCell>
 					<TableCell>{new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration.metadata.lastSaved))}</TableCell>
 					<TableCell>
-						<LabelChips labels={dialobForm?.metadata.labels} onUpdate={updateLabels} />
+						<LabelChips labels={formConfiguration.metadata.labels} onUpdate={updateLabels} />
 					</TableCell>
 					<TableCell sx={{ textAlign: "center" }}>
 						<Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>

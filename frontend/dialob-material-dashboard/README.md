@@ -1,5 +1,6 @@
 # Dialob Material Dashboard
 This package provides a Dialob Admin UI View which enables users to easily interact with the Dialob forms.
+It requires Dialob backend with version of: 2.2.4 or above
 
 ## Install
 

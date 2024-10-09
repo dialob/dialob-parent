@@ -312,6 +312,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 										copyFormConfiguration={copyFormConfiguration}
 										getDialobForm={getDialobForm}
 										config={config}
+										setFetchAgain={setFetchAgain}
 									/>
 								)}
 							</TableBody>
