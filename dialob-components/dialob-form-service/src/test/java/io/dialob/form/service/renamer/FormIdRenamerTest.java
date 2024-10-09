@@ -80,6 +80,8 @@ public class FormIdRenamerTest {
     FormItem q2 = form.getData().get("question2");
     assertEquals("test is answered", q2.getActiveWhen());
     assertEquals("test = 'test'", q2.getRequired());
+    assertEquals("test = 'xx'", q2.getCanAddRowWhen());
+    assertEquals("test = 'yy'", q2.getCanRemoveRowWhen());
 
     Validation validationBean = q2.getValidations().get(0);
     assertEquals("question2 is answered and test = 'test2'", validationBean.getRule());
@@ -95,6 +97,10 @@ public class FormIdRenamerTest {
     assertTrue(var.isPresent());
     Variable varBean = var.get();
     assertEquals("'one' + test + 'two'", varBean.getExpression());
+
+    FormValueSet valueSet1 = form.getValueSets().stream().filter(formValueSet -> formValueSet.getId().equals("valueSet1")).findFirst().get();
+    FormValueSetEntry entry2 = valueSet1.getEntries().stream().filter(formValueSetEntry -> formValueSetEntry.getId().equals("entry2")).findFirst().get();
+    assertEquals("test = 'zz'", entry2.getWhen());
   }
 
   @Test
