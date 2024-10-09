@@ -79,7 +79,7 @@ public class DialobQuestionnaireSessionBuilderTest {
     when(dialobProgram.createSession(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(dialobSession);
     when(questionnaireSessionSaveService.save(any())).then(AdditionalAnswers.returnsFirstArg());
 //    when(sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession)).thenReturn(dialobSessionUpdater);
-    when(dialobSessionUpdater.dispatchActions(any(), eq(true))).thenReturn(consumer);
+    when(dialobSessionUpdater.dispatchActions(any())).thenReturn(consumer);
     when(dialobSession.getLastUpdate()).thenReturn(Instant.now());
 
     DialobQuestionnaireSessionBuilder builder = new DialobQuestionnaireSessionBuilder(questionnaireEventPublisher,
