@@ -5,12 +5,13 @@ import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
   Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, EditNote
 } from "@mui/icons-material";
-import { DEFAULT_ITEMTYPE_CONFIG, ItemTypeConfig } from "../defaults";
+import { DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
+import { ItemTypeConfig } from "../defaults/types";
 import { FormattedMessage, useIntl } from "react-intl";
 import { OptionsTabType, useEditor } from "../editor";
-import * as Defaults from "../defaults";
 import { isPage } from "../utils/ItemUtils";
 import { scrollToAddedItem } from "../utils/ScrollUtils";
+import { useBackend } from "../backend/useBackend";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -56,13 +57,13 @@ const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: string) => {
   return null;
 }
 
-const getItemConversions = (item: DialobItem): { text: string, value: DialobItemTemplate }[] => {
-  const thisItemType = findItemTypeConfig(DEFAULT_ITEMTYPE_CONFIG, item.view ?? item.type);
+const getItemConversions = (item: DialobItem, itemTypeConfig: ItemTypeConfig): { text: string, value: DialobItemTemplate }[] => {
+  const thisItemType = findItemTypeConfig(itemTypeConfig, item.view ?? item.type);
   const options: { text: string, value: DialobItemTemplate }[] = [];
 
   if (thisItemType && thisItemType.convertible) {
     thisItemType.convertible.forEach(t => {
-      const toItemType = findItemTypeConfig(DEFAULT_ITEMTYPE_CONFIG, t);
+      const toItemType = findItemTypeConfig(itemTypeConfig, t);
       if (toItemType) {
         options.push({
           text: toItemType.title,
@@ -74,8 +75,8 @@ const getItemConversions = (item: DialobItem): { text: string, value: DialobItem
   return options;
 }
 
-const resolveTypeName = (type: string): string => {
-  const items = Defaults.DEFAULT_ITEMTYPE_CONFIG.categories.flatMap(c => c.items);
+const resolveTypeName = (type: string, itemTypeConfig: ItemTypeConfig): string => {
+  const items = itemTypeConfig.categories.flatMap(c => c.items);
   const item = items.find(i => i.config.view === type || i.config.type === type);
   if (item) {
     return item.title;
@@ -102,10 +103,12 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
   const intl = useIntl();
   const { form } = useComposer();
   const { editor } = useEditor();
+  const { config } = useBackend();
   const [label, setLabel] = React.useState<string>('');
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const maxLabelLength = hasIndicators ? MAX_LABEL_LENGTH_WITH_INDICATORS : MAX_LABEL_LENGTH_WITHOUT_INDICATORS;
-  const placeholderId = isPage(form.data, item) ? 'page.label' : Defaults.DEFAULT_ITEM_CONFIG.items.find(i => i.matcher(item))?.props.placeholder;
+  const resolvedConfig = config.itemEditors ?? DEFAULT_ITEM_CONFIG;
+  const placeholderId = isPage(form.data, item) ? 'page.label' : resolvedConfig.items.find(i => i.matcher(item))?.props.placeholder;
   const placeholder = intl.formatMessage({ id: placeholderId });
 
   React.useEffect(() => {
@@ -184,10 +187,12 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { changeItemType } = useComposer();
+  const { config } = useBackend();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const conversions = getItemConversions(item);
-  const [typeName, setTypeName] = React.useState<string>(resolveTypeName(item.view || item.type))
+  const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
+  const conversions = getItemConversions(item, resolvedConfig);
+  const [typeName, setTypeName] = React.useState<string>(resolveTypeName(item.view || item.type, resolvedConfig))
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -202,11 +207,11 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const handleConvert = (e: React.MouseEvent<HTMLElement>, config: DialobItemTemplate) => {
     handleClose(e);
     changeItemType(item.id, config);
-    setTypeName(resolveTypeName(config.type));
+    setTypeName(resolveTypeName(config.type, resolvedConfig));
   }
 
   React.useEffect(() => {
-    setTypeName(resolveTypeName(item.view || item.type));
+    setTypeName(resolveTypeName(item.view || item.type, resolvedConfig));
   }, [item]);
 
   return (
@@ -225,7 +230,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
         </MenuItem>
         {conversions.length > 0 && conversions.map((c, index) => {
           return (<MenuItem key={index} onClick={(e) => handleConvert(e, c.value)}>
-            <Typography>{resolveTypeName(c.text)}</Typography>
+            <Typography>{resolveTypeName(c.text, resolvedConfig)}</Typography>
           </MenuItem>
           )
         })}
@@ -236,6 +241,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
 export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?: boolean }> = ({ item, isPage, light }) => {
   const { form, addItem } = useComposer();
+  const { config } = useBackend();
   const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab, setHighlightedItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -243,7 +249,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
   const [chosenCategory, setChosenCategory] = React.useState<string | null>('');
   const open = Boolean(anchorEl);
   const categoriesOpen = Boolean(categoriesAnchorEl);
-  const itemCategories = Defaults.DEFAULT_ITEMTYPE_CONFIG.categories;
+  const itemCategories = config.itemTypes ? config.itemTypes.categories : DEFAULT_ITEMTYPE_CONFIG.categories;
 
   const handleClick = (e: React.MouseEvent<HTMLElement>, level: number, category?: string) => {
     e.stopPropagation();
@@ -360,11 +366,12 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
 export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { addItem } = useComposer();
   const { setHighlightedItem } = useEditor();
+  const { config } = useBackend();
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
   const [chosenCategory, setChosenCategory] = React.useState<string | null>('');
   const categoriesOpen = Boolean(categoriesAnchorEl);
-  const itemCategories = Defaults.DEFAULT_ITEMTYPE_CONFIG.categories;
+  const itemCategories = config.itemTypes ? config.itemTypes.categories : DEFAULT_ITEMTYPE_CONFIG.categories;
 
   const handleClick = (e: React.MouseEvent<HTMLElement>, category?: string) => {
     e.stopPropagation();

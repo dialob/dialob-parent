@@ -8,6 +8,8 @@ import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
 import { useEditor } from '../../editor';
 import { getErrorIcon, useErrorColorSx } from '../../utils/ErrorUtils';
 import { scrollToItem } from '../../utils/ScrollUtils';
+import { useBackend } from '../../backend/useBackend';
+import { ItemConfig } from '../../defaults/types';
 
 
 interface TreeItemProps {
@@ -46,12 +48,13 @@ const getIcon = (
   return <ArrowIcon sx={{ mr: 0.5 }} />;
 };
 
-const getTypeIcon = (item: DialobItem, isPage: boolean) => {
+const getTypeIcon = (item: DialobItem, isPage: boolean, itemConfig?: ItemConfig) => {
   if (isPage) {
     return <PreTextIcon disableRipple><PAGE_CONFIG.icon fontSize='small' /></PreTextIcon>;
   }
-  const itemConfig = DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(item));
-  const Icon = itemConfig?.props.icon || DEFAULT_ITEM_CONFIG.defaultIcon;
+  const resolvedConfig = itemConfig ?? DEFAULT_ITEM_CONFIG;
+  const matchedConfig = resolvedConfig.items.find(c => c.matcher(item));
+  const Icon = matchedConfig?.props.icon || DEFAULT_ITEM_CONFIG.defaultIcon;
   return <PreTextIcon disableRipple sx={{ mr: 0.5 }}><Icon fontSize='small' /></PreTextIcon>;
 }
 
@@ -68,8 +71,10 @@ const getTitle = (item: TreeItem) => {
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
   const { editor, setActivePage, setHighlightedItem } = useEditor();
   const { form } = useComposer();
+  const { config } = useBackend();
   const errorColor = useErrorColorSx(editor.errors, item.data.item.id);
   const itemId = item.data.item.id;
+  const itemConfig = config.itemEditors;
 
   const handleScrollTo = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -84,7 +89,7 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
       {...provided.dragHandleProps}
     >
       {getIcon(item, onExpand, onCollapse)}
-      {errorColor ? getErrorIcon(editor.errors, item.data.item.id) : getTypeIcon(item.data.item, item.data.isPage)}
+      {errorColor ? getErrorIcon(editor.errors, item.data.item.id) : getTypeIcon(item.data.item, item.data.isPage, itemConfig)}
       <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo}>
         <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{getTitle(item)}</Typography>
       </ListItemText>

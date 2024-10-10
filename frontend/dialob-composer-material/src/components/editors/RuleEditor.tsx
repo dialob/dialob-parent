@@ -8,6 +8,7 @@ import { ErrorMessage } from '../ErrorComponents';
 import CodeMirror from '../code/CodeMirror';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
+import { useBackend } from '../../backend/useBackend';
 
 type RuleType = 'visibility' | 'requirement' | 'canaddrow' | 'canremoverow';
 
@@ -24,6 +25,8 @@ const resolveRulePropName = (ruleType: RuleType): string => {
 const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const { updateItem } = useComposer();
   const { editor, setActiveItem } = useEditor();
+  const { config } = useBackend();
+  const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
   const item = editor.activeItem;
   const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
   const [ruleCode, setRuleCode] = React.useState<string>('');
@@ -52,7 +55,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     return null;
   }
 
-  if (!DEFAULT_ITEMTYPE_CONFIG.categories.find(c => c.type === 'input')?.items.find(i => i.config.type === item.type) && type === 'requirement') {
+  if (!resolvedConfig.categories.find(c => c.type === 'input')?.items.find(i => i.config.type === item.type) && type === 'requirement') {
     return null;
   }
 
