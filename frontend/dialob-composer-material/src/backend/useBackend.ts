@@ -15,6 +15,5 @@ export const useBackend = () => {
     getTags: backendContext.getTags,
     changeItemId: backendContext.changeItemId,
     createPreviewSession: backendContext.createPreviewSession,
-    getBuildInfo: backendContext.getBuildInfo,
   }
 }
