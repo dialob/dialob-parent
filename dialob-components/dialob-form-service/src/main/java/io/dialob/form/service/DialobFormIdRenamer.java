@@ -95,6 +95,12 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     if (item.getRequired() != null) {
       builder.required(idRenamer.apply(item.getRequired()));
     }
+    if (item.getCanAddRowWhen() != null) {
+      builder.canAddRowWhen(idRenamer.apply(item.getCanAddRowWhen()));
+    }
+    if (item.getCanRemoveRowWhen() != null) {
+      builder.canRemoveRowWhen(idRenamer.apply(item.getCanRemoveRowWhen()));
+    }
     List<Validation> validations = item.getValidations().stream().map(validation -> ImmutableValidation.builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).collect(toList());
     builder.validations(validations);
 
@@ -142,6 +148,26 @@ public class DialobFormIdRenamer implements FormIdRenamer {
       }
     );
     formBuilder.variables(updatedVariables);
+
+    // Handle valueset expressions
+    List<FormValueSet> updatedValueSets = new ArrayList<>();
+    form.getValueSets().forEach(vset -> {
+      ImmutableFormValueSet.Builder vsBuilder = ImmutableFormValueSet.builder().from(vset);
+      List<FormValueSetEntry> updatedVsEntries = new ArrayList<>();
+      vset.getEntries().forEach(ve -> {
+        ImmutableFormValueSetEntry.Builder vseBuilder = ImmutableFormValueSetEntry.builder().from(ve);
+
+        if (ve.getWhen() != null) {
+          vseBuilder.when(idRenamer.apply(ve.getWhen()));
+        }
+
+        updatedVsEntries.add(vseBuilder.build());
+      });
+      vsBuilder.entries(updatedVsEntries);
+      updatedValueSets.add(vsBuilder.build());
+    });
+    formBuilder.valueSets(updatedValueSets);
+
     return Pair.of(formBuilder.build(), errors);
   }
 
