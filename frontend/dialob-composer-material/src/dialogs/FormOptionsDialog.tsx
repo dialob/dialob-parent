@@ -64,18 +64,11 @@ const FormLabels: React.FC = () => {
 
 const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form, setMetadataValue } = useComposer();
-  const { getBuildInfo } = useBackend();
+  const { config } = useBackend();
   const docsUrl = useDocs('options');
   const [name, setName] = React.useState<string | undefined>();
   const [visibilityMode, setVisibilityMode] = React.useState<VisibilityType | undefined>();
   const [required, setRequired] = React.useState<boolean>(false);
-  const [backendVersion, setBackendVersion] = React.useState<string>('0.0.0');
-
-  React.useEffect(() => {
-    if (open) {
-      getBuildInfo().then(info => setBackendVersion(info.build.version));
-    }
-  }, [open, getBuildInfo]);
 
   React.useEffect(() => {
     if (open) {
@@ -166,7 +159,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.composer' /></Typography>
           <Typography>{version}</Typography>
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.backend' /></Typography>
-          <Typography>{backendVersion}</Typography>
+          <Typography>{config.backendVersion}</Typography>
         </Box>
       </DialogContent>
       <DialogActions>
