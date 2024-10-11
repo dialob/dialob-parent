@@ -95,6 +95,8 @@
       "className": [],
       "style": null,
       "activeWhen": "question1 is answered",
+      "canAddRowWhen": "question1 = 'xx'",
+      "canRemoveRowWhen": "question1 = 'yy'",
       "validations": [
         {
           "message": {
@@ -167,6 +169,7 @@
         },
         {
           "id": "entry2",
+          "when": "question1 = 'zz'",
           "label": {
             "en": "Entry label 2"
           }
