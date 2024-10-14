@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@dialob/dialob-composer-material": {
+      "signature": "58816ca9121faad34785baec3b1f69e4",
+      "file": true
+    }
+  }
+}
