@@ -16,7 +16,6 @@
 package io.dialob.cloud.aws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,11 +32,6 @@ import java.util.Optional;
 @ConditionalOnProperty(prefix = "dialob.aws", name = "enabled", havingValue = "true")
 @Slf4j
 public class DialobCloudAwsAutoConfiguration {
-
-  @Bean("S3SubmitHandler")
-  public AnswerSubmitHandler s3SubmitHandler(ObjectMapper objectMapper) {
-    return new S3NormalizingPostSubmitHandler(objectMapper);
-  }
 
   @Bean
   public SnsAsyncClient snsAsyncClient(Optional<AwsCredentialsProvider> credentialsProviderOptional, DialobSettings settings) {
