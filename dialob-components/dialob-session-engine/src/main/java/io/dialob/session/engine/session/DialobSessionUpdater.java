@@ -23,11 +23,8 @@ import java.util.function.Consumer;
 
 public interface DialobSessionUpdater {
 
-  static final DialobSessionUpdater NOOP_UPDATER = (actions, activating) -> updatedItemsVisitor -> {};
+  DialobSessionUpdater NOOP_UPDATER = (actions) -> updatedItemsVisitor -> {};
 
-  default Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions) {
-    return dispatchActions(actions, false);
-  }
+  Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions);
 
-  Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions, boolean activating);
 }

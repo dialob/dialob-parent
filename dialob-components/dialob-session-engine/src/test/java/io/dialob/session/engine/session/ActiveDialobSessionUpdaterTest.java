@@ -64,8 +64,8 @@ class ActiveDialobSessionUpdaterTest {
     Assertions.assertNull(itemState.get().getValue());
 
     final Action setValue = ActionsFactory.setValue("c1", "new value");
-    DialobSessionUpdater updater = new ActiveDialobSessionUpdater(contextFactory, program, session);
-    updater.dispatchActions(Collections.singletonList(setValue), true);
+    DialobSessionUpdater updater = new ActiveDialobSessionUpdater(contextFactory, program, session, true);
+    updater.dispatchActions(Collections.singletonList(setValue));
 
 
     itemState = session.getItemState(IdUtils.toId("c1"));
