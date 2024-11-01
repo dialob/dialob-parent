@@ -2,6 +2,19 @@
 import * as PropEditors from '../components/propEditors';
 import GenericOptionEditor from '../components/options/GenericOptionEditor';
 
+const ALERTSTYLE_PROP = {
+  component: PropEditors.ChoiceProp,
+	props: {
+		options: [
+			{key: 'normal', label: 'Normal (default)'},
+			{key: 'info', label: 'Info'},
+			{key: 'success', label: 'Success'},
+			{key: 'warning', label: 'Warning'},
+			{key: 'error', label: 'Error'}
+		]
+	}
+}
+
 export const DEFAULT_ITEMTYPE_CONFIG = {
   categories: [
     {
@@ -158,16 +171,28 @@ export const DEFAULT_ITEMTYPE_CONFIG = {
       items: [
         {
           title: 'Note',
+          propEditors: {
+            style: ALERTSTYLE_PROP
+          },
           config: {
-            type: 'note'
+            type: 'note',
+            props: {
+							style: 'normal'
+						}
           }
         },
         {
           title: 'Validation message',
+          propEditors: {
+            style: ALERTSTYLE_PROP
+          },
           config: {
             type: 'note',
             view: 'validation',
-            required: 'true'
+            required: 'true',
+            props: {
+							style: 'error'
+						}
           }
         }
       ]
