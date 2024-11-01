@@ -516,10 +516,10 @@
   resolved "https://registry.yarnpkg.com/@react-dnd/shallowequal/-/shallowequal-2.0.0.tgz#a3031eb54129f2c66b2753f8404266ec7bf67f0a"
   integrity sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==
 
-"@resys/dialob-composer@2.10.4-1":
-  version "2.10.4-1"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-composer/-/dialob-composer-2.10.4-1.tgz#c20c30e35ded773a7dc7206a660b9304180179d0"
-  integrity sha512-Flzh9DbD5WO0lvcPwzy8X4hwnpJ8EB8m554qXjGUWVXMPkRNjwFAyP6aODZQJp4ChaB4rhrGihSYp2KjPAMozw==
+"@resys/dialob-composer@2.10.5-1":
+  version "2.10.5-1"
+  resolved "https://repo.resys.io/repository/npm/@resys/dialob-composer/-/dialob-composer-2.10.5-1.tgz#924db150e583c1fe329762df4871c8aece19f83b"
+  integrity sha512-KtQE7B6xBLSxoOA9GxO050YnRcBXqb5nytFTU/KLd29uVJ7v9h2fikKfkp8LBRGhSEkGf9HnzpwvNVgaSLGOdg==
   dependencies:
     "@resys/react-redux-scroll" "0.2.3"
     "@resys/understood" "2.1.1"
