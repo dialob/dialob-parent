@@ -1,3 +1,7 @@
+# 1.5.4
+
+* Added Material UI Alert wrapper around the note item for styling the component depending on the style property
+
 # 1.5.3
 
 * Added color property, that is used to set background color to groups when the property is set to true
