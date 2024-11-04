@@ -15,6 +15,11 @@ export const pintTheme = createTheme({
     },
   },
   components: {
+    MuiOutlinedInput: {
+      defaultProps: {
+        notched: true
+      }
+    },
     MuiTooltip: {
       defaultProps: {
         arrow: true,

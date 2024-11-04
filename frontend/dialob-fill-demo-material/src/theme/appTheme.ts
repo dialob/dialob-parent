@@ -41,6 +41,12 @@ export const appTheme = createTheme({
 
   components: {
 
+    MuiOutlinedInput: {
+      defaultProps: {
+        notched: true
+      }
+    },
+
     MuiTypography: {
       styleOverrides: {
         root: {

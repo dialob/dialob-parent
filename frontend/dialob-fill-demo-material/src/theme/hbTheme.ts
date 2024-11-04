@@ -68,6 +68,11 @@ export const hbTheme = createTheme({
     }
   },
   components: {
+    MuiOutlinedInput: {
+      defaultProps: {
+        notched: true
+      }
+    },
     MuiTypography: {
       styleOverrides: {
         h1: {

@@ -25,7 +25,7 @@ const palette = {
     primary: "rgba(0, 0, 0, 0.87)",
     secondary: "rgba(0, 0, 0, 0.54)",
     disabled: "rgba(0, 0, 0, 0.38)",
-   // hint: "rgba(0, 0, 0, 0.38)",
+    // hint: "rgba(0, 0, 0, 0.38)",
   },
 };
 
@@ -35,6 +35,11 @@ export const altTheme = createTheme({
   palette,
 
   components: {
+    MuiOutlinedInput: {
+      defaultProps: {
+        notched: true
+      }
+    },
     MuiTextField: {
       defaultProps: {
         variant: 'filled'
@@ -60,10 +65,10 @@ export const altTheme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-        focused: {
-          color: palette.text.primary
+          focused: {
+            color: palette.text.primary
+          }
         }
-      }
       }
     }
 

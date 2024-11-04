@@ -11,7 +11,7 @@ const palette = {
     light: '#cccccc',
     dark: '#e0e1e2',
   },
-  common:{
+  common: {
     white: "#ffffff",
     black: "#000000"
   },
@@ -52,31 +52,31 @@ export const popTheme = createTheme({
       color: palette.text.secondary
     },
     h2: {
-        fontSize: "36px",
-        lineHeight: 2,
-        textAlign: 'center',
-        fontFamily: "'Inter', sans-serif",
-        fontWeight: 550,
-        color: palette.text.secondary
+      fontSize: "36px",
+      lineHeight: 2,
+      textAlign: 'center',
+      fontFamily: "'Inter', sans-serif",
+      fontWeight: 550,
+      color: palette.text.secondary
     },
     h3: {
-        fontSize: "30px",
-        lineHeight: 1,
-        textAlign: 'center',
-        fontFamily: "'Inter', sans-serif",
-        fontWeight: 550,
-        color: palette.common.black
+      fontSize: "30px",
+      lineHeight: 1,
+      textAlign: 'center',
+      fontFamily: "'Inter', sans-serif",
+      fontWeight: 550,
+      color: palette.common.black
     },
     subtitle1: {
-        fontFamily: "'Inter', sans-serif",
-        fontSize: "18px",
-        color: palette.text.primary
+      fontFamily: "'Inter', sans-serif",
+      fontSize: "18px",
+      color: palette.text.primary
     },
     subtitle2: {
-        fontFamily: "'Inter', sans-serif",
-        fontSize: "16px",
-        fontWeight: 400,
-        color: palette.text.primary
+      fontFamily: "'Inter', sans-serif",
+      fontSize: "16px",
+      fontWeight: 400,
+      color: palette.text.primary
     },
     body1: {
       fontFamily: "'Inter', sans-serif",
@@ -84,11 +84,18 @@ export const popTheme = createTheme({
       color: palette.text.primary
     },
     body2: {
-        fontFamily: "'Inter', sans-serif",
-        fontSize: "18px",
-        color: '#444444',
-        fontWeight: 400,
+      fontFamily: "'Inter', sans-serif",
+      fontSize: "18px",
+      color: '#444444',
+      fontWeight: 400,
     },
+  },
+  components: {
+    MuiOutlinedInput: {
+      defaultProps: {
+        notched: true
+      }
+    }
   },
   spacing: [1, 2, 4, 6, 8, 12, 16, 24, 36, 48, 64, 72],
 });
