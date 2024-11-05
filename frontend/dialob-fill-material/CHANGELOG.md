@@ -1,3 +1,7 @@
+# 1.5.5
+
+* Removed "shrink" property from InputLabel for Choice item, this resolves the crossed label issue
+
 # 1.5.4
 
 * Added Material UI Alert wrapper around the note item for styling the component depending on the style property

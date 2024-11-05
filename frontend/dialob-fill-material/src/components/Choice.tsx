@@ -35,7 +35,7 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
       error={errors.length > 0} 
       sx={{ minWidth: 120, ...getLayoutStyleFromProps(choice.props)}}
     >
-      <InputLabel id={`${itemId}_label`} shrink>{choice.label}</InputLabel>
+      <InputLabel id={`${itemId}_label`}>{choice.label}</InputLabel>
       <Select labelId={`${itemId}_label`}
         label={choice.label}
         value={choice.value || ''}
