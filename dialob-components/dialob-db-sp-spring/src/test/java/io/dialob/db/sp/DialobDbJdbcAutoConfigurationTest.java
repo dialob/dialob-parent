@@ -18,7 +18,7 @@ package io.dialob.db.sp;
 import com.azure.storage.blob.BlobServiceClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.db.assets.AssetFormDatabase;
-import io.dialob.db.azure.blob.storage.FormBlobStorageDatabase;
+import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
 import io.dialob.db.jdbc.DropQuestionnaireToFormDocumentConstraint;
@@ -260,7 +260,7 @@ class DialobDbJdbcAutoConfigurationTest {
         "dialob.db.database-type=NONE",
         "dialob.formDatabase.database-type=AZURE_BLOB_STORAGE",
         "dialob.formDatabase.azure-blob-storage.container-name=c-bucket",
-        "dialob.formDatabase.azure-blob-storage.prefix=forms/",
+        "dialob.formDatabase.azure-blob-storage.prefix=forms",
         "dialob.questionnaireDatabase.database-type=JDBC"
       )
       .withUserConfiguration(MockConfigurations.class)
@@ -273,7 +273,7 @@ class DialobDbJdbcAutoConfigurationTest {
           .hasSingleBean(TransactionTemplate.class)
           .hasSingleBean(DropQuestionnaireToFormDocumentConstraint.class);
 
-        contextAssert.getBean(FormDatabase.class).isInstanceOf(FormBlobStorageDatabase.class);
+        contextAssert.getBean(FormDatabase.class).isInstanceOf(FormAzureBlobStorageDatabase.class);
         contextAssert.getBean(QuestionnaireDatabase.class).isInstanceOf(JdbcQuestionnaireDatabase.class);
 
       });

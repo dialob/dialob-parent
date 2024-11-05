@@ -16,7 +16,6 @@
 package io.dialob.db.azure.blob.storage;
 
 import com.azure.core.util.BinaryData;
-import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,13 +35,13 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 @Slf4j
-public abstract class AbstractBlobStorageDatabase<F> extends AbstractDocumentDatabase<F> {
+public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocumentDatabase<F> {
 
   private final ObjectMapper objectMapper;
   private final BlobContainerClient blobContainerClient;
   private final String prefix;
 
-  public AbstractBlobStorageDatabase(
+  public AbstractAzureBlobStorageDatabase(
     @NonNull BlobContainerClient blobContainerClient,
     @NonNull Class<F> documentClass,
     @NonNull ObjectMapper objectMapper,
@@ -51,14 +50,16 @@ public abstract class AbstractBlobStorageDatabase<F> extends AbstractDocumentDat
     super(documentClass);
     this.blobContainerClient = blobContainerClient;
     this.objectMapper = objectMapper;
-    this.prefix = prefix;
+    this.prefix = StringUtils.stripEnd(StringUtils.stripStart(prefix, "/\\\n\r "), "/\\\n\r ");
 
   }
 
-  protected abstract String tenantPrefix(String tenantId);
+  protected String tenantPrefix(String tenantId) {
+    return this.prefix + "/" + tenantId;
+  }
 
   /**
-   * Construct S3 object name
+   * Construct Azure Blob object name
    *
    * @param tenantId
    * @param id

@@ -18,5 +18,5 @@ package io.dialob.db.azure.blob.storage;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-public class DialobDbBlobStorageAutoConfiguration {
+public class DialobDbAzureBlobStorageAutoConfiguration {
 }
