@@ -35,7 +35,7 @@ class FormAzureBlobStorageDatabase2Test {
     BlobClient blobClient = Mockito.mock();
     when(blobContainerClient.getBlobClient(anyString())).thenReturn(blobClient);
 
-    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, new ObjectMapper(), "\\alternative/sub///");
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, new ObjectMapper(), "\\alternative/sub///", null);
     database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
@@ -46,5 +46,25 @@ class FormAzureBlobStorageDatabase2Test {
     verify(blobContainerClient).getBlobClient(matches("alternative/sub/00000000-0000-0000-0000-000000000000/[0-9a-f]{32}"));
     verifyNoMoreInteractions(blobContainerClient);
   }
+
+  @Test
+  public void shouldApplySuffix() {
+
+    BlobContainerClient blobContainerClient = Mockito.mock();
+    BlobClient blobClient = Mockito.mock();
+    when(blobContainerClient.getBlobClient(anyString())).thenReturn(blobClient);
+
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, new ObjectMapper(), null, ".json");
+    database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
+      .metadata(ImmutableFormMetadata.builder()
+        .tenantId("00000000-0000-0000-0000-000000000000")
+        .label("test")
+        .build())
+      .build());
+
+    verify(blobContainerClient).getBlobClient(matches("forms/00000000-0000-0000-0000-000000000000/[0-9a-f]{32}\\.json"));
+    verifyNoMoreInteractions(blobContainerClient);
+  }
+
 
 }

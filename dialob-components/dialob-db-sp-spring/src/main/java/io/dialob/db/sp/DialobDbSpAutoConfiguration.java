@@ -262,7 +262,8 @@ public class DialobDbSpAutoConfiguration {
     public FormDatabase formDatabase(BlobServiceClient blobServiceClient, ObjectMapper objectMapper, DialobSettings settings) {
       var containerName = Objects.requireNonNull(settings.getFormDatabase().getAzureBlobStorage().getContainerName(), "Define Blob Storage container name for forms");
       return new FormAzureBlobStorageDatabase(blobServiceClient.getBlobContainerClient(containerName), objectMapper,
-        Objects.toString(settings.getQuestionnaireDatabase().getAzureBlobStorage().getPrefix(), "forms/")
+        Objects.toString(settings.getFormDatabase().getAzureBlobStorage().getPrefix(), "forms/"),
+        settings.getFormDatabase().getAzureBlobStorage().getSuffix()
       );
     }
 
@@ -271,7 +272,8 @@ public class DialobDbSpAutoConfiguration {
     public QuestionnaireDatabase questionnaireDatabase(BlobServiceClient blobServiceClient, ObjectMapper objectMapper, DialobSettings settings) {
       var containerName = Objects.requireNonNull(settings.getQuestionnaireDatabase().getAzureBlobStorage().getContainerName(), "Define Blob Storage container name for questionnaires");
       return new QuestionnaireAzureBlobStorageDatabase(blobServiceClient.getBlobContainerClient(containerName), objectMapper,
-        Objects.toString(settings.getQuestionnaireDatabase().getAzureBlobStorage().getPrefix(), "questionnaires/")
+        Objects.toString(settings.getQuestionnaireDatabase().getAzureBlobStorage().getPrefix(), "questionnaires/"),
+        settings.getQuestionnaireDatabase().getAzureBlobStorage().getSuffix()
       );
     }
   }

@@ -30,8 +30,8 @@ import java.util.function.Consumer;
 
 public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Form> implements FormDatabase {
 
-  public FormAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix) {
-    super(blobContainerClient, Form.class, objectMapper, Objects.requireNonNullElse(prefix, "forms"));
+  public FormAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {
+    super(blobContainerClient, Form.class, objectMapper, Objects.requireNonNullElse(prefix, "forms"), suffix);
   }
 
 

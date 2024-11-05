@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -40,17 +41,20 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
   private final ObjectMapper objectMapper;
   private final BlobContainerClient blobContainerClient;
   private final String prefix;
+  private final String suffix;
 
   public AbstractAzureBlobStorageDatabase(
     @NonNull BlobContainerClient blobContainerClient,
     @NonNull Class<F> documentClass,
     @NonNull ObjectMapper objectMapper,
-    @NonNull String prefix)
+    @NonNull String prefix,
+    String suffix)
   {
     super(documentClass);
     this.blobContainerClient = blobContainerClient;
     this.objectMapper = objectMapper;
     this.prefix = StringUtils.stripEnd(StringUtils.stripStart(prefix, "/\\\n\r "), "/\\\n\r ");
+    this.suffix = Objects.requireNonNullElse(suffix, "");
 
   }
 
@@ -66,7 +70,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
    * @return object name in storage
    */
   protected String objectName(String tenantId, String id) {
-    return tenantPrefix(tenantId) + "/" + id;
+    return tenantPrefix(tenantId) + "/" + id + suffix;
   }
 
   protected String extractObjectName(String key) {

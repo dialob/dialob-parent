@@ -30,8 +30,8 @@ import java.util.function.Consumer;
 
 public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Questionnaire> implements QuestionnaireDatabase {
 
-  public QuestionnaireAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix) {
-    super(blobContainerClient, Questionnaire.class, objectMapper, Objects.requireNonNullElse(prefix, "questionnaires"));
+  public QuestionnaireAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {
+    super(blobContainerClient, Questionnaire.class, objectMapper, Objects.requireNonNullElse(prefix, "questionnaires"), suffix);
   }
 
 
