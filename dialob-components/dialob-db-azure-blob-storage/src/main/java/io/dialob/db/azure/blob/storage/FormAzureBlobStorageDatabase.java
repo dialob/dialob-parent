@@ -25,11 +25,13 @@ import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.ImmutableFormMetadataRow;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-public class FormBlobStorageDatabase extends AbstractBlobStorageDatabase<Form> implements FormDatabase {
-  public FormBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix) {
-    super(blobContainerClient, Form.class, objectMapper, prefix);
+public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Form> implements FormDatabase {
+
+  public FormAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {
+    super(blobContainerClient, Form.class, objectMapper, Objects.requireNonNullElse(prefix, "forms"), suffix);
   }
 
 
@@ -56,11 +58,6 @@ public class FormBlobStorageDatabase extends AbstractBlobStorageDatabase<Form> i
   @Override
   protected Form updateDocumentRev(@NonNull Form form, String rev) {
     return ImmutableForm.builder().from(form).rev(rev).build();
-  }
-
-  @Override
-  protected String tenantPrefix(String tenantId) {
-    return "questionnaires/" + tenantId;
   }
 
 }
