@@ -50,7 +50,7 @@
 
 
     <thirdparty.log.level>INFO</thirdparty.log.level>
-    <antlr4.version>4.13.1</antlr4.version>
+    <antlr4.version>4.13.2</antlr4.version>
     <assertj-core.version>3.25.3</assertj-core.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
 
