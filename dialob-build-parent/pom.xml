@@ -52,7 +52,7 @@
     <thirdparty.log.level>INFO</thirdparty.log.level>
     <antlr4.version>4.13.1</antlr4.version>
     <assertj-core.version>3.25.3</assertj-core.version>
-    <commons-lang3.version>3.14.0</commons-lang3.version>
+    <commons-lang3.version>3.17.0</commons-lang3.version>
 
     <guava.version>33.3.0-jre</guava.version>
     <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
