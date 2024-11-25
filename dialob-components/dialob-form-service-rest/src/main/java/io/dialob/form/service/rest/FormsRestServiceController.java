@@ -36,6 +36,7 @@ import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -168,7 +169,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<FormPutResponse> putForm(@PathVariable("formId") String formId,
+  public ResponseEntity<FormPutResponse> putForm(@PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) String formId,
                                                  @RequestParam(name = "oldId", required = false) String oldId,
                                                  @RequestParam(name = "newId", required = false) String newId,
                                                  @RequestParam(name = "force", required = false, defaultValue = "false") boolean forced,
