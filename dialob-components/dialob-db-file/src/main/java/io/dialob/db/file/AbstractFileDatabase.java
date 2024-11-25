@@ -17,6 +17,7 @@ package io.dialob.db.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.common.Constants;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.db.spi.spring.AbstractDocumentDatabase;
@@ -28,8 +29,6 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -58,6 +57,9 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
   }
 
   protected File fileRef(String id) {
+    if (!Constants.VALID_FORM_ID_PATTERN_COMPILED.matcher(id).matches()) {
+      throw new IllegalArgumentException("%s is not valid.".formatted(id));
+    };
     return path.resolve(id + ".json").toFile();
   }
 
@@ -85,20 +87,11 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
   }
 
   protected void forAllFiles(@NonNull final Consumer<File> fileConsumer) {
-    List<String> files = new ArrayList<>();
     try(final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
       directoryStream.forEach(p -> fileConsumer.accept(p.toFile()));
     } catch (IOException e) {
       LOGGER.error("failed to read directory ", e);
     }
-  }
-
-  public String fileBaseName(File file) {
-    String name = file.getName();
-    if(name.endsWith(".json")) {
-      return name.substring(0, name.length() - 5);
-    }
-    return name;
   }
 
   public boolean exists(String tenantId, @NonNull String id) {

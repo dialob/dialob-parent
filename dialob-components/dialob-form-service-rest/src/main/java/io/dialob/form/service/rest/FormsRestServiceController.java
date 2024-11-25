@@ -40,7 +40,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -59,7 +58,7 @@ public class FormsRestServiceController implements FormsRestService {
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
-  private static final ResponseEntity OK = ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
+  private static final ResponseEntity<Response> OK = ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
   public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(ImmutableResponse.builder().ok(false).build());
   public static final ResponseEntity<Response> OK_RESPONSE = ok(Response.class);
 
@@ -132,7 +131,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<FormPutResponse> itemCopy(String itemId, @Validated Form form) {
+  public ResponseEntity<FormPutResponse> itemCopy(String itemId, Form form) {
     if (form == null) {
       return ResponseEntity.badRequest().body(null);
     }
