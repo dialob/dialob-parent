@@ -83,11 +83,11 @@
     <aws-java-sdk.version>2.29.20</aws-java-sdk.version>
     <azure-sdk.version>1.2.26</azure-sdk.version>
     <s3mock-junit5.version>3.11.0</s3mock-junit5.version>
-    <groovy.version>4.0.22</groovy.version>
+    <groovy.version>4.0.24</groovy.version>
     <bcpkix-jdk18on.version>1.78.1</bcpkix-jdk18on.version>
     <spring-cloud-gcp.version>5.5.1</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
     <springdoc.version>1.8.0</springdoc.version>
-    <testcontainers.version>1.20.1</testcontainers.version>
+    <testcontainers.version>1.20.4</testcontainers.version>
     <tomcat-embed-el.version>10.1.33</tomcat-embed-el.version>
     <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
