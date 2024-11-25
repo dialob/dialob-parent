@@ -19,6 +19,7 @@ import io.dialob.api.form.Form;
 import io.dialob.api.form.FormPutResponse;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.rest.Response;
+import io.dialob.common.Constants;
 import io.dialob.form.service.api.repository.FormListItem;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,8 +41,6 @@ import java.util.List;
   @Tag(name = "dialob-form-service")
 })
 public interface FormsRestService {
-
-  String VALID_FORM_ID_PATTERN = "[a-zA-Z0-9-_]+";
 
   @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
   ResponseEntity<List<FormListItem>> getForms(@RequestParam(name = "metadata", required = false) String metadata);
@@ -66,7 +65,7 @@ public interface FormsRestService {
   @Operation(summary = OpenApiDoc.PUT_FORM.PUT_FORM_SUMMARY, description = OpenApiDoc.PUT_FORM.PUT_FORM_OP)
   @PutMapping(path = "{formId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<FormPutResponse> putForm(
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) String formId,
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) String formId,
     @Parameter(description = OpenApiDoc.PUT_FORM.OLD_ID) @RequestParam(name = "oldId", required = false) String oldId,
     @Parameter(description = OpenApiDoc.PUT_FORM.NEW_ID) @RequestParam(name = "newId", required = false) String newId,
     @RequestParam(name = "force", required = false, defaultValue = "false") @Parameter(description = OpenApiDoc.PUT_FORM.FORCED) boolean forced,
@@ -81,7 +80,7 @@ public interface FormsRestService {
   @DeleteMapping(path = "{formId}")
   ResponseEntity<Response> deleteForm(
     @Parameter(description = OpenApiDoc.GENERAL.FORM_ID)
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) String formId);
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) String formId);
 
   /**
    * @param formId document id or logical form name
@@ -92,7 +91,7 @@ public interface FormsRestService {
   @GetMapping(path = "{formId}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Form> getForm(
     @Parameter(description = OpenApiDoc.GENERAL.FORM_ID)
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) String formId,
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) String formId,
     @Parameter(description = OpenApiDoc.GENERAL.REV)
     @RequestParam(name = "rev", required = false) String rev);
 
@@ -104,7 +103,7 @@ public interface FormsRestService {
   @GetMapping(path = "{formId}/tags", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<FormTag>> getFormTags(
     @Parameter(description = OpenApiDoc.GENERAL.FORM_ID)
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) String formId);
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) String formId);
 
   /**
    * @param formId  logical form name
@@ -116,7 +115,7 @@ public interface FormsRestService {
   @GetMapping(path = "{formId}/tags/{tagName}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<FormTag> getFormTag(
     @Parameter(description = OpenApiDoc.GENERAL.FORM_ID)
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) String formId,
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) String formId,
     @Parameter(description = OpenApiDoc.GENERAL.TAG_NAME)
     @PathVariable("tagName") String tagName);
 
@@ -129,7 +128,7 @@ public interface FormsRestService {
   @Operation(summary = OpenApiDoc.TAG.POST_FORM_TAG_SUMMARY, description = OpenApiDoc.TAG.POST_FORM_TAG_OP)
   @PostMapping(path = "{formId}/tags", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Response> postFormTag(
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) String formId,
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) String formId,
     @RequestParam(name = "rev", required = false) @Parameter(description = OpenApiDoc.GENERAL.REV) String rev,
     @RequestParam(name = "snapshot", required = false, defaultValue = "false") @Parameter(description = OpenApiDoc.TAG.SNAPSHOT) boolean snapshot,
     @Parameter(name = "tag", required = true, description = OpenApiDoc.TAG.TAG_OBJ)
@@ -143,7 +142,7 @@ public interface FormsRestService {
   @Operation(summary = OpenApiDoc.TAG.TAG_LATEST_SUMMARY, description = OpenApiDoc.TAG.TAG_LATEST_OP)
   @PutMapping(path = "{formId}/tags/latest", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Response> putFormTagLatest(
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) String formId,
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) @Parameter(description = OpenApiDoc.GENERAL.FORM_ID) String formId,
     @Parameter(name = "tag", required = true, description = OpenApiDoc.TAG.TAG_OBJ) @RequestBody FormTag tag);
 
   /**
@@ -155,7 +154,7 @@ public interface FormsRestService {
    */
   @PutMapping(path = "{formId}/tags/{tagName}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Response> putFormTag(
-    @PathVariable("formId") @Pattern(regexp = VALID_FORM_ID_PATTERN) String formId,
+    @PathVariable("formId") @Pattern(regexp = Constants.VALID_FORM_ID_PATTERN) String formId,
     @PathVariable("tagName") String tagName,
     @Parameter(description = "Updated tag", name = "tag", required = true)
     @RequestBody FormTag updateTag

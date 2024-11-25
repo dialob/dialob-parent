@@ -16,7 +16,9 @@
 package io.dialob.boot.controller;
 
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
+import io.dialob.common.Constants;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -24,7 +26,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -43,11 +44,7 @@ public class FillController extends BaseController {
   }
 
   @GetMapping(value = {"/{questionnaireId}"}, produces = MediaType.TEXT_HTML_VALUE)
-  public String fill(@RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor,
-                     @RequestHeader(value = "Host", required = false) String host,
-                     @RequestHeader(value = "X-Real-IP", required = false) String realIp,
-                     @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
-                     @PathVariable("questionnaireId") String questionnaireId,
+  public String fill(@PathVariable("questionnaireId") @Pattern(regexp = Constants.QUESTIONNAIRE_ID_PATTERN) String questionnaireId,
                      CsrfToken cfrsToken,
                      Model model,
                      HttpServletRequest request) {

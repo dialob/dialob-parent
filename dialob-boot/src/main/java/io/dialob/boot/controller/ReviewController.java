@@ -20,12 +20,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -67,7 +68,7 @@ public class ReviewController extends BaseController {
                        @RequestHeader(value = "Host", required = false) String host,
                        @RequestHeader(value = "X-Real-IP", required = false) String realIp,
                        @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
-                       @PathVariable("questionnaireId") String questionnaireId,
+                       @PathVariable("questionnaireId") @Pattern(regexp = Constants.QUESTIONNAIRE_ID_PATTERN) String questionnaireId,
                        CsrfToken cfrsToken,
                        Model model,
                        HttpServletRequest request) throws JsonProcessingException {

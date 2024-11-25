@@ -39,7 +39,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+
+import static io.dialob.common.Constants.*;
 
 @RequestMapping("${dialob.api.context-path:}/questionnaires")
 @OpenAPIDefinition(info = @Info(title = "DialobQuestionnaireService"), tags = {
@@ -47,8 +50,6 @@ import java.util.Optional;
 
 })
 public interface QuestionnairesRestService {
-
-  String QUESTIONNAIRE_ID_PATTERN = "[0-9A-Fa-f]{1,64}";
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.POST_QUEST_SUMMARY)
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -65,11 +66,11 @@ public interface QuestionnairesRestService {
 
   @GetMapping(produces = {"text/csv"})
   ResponseEntity<String> getCsv(
-    @RequestParam(name = "formId") Optional<String> formId,
-    @RequestParam(name = "formName") Optional<String> formName,
-    @RequestParam(name = "formTag") Optional<String> formTag,
-    @RequestParam(name = "questionnaire") Optional<List<String>> questionnaires,
-    @RequestParam(name = "language") Optional<String> language,
+    @RequestParam(name = "formId") Optional<@Pattern(regexp = VALID_FORM_ID_PATTERN) String> formId,
+    @RequestParam(name = "formName") Optional<@Pattern(regexp = VALID_FORM_NAME_PATTERN) String> formName,
+    @RequestParam(name = "formTag") Optional<@Pattern(regexp = VALID_FORM_NAME_PATTERN) String> formTag,
+    @RequestParam(name = "questionnaire") Optional<List<@Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String>> questionnaires,
+    @RequestParam(name = "language") Optional<Locale> language,
     @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> startDate,
     @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> endDate
   );

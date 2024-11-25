@@ -42,6 +42,10 @@ public final class Constants {
   public static final String QUESTIONNAIRE = "questionnaire";
   public static final String ERROR_CODE_REQUIRED = "REQUIRED";
 
+  public static final String VALID_FORM_ID_PATTERN = "[a-zA-Z0-9-_]+";
+  public static final String VALID_FORM_NAME_PATTERN = "[a-zA-Z0-9-_]+";
+  public static final String QUESTIONNAIRE_ID_PATTERN = "[0-9A-Fa-f]{1,64}";
+
   private Constants() {
   }
 }
