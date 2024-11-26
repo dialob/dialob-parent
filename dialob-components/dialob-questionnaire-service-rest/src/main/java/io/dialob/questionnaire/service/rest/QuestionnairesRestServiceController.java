@@ -35,7 +35,9 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rest.type.ApiException;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
@@ -53,6 +54,7 @@ import java.util.stream.Collectors;
 
 import static io.dialob.api.proto.ActionsFactory.*;
 import static java.util.Collections.singletonList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
@@ -402,7 +404,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
   @Nullable
   private ActionItem selectRowgroup(ActionItem question) {
-    if ( question.getType().equals("rowgroup") ) {
+    if ( "rowgroup".equals(question.getType()) ) {
       return question;
     }
     return null;
@@ -457,17 +459,19 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   @Override
-  public ResponseEntity<String> getCsv(Optional<String> formId, Optional<String> formName, Optional<String> formTag, Optional<List<String>> questionnaires, Optional<Locale> language, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
+  public ResponseEntity<String> getCsv(@Valid GetCsv getCsv) {
 
     final List<QuestionnaireDatabase.MetadataRow> questionnaireMetadataList = new ArrayList<>();
     Form form;
 
-    if (questionnaires.isPresent()) {
-      questionnaires.ifPresent(q -> q.stream().map(qId -> questionnaireRepository.findMetadata(currentTenant.getId(), qId))
-        .filter(metadataRow -> metadataRow.getValue().getStatus().equals(Questionnaire.Metadata.Status.COMPLETED))
-        .forEach(questionnaireMetadataList::add));
 
-      // Validate questionnaire list for same form
+    List<String> questionnaires = getCsv.questionnaire();
+    if (!questionnaires.isEmpty()) {
+      questionnaires.stream().map(qId -> questionnaireRepository.findMetadata(currentTenant.getId(), qId))
+        .filter(metadataRow -> metadataRow.getValue().getStatus().equals(Questionnaire.Metadata.Status.COMPLETED))
+        .forEach(questionnaireMetadataList::add);
+
+      // Validate questionnaires list for same form
       String seenFormId = null;
       for (QuestionnaireDatabase.MetadataRow metadataRow : questionnaireMetadataList) {
         Questionnaire.Metadata metadata = metadataRow.getValue();
@@ -494,31 +498,31 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       }
     } else {
       // Mode 2 - Query sessions by form
-      if (formId.isPresent()) {
-        form = formDatabase.findOne(currentTenant.getId(), formId.get());
+      if (StringUtils.isNotBlank(getCsv.formId())) {
+        form = formDatabase.findOne(currentTenant.getId(), getCsv.formId());
       } else {
-        if (formName.isEmpty() && formTag.isEmpty()) {
+        if (isBlank(getCsv.formName()) && isBlank(getCsv.formTag())) {
           throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
             .code("formNameNotSet")
             .context("")
             .error("Form name and tag or form ID is not set").build())
             .status(HttpStatus.BAD_REQUEST.value()).build());
         }
-        form = formDatabase.findOne(currentTenant.getId(), formName.get(), formTag.get());
+        form = formDatabase.findOne(currentTenant.getId(), getCsv.formName(), getCsv.formTag());
       }
 
       questionnaireRepository.findAllMetadata(currentTenant.getId(),
         null,
-        formId.orElse(null),
-        formName.orElse(null),
-        formTag.orElse(null),
+        getCsv.formId(),
+        getCsv.formName(),
+        getCsv.formTag(),
         Questionnaire.Metadata.Status.COMPLETED,
         metadata -> {
           // Filter by start and end date using last answer timestamp. TODO: use completion date when it gets available
-          if (startDate.isPresent() && startDate.get().isAfter(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+          if (getCsv.from() != null && getCsv.from().isAfter(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
             return;
           }
-          if (endDate.isPresent() && endDate.get().isBefore(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+          if (getCsv.to() != null && getCsv.to().isBefore(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
             return;
           }
           questionnaireMetadataList.add(metadata);
@@ -536,7 +540,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     }
 
     try {
-      String csv = csvSerializer.serializeQuestionnaires(questionnaireMetadataList.stream().map(QuestionnaireDatabase.MetadataRow::getId).toArray(String[]::new), form, language.orElse(Locale.ENGLISH));
+      String csv = csvSerializer.serializeQuestionnaires(questionnaireMetadataList.stream().map(QuestionnaireDatabase.MetadataRow::getId).toArray(String[]::new), form, getCsv.language());
       return ResponseEntity.ok().contentType(MediaType.valueOf("text/csv")).body(csv);
     } catch (IOException e) {
       LOGGER.error("CSV Export failed", e);

@@ -166,7 +166,7 @@ class FillControllerTest extends AbstractUIControllerTest {
 
   @Test
   public void shouldRejectInvalidId() throws Exception {
-    mockMvc.perform(get("/fill/abc-123").params(tenantParam).accept(MediaType.TEXT_HTML))
+    mockMvc.perform(get("/fill/abc\\123").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().is4xxClientError());
     verifyNoInteractions(questionnaireDatabase);
   }

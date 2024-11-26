@@ -16,6 +16,7 @@
 package io.dialob.questionnaire.service.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
@@ -30,6 +31,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -38,9 +40,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import static io.dialob.common.Constants.*;
 
@@ -64,16 +64,48 @@ public interface QuestionnairesRestService {
                                                                 @RequestParam(name = "formTag", required = false) String formTag,
                                                                 @RequestParam(name = "status", required = false) Questionnaire.Metadata.Status status);
 
+  record GetCsv(
+    @RequestParam(required = false)
+    @Nullable
+    @Pattern(regexp = VALID_FORM_ID_PATTERN)
+    String formId,
+
+    @RequestParam(required = false)
+    @Nullable
+    @Pattern(regexp = VALID_FORM_NAME_PATTERN)
+    String formName,
+
+    @RequestParam(required = false)
+    @Nullable
+    @Pattern(regexp = VALID_FORM_NAME_PATTERN)
+    String formTag,
+
+    // BUG RequestParam's name attribute here does not work with records
+    @RequestParam(required = false)
+    List<@Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String> questionnaire,
+
+    @RequestParam(required = false)
+    Locale language,
+
+    @RequestParam(required = false)
+    @Nullable
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime from,
+
+    @RequestParam(required = false)
+    @Nullable
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime to
+  ) {
+    public GetCsv {
+      // defaults
+      language = Objects.requireNonNullElse(language, Locale.ENGLISH);
+      questionnaire = Objects.requireNonNullElseGet(questionnaire, Collections::emptyList);
+    }
+  };
+
   @GetMapping(produces = {"text/csv"})
-  ResponseEntity<String> getCsv(
-    @RequestParam(name = "formId") Optional<@Pattern(regexp = VALID_FORM_ID_PATTERN) String> formId,
-    @RequestParam(name = "formName") Optional<@Pattern(regexp = VALID_FORM_NAME_PATTERN) String> formName,
-    @RequestParam(name = "formTag") Optional<@Pattern(regexp = VALID_FORM_NAME_PATTERN) String> formTag,
-    @RequestParam(name = "questionnaire") Optional<List<@Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String>> questionnaires,
-    @RequestParam(name = "language") Optional<Locale> language,
-    @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> startDate,
-    @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> endDate
-  );
+  ResponseEntity<String> getCsv(@Valid GetCsv getCsv);
 
   @Operation (summary = OpenApiDoc.QUESTIONNAIRE.GET_QUESTID_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_QUESTID_OP)
   @GetMapping(path = "{questionnaireId}", produces = MediaType.APPLICATION_JSON_VALUE)

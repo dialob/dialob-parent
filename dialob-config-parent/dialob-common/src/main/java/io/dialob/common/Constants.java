@@ -49,7 +49,7 @@ public final class Constants {
   public static final String VALID_FORM_NAME_PATTERN = "[\\p{Alnum}-_.]+";
   public static final Pattern VALID_FORM_NAME_PATTERN_COMPILED = Pattern.compile(VALID_FORM_NAME_PATTERN);
 
-  public static final String QUESTIONNAIRE_ID_PATTERN = "\\p{XDigit}{1,64}";
+  public static final String QUESTIONNAIRE_ID_PATTERN = "[\\p{XDigit}-]{1,64}";
   public static final Pattern QUESTIONNAIRE_ID_PATTERN_COMPILED = Pattern.compile(QUESTIONNAIRE_ID_PATTERN);
 
   private Constants() { }
