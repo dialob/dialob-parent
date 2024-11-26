@@ -63,12 +63,10 @@ public class ReviewController extends BaseController {
     this.pageSettingsProvider = pageSettingsProvider;
   }
 
+  // CodeQL gives false positive here and from other places where validation api is used.
+  // see. https://github.com/github/codeql/issues/8705
   @GetMapping(value = {"/{questionnaireId}"}, produces = MediaType.TEXT_HTML_VALUE)
-  public String review(@RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor,
-                       @RequestHeader(value = "Host", required = false) String host,
-                       @RequestHeader(value = "X-Real-IP", required = false) String realIp,
-                       @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
-                       @PathVariable("questionnaireId") @Pattern(regexp = Constants.QUESTIONNAIRE_ID_PATTERN) String questionnaireId,
+  public String review(@PathVariable("questionnaireId") @Pattern(regexp = Constants.QUESTIONNAIRE_ID_PATTERN) String questionnaireId,
                        CsrfToken cfrsToken,
                        Model model,
                        HttpServletRequest request) throws JsonProcessingException {
