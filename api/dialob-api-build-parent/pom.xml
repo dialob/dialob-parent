@@ -10,16 +10,16 @@
   <packaging>pom</packaging>
 
   <properties>
-    <jackson.version>2.14.2</jackson.version>
-    <jackson-annotation.version>2.14.2</jackson-annotation.version>
-    <jackson-databind.version>2.14.2</jackson-databind.version>
+    <jackson.version>2.17.3</jackson.version>
+    <jackson-annotation.version>${jackson.version}</jackson-annotation.version>
+    <jackson-databind.version>${jackson.version}</jackson-databind.version>
     
-    <spring-data-commons.version>3.0.3</spring-data-commons.version>
+    <spring-data-commons.version>3.3.6</spring-data-commons.version>
     <validation-api.version>3.0.2</validation-api.version>
-    <immutables.version>2.9.3</immutables.version>
+    <immutables.version>2.10.1</immutables.version>
     <junit.version>5.9.1</junit.version>
     <assertj.version>3.23.1</assertj.version>
-    <swagger-core.version>2.2.8</swagger-core.version>
+    <swagger-core.version>2.2.25</swagger-core.version>
     <okhttp.version>4.9.0</okhttp.version>
     <feign.version>11.6</feign.version> <!-- generator not compatible with 11.0 -->
     <feign.form.version>3.8.0</feign.form.version>
@@ -80,7 +80,7 @@
         <plugin>
           <groupId>io.swagger.codegen.v3</groupId>
           <artifactId>swagger-codegen-maven-plugin</artifactId>
-          <version>3.0.36</version>
+          <version>3.0.64</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -241,7 +241,7 @@
       <dependency>
         <groupId>jakarta.annotation</groupId>
         <artifactId>jakarta.annotation-api</artifactId>
-        <version>1.3.5</version>
+        <version>3.0.0</version>
       </dependency>
 
     </dependencies>

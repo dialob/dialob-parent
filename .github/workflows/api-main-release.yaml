@@ -28,14 +28,12 @@ jobs:
         server-username: OSSRH_USER
         server-password: OSSRH_PASS
 
-    - name: tag - release - upload
+    - name: tag - release api - upload
       shell: bash
       run: ./dialob-api-build-parent/release.sh
       env:
-      env:
         BOT_NAME: "info"
         BOT_EMAIL: "info@dialob.io"
-        DOCKER_REGISTRY: docker.io/resys
         DIALOB_GPG_SEC: ${{ secrets.DIALOB_GPG_SEC }}
         OSSRH_USER: ${{ secrets.OSSRH_USER }}
         OSSRH_PASS: ${{ secrets.OSSRH_PASS }}

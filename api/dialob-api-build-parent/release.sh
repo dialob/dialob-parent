@@ -67,13 +67,13 @@ echo "Dev version: '${PROJECT_VERSION}'"
 
 ./mvnw versions:set -DnewVersion=${RELEASE_VERSION}
 git commit -am "Release ${RELEASE_VERSION}"
-git tag -a ${RELEASE_VERSION} -m "release ${RELEASE_VERSION}"
+git tag -a api-${RELEASE_VERSION} -m "release API ${RELEASE_VERSION}"
 
 run_build
 
 ./mvnw versions:set -DnewVersion=${PROJECT_VERSION}
-git commit -am "Prepare ${NEXT_RELEASE_VERSION} development"
+git commit -am "Prepare ${NEXT_RELEASE_VERSION} api development"
 git push
-git push origin ${RELEASE_VERSION}
+git push origin api-${RELEASE_VERSION}
 
 echo "### Version ${RELEASE_VERSION} release build" >> $GITHUB_STEP_SUMMARY
