@@ -60,12 +60,8 @@ public class FormsRestServiceController implements FormsRestService {
 
   private static final ResponseEntity<Response> OK = ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
   public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(ImmutableResponse.builder().ok(false).build());
-  public static final ResponseEntity<Response> OK_RESPONSE = ok(Response.class);
 
-  private static <T> ResponseEntity<T> ok() {
-    return OK;
-  }
-  private static <T> ResponseEntity<T> ok(Class<T> type) {
+  private static ResponseEntity<Response> ok() {
     return OK;
   }
 
@@ -334,7 +330,7 @@ public class FormsRestServiceController implements FormsRestService {
         .formId(newTag.getFormId())
         .refName(newTag.getRefName())
         .build());
-      return OK_RESPONSE;
+      return OK;
     }).orElse(NOT_MODIFIED_RESPONSE);
   }
 
