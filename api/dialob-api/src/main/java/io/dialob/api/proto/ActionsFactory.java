@@ -15,6 +15,8 @@
  */
 package io.dialob.api.proto;
 
+import io.dialob.api.annotation.Nullable;
+
 public final class ActionsFactory {
 
   public static final ImmutableAction PREVIOUS_ACTION = ImmutableAction.builder().type(Action.Type.PREVIOUS).build();
@@ -75,7 +77,7 @@ public final class ActionsFactory {
     return ImmutableAction.builder().type(Action.Type.SET_LOCALE).value(locale).build();
   }
 
-  public static Actions actions(String rev, Action ...actions) {
+  public static Actions actions(@Nullable String rev, Action ...actions) {
     return ImmutableActions.builder().rev(rev).addActions(actions).build();
   }
 
