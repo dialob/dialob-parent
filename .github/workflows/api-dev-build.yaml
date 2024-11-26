@@ -1,11 +1,16 @@
 on:
+  pull_request:
+    paths:
+      - 'api/**'
+    branches:
+      - dev
   push:
     paths:
       - 'api/**'
     branches:
       - dev
 
-name: dev - build api - deploy
+name: dev - build api
 
 jobs:
   build:
@@ -27,7 +32,3 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: tag - upload
-        run: ./dialob-build-parent/build.sh
-        env:
-          GITHUB_REF_NAME: ${{ github.ref_name }}
