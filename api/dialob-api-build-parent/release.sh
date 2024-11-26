@@ -1,5 +1,34 @@
+#
+# Copyright © 2015 - 2021 ReSys (info@dialob.io)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 #!/usr/bin/env bash
 set -e
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+run_build () {
+	# https://issues.sonatype.org/browse/NEXUS-27902
+	export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
+	./mvnw -B clean deploy \
+			-Prelease,jib \
+			-Dmaven.javadoc.skip=false \
+			-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+			-Djib.to.imagePath=$DOCKER_REGISTRY \
+			-DbranchName=$GITHUB_REF_NAME
+}
 
 # No changes, skip release
 readonly local last_release_commit_hash=$(git log --author="$BOT_NAME" --pretty=format:"%H" -1)
@@ -10,20 +39,15 @@ if [[ "${last_release_commit_hash}" = "${GITHUB_SHA}" ]]; then
      #exit 0
 fi
 
-echo "Import GPG key"
-echo "$GPG_KEY" > private.key
-gpg --batch --import ./private.key 
-rm ./private.key
-echo "JAVA_HOME '$JAVA_HOME'"
-
 # Config GIT
 echo "Setup git user name to '$BOT_NAME' and email to '$BOT_EMAIL' GPG key ID $GPG_KEY_ID"
 git config --global user.name "$BOT_NAME";
 git config --global user.email "$BOT_EMAIL";
 
-echo "Git checkout refname: '${refname}' branch: '${branch}' commit: '${GITHUB_SHA}'"
+echo "Git checkout branch: '${GITHUB_REF_NAME}' commit: '${GITHUB_SHA}'"
+
 # Current and next version
-RELEASE_VERSION=$(cat dialob-api-build-parent/next-release.version)
+RELEASE_VERSION=$(cat $SCRIPT_DIR/next-release.version | xargs)
 if [[ $RELEASE_VERSION =~ ([0-9]+)$ ]]; then
   MINOR_VERSION=${BASH_REMATCH[1]}
   echo "Releasing   : '${RELEASE_VERSION}'"
@@ -36,23 +60,20 @@ else
   exit 1
 fi
 
-echo -n ${NEXT_RELEASE_VERSION} > dialob-api-build-parent/next-release.version
+echo -n ${NEXT_RELEASE_VERSION} > $SCRIPT_DIR/next-release.version
 
 PROJECT_VERSION=$(./mvnw -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-echo "Dev version: '${PROJECT_VERSION}' release version: '${RELEASE_VERSION}'"
+echo "Dev version: '${PROJECT_VERSION}'"
 
 ./mvnw versions:set -DnewVersion=${RELEASE_VERSION}
-git commit -am "Release: ${RELEASE_VERSION}"
+git commit -am "Release ${RELEASE_VERSION}"
 git tag -a ${RELEASE_VERSION} -m "release ${RELEASE_VERSION}"
 
+run_build
 
-# https://issues.sonatype.org/browse/NEXUS-27902
-export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
-
-./mvnw clean deploy -Pdialob-release --settings dialob-api-build-parent/ci-maven-settings.xml -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 ./mvnw versions:set -DnewVersion=${PROJECT_VERSION}
-git commit -am "Release: ${RELEASE_VERSION}"
+git commit -am "Prepare ${NEXT_RELEASE_VERSION} development"
 git push
 git push origin ${RELEASE_VERSION}
 
-
+echo "### Version ${RELEASE_VERSION} release build" >> $GITHUB_STEP_SUMMARY
