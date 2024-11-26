@@ -34,4 +34,4 @@ jobs:
 
       - name: build api
         run: |
-          ./mvn -B verify
+          ./mvnw -B verify
