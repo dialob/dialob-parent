@@ -32,3 +32,6 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
+      - name: build api
+        run: |
+          ./mvn -B verify
