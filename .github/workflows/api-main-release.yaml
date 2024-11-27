@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-name: main - release - java 17
+name: main - release api
 jobs:
   build:
     name: Releasing API from branch - main
