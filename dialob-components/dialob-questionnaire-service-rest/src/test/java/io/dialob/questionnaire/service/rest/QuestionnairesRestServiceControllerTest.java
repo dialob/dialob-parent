@@ -550,13 +550,11 @@ public class QuestionnairesRestServiceControllerTest {
 
   @Test
   public void shouldNotGetQuestionnaireWithInvalidId() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-
     Questionnaire questionnaire = questionnaire(null, "shouldGetQuestionnaire");
     when(questionnaireDatabase.findOne("t-123", "abc123")).thenReturn(questionnaire);
 
     mockMvc.perform(get("/questionnaires/efsf").accept(MediaType.APPLICATION_JSON))
-      .andExpect(status().is4xxClientError())
+      .andExpect(status().isBadRequest())
       .andExpect(content().string(is(emptyString())));
 
     verifyNoInteractions(questionnaireDatabase);

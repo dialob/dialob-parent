@@ -43,11 +43,20 @@ public final class Constants {
   public static final String QUESTIONNAIRE = "questionnaire";
   public static final String ERROR_CODE_REQUIRED = "REQUIRED";
 
-  public static final String VALID_FORM_ID_PATTERN = "[\\p{Alnum}-_.]+";
+  public static final String VALID_ID_PATTERN = "^\\p{Alpha}[_\\p{Alnum}]*$";
+  public static final Pattern VALID_ID_PATTERN_COMPILED = Pattern.compile(VALID_ID_PATTERN);
+
+  public static final String VALID_REV_PATTERN = "[\\p{XDigit}-]{1,64}";
+  public static final Pattern VALID_REV_PATTERN_COMPILED = Pattern.compile(VALID_REV_PATTERN);
+
+  public static final String VALID_FORM_NAME_PATTERN = "[\\p{Alnum}-_]+";
+  public static final Pattern VALID_FORM_NAME_PATTERN_COMPILED = Pattern.compile(VALID_FORM_NAME_PATTERN);
+
+  public static final String VALID_FORM_ID_PATTERN = VALID_FORM_NAME_PATTERN;
   public static final Pattern VALID_FORM_ID_PATTERN_COMPILED = Pattern.compile(VALID_FORM_ID_PATTERN);
 
-  public static final String VALID_FORM_NAME_PATTERN = "[\\p{Alnum}-_.]+";
-  public static final Pattern VALID_FORM_NAME_PATTERN_COMPILED = Pattern.compile(VALID_FORM_NAME_PATTERN);
+  public static final String VALID_FORM_TAG_PATTERN = VALID_FORM_NAME_PATTERN;
+  public static final Pattern VALID_FORM_TAG_PATTERN_COMPILED = Pattern.compile(VALID_FORM_TAG_PATTERN);
 
   public static final String QUESTIONNAIRE_ID_PATTERN = "[\\p{XDigit}-]{1,64}";
   public static final Pattern QUESTIONNAIRE_ID_PATTERN_COMPILED = Pattern.compile(QUESTIONNAIRE_ID_PATTERN);
