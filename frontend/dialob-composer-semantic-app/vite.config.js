@@ -31,14 +31,10 @@ function reactVirtualized() {
   }
 }
 
-//const ASSET_URL = process.env.ASSET_URL || '';
-
-//console.log("ASSET URL", ASSET_URL);
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), reactVirtualized()],
-  //base: ASSET_URL,
+  base: process.env.ASSET_URL ?? '',
   define: {
       'process.env': {}
   },

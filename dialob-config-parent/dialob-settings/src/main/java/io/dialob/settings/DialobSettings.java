@@ -129,6 +129,8 @@ public class DialobSettings {
 
       private String prefix = "";
 
+      private String suffix;
+
     }
 
   }

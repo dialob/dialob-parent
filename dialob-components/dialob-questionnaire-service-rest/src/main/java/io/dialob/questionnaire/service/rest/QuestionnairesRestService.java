@@ -16,6 +16,7 @@
 package io.dialob.questionnaire.service.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
@@ -30,6 +31,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +40,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static io.dialob.common.Constants.*;
 
 @RequestMapping("${dialob.api.context-path:}/questionnaires")
 @OpenAPIDefinition(info = @Info(title = "DialobQuestionnaireService"), tags = {
@@ -60,45 +64,77 @@ public interface QuestionnairesRestService {
                                                                 @RequestParam(name = "formTag", required = false) String formTag,
                                                                 @RequestParam(name = "status", required = false) Questionnaire.Metadata.Status status);
 
+  record GetCsv(
+    @RequestParam(required = false)
+    @Nullable
+    @Pattern(regexp = VALID_FORM_ID_PATTERN)
+    String formId,
+
+    @RequestParam(required = false)
+    @Nullable
+    @Pattern(regexp = VALID_FORM_NAME_PATTERN)
+    String formName,
+
+    @RequestParam(required = false)
+    @Nullable
+    @Pattern(regexp = VALID_FORM_NAME_PATTERN)
+    String formTag,
+
+    // BUG RequestParam's name attribute here does not work with records
+    @RequestParam(required = false)
+    List<@Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String> questionnaire,
+
+    @RequestParam(required = false)
+    Locale language,
+
+    @RequestParam(required = false)
+    @Nullable
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime from,
+
+    @RequestParam(required = false)
+    @Nullable
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime to
+  ) {
+    public GetCsv {
+      // defaults
+      language = Objects.requireNonNullElse(language, Locale.ENGLISH);
+      questionnaire = Objects.requireNonNullElseGet(questionnaire, Collections::emptyList);
+    }
+  };
+
   @GetMapping(produces = {"text/csv"})
-  ResponseEntity<String> getCsv(
-    @RequestParam(name = "formId") Optional<String> formId,
-    @RequestParam(name = "formName") Optional<String> formName,
-    @RequestParam(name = "formTag") Optional<String> formTag,
-    @RequestParam(name = "questionnaire") Optional<List<String>> questionnaires,
-    @RequestParam(name = "language") Optional<String> language,
-    @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> startDate,
-    @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> endDate
-  );
+  ResponseEntity<String> getCsv(@Valid GetCsv getCsv);
 
   @Operation (summary = OpenApiDoc.QUESTIONNAIRE.GET_QUESTID_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_QUESTID_OP)
   @GetMapping(path = "{questionnaireId}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Questionnaire> getQuestionnaire(
 	@Parameter (description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
-	@PathVariable("questionnaireId")
+	@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN)
 	String questionnaireId);
 
   @Operation (summary = OpenApiDoc.QUESTIONNAIRE.DELETE_QUEST_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.DELETE_QUEST_OP)
   @DeleteMapping(path = "{questionnaireId}")
   ResponseEntity<Response> deleteQuestionnaire(
 	@Parameter (description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
-	@PathVariable("questionnaireId") String questionnaireId);
+	@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String questionnaireId);
 
   @Operation (summary = OpenApiDoc.QUESTIONNAIRE.PUT_QUEST_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.PUT_QUEST_OP)
   @PutMapping(path = "{questionnaireId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Questionnaire> putQuestionnaire(
 	@Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
-    @PathVariable("questionnaireId")  String questionnaireId,
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN)  String questionnaireId,
     @Parameter(name = "questionnaire", required = true, description = OpenApiDoc.QUESTIONNAIRE.QUEST_OBJ)
     @RequestBody @Validated Questionnaire questionnaire);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_STATUS_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_STATUS_OP)
   @GetMapping(path = "{questionnaireId}/status", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<Questionnaire.Metadata.Status> getQuestionnaireStatus(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
+  ResponseEntity<Questionnaire.Metadata.Status> getQuestionnaireStatus(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.PUT_STATUS_SUMMARY)
   @PutMapping(path = "{questionnaireId}/status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<Questionnaire.Metadata.Status> putQuestionnaireStatus(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+  ResponseEntity<Questionnaire.Metadata.Status> putQuestionnaireStatus(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
                                                                        @Parameter(name = "status", required = true, description = OpenApiDoc.QUESTIONNAIRE.PUT_NEW_STATUS)
                                                                        @RequestBody Questionnaire.Metadata.Status status);
 
@@ -106,18 +142,18 @@ public interface QuestionnairesRestService {
   @GetMapping(path = "{questionnaireId}/answers", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<Answer>> getQuestionnaireAnswers(
 	@Parameter (description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
-    @PathVariable("questionnaireId") String questionnaireId);
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String questionnaireId);
 
   @Operation (summary = OpenApiDoc.QUESTIONNAIRE.ERRORS_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.ERRORS_OP)
   @GetMapping(path = "{questionnaireId}/errors", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<Error>> getQuestionnaireErrors(
 	@Parameter (description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
-	@PathVariable("questionnaireId") String questionnaireId);
+	@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String questionnaireId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.POST_ANSWER_SUMMARY)
   @PostMapping(path = "{questionnaireId}/answers", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<Error>> putQuestionnaireAnswers(
-    @PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
     @Parameter(name = "answers", required = true, description = OpenApiDoc.QUESTIONNAIRE.NEW_ANSWERS_OBJ)
     @RequestBody List<Answer> answers);
 
@@ -132,7 +168,7 @@ public interface QuestionnairesRestService {
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.PUT_ANSWER_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.PUT_ANSWER_OP)
   @PutMapping(path = "{questionnaireId}/answers/{answerId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = {MediaType.APPLICATION_JSON_VALUE})
   ResponseEntity<List<Error>> putQuestionnaireAnswer(
-    @PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
     @PathVariable("answerId") @Parameter (description = OpenApiDoc.QUESTIONNAIRE.ANSWER_ID)String answerId,
     @Parameter(name = "answer", required = true, description = OpenApiDoc.QUESTIONNAIRE.ANSWER_OBJ)
     @RequestBody Object answer) // multivalued answer?
@@ -141,41 +177,41 @@ public interface QuestionnairesRestService {
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.DELETE_ANS_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.DELETE_ANS_OP)
   @DeleteMapping(path = "{questionnaireId}/answers/{answerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<Error>> deleteQuestionnaireAnswer(
-    @PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)String questionnaireId,
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)String questionnaireId,
     @PathVariable("answerId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.ANSWER_ID) String answerId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_PAGES_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_PAGES_OP)
   @GetMapping(path = "{questionnaireId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<Items> getQuestionnairePages(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
+  ResponseEntity<Items> getQuestionnairePages(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.PUT_PAGES_SUMMARY)
   @PutMapping(path = "{questionnaireId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<Items> putQuestionnairePages(@NonNull @PathVariable("questionnaireId")
+  ResponseEntity<Items> putQuestionnairePages(@NonNull @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN)
   		@Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)String questionnaireId,
         @Parameter(name = "pages", required = true, description = OpenApiDoc.QUESTIONNAIRE.PAGES) @RequestBody Items pages);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_ITEMS_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_ITEMS_OP)
   @GetMapping(path = "{questionnaireId}/items", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<ActionItem>> getQuestionnaireItems(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
+  ResponseEntity<List<ActionItem>> getQuestionnaireItems(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_ITEM_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_ITEM_OP)
   @GetMapping(path = "{questionnaireId}/items/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<ActionItem> getQuestionnaireItem(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.ITEM_ID) String questionnaireId, @PathVariable("itemId") String itemId);
+  ResponseEntity<ActionItem> getQuestionnaireItem(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.ITEM_ID) String questionnaireId, @PathVariable("itemId") String itemId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_ROWS_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_ROWS_OP)
   @GetMapping(path = "{questionnaireId}/items/{itemId}/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<String>> getQuestionnaireItemRows(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+  ResponseEntity<List<String>> getQuestionnaireItemRows(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
 	@PathVariable("itemId") @Parameter (description = OpenApiDoc.QUESTIONNAIRE.ITEM_ID) String itemId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.POST_ROW_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.POST_ROW_OP)
   @PostMapping(path = "{questionnaireId}/items/{itemId}/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<String>> postQuestionnaireItemRow(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+  ResponseEntity<List<String>> postQuestionnaireItemRow(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
 	@Parameter(description = OpenApiDoc.QUESTIONNAIRE.ITEM_ID)
 	@PathVariable("itemId") String itemId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.DELETE_ROW_ITEM_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.DELETE_ROW_ITEM_OP)
   @DeleteMapping(path = "{questionnaireId}/items/{itemId}/rows/{rowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<String>> deleteQuestionnaireItemRow(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+  ResponseEntity<List<String>> deleteQuestionnaireItemRow(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
 	@Parameter (description = OpenApiDoc.QUESTIONNAIRE.ITEM_ID)
 	@PathVariable("itemId") String itemId,
 	@Parameter (description = OpenApiDoc.QUESTIONNAIRE.ROW_ID)
@@ -183,10 +219,10 @@ public interface QuestionnairesRestService {
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_VALUESETS_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_VALUESETS_OP)
   @GetMapping(path = "{questionnaireId}/valueSets", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<ValueSet>> getQuestionnaireValueSets(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
+  ResponseEntity<List<ValueSet>> getQuestionnaireValueSets(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId);
 
   @Operation(summary = OpenApiDoc.QUESTIONNAIRE.GET_VALUESET_SUMMARY, description = OpenApiDoc.QUESTIONNAIRE.GET_VALUESET_OP)
   @GetMapping(path = "{questionnaireId}/valueSets/{valueSetId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<ValueSet> getQuestionnaireValueSet(@PathVariable("questionnaireId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
+  ResponseEntity<ValueSet> getQuestionnaireValueSet(@PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID) String questionnaireId,
    @PathVariable("valueSetId") @Parameter(description = OpenApiDoc.QUESTIONNAIRE.VALUESET_ID) String valueSetId);
 }

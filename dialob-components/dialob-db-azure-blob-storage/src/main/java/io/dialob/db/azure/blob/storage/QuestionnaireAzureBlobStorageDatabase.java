@@ -25,12 +25,13 @@ import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-public class QuestionnaireBlobStorageDatabase extends AbstractBlobStorageDatabase<Questionnaire> implements QuestionnaireDatabase {
+public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Questionnaire> implements QuestionnaireDatabase {
 
-  public QuestionnaireBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix) {
-    super(blobContainerClient, Questionnaire.class, objectMapper, prefix);
+  public QuestionnaireAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {
+    super(blobContainerClient, Questionnaire.class, objectMapper, Objects.requireNonNullElse(prefix, "questionnaires"), suffix);
   }
 
 
@@ -59,8 +60,4 @@ public class QuestionnaireBlobStorageDatabase extends AbstractBlobStorageDatabas
     return ImmutableQuestionnaire.builder().from(document).rev(rev).build();
   }
 
-  @Override
-  protected String tenantPrefix(String tenantId) {
-    return "questionnaires/" + tenantId;
-  }
 }

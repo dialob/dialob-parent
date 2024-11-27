@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 
 import static org.mockito.ArgumentMatchers.argThat;
 
-class FormBlobStorageDatabaseTest {
+class FormAzureBlobStorageDatabaseTest {
 
 
   private static final String AZURITE_IMAGE = "mcr.microsoft.com/azure-storage/azurite:3.32.0";
@@ -62,7 +62,7 @@ class FormBlobStorageDatabaseTest {
 
   @Test
   public void shouldGetSameObjectBackFromStorage() {
-    FormBlobStorageDatabase database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
@@ -75,7 +75,7 @@ class FormBlobStorageDatabaseTest {
 
   @Test
   public void shouldRevisionObject() {
-    FormBlobStorageDatabase database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
@@ -92,20 +92,20 @@ class FormBlobStorageDatabaseTest {
 
   @Test
   public void shouldThrowDocumentNotFoundExceptionIfObjectNotFound() {
-    var database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Assertions.assertThrows(DocumentNotFoundException.class, () -> database.findOne("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
 
   @Test
   public void shouldGetFalseFromExistsWhenDocumentDoNotExists() {
-    var database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Assertions.assertFalse(database.exists("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
   @Test
   public void shouldGetTrueFromExistsWhenDocumentDoExists() {
-    var database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
@@ -118,14 +118,14 @@ class FormBlobStorageDatabaseTest {
 
   @Test
   public void shouldBeAbleDeleteNonExistingDocument() {
-    FormBlobStorageDatabase database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Assertions.assertFalse(database.exists("00000000-0000-0000-0000-000000000000", "not-exists"));
     Assertions.assertFalse(database.delete("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
   @Test
   public void shouldBeAbleDeleteExistingDocument() {
-    FormBlobStorageDatabase database = new FormBlobStorageDatabase(blobContainerClient, objectMapper, "forms");
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
@@ -140,7 +140,7 @@ class FormBlobStorageDatabaseTest {
 
   @Test
   public void shouldScanBucket() {
-    FormBlobStorageDatabase database = new FormBlobStorageDatabase(blobServiceClient.createBlobContainer("should-scan-bucket"), objectMapper, "forms");
+    FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobServiceClient.createBlobContainer("should-scan-bucket"), objectMapper, "forms", null);
 
     Consumer<BlobItem> scanner = Mockito.mock();
     database.forAllObjects("00000000-0000-0000-0000-000000000000", scanner);

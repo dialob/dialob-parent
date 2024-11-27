@@ -134,4 +134,15 @@ class ReviewControllerTest extends AbstractUIControllerTest {
 
   }
 
+  @Test
+  @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
+  public void shouldNotAcceptInvalidId() throws Exception {
+
+    mockMvc.perform(get("/review/fgerfe").params(tenantParam).accept(MediaType.TEXT_HTML))
+      .andExpect(status().isBadRequest());
+    verifyNoMoreInteractions(questionnaireDatabase);
+
+  }
+
+
 }

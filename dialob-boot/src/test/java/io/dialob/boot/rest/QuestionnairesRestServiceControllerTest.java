@@ -197,8 +197,8 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest"})
   public void shouldReturn404IfQuestionnaireDoNotExists() throws Exception {
-    when(questionnaireDatabaseMock().findOne(tenantId, "notfound")).thenThrow(new DocumentNotFoundException("not_found"));
-    mockMvc.perform(get(uri("api", "questionnaires", "notfound")).params(tenantParam))
+    when(questionnaireDatabaseMock().findOne(tenantId, "00000")).thenThrow(new DocumentNotFoundException("not_found"));
+    mockMvc.perform(get(uri("api", "questionnaires", "00000")).params(tenantParam))
       .andExpect(status().isNotFound())
       .andExpect(jsonPath("$.status").value(404))
       .andExpect(jsonPath("$.message").value("not_found"))
@@ -214,20 +214,20 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest"})
   public void return200EvenQuestionnairesFormDoNotExists() throws Exception {
-    Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "notexists", "1-notexists");
-    when(questionnaireDatabaseMock().findOne(tenantId, "invalidQ")).thenReturn(questionnaire);
+    Questionnaire questionnaire = createQuestionnaireDocument("abc123edf3", "1-invalidQ", "notexists", "1-notexists");
+    when(questionnaireDatabaseMock().findOne(tenantId, "abc123edf3")).thenReturn(questionnaire);
 
-    mockMvc.perform(get(uri("api", "questionnaires", "invalidQ")).params(tenantParam))
+    mockMvc.perform(get(uri("api", "questionnaires", "abc123edf3")).params(tenantParam))
       .andExpect(status().isOk());
 
-    verify(questionnaireDatabaseMock()).findOne(tenantId, "invalidQ");
+    verify(questionnaireDatabaseMock()).findOne(tenantId, "abc123edf3");
     verifyNoMoreInteractions(questionnaireDatabaseMock(), formDatabase);
   }
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest"})
   public void cannotFetchQuestionnairesWithoutAuthority() throws Exception {
-    mockMvc.perform(get(uri("api", "questionnaires", "noauthority")).params(tenantParam))
+    mockMvc.perform(get(uri("api", "questionnaires", "abc123edf1")).params(tenantParam))
       .andExpect(status().isForbidden());
     verifyNoMoreInteractions(questionnaireDatabaseMock(), formDatabase);
   }
@@ -235,7 +235,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest"})
   public void cannotDeleteQuestionnairesWithoutAuthority() throws Exception {
-    mockMvc.perform(delete(uri("api", "questionnaires", "noauthority")).params(tenantParam).with(csrf()))
+    mockMvc.perform(delete(uri("api", "questionnaires", "abc123edf1")).params(tenantParam).with(csrf()))
       .andExpect(status().isForbidden());
     verifyNoMoreInteractions(questionnaireDatabaseMock(), formDatabase);
   }
@@ -244,9 +244,9 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   @WithMockUser(username = "testUser", authorities = {"itest","questionnaires.delete"})
   public void canDeleteQuestionnairesWithAuthority() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
-    mockMvc.perform(delete(uri("api", "questionnaires", "toberemoved")).params(tenantParam).with(csrf()))
+    mockMvc.perform(delete(uri("api", "questionnaires", "abc123edf")).params(tenantParam).with(csrf()))
       .andExpect(status().isOk());
-    verify(questionnaireDatabaseMock()).delete(tenantId, "toberemoved");
+    verify(questionnaireDatabaseMock()).delete(tenantId, "abc123edf");
     verifyNoMoreInteractions(questionnaireDatabaseMock(), formDatabase);
   }
 

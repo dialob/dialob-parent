@@ -25,6 +25,7 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) 
       tenantId: appConfig.tenantId || undefined,
       credentialMode: appConfig.credentialMode || undefined,
     },
+    backendVersion: appConfig.version,
     documentationUrl: 'https://github.com/dialob/dialob-parent/wiki/',
     closeHandler: () => window.location.href = appConfig.adminAppUrl,
   };
