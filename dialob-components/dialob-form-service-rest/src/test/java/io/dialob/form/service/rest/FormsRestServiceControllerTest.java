@@ -154,7 +154,7 @@ class FormsRestServiceControllerTest {
     when(currentTenant.getId()).thenReturn("t-123");
 
     mockMvc.perform(get("/forms/{formId}", "123*%4"))
-      .andExpect(status().is4xxClientError())
+      .andExpect(status().isBadRequest())
       .andExpect(content().string(is(emptyString())))
     ;
 
@@ -254,6 +254,16 @@ class FormsRestServiceControllerTest {
 
 
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
+  void shouldRejectInvalidTagNames() throws Exception {
+    mockMvc.perform(put("/forms/{formId}/tags/{tagName}", "myform","newt%ag")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("{}"))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().string(""));
+    verifyNoInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
   }
 
   @Test

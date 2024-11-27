@@ -139,7 +139,7 @@ class ReviewControllerTest extends AbstractUIControllerTest {
   public void shouldNotAcceptInvalidId() throws Exception {
 
     mockMvc.perform(get("/review/fgerfe").params(tenantParam).accept(MediaType.TEXT_HTML))
-      .andExpect(status().is4xxClientError());
+      .andExpect(status().isBadRequest());
     verifyNoMoreInteractions(questionnaireDatabase);
 
   }
