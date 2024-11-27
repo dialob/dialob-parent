@@ -20,12 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -34,7 +36,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -62,18 +63,20 @@ public class ReviewController extends BaseController {
     this.pageSettingsProvider = pageSettingsProvider;
   }
 
+  public record GetReview(
+    @PathVariable("questionnaireId") @Pattern(regexp = Constants.QUESTIONNAIRE_ID_PATTERN) String questionnaireId
+  ) { }
+
+  // CodeQL gives false positive here and from other places where validation api is used.
+  // see. https://github.com/github/codeql/issues/8705
   @GetMapping(value = {"/{questionnaireId}"}, produces = MediaType.TEXT_HTML_VALUE)
-  public String review(@RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor,
-                       @RequestHeader(value = "Host", required = false) String host,
-                       @RequestHeader(value = "X-Real-IP", required = false) String realIp,
-                       @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
-                       @PathVariable("questionnaireId") String questionnaireId,
+  public String review(@Valid GetReview getReview,
                        CsrfToken cfrsToken,
                        Model model,
                        HttpServletRequest request) throws JsonProcessingException {
     var reviewOptionsBuilder = ReviewOptions.builder()
       .apiUrl(settings.getApiUrl())
-      .questionnaireId(questionnaireId)
+      .questionnaireId(getReview.questionnaireId())
       .csrf(cfrsToken);
     final String tenantId = request.getParameter("tenantId");
     if (!StringUtils.isBlank(tenantId)) {
@@ -81,7 +84,7 @@ public class ReviewController extends BaseController {
     }
 
     if (StringUtils.isBlank(settings.getApiUrl())) {
-      Questionnaire questionnaire = questionnaireRepository.findOne(currentTenant.getId(), questionnaireId);
+      Questionnaire questionnaire = questionnaireRepository.findOne(currentTenant.getId(), getReview.questionnaireId());
       Form form;
       var metadata = questionnaire.getMetadata();
       String formRev = "LATEST".equals(metadata.getFormRev()) ? null : metadata.getFormRev();
@@ -90,7 +93,7 @@ public class ReviewController extends BaseController {
       reviewOptionsBuilder.sessionData(objectMapper.writeValueAsString(questionnaire));
     }
     model.addAttribute("reviewOptions", reviewOptionsBuilder.build());
-    final PageAttributes pageAttributes = pageSettingsProvider.findPageSettingsByQuestionnaireId("review", questionnaireId);
+    final PageAttributes pageAttributes = pageSettingsProvider.findPageSettingsByQuestionnaireId("review", getReview.questionnaireId());
     model.addAllAttributes(pageAttributes.getAttributes());
     index(model, request);
     return pageAttributes.getTemplate();

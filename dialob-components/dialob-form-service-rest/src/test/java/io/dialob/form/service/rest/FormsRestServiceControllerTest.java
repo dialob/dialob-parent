@@ -48,6 +48,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -144,6 +145,20 @@ class FormsRestServiceControllerTest {
     verify(formDatabase).findOne(eq("t-123"), eq("1234"), isNull());
     verify(currentTenant).getId();
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
+  }
+
+  @Test
+  public void shouldNotReturnFormForInvalidId() throws Exception {
+
+    when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
+    when(currentTenant.getId()).thenReturn("t-123");
+
+    mockMvc.perform(get("/forms/{formId}", "123*%4"))
+      .andExpect(status().is4xxClientError())
+      .andExpect(content().string(is(emptyString())))
+    ;
+
+    verifyNoInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
   }
 
   @Test

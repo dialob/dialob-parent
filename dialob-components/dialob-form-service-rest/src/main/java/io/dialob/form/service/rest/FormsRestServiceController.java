@@ -34,18 +34,12 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -64,21 +58,15 @@ public class FormsRestServiceController implements FormsRestService {
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
-  private static final ResponseEntity OK = ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
+  private static final ResponseEntity<Response> OK = ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
   public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(ImmutableResponse.builder().ok(false).build());
-  public static final ResponseEntity<Response> OK_RESPONSE = ok(Response.class);
 
-  private static <T> ResponseEntity<T> ok() {
-    return OK;
-  }
-  private static <T> ResponseEntity<T> ok(Class<T> type) {
+  private static ResponseEntity<Response> ok() {
     return OK;
   }
 
   private Form templateForm;
 
-  // For some weird reasons hk2 tries to inject something into rest controllers
-  // that's why use Autowired here.
   private final ApplicationEventPublisher eventPublisher;
 
   private final FormDatabase formDatabase;
@@ -139,7 +127,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<FormPutResponse> itemCopy(@RequestParam(name = "itemId") String itemId, @Validated @RequestBody Form form) {
+  public ResponseEntity<FormPutResponse> itemCopy(String itemId, Form form) {
     if (form == null) {
       return ResponseEntity.badRequest().body(null);
     }
@@ -157,7 +145,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<Form> postForm(@Valid @RequestBody Form formDocument) {
+  public ResponseEntity<Form> postForm(Form formDocument) {
     Form form = updateMetadata(formDocument);
     form = ImmutableForm.builder().from(form).id(null).rev(null).build();
     Form savedForm = formDatabase.save(currentTenant.getId(), form);
@@ -168,12 +156,12 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<FormPutResponse> putForm(@PathVariable("formId") String formId,
-                                                 @RequestParam(name = "oldId", required = false) String oldId,
-                                                 @RequestParam(name = "newId", required = false) String newId,
-                                                 @RequestParam(name = "force", required = false, defaultValue = "false") boolean forced,
-                                                 @RequestParam(name = "dryRun", required =false, defaultValue = "false") boolean dryRun,
-                                                 @Validated @NotNull @RequestBody final Form formBody) {
+  public ResponseEntity<FormPutResponse> putForm(String formId,
+                                                 String oldId,
+                                                 String newId,
+                                                 boolean forced,
+                                                 boolean dryRun,
+                                                 final Form formBody) {
     //
     if (isTemplateFormId(formId)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
@@ -253,7 +241,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<Response> deleteForm(@PathVariable("formId") String formId) {
+  public ResponseEntity<Response> deleteForm(String formId) {
     if (isTemplateFormId(formId)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Or Response.Status.METHOD_NOT_ALLOWED ??
     }
@@ -263,7 +251,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   @Override
-  public ResponseEntity<Form> getForm(@PathVariable("formId") String formId, @RequestParam(name = "rev", required = false) String rev) {
+  public ResponseEntity<Form> getForm(String formId, String rev) {
     if (isTemplateFormId(formId)) {
       return ResponseEntity.ok(getTemplateForm());
     }
@@ -342,7 +330,7 @@ public class FormsRestServiceController implements FormsRestService {
         .formId(newTag.getFormId())
         .refName(newTag.getRefName())
         .build());
-      return OK_RESPONSE;
+      return OK;
     }).orElse(NOT_MODIFIED_RESPONSE);
   }
 
