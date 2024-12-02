@@ -19,7 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.spring.tenant.DefaultTenantSupplier;
 import io.dialob.security.spring.tenant.RequestParameterTenantScopeFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.DialobSettings.TenantSettings;
 import io.dialob.settings.DialobSettings.TenantSettings.Mode;
@@ -92,7 +92,7 @@ public class SecurityDisabledConfiguration {
     if (StringUtils.isEmpty(tenantSettings.getFixedId())) {
       return Optional::empty;
     }
-    return () -> Optional.of(ImmutableTenant.of(tenantSettings.getFixedId(), Optional.empty()));
+    return () -> Optional.of(Tenant.of(tenantSettings.getFixedId()));
   }
 
   @NonNull

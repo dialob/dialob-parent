@@ -234,7 +234,7 @@ public class DialobSession implements ItemStates, Serializable {
 
   public String getTenantId() {
     if (tenantId == null) {
-      return ResysSecurityConstants.DEFAULT_TENANT.getId();
+      return ResysSecurityConstants.DEFAULT_TENANT.id();
     }
     return tenantId;
   }

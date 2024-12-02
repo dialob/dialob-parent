@@ -19,12 +19,10 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Actions;
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
 
 import java.net.InetAddress;
-import java.util.Optional;
 
 public class QuestionnaireEventPublisher {
 
@@ -42,7 +40,7 @@ public class QuestionnaireEventPublisher {
 
   private Tenant getTenant(String tenantId) {
     if (tenantId != null) {
-      return ImmutableTenant.of(tenantId, Optional.empty());
+      return Tenant.of(tenantId);
     }
     return ResysSecurityConstants.DEFAULT_TENANT;
   }

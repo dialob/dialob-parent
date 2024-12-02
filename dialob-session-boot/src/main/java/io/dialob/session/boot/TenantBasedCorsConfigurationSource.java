@@ -49,6 +49,6 @@ public class TenantBasedCorsConfigurationSource implements CorsConfigurationSour
   }
 
   private String resolveTenantFromRequest(HttpServletRequest request) {
-    return this.tenantFromRequestResolver.resolveTenantFromRequest(request).map(Tenant::getId).orElse(null);
+    return this.tenantFromRequestResolver.resolveTenantFromRequest(request).map(Tenant::id).orElse(null);
   }
 }

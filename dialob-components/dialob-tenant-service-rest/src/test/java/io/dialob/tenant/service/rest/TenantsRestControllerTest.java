@@ -17,7 +17,7 @@ package io.dialob.tenant.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,6 @@ import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfigu
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -92,8 +91,8 @@ class TenantsRestControllerTest {
   @Test
   public void shouldReturnListOfTenants() throws Exception {
     Mockito.when(tenantsProvider.getTenants()).thenReturn(Arrays.asList(
-      ImmutableTenant.of("0123-321", Optional.of("hello")),
-      ImmutableTenant.of("0123-322", Optional.empty())
+      Tenant.of("0123-321", "hello"),
+      Tenant.of("0123-322")
     ));
     mockMvc
       .perform(get("/tenants")

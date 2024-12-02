@@ -36,7 +36,7 @@ public class GrantedTenantAccessEvaluator implements TenantAccessEvaluator {
 
   @Override
   public boolean doesUserHaveAccessToTenant(Tenant tenant) {
-    if (publicTenant != null && publicTenant.getId().equals(tenant.getId())) {
+    if (publicTenant != null && publicTenant.id().equals(tenant.id())) {
       return true;
     }
     SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -46,7 +46,7 @@ public class GrantedTenantAccessEvaluator implements TenantAccessEvaluator {
         return true;
       }
       return authentication.getAuthorities().stream().filter(a -> a instanceof TenantGrantedAuthority)
-        .anyMatch(a -> ((TenantGrantedAuthority) a).getTenantId().equals(tenant.getId()));
+        .anyMatch(a -> ((TenantGrantedAuthority) a).getTenantId().equals(tenant.id()));
     }
     return false;
   }

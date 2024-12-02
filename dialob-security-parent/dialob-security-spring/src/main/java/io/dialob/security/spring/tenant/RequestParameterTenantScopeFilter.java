@@ -16,7 +16,6 @@
 package io.dialob.security.spring.tenant;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
@@ -70,7 +69,7 @@ public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {
     if (tenant == null) {
       String tenantId = request.getParameter(parameterName);
       if (tenantId != null) {
-        tenant = ImmutableTenant.of(tenantId, Optional.empty());
+        tenant = Tenant.of(tenantId);
       } else {
         tenant = defaultTenantSupplier.get().orElse(null);
       }
@@ -86,7 +85,7 @@ public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {
       final Tenant tenant = resolveTenantFromRequest(request);
       if (tenant != null) {
         if (!tenantAccessEvaluator.doesUserHaveAccessToTenant(tenant)) {
-          tenantAccessDenied(String.format("Access to tenant %s denied.", tenant.getId()));
+          tenantAccessDenied(String.format("Access to tenant %s denied.", tenant.id()));
           return;
         }
         request.setAttribute(CURRENT_TENANT_ATTR, tenant);

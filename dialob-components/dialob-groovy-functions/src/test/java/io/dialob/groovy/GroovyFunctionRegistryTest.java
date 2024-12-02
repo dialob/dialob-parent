@@ -20,7 +20,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -77,7 +76,7 @@ public class GroovyFunctionRegistryTest {
   public void testGroovyRegistry() throws VariableNotDefinedException, ClassNotFoundException {
     assertNotNull(groovyFunctionRegistry);
     assertEquals(ValueType.STRING, functionRegistry.returnTypeOf("testFunction", ValueType.STRING));
-    TenantContextHolderCurrentTenant.runInTenantContext(ImmutableTenant.of("test", Optional.empty()), () -> {
+    TenantContextHolderCurrentTenant.runInTenantContext(Tenant.of("test"), () -> {
       FunctionRegistry.FunctionCallback callback = Mockito.mock(FunctionRegistry.FunctionCallback.class);
       functionRegistry.invokeFunctionAsync(callback, "Test.testFunction", "blah");
       verify(callback).succeeded("blah blah");

@@ -17,24 +17,28 @@ package io.dialob.security.tenant;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.io.Serializable;
-import java.util.Optional;
+import java.util.Objects;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableTenant.class)
-@JsonDeserialize(as = ImmutableTenant.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-public interface Tenant extends Serializable {
+public record Tenant(
+  String id,
+  @Nullable String name
+) implements Serializable {
 
-  @Value.Parameter
-  String getId();
+  public Tenant {
+    id = Objects.requireNonNull(id, "Tenant id may not be null.");
+  }
 
-  @Value.Parameter
-  Optional<String> getName();
+  public static Tenant of(String id) {
+    return new Tenant(id, null);
+  }
+
+  public static Tenant of(String id, String name) {
+    return new Tenant(id, name);
+  }
 
 }

@@ -26,7 +26,7 @@ import io.dialob.form.service.api.validation.FormValidator;
 import io.dialob.integration.api.NodeId;
 import io.dialob.rest.DialobRestAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import jakarta.inject.Inject;
@@ -227,7 +227,7 @@ class FormsRestServiceControllerTest {
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
 
     when(currentTenant.getId()).thenReturn("t-123");
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of("t-123", Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
     when(currentUserProvider.getUserId()).thenReturn("user");
     when(nodeId.getId()).thenReturn("testnode");
     when(formVersionControlDatabase.getFormDatabase()).thenReturn(formDatabase);

@@ -17,11 +17,10 @@ package io.dialob.integration.api.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,7 +31,7 @@ class FormUpdatedEventTest {
   public void shouldSerializaIntoJsonAndBack() throws IOException {
     final FormUpdatedEvent event = ImmutableFormUpdatedEvent.builder()
       .source("node1")
-      .tenant(ImmutableTenant.of("tent1", Optional.empty()))
+      .tenant(Tenant.of("tent1"))
       .formId("formi")
       .revision("new")
       .build();

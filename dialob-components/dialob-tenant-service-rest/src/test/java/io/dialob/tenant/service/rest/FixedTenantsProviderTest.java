@@ -16,30 +16,28 @@
 package io.dialob.tenant.service.rest;
 
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class FixedTenantsProviderTest {
 
   @Test
   public void shouldReturnCurrentTenantAsTenant() {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
-    Mockito.when(currentTenant.get()).thenReturn(ImmutableTenant.of("123", Optional.empty()));
+    Mockito.when(currentTenant.get()).thenReturn(Tenant.of("123"));
 
     FixedTenantsProvider fixedTenantsProvider = new FixedTenantsProvider(currentTenant);
     List<Tenant> tenants = fixedTenantsProvider.getTenants();
 
     assertEquals(1, tenants.size());
-    assertEquals("123", tenants.get(0).getId());
-    assertFalse(tenants.get(0).getName().isPresent());
+    assertEquals("123", tenants.get(0).id());
+    assertNull(tenants.get(0).name());
   }
 
 }
