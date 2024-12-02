@@ -31,6 +31,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -65,7 +66,7 @@ public class PostSubmitHandlerTest {
     verify(httpHeaders, times(2)).getContentType();
 //    HashMap<String, List<String>> map = Maps.newHashMap();
 //    map.put("Content-Type",Arrays.asList("application/json"));
-    verify(httpHeaders).put("Content-Type",Arrays.asList("application/json"));
+    verify(httpHeaders).put("Content-Type", List.of("application/json"));
     verify(httpHeaders).getContentLength();
 
     verifyNoMoreInteractions(httpHeaders, requestFactory);
@@ -95,11 +96,13 @@ public class PostSubmitHandlerTest {
     postSubmitHandler.submit(submitHandlerSettings, document);
 
     verify(requestFactory).createRequest(new URI("http://test:pass@localhost:8080/here"), HttpMethod.POST);
-    verify(httpHeaders).addAll("Accept", Arrays.asList("text/plain, application/json, application/*+json, */*"));
-    verify(httpHeaders).addAll("Content-Type", Arrays.asList("application/json"));
-    verify(httpHeaders).addAll("Content-Length", Arrays.asList("80"));
+    verify(httpHeaders).addAll("Accept", List.of("text/plain, application/json, application/*+json, */*"));
+    verify(httpHeaders).addAll("Content-Type", List.of("application/json"));
+    verify(httpHeaders).addAll("Content-Length", List.of("80"));
     verify(body).write("{\"metadata\":{\"status\":\"NEW\",\"submitUrl\":\"http://test:pass@localhost:8080/here\"}}".getBytes());
-    verify(httpHeaders).addAll("Authorization", Arrays.asList("Basic dGVzdDpwYXNz"));
+    verify(httpHeaders).addAll("Authorization", List.of("Basic dGVzdDpwYXNz"));
+    verify(httpHeaders).getContentLength();
+    verify(httpHeaders).setContentLength(80);
     verifyNoMoreInteractions(httpHeaders, requestFactory);
   }
 
