@@ -50,24 +50,23 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
 
   private final Set<Command<?>> updated = new HashSet<>();
 
+  private final boolean activating;
+
   protected final List<Command<?>> evalQueue = new LinkedList<>();
 
   public ActiveDialobSessionUpdater(@NonNull DialobSessionEvalContextFactory sessionContextFactory,
                                     @NonNull DialobProgram dialobProgram,
-                                    @NonNull DialobSession dialobSession) {
+                                    @NonNull DialobSession dialobSession,
+                                    boolean activating) {
     this.sessionContextFactory = requireNonNull(sessionContextFactory);
     this.dialobProgram = requireNonNull(dialobProgram);
     this.dialobSession = requireNonNull(dialobSession);
+    this.activating = activating;
   }
 
   @Override
   public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions) {
-    return dispatchActions(actions, false);
-  }
-
-  @Override
-  public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions, boolean activating) {
-    DialobSessionEvalContext evalContext = sessionContextFactory.createDialobSessionEvalContext(dialobSession, this::queueUpdate, activating);
+    DialobSessionEvalContext evalContext = sessionContextFactory.createDialobSessionEvalContext(this.dialobSession, this::queueUpdate, this.activating);
     applyUpdates(actions);
     while(!evalQueue.isEmpty()) {
       ListIterator<Command<?>> iterator = evalQueue.listIterator();

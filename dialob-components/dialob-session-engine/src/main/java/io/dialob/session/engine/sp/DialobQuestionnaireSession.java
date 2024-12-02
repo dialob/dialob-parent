@@ -63,12 +63,18 @@ import static io.dialob.session.engine.Utils.*;
 @ToString
 public class DialobQuestionnaireSession implements QuestionnaireSession {
 
-  enum State {
-    NEW,
-    ACTIVATING,
-    ACTIVE,
-    PASSIVATING,
-    PASSIVE
+  public enum State {
+    NEW(false),
+    ACTIVATING(true),
+    ACTIVE(true),
+    PASSIVATING(false),
+    PASSIVE(false);
+
+    final boolean updatable;
+
+    State(boolean updatable) {
+      this.updatable = updatable;
+    }
   }
 
 
@@ -297,13 +303,14 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
           .build())
         .build();
     }
-    final FormActions formActions = new FormActions();
     try {
       MDC.put(Constants.QUESTIONNAIRE, getSessionId().orElse("new-session"));
       boolean revisionMatch = revision != null && revision.equals(prevRevision);
       LOGGER.debug("revision comparison: {} vs. {} == {}", revision,prevRevision, revisionMatch);
-      sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession)
-        .dispatchActions(actions, state.get() == State.ACTIVATING)
+      DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, state.get());
+      final FormActions formActions = new FormActions();
+      sessionUpdater
+        .dispatchActions(actions)
         .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this.toActionItemFunction)) {
           @Override
           public void visitCompleted() {

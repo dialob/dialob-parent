@@ -30,6 +30,7 @@ import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
+import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -136,7 +137,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, DialobQuestionnaireSession.State.ACTIVE);
 
     assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
@@ -151,7 +152,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, DialobQuestionnaireSession.State.ACTIVE);
 
     assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
@@ -167,7 +168,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, DialobQuestionnaireSession.State.ACTIVE);
 
     assertNull(dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
@@ -244,7 +245,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertDisabled(session, toRef("group2"));
     assertDisabled(session, toRef("question2"));
 
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
 
     dialobSessionUpdater.dispatchActions(gotoPage("page2"));
     assertDisabled(session, toRef("page1"));
@@ -333,7 +334,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorInactive(session, toRef("question1"), "ERROR1");
@@ -364,7 +365,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorActive(session, toRef("question1"), "REQUIRED");
@@ -395,7 +396,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorActive(session, toRef("question1"), "REQUIRED");
@@ -425,7 +426,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
 
     final EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
     final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
@@ -477,7 +478,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
 
     final EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
     final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
@@ -531,7 +532,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
 
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertValueEquals(session, toRef("var1"), null);
@@ -570,7 +571,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
 
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertErrorInactive(session, toRef("question"), "err1");
@@ -611,7 +612,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
 
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertNotRequired(session, toRef("question2"));
@@ -657,7 +658,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     ItemState asyncVariable = session.getItemState(IdUtils.toId("$$f1_1")).get();
     Assertions.assertNull(asyncVariable.getValue());
 
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertNotRequired(session, toRef("question2"));

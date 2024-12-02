@@ -121,14 +121,16 @@ class CreateDialobSessionProgramVisitorTest {
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
-    DialobSessionUpdater sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")), true);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")), true);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")), true);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q1", 1)), false);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q2", 1)), false);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q1", 2.0)), false);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q2", 2.0)), false);
+    DialobSessionUpdater sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession, true);
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
+
+    sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession, false);
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q1", 1)));
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q2", 1)));
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q1", 2.0)));
+    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q2", 2.0)));
 
     assertTrue(dialobSession.getItemState(Operators.ref("rg.0")).isPresent());
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
