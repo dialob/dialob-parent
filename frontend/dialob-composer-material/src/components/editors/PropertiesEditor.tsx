@@ -5,15 +5,21 @@ import { BorderedTable } from '../TableEditorComponents';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import PropItem from '../PropItem';
+import { useBackend } from '../../backend/useBackend';
+import { findItemTypeConfig } from '../../items/ItemComponents';
+import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
+
+export type PropValue = string | string[] | boolean;
 
 export interface ItemProp {
   key: string;
-  value: string;
+  value: PropValue;
 }
 
 const PropertiesEditor: React.FC = () => {
   const { editor, setActiveItem } = useEditor();
   const { setItemProp, deleteItemProp } = useComposer();
+  const { config } = useBackend();
   const item = editor.activeItem;
   const [props, setProps] = React.useState<ItemProp[]>([]);
   const [newProp, setNewProp] = React.useState<string>('');
@@ -24,10 +30,17 @@ const PropertiesEditor: React.FC = () => {
     }
   }, [item?.props]);
 
+  if (!item) {
+    return null;
+  }
+
+  const propEditors  = findItemTypeConfig(DEFAULT_ITEMTYPE_CONFIG, item.type, item.view)?.propEditors;
+
   const handleAddProp = () => {
     if (item) {
-      setItemProp(item.id, newProp, '');
-      setActiveItem({ ...item, props: { ...item.props, [newProp]: '' } });
+      const isArray = propEditors && propEditors[newProp]?.props?.options?.length > 0;
+      setItemProp(item.id, newProp, isArray ? [] : '');
+      setActiveItem({ ...item, props: { ...item.props, [newProp]: isArray ? [] : '' } });
     }
   }
 
@@ -47,11 +60,7 @@ const PropertiesEditor: React.FC = () => {
       setActiveItem({ ...item, props: newProps });
     }
   }
-
-  if (!item) {
-    return null;
-  }
-
+  
   return (
     <Box>
       <Typography><FormattedMessage id='dialogs.options.properties.add' /></Typography>
@@ -71,7 +80,7 @@ const PropertiesEditor: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.map(prop => <PropItem key={prop.key} prop={prop} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
+            {props.map(prop => <PropItem key={prop.key} prop={prop} propEditor={propEditors && propEditors[prop.key]} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
           </TableBody>
         </BorderedTable>
       </TableContainer>

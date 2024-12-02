@@ -1,15 +1,19 @@
 import React from 'react';
-import { ItemProp } from "./editors/PropertiesEditor";
+import { ItemProp, PropValue } from "./editors/PropertiesEditor";
 import { TableCell, TableRow, Typography, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { StyledTextField } from './TableEditorComponents';
+import { InputProp } from './propEditors/InputProp';
 
 const PropItem: React.FC<{
   prop: ItemProp,
-  onEdit: (key: string, value: string) => void,
+  propEditor: {
+    component: any,
+    props?: any
+  } | undefined,
+  onEdit: (key: string, value: PropValue) => void,
   onDelete: (key: string) => void
-}> = ({ prop, onEdit, onDelete }) => {
-  const [value, setValue] = React.useState<string>(prop.value || '');
+}> = ({ prop, propEditor, onEdit, onDelete }) => {
+  const [value, setValue] = React.useState<PropValue>(prop.value);
 
   React.useEffect(() => {
     if (value !== '' && value !== prop.value) {
@@ -30,9 +34,7 @@ const PropItem: React.FC<{
         <Typography sx={{ p: 1 }}>{prop.key}</Typography>
       </TableCell>
       <TableCell>
-        <StyledTextField variant='standard' InputProps={{
-          disableUnderline: true,
-        }} value={value} onChange={(e) => setValue(e.target.value)} />
+        {propEditor ? propEditor.component({value, setValue, ...propEditor.props}) : InputProp({value, setValue})}
       </TableCell>
     </TableRow>
   );
