@@ -21,6 +21,7 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   const tagErrors = editor.errors?.filter(e => e.type === 'TAG_ERROR');
   const [name, setName] = React.useState<string>('');
   const [desc, setDesc] = React.useState<string>('');
+  const [error, setError] = React.useState<string | undefined>();
 
   React.useEffect(() => {
     if (!open) {
@@ -30,6 +31,13 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   }, [open]);
 
   const handleCreate = () => {
+    const tagRegex = new RegExp(/^[0-9A-Za-z-_]+$/);
+    if (!tagRegex.test(name)) {
+      setError('dialogs.create.tag.error');
+      return;
+    } else {
+      setError(undefined);
+    }
     createTag({ name, description: desc, formName: form.name })
       .then((res) => {
         if (res.success) {
@@ -75,6 +83,7 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '50vh' }}>
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', width: 1 }}>
+          {error && <Alert severity="error" sx={{ mb: 2 }}><FormattedMessage id={error} /></Alert>}
           <Typography fontWeight='bold'><FormattedMessage id='dialogs.create.tag.name' /></Typography>
           <TextField value={name} onChange={e => setName(e.target.value)} fullWidth />
           <Typography fontWeight='bold' sx={{ mt: 2 }}><FormattedMessage id='dialogs.create.tag.desc' /></Typography>
