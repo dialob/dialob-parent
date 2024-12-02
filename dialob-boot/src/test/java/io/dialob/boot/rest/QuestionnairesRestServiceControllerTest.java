@@ -33,7 +33,7 @@ import io.dialob.questionnaire.service.rest.DialobQuestionnaireServiceRestAutoCo
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,7 +59,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -127,7 +126,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   @BeforeEach
   void setupTenant() {
     when(currentTenant.getId()).thenReturn(tenantId);
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
   }
 
   @Value("${server.servlet.context-path:/}")

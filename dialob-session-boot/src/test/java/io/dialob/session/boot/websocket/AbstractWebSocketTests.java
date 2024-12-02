@@ -29,7 +29,7 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.sockjs.WebSocketRequestTestTemplate;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.session.boot.ProvideTestRedis;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +67,7 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   @BeforeEach
   void setupCurrentTenant() {
     when(currentTenant.getId()).thenReturn(tenantId);
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
     defineInMemoryPersistence(questionnaireDatabase);
   }
 

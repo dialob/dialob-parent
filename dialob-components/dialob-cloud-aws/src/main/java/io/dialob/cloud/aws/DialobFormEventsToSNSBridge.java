@@ -38,7 +38,7 @@ public class DialobFormEventsToSNSBridge extends AbstractEventsToSNSBridge {
   public void onFormTaggedEvent(FormTaggedEvent event) {
     LOGGER.info("Publishing event {} to SNS Topic {}", event, this.getTopicARN());
     Map<String, MessageAttributeValue> attributes = new HashMap<>();
-    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().getId()).dataType("String").build());
+    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().id()).dataType("String").build());
     publish("FormTagged", event, attributes);
   }
 
@@ -46,7 +46,7 @@ public class DialobFormEventsToSNSBridge extends AbstractEventsToSNSBridge {
   public void onFormDeletedEvent(FormDeletedEvent event) {
     LOGGER.info("Publishing event {} to SNS Topic {}", event, this.getTopicARN());
     Map<String, MessageAttributeValue> attributes = new HashMap<>();
-    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().getId()).dataType("String").build());
+    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().id()).dataType("String").build());
     publish("FormDeleted", event, attributes);
   }
 
@@ -54,7 +54,7 @@ public class DialobFormEventsToSNSBridge extends AbstractEventsToSNSBridge {
   public void onFormUpdatedEvent(FormUpdatedEvent event) {
     LOGGER.info("Publishing event {} to SNS Topic {}", event, this.getTopicARN());
     Map<String, MessageAttributeValue> attributes = new HashMap<>();
-    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().getId()).dataType("String").build());
+    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().id()).dataType("String").build());
     publish("FormUpdated", event, attributes);
   }
 }

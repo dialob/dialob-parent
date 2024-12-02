@@ -34,7 +34,6 @@ import io.dialob.questionnaire.service.api.event.QuestionnaireEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
@@ -59,7 +58,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -110,7 +112,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     this.questionnaireId = (String) sessionAttributes.get(settings.getUrlAttributes().getSessionId());
     String tenantId = (String) sessionAttributes.get(settings.getUrlAttributes().getTenantId());
     if (tenantId != null && !isDefaultTenantPathPlaceholder(tenantId)) {
-      this.tenant = ImmutableTenant.of(tenantId, Optional.empty());
+      this.tenant = Tenant.of(tenantId);
     }
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () -> {
       publishConnectionEvent();

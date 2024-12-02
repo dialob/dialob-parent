@@ -18,7 +18,7 @@ package io.dialob.cache;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,9 +64,7 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
       LOGGER.info("Evicting session \"{}\".", sessionId);
     }
 
-    TenantContextHolderCurrentTenant.runInTenantContext(ImmutableTenant.builder()
-      .id(questionnaireSession.getTenantId())
-      .name(Optional.empty()).build(), () -> {
+    TenantContextHolderCurrentTenant.runInTenantContext(Tenant.of(questionnaireSession.getTenantId()), () -> {
       String rev = questionnaireSession.getRev();
       String revAfterCallback = rev;
       QuestionnaireSession questionnaireSessionToEvict = questionnaireSession;

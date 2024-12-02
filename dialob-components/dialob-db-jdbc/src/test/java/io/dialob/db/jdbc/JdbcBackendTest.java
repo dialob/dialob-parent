@@ -31,7 +31,7 @@ public interface JdbcBackendTest {
 
   ObjectMapper objectMapper = new ObjectMapper();
 
-  Predicate<String> IS_ANY_TENANT_PREDICATE = tenantId -> ResysSecurityConstants.DEFAULT_TENANT.getId().equals(tenantId);
+  Predicate<String> IS_ANY_TENANT_PREDICATE = tenantId -> ResysSecurityConstants.DEFAULT_TENANT.id().equals(tenantId);
 
   DataSource getDataSource();
 

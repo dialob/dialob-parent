@@ -18,13 +18,13 @@ package io.dialob.security.tenant;
 public interface CurrentTenant {
 
   /**
-   * @throws NoTenantInScopeException when there is not tenant in scope
+   * @throws NoTenantInScopeException when there is no tenant in scope
    * @return current scope tenant
    */
   Tenant get();
 
   default String getId() {
-    return get().getId();
+    return get().id();
   }
 
   boolean isInTenantScope();

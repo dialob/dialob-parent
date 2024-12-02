@@ -137,7 +137,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   public void saveAndUpdateQuestionnaireWithoutTenant() {
-    setActiveTenant(ResysSecurityConstants.DEFAULT_TENANT.getId());
+    setActiveTenant(ResysSecurityConstants.DEFAULT_TENANT.id());
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
         .id("questionnaire")
@@ -176,7 +176,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
     assertEquals("1", q.getRev());
 
     // DEFAULT tenant -> no tenant scoped save
-    setActiveTenant(ResysSecurityConstants.DEFAULT_TENANT.getId());
+    setActiveTenant(ResysSecurityConstants.DEFAULT_TENANT.id());
     q = getQuestionnaireDatabase().save(getCurrentTenant().getId(), q);
     assertEquals("2", q.getRev());
 

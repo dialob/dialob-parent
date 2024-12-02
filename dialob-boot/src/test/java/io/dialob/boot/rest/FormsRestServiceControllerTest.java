@@ -30,7 +30,7 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import jakarta.inject.Inject;
 import org.hamcrest.CustomTypeSafeMatcher;
@@ -150,7 +150,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @BeforeEach
   void setupTenant() {
     when(currentTenant.getId()).thenReturn(tenantId);
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
   }
 
   @Override
@@ -403,7 +403,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
   public void shouldBeAbleToPutLatestTag() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(true);
 
     // We need to return cfrs token on update action

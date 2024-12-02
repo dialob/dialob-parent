@@ -93,6 +93,7 @@ public class RequestHeaderApiKeyExtractor implements ServletRequestApiKeyExtract
     return UUIDUtils.toUUID(uuidBytes).toString();
   }
 
+  @NonNull
   @Override
   public String getHeader() {
     return header;

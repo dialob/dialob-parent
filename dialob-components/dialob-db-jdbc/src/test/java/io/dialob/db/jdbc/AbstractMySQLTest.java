@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -153,7 +152,7 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
   }
 
   default Tenant setActiveTenant(String tenantId) {
-    ATTRS.activeTenant = ImmutableTenant.of(tenantId, Optional.empty());
+    ATTRS.activeTenant = Tenant.of(tenantId);
     return ATTRS.activeTenant;
   }
 

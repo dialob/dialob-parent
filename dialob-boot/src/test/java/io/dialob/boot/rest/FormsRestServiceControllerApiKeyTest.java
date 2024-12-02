@@ -36,7 +36,7 @@ import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.settings.DialobSettings;
@@ -71,7 +71,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -129,7 +128,7 @@ public class FormsRestServiceControllerApiKeyTest {
   @BeforeEach
   void setupTenant() {
     when(currentTenant.getId()).thenReturn(tenantId);
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of(tenantId, Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
   }
 
   @Configuration(proxyBeanMethods = false)

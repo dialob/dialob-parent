@@ -31,7 +31,7 @@ import io.dialob.integration.api.event.ImmutableFormDeletedEvent;
 import io.dialob.integration.api.event.ImmutableFormTaggedEvent;
 import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -207,7 +207,7 @@ public class FormsRestServiceController implements FormsRestService {
     Form updatedForm;
     if (!dryRun) {
       updatedForm = formDatabase.save(currentTenant.getId(), ImmutableForm.builder().from(form).metadata(ImmutableFormMetadata.builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
-      eventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder().source(getNodeId().getId()).tenant(ImmutableTenant.of(updatedForm.getMetadata().getTenantId(), Optional.empty())).formId(formId).revision(updatedForm.getRev()).build());
+      eventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder().source(getNodeId().getId()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
     } else {
       updatedForm = form;
     }

@@ -36,7 +36,7 @@ public class DialobQuestionnaireEventsToSNSBridge extends AbstractEventsToSNSBri
   public void onQuestionnaireCompletedEvent(QuestionnaireCompletedEvent event) {
     LOGGER.info("Publishing event {} to SNS Topic {}", event, this.getTopicARN());
     Map<String, MessageAttributeValue> attributes = new HashMap<>();
-    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().getId()).dataType("String").build());
+    attributes.put("tenantId", MessageAttributeValue.builder().stringValue(event.getTenant().id()).dataType("String").build());
 
     String subject = "QuestionnaireCompleted";
     publish(subject, event, attributes);
