@@ -203,6 +203,7 @@ const en = {
   'dialogs.create.tag.title': 'Create new version tag',
   'dialogs.create.tag.name': 'Tag name',
   'dialogs.create.tag.desc': 'Tag description',
+  'dialogs.create.tag.error': 'Tag name is invalid',
 
   'dialogs.change.id': 'Change ID',
   'dialogs.change.id.tip': 'Valid ID can consist of letters, numbers & underscores. It must not contain reserved words used in expressions, must start with a letter and be unique',
