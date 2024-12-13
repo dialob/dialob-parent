@@ -214,7 +214,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
   ]
 };
 
-const renderDialobComposer = (targetElement: HTMLElement, appConfig: any) => {
+const renderDialobComposer = (targetElement: HTMLElement, appConfig: BackendTypes.AppConfig) => {
 
   const FORM_ID = appConfig.formId;
 
@@ -234,6 +234,7 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: any) => {
     documentationUrl: 'https://github.com/dialob/dialob-parent/wiki/',
     itemEditors: ITEM_EDITORS,
     itemTypes: ITEMTYPE_CONFIG,
+    backendVersion: appConfig.version,
     closeHandler: () => window.location.href = appConfig.adminAppUrl,
   };
 

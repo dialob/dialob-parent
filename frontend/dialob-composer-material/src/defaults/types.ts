@@ -10,7 +10,10 @@ export interface ItemConfig {
     props: {
       icon: React.ComponentType<SvgIconProps>,
       placeholder: string,
-      treeCollapsible?: boolean
+      treeCollapsible?: boolean,
+      style?: 'normal' | 'success' | 'info' | 'warning' | 'error',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string]: any
     }
   }[]
 }
@@ -27,7 +30,8 @@ export interface ItemTypeConfig {
       }[],
       propEditors?: {
         [key: string]: {
-          component: React.FC,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          component: any,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           props?: any
         }

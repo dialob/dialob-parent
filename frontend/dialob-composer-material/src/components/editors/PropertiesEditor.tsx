@@ -34,7 +34,8 @@ const PropertiesEditor: React.FC = () => {
     return null;
   }
 
-  const propEditors  = findItemTypeConfig(DEFAULT_ITEMTYPE_CONFIG, item.type, item.view)?.propEditors;
+  const itemTypeConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
+  const propEditors  = findItemTypeConfig(itemTypeConfig, item.type, item.view)?.propEditors;
 
   const handleAddProp = () => {
     if (item) {

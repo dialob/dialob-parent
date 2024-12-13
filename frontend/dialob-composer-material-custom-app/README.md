@@ -14,7 +14,7 @@ Within the method, an instance of `BackendTypes.DialobComposerConfig` should be 
 Customization is done by setting `itemEditors` (of type `DefaultTypes.ItemConfig`) and `itemTypes` (of type `DefaultTypes.ItemTypeConfig`) properties in `DialobComposerConfig` object. 
 
 ```typescript
-const renderDialobComposer = (targetElement: HTMLElement, appConfig: any) => {
+const renderDialobComposer = (targetElement: HTMLElement, appConfig: BackendTypes.AppConfig) => {
 
   const FORM_ID = appConfig.formId;
 
@@ -34,6 +34,7 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: any) => {
     documentationUrl: 'https://github.com/dialob/dialob-parent/wiki/',
     itemEditors: ITEM_EDITORS,
     itemTypes: ITEMTYPE_CONFIG,
+    backendVersion: appConfig.version,
     closeHandler: () => window.location.href = appConfig.adminAppUrl,
   };
 
@@ -71,6 +72,7 @@ In the demo app, the function is called in the `index.html` file with the target
           filling_app_url: 'http://localhost:3001/#',
           credentialMode: 'omit',
           adminAppUrl: 'http://localhost:3003/#',
+          version: '0.0.0-local'
         };
       }
       
