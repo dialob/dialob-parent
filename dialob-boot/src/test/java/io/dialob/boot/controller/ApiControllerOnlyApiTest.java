@@ -39,7 +39,6 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -50,6 +49,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -119,25 +119,25 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   @Inject
   public AuthenticationStrategy authenticationStrategy;
 
-  @MockBean
+  @MockitoBean
   public ClientRegistrationRepository clientRegistrationRepository;
 
-  @MockBean
+  @MockitoBean
   public TenantAccessEvaluator tenantAccessEvaluator;
 
-  @MockBean
+  @MockitoBean
   public FormsRestServiceController formsRestServiceController;
 
-  @MockBean
+  @MockitoBean
   public QuestionnairesRestServiceController questionnairesRestServiceController;
 
-  @MockBean
+  @MockitoBean
   public ClientApiKeyService clientApiKeyService;
 
-  @MockBean
+  @MockitoBean
   public ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider;
 
-  @MockBean
+  @MockitoBean
   public ApiKeyValidator apiKeyValidator;
 
   @BeforeEach

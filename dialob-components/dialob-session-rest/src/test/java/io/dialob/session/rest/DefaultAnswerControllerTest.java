@@ -24,10 +24,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -63,13 +63,13 @@ class DefaultAnswerControllerTest {
 
   }
 
-  @MockBean
+  @MockitoBean
   QuestionnaireSessionService questionnaireSessionService;
 
-  @MockBean
+  @MockitoBean
   ActionProcessingService actionProcessingService;
 
-  @MockBean
+  @MockitoBean
   SessionPermissionEvaluator sessionPermissionEvaluator;
 
 

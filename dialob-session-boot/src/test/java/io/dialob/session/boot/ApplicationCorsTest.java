@@ -30,9 +30,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -66,10 +66,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableConfigurationProperties(DialobSettings.class)
 class ApplicationCorsTest {
 
-  @MockBean
+  @MockitoBean
   DefaultAnswerController answerController;
 
-  @MockBean
+  @MockitoBean
   QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
   @Inject
@@ -78,7 +78,7 @@ class ApplicationCorsTest {
   @Inject
   public DialobSettings dialobSettings;
 
-  @MockBean
+  @MockitoBean
   public QuestionnaireSessionService questionnaireSessionService;
 
   private MockMvc mockMvc;

@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
@@ -45,13 +45,13 @@ import static org.mockito.Mockito.when;
 })
 public class AnswerControllerWithStackTest {
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireSessionService questionnaireSessionService;
 
-  @MockBean
+  @MockitoBean
   private ActionProcessingService actionProcessingService;
 
-  @MockBean
+  @MockitoBean
   private CurrentUserProvider currentUserProvider;
 
   @Autowired

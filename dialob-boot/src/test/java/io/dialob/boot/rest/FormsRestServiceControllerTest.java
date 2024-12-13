@@ -46,7 +46,6 @@ import org.springframework.boot.autoconfigure.validation.ValidationAutoConfigura
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -55,6 +54,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
@@ -129,14 +129,14 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Inject
   private ApplicationEventPublisher applcationApplicationEventPublisher;
 
-  @MockBean
+  @MockitoBean
   private ListenerMock listenerMock;
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
-  @MockBean
+  @MockitoBean
   private FormVersionControlDatabase formVersionControlDatabase;
-  @MockBean
+  @MockitoBean
   private FunctionRegistry functionRegistry;
 
   @BeforeEach

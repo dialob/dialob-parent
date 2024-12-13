@@ -27,12 +27,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -78,13 +78,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebMvc
 class ComposerControllerTest extends AbstractUIControllerTest {
 
-  @MockBean
+  @MockitoBean
   public TenantAccessEvaluator tenantAccessEvaluator;
 
-  @MockBean
+  @MockitoBean
   public PageSettingsProvider pageSettingsProvider;
 
-  @MockBean
+  @MockitoBean
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper;
 
   @BeforeEach

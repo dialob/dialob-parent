@@ -24,17 +24,17 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -52,7 +52,7 @@ public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
   public static class TestConfiguration {
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-      return new StreamingGrantedAuthoritiesMapper(Arrays.asList());
+      return new StreamingGrantedAuthoritiesMapper(Collections.emptyList());
     }
 
     @Bean
@@ -67,7 +67,7 @@ public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
 
   }
 
-  @MockBean
+  @MockitoBean
   public CurrentUserProvider currentUserProvider;
 
   @Inject

@@ -48,13 +48,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 
@@ -112,13 +112,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebSecurity
 public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   private FunctionRegistry functionRegistry;
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireEventPublisher questionnaireEventPublisher;
 
   public String tenantId = "00000000-0000-0000-0000-000000000000";

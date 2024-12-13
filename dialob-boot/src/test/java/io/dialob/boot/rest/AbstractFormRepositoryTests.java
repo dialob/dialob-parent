@@ -17,6 +17,7 @@ package io.dialob.boot.rest;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.ImmutableForm;
@@ -37,16 +38,13 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -103,7 +101,7 @@ public class AbstractFormRepositoryTests {
   @Inject
   protected QuestionnaireDatabase questionnaireDatabase;
 
-  @MockBean
+  @MockitoBean
   protected FormDatabase formDatabase;
 
   public String getContextPath() {
@@ -197,11 +195,10 @@ public class AbstractFormRepositoryTests {
   }
 
   protected FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
-    FormItem formItemBean = addItem(formBuilder, Constants.QUESTIONNAIRE, builder -> {
+    return addItem(formBuilder, Constants.QUESTIONNAIRE, builder -> {
       builder.type(Constants.QUESTIONNAIRE);
       builderConsumer.accept(builder);
     });
-    return formItemBean;
   }
 
   protected FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
@@ -220,7 +217,6 @@ public class AbstractFormRepositoryTests {
   }
 
   protected Session createQuestionnaire(String formId) throws Exception {
-    HttpHeaders headers = new HttpHeaders();
     MvcResult mvcResult = mockMvc
       .perform(post(uri("api","questionnaires")).params(tenantParam)
         .content("{\"metadata\": {\"formId\":\"" + formId + "\"}}")
@@ -234,7 +230,6 @@ public class AbstractFormRepositoryTests {
   }
 
   protected Session createEditorQuestionnaire(String formId) throws Exception {
-    HttpHeaders headers = new HttpHeaders();
     MvcResult mvcResult = mockMvc
       .perform(post(uri("api", "questionnaires")).params(tenantParam)
           .content("{\"metadata\": {\"formId\":\"" + formId + "\",\"formRev\":\"LATEST\"}}")
@@ -251,7 +246,7 @@ public class AbstractFormRepositoryTests {
       httpHeaders = new HttpHeaders();
     }
     httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-    return new HttpEntity<T>(document, httpHeaders);
+    return new HttpEntity<>(document, httpHeaders);
   }
 
   protected <T> HttpEntity<T> httpEntity(HttpHeaders httpHeaders) {
@@ -261,7 +256,7 @@ public class AbstractFormRepositoryTests {
 
   private static class NoExceptionResponseErrorHandler extends DefaultResponseErrorHandler {
     @Override
-    public void handleError(ClientHttpResponse response) throws IOException {
+    public void handleError(@NonNull ClientHttpResponse response) {
     }
   }
 
@@ -274,7 +269,8 @@ public class AbstractFormRepositoryTests {
       this.entity = entity;
     }
 
-    ParameterizedTypeReference<List<Action>> actionListGenericType = new ParameterizedTypeReference<List<Action>>() { };
+    ParameterizedTypeReference<List<Action>> actionListGenericType = new ParameterizedTypeReference<>() {
+    };
 
     public List<Action> getAllActions() throws Exception {
       MvcResult mvcResult = mockMvc.perform(
@@ -291,31 +287,31 @@ public class AbstractFormRepositoryTests {
     public List<Action> answerQuestion(String questionId, String answer) throws Exception {
       final Action action = ActionsFactory.answer(questionId, answer);
       ResponseEntity<List<Action>> response = postAction(action);
-      assertEquals(200, response.getStatusCodeValue());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
     public List<Action> addRow(String rowGroupId) throws Exception {
       ResponseEntity<List<Action>> response = postAction(ActionsFactory.addRow(rowGroupId));
-      assertEquals(200, response.getStatusCodeValue());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
     public List<Action> deleteRow(String rowId) throws Exception {
       ResponseEntity<List<Action>> response = postAction(ActionsFactory.deleteRow(rowId));
-      assertEquals(200, response.getStatusCodeValue());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
     public List<Action> previousPage() throws Exception {
       ResponseEntity<List<Action>> response = postAction(Action.Type.PREVIOUS);
-      assertEquals(200, response.getStatusCodeValue());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
     public List<Action> nextPage() throws Exception {
       ResponseEntity<List<Action>> response = postAction(Action.Type.NEXT);
-      assertEquals(200, response.getStatusCodeValue());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 

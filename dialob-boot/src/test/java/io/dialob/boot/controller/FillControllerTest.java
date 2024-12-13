@@ -28,7 +28,6 @@ import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -38,6 +37,7 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResp
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
@@ -105,19 +105,19 @@ class FillControllerTest extends AbstractUIControllerTest {
     }
   }
 
-  @MockBean
+  @MockitoBean
   ClientRegistrationRepository clientRegistrationRepository;
 
-  @MockBean
+  @MockitoBean
   QuestionnaireDatabase questionnaireDatabase;
 
-  @MockBean
+  @MockitoBean
   GrantedAuthoritiesMapper grantedAuthoritiesMapper;
 
-  @MockBean
+  @MockitoBean
   OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient;
 
-  @MockBean
+  @MockitoBean
   CurrentTenant currentTenant;
 
   @Test
