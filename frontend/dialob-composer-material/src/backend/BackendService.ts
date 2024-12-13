@@ -2,7 +2,6 @@ import { ComposerState, ComposerTag } from "../dialob";
 import {
   SaveResult, DuplicateResult, ApiResponse, CreateTagRequest, CreateTagResult, ChangeIdResult, PreviewSessionData,
   PreviewSessionContext, CreateSessionResult, DialobComposerConfig,
-  BuildInfo
 } from "./types";
 
 interface UrlParams {
@@ -193,9 +192,5 @@ export class BackendService {
         apiError: err
       }
     }
-  }
-
-  public async getBuildInfo(): Promise<BuildInfo> {
-    return await this.doFetch(this.config.transport.apiUrl.replace('/api', '') + '/manage/info', 'GET');
   }
 }

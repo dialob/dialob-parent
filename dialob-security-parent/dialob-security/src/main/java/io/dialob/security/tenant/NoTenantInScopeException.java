@@ -15,6 +15,11 @@
  */
 package io.dialob.security.tenant;
 
+import java.io.Serial;
+
 public class NoTenantInScopeException extends RuntimeException {
+
+  @Serial
   private static final long serialVersionUID = 6945268202991893317L;
+
 }

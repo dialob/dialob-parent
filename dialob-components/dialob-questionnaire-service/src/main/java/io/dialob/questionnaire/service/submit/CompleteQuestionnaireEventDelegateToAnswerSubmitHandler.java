@@ -50,7 +50,7 @@ public class CompleteQuestionnaireEventDelegateToAnswerSubmitHandler {
   @EventListener
   protected void onCompleteQuestionnaireHandler(QuestionnaireCompletedEvent event) {
     LOGGER.debug("Received: {}", event);
-    String tenantId = event.getTenant().getId();
+    String tenantId = event.getTenant().id();
     AnswerSubmitHandler.Settings submitHandlerSettings = new AnswerSubmitHandler.Settings() {
 
       @Override

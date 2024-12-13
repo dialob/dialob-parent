@@ -19,7 +19,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +39,7 @@ public class SessionRestTenantFromRequestResolver implements TenantFromRequestRe
     if (StringUtils.isNotBlank(sessionId)) {
       try {
         return getQuestionnaireSession(sessionId)
-          .map(QuestionnaireSession::getTenantId).map(tId -> ImmutableTenant.of(tId, Optional.empty()));
+          .map(QuestionnaireSession::getTenantId).map(Tenant::of);
       } catch (DocumentNotFoundException dnfe) {
         /* fall throught */;
       }

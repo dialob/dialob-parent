@@ -277,7 +277,8 @@ public class CSVSerializer {
     printer.printRecord(records);
   }
 
-  public String serializeQuestionnaires(String[] sessionIds, Form form, String language) throws IOException {
+  public String serializeQuestionnaires(String[] sessionIds, Form form, Locale locale) throws IOException {
+    var language = locale.getLanguage();
     CSVPrinter printer = null;
     StringWriter out = new StringWriter();
     try {

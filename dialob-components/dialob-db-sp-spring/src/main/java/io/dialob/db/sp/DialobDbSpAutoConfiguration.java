@@ -15,6 +15,7 @@
  */
 package io.dialob.db.sp;
 
+import com.azure.storage.blob.BlobServiceClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.assets.AssetFormDatabase;
@@ -23,6 +24,8 @@ import io.dialob.db.assets.repository.GenericAssetRepository;
 import io.dialob.db.assets.serialization.AssetFormDeserializer;
 import io.dialob.db.assets.serialization.AssetFormMetadataRowDeserializer;
 import io.dialob.db.assets.serialization.AssetFormSerializer;
+import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
+import io.dialob.db.azure.blob.storage.QuestionnaireAzureBlobStorageDatabase;
 import io.dialob.db.dialob.api.DialobApiDbSettings;
 import io.dialob.db.dialob.api.DialobApiFormDatabase;
 import io.dialob.db.dialob.api.DialobApiQuestionnaireDatabase;
@@ -77,6 +80,7 @@ import java.util.function.Predicate;
 @EnableConfigurationProperties(DialobSettings.class)
 @Import(DatabaseExceptionMapper.class)
 public class DialobDbSpAutoConfiguration {
+
 
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
   @Import({
@@ -143,26 +147,6 @@ public class DialobDbSpAutoConfiguration {
     }
 
 
-    DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
-      try (Connection connection = dataSource.getConnection()) {
-        String databaseProductName = connection.getMetaData().getDatabaseProductName();
-        if (databaseProductName.startsWith("DB2/")) {
-          databaseProductName = "DB2";
-        }
-        switch (databaseProductName) {
-          case "PostgreSQL":
-            return new PostgreSQLDatabaseHelper(settings.getSchema());
-          case "MySQL":
-            return new MySQLDatabaseHelper(settings.getSchema());
-          case "DB2":
-            return new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
-          default:
-            throw new IllegalStateException("Unsupported database product " + connection.getMetaData().getDatabaseProductName());
-        }
-      } catch (SQLException e) {
-        throw new IllegalStateException(e);
-      }
-    }
 
     @Bean
     @ConditionalOnMissingBean(PlatformTransactionManager.class)
@@ -217,6 +201,9 @@ public class DialobDbSpAutoConfiguration {
     public QuestionnaireDatabase questionnaireDatabase() {
       return this.jdbcQuestionnaireDatabase;
     }
+
+
+
   }
 
   @Configuration(proxyBeanMethods = false)
@@ -224,8 +211,8 @@ public class DialobDbSpAutoConfiguration {
   public static class DialobDbFileAutoConfiguration {
 
     private String directory(@NonNull String baseDirectory, @NonNull String type) {
-      final File directory = new File(baseDirectory);
-      Assert.isTrue(directory.exists(), "File db directory " + baseDirectory + " do not exists");
+      final File directory = new File(Objects.requireNonNull(baseDirectory, "property dialob.db.file.directory not set"));
+      Assert.isTrue(directory.exists(), "File db directory " + baseDirectory + " does not exists");
       Assert.isTrue(directory.isDirectory(), "File db directory " + baseDirectory + " is not directory");
       return directory.toPath().resolve(type).toString();
     }
@@ -265,6 +252,35 @@ public class DialobDbSpAutoConfiguration {
       );
     }
   }
+
+  @Configuration(proxyBeanMethods = false)
+  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.AZURE_BLOB_STORAGE)
+  public static class DialobDbAzureBlobStorageAutoConfiguration {
+
+    @Bean
+    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "AZURE_BLOB_STORAGE", matchIfMissing = true)
+    public FormDatabase formDatabase(BlobServiceClient blobServiceClient, ObjectMapper objectMapper, DialobSettings settings) {
+      var containerName = Objects.requireNonNull(settings.getFormDatabase().getAzureBlobStorage().getContainerName(), "Define Blob Storage container name for forms");
+      return new FormAzureBlobStorageDatabase(blobServiceClient.getBlobContainerClient(containerName), objectMapper,
+        Objects.toString(settings.getFormDatabase().getAzureBlobStorage().getPrefix(), "forms/"),
+        settings.getFormDatabase().getAzureBlobStorage().getSuffix()
+      );
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "AZURE_BLOB_STORAGE", matchIfMissing = true)
+    public QuestionnaireDatabase questionnaireDatabase(BlobServiceClient blobServiceClient, ObjectMapper objectMapper, DialobSettings settings) {
+      var containerName = Objects.requireNonNull(settings.getQuestionnaireDatabase().getAzureBlobStorage().getContainerName(), "Define Blob Storage container name for questionnaires");
+      return new QuestionnaireAzureBlobStorageDatabase(blobServiceClient.getBlobContainerClient(containerName), objectMapper,
+        Objects.toString(settings.getQuestionnaireDatabase().getAzureBlobStorage().getPrefix(), "questionnaires/"),
+        settings.getQuestionnaireDatabase().getAzureBlobStorage().getSuffix()
+      );
+    }
+  }
+
+
+
+
 
   @Configuration(proxyBeanMethods = false)
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.DIALOBAPIDB)
@@ -309,4 +325,23 @@ public class DialobDbSpAutoConfiguration {
       return new AssetFormDatabase(assetRepository, assetFormSerializer, assetFormDeserializer, assetFormMetadataRowDeserializer);
     }
   }
+
+  static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
+    try (Connection connection = dataSource.getConnection()) {
+      String databaseProductName = connection.getMetaData().getDatabaseProductName();
+      if (databaseProductName.startsWith("DB2/")) {
+        databaseProductName = "DB2";
+      }
+      return switch (databaseProductName) {
+        case "PostgreSQL" -> new PostgreSQLDatabaseHelper(settings.getSchema());
+        case "MySQL" -> new MySQLDatabaseHelper(settings.getSchema());
+        case "DB2" -> new DB2DatabaseHelper(settings.getSchema(), settings.getRemap());
+        default ->
+          throw new IllegalStateException("Unsupported database product %s".formatted(connection.getMetaData().getDatabaseProductName()));
+      };
+    } catch (SQLException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
 }

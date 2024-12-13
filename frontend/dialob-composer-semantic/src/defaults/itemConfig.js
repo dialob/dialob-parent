@@ -114,7 +114,8 @@ export const DEFAULT_ITEM_CONFIG = {
       component: Note,
       props: {
         icon: 'warning circle',
-        placeholder: 'Validation message text'
+        placeholder: 'Validation message text',
+        style: 'error'
       }
     },
     {
@@ -122,7 +123,8 @@ export const DEFAULT_ITEM_CONFIG = {
       component: Note,
       props: {
         icon: 'file outline',
-        placeholder: 'Note text'
+        placeholder: 'Note text',
+        style: 'normal'
       }
     }
   ]

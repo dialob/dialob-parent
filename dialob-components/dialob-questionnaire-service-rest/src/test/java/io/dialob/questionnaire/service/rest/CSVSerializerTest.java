@@ -226,6 +226,12 @@ public class CSVSerializerTest {
   }
 
   @Test
+  public void getByQuestionnaireIdInvalidId() throws Exception {
+    mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc,unacceptable-id").accept(MediaType.parseMediaType("text/csv")))
+      .andExpect(status().isBadRequest());
+  }
+
+  @Test
   public void getByQuestionnaireIdWrongForm() throws Exception {
     mockMvc.perform(get("/questionnaires?questionnaire=1,3").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().is4xxClientError());

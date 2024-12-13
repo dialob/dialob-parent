@@ -33,7 +33,7 @@ public interface ApiKey extends Serializable {
   Optional<String> getHash();
 
   default boolean isValid() {
-    return getHash().isPresent() && !getToken().isPresent();
+    return getHash().isPresent() && getToken().isEmpty();
   }
 
   Optional<String> getTenantId();

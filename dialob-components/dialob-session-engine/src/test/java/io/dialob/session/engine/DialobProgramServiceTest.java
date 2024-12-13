@@ -26,6 +26,7 @@ import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
+import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -56,7 +57,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
-    DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession);
+    DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, DialobQuestionnaireSession.State.ACTIVE);
 
     final EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
     final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);

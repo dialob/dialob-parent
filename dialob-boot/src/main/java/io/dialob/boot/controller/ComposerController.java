@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequestMapping("${composer.context-path:/composer}")
 @Slf4j
 public class ComposerController extends BaseController {
+  @Value("${info.build.version}")
+  private String version;
+
 
   private ComposerApplicationSettings settings;
 
@@ -121,6 +125,7 @@ public class ComposerController extends BaseController {
     if (!StringUtils.isBlank(tenantId)) {
       appConfig.setTenantId(tenantId);
     }
+    appConfig.setVersion(version);
     return appConfig;
   }
 
@@ -147,6 +152,7 @@ public class ComposerController extends BaseController {
 
     private String tenantId;
 
+    private String version;
   }
 
 }

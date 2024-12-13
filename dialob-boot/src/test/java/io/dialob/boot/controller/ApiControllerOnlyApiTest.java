@@ -27,7 +27,6 @@ import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.*;
 import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
@@ -189,7 +188,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
       new SimpleGrantedAuthority(Permissions.QUESTIONNAIRES_GET),
       ImmutableTenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
       .when(apiKeyAuthoritiesProvider).loadAuthorities(loadedApiKey);
-    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(ImmutableTenant.of("00000000-0000-0000-0000-000000000000", Optional.of("00000000-0000-0000-0000-000000000000")));
+    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000"));
 
     doReturn(ResponseEntity.ok(Collections.emptyList())).when(formsRestServiceController).getForms(null);
     doReturn(ResponseEntity.ok(Collections.emptyList())).when(questionnairesRestServiceController).getQuestionnaires(null, null, null, null, null);
@@ -226,7 +225,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
     doReturn(Arrays.asList(
       ImmutableTenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
       .when(apiKeyAuthoritiesProvider).loadAuthorities(loadedApiKey);
-    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(ImmutableTenant.of("00000000-0000-0000-0000-000000000000", Optional.of("00000000-0000-0000-0000-000000000000")));
+    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000"));
 
     mockMvc.perform(get("/api/tenants").accept(MediaType.APPLICATION_JSON).header("x-api-key","MDEyMzQ1Njc4OTEyMzQ1NmFiYw=="))
       .andExpect(status().isOk())

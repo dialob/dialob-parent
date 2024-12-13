@@ -21,7 +21,7 @@ import io.dialob.form.service.rest.FormsRestServiceController;
 import io.dialob.questionnaire.service.rest.QuestionnairesRestServiceController;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
 import io.dialob.tenant.service.rest.TenantsRestController;
@@ -43,7 +43,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -129,7 +128,7 @@ public class ApiControllerTest extends AbstractControllerTest {
   @Test
   @WithDialobUser(username = "apiUser", authorities = {}, tenants = {"testi"})
   public void fetchTenantsWithAccessToOneTenant() throws Exception {
-    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(ImmutableTenant.of("testi", Optional.of("testi")));
+    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("testi", "testi"));
 
     mockMvc.perform(get("/api/tenants").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
@@ -137,7 +136,7 @@ public class ApiControllerTest extends AbstractControllerTest {
       .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
       .andReturn();
 
-    verify(tenantAccessEvaluator).doesUserHaveAccessToTenant(ImmutableTenant.of("testi", Optional.of("testi")));
+    verify(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("testi", "testi"));
   }
 
   @Test
@@ -157,7 +156,7 @@ public class ApiControllerTest extends AbstractControllerTest {
   @Test
   @WithDialobUser(username = "apiUser", authorities = {Permissions.FORMS_GET, Permissions.QUESTIONNAIRES_GET}, tenants = {"testi"})
   public void canAccessFormsWithTenant() throws Exception {
-    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(ImmutableTenant.of("testi", Optional.of("testi")));
+    doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("testi", "testi"));
 
     doReturn(ResponseEntity.ok(Collections.emptyList())).when(formsRestServiceController).getForms(null);
     doReturn(ResponseEntity.ok(Collections.emptyList())).when(questionnairesRestServiceController).getQuestionnaires(null, null, null, null, null);
@@ -172,7 +171,7 @@ public class ApiControllerTest extends AbstractControllerTest {
       .andExpect(content().string(containsString("[]")))
       .andReturn();
 
-    verify(tenantAccessEvaluator, times(2)).doesUserHaveAccessToTenant(ImmutableTenant.of("testi", Optional.of("testi")));
+    verify(tenantAccessEvaluator, times(2)).doesUserHaveAccessToTenant(Tenant.of("testi", "testi"));
     verify(formsRestServiceController).getForms(null);
     verify(questionnairesRestServiceController).getQuestionnaires(null, null, null, null, null);
 

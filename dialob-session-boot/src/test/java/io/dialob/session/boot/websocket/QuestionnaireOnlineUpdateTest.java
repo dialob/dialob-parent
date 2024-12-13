@@ -22,7 +22,7 @@ import io.dialob.function.DialobFunctionAutoConfiguration;
 import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
 import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.session.boot.Application;
 import io.dialob.session.boot.ApplicationAutoConfiguration;
 import io.dialob.settings.DialobSettings;
@@ -37,7 +37,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -120,7 +119,7 @@ public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
         applicationEventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder()
           .source("sourc3")
           .formId("updateFormOnline")
-          .tenant(ImmutableTenant.of("testTenant", Optional.empty()))
+          .tenant(Tenant.of("testTenant"))
           .revision("2")
           .build());
 

@@ -16,7 +16,6 @@
 package io.dialob.security.tenant;
 
 import java.util.Objects;
-import java.util.Optional;
 
 
 public class FixedCurrentTenant implements CurrentTenant {
@@ -28,7 +27,7 @@ public class FixedCurrentTenant implements CurrentTenant {
   }
 
   public FixedCurrentTenant(String tenantId, String name) {
-    this(ImmutableTenant.of(Objects.requireNonNull(tenantId, "tenant id may no be null"), Optional.ofNullable(name)));
+    this(Tenant.of(Objects.requireNonNull(tenantId, "tenant id may no be null"), name));
   }
 
   public FixedCurrentTenant(Tenant tenant) {

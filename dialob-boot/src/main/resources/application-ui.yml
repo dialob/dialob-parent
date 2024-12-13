@@ -77,14 +77,7 @@ composer:
   documentationUrl: "${documentationUrl}"
   tenants:
     default:
-      template: "composer"
-      attributes:
-        javascriptFiles:
-          - "//cdn.resys.io/dialob-composer-generic-app/${composer.version}/runtime.js"
-          - "//cdn.resys.io/dialob-composer-generic-app/${composer.version}/app.js"
-        stylesheets:
-          - "//cdn.resys.io/dialob-composer-generic-app/${composer.version}/app.css"
-          - "//unpkg.com/semantic-ui@2.4.2/dist/semantic.min.css"
+      template: "//cdn.resys.io/dialob-composer-generic-app/dev/index.html"
 
 review:
   context-path: "/review"

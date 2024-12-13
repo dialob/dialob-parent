@@ -1,14 +1,14 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ComposerState, ComposerTag, INIT_STATE } from "../dialob";
 import { BackendService } from "./BackendService";
-import { ApiResponse, BackendState, BuildInfo, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
+import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const INITIAL_BACKEND: BackendState = {
   formId: "",
   loaded: false,
   form: null,
-  config: { transport: { apiUrl: "", previewUrl: "" }, closeHandler: () => { } },
+  config: { transport: { apiUrl: "", previewUrl: "" }, backendVersion: "0.0.0", closeHandler: () => { } },
   loadForm: (_formId: string, _tagName?: string): Promise<ComposerState> => {
     return Promise.resolve(INIT_STATE);
   },
@@ -29,9 +29,6 @@ const INITIAL_BACKEND: BackendState = {
   },
   createPreviewSession: (_formId: string, _language: string, _context?: PreviewSessionContext): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
-  },
-  getBuildInfo: (): Promise<BuildInfo> => {
-    return Promise.resolve({ build: { artifact: "", name: "", version: "", group: "", time: "" } });
   },
 };
 
@@ -71,7 +68,6 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
       getTags: backendService.current.getTags.bind(backendService.current),
       changeItemId: backendService.current.changeItemId.bind(backendService.current),
       createPreviewSession: backendService.current.createPreviewSession.bind(backendService.current),
-      getBuildInfo: backendService.current.getBuildInfo.bind(backendService.current),
     }}>
       {children}
     </BackendContext.Provider>

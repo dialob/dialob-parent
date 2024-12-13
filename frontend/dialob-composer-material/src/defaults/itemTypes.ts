@@ -1,5 +1,19 @@
-import Editor from "../components/Editor";
 import { ItemTypeConfig } from "./types";
+import * as PropEditors from "../components/propEditors";
+
+const ALERTSTYLE_PROP = {
+  component: PropEditors.ChoiceProp,
+  props: {
+    options: [
+      { key: 'normal', label: 'Normal (default)' },
+      { key: 'info', label: 'Info' },
+      { key: 'success', label: 'Success' },
+      { key: 'warning', label: 'Warning' },
+      { key: 'error', label: 'Error' }
+    ]
+  }
+}
+
 
 export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
   categories: [
@@ -10,11 +24,11 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         {
           title: 'Group',
           optionEditors: [
-            { name: 'Additional option', editor: Editor }
+            { name: 'Additional option', editor: PropEditors.InputProp }
           ],
           propEditors: {
             columns: {
-              component: Editor,
+              component: PropEditors.InputProp,
               props: {
                 type: 'number',
                 min: 1,
@@ -84,7 +98,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
           convertible: ['text', 'textBox'],
           propEditors: {
             country: {
-              component: Editor,
+              component: PropEditors.MultiChoiceProp,
               props: {
                 allowAdditions: true,
                 options: [
@@ -157,16 +171,28 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
       items: [
         {
           title: 'Note',
+          propEditors: {
+            style: ALERTSTYLE_PROP
+          },
           config: {
-            type: 'note'
+            type: 'note',
+            props: {
+              style: 'normal'
+            }
           }
         },
         {
           title: 'Validation message',
+          propEditors: {
+            style: ALERTSTYLE_PROP
+          },
           config: {
             type: 'note',
             view: 'validation',
-            required: 'true'
+            required: 'true',
+            props: {
+              style: 'error'
+            }
           }
         }
       ]

@@ -46,6 +46,10 @@ On first startup, following databases are created using init scripts in `db_init
 
 Postgres service is exposed on `localhost:5433`
 
+```shell
+PGPASSWORD=dialob123 psql -h localhost -p 5433 -U dialob -d dialob
+```
+
 ### Dialob 
 
 Dialob Admin UI: http://localhost:8080/dialob/

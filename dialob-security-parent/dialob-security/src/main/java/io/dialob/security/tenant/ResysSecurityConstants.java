@@ -15,12 +15,10 @@
  */
 package io.dialob.security.tenant;
 
-import java.util.Optional;
-
 public class ResysSecurityConstants {
 
   private ResysSecurityConstants() {}
 
-  public static final Tenant DEFAULT_TENANT = ImmutableTenant.of("00000000-0000-0000-0000-000000000000", Optional.empty());
+  public static final Tenant DEFAULT_TENANT = Tenant.of("00000000-0000-0000-0000-000000000000");
 
 }

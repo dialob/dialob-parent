@@ -35,18 +35,18 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rest.type.ApiException;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
 
 import static io.dialob.api.proto.ActionsFactory.*;
 import static java.util.Collections.singletonList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
@@ -96,12 +97,9 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
   /**
    *
-   * @param questionnaire
-   * @return
    */
   @Override
-  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<IdAndRevision> postQuestionnaire(@NonNull @RequestBody @Validated Questionnaire questionnaire) {
+  public ResponseEntity<IdAndRevision> postQuestionnaire(@NonNull Questionnaire questionnaire) {
     final Questionnaire.Metadata metadata = questionnaire.getMetadata();
     final String formId = metadata.getFormId();
     final String formRev = metadata.getFormRev();
@@ -148,19 +146,14 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   /**
-   * @return
-   * @param owner
-   * @param formId
-   * @param formTag
    * @param status
    */
   @Override
-  @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<List<QuestionnaireListItem>> getQuestionnaires(@RequestParam(name = "owner", required = false) String owner,
-                                                                       @RequestParam(name = "formId", required = false) String formId,
-                                                                       @RequestParam(name = "formName", required = false) String formName,
-                                                                       @RequestParam(name = "formTag", required = false) String formTag,
-                                                                       @RequestParam(name = "status", required = false) Questionnaire.Metadata.Status status) {
+  public ResponseEntity<List<QuestionnaireListItem>> getQuestionnaires(String owner,
+                                                                       String formId,
+                                                                       String formName,
+                                                                       String formTag,
+                                                                       Questionnaire.Metadata.Status status) {
     List<QuestionnaireListItem> result = new ArrayList<>();
     questionnaireRepository.findAllMetadata(
       currentTenant.getId(),
@@ -179,8 +172,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @GetMapping(path = "{questionnaireId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Questionnaire> getQuestionnaire(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<Questionnaire> getQuestionnaire(String questionnaireId) {
     LOGGER.debug("GET /questionnaire/{}", questionnaireId);
     return ResponseEntity.ok(questionnaireRepository.findOne(currentTenant.getId(), questionnaireId));
   }
@@ -191,8 +183,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @DeleteMapping(path = "{questionnaireId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Response> deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<Response> deleteQuestionnaire(String questionnaireId) {
     LOGGER.debug("DELETE /questionnaire/{}", questionnaireId);
     questionnaireRepository.delete(currentTenant.getId(), questionnaireId);
     return ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
@@ -205,10 +196,9 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @PutMapping(path = "{questionnaireId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Questionnaire> putQuestionnaire(
-    @PathVariable("questionnaireId") final String questionnaireId,
-    @RequestBody @Validated final Questionnaire questionnaire)
+    final String questionnaireId,
+    final Questionnaire questionnaire)
   {
     return inSession(questionnaireId, questionnaireSession -> {
       final List<Action> actions = new ArrayList<>();
@@ -234,8 +224,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @GetMapping(path = "{questionnaireId}/status", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Questionnaire.Metadata.Status> getQuestionnaireStatus(@PathVariable("questionnaireId") final String questionnaireId){
+  public ResponseEntity<Questionnaire.Metadata.Status> getQuestionnaireStatus(final String questionnaireId){
     return inSession(questionnaireId, questionnaireSession -> ResponseEntity.ok(questionnaireSession.getStatus()));
   }
 
@@ -246,8 +235,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @PutMapping(path = "{questionnaireId}/status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Questionnaire.Metadata.Status> putQuestionnaireStatus(@PathVariable("questionnaireId") final String questionnaireId, @RequestBody Questionnaire.Metadata.Status status){
+  public ResponseEntity<Questionnaire.Metadata.Status> putQuestionnaireStatus(final String questionnaireId, Questionnaire.Metadata.Status status){
     return inSession(questionnaireId, questionnaireSession -> {
       if (status == Questionnaire.Metadata.Status.COMPLETED) {
         updateQuestionnaire(questionnaireSession, Collections.singletonList(ActionsFactory.complete(questionnaireId)));
@@ -262,8 +250,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @GetMapping(path = "{questionnaireId}/answers", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<Answer>> getQuestionnaireAnswers(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<List<Answer>> getQuestionnaireAnswers(String questionnaireId) {
     LOGGER.debug("GET /questionnaires/{}/answers", questionnaireId);
     return inSession(questionnaireId, questionnaireSession -> ResponseEntity.ok(questionnaireSession.getAnswers()));
   }
@@ -274,23 +261,15 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @GetMapping(path = "{questionnaireId}/errors", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<Error>> getQuestionnaireErrors(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<List<Error>> getQuestionnaireErrors(String questionnaireId) {
     LOGGER.debug("GET /questionnaires/{}/errors", questionnaireId);
     return inSession(questionnaireId, questionnaireSession -> ResponseEntity.ok(questionnaireSession.getErrors()));
   }
 
-  /**
-   *
-   * @param questionnaireId
-   * @param answers
-   * @return
-   */
   @Override
-  @PostMapping(path = "{questionnaireId}/answers", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<Error>> putQuestionnaireAnswers(
-    @PathVariable("questionnaireId") String questionnaireId,
-    @RequestBody List<Answer> answers)
+    String questionnaireId,
+    List<Answer> answers)
   {
     return inSession(questionnaireId, questionnaireSession -> {
       updateQuestionnaire(questionnaireSession, answers.stream().map(answer ->
@@ -300,11 +279,10 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   @Override
-  @PutMapping(path = "{questionnaireId}/answers/{answerId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<List<Error>> putQuestionnaireAnswer(
-    @PathVariable("questionnaireId") String questionnaireId,
-    @PathVariable("answerId") String answerId,
-    @RequestBody Object answer) // multivalued answer?
+    String questionnaireId,
+    String answerId,
+    Object answer) // multivalued answer?
   {
     if (!isValidAnswerValue(answer)) {
       return ResponseEntity.badRequest().body(singletonList(ImmutableError.builder().id(answerId).code("invalid_answer").description("Cannot handle answer data").build()));
@@ -344,10 +322,9 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @DeleteMapping(path = "{questionnaireId}/answers/{answerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<Error>> deleteQuestionnaireAnswer(
-    @PathVariable("questionnaireId") String questionnaireId,
-    @PathVariable("answerId") String answerId)
+    String questionnaireId,
+    String answerId)
   {
     return putQuestionnaireAnswers(questionnaireId, singletonList(QuestionnaireFactory.answer(answerId, null)));
   }
@@ -358,8 +335,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  @GetMapping(path = "{questionnaireId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Items> getQuestionnairePages(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<Items> getQuestionnairePages(String questionnaireId) {
     return inSession(questionnaireId, questionnaireSession -> questionnaireSession
       .getItemById(Constants.QUESTIONNAIRE)
       .map(question -> {
@@ -379,11 +355,10 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   @Override
-  @PutMapping(path = "{questionnaireId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Items> putQuestionnairePages(@NonNull @PathVariable("questionnaireId") String questionnaireId, @RequestBody Items pages) {
+  public ResponseEntity<Items> putQuestionnairePages(@NonNull String questionnaireId, Items pages) {
     return inSession(questionnaireId, questionnaireSession -> {
       final String activeItem = pages.getActiveItem();
-      if (!questionnaireSession.getActiveItem().filter(sessionActiveItem -> sessionActiveItem.equals(activeItem)).isPresent()) {
+      if (questionnaireSession.getActiveItem().filter(sessionActiveItem -> sessionActiveItem.equals(activeItem)).isEmpty()) {
         updateQuestionnaire(questionnaireSession, Collections.singletonList(gotoPage(activeItem)));
         return questionnaireSession
           .getItemById(Constants.QUESTIONNAIRE)
@@ -407,20 +382,17 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   @Override
-  @GetMapping(path = "{questionnaireId}/items", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<ActionItem>> getQuestionnaireItems(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<List<ActionItem>> getQuestionnaireItems(String questionnaireId) {
     return inSession(questionnaireId, questionnaireSession -> ResponseEntity.ok(questionnaireSession.getItems()));
   }
 
   @Override
-  @GetMapping(path = "{questionnaireId}/items/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ActionItem> getQuestionnaireItem(@PathVariable("questionnaireId") String questionnaireId, @PathVariable("itemId") String itemId) {
+  public ResponseEntity<ActionItem> getQuestionnaireItem(String questionnaireId, String itemId) {
     return inSession(questionnaireId, questionnaireSession -> questionnaireSession.getItemById(itemId).map(ResponseEntity::ok).orElse(notFound().build()));
   }
 
   @Override
-  @GetMapping(path = "{questionnaireId}/items/{itemId}/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<String>> getQuestionnaireItemRows(@PathVariable("questionnaireId") String questionnaireId, @PathVariable("itemId") String itemId) {
+  public ResponseEntity<List<String>> getQuestionnaireItemRows(String questionnaireId, String itemId) {
     return inSession(questionnaireId, questionnaireSession ->
       questionnaireSession
         .getItemById(itemId)
@@ -432,15 +404,14 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
   @Nullable
   private ActionItem selectRowgroup(ActionItem question) {
-    if ( question.getType().equals("rowgroup") ) {
+    if ( "rowgroup".equals(question.getType()) ) {
       return question;
     }
     return null;
   }
 
   @Override
-  @PostMapping(path = "{questionnaireId}/items/{itemId}/rows", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<String>> postQuestionnaireItemRow(@PathVariable("questionnaireId") String questionnaireId, @PathVariable("itemId") String itemId) {
+  public ResponseEntity<List<String>> postQuestionnaireItemRow(String questionnaireId, String itemId) {
     return inSession(questionnaireId, questionnaireSession ->
       updateQuestionnaire(questionnaireSession, Collections.singletonList(ActionsFactory.addRow(itemId)))
         .getItemById(itemId)
@@ -452,8 +423,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
 
   @Override
-  @DeleteMapping(path = "{questionnaireId}/items/{itemId}/rows/{rowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<String>> deleteQuestionnaireItemRow(@PathVariable("questionnaireId") String questionnaireId, @PathVariable("itemId") String itemId, @PathVariable("rowId") String rowId) {
+  public ResponseEntity<List<String>> deleteQuestionnaireItemRow(String questionnaireId, String itemId, String rowId) {
     return inSession(questionnaireId, questionnaireSession -> questionnaireSession.getItemById(itemId)
       .map(this::selectRowgroup)
       .map(ActionItem::getItems)
@@ -466,14 +436,12 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   @Override
-  @GetMapping(path = "{questionnaireId}/valueSets", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<ValueSet>> getQuestionnaireValueSets(@PathVariable("questionnaireId") String questionnaireId) {
+  public ResponseEntity<List<ValueSet>> getQuestionnaireValueSets(String questionnaireId) {
     return inSession(questionnaireId, questionnaireSession -> ResponseEntity.ok(questionnaireSession.getValueSets()));
   }
 
   @Override
-  @GetMapping(path = "{questionnaireId}/valueSets/{valueSetId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ValueSet> getQuestionnaireValueSet(@PathVariable("questionnaireId") String questionnaireId, @PathVariable("valueSetId") String valueSetId) {
+  public ResponseEntity<ValueSet> getQuestionnaireValueSet(String questionnaireId, String valueSetId) {
     return inSession(questionnaireId, questionnaireSession -> questionnaireSession.getValueSets().stream().filter(valueSet1 -> valueSet1.getId().equals(valueSetId)).findFirst().map(ResponseEntity::ok).orElse(notFound().build()));
   }
 
@@ -491,17 +459,19 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   }
 
   @Override
-  public ResponseEntity<String> getCsv(Optional<String> formId, Optional<String> formName, Optional<String> formTag, Optional<List<String>> questionnaires, Optional<String> language, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
+  public ResponseEntity<String> getCsv(@Valid GetCsv getCsv) {
 
     final List<QuestionnaireDatabase.MetadataRow> questionnaireMetadataList = new ArrayList<>();
     Form form;
 
-    if (questionnaires.isPresent()) {
-      questionnaires.ifPresent(q -> q.stream().map(qId -> questionnaireRepository.findMetadata(currentTenant.getId(), qId))
-        .filter(metadataRow -> metadataRow.getValue().getStatus().equals(Questionnaire.Metadata.Status.COMPLETED))
-        .forEach(questionnaireMetadataList::add));
 
-      // Validate questionnaire list for same form
+    List<String> questionnaires = getCsv.questionnaire();
+    if (!questionnaires.isEmpty()) {
+      questionnaires.stream().map(qId -> questionnaireRepository.findMetadata(currentTenant.getId(), qId))
+        .filter(metadataRow -> metadataRow.getValue().getStatus().equals(Questionnaire.Metadata.Status.COMPLETED))
+        .forEach(questionnaireMetadataList::add);
+
+      // Validate questionnaires list for same form
       String seenFormId = null;
       for (QuestionnaireDatabase.MetadataRow metadataRow : questionnaireMetadataList) {
         Questionnaire.Metadata metadata = metadataRow.getValue();
@@ -528,31 +498,31 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       }
     } else {
       // Mode 2 - Query sessions by form
-      if (formId.isPresent()) {
-        form = formDatabase.findOne(currentTenant.getId(), formId.get());
+      if (StringUtils.isNotBlank(getCsv.formId())) {
+        form = formDatabase.findOne(currentTenant.getId(), getCsv.formId());
       } else {
-        if (!formName.isPresent() && !formTag.isPresent()) {
+        if (isBlank(getCsv.formName()) && isBlank(getCsv.formTag())) {
           throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
             .code("formNameNotSet")
             .context("")
             .error("Form name and tag or form ID is not set").build())
             .status(HttpStatus.BAD_REQUEST.value()).build());
         }
-        form = formDatabase.findOne(currentTenant.getId(), formName.get(), formTag.get());
+        form = formDatabase.findOne(currentTenant.getId(), getCsv.formName(), getCsv.formTag());
       }
 
       questionnaireRepository.findAllMetadata(currentTenant.getId(),
         null,
-        formId.orElse(null),
-        formName.orElse(null),
-        formTag.orElse(null),
+        getCsv.formId(),
+        getCsv.formName(),
+        getCsv.formTag(),
         Questionnaire.Metadata.Status.COMPLETED,
         metadata -> {
           // Filter by start and end date using last answer timestamp. TODO: use completion date when it gets available
-          if (startDate.isPresent() && startDate.get().isAfter(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+          if (getCsv.from() != null && getCsv.from().isAfter(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
             return;
           }
-          if (endDate.isPresent() && endDate.get().isBefore(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+          if (getCsv.to() != null && getCsv.to().isBefore(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
             return;
           }
           questionnaireMetadataList.add(metadata);
@@ -570,7 +540,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     }
 
     try {
-      String csv = csvSerializer.serializeQuestionnaires(questionnaireMetadataList.stream().map(md -> md.getId()).toArray(String[]::new), form, language.orElse("en"));
+      String csv = csvSerializer.serializeQuestionnaires(questionnaireMetadataList.stream().map(QuestionnaireDatabase.MetadataRow::getId).toArray(String[]::new), form, getCsv.language());
       return ResponseEntity.ok().contentType(MediaType.valueOf("text/csv")).body(csv);
     } catch (IOException e) {
       LOGGER.error("CSV Export failed", e);

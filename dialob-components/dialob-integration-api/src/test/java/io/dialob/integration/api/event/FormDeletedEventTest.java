@@ -17,11 +17,9 @@ package io.dialob.integration.api.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,11 +28,11 @@ public class FormDeletedEventTest {
 
   @Test
   public void testConstructorJsonMapping() throws Exception {
-    FormDeletedEvent event = ImmutableFormDeletedEvent.builder().source("node").tenant(ImmutableTenant.of("tenante", Optional.empty())).formId("formi").build();
+    FormDeletedEvent event = ImmutableFormDeletedEvent.builder().source("node").tenant(Tenant.of("tenante")).formId("formi").build();
     assertEquals("{\"type\":\"FormDeleted\",\"tenant\":{\"id\":\"tenante\"},\"formId\":\"formi\",\"source\":\"node\"}", mapper.writeValueAsString(event));
     event = (FormDeletedEvent) mapper.readValue("{\"type\":\"FormDeleted\",\"source\":\"node1\",\"tenant\":{\"id\":\"tenante2\"},\"formId\":\"formi3\"}", DistributedEvent.class);
     Assertions.assertEquals("node1", event.getSource());
-    Assertions.assertEquals("tenante2", event.getTenant().getId());
+    Assertions.assertEquals("tenante2", event.getTenant().id());
     Assertions.assertEquals("formi3", event.getFormId());
   }
 

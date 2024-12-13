@@ -34,7 +34,8 @@ public class DialobSettings {
     DIALOBAPIDB,
     JDBC,
     ASSETS,
-    S3
+    S3,
+    AZURE_BLOB_STORAGE
   }
 
   private SessionSettings session = new SessionSettings();
@@ -58,6 +59,8 @@ public class DialobSettings {
   private DialobAssetsSettings assets = new DialobAssetsSettings();
 
   private AwsSettings aws = new AwsSettings();
+
+  private AzureSettings azure = new AzureSettings();
 
   private GcpSettings gcp = new GcpSettings();
 
@@ -94,6 +97,9 @@ public class DialobSettings {
 
     private S3Settings s3 = new S3Settings();
 
+    private AzureBlobStorageSettings azureBlobStorage = new AzureBlobStorageSettings();
+
+
     @Data
     public static class JdbcSettings {
       private String schema;
@@ -115,6 +121,18 @@ public class DialobSettings {
       private String prefix = "";
 
     }
+
+    @Data
+    public static class AzureBlobStorageSettings {
+
+      private String containerName;
+
+      private String prefix = "";
+
+      private String suffix;
+
+    }
+
   }
 
   @Data
@@ -228,7 +246,6 @@ public class DialobSettings {
 
       String questionnaireEventsTopicARN;
 
-
     }
 
     @Data
@@ -241,6 +258,20 @@ public class DialobSettings {
       Optional<String> principalRequestHeader = Optional.of("X-Amzn-Oidc-Identity");
 
       Optional<String> credentialsRequestHeader = Optional.of("X-Amzn-Oidc-Data");
+    }
+
+  }
+
+  @Data
+  public static class AzureSettings {
+
+    boolean enabled = false;
+
+    BlobStorage blobStorage = new BlobStorage();
+
+    @Data
+    public static class BlobStorage {
+      Optional<String> endpoint =  Optional.empty();
     }
 
   }

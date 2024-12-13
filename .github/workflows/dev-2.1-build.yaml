@@ -1,5 +1,12 @@
 on:
   push:
+    paths-ignore:
+      - 'docs/**'
+      - 'frontends/**'
+      - 'utils/**'
+      - '**/*.md'
+      - 'compose/**'
+      - 'dev-env/**'
     branches:
       - dev-2.1
 

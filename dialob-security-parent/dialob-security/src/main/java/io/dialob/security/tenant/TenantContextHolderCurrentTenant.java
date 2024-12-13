@@ -31,21 +31,21 @@ public class TenantContextHolderCurrentTenant implements CurrentTenant {
   public static void runInTenantContext(@NonNull Tenant tenant, @NonNull Runnable runnable) {
     Tenant originalTenant = TENANT_THREAD_LOCAL.get();
     TENANT_THREAD_LOCAL.set(Objects.requireNonNull(tenant));
-    MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, tenant.getId());
+    MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, tenant.id());
     try {
       runnable.run();
     } finally {
       if (originalTenant == null) {
         MDC.remove(LoggingContextKeys.MDC_TENANT_ID_KEY);
       } else {
-        MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, originalTenant.getId());
+        MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, originalTenant.id());
       }
       TENANT_THREAD_LOCAL.set(originalTenant);
     }
   }
 
   public static void setTenant(Tenant tenant) {
-    MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, tenant.getId());
+    MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, tenant.id());
     TENANT_THREAD_LOCAL.set(tenant);
   }
 

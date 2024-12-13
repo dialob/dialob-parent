@@ -46,10 +46,10 @@ export const StyledTable = styled(Table, {
 ));
 
 
-const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: string) => {
+export const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: string, view?: string) => {
   for (const idx in itemTypes.categories) {
     const c = itemTypes.categories[idx];
-    const resultConfig = c.items.find(v => v.config.view === type || v.config.type === type);
+    const resultConfig = c.items.find(v => v.config.type === type && (!view || v.config.view === view));
     if (resultConfig) {
       return resultConfig;
     }

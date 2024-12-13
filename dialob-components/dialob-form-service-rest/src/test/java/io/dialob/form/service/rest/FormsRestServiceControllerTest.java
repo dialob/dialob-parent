@@ -26,7 +26,7 @@ import io.dialob.form.service.api.validation.FormValidator;
 import io.dialob.integration.api.NodeId;
 import io.dialob.rest.DialobRestAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
-import io.dialob.security.tenant.ImmutableTenant;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import jakarta.inject.Inject;
@@ -48,6 +48,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -147,6 +148,20 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
+  public void shouldNotReturnFormForInvalidId() throws Exception {
+
+    when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
+    when(currentTenant.getId()).thenReturn("t-123");
+
+    mockMvc.perform(get("/forms/{formId}", "123*%4"))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().string(is(emptyString())))
+    ;
+
+    verifyNoInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
+  }
+
+  @Test
   public void postShouldAlwaysCreateNewForm() throws Exception {
     ImmutableForm immutableForm = ImmutableForm.builder()
       .id("123")
@@ -212,7 +227,7 @@ class FormsRestServiceControllerTest {
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
 
     when(currentTenant.getId()).thenReturn("t-123");
-    when(currentTenant.get()).thenReturn(ImmutableTenant.of("t-123", Optional.empty()));
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
     when(currentUserProvider.getUserId()).thenReturn("user");
     when(nodeId.getId()).thenReturn("testnode");
     when(formVersionControlDatabase.getFormDatabase()).thenReturn(formDatabase);
@@ -239,6 +254,16 @@ class FormsRestServiceControllerTest {
 
 
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
+  void shouldRejectInvalidTagNames() throws Exception {
+    mockMvc.perform(put("/forms/{formId}/tags/{tagName}", "myform","newt%ag")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("{}"))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().string(""));
+    verifyNoInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
   }
 
   @Test

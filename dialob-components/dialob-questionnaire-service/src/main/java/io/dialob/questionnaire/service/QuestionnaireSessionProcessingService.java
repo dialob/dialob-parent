@@ -35,6 +35,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -98,7 +99,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   @Deprecated
   public Actions answerQuestion(@NonNull final String questionnaireId, String revision, @NonNull final List<Action> actions) {
     this.numberOfExecutions.increment();
-    return this.processingTime.record(() -> {
+    return Objects.requireNonNull(this.processingTime.record(() -> {
       try {
         int retries = 5;
         Actions returnActions = null;
@@ -111,17 +112,15 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
             if (--retries <= 0) {
               throw e;
             }
-          } catch (Exception e) {
-            throw e;
           }
-        } while (retries > 0);
+        } while (true);
         return returnActions;
       } catch (Exception e) {
         numberOfFailures.increment();
         LOGGER.error("Action processing failure on questionnaireId {} error: {}", questionnaireId, e.getMessage(), e);
         throw e;
       }
-    });
+    }));
   }
 
   private Actions runUpdate(String questionnaireId, String revision, List<Action> actions) {
@@ -147,7 +146,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   @NonNull
   @Override
   public QuestionnaireSession computeSessionUpdate(@NonNull String questionnaireId, boolean openIfClosed, Function<QuestionnaireSession, QuestionnaireSession> updateFunction) {
-    return this.updateTime.record(() -> {
+    return Objects.requireNonNull(this.updateTime.record(() -> {
       try {
         final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);
         if (session == null) {
@@ -162,7 +161,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
         LOGGER.error("Processing failure on questionnaireId : {}", questionnaireId, e);
         throw e;
       }
-    });
+    }));
   }
 
   public void storeSessionIntoCache(@NonNull final String questionnaireId, @NonNull final QuestionnaireSession session) {

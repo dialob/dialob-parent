@@ -17,6 +17,7 @@ Dialob backend services
   * **dialob-cloud-gcp** - GCP support: Publish questionnaire and form events to GCP PubSub
   * **dialob-core** - (no function, obsolete)
   * **dialob-db-assets** - Form persistence implementation: Wrench asset service (obsolete)
+  * **dialob-db-azure-blob-storage** - Form and questionnaire persistence implementation: Azure Blob Storage
   * **dialob-db-dialob-api** - Form and questionnaire persistence implementation: Use external Dialob API as persistence (obsolete?)
   * **dialob-db-file** - Form and questionnaire persistence implementation: Filesystem
   * **dialob-db-jdbc** - Form and questionnaire persistence implementation: JDBC, database schema definitions and Flyway migrations for MySql and Postgres

@@ -15,7 +15,6 @@
  */
 package io.dialob.security.spring.tenant;
 
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -43,7 +42,7 @@ public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSuppl
       return Optional.ofNullable(token.getAuthorities().stream()
         .filter(grantedAuthority -> grantedAuthority instanceof TenantGrantedAuthority)
         .findFirst()
-        .map(grantedAuthority -> (Tenant) ImmutableTenant.of(((TenantGrantedAuthority) grantedAuthority).getTenantId(), Optional.of(grantedAuthority.getAuthority())))
+        .map(grantedAuthority -> (Tenant) Tenant.of(((TenantGrantedAuthority) grantedAuthority).getTenantId(), grantedAuthority.getAuthority()))
         .orElse(publicTenant));
     }
     return Optional.ofNullable(publicTenant);

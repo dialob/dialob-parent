@@ -17,7 +17,6 @@ package io.dialob.tenant.service.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.spring.tenant.TenantGrantedAuthority;
-import io.dialob.security.tenant.ImmutableTenant;
 import io.dialob.security.tenant.Tenant;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 class GrantedAuthorityTenantsProvider implements TenantsProvider {
@@ -41,7 +39,7 @@ class GrantedAuthorityTenantsProvider implements TenantsProvider {
       tenants = token.getAuthorities().stream()
         .filter(a -> a instanceof TenantGrantedAuthority)
         .map(a -> (TenantGrantedAuthority) a)
-        .map(a -> ImmutableTenant.of(a.getTenantId(), Optional.ofNullable(a.getAuthority())))
+        .map(a -> Tenant.of(a.getTenantId(), a.getAuthority()))
         .collect(Collectors.toList());
     }
     return tenants;

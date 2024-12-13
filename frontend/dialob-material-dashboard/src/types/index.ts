@@ -1,79 +1,82 @@
 export interface FormConfiguration {
-	id: string;
-	metadata: Metadata;
+  id: string;
+  metadata: Metadata;
+  latestTagName?: string;
+  latestTagDate?: Date;
 }
 
 export interface FormConfigurationFilters {
-	label: string | undefined;
-	latestTagDate: Date | undefined;
-	lastSaved: Date | undefined;
-	latestTagName: string | undefined;
-	labels: string | undefined;
+  label: string | undefined;
+  latestTagDate: Date | undefined;
+  lastSaved: Date | undefined;
+  latestTagName: string | undefined;
+  labels: string | undefined;
 }
 
 export interface FormConfigurationTag {
-	latestTagName: string;
-	latestTagDate: Date;
+  latestTagName: string;
+  latestTagDate: Date;
 }
 
 export interface Metadata {
-	label?: string,
-	created: Date,
-	lastSaved: Date,
-	tenantId: string,
-	modified: string,
-	modifiedBy: string
+  label?: string,
+  created: Date,
+  lastSaved: Date,
+  tenantId: string,
+  modified: string,
+  modifiedBy: string,
+  labels: string[]
 }
 
 export interface DefaultForm {
-	name: string;
-	data: FormData;
-	metadata: FormMetadata;
+  name: string;
+  data: FormData;
+  metadata: FormMetadata;
 }
 
 export interface FormData {
-	questionnaire: FormQuestionnaire
+  questionnaire: FormQuestionnaire
 }
 
 export interface FormQuestionnaire {
-	id: string;
-	type: string;
-	items: any
+  id: string;
+  type: string;
+  items: any
 }
 
 export interface FormMetadata {
-	label: string;
-	languages: string[]
+  label: string;
+  languages: string[]
 }
 
 // Builtin structure for minimum form data
 export const DEFAULT_FORM: DefaultForm = {
-	name: '',
-	data: {
-		questionnaire: {
-			id: 'questionnaire',
-			type: 'questionnaire',
-			items: []
-		}
-	},
-	metadata: {
-		label: '',
-		languages: [
-			'fi',
-			'en'
-		]
-	}
+  name: '',
+  data: {
+    questionnaire: {
+      id: 'questionnaire',
+      type: 'questionnaire',
+      items: []
+    }
+  },
+  metadata: {
+    label: '',
+    languages: [
+      'fi',
+      'en'
+    ]
+  }
 };
 
 export const DEFAULT_CONFIGURATION_FILTERS: FormConfigurationFilters = {
-	label: undefined,
-	latestTagDate: undefined,
-	lastSaved: undefined,
-	latestTagName: undefined,
-	labels: undefined
+  label: undefined,
+  latestTagDate: undefined,
+  lastSaved: undefined,
+  latestTagName: undefined,
+  labels: undefined
 }
 
 export enum LabelAction {
-	ADD = 'ADD',
-	DELETE = 'DELETE',
+  ADD = 'ADD',
+  DELETE = 'DELETE',
 }

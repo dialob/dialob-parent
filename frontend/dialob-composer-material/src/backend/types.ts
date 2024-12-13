@@ -79,6 +79,7 @@ export interface DialobComposerConfig {
   documentationUrl?: string;
   itemEditors?: ItemConfig;
   itemTypes?: ItemTypeConfig;
+  backendVersion: string;
   closeHandler: () => void;
 }
 
@@ -91,16 +92,7 @@ export interface AppConfig {
   adminAppUrl: string;
   tenantId: string;
   credentialMode: RequestCredentials;
-}
-
-export interface BuildInfo {
-  build: {
-    artifact: string;
-    name: string;
-    version: string;
-    group: string;
-    time: string;
-  }
+  version: string;
 }
 
 export interface BackendState {
@@ -115,5 +107,4 @@ export interface BackendState {
   getTags(formName: string): Promise<ComposerTag[]>;
   changeItemId(form: ComposerState, oldId: string, newId: string): Promise<ApiResponse>;
   createPreviewSession(formId: string, language: string, context?: PreviewSessionContext): Promise<ApiResponse>;
-  getBuildInfo(): Promise<BuildInfo>;
 }
