@@ -21,6 +21,7 @@ import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.boot.settings.ReviewApplicationSettings;
 import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   QuestionnaireApplicationSettings.class,
   ReviewApplicationSettings.class,
   DialobSecurityAwsAutoConfiguration.class,
+  DialobSecuritySpringAutoConfiguration.class,
   AdminControllerAwsElbTest.TestConfiguration.class,
 })
 class AdminControllerAwsElbTest extends AbstractUIControllerTest {

@@ -35,6 +35,7 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.UUIDUtils;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUser;
@@ -99,6 +100,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   DialobFormServiceRestAutoConfiguration.class,
   DialobSessionEngineAutoConfiguration.class,
   DialobFormServiceAutoConfiguration.class,
+  DialobSecuritySpringAutoConfiguration.class,
   DialobIntegrationQueueAutoConfiguration.class,
   ValidationAutoConfiguration.class,
   RestApiExceptionMapper.class

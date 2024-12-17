@@ -27,17 +27,17 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 @Slf4j
-public class UaaGroups2GroupGrantedAuthoritiesMapper implements UnaryOperator<Stream<? extends GrantedAuthority>> {
+public class Groups2GroupGrantedAuthoritiesMapper implements UnaryOperator<Stream<? extends GrantedAuthority>> {
 
   private final UsersAndGroupsService usersAndGroupsService;
 
   private final Predicate<Group> groupFilter;
 
-  public UaaGroups2GroupGrantedAuthoritiesMapper(UsersAndGroupsService usersAndGroupsService) {
+  public Groups2GroupGrantedAuthoritiesMapper(UsersAndGroupsService usersAndGroupsService) {
     this(usersAndGroupsService, group -> true);
   }
 
-  public UaaGroups2GroupGrantedAuthoritiesMapper(UsersAndGroupsService usersAndGroupsService, Predicate<Group> groupFilter) {
+  public Groups2GroupGrantedAuthoritiesMapper(UsersAndGroupsService usersAndGroupsService, Predicate<Group> groupFilter) {
     this.usersAndGroupsService = Objects.requireNonNull(usersAndGroupsService);
     this.groupFilter = Objects.requireNonNull(groupFilter);
   }
@@ -57,9 +57,8 @@ public class UaaGroups2GroupGrantedAuthoritiesMapper implements UnaryOperator<St
   @Override
   public Stream<? extends GrantedAuthority> apply(Stream<? extends GrantedAuthority> stream) {
     return stream.flatMap(grantedAuthority -> {
-      if (grantedAuthority instanceof OAuth2UserAuthority) {
-        final OAuth2UserAuthority oAuth2UserAuthority = (OAuth2UserAuthority) grantedAuthority;
-        String sub = (String) oAuth2UserAuthority.getAttributes().get("sub");
+      if (grantedAuthority instanceof OAuth2UserAuthority oAuth2UserAuthority) {
+        var sub = (String) oAuth2UserAuthority.getAttributes().get("sub");
         return Stream.concat(Stream.of(grantedAuthority), loadUserGroups(sub).map(group -> ImmutableGroupGrantedAuthority.of(group.getId(), group.getName())));
       }
       return Stream.of(grantedAuthority);
