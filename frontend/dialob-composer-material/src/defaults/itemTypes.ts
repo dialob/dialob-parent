@@ -1,5 +1,5 @@
+import { ItemTypeConfig } from "./types";
 import * as PropEditors from "../components/propEditors";
-import { DialobCategoryType, DialobItemTemplate, DialobItemType } from "../dialob";
 
 const ALERTSTYLE_PROP = {
   component: PropEditors.ChoiceProp,
@@ -14,29 +14,6 @@ const ALERTSTYLE_PROP = {
   }
 }
 
-export interface ItemTypeConfig {
-  categories: {
-    title: string,
-    type: DialobCategoryType,
-    items: {
-      title: string,
-      optionEditors?: {
-        name: string,
-        editor: React.FC
-      }[],
-      propEditors?: {
-        [key: string]: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          component: any,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          props?: any
-        }
-      },
-      convertible?: DialobItemType[],
-      config: DialobItemTemplate
-    }[]
-  }[]
-}
 
 export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
   categories: [

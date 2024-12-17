@@ -16,9 +16,11 @@ import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 import { INIT_TREE, buildTreeFromForm } from '../../utils/TreeUtils';
 import { FormattedMessage } from 'react-intl';
+import { useBackend } from '../../backend/useBackend';
+import { ItemConfig } from '../../defaults/types';
 
 
-const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): boolean => {
+const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition, itemConfig?: ItemConfig): boolean => {
   if (!destination) {
     return false;
   }
@@ -26,14 +28,15 @@ const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition): bo
     return true;
   }
   const destinationItem: DialobItem = tree.items[destination.parentId].data.item;
-  if (DEFAULT_ITEM_CONFIG.items.find(c => c.matcher(destinationItem))?.props.treeCollapsible) {
+  const resolvedConfig = itemConfig ?? DEFAULT_ITEM_CONFIG;
+  if (resolvedConfig.items.find(c => c.matcher(destinationItem))?.props.treeCollapsible) {
     return true;
   }
   return false;
 }
 
-const isEmptyParentNode = (tree: TreeData, destination?: TreeDestinationPosition): boolean => {
-  const isParent = isParentNode(tree, destination);
+const isEmptyParentNode = (tree: TreeData, destination?: TreeDestinationPosition, itemConfig?: ItemConfig): boolean => {
+  const isParent = isParentNode(tree, destination, itemConfig);
   if (!isParent) {
     return false;
   }
@@ -52,6 +55,8 @@ const NavigationTreeView: React.FC = () => {
   const theme = useTheme();
   const { form, moveItem } = useComposer();
   const { editor } = useEditor();
+  const { config } = useBackend();
+  const itemConfig = config.itemEditors;
   const [tree, setTree] = useState<TreeData>(INIT_TREE);
   const [expanded, setExpanded] = useState<boolean>(true);
 
@@ -109,7 +114,7 @@ const NavigationTreeView: React.FC = () => {
     if (!canContain(destinationItem, sourceItem)) {
       return;
     }
-    if (isEmptyParentNode(tree, destination)) {
+    if (isEmptyParentNode(tree, destination, itemConfig)) {
       destination.index = 0;
     }
     const newTree = moveItemOnTree(tree, source, destination);

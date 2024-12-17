@@ -1,3 +1,4 @@
+import { ItemConfig, ItemTypeConfig } from "../defaults/types";
 import { ComposerState, ComposerTag } from "../dialob";
 import { EditorError } from "../editor";
 
@@ -76,6 +77,8 @@ export interface TransportConfig {
 export interface DialobComposerConfig {
   transport: TransportConfig;
   documentationUrl?: string;
+  itemEditors?: ItemConfig;
+  itemTypes?: ItemTypeConfig;
   backendVersion: string;
   closeHandler: () => void;
 }

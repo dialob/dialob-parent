@@ -7,12 +7,14 @@ import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMe
 import { itemFactory } from './ItemFactory';
 import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
+import { ItemConfig } from '../defaults/types';
+import { useBackend } from '../backend/useBackend';
 
 
-const createChildren = (item: DialobItem, items: DialobItems) => {
+const createChildren = (item: DialobItem, items: DialobItems, itemConfig?: ItemConfig) => {
   return item.items && item.items
     .map(itemId => items[itemId])
-    .map(item => itemFactory(item));
+    .map(item => itemFactory(item, itemConfig));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
@@ -20,8 +22,9 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
   const theme = useTheme();
   const { form } = useComposer();
   const { editor } = useEditor();
+  const { config } = useBackend();
   const [expanded, setExpanded] = React.useState<boolean>(true);
-  const children = createChildren(item, form.data);
+  const children = createChildren(item, form.data, config.itemEditors);
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;

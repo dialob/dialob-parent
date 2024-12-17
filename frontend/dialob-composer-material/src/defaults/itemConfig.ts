@@ -1,24 +1,9 @@
-import React from "react";
 import Items from "../items";
-import { DialobItem } from "../dialob";
-import { SvgIconProps } from "@mui/material";
-import { BlurLinear, CalendarMonth, CheckBox, Circle, CropSquare, ErrorOutline, Euro, KeyboardArrowDown, List, MoreHoriz, Note, Place, Schedule, TableRows, Tag, TextFormat } from "@mui/icons-material";
-
-
-interface ItemConfig {
-	defaultIcon: React.ComponentType<SvgIconProps>,
-	items: {
-		matcher: (item: DialobItem) => boolean,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		component: React.FC<{ item: DialobItem, props?: any }>,
-		props: {
-			icon: React.ComponentType<SvgIconProps>,
-			placeholder: string,
-			treeCollapsible?: boolean,
-			style?: 'normal' | 'success' | 'error' | 'info' | 'warning'
-		}
-	}[]
-}
+import { 
+  BlurLinear, CalendarMonth, CheckBox, Circle, CropSquare, ErrorOutline, Euro, KeyboardArrowDown, 
+  List, MoreHoriz, Note, Place, Schedule, TableRows, Tag, TextFormat 
+} from "@mui/icons-material";
+import { ItemConfig } from "./types";
 
 export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 	defaultIcon: Circle,
