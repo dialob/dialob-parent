@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.security.spring.oauth2;
+package io.dialob.security.cognito;
 
-import feign.Param;
-import feign.RequestLine;
-import io.dialob.security.spring.oauth2.model.Token;
+import io.dialob.security.spring.oauth2.UsersAndGroupsService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-public interface OAuth2TokenService {
+@Configuration(proxyBeanMethods = false)
+@Profile("cognito")
+public class DialobSecurityCognitoAutoConfiguration {
 
-  @RequestLine("GET /oauth/token?grant_type=client_credentials&scope={scope}")
-  Token getToken(@Param("scope") String scope);
+  @Bean
+  public UsersAndGroupsService usersAndGroupsService() {
+    return new CognitoUsersAndGroupsService();
+  }
 
 }

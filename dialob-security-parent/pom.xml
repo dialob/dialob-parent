@@ -34,5 +34,6 @@
     <module>dialob-security-spring</module>
     <module>dialob-security-aws</module>
     <module>dialob-security-uaa</module>
+    <module>dialob-security-cognito</module>
   </modules>
 </project>

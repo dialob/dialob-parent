@@ -39,7 +39,7 @@ public class Groups2GrantedAuthorisations implements UnaryOperator<Stream<? exte
     final List<? extends GrantedAuthority> grantedAuthorities = stream.collect(toList());
 
     List<GroupGrantedAuthority> groups = grantedAuthorities.stream().filter(a -> a instanceof GroupGrantedAuthority)
-      .map(a -> (GroupGrantedAuthority) a).collect(toList());
+      .map(a -> (GroupGrantedAuthority) a).toList();
 
     return Stream.concat(
       grantedAuthorities.stream().filter(a -> !(a instanceof GroupGrantedAuthority)),

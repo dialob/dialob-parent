@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.security.spring.oauth2;
+package io.dialob.security.uaa;
 
 import feign.Feign;
 import feign.RequestInterceptor;
@@ -22,6 +22,7 @@ import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import io.dialob.security.spring.oauth2.model.Token;
+import io.dialob.security.uaa.spi.OAuth2TokenService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;

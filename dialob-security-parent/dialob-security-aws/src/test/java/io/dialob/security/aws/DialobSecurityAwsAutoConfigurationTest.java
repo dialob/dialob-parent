@@ -16,6 +16,7 @@
 package io.dialob.security.aws;
 
 import com.nimbusds.jwt.proc.JWTProcessor;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ class DialobSecurityAwsAutoConfigurationTest {
         "spring.profiles.active=")
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,
+        DialobSecuritySpringAutoConfiguration.class,
         DialobSettings.class)
       .run(context -> {
         assertThat(context)
@@ -46,9 +48,11 @@ class DialobSecurityAwsAutoConfigurationTest {
   public void shouldSetupTypesIfProfileAWSIsSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
-        "spring.profiles.active=aws")
+        "spring.profiles.active=aws"
+      )
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,
+        DialobSecuritySpringAutoConfiguration.class,
         DialobSettings.class)
       .run(context -> {
         assertThat(context)
@@ -57,7 +61,6 @@ class DialobSecurityAwsAutoConfigurationTest {
           .hasSingleBean(JWTProcessor.class);
       });
   }
-
 
 
 }

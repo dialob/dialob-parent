@@ -19,6 +19,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
 import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
 import io.dialob.security.spring.AuthenticationStrategy;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.rest.SessionPermissionEvaluator;
 import io.dialob.settings.DialobSettingsAutoConfiguration;
@@ -67,7 +68,7 @@ class ApplicationAutoConfigurationTest {
         assertThat(context)
           .hasSingleBean(ApplicationAutoConfiguration.RestApiSecurityConfigurer.class)
           .doesNotHaveBean(AuthenticationStrategy.class)
-          .doesNotHaveBean(CurrentUserProvider.class)
+          .hasSingleBean(CurrentUserProvider.class)
           .doesNotHaveBean(ApplicationAutoConfiguration.SockJSWebSocketConfigurer.class)
         ;
       });
@@ -81,6 +82,7 @@ class ApplicationAutoConfigurationTest {
         DialobSettingsAutoConfiguration.class,
         DialobQuestionnaireServiceSockJSAutoConfiguration.class,
         ApplicationAutoConfiguration.class,
+        DialobSecuritySpringAutoConfiguration.class,
         DialobSecurityAwsAutoConfiguration.class
       ))
       .withSystemProperties(

@@ -23,54 +23,19 @@ import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTProcessor;
-import io.dialob.common.Permissions;
 import io.dialob.security.aws.elb.ElbJWKSource;
-import io.dialob.security.spring.oauth2.Groups2GrantedAuthorisations;
-import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.oauth2.UaaGroups2GroupGrantedAuthoritiesMapper;
-import io.dialob.security.spring.oauth2.UsersAndGroupsService;
-import io.dialob.security.spring.tenant.GrantedTenantAccessEvaluator;
-import io.dialob.security.spring.tenant.MapTenantGroupToTenantGrantedAuthority;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
-import java.util.*;
-import java.util.function.UnaryOperator;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Configuration(proxyBeanMethods = false)
 @Profile("aws")
 public class DialobSecurityAwsAutoConfiguration {
-
-  @Bean
-  public GrantedAuthoritiesMapper grantedAuthoritiesMapper(DialobSettings dialobSettings,
-                                                           Optional<UsersAndGroupsService> usersAndGroupsService) {
-    List<UnaryOperator<Stream<? extends GrantedAuthority>>> operators = new ArrayList<>();
-
-    final Map<String, Set<String>> groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
-    operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
-    operators.add(new MapTenantGroupToTenantGrantedAuthority(dialobSettings.getTenant().getEnv()));
-    usersAndGroupsService.ifPresent(service -> operators.add(new UaaGroups2GroupGrantedAuthoritiesMapper(service)));
-    return new StreamingGrantedAuthoritiesMapper(operators);
-  }
-
-  @Bean
-  public TenantAccessEvaluator tenantAccessEvaluator() {
-    return new GrantedTenantAccessEvaluator() {
-      @Override
-      protected boolean canAccessAnyTenant(AbstractAuthenticationToken authentication) {
-        return authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Permissions.ALL_TENANTS));
-      }
-    };
-  }
 
   @Bean
   public <C extends SecurityContext> JWTProcessor<C> awsElbJwtProcessor(DialobSettings settings, Optional<JWKSource<C>> jwkSource) {

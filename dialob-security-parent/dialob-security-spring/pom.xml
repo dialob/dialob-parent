@@ -30,7 +30,15 @@
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>
+      <artifactId>dialob-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dialob</groupId>
       <artifactId>dialob-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dialob</groupId>
+      <artifactId>dialob-settings</artifactId>
     </dependency>
 
 
@@ -64,18 +72,6 @@
       <artifactId>spring-security-web</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>io.github.openfeign</groupId>
-      <artifactId>feign-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.openfeign</groupId>
-      <artifactId>feign-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.github.openfeign</groupId>
-      <artifactId>feign-jackson</artifactId>
-    </dependency>
     
     
     <dependency>
