@@ -6,6 +6,7 @@ import {
   ValidationRule, LocalizedString
 } from './types';
 import { isContextVariable } from '../utils/ItemUtils';
+import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -62,10 +63,11 @@ const updateItem = (state: ComposerState, itemId: string, attribute: string, val
   // TODO: Sanity: item exists
   // TODO: Sanity: attribute is not an id or type
   if (language) {
+    const cleanedValue = cleanString(value);
     if (state.data[itemId][attribute] === undefined) {
-      state.data[itemId][attribute] = { [language]: value };
+      state.data[itemId][attribute] = { [language]: cleanedValue };
     } else {
-      state.data[itemId][attribute][language] = value;
+      state.data[itemId][attribute][language] = cleanedValue;
     }
   } else {
     if (value === '') {
@@ -78,8 +80,9 @@ const updateItem = (state: ComposerState, itemId: string, attribute: string, val
 
 const updateLocalizedString = (state: ComposerState, itemId: string, attribute: string, value: LocalizedString, index?: number): void => {
   const item = state.data[itemId];
+  const cleanedValue = cleanLocalizedString(value);
   if (item && (attribute === 'label' || attribute === 'description')) {
-    item[attribute] = value;
+    item[attribute] = cleanedValue;
   } else if (attribute === 'validations' && index !== undefined) {
     const validations = state.data[itemId].validations;
     if (validations) {
@@ -87,7 +90,7 @@ const updateLocalizedString = (state: ComposerState, itemId: string, attribute: 
       if (!rule) {
         return;
       }
-      rule.message = value;
+      rule.message = cleanedValue;
     }
   } else {
     return;
@@ -182,13 +185,16 @@ const deleteItemProp = (state: ComposerState, itemId: string, key: string): void
 }
 
 const createValidation = (state: ComposerState, itemId: string, rule?: ValidationRule): void => {
-  const emptyRule: ValidationRule = { message: {}, rule: '' };
+  const cleanedRule: ValidationRule = {
+    message: rule?.message ? cleanLocalizedString(rule.message) : {},
+    rule: rule?.rule ? rule.rule : ''
+  }
 
   // TODO: Sanity: item exists
   if (state.data[itemId].validations === undefined) {
-    state.data[itemId].validations = [rule ? rule : emptyRule];
+    state.data[itemId].validations = [cleanedRule];
   } else {
-    state.data[itemId].validations?.push(rule ? rule : emptyRule);
+    state.data[itemId].validations?.push(cleanedRule);
   }
 }
 
@@ -199,10 +205,11 @@ const setValidationMessage = (state: ComposerState, itemId: string, index: numbe
     if (!rule) {
       return;
     }
+    const cleanedMessage = cleanString(message);
     if (!rule.message) {
-      rule.message = { [language]: message };
+      rule.message = { [language]: cleanedMessage };
     } else {
-      rule.message[language] = message;
+      rule.message[language] = cleanedMessage;
     }
   }
 }
@@ -243,10 +250,12 @@ const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toInd
 const createValueSet = (state: ComposerState, itemId: string | null, entries?: ValueSetEntry[]): void => {
   // TODO: Sanity: item exists if not null
 
+  const cleanedEntries: ValueSetEntry[] = entries ? entries.map(e => ({ ...e, label: cleanLocalizedString(e.label) })) : [];
+
   const valueSetId = generateValueSetId(state, 'vs');
   const valueSet = {
     id: valueSetId,
-    entries: entries || []
+    entries: cleanedEntries
   };
 
   if (!state.valueSets) {
@@ -276,7 +285,8 @@ const setValueSetEntries = (state: ComposerState, valueSetId: string, entries: V
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      state.valueSets[vsIdx].entries = entries;
+      const cleanedEntries: ValueSetEntry[] = entries ? entries.map(e => ({ ...e, label: cleanLocalizedString(e.label) })) : [];
+      state.valueSets[vsIdx].entries = cleanedEntries;
     }
   }
 }
@@ -287,11 +297,11 @@ const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: Valu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
-      const newEntry = entry ? entry : { id: '', label: {} };
+      const cleanedEntry: ValueSetEntry = entry ? { ...entry, label: cleanLocalizedString(entry.label) } : { id: '', label: {} };
       if (state.valueSets[vsIdx].entries !== undefined) {
-        state.valueSets[vsIdx].entries!.push(newEntry);
+        state.valueSets[vsIdx].entries!.push(cleanedEntry);
       } else {
-        state.valueSets[vsIdx].entries = [newEntry];
+        state.valueSets[vsIdx].entries = [cleanedEntry];
       }
     }
   }
@@ -313,8 +323,8 @@ const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, inde
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && text !== null) {
-
-      state.valueSets[vsIdx].entries![index].label[language] = text;
+      const cleanedText = cleanString(text);
+      state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
     }
   }
 }
