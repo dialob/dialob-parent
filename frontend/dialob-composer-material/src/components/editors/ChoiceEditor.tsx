@@ -175,16 +175,16 @@ const ChoiceEditor: React.FC = () => {
           <BorderedTable>
             <TableHead>
               <TableRow>
-                <TableCell width='20%' align='center'>
-                  <IconButton onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
-                  <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                  <IconButton onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
+                <TableCell width='15%' align='center'>
+                  <IconButton sx={{ p: 0.5 }} onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
+                  <IconButton sx={{ p: 0.5 }} onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
+                  <IconButton sx={{ p: 0.5 }} onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
                 </TableCell>
-                <TableCell width='30%' sx={{ p: 1 }}>
+                <TableCell width='20%' sx={{ p: 1 }}>
                   <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography>
                 </TableCell>
                 {formLanguages?.map(lang => (
-                  <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+                  <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
                     <Typography fontWeight='bold'>
                       <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                     </Typography>

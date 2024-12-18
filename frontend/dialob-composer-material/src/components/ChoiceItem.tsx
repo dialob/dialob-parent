@@ -105,16 +105,16 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
         {...provided.dragHandleProps}>
         <TableBody>
           <TableRow key={entry.id} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
-            <TableCell align='center' width='20%'>
-              <IconButton onClick={() => onToggleExpand(entry.id)}>{entryExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
-              <IconButton onClick={() => setOpen(true)}><Close color='error' /></IconButton>
+            <TableCell align='center' width='15%'>
+              <IconButton sx={{ p: 0.5 }} onClick={() => onToggleExpand(entry.id)}>{entryExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</IconButton>
+              <IconButton sx={{ p: 0.5 }} onClick={() => setOpen(true)}><Close color='error' /></IconButton>
               {!isGlobal && <IconButton onClick={() => onToggleExpand(entry.id)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
             </TableCell>
-            <TableCell width='30%' sx={{ p: 1 }}>
+            <TableCell width='20%' sx={{ p: 0.5 }}>
               <Typography>{entry.id}</Typography>
             </TableCell>
             {formLanguages?.map(lang => (
-              <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+              <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
                 {getLabel(entry, lang)}
               </TableCell>
             ))}

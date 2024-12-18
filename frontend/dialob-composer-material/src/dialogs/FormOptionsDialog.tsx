@@ -107,7 +107,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }, [required, setMetadataValue]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.form.options.title' />
         <Button variant='outlined' endIcon={<Help />}

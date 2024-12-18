@@ -62,7 +62,7 @@ const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open,
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.preview.title' />
       </DialogTitle>

@@ -75,7 +75,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.versioning.title' />
         <Button variant='outlined' endIcon={<Help />}

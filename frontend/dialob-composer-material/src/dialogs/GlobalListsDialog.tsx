@@ -145,7 +145,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     <>
       <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
         currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl'>
+      <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.lists.global.title' />
           <Box flexGrow={1} />
@@ -201,14 +201,14 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                   <BorderedTable>
                     <TableHead>
                       <TableRow>
-                        <TableCell width='20%' align='center'>
-                          <IconButton onClick={addEntry}><Add color='success' /></IconButton>
-                          <IconButton onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
-                          <IconButton onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
+                        <TableCell width='15%' align='center'>
+                          <IconButton sx={{ p: 0.25 }} onClick={addEntry}><Add color='success' /></IconButton>
+                          <IconButton sx={{ p: 0.25 }} onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
+                          <IconButton sx={{ p: 0.25 }} onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
                         </TableCell>
-                        <TableCell width='30%' sx={{ p: 1 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
+                        <TableCell width='20%' sx={{ p: 0.5 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
                         {formLanguages?.map(lang => (
-                          <TableCell key={lang} width={formLanguages ? `${50 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+                          <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
                             <Typography fontWeight='bold'>
                               <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                             </Typography>

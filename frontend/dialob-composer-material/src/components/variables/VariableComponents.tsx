@@ -32,14 +32,14 @@ export interface VariableProps {
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { deleteVariable } = useComposer();
   return (
-    <IconButton sx={{ p: 1, m: 1 }} onClick={() => deleteVariable(variable.name)}><Delete color='error' /></IconButton>
+    <IconButton sx={{ p: 0.5 }} onClick={() => deleteVariable(variable.name)}><Delete color='error' /></IconButton>
   );
 }
 
 export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { updateVariablePublishing } = useComposer();
   return (
-    <Switch sx={{ m: 1 }} checked={variable.published} onChange={(e) => updateVariablePublishing(variable.name, e.target.checked)} />
+    <Switch checked={variable.published} onChange={(e) => updateVariablePublishing(variable.name, e.target.checked)} />
   );
 }
 
@@ -202,7 +202,7 @@ export const UsersField: React.FC<{ variable: ContextVariable | Variable, onClos
     <>
       <Tooltip title={<FormattedMessage id='dialogs.variables.users.tooltip' />}>
         <Button variant='text' onClick={(e) => setAnchorEl(e.currentTarget)}>
-          <Typography fontWeight='bold' color='primary.main' variant='h4'>
+          <Typography fontWeight='bold' color='primary.main'>
             {users.length}
           </Typography>
         </Button>
