@@ -24,8 +24,6 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
-
 public class Groups2GrantedAuthorisations implements UnaryOperator<Stream<? extends GrantedAuthority>> {
 
   private final GroupToAuthorityMapper groupToAuthorityMapper;
@@ -36,10 +34,10 @@ public class Groups2GrantedAuthorisations implements UnaryOperator<Stream<? exte
 
   @Override
   public Stream<? extends GrantedAuthority> apply(Stream<? extends GrantedAuthority> stream) {
-    final List<? extends GrantedAuthority> grantedAuthorities = stream.collect(toList());
+    final List<? extends GrantedAuthority> grantedAuthorities = stream.toList();
 
-    List<GroupGrantedAuthority> groups = grantedAuthorities.stream().filter(a -> a instanceof GroupGrantedAuthority)
-      .map(a -> (GroupGrantedAuthority) a).collect(toList());
+    var groups = grantedAuthorities.stream().filter(a -> a instanceof GroupGrantedAuthority)
+      .map(a -> (GroupGrantedAuthority) a).toList();
 
     return Stream.concat(
       grantedAuthorities.stream().filter(a -> !(a instanceof GroupGrantedAuthority)),

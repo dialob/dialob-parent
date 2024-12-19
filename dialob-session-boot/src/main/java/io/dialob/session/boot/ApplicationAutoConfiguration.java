@@ -26,11 +26,13 @@ import io.dialob.security.spring.ApiKeyCurrentUserProvider;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.security.user.DelegateCurrentUserProvider;
+import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 import io.dialob.session.rest.OnlyOwnerCanAccessSessionPermissionEvaluator;
 import io.dialob.session.rest.SessionPermissionEvaluator;
 import io.dialob.settings.DialobSettings;
 import io.dialob.settings.SessionSettings;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -192,5 +194,12 @@ public class ApplicationAutoConfiguration {
     }
     return new ProviderManager(providerList);
   }
+
+  @Bean
+  @ConditionalOnMissingBean(CurrentUserProvider.class)
+  public CurrentUserProvider anonymousCurrentUserProvider() {
+    return UnauthenticatedCurrentUserProvider.INSTANCE;
+  }
+
 
 }

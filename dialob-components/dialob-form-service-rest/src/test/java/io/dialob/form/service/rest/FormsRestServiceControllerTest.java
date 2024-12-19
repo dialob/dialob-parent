@@ -35,11 +35,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -81,31 +81,31 @@ class FormsRestServiceControllerTest {
   @Autowired
   private WebApplicationContext webApplicationContext;
 
-  @MockBean
+  @MockitoBean
   private FormDatabase formDatabase;
 
-  @MockBean
+  @MockitoBean
   private FormVersionControlDatabase formVersionControlDatabase;
 
-  @MockBean
+  @MockitoBean
   private FormValidator formValidator;
 
-  @MockBean
+  @MockitoBean
   private FormValidatorExecutor formValidatorExecutor;
 
-  @MockBean
+  @MockitoBean
   private FormIdRenamer formIdRenamer;
 
-  @MockBean
+  @MockitoBean
   private FormItemCopier formItemCopier;
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   private CurrentUserProvider currentUserProvider;
 
-  @MockBean
+  @MockitoBean
   private NodeId nodeId;
 
   private MockMvc mockMvc;

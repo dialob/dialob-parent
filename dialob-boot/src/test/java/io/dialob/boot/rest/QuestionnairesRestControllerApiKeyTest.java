@@ -48,25 +48,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -113,7 +110,7 @@ public class QuestionnairesRestControllerApiKeyTest {
   public static class TestConfiguration {
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-      return new StreamingGrantedAuthoritiesMapper(Arrays.asList());
+      return new StreamingGrantedAuthoritiesMapper(Collections.emptyList());
     }
 
     @Bean
@@ -158,13 +155,13 @@ public class QuestionnairesRestControllerApiKeyTest {
 
   RestTemplate restTemplate = new RestTemplate();
 
-  @MockBean
+  @MockitoBean
   private FunctionRegistry functionRegistry;
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   private CurrentUserProvider currentUserProvider;
 
   @BeforeEach
@@ -174,7 +171,7 @@ public class QuestionnairesRestControllerApiKeyTest {
     when(currentUserProvider.get()).thenReturn(new CurrentUser(testMethodName, testMethodName,"","",""));
   }
 
-  private HttpEntity createHttpEntity(UUID clientId, String clientSecret) {
+  private HttpEntity<Void> createHttpEntity(UUID clientId, String clientSecret) {
     HttpHeaders httpHeaders = new HttpHeaders();
     byte[] secretBytes = clientSecret.getBytes();
     byte[] token = new byte[16 + secretBytes.length];
@@ -185,7 +182,7 @@ public class QuestionnairesRestControllerApiKeyTest {
 
     httpHeaders.set("x-api-key", Base64.getEncoder().encodeToString(token));
     httpHeaders.set(HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
-    return new HttpEntity(httpHeaders);
+    return new HttpEntity<Void>(httpHeaders);
   }
 
   @Test
@@ -224,7 +221,7 @@ public class QuestionnairesRestControllerApiKeyTest {
 
     ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret"), new ParameterizedTypeReference<List<FormListItem>>() {});
 
-    assertEquals(200, response.getStatusCodeValue());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
     List<FormListItem> r = response.getBody();
     assertEquals(2, r.size());
     assertEquals("l1",r.get(0).getMetadata().getLabel());
@@ -239,13 +236,13 @@ public class QuestionnairesRestControllerApiKeyTest {
 
   @Test
   public void shouldRejectInvalidKey() throws Exception {
-    HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
+    var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {
         ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
         });
       } catch (HttpClientErrorException e) {
-        assertEquals(403, e.getRawStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, e.getStatusCode());
         throw e;
       }
     });

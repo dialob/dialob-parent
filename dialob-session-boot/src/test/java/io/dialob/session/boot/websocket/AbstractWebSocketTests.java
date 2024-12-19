@@ -35,12 +35,12 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -56,12 +56,12 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
 
   String tenantId = "00000000-0000-0000-0000-000000000000";
 
-  @MockBean
+  @MockitoBean
   CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   QuestionnaireDatabase questionnaireDatabase;
-  @MockBean
+  @MockitoBean
   FormDatabase formDatabase;
 
   @BeforeEach

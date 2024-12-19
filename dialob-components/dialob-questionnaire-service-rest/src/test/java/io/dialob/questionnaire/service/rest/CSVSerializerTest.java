@@ -36,11 +36,11 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -89,25 +89,25 @@ public class CSVSerializerTest {
   @Inject
   private WebApplicationContext webApplicationContext;
 
-  @MockBean
+  @MockitoBean
   private FormDatabase formDatabase;
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireDatabase questionnaireDatabase;
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory;
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireSessionService questionnaireSessionService;
 
-  @MockBean
+  @MockitoBean
   private CurrentUserProvider currentUserProvider;
 
   private MockMvc mockMvc;

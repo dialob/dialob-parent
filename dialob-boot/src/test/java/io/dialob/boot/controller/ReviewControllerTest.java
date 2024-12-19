@@ -28,14 +28,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
@@ -72,11 +73,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ReviewControllerTest.Config.class,
   SecurityConfiguration.class,
   ReviewController.class,
-  ReviewApplicationSettings.class,
+  OAuth2ClientAutoConfiguration.class
+})
+@EnableConfigurationProperties({
   AdminApplicationSettings.class,
   ComposerApplicationSettings.class,
   QuestionnaireApplicationSettings.class,
-  OAuth2ClientAutoConfiguration.class
+  ReviewApplicationSettings.class,
 })
 class ReviewControllerTest extends AbstractUIControllerTest {
 
@@ -94,19 +97,19 @@ class ReviewControllerTest extends AbstractUIControllerTest {
 
   }
 
-  @MockBean
+  @MockitoBean
   QuestionnaireDatabase questionnaireDatabase;
 
-  @MockBean
+  @MockitoBean
   FormDatabase formDatabase;
 
-  @MockBean
+  @MockitoBean
   public TenantAccessEvaluator tenantAccessEvaluator;
 
-  @MockBean
+  @MockitoBean
   public CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper;
 
   @BeforeEach

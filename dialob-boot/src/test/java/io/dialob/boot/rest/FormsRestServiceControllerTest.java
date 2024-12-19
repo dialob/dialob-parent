@@ -29,6 +29,7 @@ import io.dialob.integration.queue.DialobIntegrationQueueAutoConfiguration;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
@@ -46,7 +47,6 @@ import org.springframework.boot.autoconfigure.validation.ValidationAutoConfigura
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -55,6 +55,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
@@ -101,6 +102,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   DialobSessionEngineAutoConfiguration.class,
   DialobFormServiceAutoConfiguration.class,
   DialobIntegrationQueueAutoConfiguration.class,
+  DialobSecuritySpringAutoConfiguration.class,
   ValidationAutoConfiguration.class,
   RestApiExceptionMapper.class
 })
@@ -129,14 +131,14 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Inject
   private ApplicationEventPublisher applcationApplicationEventPublisher;
 
-  @MockBean
+  @MockitoBean
   private ListenerMock listenerMock;
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
-  @MockBean
+  @MockitoBean
   private FormVersionControlDatabase formVersionControlDatabase;
-  @MockBean
+  @MockitoBean
   private FunctionRegistry functionRegistry;
 
   @BeforeEach
@@ -159,7 +161,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   public void shouldLookupFormsFromRepository() throws Exception {
     doAnswer(invocation -> {
       Consumer consumer = (Consumer) invocation.getArguments()[2];
@@ -201,7 +203,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   public void shouldLookupFormFromRepository() throws Exception {
 
     Form formDocument = ImmutableForm.builder()
@@ -222,7 +224,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   public void shouldReturn404IfFormDoNotExists() throws Exception {
     when(formDatabase.findOne(tenantId, "form-id", null)).thenThrow(new DocumentNotFoundException("not_found"));
     ResponseEntity<Errors> response;
@@ -238,7 +240,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   public void shouldReturnTemplateForm() throws Exception {
     mockMvc.perform(get(uri("api", "forms", "00000000000000000000000000000000")).params(tenantParam).accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
@@ -246,7 +248,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldTriggerEventOnFormUpdate() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
       ImmutableForm arg = (ImmutableForm) invocation.getArguments()[1];
@@ -282,7 +284,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.post"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.post", "tenant.all"})
   @Disabled// TODO
   public void shouldReturnErrorWhenRootITemIsMissing() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
@@ -311,7 +313,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldRejectUpdateByNameWhenNotForced() throws Exception {
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
       .thenReturn(Optional.of(ImmutableFormTag.builder().formName("form-name").formId("123-123").created(new Date()).build()));
@@ -333,7 +335,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldAcceptUpdateByNameWhenForced() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
 
@@ -368,7 +370,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldReturnErrorWhenLabelIsMissing() throws Exception {
     // We need to return csrf token on update action
     mockMvc.perform(put(uri("api", "forms", "new-form")).params(tenantParam).with(csrf().asHeader())
@@ -383,7 +385,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @Disabled
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldReturnBadRequestWhenRootItemIsMissing() throws Exception {
     // We need to return csrf token on update action
     mockMvc.perform(put(uri("api", "forms", "123")).params(tenantParam).with(csrf().asHeader())
@@ -400,7 +402,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldBeAbleToPutLatestTag() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
     when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
@@ -422,7 +424,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   public void shouldNotModifyIfUpdateIsNotDone() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(false);

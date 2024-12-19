@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.security.spring.oauth2;
+package io.dialob.security.uaa.spi;
 
 import feign.Param;
 import feign.RequestLine;

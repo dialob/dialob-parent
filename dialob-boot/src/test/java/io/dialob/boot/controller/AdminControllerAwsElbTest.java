@@ -21,12 +21,13 @@ import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.boot.settings.ReviewApplicationSettings;
 import io.dialob.security.aws.DialobSecurityAwsAutoConfiguration;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -35,6 +36,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -61,12 +63,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   SecurityConfiguration.class,
   AdminController.class,
+  DialobSecurityAwsAutoConfiguration.class,
+  DialobSecuritySpringAutoConfiguration.class,
+  AdminControllerAwsElbTest.TestConfiguration.class,
+})
+@EnableConfigurationProperties({
   AdminApplicationSettings.class,
   ComposerApplicationSettings.class,
   QuestionnaireApplicationSettings.class,
   ReviewApplicationSettings.class,
-  DialobSecurityAwsAutoConfiguration.class,
-  AdminControllerAwsElbTest.TestConfiguration.class,
 })
 class AdminControllerAwsElbTest extends AbstractUIControllerTest {
 
@@ -81,7 +86,7 @@ class AdminControllerAwsElbTest extends AbstractUIControllerTest {
     }
   }
 
-  @MockBean
+  @MockitoBean
   public PageSettingsProvider pageSettingsProvider;
 
 

@@ -35,6 +35,7 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.UUIDUtils;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUser;
@@ -52,7 +53,6 @@ import org.springframework.boot.autoconfigure.validation.ValidationAutoConfigura
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -65,6 +65,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -99,6 +100,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   DialobFormServiceRestAutoConfiguration.class,
   DialobSessionEngineAutoConfiguration.class,
   DialobFormServiceAutoConfiguration.class,
+  DialobSecuritySpringAutoConfiguration.class,
   DialobIntegrationQueueAutoConfiguration.class,
   ValidationAutoConfiguration.class,
   RestApiExceptionMapper.class
@@ -113,9 +115,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 })
 public class FormsRestServiceControllerApiKeyTest {
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
-  @MockBean
+  @MockitoBean
   private FunctionRegistry functionRegistry;
 
   public interface ListenerMock {
@@ -145,19 +147,19 @@ public class FormsRestServiceControllerApiKeyTest {
     }
   }
 
-  @MockBean
+  @MockitoBean
   private FormDatabase formDatabase;
 
   @Inject
   private ApplicationEventPublisher applicationEventPublisher;
 
-  @MockBean
+  @MockitoBean
   private ListenerMock listenerMock;
 
   @LocalServerPort
   private Integer port;
 
-  @MockBean
+  @MockitoBean
   private CurrentUserProvider currentUserProvider;
 
   @BeforeEach

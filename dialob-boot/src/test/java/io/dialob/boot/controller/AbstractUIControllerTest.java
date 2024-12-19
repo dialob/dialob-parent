@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dialob.boot.ApplicationAutoConfiguration;
-import io.dialob.settings.DialobSettings;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
@@ -31,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
   ThymeleafAutoConfiguration.class,
   ApplicationAutoConfiguration.UIConfiguration.CustomWebMvcConfigurer.class,
   GlobalModelAttributesInjector.class,
-  DialobSettings.class,
   AbstractUIControllerTest.TestConfiguration.class
 })
 public class AbstractUIControllerTest extends AbstractControllerTest {

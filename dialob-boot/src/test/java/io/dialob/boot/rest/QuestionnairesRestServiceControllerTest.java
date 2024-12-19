@@ -32,6 +32,7 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.rest.DialobQuestionnaireServiceRestAutoConfiguration;
 import io.dialob.rest.RestApiExceptionMapper;
 import io.dialob.rule.parser.function.FunctionRegistry;
+import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
@@ -48,13 +49,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 
@@ -98,6 +99,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     QuestionnairesRestServiceControllerTest.TestConfiguration.class,
     DialobQuestionnaireServiceRestAutoConfiguration.class,
     DialobSessionEngineAutoConfiguration.class,
+    DialobSecuritySpringAutoConfiguration.class,
     ApplicationAutoConfiguration.class,
     RestApiExceptionMapper.class,
   })
@@ -112,13 +114,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebSecurity
 public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
-  @MockBean
+  @MockitoBean
   private CurrentTenant currentTenant;
 
-  @MockBean
+  @MockitoBean
   private FunctionRegistry functionRegistry;
 
-  @MockBean
+  @MockitoBean
   private QuestionnaireEventPublisher questionnaireEventPublisher;
 
   public String tenantId = "00000000-0000-0000-0000-000000000000";
@@ -162,7 +164,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest", "questionnaires.post", "questionnaires.get"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "questionnaires.post", "questionnaires.get", "tenant.all"})
   public void testGetQuestionnaires() throws Exception {
     ImmutableForm.Builder formDocument = ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build())
@@ -194,7 +196,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
 
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest", "tenant.all"})
   public void shouldReturn404IfQuestionnaireDoNotExists() throws Exception {
     when(questionnaireDatabaseMock().findOne(tenantId, "00000")).thenThrow(new DocumentNotFoundException("not_found"));
     mockMvc.perform(get(uri("api", "questionnaires", "00000")).params(tenantParam))
@@ -211,7 +213,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
 
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest", "tenant.all"})
   public void return200EvenQuestionnairesFormDoNotExists() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("abc123edf3", "1-invalidQ", "notexists", "1-notexists");
     when(questionnaireDatabaseMock().findOne(tenantId, "abc123edf3")).thenReturn(questionnaire);
@@ -232,7 +234,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest"})
+  @WithMockUser(username = "testUser", authorities = {"itest", "tenant.all"})
   public void cannotDeleteQuestionnairesWithoutAuthority() throws Exception {
     mockMvc.perform(delete(uri("api", "questionnaires", "abc123edf1")).params(tenantParam).with(csrf()))
       .andExpect(status().isForbidden());
@@ -240,7 +242,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"itest","questionnaires.delete"})
+  @WithMockUser(username = "testUser", authorities = {"itest","questionnaires.delete", "tenant.all"})
   public void canDeleteQuestionnairesWithAuthority() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
     mockMvc.perform(delete(uri("api", "questionnaires", "abc123edf")).params(tenantParam).with(csrf()))
@@ -250,7 +252,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest", "tenant.all"})
   public void return422WhenTryingToCreateQuestionnaireForNonExistingForm() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "notexists", "1-notexists");
     when(formDatabase.exists(tenantId, "notexists")).thenReturn(false);
@@ -270,7 +272,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest", "tenant.all"})
   public void return422WhenTryingToCreateQuestionnaireForINvalidForm() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "invalid", "1-invalid");
     when(formDatabase.exists(tenantId, "invalid")).thenReturn(true);
@@ -299,7 +301,7 @@ public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRest
   }
 
   @Test
-  @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest"})
+  @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest", "tenant.all"})
   public void return422WhenTryingToCreateQuestionnaireForInvalidForm2() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "invalid2", "1-invalid2");
     when(formDatabase.exists(tenantId, "invalid2")).thenReturn(true);
