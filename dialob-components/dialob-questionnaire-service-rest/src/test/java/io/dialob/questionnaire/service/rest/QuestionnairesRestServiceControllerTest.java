@@ -561,16 +561,14 @@ public class QuestionnairesRestServiceControllerTest {
   }
 
   @Test
-  @Disabled // requires CouchDbExceptionMapper.class and dependency on dialob-db-couch-spring project
   public void shouldGet404QuestionnaireWhenNotFound() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-
     when(questionnaireDatabase.findOne("t-123", "abc123")).thenThrow(DocumentNotFoundException.class);
 
     mockMvc.perform(get("/questionnaires/abc123").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isNotFound())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(content().string("{}"));
+      .andExpect(jsonPath(".status").value(404))
+      .andExpect(jsonPath(".error").value("Not Found"));
 
     verify(questionnaireDatabase).findOne("t-123", "abc123");
     verifyNoMoreInteractions(questionnaireDatabase);
