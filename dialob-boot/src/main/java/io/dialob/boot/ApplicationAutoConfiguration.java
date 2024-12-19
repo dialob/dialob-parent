@@ -20,7 +20,10 @@ import io.dialob.boot.security.SecurityConfiguration;
 import io.dialob.boot.settings.*;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.user.CurrentUserProvider;
+import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -124,5 +127,10 @@ public class ApplicationAutoConfiguration {
     return ConfigureRedisAction.NO_OP;
   }
 
+  @Bean
+  @ConditionalOnMissingBean(CurrentUserProvider.class)
+  public CurrentUserProvider anonymousCurrentUserProvider() {
+    return UnauthenticatedCurrentUserProvider.INSTANCE;
+  }
 
 }
