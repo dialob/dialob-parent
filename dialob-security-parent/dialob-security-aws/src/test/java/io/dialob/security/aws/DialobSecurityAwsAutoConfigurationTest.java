@@ -18,7 +18,6 @@ package io.dialob.security.aws;
 import com.nimbusds.jwt.proc.JWTProcessor;
 import io.dialob.security.spring.DialobSecuritySpringAutoConfiguration;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -34,8 +33,7 @@ class DialobSecurityAwsAutoConfigurationTest {
         "spring.profiles.active=")
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,
-        DialobSecuritySpringAutoConfiguration.class,
-        DialobSettings.class)
+        DialobSecuritySpringAutoConfiguration.class)
       .run(context -> {
         assertThat(context)
           .doesNotHaveBean(GrantedAuthoritiesMapper.class)
@@ -52,8 +50,7 @@ class DialobSecurityAwsAutoConfigurationTest {
       )
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,
-        DialobSecuritySpringAutoConfiguration.class,
-        DialobSettings.class)
+        DialobSecuritySpringAutoConfiguration.class)
       .run(context -> {
         assertThat(context)
           .hasSingleBean(GrantedAuthoritiesMapper.class)

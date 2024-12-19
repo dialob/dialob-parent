@@ -150,6 +150,14 @@ public class DialobSettings {
 
     private String urlParameter = "tenantId";
 
+    private Map<String,Set<String>> groupToTenants = new HashMap<>();
+
+    private Map<String,Tenant> tenants = new HashMap<>();
+
+    public record Tenant(
+      String name
+    ) {};
+
   }
 
   @Data

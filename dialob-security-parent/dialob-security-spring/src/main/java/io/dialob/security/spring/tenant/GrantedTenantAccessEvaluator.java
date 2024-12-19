@@ -15,6 +15,7 @@
  */
 package io.dialob.security.spring.tenant;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.Tenant;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -35,7 +36,7 @@ public class GrantedTenantAccessEvaluator implements TenantAccessEvaluator {
   }
 
   @Override
-  public boolean doesUserHaveAccessToTenant(Tenant tenant) {
+  public boolean doesUserHaveAccessToTenant(@NonNull Tenant tenant) {
     if (publicTenant != null && publicTenant.id().equals(tenant.id())) {
       return true;
     }

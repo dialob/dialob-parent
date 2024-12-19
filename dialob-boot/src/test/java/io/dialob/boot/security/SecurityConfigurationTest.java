@@ -28,7 +28,6 @@ import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -40,49 +39,26 @@ class SecurityConfigurationTest {
 
 
   @org.springframework.boot.test.context.TestConfiguration(proxyBeanMethods = false)
-  @EnableConfigurationProperties(ReviewApplicationSettings.class)
+  @EnableConfigurationProperties({
+    DialobSettings.class,
+    ReviewApplicationSettings.class,
+    ComposerApplicationSettings.class,
+    QuestionnaireApplicationSettings.class,
+    AdminApplicationSettings.class,
+  })
   public static class MockConfiguration {
-
-    @Bean
-    GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-      return mock(GrantedAuthoritiesMapper.class);
-    }
-
-    @Bean
-    OAuth2AccessTokenResponseClient oAuth2AccessTokenResponseClient() {
-      return mock(OAuth2AccessTokenResponseClient.class);
-    }
-
-    @Bean
-    TenantAccessEvaluator tenantAccessEvaluator() {
-      return mock(TenantAccessEvaluator.class);
-    }
-
-    @Bean
-    ClientRegistrationRepository clientRegistrationRepository() {
-      return mock(ClientRegistrationRepository.class);
-    }
-
-    @Bean
-    JWTProcessor jwtProcessor() {
-      return mock(JWTProcessor.class);
-    }
   }
 
 
   @Test
   public void testSecurityConfigurationTestSecurityDisabled() {
     new ApplicationContextRunner()
+      .withBean(JWTProcessor.class, () -> mock(JWTProcessor.class))
       .withPropertyValues(
         "dialob.security.enabled=false",
         "review.contextPath=/review")
       .withUserConfiguration(
-        SecurityConfiguration.class,
-        DialobSettings.class,
-        ComposerApplicationSettings.class,
-        QuestionnaireApplicationSettings.class,
-        ReviewApplicationSettings.class,
-        AdminApplicationSettings.class)
+        SecurityConfiguration.class)
       .run(context -> {
         assertThat(context)
           .doesNotHaveBean(SecurityConfiguration.class)
@@ -98,6 +74,10 @@ class SecurityConfigurationTest {
   @Test
   public void testSecurityConfigurationTestSecurityOAuth2Enabled() {
     new ApplicationContextRunner()
+      .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
+      .withBean(OAuth2AccessTokenResponseClient.class, () -> mock(OAuth2AccessTokenResponseClient.class))
+      .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))
+      .withBean(ClientRegistrationRepository.class, () -> mock(ClientRegistrationRepository.class))
       .withPropertyValues(
         "spring.profiles.active=ui",
         "dialob.security.enabled=true",
@@ -107,10 +87,6 @@ class SecurityConfigurationTest {
         "composer.contextPath=/composer")
       .withUserConfiguration(
         SecurityConfiguration.class,
-        DialobSettings.class,
-        ComposerApplicationSettings.class,
-        QuestionnaireApplicationSettings.class,
-        AdminApplicationSettings.class,
         SecurityConfigurationTest.MockConfiguration.class)
       .run(context -> {
         assertThat(context)
@@ -128,15 +104,14 @@ class SecurityConfigurationTest {
   @Test
   public void testSecurityConfigurationInAPIOnlyConfiguration() {
     new ApplicationContextRunner()
+      .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
+      .withBean(OAuth2AccessTokenResponseClient.class, () -> mock(OAuth2AccessTokenResponseClient.class))
+      .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))
       .withPropertyValues(
         "spring.profiles.active=",
         "dialob.security.enabled=true")
       .withUserConfiguration(
         SecurityConfiguration.class,
-        DialobSettings.class,
-        ComposerApplicationSettings.class,
-        QuestionnaireApplicationSettings.class,
-        AdminApplicationSettings.class,
         SecurityConfigurationTest.MockConfiguration.class)
       .run(context -> {
         assertThat(context)
@@ -153,10 +128,12 @@ class SecurityConfigurationTest {
   }
 
 
-
   @Test
   public void testSecurityConfigurationTestSecurityAwsElbEnabled() {
     new ApplicationContextRunner()
+      .withBean(JWTProcessor.class, () -> mock(JWTProcessor.class))
+      .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))
+      .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
       .withPropertyValues(
         "spring.profiles.active=ui",
         "dialob.security.enabled=true",
@@ -167,10 +144,6 @@ class SecurityConfigurationTest {
         "composer.contextPath=/composer")
       .withUserConfiguration(
         SecurityConfiguration.class,
-        DialobSettings.class,
-        ComposerApplicationSettings.class,
-        QuestionnaireApplicationSettings.class,
-        AdminApplicationSettings.class,
         SecurityConfigurationTest.MockConfiguration.class)
       .run(context -> {
         assertThat(context)

@@ -26,6 +26,7 @@ import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,13 +63,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   SecurityConfiguration.class,
   AdminController.class,
+  DialobSecurityAwsAutoConfiguration.class,
+  DialobSecuritySpringAutoConfiguration.class,
+  AdminControllerAwsElbTest.TestConfiguration.class,
+})
+@EnableConfigurationProperties({
   AdminApplicationSettings.class,
   ComposerApplicationSettings.class,
   QuestionnaireApplicationSettings.class,
   ReviewApplicationSettings.class,
-  DialobSecurityAwsAutoConfiguration.class,
-  DialobSecuritySpringAutoConfiguration.class,
-  AdminControllerAwsElbTest.TestConfiguration.class,
 })
 class AdminControllerAwsElbTest extends AbstractUIControllerTest {
 

@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
-
 public class StreamingGrantedAuthoritiesMapper implements GrantedAuthoritiesMapper {
 
   private final UnaryOperator<Stream<? extends GrantedAuthority>> grantMapper;
@@ -37,6 +35,6 @@ public class StreamingGrantedAuthoritiesMapper implements GrantedAuthoritiesMapp
 
   @Override
   public Collection<? extends GrantedAuthority> mapAuthorities(Collection<? extends GrantedAuthority> authorities) {
-    return grantMapper.apply(authorities.stream()).collect(toList());
+    return grantMapper.apply(authorities.stream()).toList();
   }
 }

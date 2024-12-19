@@ -21,11 +21,13 @@ import io.dialob.boot.settings.ComposerApplicationSettings;
 import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.boot.settings.ReviewApplicationSettings;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -63,11 +65,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 }, classes = {
   SecurityConfiguration.class,
   AdminController.class,
+  OAuth2ClientAutoConfiguration.class
+})
+@EnableConfigurationProperties({
+  DialobSettings.class,
   AdminApplicationSettings.class,
   ComposerApplicationSettings.class,
   QuestionnaireApplicationSettings.class,
-  ReviewApplicationSettings.class,
-  OAuth2ClientAutoConfiguration.class
+  ReviewApplicationSettings.class
 })
 class AdminControllerTest extends AbstractUIControllerTest {
 

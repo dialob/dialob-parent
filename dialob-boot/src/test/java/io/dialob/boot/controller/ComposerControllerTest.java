@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -68,11 +69,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   SecurityConfiguration.class,
   ComposerController.class,
+  OAuth2ClientAutoConfiguration.class
+})
+@EnableConfigurationProperties({
+  AdminApplicationSettings.class,
   ComposerApplicationSettings.class,
   QuestionnaireApplicationSettings.class,
-  AdminApplicationSettings.class,
   ReviewApplicationSettings.class,
-  OAuth2ClientAutoConfiguration.class
 })
 @EnableWebSecurity
 @EnableWebMvc

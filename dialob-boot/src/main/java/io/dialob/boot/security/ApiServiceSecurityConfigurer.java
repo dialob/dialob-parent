@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer {
 
   public static final RequestMatcher SESSION_NOT_EXISTS_MATCHER = request -> request.getSession(false) == null;

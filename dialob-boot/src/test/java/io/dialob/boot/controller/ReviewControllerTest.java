@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -72,11 +73,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ReviewControllerTest.Config.class,
   SecurityConfiguration.class,
   ReviewController.class,
-  ReviewApplicationSettings.class,
+  OAuth2ClientAutoConfiguration.class
+})
+@EnableConfigurationProperties({
   AdminApplicationSettings.class,
   ComposerApplicationSettings.class,
   QuestionnaireApplicationSettings.class,
-  OAuth2ClientAutoConfiguration.class
+  ReviewApplicationSettings.class,
 })
 class ReviewControllerTest extends AbstractUIControllerTest {
 

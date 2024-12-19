@@ -16,44 +16,30 @@
 package io.dialob.security.spring.tenant;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 @Slf4j
 public class MapTenantGroupToTenantGrantedAuthority implements UnaryOperator<Stream<? extends GrantedAuthority>> {
 
-  private final String envPrefix;
+  private final Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper;
 
-  public MapTenantGroupToTenantGrantedAuthority(String envPrefix) {
-    this.envPrefix = StringUtils.appendIfMissing(Objects.requireNonNull(envPrefix), "/");
+  public MapTenantGroupToTenantGrantedAuthority(Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper) {
+    this.tenantMapper = Objects.requireNonNull(tenantMapper, "tenantMapper may not be null.");
   }
 
   @Override
   public Stream<? extends GrantedAuthority> apply(Stream<? extends GrantedAuthority> stream) {
     return stream.flatMap(grantedAuthority -> {
-      if (grantedAuthority instanceof GroupGrantedAuthority) {
-        GroupGrantedAuthority groupGrantedAuthority = (GroupGrantedAuthority) grantedAuthority;
-        final String authority = groupGrantedAuthority.getAuthority();
-        if (isTenantGroup(authority)) {
-          if (authority.startsWith(envPrefix)) {
-            return Stream.of(ImmutableTenantGrantedAuthority.builder()
-              .tenantId(groupGrantedAuthority.getGroupId())
-              .authority(authority.substring(envPrefix.length()))
-              .build());
-          }
-          LOGGER.debug("Dropping other env tenant {}", authority);
-          return Stream.empty(); // Filter out unknown tenant groups
-        }
+      if (grantedAuthority instanceof GroupGrantedAuthority groupGrantedAuthority) {
+        return tenantMapper.apply(groupGrantedAuthority);
       }
       return Stream.of(grantedAuthority);
     });
   }
 
-  private boolean isTenantGroup(String authority) {
-    return authority.contains("/");
-  }
 }

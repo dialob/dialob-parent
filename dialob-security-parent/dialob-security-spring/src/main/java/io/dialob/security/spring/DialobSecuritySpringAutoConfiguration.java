@@ -22,30 +22,31 @@ import io.dialob.security.spring.oauth2.Groups2GrantedAuthorisations;
 import io.dialob.security.spring.oauth2.Groups2GroupGrantedAuthoritiesMapper;
 import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
 import io.dialob.security.spring.oauth2.UsersAndGroupsService;
-import io.dialob.security.spring.tenant.GrantedTenantAccessEvaluator;
-import io.dialob.security.spring.tenant.MapTenantGroupToTenantGrantedAuthority;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import io.dialob.security.user.CurrentUserProvider;
-import io.dialob.security.user.UnauthenticatedCurrentUserProvider;
+import io.dialob.security.spring.tenant.*;
 import io.dialob.settings.DialobSettings;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 @Configuration(proxyBeanMethods = false)
 @Import(AuditConfiguration.class)
+@EnableConfigurationProperties(DialobSettings.class)
 public class DialobSecuritySpringAutoConfiguration {
+
+  public static final DialobSettings.TenantSettings.Tenant UNKNOWN_TENANT = new DialobSettings.TenantSettings.Tenant("unknown");
 
   @Bean
   public FilterRegistrationBean<MDCRequestIdFilter> requestIdFilter() {
@@ -54,22 +55,53 @@ public class DialobSecuritySpringAutoConfiguration {
     return filterRegBean;
   }
 
+  @Deprecated // uaa support should be removed
+  static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> uaaGroupNameToTenantMapper(String prefix) {
+    var envPrefix = StringUtils.appendIfMissing(Objects.requireNonNull(prefix), "/");
+    return (GroupGrantedAuthority groupGrantedAuthority) -> {
+      var authority = groupGrantedAuthority.getAuthority();
+      if (authority.contains("/") && authority.startsWith(envPrefix)) {
+        return Stream.of(ImmutableTenantGrantedAuthority.builder()
+            .authority(authority.substring(envPrefix.length()))
+            .tenantId(groupGrantedAuthority.getGroupId())
+          .build());
+      }
+      return Stream.empty();
+    };
+  }
+
+  static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> groupNameToTenantMapper(Map<String,Set<String>> groupMapping, Map<String, DialobSettings.TenantSettings.Tenant> tenants) {
+    return (GroupGrantedAuthority authority) -> groupMapping.getOrDefault(authority.getAuthority(), Collections.emptySet())
+        .stream().map(tenantId -> ImmutableTenantGrantedAuthority.builder()
+          .authority(tenants.getOrDefault(tenantId, UNKNOWN_TENANT).name())
+          .tenantId(tenantId)
+          .build());
+  }
 
   @Bean
-  @Profile({"uaa","aws"})
-  public GrantedAuthoritiesMapper grantedAuthoritiesMapper(DialobSettings dialobSettings,
+  @Profile({"uaa | aws"})
+  public GrantedAuthoritiesMapper grantedAuthoritiesMapper(Environment environment,
+                                                           DialobSettings dialobSettings,
                                                            Optional<UsersAndGroupsService> usersAndGroupsService) {
     var operators = new ArrayList<UnaryOperator<Stream<? extends GrantedAuthority>>>();
 
+    Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper;
+    if (environment.matchesProfiles("uaa")) {
+      tenantMapper = uaaGroupNameToTenantMapper(dialobSettings.getTenant().getEnv());
+    } else {
+      tenantMapper = groupNameToTenantMapper(dialobSettings.getTenant().getGroupToTenants(), dialobSettings.getTenant().getTenants());
+    }
+
     final Map<String, Set<String>> groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
-    operators.add(new MapTenantGroupToTenantGrantedAuthority(dialobSettings.getTenant().getEnv()));
+    operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper));
     usersAndGroupsService.ifPresent(service -> operators.add(new Groups2GroupGrantedAuthoritiesMapper(service)));
     return new StreamingGrantedAuthoritiesMapper(operators);
   }
 
+
   @Bean
-  @Profile({"uaa","aws"})
+  @Profile({"uaa | aws"})
   public TenantAccessEvaluator tenantAccessEvaluator() {
     return new GrantedTenantAccessEvaluator() {
       @Override
