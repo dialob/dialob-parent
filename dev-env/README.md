@@ -70,7 +70,7 @@ Changes to logging configuration are automatically updated every 10 seconds.
 
 ### Debugging
 
-`dialob-api` opens jwdp on port 5085 and `dialob-session` port 5085. You can connect java remote debugger on these ports. 
+`dialob-api` opens jwdp on port 5085 and `dialob-session` port 5084. You can connect java remote debugger on these ports. 
 
 ### Open form in composer
 

@@ -15,6 +15,7 @@
  */
 package io.dialob.security.spring.oauth2;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+@Slf4j
 public class StreamingGrantedAuthoritiesMapper implements GrantedAuthoritiesMapper {
 
   private final UnaryOperator<Stream<? extends GrantedAuthority>> grantMapper;
@@ -35,6 +37,10 @@ public class StreamingGrantedAuthoritiesMapper implements GrantedAuthoritiesMapp
 
   @Override
   public Collection<? extends GrantedAuthority> mapAuthorities(Collection<? extends GrantedAuthority> authorities) {
-    return grantMapper.apply(authorities.stream()).toList();
+    var mappedAuthorities = grantMapper.apply(authorities.stream()).toList();
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Mapped authorities : {}", mappedAuthorities);
+    }
+    return mappedAuthorities;
   }
 }

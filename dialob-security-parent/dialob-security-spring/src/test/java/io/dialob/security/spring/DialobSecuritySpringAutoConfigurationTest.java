@@ -43,7 +43,7 @@ class DialobSecuritySpringAutoConfigurationTest {
         assertThat(context)
           .hasSingleBean(FilterRegistrationBean.class)
           .doesNotHaveBean(GrantedAuthoritiesMapper.class)
-          .doesNotHaveBean(TenantAccessEvaluator.class);
+          .hasSingleBean(TenantAccessEvaluator.class);
       });
   }
 

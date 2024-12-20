@@ -37,7 +37,7 @@ class DialobSecurityAwsAutoConfigurationTest {
       .run(context -> {
         assertThat(context)
           .doesNotHaveBean(GrantedAuthoritiesMapper.class)
-          .doesNotHaveBean(TenantAccessEvaluator.class)
+          .hasSingleBean(TenantAccessEvaluator.class)
           .doesNotHaveBean(JWTProcessor.class);
       });
   }

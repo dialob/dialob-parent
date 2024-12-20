@@ -33,7 +33,6 @@ import io.dialob.questionnaire.service.rest.DialobQuestionnaireServiceRestAutoCo
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
@@ -132,11 +131,6 @@ public class QuestionnairesRestControllerApiKeyTest {
     @Primary
     public FormFinder formFinder(FormDatabase formDatabase, CurrentTenant currentTenant) {
       return (id, rev) -> formDatabase.findOne(currentTenant.getId(), id, rev);
-    }
-
-    @Bean
-    public TenantAccessEvaluator tenantAccessEvaluator() {
-      return tenant -> true;
     }
 
   }

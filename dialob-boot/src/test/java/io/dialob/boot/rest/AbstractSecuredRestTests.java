@@ -17,7 +17,6 @@ package io.dialob.boot.rest;
 
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
 import jakarta.inject.Inject;
@@ -58,11 +57,6 @@ public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
     @Bean
     public DatabaseExceptionMapper databaseExceptionMapper() {
       return new DatabaseExceptionMapper();
-    }
-
-    @Bean
-    public TenantAccessEvaluator tenantPermissionEvaluator() {
-      return tenant -> true;
     }
 
   }

@@ -45,7 +45,11 @@ public class Groups2GroupGrantedAuthoritiesMapper implements UnaryOperator<Strea
   public Stream<Group> loadUserGroups(String userId) {
     return usersAndGroupsService.findUser(userId)
       .map(user -> {
-        LOGGER.debug("Loaded user {}, {} groups", user.getId(), user.getGroups().size());
+        if (LOGGER.isTraceEnabled()) {
+          LOGGER.trace("Loaded user {}, groups : {}", user.getId(), user.getGroups());
+        } else {
+          LOGGER.debug("Loaded user {}, {} groups", user.getId(), user.getGroups().size());
+        }
         return user.getGroups().stream()
           .filter(this.groupFilter);
       }).orElseGet(() -> {
