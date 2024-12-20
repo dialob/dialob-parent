@@ -81,7 +81,7 @@ For default configurations, see YML-s in **dialob-config-parent/dialob-settings*
 * **filedb** - Form and questionnaire persistence - Filesystem
 * **mongodb** - Form and questionnaire persistence - MongoDb
 * **uaa** - Security implementation UAA (deprecated)
-* **openid** - Enabled Open ID authentication
+* **oauth2** - Enabled OAuth 2 authentication
 
 ## Building tasks
 
