@@ -79,7 +79,7 @@ public class DialobSecuritySpringAutoConfiguration {
   }
 
   @Bean
-  @Profile({"uaa | aws | openid"})
+  @Profile({"uaa | aws | oauth2"})
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper(Environment environment,
                                                            DialobSettings dialobSettings,
                                                            Optional<UsersAndGroupsService> usersAndGroupsService) {
