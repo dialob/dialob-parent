@@ -80,7 +80,7 @@ For default configurations, see YML-s in **dialob-config-parent/dialob-settings*
 * **dialobapidb** - Form and questionnaire persistence - Dialob API
 * **filedb** - Form and questionnaire persistence - Filesystem
 * **mongodb** - Form and questionnaire persistence - MongoDb
-* **uaa** - Security implementation UAA
+* **uaa** - Security implementation UAA (deprecated)
 * **openid** - Enabled Open ID authentication
 
 ## Building tasks

@@ -41,8 +41,7 @@ public class GrantedTenantAccessEvaluator implements TenantAccessEvaluator {
       return true;
     }
     SecurityContext securityContext = SecurityContextHolder.getContext();
-    if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken) {
-      final AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) securityContext.getAuthentication();
+    if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken authentication) {
       if (canAccessAnyTenant(authentication)) {
         return true;
       }

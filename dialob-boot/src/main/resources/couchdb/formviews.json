@@ -1,9 +1,0 @@
-{
-   "_id": "_design/formviews",
-   "language": "javascript",
-   "views": {
-       "all": {
-           "map": "function(doc) { emit(doc._id, doc.metadata) }"
-       }
-   }
-}

@@ -66,7 +66,7 @@ public class DialobSecuritySpringAutoConfiguration {
             .tenantId(groupGrantedAuthority.getGroupId())
           .build());
       }
-      return Stream.empty();
+      return Stream.of(groupGrantedAuthority);
     };
   }
 
@@ -79,7 +79,7 @@ public class DialobSecuritySpringAutoConfiguration {
   }
 
   @Bean
-  @Profile({"uaa | aws"})
+  @Profile({"uaa | aws | openid"})
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper(Environment environment,
                                                            DialobSettings dialobSettings,
                                                            Optional<UsersAndGroupsService> usersAndGroupsService) {
@@ -92,7 +92,7 @@ public class DialobSecuritySpringAutoConfiguration {
       tenantMapper = groupNameToTenantMapper(dialobSettings.getTenant().getGroupToTenants(), dialobSettings.getTenant().getTenants());
     }
 
-    final Map<String, Set<String>> groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
+    final var groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
     operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper));
     usersAndGroupsService.ifPresent(service -> operators.add(new Groups2GroupGrantedAuthoritiesMapper(service)));
@@ -101,8 +101,10 @@ public class DialobSecuritySpringAutoConfiguration {
 
 
   @Bean
-  @Profile({"uaa | aws"})
-  public TenantAccessEvaluator tenantAccessEvaluator() {
+  public TenantAccessEvaluator tenantAccessEvaluator(DialobSettings dialobSettings) {
+    if (dialobSettings.getTenant().getMode() == DialobSettings.TenantSettings.Mode.FIXED) {
+      return tenant -> true;
+    }
     return new GrantedTenantAccessEvaluator() {
       @Override
       protected boolean canAccessAnyTenant(AbstractAuthenticationToken authentication) {
