@@ -1,0 +1,21 @@
+dialob:
+  security:
+    enabled: true
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          default:
+            provider: "default"
+            client-id: localhost
+            client-secret: mysecret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid   # We'll only get "idToken" (SSO)
+              - profile  # Triggers userinfo lookup from "userInfoUri"
+        provider:
+          default:
+            issuer-uri: https://login.example.com
