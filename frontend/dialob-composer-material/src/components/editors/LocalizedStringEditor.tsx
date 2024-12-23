@@ -1,7 +1,7 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Button, Typography, Box, TextareaAutosize, Menu, MenuItem, IconButton } from '@mui/material';
-import { Add, Delete, Translate, Visibility } from '@mui/icons-material';
+import { Button, Typography, Box, TextareaAutosize, IconButton } from '@mui/material';
+import { Delete, Visibility } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { LocalizedString, useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
@@ -17,12 +17,10 @@ const LocalizedStringEditor: React.FC<{
 }> = ({ type, rule, setRule }) => {
   const { form, updateLocalizedString } = useComposer();
   const { editor, setActiveItem } = useEditor();
-  const activeLanguage = editor.activeFormLanguage;
   const item = editor.activeItem;
   const formLanguages = form.metadata.languages;
   const [preview, setPreview] = React.useState(false);
   const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   React.useEffect(() => {
     if (item) {
@@ -52,10 +50,6 @@ const LocalizedStringEditor: React.FC<{
     return null;
   }
 
-  const handleAdd = (language: string) => {
-    setLocalizedString({ ...localizedString, [language]: '' });
-  }
-
   const handleUpdate = (value: string, language: string) => {
     setLocalizedString({ ...localizedString, [language]: value });
   }
@@ -73,32 +67,9 @@ const LocalizedStringEditor: React.FC<{
         <Button variant={preview ? 'contained' : 'outlined'} endIcon={<Visibility />} onClick={() => setPreview(!preview)}>
           <FormattedMessage id='dialogs.options.preview' />
         </Button>
-        {(localizedString === undefined || localizedString[activeLanguage] === undefined) && <Button variant='outlined'
-          onClick={() => handleAdd(activeLanguage)} sx={{ textTransform: 'none', ml: 1 }} endIcon={<Translate />}
-          disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}>
-          <FormattedMessage id={`dialogs.options.translation.${activeLanguage}.add`} />
-        </Button>}
-        {formLanguages && formLanguages.length > 1 && <Button variant='outlined' onClick={(e) => setAnchorEl(e.currentTarget)}
-          disabled={form.metadata.languages?.length === (localizedString ? Object.keys(localizedString).length : 0)}
-          sx={{ textTransform: 'none', ml: 1 }} endIcon={<Add />}>
-          <FormattedMessage id={`dialogs.options.${type}.add`} />
-        </Button>}
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)}
-        >
-          {form.metadata.languages?.filter((language) => !localizedString?.[language])
-            .map((language) => (
-              <MenuItem key={language} onClick={() => {
-                handleAdd(language);
-                setAnchorEl(null);
-              }}>{getLanguageName(language)}</MenuItem>
-            ))}
-        </Menu>
       </Box>
-      {localizedString && Object.keys(localizedString).map((language) => {
-        const localizedText = localizedString[language];
+      {formLanguages?.map((language) => {
+        const localizedText = localizedString ? localizedString[language] : '';
         return (
           <Box key={language}>
             <Box display='flex' alignItems='center'>
