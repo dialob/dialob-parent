@@ -139,7 +139,6 @@ const ItemOptionsDialog: React.FC = () => {
               </Tooltip>
             } value='rules' />
             {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.validations' />}><Rule /></Tooltip>} value='validations' />}
-            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.default' />}><EditNote /></Tooltip>} value='defaults' />}
             {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.choices' />}><List /></Tooltip>} value='choices' />}
             <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.properties' />}><Dns /></Tooltip>} value='properties' />
           </Tabs>
@@ -148,7 +147,6 @@ const ItemOptionsDialog: React.FC = () => {
             {activeTab === 'description' && <Editors.Description />}
             {activeTab === 'rules' && <Editors.Rules />}
             {activeTab === 'validations' && <Editors.Validations />}
-            {activeTab === 'defaults' && <Editors.Defaults />}
             {activeTab === 'choices' && <Editors.Choice />}
             {activeTab === 'properties' && <Editors.Properties />}
           </Box>
