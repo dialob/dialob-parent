@@ -69,7 +69,7 @@ const getTitle = (item: TreeItem) => {
 }
 
 const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollapse, provided }) => {
-  const { editor, setActivePage, setHighlightedItem } = useEditor();
+  const { editor, setActivePage, setHighlightedItem, setActiveItem, setItemOptionsActiveTab } = useEditor();
   const { form } = useComposer();
   const { config } = useBackend();
   const errorColor = useErrorColorSx(editor.errors, item.data.item.id);
@@ -82,6 +82,11 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
     scrollToItem(itemId, Object.values(form.data), editor.activePage, setActivePage);
   }
 
+  const handleOpenEditor = () => {
+    setActiveItem(item.data.item);
+    setItemOptionsActiveTab('label');
+  }
+
   return (
     <ListItem
       ref={provided.innerRef}
@@ -90,7 +95,7 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
     >
       {getIcon(item, onExpand, onCollapse)}
       {errorColor ? getErrorIcon(editor.errors, item.data.item.id) : getTypeIcon(item.data.item, item.data.isPage, itemConfig)}
-      <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo}>
+      <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo} onDoubleClick={handleOpenEditor}>
         <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{getTitle(item)}</Typography>
       </ListItemText>
     </ListItem>
