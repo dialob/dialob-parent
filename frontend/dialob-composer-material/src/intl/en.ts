@@ -111,7 +111,7 @@ const en = {
   'dialogs.options.choices.divider': 'OR',
   'dialogs.options.properties.add': 'Add property',
   'dialogs.options.properties.add.short': 'Add',
-  'dialogs.options.default.set': 'Set default value',
+  'dialogs.options.default': 'Default value',
   'dialogs.options.preview': 'Preview',
 
   'dialogs.upload.valueset.title': 'Upload value set',

@@ -38,7 +38,7 @@ const DefaultValueEditor: React.FC = () => {
 
   return (
     <Box>
-      <Typography><FormattedMessage id='dialogs.options.default.set' /></Typography>
+      <Typography color="text.hint"><FormattedMessage id='dialogs.options.default' /></Typography>
       <TextField variant='outlined' value={defaultValue} onChange={(e) => setDefaultValue(e.target.value)} />
       {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>

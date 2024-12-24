@@ -109,7 +109,7 @@ const UploadValuesetDialog: React.FC<{
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
         <FormattedMessage id='dialogs.upload.valueset.title' />
         <Button variant='outlined' endIcon={<Help />}

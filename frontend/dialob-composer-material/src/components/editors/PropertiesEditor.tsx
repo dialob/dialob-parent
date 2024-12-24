@@ -71,7 +71,7 @@ const PropertiesEditor: React.FC = () => {
           <Typography sx={{ px: 2 }}><FormattedMessage id='dialogs.options.properties.add.short' /></Typography>
         </Button>
       </Box>
-      <TableContainer>
+      {props.length > 0 && <TableContainer>
         <BorderedTable>
           <TableHead>
             <TableRow>
@@ -84,7 +84,7 @@ const PropertiesEditor: React.FC = () => {
             {props.map(prop => <PropItem key={prop.key} prop={prop} propEditor={propEditors && propEditors[prop.key]} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
           </TableBody>
         </BorderedTable>
-      </TableContainer>
+      </TableContainer>}
     </Box>
   );
 }

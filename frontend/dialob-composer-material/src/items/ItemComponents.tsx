@@ -175,7 +175,7 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
         </Tooltip>}
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
-          < IconButton onClick={(e) => handleClick(e, 'defaults')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
+          < IconButton onClick={(e) => handleClick(e, 'rules')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
         </Tooltip>}
       {item.type === 'note' && item.activeWhen &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.visibility' />}>
