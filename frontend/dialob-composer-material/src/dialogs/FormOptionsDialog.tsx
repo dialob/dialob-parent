@@ -150,7 +150,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.id' /></Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography>{form._id}</Typography>
-            <CopyToClipboardButton text={form._id} />
+            <CopyToClipboardButton text={form._id + ''} />
           </Box>
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.created' /></Typography>
           <Typography>{form?.metadata.created && new Date(form?.metadata.created).toLocaleString('en-GB')}</Typography>

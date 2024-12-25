@@ -45,7 +45,7 @@ const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open,
 
   const initPreview = () => {
     const context: PreviewSessionContext = Object.entries(contextValues || {}).map(([name, value]) => ({ id: name, value }));
-    createPreviewSession(form._id, editor.activeFormLanguage, context).then((response) => {
+    createPreviewSession(form._id + '', editor.activeFormLanguage, context).then((response) => {
       const result = response.result as CreateSessionResult;
       if (response.success) {
         const win = window.open(`${config.transport.previewUrl}/${result._id}`);
