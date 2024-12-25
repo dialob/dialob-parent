@@ -15,6 +15,9 @@ const INITIAL_BACKEND: BackendState = {
   saveForm: (_form: ComposerState, _dryRun?: boolean): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
+  createForm: (_form: ComposerState): Promise<ApiResponse> => {
+    return Promise.resolve({ success: true });
+  },
   duplicateItem: (_form: ComposerState, _itemId: string): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
@@ -63,6 +66,7 @@ export const BackendProvider: React.FC<BackendProviderProps> = ({ children, form
       config,
       loadForm: backendService.current.loadForm.bind(backendService.current),
       saveForm: backendService.current.saveForm.bind(backendService.current),
+      createForm: backendService.current.createForm.bind(backendService.current),
       duplicateItem: backendService.current.duplicateItem.bind(backendService.current),
       createTag: backendService.current.createTag.bind(backendService.current),
       getTags: backendService.current.getTags.bind(backendService.current),
