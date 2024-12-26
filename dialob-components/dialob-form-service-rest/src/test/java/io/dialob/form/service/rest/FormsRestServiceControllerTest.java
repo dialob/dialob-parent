@@ -15,11 +15,59 @@
  */
 package io.dialob.form.service.rest;
 
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.form.*;
+
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormTag;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.ImmutableFormTag;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
+import io.dialob.form.service.DialobCsvToFormParser;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
+import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.form.service.api.validation.FormValidator;
@@ -30,32 +78,6 @@ import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
@@ -75,6 +97,10 @@ class FormsRestServiceControllerTest {
       return new ObjectMapper();
     }
 
+    @Bean
+    public CsvToFormParser csvToFormParser() {
+      return new DialobCsvToFormParser();
+    }
 
   }
 
@@ -107,6 +133,9 @@ class FormsRestServiceControllerTest {
 
   @MockitoBean
   private NodeId nodeId;
+
+  @Inject
+  private CsvToFormParser csvToFormParser;
 
   private MockMvc mockMvc;
 
@@ -200,6 +229,76 @@ class FormsRestServiceControllerTest {
     verify(currentTenant, times(2)).getId();
     verify(currentUserProvider).getUserId();
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
+  }
+
+  @Test
+  public void postCsvShouldAlwaysCreateNewForm() throws Exception {
+    StringBuilder csvBuilder = new StringBuilder();
+    csvBuilder
+      .append("testForm101\n")
+      .append("id,type,fi,et,sv,en\n")
+      .append("ghj,Text,Mikä on nimesi,Vad häter du\n")
+      .append(",Boolean,Onko näin?,Är det så?,\n")
+      .append(",Date,Valitse päivä,,Select day\n")
+      .append("hh56,Time,,,Select time\n")
+      .append(",Choice,Tee valinta,\n")
+      .append(",Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,\n")
+      .append(",Integer,number label fi\n")
+      .append("gfhf69,Date\n")
+      .append(",Time,,test1\n")
+      .append("gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test\n")
+      .append(",Time,,");
+    String csvContent = csvBuilder.toString();
+
+    ImmutableForm immutableForm = ImmutableForm.builder().from(csvToFormParser.parseCsv(csvContent)).id("234").rev("543").build();
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(formDatabase.save(eq("t-123"), any())).thenReturn(immutableForm);
+    when(currentUserProvider.getUserId()).thenReturn("u1");
+
+    mockMvc.perform(
+      post("/forms", "1234")
+      .contentType("text/csv")
+      .content(csvContent)
+    ).andExpect(status().isCreated())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.ok", is(true)))
+      .andExpect(jsonPath("$.form.metadata.label", is("testForm101")))
+      .andExpect(jsonPath("$.form.name", is("testForm101")));
+
+    ArgumentCaptor<Form> captor = ArgumentCaptor.captor();
+    verify(formDatabase).save(eq("t-123"), captor.capture());
+    Form form = captor.getValue();
+    assertNull(form.getId());
+    assertNull(form.getRev());
+    assertEquals("u1", form.getMetadata().getSavedBy());
+    assertEquals("t-123", form.getMetadata().getTenantId());
+    assertNotNull(form.getMetadata().getLastSaved());
+
+    verify(currentTenant, times(2)).getId();
+    verify(currentUserProvider).getUserId();
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
+  }
+
+  @Test
+  public void postCsvShouldNotCreateNewForm() throws Exception {
+    StringBuilder csvBuilder = new StringBuilder();
+    csvBuilder
+      .append("test Form102\n")
+      .append("id,type,en,fi\n")
+      .append("id1,Text,Mikä on nimesi,Vad häter du\n")
+      .append(",Date\n");
+
+    String csvContent = csvBuilder.toString();
+
+    mockMvc.perform(
+      post("/forms", "1234")
+        .contentType("text/csv")
+        .content(csvContent)
+      ).andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.ok", is(false)))
+      .andExpect(jsonPath("$.error", is("CSV_PARSING_ERROR")));
   }
 
   @Test
