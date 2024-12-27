@@ -6,10 +6,8 @@ import { InputProp } from './propEditors/InputProp';
 
 const PropItem: React.FC<{
   prop: ItemProp,
-  propEditor: {
-    component: any,
-    props?: any
-  } | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  propEditor: { component: any, props?: any } | undefined,
   onEdit: (key: string, value: PropValue) => void,
   onDelete: (key: string) => void
 }> = ({ prop, propEditor, onEdit, onDelete }) => {

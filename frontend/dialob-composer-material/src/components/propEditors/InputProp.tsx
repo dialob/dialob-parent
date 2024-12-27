@@ -1,8 +1,7 @@
 import { StyledTextField } from '../TableEditorComponents';
 
-export const InputProp = (
-  props: any
-) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const InputProp = (props: any) => {
   const { value, setValue, ...inputProps } = props;
 
   return (

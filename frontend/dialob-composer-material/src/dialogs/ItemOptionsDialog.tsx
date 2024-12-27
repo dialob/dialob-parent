@@ -4,7 +4,7 @@ import {
   Dialog, DialogTitle, DialogContent, Button, Box, Tabs, Tab,
   DialogActions, Tooltip, styled, TextField, IconButton
 } from '@mui/material';
-import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel, Help } from "@mui/icons-material";
+import { Rule, Edit, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel, Help } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import { ConversionMenu } from '../items/ItemComponents';

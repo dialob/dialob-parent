@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, Box, Container } from '@mui/material';
+import { Drawer, Box } from '@mui/material';
 import MenuBar from './layout/MenuBar';
 import NavigationPane from './layout/NavigationPane';
 import EditorArea from './layout/EditorArea';

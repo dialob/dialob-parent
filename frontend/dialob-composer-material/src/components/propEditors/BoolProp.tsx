@@ -1,8 +1,7 @@
 import { Switch } from "@mui/material";
 
-export const BoolProp = (
-  props: any
-) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const BoolProp = (props: any) => {
   const { value, setValue } = props;
 
   return (
