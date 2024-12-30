@@ -12,6 +12,7 @@ import { OptionsTabType, useEditor } from "../editor";
 import { isPage } from "../utils/ItemUtils";
 import { scrollToAddedItem } from "../utils/ScrollUtils";
 import { useBackend } from "../backend/useBackend";
+import { findItemTypeConfig } from "../utils/ConfigUtils";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -44,18 +45,6 @@ export const StyledTable = styled(Table, {
     borderColor: errorBorderColor,
   }
 ));
-
-
-export const findItemTypeConfig = (itemTypes: ItemTypeConfig, type: string, view?: string) => {
-  for (const idx in itemTypes.categories) {
-    const c = itemTypes.categories[idx];
-    const resultConfig = c.items.find(v => v.config.type === type && (!view || v.config.view === view));
-    if (resultConfig) {
-      return resultConfig;
-    }
-  }
-  return null;
-}
 
 const getItemConversions = (item: DialobItem, itemTypeConfig: ItemTypeConfig): { text: string, value: DialobItemTemplate }[] => {
   const thisItemType = findItemTypeConfig(itemTypeConfig, item.view ?? item.type);
@@ -212,7 +201,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
   React.useEffect(() => {
     setTypeName(resolveTypeName(item.view || item.type, resolvedConfig));
-  }, [item]);
+  }, [item, resolvedConfig]);
 
   return (
     <>

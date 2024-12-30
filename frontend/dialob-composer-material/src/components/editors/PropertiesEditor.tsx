@@ -6,8 +6,8 @@ import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import PropItem from '../PropItem';
 import { useBackend } from '../../backend/useBackend';
-import { findItemTypeConfig } from '../../items/ItemComponents';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
+import { findItemTypeConfig } from '../../utils/ConfigUtils';
 
 export type PropValue = string | string[] | boolean;
 

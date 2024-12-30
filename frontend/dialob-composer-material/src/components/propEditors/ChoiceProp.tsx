@@ -2,9 +2,8 @@ import { Autocomplete, MenuItem, Select } from '@mui/material';
 import { StyledTextField } from '../TableEditorComponents';
 import { ArrowDropDown } from '@mui/icons-material';
 
-export const ChoiceProp = (
-  props: any
-) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const ChoiceProp = (props: any) => {
   const { value, setValue, ...inputProps } = props;
 
   if (inputProps.allowAdditions) {
