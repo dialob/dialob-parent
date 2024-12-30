@@ -110,6 +110,33 @@ export class BackendService {
     }
   }
 
+  public async createForm(form: ComposerState): Promise<ApiResponse> {
+    if (this.isSaving) {
+      console.log('DEFER SAVE');
+      return {
+        result: undefined,
+        success: true
+      }
+    }
+
+    this.isSaving = true;
+
+    try {
+      const res = await this.doFetch(this.prepareFormsUrl('/forms'), 'POST', form);
+      this.isSaving = false;
+      return {
+        result: res as SaveResult,
+        success: true
+      }
+    } catch (err: any) {
+      this.isSaving = false;
+      return {
+        success: false,
+        apiError: err
+      }
+    }
+  }
+
   public async loadForm(formId: string, tagName?: string): Promise<ComposerState> {
     return await this.doFetch(this.prepareFormsUrl(`/forms/${formId}`, { formTag: tagName }), 'GET');
   }

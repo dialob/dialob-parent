@@ -102,6 +102,7 @@ export interface BackendState {
   config: DialobComposerConfig;
   loadForm(formId: string, tagName?: string): Promise<ComposerState>;
   saveForm(form: ComposerState, dryRun?: boolean): Promise<ApiResponse>;
+  createForm(form: ComposerState): Promise<ApiResponse>;
   duplicateItem(form: ComposerState, itemId: string): Promise<ApiResponse>;
   createTag(request: CreateTagRequest): Promise<ApiResponse>;
   getTags(formName: string): Promise<ComposerTag[]>;

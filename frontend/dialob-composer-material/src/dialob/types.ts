@@ -84,8 +84,8 @@ export type ComposerTag = {
 }
 
 export type ComposerState = {
-  _id: string;
-  _rev: string;
+  _id?: string;
+  _rev?: string;
   _tag?: string;
   name: string;
   data: {
