@@ -26,8 +26,6 @@ export const useDocs = (type: DocsType): string => {
       return baseUrl + 'Dialob-composer:-05%E2%80%90Dialob-Expression-Language-%E2%80%93-DEL#validation-rules';
     case 'choices':
       return baseUrl + 'Dialob-composer:-03%E2%80%90Advanced-operations#creating-a-local-list';
-    case 'defaults':
-      return baseUrl + 'Dialob-composer:-04%E2%80%90Input-and-output-types';
     case 'properties':
       return baseUrl + 'Dialob-composer:-08-customization';
     case 'del':
