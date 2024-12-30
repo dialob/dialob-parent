@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BackendTypes, DefaultTypes, DialobComposer, DialobTypes, Editor, SimpleField } from '@dialob/dialob-composer-material';
+import { BackendTypes, DefaultTypes, DialobComposer, DialobTypes, SimpleField, PropEditors } from '@dialob/dialob-composer-material';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { siteTheme } from './siteTheme';
 import { Circle, Phone } from '@mui/icons-material';
@@ -29,7 +29,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           title: 'Group',
           propEditors: {
             columns: {
-              component: Editor,
+              component: PropEditors.InputProp,
               props: {
                 type: 'number',
                 min: 1,
@@ -99,7 +99,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           convertible: ['text', 'textBox'],
           propEditors: {
             country: {
-              component: Editor,
+              component: PropEditors.InputProp,
               props: {
                 allowAdditions: true,
                 options: [

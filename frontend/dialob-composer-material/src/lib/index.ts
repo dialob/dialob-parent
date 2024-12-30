@@ -44,6 +44,7 @@ import DialobComposer from "../dialob/DialobComposer";
 import * as BackendTypes from "../backend/types";
 import * as DialobTypes from "../dialob/types";
 import * as DefaultTypes from "../defaults/types";
+import * as PropEditors from "../components/propEditors";
 
 // export for building the library
 export {
@@ -57,6 +58,7 @@ export {
   ChoiceDeleteDialog, ConfirmationDialog, ConvertConfirmationDialog, CreateTagDialog, FormOptionsDialog, GlobalListsDialog,
   ItemOptionsDialog, PreviewDialog, TranslationDialog, UploadValuesetDialog, VariablesDialog, VersioningDialog, // dialogs
   DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS, // defaults
+  PropEditors, // propEditors (ChoiceProp, InputProp, etc.)
   DialobComposer, // composer
 };
 

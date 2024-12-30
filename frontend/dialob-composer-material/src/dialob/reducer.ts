@@ -316,7 +316,7 @@ const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: Valu
     if (vsIdx > -1) {
       const cleanedEntry: ValueSetEntry = entry ? { ...entry, label: cleanLocalizedString(entry.label) } : { id: '', label: {} };
       if (state.valueSets[vsIdx].entries !== undefined) {
-        state.valueSets[vsIdx].entries.push(cleanedEntry);
+        state.valueSets[vsIdx].entries!.push(cleanedEntry);
       } else {
         state.valueSets[vsIdx].entries = [cleanedEntry];
       }
@@ -327,8 +327,8 @@ const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: Valu
 const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: number, entry: ValueSetEntry): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries[index] !== undefined) {
-      state.valueSets[vsIdx].entries[index] = entry;
+    if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined) {
+      state.valueSets[vsIdx].entries![index] = entry;
     }
   }
 }
@@ -336,9 +336,9 @@ const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
 const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, index: number, text: string | null, language: string): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1 && text !== null && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries[index] !== undefined && state.valueSets[vsIdx].entries[index].label !== undefined) {
+    if (vsIdx > -1 && text !== null && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined && state.valueSets[vsIdx].entries![index].label !== undefined) {
       const cleanedText = cleanString(text);
-      state.valueSets[vsIdx].entries[index].label[language] = cleanedText;
+      state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
     }
   }
 }
@@ -347,7 +347,7 @@ const deleteValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
-      state.valueSets[vsIdx].entries.splice(index, 1);
+      state.valueSets[vsIdx].entries!.splice(index, 1);
     }
   }
 }
@@ -356,8 +356,8 @@ const moveValueSetEntry = (state: ComposerState, valueSetId: string, from: numbe
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
-      const newIndex = to > state.valueSets[vsIdx].entries.length ? state.valueSets[vsIdx].entries.length - 1 : to;
-      state.valueSets[vsIdx].entries.splice(newIndex, 0, state.valueSets[vsIdx].entries.splice(from, 1)[0]);
+      const newIndex = to > state.valueSets[vsIdx].entries!.length ? state.valueSets[vsIdx].entries!.length - 1 : to;
+      state.valueSets[vsIdx].entries!.splice(newIndex, 0, state.valueSets[vsIdx].entries!.splice(from, 1)[0]);
     }
   }
 }
