@@ -190,7 +190,7 @@ const MenuBar: React.FC = () => {
             <MenuItem onClick={handleOpenVersioningDialog}>
               <FormattedMessage id='menus.versions.manage' />
             </MenuItem>
-            <MenuItem onClick={handleOpenCreateTagDialog}>
+            <MenuItem onClick={handleOpenCreateTagDialog} disabled={status === 'FATAL' || status === 'ERROR' || currentTag !== 'LATEST'}>
               <FormattedMessage id='menus.versions.create' />
             </MenuItem>
           </Menu>
