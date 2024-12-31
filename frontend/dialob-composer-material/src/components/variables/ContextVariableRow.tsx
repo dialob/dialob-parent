@@ -40,7 +40,7 @@ const ContextVariableRow: React.FC<VariableProps> = ({ item, provided, onClose }
             <DefaultValueField variable={variable} />
           </TableCell>
           <TableCell width='20%' sx={{ p: 0.5 }}>
-            <DescriptionField />
+            <DescriptionField variable={variable} />
           </TableCell>
           <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
             <UsersField variable={variable} onClose={onClose} />

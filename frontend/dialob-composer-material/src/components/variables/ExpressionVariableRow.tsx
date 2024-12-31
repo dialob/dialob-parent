@@ -41,7 +41,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
             </Box>
           </TableCell>
           <TableCell width='20%' sx={{ p: 1 }}>
-            <DescriptionField />
+            <DescriptionField variable={variable} />
           </TableCell>
           <TableCell width='10%' align='center' sx={{ p: 1 }}>
             <UsersField variable={variable} onClose={onClose} />

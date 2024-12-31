@@ -123,6 +123,10 @@ export const useComposer = () => {
     dispatch({ type: 'updateVariablePublishing', variableId, published });
   }
 
+  const updateVariableDescription = (variableId: string, description: string) => {
+    dispatch({ type: 'updateVariableDescription', variableId, description });
+  }
+
   const deleteVariable = (variableId: string) => {
     dispatch({ type: 'deleteVariable', variableId });
   }
@@ -176,6 +180,7 @@ export const useComposer = () => {
     updateContextVariable,
     updateExpressionVariable,
     updateVariablePublishing,
+    updateVariableDescription,
     deleteVariable,
     moveVariable,
     addLanguage,
