@@ -89,7 +89,8 @@ class ApplicationAutoConfigurationTest {
         "spring.profiles.active=aws",
         "dialob.session.security.enabled=true",
         "dialob.session.sockjs.webSocketEnabled=false",
-        "dialob.session.sockjs.allowedOrigins=*"
+        "dialob.session.sockjs.allowedOrigins=*",
+        "dialob.security.groups-claim=true"
       )
       .run(context -> {
         assertThat(context)

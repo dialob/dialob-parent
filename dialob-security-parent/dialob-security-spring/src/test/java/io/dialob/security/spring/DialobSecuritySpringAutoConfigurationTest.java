@@ -54,7 +54,8 @@ class DialobSecuritySpringAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=aws",
-        "dialob.security.enabled=true")
+        "dialob.security.enabled=true",
+        "dialob.security.groups-claim=true")
       .withUserConfiguration(
         DialobSecuritySpringAutoConfiguration.class)
       .run(context -> {
@@ -77,7 +78,8 @@ class DialobSecuritySpringAutoConfigurationTest {
         "dialob.tenant.group-to-tenants.g1=t,t2",
         "dialob.tenant.tenants.t.name=Tenant 1",
         "dialob.tenant.tenants.t.name=Tenant 2",
-        "dialob.security.enabled=true"
+        "dialob.security.enabled=true",
+        "dialob.security.groups-claim=true"
       )
       .withUserConfiguration(
         DialobSecuritySpringAutoConfiguration.class)
@@ -99,7 +101,8 @@ class DialobSecuritySpringAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=uaa",
-        "dialob.security.enabled=true")
+        "dialob.security.enabled=true",
+        "dialob.security.groups-claim=true")
       .withUserConfiguration(
         DialobSecuritySpringAutoConfiguration.class)
       .run(context -> {

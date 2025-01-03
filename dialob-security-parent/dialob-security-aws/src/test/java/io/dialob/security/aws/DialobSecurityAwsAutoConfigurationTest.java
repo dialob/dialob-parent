@@ -48,7 +48,8 @@ class DialobSecurityAwsAutoConfigurationTest {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=aws",
-        "dialob.security.enabled=true"
+        "dialob.security.enabled=true",
+        "dialob.security.groups-claim=true"
       )
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,

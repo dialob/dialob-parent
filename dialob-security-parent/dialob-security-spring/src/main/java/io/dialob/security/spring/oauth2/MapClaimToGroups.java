@@ -16,19 +16,25 @@
 package io.dialob.security.spring.oauth2;
 
 import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+@Slf4j
 public class MapClaimToGroups implements UnaryOperator<Stream<? extends GrantedAuthority>> {
 
   private final String groupAttributeName;
 
   public MapClaimToGroups(String groupAttributeName) {
-    this.groupAttributeName = groupAttributeName;
+    this.groupAttributeName = Objects.requireNonNull(groupAttributeName, "groupAttributeName may not be null.");
+    LOGGER.debug("Get groups from claim '{}'", this.groupAttributeName);
   }
 
   @Override
@@ -46,6 +52,16 @@ public class MapClaimToGroups implements UnaryOperator<Stream<? extends GrantedA
   }
 
   private Collection<String> getGroups(OAuth2UserAuthority oAuth2UserAuthority) {
-    return (Collection<String>) oAuth2UserAuthority.getAttributes().get(groupAttributeName);
+    Object claim = oAuth2UserAuthority.getAttributes().get(groupAttributeName);
+    if (claim instanceof Collection<?>) {
+      return (Collection<String>) claim;
+    }
+    if (claim instanceof String[] claims) {
+      return List.of(claims);
+    }
+    if (claim instanceof String claimsAsString) {
+      return List.of(claimsAsString.split(","));
+    }
+    return Collections.emptyList();
   }
 }

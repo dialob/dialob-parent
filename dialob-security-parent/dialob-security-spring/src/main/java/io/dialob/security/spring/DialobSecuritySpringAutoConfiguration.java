@@ -120,7 +120,7 @@ public class DialobSecuritySpringAutoConfiguration {
 
     final var groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
-    operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper));
+    operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper, true));
     usersAndGroupsService.ifPresent(service -> operators.add(new Groups2GroupGrantedAuthoritiesMapper(service)));
     operators.add(new MapClaimToGroups(dialobSettings.getSecurity().getGroupsClaim()));
     return new StreamingGrantedAuthoritiesMapper(operators);
