@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BackendTypes, DefaultTypes, DialobComposer, DialobTypes, SimpleField, PropEditors } from '@dialob/dialob-composer-material';
+import { BackendTypes, DefaultTypes, DialobComposer, DialobTypes, SimpleField, PropEditors, DEFAULT_ITEM_CONFIG } from '@dialob/dialob-composer-material';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { siteTheme } from './siteTheme';
 import { Circle, Phone } from '@mui/icons-material';
@@ -15,8 +15,8 @@ const ITEM_EDITORS: DefaultTypes.ItemConfig =  {
         icon: Phone,
         placeholder: 'placeholders.phone'
       }
-    },
-  ],
+    } as DefaultTypes.ItemConfigItem,
+  ].concat(DEFAULT_ITEM_CONFIG.items),
 };
 
 export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
@@ -168,7 +168,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           title: "Phone number",
           config: {
             type: 'text',
-            view: 'text',
+            view: 'phoneNumber',
             validations: [{
               message: {
                 "en": "Phone number format is incorrect, format is optional country code starting with +, optional area code in parenthesis and 4-15 numbers",
@@ -184,7 +184,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           title: "Optional phone number",
           config: {
             type: 'text',
-            view: 'text',
+            view: 'phoneNumber',
             validations: [{
               message: {
                 "en": "Phone number format is incorrect, format is optional country code starting with +, optional area code in parenthesis and 4-15 numbers",
