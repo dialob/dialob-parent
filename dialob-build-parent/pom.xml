@@ -75,7 +75,7 @@
     <validation-api.version>3.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <caffeine.version>3.1.8</caffeine.version>
-    <protobuf-java.version>4.27.5</protobuf-java.version>
+    <protobuf-java.version>4.29.2</protobuf-java.version>
     <lombok.version>1.18.34</lombok.version>
     <commons-text.version>1.12.0</commons-text.version>
     <commons-csv.version>1.12.0</commons-csv.version>
