@@ -1,6 +1,6 @@
-import { Note } from "@mui/icons-material";
 import { Group } from "../items/Group";
 import { SimpleField } from "../items/SimpleField";
+import { Note } from "../items/Note";
 import { LabelField, VisibilityField } from "../items/ItemComponents";
 import { ChoiceEditor } from "../components/editors/ChoiceEditor";
 import { DefaultValueEditor } from "../components/editors/DefaultValueEditor";
