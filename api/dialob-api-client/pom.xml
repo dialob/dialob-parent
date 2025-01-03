@@ -39,6 +39,7 @@
                 <supportJava6>false</supportJava6>
                 <dateLibrary>jdk8</dateLibrary>
                 <library>feign</library>
+                <jakarta>true</jakarta>
               </configOptions>
               <importMappings>
                 <importMapping>Errors=io.dialob.api.rest.Errors</importMapping>
