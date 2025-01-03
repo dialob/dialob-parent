@@ -1,6 +1,7 @@
 dialob:
   security:
     enabled: true
+    groups-claim: "cognito:groups"
 
 spring:
   security:

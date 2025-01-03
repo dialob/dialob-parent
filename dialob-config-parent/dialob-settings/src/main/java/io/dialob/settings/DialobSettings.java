@@ -226,6 +226,8 @@ public class DialobSettings {
 
     private Map<String,Set<String>> groupPermissions = new HashMap<>();
 
+    private String groupsClaim;
+
     @Data
     public static class AuditSettings {
 
