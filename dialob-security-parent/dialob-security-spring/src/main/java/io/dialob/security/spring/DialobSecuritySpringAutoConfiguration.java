@@ -24,6 +24,7 @@ import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
 import io.dialob.security.spring.oauth2.UsersAndGroupsService;
 import io.dialob.security.spring.tenant.*;
 import io.dialob.settings.DialobSettings;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -44,6 +45,7 @@ import java.util.stream.Stream;
 @Configuration(proxyBeanMethods = false)
 @Import(AuditConfiguration.class)
 @EnableConfigurationProperties(DialobSettings.class)
+@Slf4j
 public class DialobSecuritySpringAutoConfiguration {
 
   public static final DialobSettings.TenantSettings.Tenant UNKNOWN_TENANT = new DialobSettings.TenantSettings.Tenant("unknown");
@@ -71,6 +73,9 @@ public class DialobSecuritySpringAutoConfiguration {
   }
 
   static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> groupNameToTenantMapper(Map<String,Set<String>> groupMapping, Map<String, DialobSettings.TenantSettings.Tenant> tenants) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Number of group mappings: {}, Number of tenants: {}", groupMapping.size(), tenants.size());
+    }
     return (GroupGrantedAuthority authority) -> groupMapping.getOrDefault(authority.getAuthority(), Collections.emptySet())
         .stream().map(tenantId -> ImmutableTenantGrantedAuthority.builder()
           .authority(tenants.getOrDefault(tenantId, UNKNOWN_TENANT).name())
