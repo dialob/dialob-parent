@@ -30,6 +30,9 @@ public class StreamingGrantedAuthoritiesMapper implements GrantedAuthoritiesMapp
   private final UnaryOperator<Stream<? extends GrantedAuthority>> grantMapper;
 
   public StreamingGrantedAuthoritiesMapper(List<UnaryOperator<Stream<? extends GrantedAuthority>>> chain) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Mapper chain: {}", chain);
+    }
     grantMapper = chain.stream()
       .reduce((streamOperator, streamOperator2) -> authoritiesStream -> streamOperator.apply(streamOperator2.apply(authoritiesStream)))
       .orElse(stream -> stream);
@@ -37,6 +40,9 @@ public class StreamingGrantedAuthoritiesMapper implements GrantedAuthoritiesMapp
 
   @Override
   public Collection<? extends GrantedAuthority> mapAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Defined authorities : {}", authorities);
+    }
     var mappedAuthorities = grantMapper.apply(authorities.stream()).toList();
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Mapped authorities : {}", mappedAuthorities);
