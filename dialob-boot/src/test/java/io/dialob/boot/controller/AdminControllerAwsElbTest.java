@@ -58,7 +58,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "dialob.db.database-type=none",
-  "dialob.security.groupPermissions.oprh\\.admin=manager.view"
+  "dialob.security.groupPermissions.oprh\\.admin=manager.view",
+  "dialob.security.groups-claim=true"
 })
 @ContextConfiguration(classes = {
   SecurityConfiguration.class,

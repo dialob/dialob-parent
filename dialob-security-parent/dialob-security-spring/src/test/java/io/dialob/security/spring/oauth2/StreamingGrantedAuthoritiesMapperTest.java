@@ -86,7 +86,7 @@ class StreamingGrantedAuthoritiesMapperTest {
     var groupPermissions = Map.of("gx", Set.of("px"));
     List<UnaryOperator<Stream<? extends GrantedAuthority>>> operators = new ArrayList<>();
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
-    operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper));
+    operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper, true));
     operators.add(new MapClaimToGroups("cognito:groups"));
     var mapper = new StreamingGrantedAuthoritiesMapper(operators);
 

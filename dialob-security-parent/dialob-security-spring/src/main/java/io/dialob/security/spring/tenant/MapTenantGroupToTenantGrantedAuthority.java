@@ -28,15 +28,22 @@ public class MapTenantGroupToTenantGrantedAuthority implements UnaryOperator<Str
 
   private final Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper;
 
-  public MapTenantGroupToTenantGrantedAuthority(Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper) {
+  private final boolean retainAuthority;
+
+  public MapTenantGroupToTenantGrantedAuthority(Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper, boolean retainAuthority) {
     this.tenantMapper = Objects.requireNonNull(tenantMapper, "tenantMapper may not be null.");
+    this.retainAuthority = retainAuthority;
   }
 
   @Override
   public Stream<? extends GrantedAuthority> apply(Stream<? extends GrantedAuthority> stream) {
     return stream.flatMap(grantedAuthority -> {
       if (grantedAuthority instanceof GroupGrantedAuthority groupGrantedAuthority) {
-        return tenantMapper.apply(groupGrantedAuthority);
+        Stream<? extends GrantedAuthority> applied = tenantMapper.apply(groupGrantedAuthority);
+        if (this.retainAuthority) {
+          return Stream.concat(applied, Stream.of(grantedAuthority));
+        }
+        return applied;
       }
       return Stream.of(grantedAuthority);
     });
