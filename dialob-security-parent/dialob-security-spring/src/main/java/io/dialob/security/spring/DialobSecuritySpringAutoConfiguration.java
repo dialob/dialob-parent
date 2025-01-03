@@ -18,20 +18,16 @@ package io.dialob.security.spring;
 import io.dialob.common.Permissions;
 import io.dialob.security.spring.audit.AuditConfiguration;
 import io.dialob.security.spring.filter.MDCRequestIdFilter;
-import io.dialob.security.spring.oauth2.Groups2GrantedAuthorisations;
-import io.dialob.security.spring.oauth2.Groups2GroupGrantedAuthoritiesMapper;
-import io.dialob.security.spring.oauth2.StreamingGrantedAuthoritiesMapper;
-import io.dialob.security.spring.oauth2.UsersAndGroupsService;
+import io.dialob.security.spring.oauth2.*;
 import io.dialob.security.spring.tenant.*;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,8 +42,27 @@ import java.util.stream.Stream;
 @Import(AuditConfiguration.class)
 @EnableConfigurationProperties(DialobSettings.class)
 @Slf4j
+@Conditional(DialobSecuritySpringAutoConfiguration.OnSecurityEnabled.class)
 public class DialobSecuritySpringAutoConfiguration {
 
+
+  private String groupsClaim;
+
+  static class OnSecurityEnabled extends AnyNestedCondition {
+
+    OnSecurityEnabled() {
+      super(ConfigurationPhase. PARSE_CONFIGURATION);
+    }
+
+    @ConditionalOnProperty(prefix = "dialob.security", name = "enabled", havingValue = "true")
+    static class OnSecurity {
+    }
+
+    @ConditionalOnProperty(prefix = "dialob.session.security", name = "enabled", havingValue = "true")
+    static class OnSessionSecurity {
+    }
+
+  }
   public static final DialobSettings.TenantSettings.Tenant UNKNOWN_TENANT = new DialobSettings.TenantSettings.Tenant("unknown");
 
   @Bean
@@ -72,15 +87,21 @@ public class DialobSecuritySpringAutoConfiguration {
     };
   }
 
-  static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> groupNameToTenantMapper(Map<String,Set<String>> groupMapping, Map<String, DialobSettings.TenantSettings.Tenant> tenants) {
+  public static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> groupNameToTenantMapper(Map<String, Set<String>> groupMapping, Map<String, DialobSettings.TenantSettings.Tenant> tenants) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Number of group mappings: {}, Number of tenants: {}", groupMapping.size(), tenants.size());
     }
-    return (GroupGrantedAuthority authority) -> groupMapping.getOrDefault(authority.getAuthority(), Collections.emptySet())
-        .stream().map(tenantId -> ImmutableTenantGrantedAuthority.builder()
-          .authority(tenants.getOrDefault(tenantId, UNKNOWN_TENANT).name())
-          .tenantId(tenantId)
-          .build());
+    return (GroupGrantedAuthority authority) -> {
+      Set<String> groups = groupMapping.get(authority.getAuthority());
+      if (groups == null) {
+        return Stream.of(authority);
+      }
+      return groups
+          .stream().map(tenantId -> ImmutableTenantGrantedAuthority.builder()
+            .authority(tenants.getOrDefault(tenantId, UNKNOWN_TENANT).name())
+            .tenantId(tenantId)
+            .build());
+    };
   }
 
   @Bean
@@ -101,6 +122,7 @@ public class DialobSecuritySpringAutoConfiguration {
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));
     operators.add(new MapTenantGroupToTenantGrantedAuthority(tenantMapper));
     usersAndGroupsService.ifPresent(service -> operators.add(new Groups2GroupGrantedAuthoritiesMapper(service)));
+    operators.add(new MapClaimToGroups(dialobSettings.getSecurity().getGroupsClaim()));
     return new StreamingGrantedAuthoritiesMapper(operators);
   }
 
