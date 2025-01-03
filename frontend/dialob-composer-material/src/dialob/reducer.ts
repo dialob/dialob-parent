@@ -462,6 +462,15 @@ const updateVariablePublishing = (state: ComposerState, variableId: string, publ
   }
 }
 
+const updateVariableDescription = (state: ComposerState, variableId: string, description: string): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => v.name === variableId);
+    if (varIdx > -1) {
+      (state.variables[varIdx]).description = description;
+    }
+  }
+}
+
 const moveVariable = (state: ComposerState, origin: ContextVariable | Variable, destination: ContextVariable | Variable): void => {
   const originIdx = state.variables?.findIndex(v => v.name === origin.name);
   const destinationIdx = state.variables?.findIndex(v => v.name === destination.name);
@@ -630,6 +639,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       updateExpressionVariable(state, action.variableId, action.expression);
     } else if (action.type === 'updateVariablePublishing') {
       updateVariablePublishing(state, action.variableId, action.published);
+    } else if (action.type === 'updateVariableDescription') {
+      updateVariableDescription(state, action.variableId, action.description);
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
     } else if (action.type === 'moveVariable') {

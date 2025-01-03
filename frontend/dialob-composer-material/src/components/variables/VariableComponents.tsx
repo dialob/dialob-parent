@@ -92,8 +92,20 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
   );
 }
 
-export const DescriptionField: React.FC = () => {
-  const [description, setDescription] = React.useState<string | undefined>(); // TODO: add description to context
+export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }> = ({ variable }) => {
+  const { updateVariableDescription } = useComposer();
+  const [description, setDescription] = React.useState<string | undefined>(variable.description); // TODO: add description to context
+
+  React.useEffect(() => {
+    const id = setTimeout(() => {
+      if (description && description !== variable.description) {
+        updateVariableDescription(variable.name, description);
+      }
+    }, 300);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [description]);
+
   return (
     <TextField
       value={description || ''}
