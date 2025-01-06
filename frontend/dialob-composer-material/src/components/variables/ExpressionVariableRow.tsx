@@ -27,23 +27,23 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ item, provided, onClos
           <TableCell width='5%' align='center' sx={{ p: 1 }}>
             <DeleteButton variable={variable} />
           </TableCell>
-          <TableCell width='7%' align='center' sx={{ p: 1 }}>
+          <TableCell width='10%' align='center' sx={{ p: 1 }}>
             <PublishedSwitch variable={variable} />
           </TableCell>
           <TableCell width='25%' sx={{ p: 1 }}>
             <NameField variable={variable} />
           </TableCell>
-          <TableCell width='33%' sx={{ p: 1 }}>
+          <TableCell width='30%' sx={{ p: 1 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
-              {variable.expression.substring(0, 45) + (variable.expression.length > 45 ? '...' : '')}
+              {variable.expression.substring(0, 20) + (variable.expression.length > 20 ? '...' : '')}
               <IconButton><Edit color={expanded ? 'primary' : 'inherit'} onClick={() => setExpanded(!expanded)} /></IconButton>
             </Box>
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
-            <DescriptionField />
+          <TableCell width='20%' sx={{ p: 1 }}>
+            <DescriptionField variable={variable} />
           </TableCell>
-          <TableCell width='5%' align='center' sx={{ p: 1 }}>
+          <TableCell width='10%' align='center' sx={{ p: 1 }}>
             <UsersField variable={variable} onClose={onClose} />
           </TableCell>
         </TableRow>

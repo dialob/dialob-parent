@@ -30,7 +30,8 @@ class DialobSecurityAwsAutoConfigurationTest {
   public void shouldNotSetupTypeIfProfileAWSNoSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
-        "spring.profiles.active=")
+        "spring.profiles.active=",
+        "dialob.security.enabled=true")
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,
         DialobSecuritySpringAutoConfiguration.class)
@@ -46,7 +47,9 @@ class DialobSecurityAwsAutoConfigurationTest {
   public void shouldSetupTypesIfProfileAWSIsSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
-        "spring.profiles.active=aws"
+        "spring.profiles.active=aws",
+        "dialob.security.enabled=true",
+        "dialob.security.groups-claim=true"
       )
       .withUserConfiguration(
         DialobSecurityAwsAutoConfiguration.class,

@@ -60,4 +60,7 @@ public interface Variable extends Serializable {
   @Nullable
   String getContextType();
 
+  @Nullable
+  String getDescription();
+
 }

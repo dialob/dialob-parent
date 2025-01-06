@@ -36,13 +36,17 @@ export const generateValueSetId = (state: ComposerState, prefix = 'vs'): string 
 }
 
 const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks): void => {
+  if (state.data[parentItemId] === undefined) {
+    return;
+  }
+
   const id = generateItemId(state, itemTemplate);
   const newItem = {
     ...itemTemplate,
     id: generateItemId(state, itemTemplate),
   }
   state.data[id] = Object.assign(newItem, { id });
-  // TODO: Sanity check if parentItemId exists in form
+
   const newIndex = state.data[parentItemId].items?.findIndex(i => i === afterItemId);
   if (newIndex === undefined) {
     state.data[parentItemId].items = [id];
@@ -60,8 +64,10 @@ const addItem = (state: ComposerState, itemTemplate: DialobItemTemplate, parentI
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateItem = (state: ComposerState, itemId: string, attribute: string, value: any, language?: string): void => {
-  // TODO: Sanity: item exists
-  // TODO: Sanity: attribute is not an id or type
+  if (state.data[itemId] === undefined || attribute === 'id' || attribute === 'type') {
+    return;
+  }
+
   if (language) {
     const cleanedValue = cleanString(value);
     if (state.data[itemId][attribute] === undefined) {
@@ -116,7 +122,9 @@ const convertItem = (state: ComposerState, itemId: string, itemTemplate: DialobI
 }
 
 const deleteItem = (state: ComposerState, itemId: string): void => {
-  // TODO: Sanity: item exists
+  if (state.data[itemId] === undefined) {
+    return;
+  }
 
   // Collect item and children to delete
   const collect = (target: string): string[] => {
@@ -161,7 +169,10 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setItemProp = (state: ComposerState, itemId: string, key: string, value: any): void => {
-  // TODO: Sanity: item exists
+  if (state.data[itemId] === undefined) {
+    return;
+  }
+
   if (state.data[itemId].props === undefined) {
     state.data[itemId].props = { [key]: value };
   } else {
@@ -173,7 +184,10 @@ const setItemProp = (state: ComposerState, itemId: string, key: string, value: a
 }
 
 const deleteItemProp = (state: ComposerState, itemId: string, key: string): void => {
-  // TODO: Sanity item exists
+  if (state.data[itemId] === undefined) {
+    return;
+  }
+
   const props = state.data[itemId]?.props;
   if (props !== undefined) {
     delete props[key];
@@ -185,12 +199,15 @@ const deleteItemProp = (state: ComposerState, itemId: string, key: string): void
 }
 
 const createValidation = (state: ComposerState, itemId: string, rule?: ValidationRule): void => {
+  if (state.data[itemId] === undefined) {
+    return;
+  }
+
   const cleanedRule: ValidationRule = {
     message: rule?.message ? cleanLocalizedString(rule.message) : {},
     rule: rule?.rule ? rule.rule : ''
   }
 
-  // TODO: Sanity: item exists
   if (state.data[itemId].validations === undefined) {
     state.data[itemId].validations = [cleanedRule];
   } else {
@@ -237,8 +254,10 @@ const deleteValidation = (state: ComposerState, itemId: string, index: number): 
 }
 
 const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string): void => {
-  // TODO: Sanity: item exists
-  // TODO: Ergonomics: fromParent and fromIndex can be computed by itemId and not needed in function parameters
+  if (state.data[itemId] === undefined) {
+    return;
+  }
+
   state.data[fromParent]?.items?.splice(fromIndex, 1);
   if (state.data[toParent].items === undefined) {
     state.data[toParent].items = [itemId];
@@ -248,7 +267,9 @@ const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toInd
 }
 
 const createValueSet = (state: ComposerState, itemId: string | null, entries?: ValueSetEntry[]): void => {
-  // TODO: Sanity: item exists if not null
+  if (itemId && state.data[itemId] === undefined) {
+    return;
+  }
 
   const cleanedEntries: ValueSetEntry[] = entries ? entries.map(e => ({ ...e, label: cleanLocalizedString(e.label) })) : [];
 
@@ -280,8 +301,6 @@ const createValueSet = (state: ComposerState, itemId: string | null, entries?: V
 }
 
 const setValueSetEntries = (state: ComposerState, valueSetId: string, entries: ValueSetEntry[]): void => {
-  // TODO: Sanity: valueSet exists
-
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
@@ -292,8 +311,6 @@ const setValueSetEntries = (state: ComposerState, valueSetId: string, entries: V
 }
 
 const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: ValueSetEntry): void => {
-  // TODO Sanity: valueSet extists
-
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
@@ -308,12 +325,9 @@ const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: Valu
 }
 
 const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: number, entry: ValueSetEntry): void => {
-  // TODO Sanity: ValueSet exists
-  // TODO Sanity: Entry index exists
-
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1) {
+    if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined) {
       state.valueSets[vsIdx].entries![index] = entry;
     }
   }
@@ -322,7 +336,7 @@ const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
 const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, index: number, text: string | null, language: string): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1 && text !== null) {
+    if (vsIdx > -1 && text !== null && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined && state.valueSets[vsIdx].entries![index].label !== undefined) {
       const cleanedText = cleanString(text);
       state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
     }
@@ -330,24 +344,18 @@ const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, inde
 }
 
 const deleteValueSetEntry = (state: ComposerState, valueSetId: string, index: number): void => {
-  // TODO Sanity: ValueSet exists
-  // TODO Sanity: Entry index exists
-
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1) {
+    if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
       state.valueSets[vsIdx].entries!.splice(index, 1);
     }
   }
 }
 
 const moveValueSetEntry = (state: ComposerState, valueSetId: string, from: number, to: number): void => {
-  // TODO Sanity: ValueSet exists
-  // TODO Sanity: Entry index exists
-
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1) {
+    if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
       const newIndex = to > state.valueSets[vsIdx].entries!.length ? state.valueSets[vsIdx].entries!.length - 1 : to;
       state.valueSets[vsIdx].entries!.splice(newIndex, 0, state.valueSets[vsIdx].entries!.splice(from, 1)[0]);
     }
@@ -378,8 +386,9 @@ const deleteLocalValueSet = (state: ComposerState, valueSetId: string): void => 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setMetadataValue = (state: ComposerState, attr: string, value: any): void => {
-  // TODO: Sanity: Prevent overwriting certain critical attributes
-
+  if (attr === 'tenantId' || attr === 'created' || attr === 'creator') {
+    return;
+  }
   state.metadata[attr] = value;
 }
 
@@ -449,6 +458,15 @@ const updateVariablePublishing = (state: ComposerState, variableId: string, publ
     const varIdx = state.variables.findIndex(v => v.name === variableId);
     if (varIdx > -1) {
       (state.variables[varIdx]).published = published;
+    }
+  }
+}
+
+const updateVariableDescription = (state: ComposerState, variableId: string, description: string): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => v.name === variableId);
+    if (varIdx > -1) {
+      (state.variables[varIdx]).description = description;
     }
   }
 }
@@ -621,6 +639,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       updateExpressionVariable(state, action.variableId, action.expression);
     } else if (action.type === 'updateVariablePublishing') {
       updateVariablePublishing(state, action.variableId, action.published);
+    } else if (action.type === 'updateVariableDescription') {
+      updateVariableDescription(state, action.variableId, action.description);
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
     } else if (action.type === 'moveVariable') {

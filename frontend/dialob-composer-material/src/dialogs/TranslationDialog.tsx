@@ -12,7 +12,7 @@ const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const docsUrl = useDocs('translations');
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='xl'>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.translations.title' />
         <Button variant='outlined' endIcon={<Help />}

@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { Box, Button } from '@mui/material';
 import { Help } from '@mui/icons-material';
 import { useDocs } from '../../utils/DocsUtils';
+import { DefaultValueEditor } from './DefaultValueEditor';
 
 const RulesEditor: React.FC = () => {
   const docsUrl = useDocs('del');
@@ -20,6 +21,7 @@ const RulesEditor: React.FC = () => {
       <RuleEditor type='requirement' />
       <RuleEditor type='canaddrow' />
       <RuleEditor type='canremoverow' />
+      <DefaultValueEditor />
     </>
   );
 }

@@ -13,6 +13,7 @@ import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
 import { SaveResult } from "../backend/types";
 import { useDocs } from "../utils/DocsUtils";
+import CopyTagDialog from "./CopyTagDialog";
 
 
 const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
@@ -22,9 +23,10 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   const { setErrors, clearErrors } = useEditor();
   const docsUrl = useDocs('versioning');
   const [tags, setTags] = React.useState<ComposerTag[]>([]);
+  const [tagToCopy, setTagToCopy] = React.useState<ComposerTag>();
 
   const LATEST_TAG: ComposerTag = React.useMemo(() => ({
-    formId: form._id, name: 'LATEST', formName: form.name, description: 'Latest version',
+    formId: form._id + '', name: 'LATEST', formName: form.name, description: 'Latest version',
     created: new Date().toISOString(), type: 'NORMAL'
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), []);
@@ -37,7 +39,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   }, [open]);
 
   const handleLoadVersion = (tag: ComposerTag) => {
-    loadForm(tag.formId, tag.name).then(form => {
+    loadForm(tag.formId).then(form => {
       if (tag.name === 'LATEST') {
         setForm(form);
         saveForm(form, true)
@@ -68,77 +70,83 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
     if (tag.name === 'LATEST') {
       downloadForm(form);
     } else {
-      loadForm(tag.formId, tag.name).then(form => {
+      loadForm(tag.formId).then(form => {
         downloadForm(form);
       });
     }
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
-      <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
-        <FormattedMessage id='dialogs.versioning.title' />
-        <Button variant='outlined' endIcon={<Help />}
-          onClick={() => window.open(docsUrl, "_blank")}>
-          <FormattedMessage id='buttons.help' />
-        </Button>
-      </DialogTitle>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
-        <Box sx={{ p: 3 }}>
-          <Typography variant='h5' fontWeight='bold'><FormattedMessage id='dialogs.versioning.list' /></Typography>
-          <Typography sx={{ my: 2 }}><FormattedMessage id='dialogs.versioning.editable.desc' /></Typography>
-          <BorderedTable>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ p: 1 }}>
-                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.name' /></Typography>
-                </TableCell>
-                <TableCell sx={{ p: 1 }}>
-                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.description' /></Typography>
-                </TableCell>
-                <TableCell sx={{ p: 1 }}>
-                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.created' /></Typography>
-                </TableCell>
-                <TableCell align='center' sx={{ p: 1 }}>
-                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.actions' /></Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {[LATEST_TAG, ...tags].map(tag => (
-                <TableRow key={tag.formId} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
-                  <TableCell>
-                    <Tooltip
-                      title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.formId)}>
-                        <Typography><FormattedMessage id='dialogs.versioning.copy.id' /></Typography>
-                      </Button>}
-                      placement='left'>
-                      <Box sx={{ display: 'flex', p: 1 }}>
-                        {tag.name === 'LATEST' ? <EditNote fontSize='medium' color='primary' sx={{ mr: 1 }} /> : <LocalOffer fontSize='small' sx={{ mr: 1 }} />}
-                        <Typography>{tag.name}</Typography>
-                      </Box>
-                    </Tooltip>
+    <>
+      <CopyTagDialog tag={tagToCopy} onClose={() => setTagToCopy(undefined)} />
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
+        <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
+          <FormattedMessage id='dialogs.versioning.title' />
+          <Button variant='outlined' endIcon={<Help />}
+            onClick={() => window.open(docsUrl, "_blank")}>
+            <FormattedMessage id='buttons.help' />
+          </Button>
+        </DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '70vh' }}>
+          <Box sx={{ p: 3 }}>
+            <Typography variant='h5' fontWeight='bold'><FormattedMessage id='dialogs.versioning.list' /></Typography>
+            <Typography sx={{ my: 2 }}><FormattedMessage id='dialogs.versioning.editable.desc' /></Typography>
+            <BorderedTable>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ p: 1 }}>
+                    <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.name' /></Typography>
                   </TableCell>
-                  <TableCell sx={{ p: 1 }}><Typography>{tag.description}</Typography></TableCell>
-                  <TableCell sx={{ p: 1 }}><Typography>{new Date(tag.created).toLocaleString('en-GB')}</Typography></TableCell>
-                  <TableCell align='center'>
-                    <Button variant='outlined' color='primary'
-                      disabled={tag.name === form._tag || (form._tag === undefined && tag.name === 'LATEST')}
-                      onClick={() => handleLoadVersion(tag)}>
-                      <FormattedMessage id='buttons.activate' />
-                    </Button>
-                    <IconButton sx={{ ml: 1 }} onClick={() => handleDownload(tag)}><Download color='success' /></IconButton>
+                  <TableCell sx={{ p: 1 }}>
+                    <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.description' /></Typography>
+                  </TableCell>
+                  <TableCell sx={{ p: 1 }}>
+                    <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.created' /></Typography>
+                  </TableCell>
+                  <TableCell align='center' sx={{ p: 1 }}>
+                    <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.actions' /></Typography>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </BorderedTable>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
-      </DialogActions>
-    </Dialog>
+              </TableHead>
+              <TableBody>
+                {[LATEST_TAG, ...tags].map(tag => (
+                  <TableRow key={tag.formId} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
+                    <TableCell>
+                      <Tooltip
+                        title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.formId)}>
+                          <Typography><FormattedMessage id='dialogs.versioning.copy.id' /></Typography>
+                        </Button>}
+                        placement='left'>
+                        <Box sx={{ display: 'flex', p: 1 }}>
+                          {tag.name === 'LATEST' ? <EditNote fontSize='medium' color='primary' sx={{ mr: 1 }} /> : <LocalOffer fontSize='small' sx={{ mr: 1 }} />}
+                          <Typography>{tag.name}</Typography>
+                        </Box>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell sx={{ p: 1 }}><Typography>{tag.description}</Typography></TableCell>
+                    <TableCell sx={{ p: 1 }}><Typography>{new Date(tag.created).toLocaleString('en-GB')}</Typography></TableCell>
+                    <TableCell align='center'>
+                      <Button variant='outlined' color='primary'
+                        disabled={tag.name === form._tag || (form._tag === undefined && tag.name === 'LATEST')}
+                        onClick={() => handleLoadVersion(tag)}>
+                        <FormattedMessage id='buttons.activate' />
+                      </Button>
+                      <IconButton sx={{ ml: 1 }} onClick={() => handleDownload(tag)}><Download color='success' /></IconButton>
+                      <Tooltip title={<FormattedMessage id='dialogs.versioning.copy.new' />} placement="right">
+                        <IconButton onClick={() => setTagToCopy(tag)}><ContentCopy /></IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </BorderedTable>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }
 

@@ -4,7 +4,7 @@ import {
   Dialog, DialogTitle, DialogContent, Button, Box, Tabs, Tab,
   DialogActions, Tooltip, styled, TextField, IconButton
 } from '@mui/material';
-import { Rule, Edit, EditNote, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel, Help } from "@mui/icons-material";
+import { Rule, Edit, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel, Help } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../defaults';
 import { ConversionMenu } from '../items/ItemComponents';
@@ -99,7 +99,7 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl'>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
           helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
@@ -139,7 +139,6 @@ const ItemOptionsDialog: React.FC = () => {
               </Tooltip>
             } value='rules' />
             {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.validations' />}><Rule /></Tooltip>} value='validations' />}
-            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.default' />}><EditNote /></Tooltip>} value='defaults' />}
             {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.choices' />}><List /></Tooltip>} value='choices' />}
             <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.properties' />}><Dns /></Tooltip>} value='properties' />
           </Tabs>
@@ -148,7 +147,6 @@ const ItemOptionsDialog: React.FC = () => {
             {activeTab === 'description' && <Editors.Description />}
             {activeTab === 'rules' && <Editors.Rules />}
             {activeTab === 'validations' && <Editors.Validations />}
-            {activeTab === 'defaults' && <Editors.Defaults />}
             {activeTab === 'choices' && <Editors.Choice />}
             {activeTab === 'properties' && <Editors.Properties />}
           </Box>

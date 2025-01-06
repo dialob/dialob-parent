@@ -48,25 +48,25 @@ const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     <BorderedTable sx={{ tableLayout: 'fixed' }}>
       <TableHead>
         <TableRow>
-          <TableCell width='5%' align='center' sx={{ p: 1 }}>
-            <IconButton sx={{ p: 1, m: 1 }} onClick={handleAdd}><Add color='success' /></IconButton>
+          <TableCell width='5%' align='center' sx={{ p: 0.5 }}>
+            <IconButton sx={{ p: 0.5 }} onClick={handleAdd}><Add color='success' /></IconButton>
           </TableCell>
-          <TableCell width='7%' sx={{ p: 1 }}>
+          <TableCell width='10%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.published' /></Typography>
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
+          <TableCell width='25%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.id' /></Typography>
           </TableCell>
-          <TableCell width='8%' sx={{ p: 1 }}>
+          <TableCell width='10%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.type' /></Typography>
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
+          <TableCell width='20%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.default' /></Typography>
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
+          <TableCell width='20%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.description' /></Typography>
           </TableCell>
-          <TableCell width='5%' align='center' sx={{ p: 1 }}>
+          <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.users' /></Typography>
           </TableCell>
         </TableRow>

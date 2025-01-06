@@ -1,22 +1,147 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BackendTypes, DefaultTypes, DialobComposer, DialobTypes, Editor, SimpleField } from '@dialob/dialob-composer-material';
+import { BackendTypes, DefaultTypes, DialobComposer, PropEditors, SimpleField, Group, Note } from '@dialob/dialob-composer-material';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { siteTheme } from './siteTheme';
-import { Circle, Phone } from '@mui/icons-material';
+import { Circle, Phone, CropSquare, BlurLinear, TableRows, MoreHoriz, Place, TextFormat, Schedule, CalendarMonth, Tag, Euro, CheckBox, KeyboardArrowDown, List, ErrorOutline, Note as NoteIcon } from '@mui/icons-material';
 
 const ITEM_EDITORS: DefaultTypes.ItemConfig =  {
   defaultIcon: Circle,
   items: [
-      {
-      matcher: (item: DialobTypes.DialobItem) => item.type === 'text' && item.view === 'phoneNumber',
+    {
+      matcher: item => item.type === 'text' && item.view === 'phoneNumber',
       component: SimpleField,
       props: {
         icon: Phone,
         placeholder: 'placeholders.phone'
       }
     },
-  ],
+		{
+			matcher: item => item.type === 'group',
+			component: Group,
+			props: {
+				icon: CropSquare,
+				placeholder: 'placeholders.group',
+				treeCollapsible: true,
+			}
+		},
+		{
+			matcher: item => item.type === 'surveygroup',
+			component: Group,
+			props: {
+				icon: BlurLinear,
+				placeholder: 'placeholders.surveygroup',
+				treeCollapsible: true
+			}
+		},
+		{
+			matcher: item => item.type === 'rowgroup',
+			component: Group,
+			props: {
+				icon: TableRows,
+				placeholder: 'placeholders.rowgroup',
+				treeCollapsible: true
+			}
+		},
+		{
+			matcher: item => item.type === 'survey',
+			component: SimpleField,
+			props: {
+				icon: MoreHoriz,
+				placeholder: 'placeholders.survey'
+			}
+		},
+		{
+			matcher: item => item.view === 'address',
+			component: SimpleField,
+			props: {
+				icon: Place,
+				placeholder: 'placeholders.address'
+			}
+		},
+		{
+			matcher: item => item.type === 'text',
+			component: SimpleField,
+			props: {
+				icon: TextFormat,
+				placeholder: 'placeholders.text'
+			}
+		},
+		{
+			matcher: item => item.type === 'time',
+			component: SimpleField,
+			props: {
+				icon: Schedule,
+				placeholder: 'placeholders.time'
+			}
+		},
+		{
+			matcher: item => item.type === 'date',
+			component: SimpleField,
+			props: {
+				icon: CalendarMonth,
+				placeholder: 'placeholders.date'
+			}
+		},
+		{
+			matcher: item => item.type === 'number',
+			component: SimpleField,
+			props: {
+				icon: Tag,
+				placeholder: 'placeholders.number'
+			}
+		},
+		{
+			matcher: item => item.type === 'decimal',
+			component: SimpleField,
+			props: {
+				icon: Euro,
+				placeholder: 'placeholders.decimal'
+			}
+		},
+		{
+			matcher: item => item.type === 'boolean',
+			component: SimpleField,
+			props: {
+				icon: CheckBox,
+				placeholder: 'placeholders.boolean'
+			}
+		},
+		{
+			matcher: item => item.type === 'list',
+			component: SimpleField,
+			props: {
+				icon: KeyboardArrowDown,
+				placeholder: 'placeholders.list'
+			}
+		},
+		{
+			matcher: item => item.type === 'multichoice',
+			component: SimpleField,
+			props: {
+				icon: List,
+				placeholder: 'placeholders.multichoice'
+			}
+		},
+		{
+			matcher: item => item.type === 'note' && item.view === 'validation',
+			component: Note,
+			props: {
+				icon: ErrorOutline,
+				placeholder: 'placeholders.validation',
+				style: 'error'
+			}
+		},
+		{
+			matcher: item => item.type === 'note',
+			component: Note,
+			props: {
+				icon: NoteIcon,
+				placeholder: 'placeholders.note',
+				style: 'normal'
+			}
+		}
+	]
 };
 
 export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
@@ -29,7 +154,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           title: 'Group',
           propEditors: {
             columns: {
-              component: Editor,
+              component: PropEditors.InputProp,
               props: {
                 type: 'number',
                 min: 1,
@@ -99,7 +224,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           convertible: ['text', 'textBox'],
           propEditors: {
             country: {
-              component: Editor,
+              component: PropEditors.InputProp,
               props: {
                 allowAdditions: true,
                 options: [
@@ -168,7 +293,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           title: "Phone number",
           config: {
             type: 'text',
-            view: 'text',
+            view: 'phoneNumber',
             validations: [{
               message: {
                 "en": "Phone number format is incorrect, format is optional country code starting with +, optional area code in parenthesis and 4-15 numbers",
@@ -184,7 +309,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
           title: "Optional phone number",
           config: {
             type: 'text',
-            view: 'text',
+            view: 'phoneNumber',
             validations: [{
               message: {
                 "en": "Phone number format is incorrect, format is optional country code starting with +, optional area code in parenthesis and 4-15 numbers",
@@ -249,4 +374,3 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: BackendType
 };
 
 window.renderDialobComposer = renderDialobComposer;
-

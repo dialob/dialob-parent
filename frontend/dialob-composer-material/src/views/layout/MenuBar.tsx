@@ -103,7 +103,7 @@ const MenuBar: React.FC = () => {
     if (contextVariables && contextVariables.length > 0) {
       setPreviewDialogOpen(true);
     } else {
-      createPreviewSession(form._id, editor.activeFormLanguage).then((response) => {
+      createPreviewSession(form._id + '', editor.activeFormLanguage).then((response) => {
         const result = response.result as CreateSessionResult;
         if (response.success) {
           const win = window.open(`${config.transport.previewUrl}/${result._id}`);
@@ -190,7 +190,7 @@ const MenuBar: React.FC = () => {
             <MenuItem onClick={handleOpenVersioningDialog}>
               <FormattedMessage id='menus.versions.manage' />
             </MenuItem>
-            <MenuItem onClick={handleOpenCreateTagDialog}>
+            <MenuItem onClick={handleOpenCreateTagDialog} disabled={status === 'FATAL' || status === 'ERROR' || currentTag !== 'LATEST'}>
               <FormattedMessage id='menus.versions.create' />
             </MenuItem>
           </Menu>

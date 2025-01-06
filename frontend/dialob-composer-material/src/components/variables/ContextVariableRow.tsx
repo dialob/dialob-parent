@@ -24,25 +24,25 @@ const ContextVariableRow: React.FC<VariableProps> = ({ item, provided, onClose }
       {...provided.dragHandleProps}>
       <TableBody>
         <TableRow key={variable.name} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
-          <TableCell width='5%' align='center' sx={{ p: 1 }}>
+          <TableCell width='5%' align='center' sx={{ p: 0.5 }}>
             <DeleteButton variable={variable} />
           </TableCell>
-          <TableCell width='7%' align='center' sx={{ p: 1 }}>
+          <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
             <PublishedSwitch variable={variable} />
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
+          <TableCell width='25%' sx={{ p: 0.5 }}>
             <NameField variable={variable} />
           </TableCell>
-          <TableCell width='8%' sx={{ p: 1 }}>
+          <TableCell width='10%' sx={{ p: 0.5 }}>
             <ContextTypeMenu variable={variable} />
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
+          <TableCell width='20%' sx={{ p: 0.5 }}>
             <DefaultValueField variable={variable} />
           </TableCell>
-          <TableCell width='25%' sx={{ p: 1 }}>
-            <DescriptionField />
+          <TableCell width='20%' sx={{ p: 0.5 }}>
+            <DescriptionField variable={variable} />
           </TableCell>
-          <TableCell width='5%' align='center' sx={{ p: 1 }}>
+          <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
             <UsersField variable={variable} onClose={onClose} />
           </TableCell>
         </TableRow>

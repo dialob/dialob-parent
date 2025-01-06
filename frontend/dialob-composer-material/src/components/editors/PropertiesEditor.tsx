@@ -6,8 +6,8 @@ import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import PropItem from '../PropItem';
 import { useBackend } from '../../backend/useBackend';
-import { findItemTypeConfig } from '../../items/ItemComponents';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
+import { findItemTypeConfig } from '../../utils/ConfigUtils';
 
 export type PropValue = string | string[] | boolean;
 
@@ -71,7 +71,7 @@ const PropertiesEditor: React.FC = () => {
           <Typography sx={{ px: 2 }}><FormattedMessage id='dialogs.options.properties.add.short' /></Typography>
         </Button>
       </Box>
-      <TableContainer>
+      {props.length > 0 && <TableContainer>
         <BorderedTable>
           <TableHead>
             <TableRow>
@@ -84,7 +84,7 @@ const PropertiesEditor: React.FC = () => {
             {props.map(prop => <PropItem key={prop.key} prop={prop} propEditor={propEditors && propEditors[prop.key]} onEdit={handleEditProp} onDelete={handleDeleteProp} />)}
           </TableBody>
         </BorderedTable>
-      </TableContainer>
+      </TableContainer>}
     </Box>
   );
 }

@@ -6,6 +6,7 @@ export type Variable = {
   name: string;
   published?: boolean;
   expression: string;
+  description?: string;
 };
 
 export type ContextVariableType = 'text' | 'number' | 'decimal' | 'boolean' | 'date' | 'time';
@@ -17,6 +18,7 @@ export type ContextVariable = {
   defaultValue?: any;
   context: boolean;
   contextType: ContextVariableType | string;
+  description?: string;
 };
 
 export type ValueSetEntry = {
@@ -84,8 +86,8 @@ export type ComposerTag = {
 }
 
 export type ComposerState = {
-  _id: string;
-  _rev: string;
+  _id?: string;
+  _rev?: string;
   _tag?: string;
   name: string;
   data: {

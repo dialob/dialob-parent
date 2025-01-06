@@ -45,7 +45,7 @@ const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open,
 
   const initPreview = () => {
     const context: PreviewSessionContext = Object.entries(contextValues || {}).map(([name, value]) => ({ id: name, value }));
-    createPreviewSession(form._id, editor.activeFormLanguage, context).then((response) => {
+    createPreviewSession(form._id + '', editor.activeFormLanguage, context).then((response) => {
       const result = response.result as CreateSessionResult;
       if (response.success) {
         const win = window.open(`${config.transport.previewUrl}/${result._id}`);
@@ -62,7 +62,7 @@ const PreviewDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open,
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.preview.title' />
       </DialogTitle>

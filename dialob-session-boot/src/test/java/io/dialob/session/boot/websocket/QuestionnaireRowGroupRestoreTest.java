@@ -56,7 +56,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
   "dialob.db.database-type=none",
   "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
-  "dialob.session.cache.type=LOCAL"
+  "dialob.session.cache.type=LOCAL",
+  "dialob.security.groups-claim=true"
 }, classes = {
   Application.class,
   ApplicationAutoConfiguration.class,

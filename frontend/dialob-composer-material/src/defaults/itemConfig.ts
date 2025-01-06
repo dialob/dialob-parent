@@ -1,7 +1,9 @@
-import Items from "../items";
+import { Group } from "../items/Group";
+import { SimpleField } from "../items/SimpleField";
+import { Note } from "../items/Note";
 import { 
   BlurLinear, CalendarMonth, CheckBox, Circle, CropSquare, ErrorOutline, Euro, KeyboardArrowDown, 
-  List, MoreHoriz, Note, Place, Schedule, TableRows, Tag, TextFormat 
+  List, MoreHoriz, Note as NoteIcon, Place, Schedule, TableRows, Tag, TextFormat 
 } from "@mui/icons-material";
 import { ItemConfig } from "./types";
 
@@ -10,7 +12,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 	items: [
 		{
 			matcher: item => item.type === 'group',
-			component: Items.Group,
+			component: Group,
 			props: {
 				icon: CropSquare,
 				placeholder: 'placeholders.group',
@@ -19,7 +21,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'surveygroup',
-			component: Items.Group,
+			component: Group,
 			props: {
 				icon: BlurLinear,
 				placeholder: 'placeholders.surveygroup',
@@ -28,7 +30,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'rowgroup',
-			component: Items.Group,
+			component: Group,
 			props: {
 				icon: TableRows,
 				placeholder: 'placeholders.rowgroup',
@@ -37,7 +39,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'survey',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: MoreHoriz,
 				placeholder: 'placeholders.survey'
@@ -45,7 +47,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.view === 'address',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: Place,
 				placeholder: 'placeholders.address'
@@ -53,7 +55,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'text',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: TextFormat,
 				placeholder: 'placeholders.text'
@@ -61,7 +63,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'time',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: Schedule,
 				placeholder: 'placeholders.time'
@@ -69,7 +71,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'date',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: CalendarMonth,
 				placeholder: 'placeholders.date'
@@ -77,7 +79,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'number',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: Tag,
 				placeholder: 'placeholders.number'
@@ -85,7 +87,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'decimal',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: Euro,
 				placeholder: 'placeholders.decimal'
@@ -93,7 +95,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'boolean',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: CheckBox,
 				placeholder: 'placeholders.boolean'
@@ -101,7 +103,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'list',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: KeyboardArrowDown,
 				placeholder: 'placeholders.list'
@@ -109,7 +111,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'multichoice',
-			component: Items.SimpleField,
+			component: SimpleField,
 			props: {
 				icon: List,
 				placeholder: 'placeholders.multichoice'
@@ -117,7 +119,7 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'note' && item.view === 'validation',
-			component: Items.Note,
+			component: Note,
 			props: {
 				icon: ErrorOutline,
 				placeholder: 'placeholders.validation',
@@ -126,9 +128,9 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
 		},
 		{
 			matcher: item => item.type === 'note',
-			component: Items.Note,
+			component: Note,
 			props: {
-				icon: Note,
+				icon: NoteIcon,
 				placeholder: 'placeholders.note',
 				style: 'normal'
 			}

@@ -10,6 +10,7 @@ export const useBackend = () => {
     config: backendContext.config,
     loadForm: backendContext.loadForm,
     saveForm: backendContext.saveForm,
+    createForm: backendContext.createForm,
     duplicateItem: backendContext.duplicateItem,
     createTag: backendContext.createTag,
     getTags: backendContext.getTags,

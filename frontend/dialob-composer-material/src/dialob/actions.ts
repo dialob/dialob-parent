@@ -41,6 +41,7 @@ export type ComposerAction =
   | { type: 'updateContextVariable', variableId: string, defaultValue?: any, contextType?: ContextVariableType | string }
   | { type: 'updateExpressionVariable', variableId: string, expression: string }
   | { type: 'updateVariablePublishing', variableId: string, published: boolean }
+  | { type: 'updateVariableDescription', variableId: string, description: string }
   | { type: 'deleteVariable', variableId: string }
   | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
 
