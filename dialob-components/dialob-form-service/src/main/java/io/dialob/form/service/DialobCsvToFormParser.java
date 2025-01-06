@@ -148,7 +148,7 @@ public class DialobCsvToFormParser implements CsvToFormParser {
         String type = validateAndMapType(record.get("type"));
 
         // Extract or generate ID
-        String id = validateAndGenerateId(record.get("id"), type, typeCounters);
+        String id = validateAndGenerateId(record.get("id"), type, typeCounters, formItems);
 
         // Extract translations for each language
         Map<String, String> labels = extractLabels(record, languages);
@@ -211,11 +211,14 @@ public class DialobCsvToFormParser implements CsvToFormParser {
     return mappedType;
   }
 
-  private String validateAndGenerateId(String id, String type, Map<String, Integer> typeCounters) {
+  private String validateAndGenerateId(String id, String type, Map<String, Integer> typeCounters, Map<String, FormItem> formItems) {
     if (id == null || id.isBlank()) {
       int count = typeCounters.getOrDefault(type, 0) + 1;
       typeCounters.put(type, count);
       return type + count;
+    }
+    if (formItems.containsKey(id)) {
+      throw new CsvParsingException("Duplicate form item ID found: " + id + ". Item ID's must be unique.");
     }
     return id;
   }
