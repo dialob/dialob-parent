@@ -8,7 +8,7 @@ import { Spinner } from './components/Spinner';
 import { checkHttpResponse, handleRejection } from './middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, Metadata } from './types';
 import {
-  addAdminFormConfiguration, editAdminFormConfiguration, getAdminFormConfiguration,
+  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormConfiguration,
   getAdminFormConfigurationList, getAdminFormConfigurationTags
 } from './backend';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -21,6 +21,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { DialobAdminConfig } from './index';
 import CustomDatePicker from './components/CustomDatePicker';
 import SortField from './components/SortField';
+
+const CSV_PARSING_ERROR = "CSV_PARSING_ERROR";
 
 export interface DialobAdminViewProps {
   config: DialobAdminConfig;
@@ -38,8 +40,21 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     field: "label",
     direction: 'asc',
   });
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const intl = useIntl();
+  const fileInputRefJson = useRef<HTMLInputElement | null>(null);
+  const fileInputRefCsv = useRef<HTMLInputElement | null>(null);
+
+  const handleJsonUploadClick = () => {
+    if (fileInputRefJson.current) {
+      fileInputRefJson.current.click();
+    }
+  };
+
+  const handleCsvUploadClick = () => {
+    if (fileInputRefCsv.current) {
+      fileInputRefCsv.current.click();
+    }
+  };
 
   const handleCreateModalClose = () => {
     setSelectedFormConfiguration(undefined);
@@ -158,13 +173,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     fetchForms();
   }, [formConfigurations]);
 
-  const handleUploadClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const uploadDialogForm = (e: any) => {
+  const uploadJsonDialogForm = (e: any) => {
     const file = e.target.files[0];
 
     const handleFileRead = async (event: ProgressEvent<FileReader>) => {
@@ -221,8 +230,66 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
       reader.readAsText(file);
     }
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    if (fileInputRefJson.current) {
+      fileInputRefJson.current.value = '';
+    }
+  };
+
+  const uploadCsvDialogForm = (e: any) => {
+    const file = e.target.files[0];
+
+    const handleFileRead = async (event: ProgressEvent<FileReader>) => {
+      const result = event.target?.result;
+      let response;
+      if (typeof result === 'string') {
+        try {
+          response = await addAdminFormConfigurationFromCsv(result, config);
+          await checkHttpResponse(response, config.setLoginRequired);
+
+          const responseData = await response.json();
+          if (showNotification) {
+            showNotification(`Uploaded CSV form successfully. ID: ${responseData?.id}`, 'success');
+          }
+          setFetchAgain((prev) => !prev);
+        } catch (ex: any) {
+          if (response) {
+            const responseData = await response.json();
+            const errorMessage = responseData?.error === "CSV_PARSING_ERROR"
+              ? responseData?.reason
+              : responseData?.message;
+
+            if (errorMessage) {
+              console.error(`Error while uploading a new form from CSV: ${errorMessage}`);
+              if (showNotification) {
+                showNotification(`Error while uploading a new form from CSV: ${errorMessage}`, 'error');
+              }
+            }
+          } else {
+            console.error(`Error while uploading a new form from CSV: ${ex}`);
+            if (showNotification) {
+              showNotification(`Error while uploading a new form from CSV: ${ex}`, 'error');
+            }
+          }
+          handleRejection(ex, config.setTechnicalError);
+        }
+      }
+    };
+
+    const handleFileError = () => {
+      if (showNotification) {
+        showNotification(`Error reading file.`, 'error');
+      }
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = handleFileRead;
+      reader.onerror = handleFileError;
+      reader.readAsText(file);
+    }
+
+    if (fileInputRefCsv.current) {
+      fileInputRefCsv.current.value = '';
     }
   };
 
@@ -274,19 +341,31 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography sx={{ mb: 4 }} variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
             <Box>
-              <Tooltip title={intl.formatMessage({ id: "upload" })} placement='top-end' arrow>
-                <Button onClick={handleUploadClick} sx={{ width: '50px', height: '50px' }}>
-                  <SvgIcon fontSize="small" >
-                    <FileUploadIcon />
-                  </SvgIcon>
-                </Button>
-              </Tooltip>
+              <Button onClick={handleJsonUploadClick}>
+                <SvgIcon fontSize="small" >
+                  <FileUploadIcon />
+                </SvgIcon>
+                {intl.formatMessage({ id: "upload.json" })}
+              </Button>
               <input
-                ref={fileInputRef}
+                ref={fileInputRefJson}
                 type='file'
                 accept='.json'
                 hidden
-                onChange={(e) => uploadDialogForm(e)}
+                onChange={(e) => uploadJsonDialogForm(e)}
+              />
+              <Button onClick={handleCsvUploadClick} sx={{ ml: 1 }}>
+                <SvgIcon fontSize="small">
+                  <FileUploadIcon />
+                </SvgIcon>
+                {intl.formatMessage({ id: "upload.csv" })}
+              </Button>
+              <input
+                ref={fileInputRefCsv}
+                type='file'
+                accept='.csv'
+                hidden
+                onChange={(e) => uploadCsvDialogForm(e)}
               />
             </Box>
           </Box>

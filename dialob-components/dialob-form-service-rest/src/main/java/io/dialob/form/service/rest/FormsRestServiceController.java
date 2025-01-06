@@ -15,15 +15,42 @@
  */
 package io.dialob.form.service.rest;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.form.*;
+
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormPutResponse;
+import io.dialob.api.form.FormTag;
+import io.dialob.api.form.FormValidationError;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.ImmutableFormPutResponse;
+import io.dialob.api.form.ImmutableFormTag;
 import io.dialob.api.rest.ImmutableResponse;
 import io.dialob.api.rest.Response;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
+import io.dialob.form.service.CsvParsingException;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.form.service.api.repository.FormListItem;
+import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.integration.api.NodeId;
@@ -35,22 +62,6 @@ import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -87,6 +98,8 @@ public class FormsRestServiceController implements FormsRestService {
 
   private final CurrentUserProvider currentUserProvider;
 
+  private final CsvToFormParser csvToFormParser;
+
   public FormsRestServiceController(ApplicationEventPublisher eventPublisher,
                                     FormDatabase formDatabase,
                                     Optional<FormVersionControlDatabase> formVersionControlDatabase,
@@ -96,7 +109,8 @@ public class FormsRestServiceController implements FormsRestService {
                                     NodeId nodeId,
                                     FormItemCopier formItemCopier,
                                     CurrentTenant currentTenant,
-                                    CurrentUserProvider currentUserProvider)
+                                    CurrentUserProvider currentUserProvider,
+                                    CsvToFormParser csvToFormParser)
   {
     this.eventPublisher = eventPublisher;
     this.formDatabase = formDatabase;
@@ -108,6 +122,7 @@ public class FormsRestServiceController implements FormsRestService {
     this.formItemCopier = formItemCopier;
     this.currentTenant = currentTenant;
     this.currentUserProvider = currentUserProvider;
+    this.csvToFormParser = csvToFormParser;
   }
 
   @Override
@@ -153,6 +168,37 @@ public class FormsRestServiceController implements FormsRestService {
       .fromCurrentRequest().path("/{id}")
       .buildAndExpand(savedForm.getId()).toUri();
     return ResponseEntity.created(uri).body(savedForm);
+  }
+
+  @Override
+  public ResponseEntity<FormPutResponse> postFormFromCsv(String formCsv) {
+    try {
+      Form formDocument = csvToFormParser.parseCsv(formCsv);
+      Form form = updateMetadata(formDocument);
+      form = ImmutableForm.builder().from(form).id(null).rev(null).build();
+      Form savedForm = formDatabase.save(currentTenant.getId(), form);
+
+      URI uri = ServletUriComponentsBuilder
+        .fromCurrentRequest().path("/{id}")
+        .buildAndExpand(savedForm.getId()).toUri();
+
+      // Success Response
+      return ResponseEntity.created(uri)
+        .body(ImmutableFormPutResponse.builder()
+        .ok(true)
+        .id(savedForm.getId())
+        .rev(savedForm.getRev())
+        .form(savedForm)
+        .build());
+    } catch (CsvParsingException e) {
+      // Bad Request Response
+      return ResponseEntity.badRequest()
+        .body(ImmutableFormPutResponse.builder()
+        .ok(false)
+        .error("CSV_PARSING_ERROR")
+        .reason(e.getMessage())
+        .build());
+    }
   }
 
   @Override
