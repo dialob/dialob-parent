@@ -137,7 +137,7 @@
       "style": null,
       "activeWhen": "\"entry1\" in question1",
       "validations": [],
-      "valueSetId": null,
+      "valueSetId": "valueSet2",
       "options": {}
     }
 
@@ -149,7 +149,15 @@
     "label": "Test Form",
     "created": "2016-05-06T08:45:23.641Z",
     "lastSaved": "2016-05-06T08:47:39.921Z",
-    "valid": true
+    "valid": true,
+    "composer": {
+      "globalValueSets": [
+        {
+          "label": "gvs1",
+          "valueSetId": "valueSet2"
+        }
+      ]
+    }
   },
   "variables": [
     {
@@ -170,6 +178,23 @@
         {
           "id": "entry2",
           "when": "question1 = 'zz'",
+          "label": {
+            "en": "Entry label 2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "valueSet2",
+      "entries": [
+        {
+          "id": "entry1",
+          "label": {
+            "en": "Entry label 1"
+          }
+        },
+        {
+          "id": "entry2",
           "label": {
             "en": "Entry label 2"
           }

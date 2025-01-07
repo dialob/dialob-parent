@@ -63,6 +63,16 @@ public class DialobFormItemCopier implements FormItemCopier {
     return form.getData().values().stream().filter(i -> i.getItems().contains(itemId)).findFirst();
   }
 
+  private Boolean isGlobalValueSet(Form form, String valueSetId) {
+    final var composerMetadata = form.getMetadata().getAdditionalProperties().get("composer");
+    if (composerMetadata == null) {
+      return false;
+    }
+    final var composer = (Map<String, Object>) composerMetadata;
+    final var globalValueSets = (List<Map<String, String>>) composer.get("globalValueSets");
+    return globalValueSets != null && globalValueSets.stream().anyMatch(gvs -> gvs.get("valueSetId").equals(valueSetId));
+  }
+
   private String copySingleItem(ImmutableForm.Builder formBuilder, Form form, Map<String, String> idRenameMap, FormItem sourceItem) {
     Map<String, FormItem> formData = form.getData();
     String nextID = findNextID(formData, sourceItem.getId());
@@ -75,12 +85,16 @@ public class DialobFormItemCopier implements FormItemCopier {
 
     // ValueSets
     if (sourceItem.getValueSetId() != null) {
-      String newValueSetId = findNextValuesetId(form, sourceItem.getValueSetId());
-      FormValueSet sourceValueSet = findValueSet(form, sourceItem.getValueSetId());
-      FormValueSet newValueSet = ImmutableFormValueSet.builder().from(sourceValueSet)
-        .id(newValueSetId).build();
-      builder.valueSetId(newValueSetId);
-      formBuilder.addValueSets(newValueSet);
+      if (isGlobalValueSet(form, sourceItem.getValueSetId())) {
+        builder.valueSetId(sourceItem.getValueSetId());
+      } else {
+        String newValueSetId = findNextValuesetId(form, sourceItem.getValueSetId());
+        FormValueSet sourceValueSet = findValueSet(form, sourceItem.getValueSetId());
+        FormValueSet newValueSet = ImmutableFormValueSet.builder().from(sourceValueSet)
+          .id(newValueSetId).build();
+        builder.valueSetId(newValueSetId);
+        formBuilder.addValueSets(newValueSet);
+      }
     }
     formBuilder.putData(nextID, builder.build());
     return nextID;

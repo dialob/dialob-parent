@@ -98,8 +98,21 @@ public class FormItemCopierTest {
     assertTrue(form.getData().containsKey("question1"));
     assertTrue(form.getData().containsKey("question11"));
     assertEquals(form.getData().get("group1").getItems().indexOf("question1") + 1, form.getData().get("group1").getItems().indexOf("question11"));
-    assertEquals(2, form.getValueSets().size());
+    assertEquals(3, form.getValueSets().size());
     assertEquals("valueSet11", form.getData().get("question11").getValueSetId());
+  }
+
+  @Test
+  public void testQuestionCopyGvs() {
+    Form form = loadForm();
+    Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "question4");
+    form = resultPair.getLeft();
+    assertEquals(0, resultPair.getRight().size());
+    assertTrue(form.getData().containsKey("question4"));
+    assertTrue(form.getData().containsKey("question41"));
+    assertEquals(form.getData().get("group1").getItems().indexOf("question4") + 1, form.getData().get("group1").getItems().indexOf("question41"));
+    assertEquals(2, form.getValueSets().size());
+    assertEquals("valueSet2", form.getData().get("question41").getValueSetId());
   }
 
   @Test
@@ -111,7 +124,7 @@ public class FormItemCopierTest {
     assertTrue(form.getData().containsKey("group1"));
     assertTrue(form.getData().containsKey("group11"));
     assertEquals(form.getData().get("page1").getItems().indexOf("group1") + 1, form.getData().get("page1").getItems().indexOf("group11"));
-    assertEquals(2, form.getValueSets().size());
+    assertEquals(3, form.getValueSets().size());
     assertEquals("valueSet11", form.getData().get("question11").getValueSetId());
     assertThat(form.getData().get("group11").getItems(), contains("question11", "question21", "question31", "question41"));
     assertEquals("question11 = 'test'", form.getData().get("question21").getRequired());
