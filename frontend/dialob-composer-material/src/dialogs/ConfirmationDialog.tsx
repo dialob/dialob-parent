@@ -33,7 +33,7 @@ const ConfirmationDialog: React.FC = () => {
         .then(duplicateResponse => {
           if (duplicateResponse.success && duplicateResponse.result) {
             const duplicateRes = duplicateResponse.result as DuplicateResult;
-            setForm(duplicateRes.form);
+            setForm(duplicateRes.form, undefined, true);
           } else if (duplicateResponse.apiError) {
             setErrors([{ level: 'FATAL', message: duplicateResponse.apiError.message }]);
           }
