@@ -564,22 +564,6 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <configuration>
-          <licenseSets>
-            <licenseSet>
-              <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-              <excludes>
-                <exclude>release.version</exclude>
-                <exclude>.m2/**</exclude>
-                <exclude>**/*.g4</exclude>
-                <exclude>**/*.yml</exclude>
-                <exclude>src/test/resources/**</exclude>
-                <exclude>src/main/resources/**</exclude>
-                <exclude>**/ElbJWKSource.java</exclude>
-              </excludes>
-            </licenseSet>
-          </licenseSets>
-        </configuration>
         <executions>
           <execution>
             <goals>
@@ -674,27 +658,6 @@
           <groupId>pl.project13.maven</groupId>
           <artifactId>git-commit-id-plugin</artifactId>
           <version>4.0.0</version>
-        </plugin>
-        <plugin>
-          <groupId>com.mycila</groupId>
-          <artifactId>license-maven-plugin</artifactId>
-          <configuration>
-            <licenseSets>
-              <licenseSet>
-                <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-                <excludes>
-                  <exclude>**/*.md</exclude>
-                  <exclude>src/test/resources/**</exclude>
-                  <exclude>src/main/resources/**</exclude>
-                  <exclude>**/ElbJWKSource.java</exclude>
-                </excludes>
-              </licenseSet>
-            </licenseSets>
-            <properties>
-              <owner>ReSys</owner>
-              <email>info@dialob.io</email>
-            </properties>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
