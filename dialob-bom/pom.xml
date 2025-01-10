@@ -31,7 +31,6 @@
 
   <properties>
     <dialob-admin-ui.version>0.4.2</dialob-admin-ui.version>
-    <dialob-api.version>3.0.1</dialob-api.version>
     <dialob-review.version>0.0.2</dialob-review.version>
   </properties>
 
@@ -294,13 +293,13 @@
       <dependency>
         <groupId>io.dialob</groupId>
         <artifactId>dialob-api</artifactId>
-        <version>${dialob-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.dialob</groupId>
         <artifactId>dialob-api</artifactId>
         <classifier>test</classifier>
-        <version>${dialob-api.version}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
