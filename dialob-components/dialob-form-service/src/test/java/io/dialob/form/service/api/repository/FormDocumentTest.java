@@ -42,7 +42,7 @@ public class FormDocumentTest {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         Form formDocument = mapper.readValue(s, Form.class);
         assertEquals(6, formDocument.getData().size());
-        assertEquals(new Date(Instant.parse("2015-10-09T13:34:01.622Z").toEpochMilli()), formDocument.getMetadata().getCreated());
+        assertEquals(Date.from(Instant.parse("2015-10-09T13:34:01.622Z")), formDocument.getMetadata().getCreated());
         assertNotNull(formDocument);
     }
 

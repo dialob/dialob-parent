@@ -209,7 +209,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     Form formDocument = ImmutableForm.builder()
       .id("form-id")
       .rev("2")
-      .metadata(ImmutableFormMetadata.builder().created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).label("test").build())
+      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "form-id", null)).thenReturn(formDocument);
@@ -258,7 +258,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .id("new-form")
       .rev("old")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).label("test").build())
+      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     // We need to return cfrs token on update action
@@ -320,7 +320,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     Form formDocument = ImmutableForm.builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).build())
+      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
       .build();
 
     // We need to return cfrs token on update action
@@ -342,7 +342,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     Form formDocument = ImmutableForm.builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).tenantId("3tt").build())
+      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "123-123")).thenReturn(ImmutableForm.builder().from(formDocument).id("123-123").rev("321").build());

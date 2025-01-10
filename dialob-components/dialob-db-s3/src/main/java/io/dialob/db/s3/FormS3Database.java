@@ -40,7 +40,7 @@ public class FormS3Database extends AbstractS3Database<Form> implements FormData
       consumer.accept(ImmutableFormMetadataRow.of(
         id,
         ImmutableFormMetadata.builder()
-          .lastSaved(new Date(object.lastModified().toEpochMilli()))
+          .lastSaved(Date.from(object.lastModified()))
           .tenantId(tenantId)
           .build()
       ));

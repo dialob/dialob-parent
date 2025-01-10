@@ -41,7 +41,7 @@ public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> i
       consumer.accept(ImmutableMetadataRow.of(
         id,
         ImmutableQuestionnaireMetadata.builder()
-          .lastAnswer(new Date(object.lastModified().toEpochMilli()))
+          .lastAnswer(Date.from(object.lastModified()))
           .build()
       ));
     });

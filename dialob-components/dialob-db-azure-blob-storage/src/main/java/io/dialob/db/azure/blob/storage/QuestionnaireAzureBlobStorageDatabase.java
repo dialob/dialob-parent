@@ -42,7 +42,7 @@ public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStor
       consumer.accept(ImmutableMetadataRow.of(
         id,
         ImmutableQuestionnaireMetadata.builder()
-          .lastAnswer(new Date(object.getProperties().getLastModified().toInstant().toEpochMilli()))
+          .lastAnswer(Date.from(object.getProperties().getLastModified().toInstant()))
           .build()
       ));
     });

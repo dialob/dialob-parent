@@ -42,7 +42,7 @@ public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDataba
       consumer.accept(ImmutableFormMetadataRow.of(
         id,
         ImmutableFormMetadata.builder()
-          .lastSaved(new Date(object.getProperties().getLastModified().toInstant().toEpochMilli()))
+          .lastSaved(Date.from(object.getProperties().getLastModified().toInstant()))
           .tenantId(tenantId)
           .build()
       ));

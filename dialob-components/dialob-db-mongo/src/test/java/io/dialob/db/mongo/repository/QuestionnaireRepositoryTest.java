@@ -54,7 +54,7 @@ public class QuestionnaireRepositoryTest extends AbsractMongoTest {
 
   //  @Rule
 //  public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(MONGO_DATABASE);
-  public static final Date CREATED = new Date(Instant.parse("2018-01-20T10:10:56.800Z").toEpochMilli());
+  public static final Date CREATED = Date.from(Instant.parse("2018-01-20T10:10:56.800Z"));
   public static final Questionnaire IMMUTABLE_QUESTIONNAIRE = ImmutableQuestionnaire.builder()
     .id(null)
     .addAnswers(ImmutableAnswer.of("q1", "v1"))
