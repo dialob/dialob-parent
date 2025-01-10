@@ -17,14 +17,16 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>dialob-components</artifactId>
+    <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
+    <relativePath>../dialob-build-parent/pom.xml</relativePath>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+  <artifactId>dialob-api</artifactId>
+  <packaging>jar</packaging>
 
-  <artifactId>dialob-questionnaire-service-sockjs</artifactId>
   <build>
     <plugins>
       <plugin>
@@ -40,63 +42,53 @@
       </plugin>
     </plugins>
   </build>
-
+  
   <dependencies>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-questionnaire-service-api</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-questionnaire-service</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-websocket</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.inject</groupId>
-      <artifactId>jakarta.inject-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-actuator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.validator</groupId>
-      <artifactId>hibernate-validator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>mongo</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-api</artifactId>
-      <type>test-jar</type>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-el</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

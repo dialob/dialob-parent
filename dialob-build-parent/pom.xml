@@ -449,6 +449,11 @@
         <version>${immutables.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>mongo</artifactId>
+        <version>${immutables.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.github.ben-manes.caffeine</groupId>
         <artifactId>caffeine</artifactId>
         <version>${caffeine.version}</version>

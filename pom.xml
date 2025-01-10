@@ -79,6 +79,7 @@
 
   <modules>
     <module>dialob-bom</module>
+    <module>dialob-api</module>
     <module>dialob-build-parent</module>
     <module>dialob-config-parent</module>
     <module>dialob-security-parent</module>
