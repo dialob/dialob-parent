@@ -27,6 +27,22 @@
   <artifactId>dialob-api</artifactId>
   <packaging>jar</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -63,7 +79,6 @@
     <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>mongo</artifactId>
-      <version>2.10.1</version>
     </dependency>
 
     <dependency>

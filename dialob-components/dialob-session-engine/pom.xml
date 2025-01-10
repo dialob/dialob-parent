@@ -67,7 +67,6 @@
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-rule-parser</artifactId>
-      <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
