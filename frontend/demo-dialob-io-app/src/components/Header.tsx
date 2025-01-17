@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Box, Typography, useTheme, Theme } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
+import TenantSelector from './TenantSelector';
+import { useTenantContext } from '../context/useTenantContext';
 
 const Header: React.FC = () => {
   const [imageError, setImageError] = useState(false);
   const theme: Theme = useTheme();
+  const { error } = useTenantContext();
 
   const styles = {
     logo: {
@@ -14,11 +17,16 @@ const Header: React.FC = () => {
     fallbackTitle: {
       color: theme.palette.activeItem.contrastText,
     },
+    toolbar: {
+      display: "flex",
+      alignItems: "center",
+      height: "80px"
+    }
   };
 
   return (
     <AppBar position="static" elevation={1}>
-      <Toolbar>
+      <Toolbar sx={styles.toolbar}>
         {!imageError ? (
           <Box
             component="img"
@@ -32,6 +40,7 @@ const Header: React.FC = () => {
             <FormattedMessage id='placeholders.appbar.header' />
           </Typography>
         )}
+        {!error && <TenantSelector />}
       </Toolbar>
     </AppBar>
   );

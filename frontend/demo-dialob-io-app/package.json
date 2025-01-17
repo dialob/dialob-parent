@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@dialob/dashboard-material": "^1.2.5",
+    "@dialob/dashboard-material": "^1.2.6",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",

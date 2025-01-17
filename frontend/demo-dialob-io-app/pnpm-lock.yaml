@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@dialob/dashboard-material':
-        specifier: ^1.2.5
-        version: 1.2.5(tq2lqzmb2j6fd6polkacbxd3ay)
+        specifier: ^1.2.6
+        version: 1.2.6(tq2lqzmb2j6fd6polkacbxd3ay)
       '@emotion/react':
         specifier: ^11.11.1
         version: 11.14.0(@types/react@18.3.18)(react@18.3.1)
@@ -290,8 +290,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@dialob/dashboard-material@1.2.5':
-    resolution: {integrity: sha512-wEhhS/kCJqaoqEGYm2YiL/22yMxAcP3qvdTswtqgzPMV+yixZP+x4NRQexg630pUuuqBCMj8mPty7CpX+kRskA==}
+  '@dialob/dashboard-material@1.2.6':
+    resolution: {integrity: sha512-PF4Z1SRM/xn2CFowxO4u+xSiMjaWpFzIfy2ETYM9Bo8Vh4RnJJOgTY2SVyQ7knquM4oVvi/1n4Q3OpAuuLPhgA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@mui/icons-material': ^5.1.0
@@ -3381,7 +3381,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@dialob/dashboard-material@1.2.5(tq2lqzmb2j6fd6polkacbxd3ay)':
+  '@dialob/dashboard-material@1.2.6(tq2lqzmb2j6fd6polkacbxd3ay)':
     dependencies:
       '@mui/icons-material': 5.16.14(@mui/material@5.16.14(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
       '@mui/material': 5.16.14(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

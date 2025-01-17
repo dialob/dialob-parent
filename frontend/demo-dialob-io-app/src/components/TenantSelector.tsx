@@ -1,58 +1,73 @@
-import React, { useState } from 'react';
-import { MenuItem, Menu, Button, Box } from '@mui/material';
+import React from 'react';
+import { MenuItem, Box, FormControl, Typography, Select, SelectChangeEvent, useTheme } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { Tenant } from '../types/index';
 import { useTenantContext } from '../context/useTenantContext';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const TenantSelector: React.FC = () => {
   const { tenants, selectedTenant, selectTenant } = useTenantContext();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const theme = useTheme();
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const styles = {
+    select: {
+      width: "100%",
+      height: "28px",
+      lineHeight: "28px",
+      '& .MuiSelect-select': {
+        backgroundColor: theme.palette.article.contrastText,
+      },
+      '&.Mui-focused .MuiSelect-select': {
+        backgroundColor: theme.palette.article.contrastText,
+      },
+    },
+    formControl: {
+      '& .MuiInput-root': {
+        paddingLeft: 0,
+        paddingRight: 0,
+      },
+    },
+    container: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    typography: {
+      ml: 4,
+      mr: 0,
+      minWidth: "150px",
+      color: theme.palette.text.primary
+    }
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleSelect = (tenant: Tenant) => {
-    selectTenant(tenant);
-    handleClose();
+  const handleSelect = (event: SelectChangeEvent<string>) => {
+    const selectedId = event.target.value;
+    const tenant = tenants.find((tenant) => tenant.id === selectedId);
+    if (tenant) {
+      selectTenant(tenant);
+    }
   };
 
   return (
-    <Box sx={{ mt: 2, ml: 2 }}>
-      <Button
-        id="tenant-menu-button"
-        variant="text"
-        onClick={handleOpen}
-        endIcon={<ArrowDropDownIcon fontSize='small' />}
-      >
-        {selectedTenant
-          ? (selectedTenant.name || selectedTenant.description || <FormattedMessage id='placeholders.tenants.unnamed' />)
-          : <FormattedMessage id='placeholders.tenants' />}
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'tenant-menu-button',
-        }}
-      >
-        {tenants.map((tenant) => (
-          <MenuItem
-            key={tenant.id}
-            value={tenant.id}
-            onClick={() => handleSelect(tenant)}
-            selected={selectedTenant?.id === tenant.id}
-          >
-            {tenant.name || tenant.description || <FormattedMessage id='placeholders.tenants.unnamed' />}
-          </MenuItem>
-        ))}
-      </Menu>
+    <Box sx={styles.container}>
+      <Typography sx={styles.typography}>
+        <FormattedMessage id="placeholders.tenants" />
+      </Typography>
+      <FormControl fullWidth sx={styles.formControl}>
+        <Select
+          value={selectedTenant?.id || ""}
+          onChange={handleSelect}
+          displayEmpty
+          variant='standard'
+          sx={styles.select}
+          disableUnderline
+        >
+          {tenants.map((tenant) => (
+            <MenuItem key={tenant.id} value={tenant.id}>
+              {tenant.name || tenant.description || (
+                <FormattedMessage id="placeholders.tenants.unnamed" />
+              )}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Box>
   );
 };

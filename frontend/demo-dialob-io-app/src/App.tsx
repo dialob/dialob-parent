@@ -1,10 +1,10 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { CircularProgress, Grid, Container, Typography, Link } from '@mui/material';
-import TenantSelector from './components/TenantSelector';
+import { CircularProgress, Grid, Typography, Link, Box } from '@mui/material';
 import TenantDashboard from './components/TenantDashboard';
 import { AppConfig } from './types';
 import { useTenantContext } from './context/useTenantContext';
+import Header from './components/Header';
 
 export const ProgressSplash: React.FC = () => (
   <Grid
@@ -30,46 +30,43 @@ const App: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
 
   if (error) {
     return (
-      <Container>
-        <Typography color="error" variant="h6">
-          <FormattedMessage id="errors.message.tenants.loading" />
-        </Typography>
-      </Container>
+      <>
+        <Header />
+        <Box p={2}>
+          <Typography color="error" variant="h6">
+            <FormattedMessage id="errors.message.tenants.loading" />
+          </Typography>
+        </Box>
+      </>
     );
   }
 
   if (!tenants || tenants.length === 0) {
     return (
-      <Container sx={{ p: 4 }}>
-        <Typography color="error" variant="h6">
-          <FormattedMessage id="errors.message.tenants.noAccess" />
-        </Typography>
-        <Typography variant="body1">
-          <FormattedMessage
-            id="errors.message.tenants.empty"
-          />
-          <Link href="/logout" sx={{ ml: 1 }}>
-            <FormattedMessage id="errors.message.tenants.tryAgain" />
-          </Link>
-        </Typography>
-      </Container>
+      <>
+        <Header />
+        <Box p={2}>
+          <Typography color="error" variant="h6">
+            <FormattedMessage id="errors.message.tenants.noAccess" />
+          </Typography>
+          <Typography variant="body1">
+            <FormattedMessage
+              id="errors.message.tenants.empty"
+            />
+            <Link href="/logout" sx={{ ml: 1 }}>
+              <FormattedMessage id="errors.message.tenants.tryAgain" />
+            </Link>
+          </Typography>
+        </Box>
+      </>
     );
   }
 
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="left"
-    >
-      <Grid item xs={3}>
-        <TenantSelector />
-      </Grid>
-      <Grid item xs={12}>
-        {selectedTenant && <TenantDashboard appConfig={appConfig} />}
-      </Grid>
-    </Grid>
+    <>
+      <Header />
+      {selectedTenant && <TenantDashboard appConfig={appConfig} />}
+    </>
   );
 };
 

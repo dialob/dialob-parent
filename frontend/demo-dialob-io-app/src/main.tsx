@@ -7,7 +7,6 @@ import { siteTheme } from './theme/siteTheme';
 import { AppConfig } from './types';
 import { IntlProvider } from 'react-intl';
 import messages from './intl';
-import Header from './components/Header';
 
 const renderDialobApp = (targetElement: HTMLElement, appConfig: AppConfig) => {
 
@@ -17,7 +16,6 @@ const renderDialobApp = (targetElement: HTMLElement, appConfig: AppConfig) => {
         <CssBaseline />
         <TenantProvider appConfig={appConfig}>
           <IntlProvider locale="en" messages={messages['en']}>
-            <Header />
             <App appConfig={appConfig} />
           </IntlProvider>
         </TenantProvider>
