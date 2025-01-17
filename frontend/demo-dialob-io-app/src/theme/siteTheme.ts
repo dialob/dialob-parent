@@ -261,6 +261,13 @@ const siteTheme = createTheme({
         },
       },
     },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: palette.article.contrastText
+        }
+      }
+    },
     MuiCardActions: {
       styleOverrides: {
         root: {
@@ -329,6 +336,31 @@ const siteTheme = createTheme({
       },
     },
 
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          padding: 0,
+        },
+        list: {
+          paddingTop: 0,
+          paddingBottom: 0,
+        },
+      },
+    },
+
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          paddingRight: "24px",
+          paddingLeft: "24px",
+          "&.Mui-selected": {
+            backgroundColor: palette.activeItem.main,
+            color: palette.text.disabled
+          },
+        }
+      }
+    },
+
     MuiStack: {
       styleOverrides: {
         root: {
@@ -351,7 +383,8 @@ const siteTheme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          padding: 0,
+          padding: "4px",
+          border: `1px solid ${palette.table.main}`,
         },
       }
     }

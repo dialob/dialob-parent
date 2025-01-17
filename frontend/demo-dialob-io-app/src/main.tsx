@@ -1,47 +1,35 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { CssBaseline, ThemeProvider } from '@mui/material'
-import { siteTheme } from './theme/siteTheme'
-import { AppConfig, DialobComposerConfig } from './backend/types'
-import DialobComposer from './dialob/DialobComposer'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import App from './App';
+import { TenantProvider } from './context/TenantContext';
+import { siteTheme } from './theme/siteTheme';
+import { AppConfig } from './types';
+import { IntlProvider } from 'react-intl';
+import messages from './intl';
+import Header from './components/Header';
 
+const renderDialobApp = (targetElement: HTMLElement, appConfig: AppConfig) => {
 
-const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) => {
-
-  const FORM_ID = appConfig.formId;
-
-  const baseUrl = window.location.origin;
-
-  const DIALOB_COMPOSER_CONFIG: DialobComposerConfig = {
-    transport: {
-      csrf: appConfig.csrfHeader ? {
-        headerName: appConfig.csrfHeader,
-        token: appConfig.csrf
-      } : undefined,
-      apiUrl: appConfig.backend_api_url.includes('://') ? appConfig.backend_api_url : baseUrl + appConfig.backend_api_url,
-      previewUrl: appConfig.filling_app_url,
-      tenantId: appConfig.tenantId || undefined,
-      credentialMode: appConfig.credentialMode || undefined,
-    },
-    backendVersion: appConfig.version,
-    documentationUrl: 'https://github.com/dialob/dialob-parent/wiki/',
-    closeHandler: () => window.location.href = appConfig.adminAppUrl,
-  };
-
-  ReactDOM.createRoot(targetElement!).render(
+  ReactDOM.createRoot(targetElement).render(
     <React.StrictMode>
       <ThemeProvider theme={siteTheme}>
         <CssBaseline />
-        <DialobComposer config={DIALOB_COMPOSER_CONFIG} formId={FORM_ID} />
+        <TenantProvider appConfig={appConfig}>
+          <IntlProvider locale="en" messages={messages['en']}>
+            <Header />
+            <App appConfig={appConfig} />
+          </IntlProvider>
+        </TenantProvider>
       </ThemeProvider>
-    </React.StrictMode>,
-  )
+    </React.StrictMode>
+  );
 };
 
 declare global {
   interface Window {
-    renderDialobComposer: (targetElement: HTMLElement, appConfig: AppConfig) => void;
+    renderDialobApp: (targetElement: HTMLElement, appConfig: AppConfig) => void;
   }
 }
 
-window.renderDialobComposer = renderDialobComposer;
+window.renderDialobApp = renderDialobApp;

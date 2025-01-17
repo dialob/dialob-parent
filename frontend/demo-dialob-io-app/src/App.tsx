@@ -1,80 +1,76 @@
 import React from 'react';
-import { ComposerProvider, ComposerState } from './dialob'
-import { useEditor } from './editor';
-import { IntlProvider } from 'react-intl';
-import messages from './intl';
-import ComposerLayoutView from './views/ComposerLayoutView';
-import { Dispatch } from 'react';
-import { CircularProgress, Grid } from '@mui/material';
-import { Middleware } from './dialob/react/ComposerContext';
-import { ComposerAction } from './dialob/actions';
-import { useBackend } from './backend/useBackend';
-import { SaveResult } from './backend/types';
+import { FormattedMessage } from 'react-intl';
+import { CircularProgress, Grid, Container, Typography, Link } from '@mui/material';
+import TenantSelector from './components/TenantSelector';
+import TenantDashboard from './components/TenantDashboard';
+import { AppConfig } from './types';
+import { useTenantContext } from './context/useTenantContext';
 
-export const ProgressSplash: React.FC = () => {
+export const ProgressSplash: React.FC = () => (
+  <Grid
+    container
+    spacing={0}
+    direction="column"
+    alignItems="center"
+    justifyContent="center"
+    sx={{ minHeight: '100vh' }}
+  >
+    <Grid item xs={3}>
+      <CircularProgress size={100} thickness={5} />
+    </Grid>
+  </Grid>
+);
+
+const App: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
+  const { tenants, selectedTenant, isLoading, error } = useTenantContext();
+
+  if (isLoading) {
+    return <ProgressSplash />;
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Typography color="error" variant="h6">
+          <FormattedMessage id="errors.message.tenants.loading" />
+        </Typography>
+      </Container>
+    );
+  }
+
+  if (!tenants || tenants.length === 0) {
+    return (
+      <Container sx={{ p: 4 }}>
+        <Typography color="error" variant="h6">
+          <FormattedMessage id="errors.message.tenants.noAccess" />
+        </Typography>
+        <Typography variant="body1">
+          <FormattedMessage
+            id="errors.message.tenants.empty"
+          />
+          <Link href="/logout" sx={{ ml: 1 }}>
+            <FormattedMessage id="errors.message.tenants.tryAgain" />
+          </Link>
+        </Typography>
+      </Container>
+    );
+  }
+
   return (
     <Grid
       container
       spacing={0}
       direction="column"
-      alignItems="center"
-      justifyContent="center"
-      sx={{ minHeight: '100vh' }}
+      alignItems="left"
     >
       <Grid item xs={3}>
-        <CircularProgress size={100} thickness={5} />
+        <TenantSelector />
+      </Grid>
+      <Grid item xs={12}>
+        {selectedTenant && <TenantDashboard appConfig={appConfig} />}
       </Grid>
     </Grid>
-  )
-}
-
-function App() {
-  const { form, loaded, saveForm } = useBackend();
-  const { setErrors } = useEditor();
-
-  async function saveFormMiddleware(action: ComposerAction | undefined, state: ComposerState, dispatch: Dispatch<ComposerAction>) {
-    if (action && action.type !== 'setRevision' && state._tag === undefined) {
-      if (action.type === 'setForm' && !action.save) {
-        return;
-      }
-      saveForm(state)
-        .then(saveResponse => {
-          if (saveResponse.success && saveResponse.result) {
-            const result = saveResponse.result as SaveResult;
-            const errors = result.errors?.map(e => {
-              if (e.itemId && e.itemId.includes(':')) {
-                const itemId = e.itemId.split(':')[0];
-                return { ...e, itemId: itemId };
-              }
-              return e;
-            }); setErrors(errors);
-            dispatch({ type: 'setRevision', revision: result.rev });
-          } else if (saveResponse.apiError) {
-            setErrors([{ level: 'FATAL', message: saveResponse.apiError.message }])
-          }
-        });
-    }
-  }
-
-  if (form === null || !loaded) {
-    return (
-      <ProgressSplash />
-    );
-  }
-
-  const preMiddleware: Middleware[] = [];
-
-  const postMiddleware: Middleware[] = [
-    saveFormMiddleware,
-  ];
-
-  return (
-    <ComposerProvider formData={form} preMiddleware={preMiddleware} postMiddleware={postMiddleware}>
-      <IntlProvider locale='en' messages={messages['en']}>
-        <ComposerLayoutView />
-      </IntlProvider>
-    </ComposerProvider>
-  )
-}
+  );
+};
 
 export default App;
