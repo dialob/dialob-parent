@@ -50,9 +50,7 @@ const App: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
             <FormattedMessage id="errors.message.tenants.noAccess" />
           </Typography>
           <Typography variant="body1">
-            <FormattedMessage
-              id="errors.message.tenants.empty"
-            />
+            <FormattedMessage id="errors.message.tenants.empty" />
             <Link href="/logout" sx={{ ml: 1 }}>
               <FormattedMessage id="errors.message.tenants.tryAgain" />
             </Link>
