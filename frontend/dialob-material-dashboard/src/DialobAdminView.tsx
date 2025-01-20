@@ -335,11 +335,11 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
   }, [formConfigurations, sortConfig]);
 
   return (
-    <Box pt={6}>
+    <>
       {formConfigurations ? (
-        <Box sx={{ padding: "0 50px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography sx={{ mb: 4 }} variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 3 }}>
+            <Typography variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
             <Box>
               <Button onClick={handleJsonUploadClick}>
                 <SvgIcon fontSize="small" >
@@ -514,6 +514,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
       ) : (
         <Spinner />
       )}
-    </Box>
+    </>
   );
 }

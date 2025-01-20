@@ -33,6 +33,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
   setFetchAgain
 }) => {
   const intl = useIntl();
+  const tenantParam = config.tenantId ? `?tenantId=${config.tenantId}` : "";
 
   const filteredRow: FormConfigurationFilters | undefined = useMemo(() => {
     const result: FormConfigurationFilters = {
@@ -134,7 +135,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               <IconButton
                 onClick={function (e: any) {
                   e.preventDefault();
-                  window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}`);
+                  window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`);
                 }}
               >
                 <SvgIcon fontSize="small"><EditIcon /></SvgIcon>

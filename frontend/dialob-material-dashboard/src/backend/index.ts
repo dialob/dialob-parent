@@ -22,7 +22,9 @@ export const fetchAuth = (input: string, init: any, config: DialobAdminConfig) =
 }
 
 export const getAdminFormConfigurationList = async (config: DialobAdminConfig) => {
-  let url = `${config.dialobApiUrl}/api/forms`;
+  const baseUrl = `${config.dialobApiUrl}/api/forms`;
+  const { tenantId } = config;
+  const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
   const response = await fetchAuth(url, {
     method: 'GET'
   }, config);

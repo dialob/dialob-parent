@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { DialobAdmin, DialobAdminConfig } from '../src';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { THEMES } from './theme';
 import { AppHeader } from './AppHeader';
 
@@ -24,9 +24,11 @@ const App: React.FC = () => {
 			<ThemeProvider theme={THEMES[themeIndex].theme}>
 				<CssBaseline />
 				<AppHeader themeIndex={themeIndex} setThemeIndex={setThemeIndex} />
-				<DialobAdmin
-					config={conf}
-				/>
+        <Box p={2}>
+          <DialobAdmin
+            config={conf}
+          />
+        </Box>
 			</ThemeProvider>
 		</React.StrictMode>
 	);
