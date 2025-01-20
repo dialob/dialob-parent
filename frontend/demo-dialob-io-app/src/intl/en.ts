@@ -1,6 +1,6 @@
 const en = {
   'placeholders.tenants': 'Select environment:',
-  'placeholders.tenants.unselected': "Please select a tenant to view the dashboard",
+  'placeholders.tenants.unselected': "Please select a tenant",
   'placeholders.tenants.unnamed': "Unnamed",
   'placeholders.appbar.header': "Dialob IO App",
   'errors.message.tenants.empty': 'There are no tenants configured for your account.',

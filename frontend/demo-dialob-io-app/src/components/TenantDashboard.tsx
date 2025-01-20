@@ -1,6 +1,5 @@
 import React from 'react';
 import { DialobAdmin, DialobAdminConfig } from '@dialob/dashboard-material';
-import { FormattedMessage } from 'react-intl';
 import { AppConfig } from '../types';
 import { useTenantContext } from '../context/useTenantContext';
 import { Box } from '@mui/material';
@@ -9,7 +8,7 @@ const TenantDashboard: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
   const { selectedTenant } = useTenantContext();
 
   if (!selectedTenant) {
-    return <FormattedMessage id='placeholders.tenants.unselected' />;
+    return;
   }
 
   const config: DialobAdminConfig = {

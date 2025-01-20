@@ -62,10 +62,21 @@ const App: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
     );
   }
 
+  const noTenantSelected: JSX.Element = (
+    <Box display="flex" justifyContent="center" pt={4}>
+      <Typography variant='h4'>
+        <FormattedMessage id="placeholders.tenants.unselected" />
+      </Typography>
+    </Box>
+  )
+
   return (
     <>
       <Header />
-      {selectedTenant && <TenantDashboard appConfig={appConfig} />}
+      {selectedTenant ?
+        <TenantDashboard appConfig={appConfig} /> :
+        noTenantSelected
+      }
     </>
   );
 };

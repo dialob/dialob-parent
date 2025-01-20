@@ -22,7 +22,3 @@ export interface TenantContextType {
   isLoading: boolean;
   error: string | null;
 }
-
-export interface SnackbarContextType {
-  showNotification: (message: string, severity: 'success' | 'error') => void;
-}

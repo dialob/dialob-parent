@@ -14,15 +14,10 @@ const TenantSelector: React.FC = () => {
       lineHeight: "28px",
       '& .MuiSelect-select': {
         backgroundColor: theme.palette.article.contrastText,
+        minWidth: "0px !important"
       },
       '&.Mui-focused .MuiSelect-select': {
         backgroundColor: theme.palette.article.contrastText,
-      },
-    },
-    formControl: {
-      '& .MuiInput-root': {
-        paddingLeft: 0,
-        paddingRight: 0,
       },
     },
     container: {
@@ -31,9 +26,9 @@ const TenantSelector: React.FC = () => {
     },
     typography: {
       ml: 4,
-      mr: 0,
-      minWidth: "150px",
-      color: theme.palette.text.primary
+      mr: 1,
+      color: theme.palette.text.primary,
+      whiteSpace: 'nowrap'
     }
   };
 
@@ -50,11 +45,10 @@ const TenantSelector: React.FC = () => {
       <Typography sx={styles.typography}>
         <FormattedMessage id="placeholders.tenants" />
       </Typography>
-      <FormControl fullWidth sx={styles.formControl}>
+      <FormControl fullWidth>
         <Select
           value={selectedTenant?.id || ""}
           onChange={handleSelect}
-          displayEmpty
           variant='standard'
           sx={styles.select}
           disableUnderline
