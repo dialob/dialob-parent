@@ -26,6 +26,7 @@ import io.dialob.session.engine.program.expr.arith.CollectRowFieldsOperator;
 import io.dialob.session.engine.program.expr.arith.GtOperator;
 import io.dialob.session.engine.program.model.FormItem;
 import io.dialob.session.engine.program.model.Program;
+import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
@@ -139,7 +140,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
-    dialobSessionUpdater.dispatchActions(answer(toRef("question2"), "vastee"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question2"), "vastee")));
     assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
   }
@@ -154,8 +155,9 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "true")); // activates question2
-    dialobSessionUpdater.dispatchActions(answer(toRef("question2"), "vastee"));
+    // activates question2
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "true")));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question2"), "vastee")));
     assertEquals("vastee", dialobSession.getItemState(toRef("question2")).get().getValue());
     assertEquals("vastee", dialobSession.getItemState(toRef("question2")).get().getAnswer());
   }
@@ -171,31 +173,31 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertNull(dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "false"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "false")));
     assertEquals(Boolean.FALSE, dialobSession.getItemState(toRef("question1")).get().getValue());
     assertEquals("false", dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertInactive(dialobSession, toRef("question2"));
     assertActive(dialobSession, toRef("question3"));
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "true"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "true")));
     assertEquals(Boolean.TRUE, dialobSession.getItemState(toRef("question1")).get().getValue());
     assertEquals("true", dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertActive(dialobSession, toRef("question2"));
     assertActive(dialobSession, toRef("question3"));
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), null)));
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
     assertNull(dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertInactive(dialobSession, toRef("question2"));
     assertInactive(dialobSession, toRef("question3"));
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), ""));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "")));
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
     assertEquals("", dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertInactive(dialobSession, toRef("question2"));
     assertInactive(dialobSession, toRef("question3"));
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "crap"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "crap")));
     assertEquals(Boolean.FALSE, dialobSession.getItemState(toRef("question1")).get().getValue());
     assertEquals("crap", dialobSession.getItemState(toRef("question1")).get().getAnswer());
     assertInactive(dialobSession, toRef("question2"));
@@ -245,7 +247,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
-    dialobSessionUpdater.dispatchActions(gotoPage("page2"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(gotoPage("page2")));
     assertDisabled(session, toRef("page1"));
     assertDisabled(session, toRef("group1"));
     assertDisabled(session, toRef("question1"));
@@ -253,7 +255,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertEnabled(session, toRef("group2"));
     assertEnabled(session, toRef("question2"));
 
-    dialobSessionUpdater.dispatchActions(gotoPage("page1"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(gotoPage("page1")));
     assertEnabled(session, toRef("page1"));
     assertEnabled(session, toRef("group1"));
     assertEnabled(session, toRef("question1"));
@@ -261,7 +263,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertDisabled(session, toRef("group2"));
     assertDisabled(session, toRef("question2"));
 
-    dialobSessionUpdater.dispatchActions(gotoPage("page3"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(gotoPage("page3")));
     assertEnabled(session, toRef("page1"));
     assertEnabled(session, toRef("group1"));
     assertEnabled(session, toRef("question1"));
@@ -269,7 +271,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertDisabled(session, toRef("group2"));
     assertDisabled(session, toRef("question2"));
 
-    dialobSessionUpdater.dispatchActions(nextPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertDisabled(session, toRef("page1"));
     assertDisabled(session, toRef("group1"));
     assertDisabled(session, toRef("question1"));
@@ -277,7 +279,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertEnabled(session, toRef("group2"));
     assertEnabled(session, toRef("question2"));
 
-    dialobSessionUpdater.dispatchActions(nextPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertDisabled(session, toRef("page1"));
     assertDisabled(session, toRef("group1"));
     assertDisabled(session, toRef("question1"));
@@ -285,7 +287,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertEnabled(session, toRef("group2"));
     assertEnabled(session, toRef("question2"));
 
-    dialobSessionUpdater.dispatchActions(previousPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(previousPage()));
     assertEnabled(session, toRef("page1"));
     assertEnabled(session, toRef("group1"));
     assertEnabled(session, toRef("question1"));
@@ -293,7 +295,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertDisabled(session, toRef("group2"));
     assertDisabled(session, toRef("question2"));
 
-    dialobSessionUpdater.dispatchActions(previousPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(previousPage()));
     assertEnabled(session, toRef("page1"));
     assertEnabled(session, toRef("group1"));
     assertEnabled(session, toRef("question1"));
@@ -336,7 +338,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorInactive(session, toRef("question1"), "ERROR1");
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "wrong"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "wrong")));
     assertErrorActive(session, toRef("question1"), "ERROR1");
   }
 
@@ -367,7 +369,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorActive(session, toRef("question1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "answer")));
     assertErrorInactive(session, toRef("question1"), "REQUIRED");
   }
 
@@ -398,7 +400,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorActive(session, toRef("question1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "answer")));
     assertErrorInactive(session, toRef("question1"), "REQUIRED");
   }
 
@@ -435,7 +437,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
     when(visitor.visitUpdatedValueSets()).thenReturn(Optional.of(valueSetVisitor));
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "answer"))
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "answer")))
       .accept(visitor);
     InOrder order = inOrder(visitor, errorVisitor, itemVisitor, valueSetVisitor);
 
@@ -487,7 +489,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
     when(visitor.visitUpdatedValueSets()).thenReturn(Optional.of(valueSetVisitor));
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "answer"))
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "answer")))
       .accept(visitor);
     InOrder order = inOrder(visitor, errorVisitor, itemVisitor, valueSetVisitor);
 
@@ -534,7 +536,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertValueEquals(session, toRef("var1"), null);
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "1"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "1")));
     assertValueEquals(session, toRef("question1"), BigInteger.valueOf(1));
     assertValueEquals(session, toRef("var1"), BigInteger.valueOf(2));
   }
@@ -573,7 +575,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertErrorInactive(session, toRef("question"), "err1");
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "a"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "a")));
     assertValueEquals(session, toRef("question1"), "a");
     assertErrorActive(session, toRef("question1"), "err1");
   }
@@ -614,7 +616,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertNotRequired(session, toRef("question2"));
-    dialobSessionUpdater.dispatchActions(answer(toRef("question1"), "y"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "y")));
     assertValueEquals(session, toRef("question1"), "y");
     assertRequired(session, toRef("question2"));
   }
@@ -660,7 +662,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertNotRequired(session, toRef("question2"));
-    dialobSessionUpdater.dispatchActions(setValue(toRef("$$f1_1"), true));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setValue(toRef("$$f1_1"), true)));
     assertValueEquals(session, toRef("$$f1_1"), true);
     assertRequired(session, toRef("question2"));
   }

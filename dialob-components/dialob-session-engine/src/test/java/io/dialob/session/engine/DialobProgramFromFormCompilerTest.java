@@ -152,19 +152,19 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
 
-    dialobSessionUpdater.dispatchActions(addRow(toRef("rg")));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(addRow(toRef("rg"))));
     assertErrorActive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q1"), "answer")));
     assertErrorInactive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q2"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q2"), "answer")));
     assertErrorInactive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q2"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q2"), null)));
     assertErrorInactive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q1"), null)));
     assertErrorActive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
 
@@ -214,31 +214,31 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), "answer")));
     assertErrorInactive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), "answer")));
     assertErrorInactive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), null)));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), null)));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), " "));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), " ")));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), ""));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), "")));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), " "));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), " ")));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
@@ -286,10 +286,10 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     assertErrorLabel(session, toRef("q1"), "q1_error1","fi");
     assertErrorLabel(session, toRef("q2"), "q2_error1","fi");
-    dialobSessionUpdater.dispatchActions(setLocale("en"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
     assertErrorLabel(session, toRef("q1"), "q1_error1","en");
     assertErrorLabel(session, toRef("q2"), "q2_error1","en");
-    dialobSessionUpdater.dispatchActions(setLocale("fi"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("fi")));
     assertErrorLabel(session, toRef("q1"), "q1_error1","fi");
     assertErrorLabel(session, toRef("q2"), "q2_error1","fi");
 
@@ -341,7 +341,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
-    dialobSessionUpdater.dispatchActions(setLocale("en"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
 
     assertDisabled(session, toRef("g2"));
     assertDisabled(session, toRef("g22"));
@@ -427,7 +427,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
-    dialobSessionUpdater.dispatchActions(setLocale("en"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
 
     assertEnabled(session, toRef("p1"));
     assertDisabled(session, toRef("p2"));
@@ -448,7 +448,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertDisallowedAction(session, Action.Type.PREVIOUS);
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q111"), "Hello"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q111"), "Hello")));
     assertErrorInactive(session, toRef("q111"), "REQUIRED");
     assertErrorActive(session, toRef("q211"), "REQUIRED");
     assertErrorActive(session, toRef("q311"), "REQUIRED");
@@ -459,14 +459,14 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
     //
-    dialobSessionUpdater.dispatchActions(nextPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertAllowedAction(session, Action.Type.ANSWER);
     assertDisallowedAction(session, Action.Type.NEXT);
     assertAllowedAction(session, Action.Type.PREVIOUS);
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
     //
-    dialobSessionUpdater.dispatchActions(answer(toRef("q211"), "Hello"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q211"), "Hello")));
     assertErrorInactive(session, toRef("q111"), "REQUIRED");
     assertErrorInactive(session, toRef("q211"), "REQUIRED");
     assertErrorActive(session, toRef("q311"), "REQUIRED");
@@ -477,14 +477,14 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
     //
-    dialobSessionUpdater.dispatchActions(nextPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertAllowedAction(session, Action.Type.ANSWER);
     assertDisallowedAction(session, Action.Type.NEXT);
     assertAllowedAction(session, Action.Type.PREVIOUS);
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q311"), "Hello"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q311"), "Hello")));
     assertErrorInactive(session, toRef("q111"), "REQUIRED");
     assertErrorInactive(session, toRef("q211"), "REQUIRED");
     assertErrorInactive(session, toRef("q311"), "REQUIRED");
