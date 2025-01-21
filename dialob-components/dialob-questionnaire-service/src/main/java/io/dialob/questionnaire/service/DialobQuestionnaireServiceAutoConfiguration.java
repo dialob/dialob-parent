@@ -83,9 +83,8 @@ public class DialobQuestionnaireServiceAutoConfiguration {
   public PeriodicPersistenceService periodicPersistenceService(QuestionnaireSessionService questionnaireSessionService,
                                                                QuestionnaireSessionSaveService questionnaireSessionSaveService,
                                                                ThreadPoolTaskScheduler taskScheduler,
-                                                               DialobSettings settings,
-                                                               CurrentTenant currentTenant) {
-    return new PeriodicPersistenceService(questionnaireSessionService, questionnaireSessionSaveService, taskScheduler, settings, currentTenant);
+                                                               DialobSettings settings) {
+    return new PeriodicPersistenceService(questionnaireSessionService, questionnaireSessionSaveService, taskScheduler, settings.getSession().getAutosave().getInterval());
   }
 
   @Bean

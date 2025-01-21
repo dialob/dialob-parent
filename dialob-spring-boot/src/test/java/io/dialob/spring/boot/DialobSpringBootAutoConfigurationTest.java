@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 class DialobSpringBootAutoConfigurationTest {
 
-  @Configuration
+  @Configuration(proxyBeanMethods = false)
   @EnableCaching
   public static class MockConfigurations {
     @Bean

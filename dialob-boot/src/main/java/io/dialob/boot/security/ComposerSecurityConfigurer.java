@@ -30,7 +30,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Profile("ui")
 public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
 

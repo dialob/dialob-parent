@@ -52,7 +52,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
 
   private final Timer updateTime;
 
-  private Optional<CacheManager> sessionCacheManager;
+  private final Optional<CacheManager> sessionCacheManager;
 
   private final QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
@@ -102,7 +102,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
     return Objects.requireNonNull(this.processingTime.record(() -> {
       try {
         int retries = 5;
-        Actions returnActions = null;
+        Actions returnActions;
         do {
           try {
             returnActions = runUpdate(questionnaireId, revision, actions);

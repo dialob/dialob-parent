@@ -29,7 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Optional;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Profile("ui")
 public class QuestionnaireSecurityConfigurer extends WebUISecurityConfigurer {
 

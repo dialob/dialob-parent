@@ -27,7 +27,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class ActuatorEndpointSecurityConfiguration {
 
   private final RequestMatcher GET_REQUEST = request -> HttpMethod.GET.matches(request.getMethod());
