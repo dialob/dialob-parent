@@ -46,7 +46,7 @@ public class AssetFormDatabase implements FormDatabase {
 
   @NonNull
   @Override
-  public Form findOne(String tenantId, @NonNull String id, String rev) {
+  public Form findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     return assetFormDeserializer.deserialize(
         assetRepository.createQuery().id(id).rev(rev).get()
         .orElseThrow(() -> new DocumentNotFoundException(String.format("Can't find document by id = %s, rev = %s!", id, rev))));
@@ -54,12 +54,12 @@ public class AssetFormDatabase implements FormDatabase {
 
   @NonNull
   @Override
-  public Form findOne(String tenantId, @NonNull String id) {
+  public Form findOne(@NonNull String tenantId, @NonNull String id) {
     return findOne(tenantId, id, null);
   }
 
   @Override
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     return assetRepository.createQuery().id(id).get().isPresent();
   }
 

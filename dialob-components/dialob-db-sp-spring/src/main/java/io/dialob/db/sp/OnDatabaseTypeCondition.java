@@ -27,6 +27,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class is a custom condition implementation for determining if specific
+ * database-related configuration should be applied based on the active database type.
+ * The condition checks if the database type specified in an {@link ConditionalOnDatabaseType}
+ * annotation matches any of the database types currently configured in the application
+ * environment properties.
+ *
+ * The mechanism involves checking environment keys such as `dialob.db.database-type`,
+ * `dialob.form-database.database-type`, and `dialob.questionnaire-database.database-type`,
+ * and verifying if any of their values align with the database type specified in the annotation.
+ *
+ * If a match is found, the condition is treated as fulfilled, and the configuration
+ * associated with the annotated component will be activated. Otherwise, it will be ignored.
+ *
+ * Logging is provided for cases when database values from configuration properties cannot
+ * be mapped to a known {@link DialobSettings.DatabaseType}. It also suggests acceptable values
+ * to assist debugging invalid configurations.
+ */
 @Slf4j
 public class OnDatabaseTypeCondition extends SpringBootCondition {
 

@@ -62,8 +62,7 @@ public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
     UUID uuid;
     if (oid instanceof UUID) {
       uuid = (UUID) oid;
-    } else if (oid instanceof byte[]) {
-      byte[] bytes = (byte[]) oid;
+    } else if (oid instanceof byte[] bytes) {
       if (bytes.length == 16) {
         return bytes;
       }

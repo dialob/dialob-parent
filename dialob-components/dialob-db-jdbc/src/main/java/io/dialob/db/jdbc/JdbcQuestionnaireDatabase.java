@@ -48,7 +48,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @Slf4j
-public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire,Questionnaire.Metadata> implements QuestionnaireDatabase {
+public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire> implements QuestionnaireDatabase {
 
   private final FormVersionControlDatabase versionControlDatabase;
   private final String formIdToNameView;
@@ -324,21 +324,6 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
   @Override
   protected Questionnaire updateDocumentRev(@NonNull Questionnaire document, String rev) {
     return ImmutableQuestionnaire.builder().from(document).rev(rev).build();
-  }
-
-  protected Integer getFormRevision(@NonNull Questionnaire document) {
-    String rev = document.getMetadata().getFormRev();
-    if (rev == null) {
-      return null;
-    } else if ("LATEST".equals(rev)) {
-      return 0;
-    } else {
-      return Integer.parseInt(rev);
-    }
-  }
-
-  protected String toFormRevision(int formRev) {
-    return formRev == 0 ? "LATEST" : Integer.toString(formRev);
   }
 
 }

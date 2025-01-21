@@ -24,13 +24,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public abstract class JdbcBackendDatabase<T,M> extends AbstractDocumentDatabase<T> implements JdbcDatabase {
+public abstract class JdbcBackendDatabase<T> extends AbstractDocumentDatabase<T> implements JdbcDatabase {
 
   protected final String tableName;
 
@@ -77,7 +78,7 @@ public abstract class JdbcBackendDatabase<T,M> extends AbstractDocumentDatabase<
 
   public abstract T findOne(@NonNull String tenantId, @NonNull String id, String rev);
 
-  protected String toId(byte[] oid) {
+  protected String toId(@NonNull byte[] oid) {
     return Hex.encodeHexString(oid);
   }
 
@@ -86,7 +87,7 @@ public abstract class JdbcBackendDatabase<T,M> extends AbstractDocumentDatabase<
   }
 
   @NonNull
-  public T findOne(String tenantId, @NonNull String id) {
+  public T findOne(@NonNull String tenantId, @NonNull String id) {
     return findOne(tenantId, id, null);
   }
 
@@ -99,7 +100,7 @@ public abstract class JdbcBackendDatabase<T,M> extends AbstractDocumentDatabase<
       } else {
         count = template.queryForObject("select count(*) from " + tableName + " where id = ?", Integer.class, toJdbcId(oid));
       }
-      return count > 0;
+      return Objects.nonNull(count) && count > 0;
     });
   }
 

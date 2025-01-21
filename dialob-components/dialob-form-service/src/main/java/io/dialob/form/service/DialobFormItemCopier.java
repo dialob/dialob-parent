@@ -42,7 +42,7 @@ public class DialobFormItemCopier implements FormItemCopier {
     String nextID;
     do {
       nextID = id + ++suffix;
-    } while (formData.keySet().contains(nextID));
+    } while (formData.containsKey(nextID));
     return nextID;
   }
 
@@ -68,7 +68,10 @@ public class DialobFormItemCopier implements FormItemCopier {
     if (composerMetadata == null) {
       return false;
     }
+    @SuppressWarnings("unchecked")
     final var composer = (Map<String, Object>) composerMetadata;
+
+    @SuppressWarnings("unchecked")
     final var globalValueSets = (List<Map<String, String>>) composer.get("globalValueSets");
     return globalValueSets != null && globalValueSets.stream().anyMatch(gvs -> gvs.get("valueSetId").equals(valueSetId));
   }
@@ -139,9 +142,8 @@ public class DialobFormItemCopier implements FormItemCopier {
     });
 
     // Update variable references within new branch
-    Map<String, FormItem> renamedItems = new HashMap<>();
     ImmutableForm build = formBuilder.build();
-    renamedItems.putAll(build.getData());
+    Map<String, FormItem> renamedItems = new HashMap<>(build.getData());
     idRenamerSingleItem(renamedItems, build, newId, idRenameMap);
     formBuilder.data(renamedItems);
     return Pair.of(formBuilder.build(), errors);

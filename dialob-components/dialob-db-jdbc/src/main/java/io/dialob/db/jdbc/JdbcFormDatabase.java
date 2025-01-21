@@ -44,7 +44,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.FormMetadataRow> implements FormDatabase {
+public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormDatabase {
 
   public JdbcFormDatabase(JdbcTemplate jdbcTemplate,
                           DatabaseHelper databaseHelper,
@@ -57,6 +57,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
   }
 
   @NonNull
+  @Override
   public Form findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     Integer revision = Utils.validateRevValue(rev);
     byte[] oid = Utils.toOID(id);
@@ -91,6 +92,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
   }
 
   @NonNull
+  @Override
   public Form save(String tenantId, @NonNull Form document) {
     return doTransaction(template -> {
       final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -121,7 +123,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
     });
   }
 
-  protected Form toObject(byte[] oid, int objectRev, String tenantId, Timestamp created, Timestamp updated, Reader reader) {
+  protected Form toObject(@NonNull byte[] oid, int objectRev, String tenantId, Timestamp created, Timestamp updated, Reader reader) {
     try {
       final Form form = objectMapper.readValue(reader, Form.class);
       return ImmutableForm.builder().from(form)
@@ -130,7 +132,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form,FormDatabase.Form
         .metadata(ImmutableFormMetadata.builder().from(form.getMetadata()).created(new Date(created.getTime())).tenantId(tenantId).build())
         .build();
     } catch (IOException e) {
-      throw new DocumentCorruptedException("Could not read document " + oid + ":" + e.getMessage());
+      throw new DocumentCorruptedException("Could not read document " + toId(oid) + ":" + e.getMessage());
     }
   }
 
