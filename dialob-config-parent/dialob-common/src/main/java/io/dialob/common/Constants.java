@@ -46,6 +46,11 @@ public final class Constants {
   public static final String VALID_ID_PATTERN = "^\\p{Alpha}[_\\p{Alnum}]*$";
   public static final Pattern VALID_ID_PATTERN_COMPILED = Pattern.compile(VALID_ID_PATTERN);
 
+  /**
+   * A regular expression pattern that defines a valid revision identifier.
+   * This pattern matches strings containing 1 to 64 characters composed of
+   * hexadecimal digits (0-9, a-f, A-F) and hyphens ('-').
+   */
   public static final String VALID_REV_PATTERN = "[\\p{XDigit}-]{1,64}";
   public static final Pattern VALID_REV_PATTERN_COMPILED = Pattern.compile(VALID_REV_PATTERN);
 

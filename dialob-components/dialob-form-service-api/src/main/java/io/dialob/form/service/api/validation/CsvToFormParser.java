@@ -18,6 +18,18 @@ package io.dialob.form.service.api.validation;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 
+/**
+ * Interface for parsing CSV input into a `Form` representation.
+ * Implementations are expected to read the CSV content, validate the structure,
+ * map the entries to a `Form` object, and provide meaningful error handling for
+ * invalid or improperly formatted input.
+ */
 public interface CsvToFormParser {
+  /**
+   * Parses the provided CSV string and converts it into a `Form` object representation.
+   *
+   * @param formCsv the input CSV content to be parsed; must not be null
+   * @return the resulting `Form` object constructed from the CSV data
+   */
   Form parseCsv(@NonNull String formCsv);
 }

@@ -18,6 +18,8 @@ package io.dialob.questionnaire.service.submit;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
@@ -33,6 +35,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 
+@Setter
+@Getter
 @Slf4j
 public class PostSubmitHandler implements AnswerSubmitHandler {
 
@@ -90,11 +94,4 @@ public class PostSubmitHandler implements AnswerSubmitHandler {
     return restTemplate;
   }
 
-  public ClientHttpRequestFactory getRequestFactory() {
-    return requestFactory;
-  }
-
-  public void setRequestFactory(ClientHttpRequestFactory requestFactory) {
-    this.requestFactory = requestFactory;
-  }
 }

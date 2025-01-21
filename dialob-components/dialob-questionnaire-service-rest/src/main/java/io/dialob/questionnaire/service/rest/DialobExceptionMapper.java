@@ -23,14 +23,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class DialobExceptionMapper {
-    @ExceptionHandler
-    public ResponseEntity formDataMissingException(FormDataMissingException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                "{\"error\":\"form_not_found\",\"reason\":\"" +exception.getMessage() + "\"}"
-        );
-    }
 
-
-
+  @ExceptionHandler
+  public ResponseEntity formDataMissingException(FormDataMissingException exception) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+      "{\"error\":\"form_not_found\",\"reason\":\"" + exception.getMessage() + "\"}"
+    );
+  }
 
 }

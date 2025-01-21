@@ -19,10 +19,6 @@ import io.dialob.api.form.Form;
 
 public interface FormFinder {
 
-  default Form findForm(String formId) {
-    return findForm(formId, null);
-  }
-
   Form findForm(String formId, String formRev);
 
 }
