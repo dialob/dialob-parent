@@ -37,6 +37,7 @@ import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.DisplayItem;
+import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
 import lombok.EqualsAndHashCode;
@@ -55,6 +56,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static io.dialob.session.engine.Utils.*;
 
@@ -307,10 +309,12 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       MDC.put(Constants.QUESTIONNAIRE, getSessionId().orElse("new-session"));
       boolean revisionMatch = revision != null && revision.equals(prevRevision);
       LOGGER.debug("revision comparison: {} vs. {} == {}", revision,prevRevision, revisionMatch);
-      DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, state.get());
+      DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, state.get() == DialobQuestionnaireSession.State.ACTIVATING);
       final FormActions formActions = new FormActions();
+
+      final var commands = ActionToCommandMapper.toCommands(actions);
       sessionUpdater
-        .dispatchActions(actions)
+        .applyCommands(commands)
         .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this.toActionItemFunction)) {
           @Override
           public void visitCompleted() {
@@ -379,6 +383,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       .activeItem(getActiveItem().orElse(null)) // deprecated
       .valueSets(getProvidedValueSets())
       .metadata(getQuestionnaireMetadata())
+      .activeItems(getActiveItems())
       .build();
   }
 
@@ -396,9 +401,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     }
     return ImmutableQuestionnaireMetadata.builder()
       .from(metadata)
-      .lastAnswer(new Date(dialobSession.getLastUpdate().toEpochMilli()))
-      .completed(dialobSession.getCompleted() != null ? new Date(dialobSession.getCompleted().toEpochMilli()) : null)
-      .opened(dialobSession.getOpened() != null ? new Date(dialobSession.getOpened().toEpochMilli()) : null)
+      .lastAnswer(Date.from(dialobSession.getLastUpdate()))
+      .completed(dialobSession.getCompleted() != null ? Date.from(dialobSession.getCompleted()) : null)
+      .opened(dialobSession.getOpened() != null ? Date.from(dialobSession.getOpened()) : null)
       .status(status)
       .language(dialobSession.getLanguage())
       .tenantId(dialobSession.getTenantId())
@@ -538,6 +543,23 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       }
     });
     return formItems;
+  }
+
+  @NonNull
+  @Override
+  public Set<String> getActiveItems() {
+    var activeSet = new HashSet<String>();
+    dialobSession.accept(new DialobSessionVisitor() {
+      @Override
+      public Optional<ItemVisitor> visitItemStates() {
+        return Optional.of(itemState -> {
+          if (itemState.isActive()) {
+            activeSet.add(IdUtils.toString(itemState.getId()));
+          }
+        });
+      }
+    });
+    return activeSet;
   }
 
   @NonNull
@@ -698,6 +720,16 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive() && !itemState.isDisabled();
     };
   }
+
+  Predicate<SessionObject> getIsActivePredicate() {
+    return switch (questionClientVisibility) {
+      case ALL -> itemState -> itemState != null && itemState.isDisplayItem();
+      case SHOW_DISABLED -> itemState -> itemState != null && itemState.isActive();
+      default ->
+        itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive() && !itemState.isDisabled();
+    };
+  }
+
 
   private void publishQuestionnaireActions(String nextRevision, List<Action> actionQueue) {
     if (!actionQueue.isEmpty() && eventPublisher != null) {

@@ -16,17 +16,20 @@
 package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.program.expr.OutputFormatter;
 import io.dialob.session.engine.session.AsyncFunctionCall;
 import io.dialob.session.engine.session.ImmutableAsyncFunctionCall;
 import io.dialob.session.engine.session.command.Command;
+import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -68,7 +71,7 @@ public class DialobSessionEvalContext implements EvalContext {
     @NonNull DialobSession dialobSession,
     @NonNull Consumer<Event> updatesConsumer,
     boolean activating,
-    DialobSessionUpdateHook dialobSessionUpdateHook)
+    @Nullable DialobSessionUpdateHook dialobSessionUpdateHook)
   {
     this.parent = null;
     this.scope = null;
@@ -102,9 +105,19 @@ public class DialobSessionEvalContext implements EvalContext {
     this.dialobSessionUpdateHook = parent.dialobSessionUpdateHook;
   }
 
+  private Stream<Command<?>> matchPartialCommands(Command<?> command) {
+    if (command instanceof UpdateCommand updateCommand) {
+      final ItemId targetId = updateCommand.getTargetId();
+      if (targetId.isPartial()) {
+        return dialobSession.findMatchingItemIds(targetId).map((Function<? super ItemId, ? extends Command<?>>) updateCommand::withTargetId);
+      }
+    }
+    return Stream.of(command);
+  }
 
-  public void applyAction(@NonNull Command<?> action) {
-    dialobSessionUpdateHook.hookAction(dialobSession, action, a -> this.dialobSession.applyUpdate(this, a));
+  public void applyCommand(@NonNull Command<?> applyCommand) {
+    matchPartialCommands(applyCommand)
+      .forEach(command -> dialobSessionUpdateHook.hookAction(dialobSession, command, c -> this.dialobSession.applyUpdate(this, c)));
   }
 
   @Override
@@ -297,11 +310,6 @@ public class DialobSessionEvalContext implements EvalContext {
   @Override
   public boolean isActivating() {
     return activating;
-  }
-
-  @Override
-  public Optional<ItemState> findHoistingGroup(ItemId id) {
-    return this.dialobSession.findHoistingGroup(id);
   }
 
   @Override

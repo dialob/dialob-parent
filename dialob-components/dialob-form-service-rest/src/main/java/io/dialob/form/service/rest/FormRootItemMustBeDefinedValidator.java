@@ -22,6 +22,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+/**
+ * Validates Form objects to ensure they meet defined constraints.
+ * This validator specifically checks if the root form item is defined
+ * for a given form. It is implemented for use with the Spring framework's
+ * validation mechanism by implementing the Validator interface.
+ */
 @Slf4j
 public class FormRootItemMustBeDefinedValidator implements Validator {
 

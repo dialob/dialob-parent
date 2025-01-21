@@ -81,7 +81,7 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   public static class TestThreadPoolTaskScheduler extends ThreadPoolTaskScheduler {
-    private List<Runnable> delayedTasks = new ArrayList<>();
+    private final List<Runnable> delayedTasks = new ArrayList<>();
 
     @Override
     public void execute(Runnable task) {
@@ -180,11 +180,10 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   protected FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
-    FormItem formItemBean = addItem(formBuilder, "questionnaire", builder -> {
+    return addItem(formBuilder, "questionnaire", builder -> {
       builder.type("questionnaire");
       builderConsumer.accept(builder);
     });
-    return formItemBean;
   }
 
   protected FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {

@@ -15,7 +15,10 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.FormItem;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -115,7 +118,7 @@ public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
         formItemBean = ImmutableFormItem.builder().from(formItemBean).items(asList("q1", "q2")).build();
         updateFormOnlineBuilder2.putData(formItemBean.getId(), formItemBean);
         addItem(updateFormOnlineBuilder2, "q2", builder -> builder.type("text").putLabel("en", "Kysymys 2"));
-        Form formDocument2 = shouldFindForm(updateFormOnlineBuilder2.build());
+        shouldFindForm(updateFormOnlineBuilder2.build());
         applicationEventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder()
           .source("sourc3")
           .formId("updateFormOnline")

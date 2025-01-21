@@ -49,10 +49,7 @@ public class CSVSerializer {
 
   private Optional<FormValueSetEntry> getChoice(Form form, String valueSetId, Object answer) {
     Optional<FormValueSet> valueSet = form.getValueSets().stream().filter(vs -> vs.getId().equals(valueSetId)).findFirst();
-    if (valueSet.isPresent()) {
-      return valueSet.get().getEntries().stream().filter(vse -> vse.getId().equals(answer)).findFirst();
-    }
-    return Optional.empty();
+    return valueSet.flatMap(formValueSet -> formValueSet.getEntries().stream().filter(vse -> vse.getId().equals(answer)).findFirst());
   }
 
   private String getValuesetAnswer(Form form, Questionnaire questionnaire, String valueSetId, String valueKey) {

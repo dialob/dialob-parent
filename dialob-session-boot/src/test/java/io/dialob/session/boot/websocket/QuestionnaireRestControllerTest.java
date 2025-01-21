@@ -77,7 +77,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   public void testGetQuestionnaires() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("123").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
-    FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
+    addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
 
 
     Form form = formBuilder.build();
@@ -88,14 +88,6 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
     createAndOpenSession("123", "321")
       .expectActivated()
-//      .expectActions(actions -> {
-//        Assertions.assertThat(actions.getActions())
-//          .extracting("type", "item.id", "item.items")
-//          .containsOnly(
-//            tuple(Action.Type.RESET,   null, null),
-//            tuple(Action.Type.ITEM, "questionnaire", asList())
-//          );
-//      })
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
@@ -118,7 +110,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("testNextPage").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
-    FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1", "g2"));
+    addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1", "g2"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1"));
     addItem(formBuilder, "g2", builder -> builder.type("group").putLabel("en","Group2"));
 

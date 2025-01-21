@@ -107,8 +107,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     // Child refs
     int index = item.getItems().indexOf(oldId);
     if (index > -1) {
-      List<String> newItems = new ArrayList<>();
-      newItems.addAll(item.getItems());
+      List<String> newItems = new ArrayList<>(item.getItems());
       newItems.set(index, newId);
       builder.items(newItems);
     }
@@ -131,8 +130,8 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     }
     UnaryOperator<String> idRenamer = compiler.createIdRenamer(oldId, newId);
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().from(form);
-    formBuilder.data(form.getData().entrySet().stream()
-      .map(itemEntry -> renameItemAndAttributes(itemEntry.getValue(), idRenamer, oldId, newId))
+    formBuilder.data(form.getData().values().stream()
+      .map(formItem -> renameItemAndAttributes(formItem, idRenamer, oldId, newId))
       .collect(toMap(FormItem::getId, item -> item)));
     List<io.dialob.api.form.Variable> updatedVariables = new ArrayList<>();
     // Handle variable expressions

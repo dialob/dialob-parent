@@ -21,12 +21,12 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
-import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -57,7 +57,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
-    DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
     final EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
     final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
@@ -71,22 +71,22 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     InOrder order = Mockito.inOrder(visitor, errorVisitor, itemVisitor, valueSetVisitor);
 
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
-    sessionUpdater.dispatchActions(nextPage());
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
-    sessionUpdater.dispatchActions(answer(toRef("question1"), "35"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "35")));
     assertValueEquals(dialobSession,toRef("question1"), BigInteger.valueOf(35));
 
-    sessionUpdater.dispatchActions(answer(toRef("question3"), "true"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question3"), "true")));
     assertActive(dialobSession, toRef("question3"));
     assertValueEquals(dialobSession,toRef("question3"),true);
-    sessionUpdater.dispatchActions(answer(toRef("question4"), "true"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question4"), "true")));
     assertValueEquals(dialobSession,toRef("question4"),true);
 
-    sessionUpdater.dispatchActions(answer(toRef("question5"), "30001"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question5"), "30001")));
     assertValueEquals(dialobSession,toRef("question5"),BigInteger.valueOf(30001));
 
-    sessionUpdater.dispatchActions(answer(toRef("question6"), "opt2"))
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question6"), "opt2")))
       .accept(visitor);
     assertValueEquals(dialobSession,toRef("question6"),"opt2");
 

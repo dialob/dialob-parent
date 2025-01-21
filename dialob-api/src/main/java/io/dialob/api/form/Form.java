@@ -41,6 +41,16 @@ import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.validation.WithValidation;
 
+/**
+ * Represents a form object that holds a collection of information required for form management
+ * in the system. This class provides a structure to define form-specific metadata, data, variables,
+ * namespaces, value sets, and error messages related to required fields.
+ *
+ * This interface makes use of immutability and supports serialization/deserialization
+ * using libraries such as JSON and Gson. It also integrates with MongoDB for repository storage.
+ *
+ * The Form interface supports validation rules and ensures non-null constraints for key fields.
+ */
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableForm.class)
@@ -52,6 +62,11 @@ import io.dialob.api.validation.WithValidation;
 @Mongo.Repository("forms")
 public interface Form extends WithValidation<Form>, FormEntity {
 
+  /**
+   * Retrieves the unique identifier of the form.
+   *
+   * @return the form's unique identifier as a String, or null if the identifier is not set.
+   */
   @JsonProperty("_id")
   @Gson.Named("_id")
   @Id
@@ -59,6 +74,13 @@ public interface Form extends WithValidation<Form>, FormEntity {
   @Mongo.Id
   String getId();
 
+  /**
+   * Retrieves the revision identifier of the form. The revision identifier
+   * is used to track changes to the form, ensuring version control and
+   * consistency during updates or modifications.
+   *
+   * @return the revision identifier as a String, or null if the revision is not set.
+   */
   @JsonProperty("_rev")
   @Gson.Named("_rev")
   @Version

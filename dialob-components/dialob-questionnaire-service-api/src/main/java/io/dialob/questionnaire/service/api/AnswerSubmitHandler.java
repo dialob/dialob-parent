@@ -20,6 +20,11 @@ import io.dialob.api.questionnaire.Questionnaire;
 
 import java.util.Map;
 
+/**
+ * The AnswerSubmitHandler interface provides functionality for handling the submission
+ * of questionnaire answers. Implementations of this interface define how the submitted
+ * data is processed and stored or forwarded to a specific system.
+ */
 public interface AnswerSubmitHandler {
 
   interface Settings {
@@ -30,5 +35,15 @@ public interface AnswerSubmitHandler {
 
   }
 
+  /**
+   * Handles the submission of a questionnaire document using the provided settings.
+   * The method processes the given questionnaire based on the configurations defined
+   * in the submitHandlerSettings parameter.
+   *
+   * @param submitHandlerSettings configurations and properties used for handling the submission,
+   *                              such as system-specific settings or parameters.
+   * @param document the questionnaire to be submitted, including answers, metadata, context values,
+   *                 and associated properties.
+   */
   void submit(@NonNull Settings submitHandlerSettings, @NonNull Questionnaire document);
 }

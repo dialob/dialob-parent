@@ -67,7 +67,7 @@ public abstract class BaseMongoDbDatabase<T, M extends T, R extends MongoReposit
   protected abstract M toMongo(T document);
 
   @NonNull
-  public T findOne(String tenantId, @NonNull String id, String rev) {
+  public T findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     return doMongo(repository -> {
       final String mongoId = toMongoId(id);
       Optional<M> document = Optional.empty();
@@ -82,11 +82,11 @@ public abstract class BaseMongoDbDatabase<T, M extends T, R extends MongoReposit
   }
 
   @NonNull
-  public T findOne(String tenantId, @NonNull String id) {
+  public T findOne(@NonNull String tenantId, @NonNull String id) {
     return findOne(tenantId, id, null);
   }
 
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     return doMongo(repository -> {
       final String mongoId = toMongoId(id);
       if (mongoId == null) {

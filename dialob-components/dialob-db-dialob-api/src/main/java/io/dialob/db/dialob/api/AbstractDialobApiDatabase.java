@@ -30,7 +30,7 @@ public abstract class AbstractDialobApiDatabase<T> extends AbstractDocumentDatab
   }
 
   @NonNull
-  public T findOne(String tenantId, @NonNull String id, String rev) {
+  public T findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     return dialobApiTemplate.findOne(resource, id, rev, getDocumentClass());
   }
 
@@ -40,11 +40,11 @@ public abstract class AbstractDialobApiDatabase<T> extends AbstractDocumentDatab
   }
 
   @NonNull
-  public T findOne(String tenantId, @NonNull String id) {
+  public T findOne(@NonNull String tenantId, @NonNull String id) {
     return findOne(tenantId, id, null);
   }
 
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     throw new UnsupportedOperationException("exists not supported");
   }
 

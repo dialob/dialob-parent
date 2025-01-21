@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.questionnaire.Error;
+import lombok.Getter;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
@@ -35,7 +36,8 @@ import java.util.List;
 @Value.Style(jdkOnly = true)
 public interface Action extends Serializable {
 
-  public enum Type {
+  @Getter
+  enum Type {
     ANSWER(true),
     NEXT(true),
     PREVIOUS(true),
@@ -65,9 +67,6 @@ public interface Action extends Serializable {
       this.clientAction = clientAction;
     }
 
-    public boolean isClientAction() {
-      return clientAction;
-    }
   }
 
   Type getType();

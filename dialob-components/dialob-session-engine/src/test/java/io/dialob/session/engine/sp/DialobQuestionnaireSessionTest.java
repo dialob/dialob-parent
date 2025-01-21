@@ -288,6 +288,8 @@ class DialobQuestionnaireSessionTest {
         Tuple.tuple("rowg2", Arrays.asList(1,2,3), null)
       );
 
+    assertThat(session.getActiveItems()).containsOnlyOnce("rowg3.1", "rowg", "rowg2");
+
     verify(dialobProgram,times(2)).getItem(any());
     verifyNoMoreInteractions(eventPublisher, dialobProgram);
   }
@@ -345,9 +347,27 @@ class DialobQuestionnaireSessionTest {
     assertEquals(2L, session.getDialobSession().getLastAnswer().toEpochMilli());
 
     verifyNoMoreInteractions(eventPublisher, dialobProgram);
+  }
 
-
+  @Test
+  public void testObjectVisibilityWhenShowInactiveIsFalse2() {
+    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
+    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
+    DialobSession dialobSession = Mockito.mock(DialobSession.class);
+    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
+    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
+    DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
+      .eventPublisher(eventPublisher)
+      .sessionContextFactory(sessionContextFactory)
+      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev(questionnaire.getRev())
+      .metadata(questionnaire.getMetadata())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
   }
 
 
-}
+  }

@@ -80,7 +80,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
 
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id, String rev) {
+  public F findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     try {
       String objectName = objectName(tenantId, id);
       InputStream blob = this.blobContainerClient
@@ -106,7 +106,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
   }
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id) {
+  public F findOne(@NonNull String tenantId, @NonNull String id) {
       return findOne(tenantId, id, null);
   }
 
@@ -118,7 +118,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
       .forEach(fileConsumer);
 }
 
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     return this.blobContainerClient
       .getBlobClient(objectName(tenantId, id))
       .exists();

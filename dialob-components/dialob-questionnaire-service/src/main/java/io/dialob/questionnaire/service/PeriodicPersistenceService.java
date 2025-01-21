@@ -31,6 +31,29 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Service responsible for managing periodic persistence of questionnaire sessions
+ * in response to specific questionnaire-related events. Utilizes a thread pool task scheduler
+ * to schedule and manage save operations for active sessions.
+ *
+ * This service listens for {@link QuestionnaireActionsEvent}, and upon detection,
+ * schedules a task that saves the associated questionnaire session after a configured delay.
+ * If a previously scheduled task for the same questionnaire ID is still active, it is canceled
+ * before scheduling a new one.
+ *
+ * Periodic persistence tasks are only executed for sessions that are not completed.
+ * The save operation is delegated to {@link QuestionnaireSessionSaveService}, which also
+ * leverages caching for returned session data.
+ *
+ * Key components:
+ * - The {@link QuestionnaireSessionService} is utilized to retrieve session details.
+ * - The {@link ThreadPoolTaskScheduler} is used to schedule and execute save operations.
+ * - The {@link DialobSettings} is used to configure the time interval for the autosave tasks.
+ * - The {@link CurrentTenant} enables tenant-aware operations to ensure session persistence aligns with the current tenant context.
+ *
+ * Logging is performed to provide insight into service activation, session save events,
+ * and any relevant debug details.
+ */
 @Slf4j
 public class PeriodicPersistenceService {
 

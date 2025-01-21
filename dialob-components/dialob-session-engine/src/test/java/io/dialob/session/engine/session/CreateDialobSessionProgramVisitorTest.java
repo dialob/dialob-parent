@@ -30,8 +30,8 @@ import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -121,16 +121,16 @@ class CreateDialobSessionProgramVisitorTest {
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
-    DialobSessionUpdater sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession, true);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
+    ActiveDialobSessionUpdater sessionUpdater = (ActiveDialobSessionUpdater) contextFactory.createSessionUpdater(dialobProgram, dialobSession, true);
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.addRow("rg"))));
 
-    sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession, false);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q1", 1)));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q2", 1)));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q1", 2.0)));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q2", 2.0)));
+    sessionUpdater = (ActiveDialobSessionUpdater) contextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.0.q1", 1))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.0.q2", 1))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.2.q1", 2.0))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.2.q2", 2.0))));
 
     assertTrue(dialobSession.getItemState(Operators.ref("rg.0")).isPresent());
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
@@ -141,7 +141,7 @@ class CreateDialobSessionProgramVisitorTest {
     assertEquals(BigInteger.ONE, dialobSession.getItemState(IdUtils.toId("rg.0.q1")).get().getValue());
     assertEquals(BigDecimal.valueOf(1.0), dialobSession.getItemState(IdUtils.toId("rg.0.q2")).get().getValue());
 
-    EvalContext context = contextFactory.createDialobSessionEvalContext(dialobSession, event -> {}, false);
+    EvalContext context = sessionUpdater.createEvalContext();
 
 //    ItemId test = context.mapTo(IdUtils.toId("q2"), true);
     Optional<ItemState> test = context.findPrototype(IdUtils.toId("q2"));

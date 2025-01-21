@@ -36,7 +36,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -132,12 +131,11 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
   public Optional<FormTag> createTag(@NonNull String tenantId, @NonNull String formName, String newTag, String description, String formDocumentIdOrRefName, @NonNull FormTag.Type type) {
     assertTenantContextDefined(tenantId);
     try {
-      String resolvedFormDocumentId = null;
+      String resolvedFormDocumentId;
       String resolvedRefName = null;
 
       if (type == FormTag.Type.NORMAL) {
         resolvedFormDocumentId = formDocumentIdOrRefName;
-        resolvedRefName = null;
         if (!exists(tenantId, resolvedFormDocumentId)){
           return Optional.empty();
         }
@@ -164,7 +162,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         sqlParameters.add(tenantId);
 
 
-        int updated = template.update("insert into " + formRevTableName + " (tenant_id,form_name, name, description, form_document_id, type, ref_name) select tenant_id, name, ?, ?, ?, ?, ? from " + formTableName + where.toString(), sqlParameters.toArray());
+        int updated = template.update("insert into " + formRevTableName + " (tenant_id,form_name, name, description, form_document_id, type, ref_name) select tenant_id, name, ?, ?, ?, ?, ? from " + formTableName + where, sqlParameters.toArray());
         if (updated > 0) {
           return findTag(tenantId, formName, newTag);
         }
@@ -334,10 +332,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       }
       terms.add("tenant_id = ?");
       params.add(tenantId);
-      String where = "";
-      if (!terms.isEmpty()) {
-        where = " where " + String.join(" and ", terms);
-      }
+      String where = " where " + String.join(" and ", terms);
       return template.query("select form_name, name, description, created, form_document_id, type, ref_name from " + formRevTableName + where, formTagRowMapper, params.toArray(new Object[0]));
     });
   }
@@ -351,7 +346,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     return doTransaction(template -> findTag(tenantId, updateTag.getFormName(), updateTag.getRefName()).map(tag -> {
       // Can make ref only to normal tag
       if (tag.getType() != FormTag.Type.NORMAL) {
-        throw new DocumentCorruptedException(String.format("Referred tag must be immutable", updateTag.getFormName(), updateTag.getName()));
+        throw new DocumentCorruptedException(String.format("Form %s referred tag %s must be immutable", updateTag.getFormName(), updateTag.getName()));
       }
       int count = template.update("update " + formRevTableName + " set updated = current_timestamp, form_document_id = ?, ref_name = ?, description = ? where type = 'MUTABLE' and form_name = ? and name = ? and tenant_id = ?",
         toJdbcId(Utils.toOID(tag.getFormId())),
@@ -470,7 +465,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         conditions.add("data->'metadata' @> ?");
         params.add(getDatabaseHelper().jsonObject(objectMapper, metadata));
       }
-      String where = conditions.stream().collect(Collectors.joining(" and "));
+      String where = String.join(" and ", conditions);
       if (StringUtils.isNotBlank(where)) {
         where = " where " + where;
       }

@@ -29,6 +29,12 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Represents a local implementation of the {@link QuestionnaireSessionCache} interface that uses an
+ * in-memory cache to manage {@link QuestionnaireSession} instances.
+ * This class provides functionality to cache, retrieve, evict, and clear questionnaire sessions
+ * while supporting custom eviction logic.
+ */
 @Slf4j
 public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache {
 
@@ -134,7 +140,9 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     if (valueWrapper == null) {
       return null;
     }
-    return (T) valueWrapper.get();
+    @SuppressWarnings("unchecked")
+    T value = (T) valueWrapper.get();
+    return value;
   }
 
   @Override
@@ -147,7 +155,9 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
         throw new ValueRetrievalException(key, valueLoader, e);
       }
     }
-    return (T) valueWrapper.get();
+    @SuppressWarnings("unchecked")
+    T value = (T) valueWrapper.get();
+    return value;
   }
 
   @Override

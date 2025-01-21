@@ -21,6 +21,11 @@ import org.immutables.value.Value;
 
 import java.util.function.Consumer;
 
+/**
+ * Represents an interface for managing form documents in a database.
+ * Allows for operations such as retrieving, saving, checking existence,
+ * deleting, and querying metadata of form documents.
+ */
 public interface FormDatabase {
 
   @NonNull

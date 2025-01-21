@@ -266,7 +266,7 @@ public class DialobQuestionnaireSessionServiceTest {
     return fillForm(formDocument, questionnaire);
   }
 
-    protected FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) throws java.io.IOException {
+    protected FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) {
     String docId = UUID.randomUUID().toString();
     String formId = formDocument.getId();
     questionnaire = ImmutableQuestionnaire.builder().from(questionnaire).id(docId).metadata(ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
