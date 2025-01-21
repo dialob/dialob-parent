@@ -55,7 +55,7 @@ public final class Constants {
   public static final String VALID_FORM_ID_PATTERN = VALID_FORM_NAME_PATTERN;
   public static final Pattern VALID_FORM_ID_PATTERN_COMPILED = Pattern.compile(VALID_FORM_ID_PATTERN);
 
-  public static final String VALID_FORM_TAG_PATTERN = VALID_FORM_NAME_PATTERN;
+  public static final String VALID_FORM_TAG_PATTERN = "[\\p{Alnum}-_.]+";
   public static final Pattern VALID_FORM_TAG_PATTERN_COMPILED = Pattern.compile(VALID_FORM_TAG_PATTERN);
 
   public static final String QUESTIONNAIRE_ID_PATTERN = "[\\p{XDigit}-]{1,64}";

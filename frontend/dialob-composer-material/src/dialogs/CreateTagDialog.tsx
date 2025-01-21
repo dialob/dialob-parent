@@ -31,7 +31,7 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   }, [open]);
 
   const handleCreate = () => {
-    const tagRegex = new RegExp(/^[0-9A-Za-z-_]+$/);
+    const tagRegex = new RegExp(/^[0-9A-Za-z-_.]+$/);
     if (!tagRegex.test(name)) {
       setError('dialogs.create.tag.error');
       return;
