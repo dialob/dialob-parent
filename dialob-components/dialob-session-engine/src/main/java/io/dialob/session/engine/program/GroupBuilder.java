@@ -194,7 +194,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     requireBooleanExpression(canAddRowWhen, FormValidationError.Type.VISIBILITY, errorConsumer);
 
     Objects.requireNonNull(type, "group type missing");
-    ItemId id = getId();
+    var id = getId();
 
     getHoistingGroup().ifPresent(hoistingGroupBuilder -> {
       if (activeWhen == BooleanOperators.TRUE) {
@@ -218,9 +218,8 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .descriptionExpression(createLabelOperator(description))
       .props(props);
 
-    switch (type) {
-      case ROOT:
-        builder = builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
+    builder = switch (type) {
+      case ROOT -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
           .addItems(ImmutablePair.of(Operators.not(ImmutableIsOnFirstPage.builder().build()), Action.Type.PREVIOUS))
           .addItems(ImmutablePair.of(
             Operators.and(Operators.not(ImmutableIsOnLastPage.builder().build()),
@@ -229,49 +228,33 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
           .addItems(ImmutablePair.of(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()), Action.Type.COMPLETE))
           .addItems(ImmutablePair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
         ).build());
-        break;
-      case PAGE:
-        // Disable page when it's not active
-        builder = builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
-        break;
-      case ROWGROUP:
-        builder = builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
+      // Disable page when it's not active
+      case PAGE -> builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
+      case ROWGROUP -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
           .addItems(ImmutablePair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
-          ).build());
-        builder = builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
-        break;
-      case GROUP:
-      case SURVEYGROUP:
-        // TODO hoisting page??
-        // Disable group when parent group is not active
-        builder = builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
-        break;
-    }
+          ).build())
+          .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+      // TODO hoisting page??
+      // Disable group when parent group is not active
+      case GROUP, SURVEYGROUP -> builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+    };
 
     if (type.haveSubItems()) {
         builder = builder
           .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(itemIds).build());
      }
 
-    switch (type) {
-      case GROUP:
-      case PAGE:
-        // nothing here
-        break;
-      case SURVEYGROUP:
-        builder = builder
+    builder = (switch (type) {
+      // nothing here
+      case GROUP, PAGE -> builder;
+      case SURVEYGROUP -> builder
           .valueSetId(Optional.ofNullable(this.valueSetId));
-        break;
-      case ROWGROUP:
-        builder = builder
+      case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
-        break;
-      case ROOT:
-        builder = builder
+      case ROOT -> builder
           .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> ImmutablePair.of((Expression) ImmutableIsActiveOperator.of(item), item)).collect(toList())).build())
           .isInvalidAnswersExpression(ImmutableIsAnyInvalidAnswersOperator.builder().build());
-        break;
-    }
+    });
 
     getProgramBuilder().addItem(builder.build());
     if (type == Type.ROWGROUP) {

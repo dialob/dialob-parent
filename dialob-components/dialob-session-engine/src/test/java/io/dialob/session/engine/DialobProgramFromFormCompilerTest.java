@@ -23,11 +23,11 @@ import io.dialob.api.proto.Action;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
+import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -84,29 +84,26 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
-//    assertEquals(1, errorStates.size());
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     assertErrorActive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), "answer")));
     assertErrorInactive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), "answer")));
     assertErrorInactive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), null)));
     assertErrorInactive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), null)));
     assertErrorActive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-
 
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
@@ -152,7 +149,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
 
     dialobSessionUpdater.dispatchActions(addRow(toRef("rg")));
@@ -211,7 +208,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
 
     assertErrorActive(session, toRef("q1"), "q1_error1");
@@ -285,7 +282,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
     assertErrorLabel(session, toRef("q1"), "q1_error1","fi");
     assertErrorLabel(session, toRef("q2"), "q2_error1","fi");
@@ -342,7 +339,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     dialobSessionUpdater.dispatchActions(setLocale("en"));
 
@@ -428,7 +425,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
     dialobSessionUpdater.dispatchActions(setLocale("en"));
 

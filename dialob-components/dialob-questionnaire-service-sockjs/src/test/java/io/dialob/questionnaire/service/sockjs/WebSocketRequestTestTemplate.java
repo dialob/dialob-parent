@@ -16,11 +16,13 @@
 package io.dialob.questionnaire.service.sockjs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
@@ -30,6 +32,7 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -65,7 +68,7 @@ public class WebSocketRequestTestTemplate {
   public void openSession() throws Exception {
     if (webSocketSession == null) {
       final StandardWebSocketClient standardWebSocketClient = new StandardWebSocketClient();
-      ArrayList<Transport> transports = new ArrayList();
+      ArrayList<Transport> transports = new ArrayList<>();
       WebSocketTransport transport = new WebSocketTransport(standardWebSocketClient);
       transports.add(transport);
       sockJsClient = new SockJsClient(transports);
@@ -73,7 +76,7 @@ public class WebSocketRequestTestTemplate {
       if (jsessionid != null) {
         headers.add("Cookie", jsessionid);
       }
-      final ListenableFuture<WebSocketSession> listenableFuture = sockJsClient.doHandshake(webSocketHandler, headers, new URI(uri));
+      final CompletableFuture<WebSocketSession> listenableFuture = sockJsClient.execute(webSocketHandler, headers, new URI(uri));
       assertFalse(listenableFuture.isDone());
       webSocketSession = listenableFuture.get(10, TimeUnit.SECONDS);
       assertTrue(listenableFuture.isDone());
@@ -81,12 +84,15 @@ public class WebSocketRequestTestTemplate {
     }
   }
 
+  @Getter
   public static abstract class WhenMessage {
 
     private final String name;
 
+    @Setter
     private Long delay;
 
+    @Setter
     private Expectations expectations;
 
     protected WhenMessage(String name) {
@@ -95,25 +101,6 @@ public class WebSocketRequestTestTemplate {
 
     public abstract void accept(WebSocketSession webSocketSession) throws Exception;
 
-    public String getName() {
-      return name;
-    }
-
-    public void setDelay(Long delay) {
-      this.delay = delay;
-    }
-
-    public Long getDelay() {
-      return delay;
-    }
-
-    public Expectations getExpectations() {
-      return expectations;
-    }
-
-    public void setExpectations(Expectations expectations) {
-      this.expectations = expectations;
-    }
   }
 
   public interface Expectation {
@@ -232,7 +219,7 @@ public class WebSocketRequestTestTemplate {
   }
 
   public class ExpectionBuilder {
-    private StepsBuilder stepsBuilder;
+    private final StepsBuilder stepsBuilder;
 
     public ExpectionBuilder(StepsBuilder stepsBuilder) {
       this.stepsBuilder = stepsBuilder;
@@ -320,7 +307,7 @@ public class WebSocketRequestTestTemplate {
   }
 
 
-  private List<WhenMessage> steps = new ArrayList<>();
+  private final List<WhenMessage> steps = new ArrayList<>();
 
   private FinalAssert assertConsumer;
 
@@ -359,11 +346,11 @@ public class WebSocketRequestTestTemplate {
       }
 
       @Override
-      public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+      public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) throws Exception {
       }
 
       @Override
-      public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+      public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus closeStatus) throws Exception {
       }
 
       @Override
@@ -419,13 +406,13 @@ public class WebSocketRequestTestTemplate {
     return new StepsBuilder();
   }
 
-  private class OutOfOrderExpectations implements Expectations {
+  private static class OutOfOrderExpectations implements Expectations {
 
-    private List<Expectation> expectations = new ArrayList<>();
+    private final List<Expectation> expectations = new ArrayList<>();
 
-    private List<Expectation> accepted = new ArrayList<>();
+    private final List<Expectation> accepted = new ArrayList<>();
 
-    private List<String> unexpected = new ArrayList<>();
+    private final List<String> unexpected = new ArrayList<>();
 
     @Override
     public void accept(WebSocketMessage message) throws Exception {
@@ -439,7 +426,7 @@ public class WebSocketRequestTestTemplate {
           return;
         } catch (AssertionError error) {
           assertionErrors.add(error);
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
       }
       i = accepted.iterator();
@@ -451,7 +438,7 @@ public class WebSocketRequestTestTemplate {
           return;
         } catch (AssertionError error) {
           assertionErrors.add(error);
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
       }
       if (!assertionErrors.isEmpty()) {
@@ -491,15 +478,15 @@ public class WebSocketRequestTestTemplate {
   }
 
 
-  private class OrderedExpectations implements Expectations {
+  private static class OrderedExpectations implements Expectations {
 
-    private Deque<Expectation> expectations = new ArrayDeque<>();
+    private final Deque<Expectation> expectations = new ArrayDeque<>();
 
-    private List<Expectation> failed = new ArrayList<>();
+    private final List<Expectation> failed = new ArrayList<>();
 
-    private List<Expectation> succeeded = new ArrayList<>();
+    private final List<Expectation> succeeded = new ArrayList<>();
 
-    private List<Expectation> accepted = new ArrayList<>();
+    private final List<Expectation> accepted = new ArrayList<>();
 
     @Override
     public void accept(WebSocketMessage message) throws Exception {

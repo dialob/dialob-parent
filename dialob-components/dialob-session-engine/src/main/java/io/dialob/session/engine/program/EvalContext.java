@@ -89,8 +89,6 @@ public interface EvalContext {
 
   boolean isActivating();
 
-  Optional<ItemState> findHoistingGroup(ItemId id);
-
   ItemId mapTo(ItemId itemId, boolean ignoreScopeItems);
 
   boolean complete();

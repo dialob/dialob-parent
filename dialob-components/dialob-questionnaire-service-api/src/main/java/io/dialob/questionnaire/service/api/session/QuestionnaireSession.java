@@ -27,10 +27,7 @@ import io.dialob.api.questionnaire.VariableValue;
 import org.immutables.value.Value;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Value.Enclosing
 public interface QuestionnaireSession {
@@ -95,6 +92,9 @@ public interface QuestionnaireSession {
 
   @NonNull
   List<ActionItem> getVisibleItems();
+
+  @NonNull
+  Set<String> getActiveItems();
 
   @NonNull
   List<Answer> getAnswers();

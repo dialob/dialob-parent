@@ -304,6 +304,10 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         return rowGroup;
       })
       .forEach(items::add);
+    // find first whenActiveUpdated page, if activePage is unset
+    if (activePage == null) {
+      updates.add(CommandFactory.nextPage());
+    }
     this.dialobSession = new DialobSession(tenantId, sessionId, null, language, items, prototypeItems, valueSets, errors, errorPrototypes, completed, opened, lastAnswer);
   }
 

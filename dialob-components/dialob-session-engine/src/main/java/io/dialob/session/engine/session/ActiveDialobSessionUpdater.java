@@ -16,119 +16,70 @@
 package io.dialob.session.engine.session;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.proto.Action;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContext;
-import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
-import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
-import static io.dialob.session.engine.session.command.CommandFactory.*;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
 
-  private final DialobSessionEvalContextFactory sessionContextFactory;
+  public interface ContextProvider {
+    DialobSessionEvalContext createDialobSessionEvalContext(@NonNull Consumer<Event> updatesConsumer);
+  }
 
-  private final DialobSession dialobSession;
+  private final ContextProvider contextProvider;
 
   private final DialobProgram dialobProgram;
 
-  private final Set<Command<?>> updated = new HashSet<>();
-
-  private final boolean activating;
+  // State for updates and commands
+  private final Set<Command<?>> updatedCommands = new HashSet<>();
 
   protected final List<Command<?>> evalQueue = new LinkedList<>();
 
-  public ActiveDialobSessionUpdater(@NonNull DialobSessionEvalContextFactory sessionContextFactory,
-                                    @NonNull DialobProgram dialobProgram,
-                                    @NonNull DialobSession dialobSession,
-                                    boolean activating) {
-    this.sessionContextFactory = requireNonNull(sessionContextFactory);
-    this.dialobProgram = requireNonNull(dialobProgram);
-    this.dialobSession = requireNonNull(dialobSession);
-    this.activating = activating;
+  public ActiveDialobSessionUpdater(@NonNull ContextProvider contextProvider,
+                                    @NonNull DialobProgram dialobProgram) {
+    this.contextProvider = requireNonNull(contextProvider, "contextProvider may not be null");
+    this.dialobProgram = requireNonNull(dialobProgram, "dialobProgram may not be null");
   }
 
   @Override
-  public Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions) {
-    DialobSessionEvalContext evalContext = sessionContextFactory.createDialobSessionEvalContext(this.dialobSession, this::queueUpdate, this.activating);
-    applyUpdates(actions);
-    while(!evalQueue.isEmpty()) {
-      ListIterator<Command<?>> iterator = evalQueue.listIterator();
-      Command<?> command = iterator.next();
-      iterator.remove();
-      matchPartialCommands(command).forEach(action -> {
-        updated.add(action);
-        evalContext.applyAction(action);
-      });
+  public Consumer<EvalContext.UpdatedItemsVisitor> applyCommands(@NonNull Iterable<Command<?>> commands) {
+    var evalContext = createEvalContext();
+    commands.forEach(this::queueCommand);
+
+    // Execute commands in the evaluation queue
+    while (!evalQueue.isEmpty()) {
+      var command = evalQueue.remove(0); // FIFO queue processing
+      updatedCommands.add(command);
+      evalContext.applyCommand(command);
     }
-    updated.clear();
+    updatedCommands.clear();
     LOGGER.debug("Update completed.");
     return evalContext::accept;
   }
 
-  protected void applyUpdates(@NonNull Iterable<Action> actions) {
-    actions.forEach(action -> {
-      ItemId itemId = IdUtils.toIdNullable(action.getId());
-      switch(action.getType()) {
-        case ANSWER:
-          queueCommand(setAnswer(requireNonNull(itemId), action.getAnswer()));
-          break;
-        case SET_VALUE:
-          queueCommand(setVariableValue(requireNonNull(itemId), action.getValue()));
-          break;
-        case SET_FAILED:
-          queueCommand(setVariableFailed(requireNonNull(itemId)));
-          break;
-        case NEXT:
-          queueCommand(nextPage());
-          break;
-        case PREVIOUS:
-          queueCommand(prevPage());
-          break;
-        case GOTO:
-          queueCommand(gotoPage(requireNonNull(itemId)));
-          break;
-        case COMPLETE:
-          queueCommand(complete());
-          break;
-        case ADD_ROW:
-          queueCommand(addRow(requireNonNull(itemId)));
-          break;
-        case DELETE_ROW:
-          queueCommand(deleteRow(requireNonNull(itemId)));
-          break;
-        case SET_LOCALE:
-          if (action.getValue() instanceof String) {
-            queueCommand(setLocale((String) action.getValue()));
-          }
-          break;
-        default:
-          LOGGER.debug("Action \"{}\" ignored.", action);
-      }
-    });
+  protected DialobSessionEvalContext createEvalContext() {
+    return contextProvider.createDialobSessionEvalContext(this::queueUpdate);
   }
 
   private void queueUpdate(@NonNull Event event) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(" -> event({})", event);
     }
-    dialobProgram
+    this.dialobProgram
       .findDependencies(event)
       .forEach(this::queueCommand);
     if (LOGGER.isDebugEnabled()) {
@@ -136,27 +87,17 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
     }
   }
 
-  private Stream<Command<?>> matchPartialCommands(Command<?> command) {
-    if (command instanceof UpdateCommand) {
-      UpdateCommand updateCommand = (UpdateCommand) command;
-      final ItemId targetId = updateCommand.getTargetId();
-      if (targetId.isPartial()) {
-        return dialobSession.findMatchingItemIds(targetId).map((Function<ItemId, Command<?>>) updateCommand::withTargetId);
-      }
-    }
-    return Stream.of(command);
-  }
 
   protected void queueCommand(@NonNull final Command<?> updateCommand) {
-    Collection<Command<?>> mustBeBefore = dialobProgram.getCommandsToCommands(updateCommand);
+    var mustBeBefore = this.dialobProgram.getCommandsToCommands(updateCommand);
     if (mustBeBefore.isEmpty()) {
       evalQueue.add(updateCommand);
       return;
     }
-    // push command to be queue to correct location in queue.
-    ListIterator<Command<?>> i = evalQueue.listIterator();
-    while (i.hasNext()) {
-      Command<?> command = i.next();
+    // Push command into correct location in queue.
+    var iterator = evalQueue.listIterator();
+    while (iterator.hasNext()) {
+      var command = iterator.next();
       if (updateCommand.equals(command)) {
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("  - skip {} (on queue already)", DebugUtil.commandToString(updateCommand));
@@ -164,16 +105,16 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
         return;
       }
       if (mustBeBefore.contains(command)) {
-        i.previous();
+        iterator.previous();
         break;
       }
     }
-    i.add(updateCommand);
+    iterator.add(updateCommand);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("  + queued {}", DebugUtil.commandToString(updateCommand));
-    }
-    if (LOGGER.isDebugEnabled() && updated.contains(updateCommand)) {
-      LOGGER.debug("Target {} already executed. Cyclic dependency?", DebugUtil.commandToString(updateCommand));
+      if (updatedCommands.contains(updateCommand)) {
+        LOGGER.debug("Target {} already executed. Cyclic dependency?", DebugUtil.commandToString(updateCommand));
+      }
     }
   }
 }

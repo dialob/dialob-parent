@@ -21,14 +21,23 @@ public interface SessionObject extends Serializable {
 
   <I extends ItemId> I getId();
 
+  /**
+   * @return true when item is relevant to questionnaire.
+   */
   default boolean isActive() {
     return true;
   }
 
+  /**
+   * @return true if item should not be shown to user
+   */
   default boolean isDisabled() {
     return false;
   }
 
+  /**
+   * @return true if item is not variable or something similar that will not be shown to user.
+   */
   default boolean isDisplayItem() {
     return false;
   }

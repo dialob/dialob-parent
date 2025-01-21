@@ -18,13 +18,26 @@ package io.dialob.session.engine.session;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.session.command.Command;
 
 import java.util.function.Consumer;
 
 public interface DialobSessionUpdater {
 
-  DialobSessionUpdater NOOP_UPDATER = (actions) -> updatedItemsVisitor -> {};
+  DialobSessionUpdater NOOP_UPDATER = commands -> updatedItemsVisitor -> {};
 
-  Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions);
+  /**
+   * @deprecated Action handling should be done outside of session updater. Implementation just maps actions to commands
+   *             and calls {@link #applyCommands}
+   *
+   * @param actions iterable of applied actions
+   * @return
+   */
+  @Deprecated
+  default Consumer<EvalContext.UpdatedItemsVisitor> dispatchActions(@NonNull Iterable<Action> actions) {
+    return applyCommands(ActionToCommandMapper.toCommands(actions));
+  }
+
+  Consumer<EvalContext.UpdatedItemsVisitor> applyCommands(@NonNull Iterable<Command<?>> commands);
 
 }

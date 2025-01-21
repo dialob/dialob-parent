@@ -16,41 +16,35 @@
 package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 
 import java.util.function.Consumer;
 
 public class DialobSessionEvalContextFactory {
 
+  @NonNull
   private final FunctionRegistry functionRegistry;
 
-
+  @Nullable
   private final DialobSessionUpdateHook dialobSessionUpdateHook;
 
-  public DialobSessionEvalContextFactory(FunctionRegistry functionRegistry, DialobSessionUpdateHook dialobSessionUpdateHook) {
+  public DialobSessionEvalContextFactory(@NonNull FunctionRegistry functionRegistry, @Nullable DialobSessionUpdateHook dialobSessionUpdateHook) {
     this.functionRegistry = functionRegistry;
     this.dialobSessionUpdateHook = dialobSessionUpdateHook;
   }
 
   @NonNull
-  public DialobSessionEvalContext createDialobSessionEvalContext(@NonNull DialobSession dialobSession,
-                                                                 @NonNull Consumer<Event> updatesConsumer,
-                                                                 boolean activating) {
-    return new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, activating, dialobSessionUpdateHook);
-  }
-
-
-  public DialobSessionUpdater createSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession, DialobQuestionnaireSession.State state) {
+  public DialobSessionUpdater createSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession, boolean activating) {
     if (dialobSession.isCompleted()) {
       return DialobSessionUpdater.NOOP_UPDATER;
     }
-    return new ActiveDialobSessionUpdater(this, dialobProgram, dialobSession, state == DialobQuestionnaireSession.State.ACTIVATING);
+    return new ActiveDialobSessionUpdater((@NonNull Consumer<Event> updatesConsumer) -> new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, activating, dialobSessionUpdateHook), dialobProgram);
   }
 
 }
