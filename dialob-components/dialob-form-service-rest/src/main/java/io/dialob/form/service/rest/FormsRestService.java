@@ -208,7 +208,8 @@ public interface FormsRestService {
     @Parameter(name = "tag", required = true, description = OpenApiDoc.TAG.TAG_OBJ) @RequestBody FormTag tag);
 
   /**
-   * Updates or creates a tag associated with a specific form.
+   * Updates or creates a tag associated with a specific form. Only mutable tag can be updated. Mutable tags can be
+   * only set to existing tags.
    *
    * @param formId the ID of the form to which the tag will be added or updated;
    *               must match the valid form ID pattern defined in {@link Constants#VALID_FORM_ID_PATTERN}.
