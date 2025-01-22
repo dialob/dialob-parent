@@ -16,9 +16,24 @@
 package io.dialob.boot.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.ui.Model;
 
+import java.util.UUID;
+
 public abstract class BaseController {
+
+  protected static boolean isValidTenantId(String tenantId) {
+    if (StringUtils.isNotBlank(tenantId)) {
+      try {
+        UUID.fromString(tenantId);
+        return true;
+      } catch (IllegalArgumentException e) {
+        return false;
+      }
+    }
+    return false;
+  }
 
   public String index(Model model,
                       HttpServletRequest request) {

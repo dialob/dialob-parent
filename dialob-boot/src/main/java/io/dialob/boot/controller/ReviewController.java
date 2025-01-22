@@ -28,7 +28,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -102,12 +101,12 @@ public class ReviewController extends BaseController {
 
   @Builder
   public record ReviewOptions(
-    @Getter String apiUrl,
-    @Getter String questionnaireId,
-    @Getter CsrfToken csrf,
-    @Getter String form,
-    @Getter String sessionData,
-    @Getter String tenantId
+    String apiUrl,
+    String questionnaireId,
+    CsrfToken csrf,
+    String form,
+    String sessionData,
+    String tenantId
   ) {
   }
 }

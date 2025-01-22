@@ -19,7 +19,7 @@ import io.dialob.boot.settings.QuestionnaireApplicationSettings;
 import io.dialob.common.Constants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
+import lombok.Builder;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -48,43 +48,34 @@ public class FillController extends BaseController {
                      CsrfToken cfrsToken,
                      Model model,
                      HttpServletRequest request) {
-    FormConnectionOptions formConnectionOptions = new FormConnectionOptions();
-    formConnectionOptions.setQuestionnaireId(questionnaireId);
-    formConnectionOptions.setUrl(settings.getSocketUrl() + "/" + questionnaireId);
-    formConnectionOptions.setReviewUrl(settings.getReviewUrl() + "/" + questionnaireId);
-    formConnectionOptions.setCsrf(cfrsToken);
-    formConnectionOptions.setRestUrl(settings.getRestUrl() + "/" + questionnaireId);
-    formConnectionOptions.setRestUrlBase(settings.getRestUrl());
-    formConnectionOptions.setConnectionMode(settings.getConnectionMode());
-    formConnectionOptions.setBackendApiUrl(settings.getBackendApiUrl());
-    model.addAttribute("formConnectionOptions", formConnectionOptions);
+    model.addAttribute("formConnectionOptions", FormConnectionOptions.builder()
+      .questionnaireId(questionnaireId)
+      .url(settings.getSocketUrl() + "/" + questionnaireId)
+      .reviewUrl(settings.getReviewUrl() + "/" + questionnaireId)
+      .csrf(cfrsToken)
+      .restUrl(settings.getRestUrl() + "/" + questionnaireId)
+      .restUrlBase(settings.getRestUrl())
+      .connectionMode(settings.getConnectionMode())
+      .backendApiUrl(settings.getBackendApiUrl())
+      .build());
     final PageAttributes pageAttributes = pageSettingsProvider.findPageSettingsByQuestionnaireId("fill", questionnaireId);
     model.addAllAttributes(pageAttributes.getAttributes());
     index(model, request);
     return pageAttributes.getTemplate();
   }
 
-  @Data
-  public static class FormConnectionOptions {
-
-    private String url;
-
-    private String reviewUrl;
-
-    private String questionnaireId;
-
-    private List<String> transports;
-
-    private CsrfToken csrf;
-
-    private String restUrl;
-
-    private String restUrlBase;
-
-    private String connectionMode;
-
-    private String backendApiUrl;
-
-
+  @Builder
+  public record FormConnectionOptions(
+    String url,
+    String reviewUrl,
+    String questionnaireId,
+    List<String> transports,
+    CsrfToken csrf,
+    String restUrl,
+    String restUrlBase,
+    String connectionMode,
+    String backendApiUrl
+  ) {
   }
+
 }

@@ -18,6 +18,7 @@ package io.dialob.boot.controller;
 import io.dialob.boot.settings.LandingApplicationSettings;
 import io.dialob.security.tenant.CurrentTenant;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -50,18 +51,18 @@ public class LandingController extends BaseController {
                      Model model,
                      HttpServletRequest request) {
 
-    LandingOptions landingOptions = new LandingOptions();
-    landingOptions.setBackendApiUrl(settings.getApiUrl());
-    landingOptions.setComposerUrl(settings.getComposerAppUrl());
-    landingOptions.setFillingUrl(settings.getFillingAppUrl());
-    landingOptions.setTenantId(currentTenant.getId());
-    landingOptions.setAdminUrl(settings.getAdminAppUrl());
-    landingOptions.setCsrf(cfrsToken);
+    var optionsBuilder = LandingOptions.builder()
+      .backendApiUrl(settings.getApiUrl())
+      .composerUrl(settings.getComposerAppUrl())
+      .fillingUrl(settings.getFillingAppUrl())
+      .tenantId(currentTenant.getId())
+      .adminUrl(settings.getAdminAppUrl())
+      .csrf(cfrsToken);
     final String tenantId = request.getParameter("tenantId");
     if (!StringUtils.isBlank(tenantId)) {
-      landingOptions.setTenantId(tenantId);
+      optionsBuilder.tenantId(tenantId);
     }
-    model.addAttribute("landingConnectionOptions", landingOptions);
+    model.addAttribute("landingConnectionOptions", optionsBuilder.build());
     final PageAttributes pageAttributes = settings.getTenants().get("default");
     model.addAllAttributes(pageAttributes.getAttributes());
     index(model, request);
@@ -69,19 +70,20 @@ public class LandingController extends BaseController {
   }
 
   @Data
+  @Builder
   public static class LandingOptions {
 
-    private String backendApiUrl;
+    private final String backendApiUrl;
 
-    private String composerUrl;
+    private final String composerUrl;
 
-    private String fillingUrl;
+    private final String fillingUrl;
 
-    private CsrfToken csrf;
+    private final CsrfToken csrf;
 
-    private String adminUrl;
+    private final String adminUrl;
 
-    private String tenantId;
+    private final String tenantId;
 
   }
 }

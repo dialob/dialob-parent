@@ -19,9 +19,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.AdminApplicationSettings;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.UUID;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -75,18 +72,6 @@ public class AdminController extends BaseController {
       config.tenantId(tenantId);
     }
     return config.build();
-  }
-
-  private static boolean isValidTenantId(String tenantId) {
-    if (StringUtils.isNotBlank(tenantId)) {
-      try {
-        UUID.fromString(tenantId);
-        return true;
-      } catch (IllegalArgumentException e) {
-        return false;
-      }
-    }
-    return false;
   }
 
   @Builder
