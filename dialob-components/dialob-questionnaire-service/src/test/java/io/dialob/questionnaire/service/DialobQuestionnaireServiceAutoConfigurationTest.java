@@ -30,6 +30,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
 
   @Configuration(proxyBeanMethods = false)
   @EnableScheduling
+  @EnableConfigurationProperties(DialobSettings.class)
   public static class TestConfiguration {
 
     @Bean
@@ -52,11 +54,6 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
     @Bean
     public MeterRegistry meterRegistry() {
       return new SimpleMeterRegistry();
-    }
-
-    @Bean
-    public DialobSettings dialobSettings() {
-      return Mockito.mock(DialobSettings.class);
     }
 
     @Bean
