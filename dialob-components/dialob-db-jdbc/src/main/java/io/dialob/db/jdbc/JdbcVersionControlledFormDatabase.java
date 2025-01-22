@@ -41,6 +41,20 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+/**
+ * JdbcVersionControlledFormDatabase is an implementation of a version-controlled
+ * form database that uses JDBC for persistence. It handles operations related
+ * to form documents, versioning, tagging, and metadata management, providing
+ * capabilities essential for a version-aware form storage system. The class
+ * supports multi-tenancy and ensures proper tenant context handling as part
+ * of the operations.
+ *
+ * This class operates on relational database tables for storing forms,
+ * form documents, revisions, and tags, using SQL queries
+ * managed through JdbcTemplate and transaction management using TransactionTemplate.
+ * It integrates form behavior such as snapshots, tags, and label updates in
+ * a version-controlled manner.
+ */
 public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVersionControlDatabase, JdbcDatabase {
 
   public static final String LATEST = "LATEST";

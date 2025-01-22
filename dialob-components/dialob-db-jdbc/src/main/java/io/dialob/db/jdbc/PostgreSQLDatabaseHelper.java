@@ -27,6 +27,12 @@ import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.UUID;
 
+/**
+ * A helper class for interacting with a PostgreSQL database, extending the functionality
+ * provided by {@code AbstractDatabaseHelper}. This class contains methods specific to
+ * PostgreSQL, such as handling UUID conversion, JSONB objects, and schema-specific
+ * table name generation.
+ */
 public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
 
   public PostgreSQLDatabaseHelper(String schema) {

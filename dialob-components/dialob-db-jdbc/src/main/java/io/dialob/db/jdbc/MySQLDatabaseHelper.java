@@ -21,6 +21,11 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Provides MySQL-specific implementations for database operations.
+ * Extends the abstract base class {@code AbstractDatabaseHelper} to handle
+ * MySQL database-specific behaviors.
+ */
 public class MySQLDatabaseHelper extends AbstractDatabaseHelper {
   public MySQLDatabaseHelper(String schema) {
     super(schema);

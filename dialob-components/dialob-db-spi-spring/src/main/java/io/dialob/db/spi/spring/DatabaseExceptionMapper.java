@@ -27,6 +27,104 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * A controller advice class that maps database-related exceptions to appropriate HTTP responses.
+ * This class is used to centralize exception handling and provide consistent responses for various
+ * database-related issues.
+ *
+ * The class defines multiple exception handlers for specific exceptions, returning corresponding
+ * HTTP status codes and error messages. The error responses are structured using the {@code Errors}
+ * class, ensuring a standard format for API responses.
+ *
+ * Exception Handling:
+ * <table>
+ *   <caption>Mapping of exceptions to HTTP statuses</caption>
+ *   <thead>
+ *     <tr>
+ *       <th>Exception</th>
+ *       <th>HTTP Status</th>
+ *       <th>Description</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>{@link DocumentNotFoundException}</td>
+ *       <td>404 (Not Found)</td>
+ *       <td>Resource not found.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DatabaseUnauthorizedException}</td>
+ *       <td>401 (Unauthorized)</td>
+ *       <td>Access unauthorized.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DocumentForbiddenException}</td>
+ *       <td>403 (Forbidden)</td>
+ *       <td>Access forbidden.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DocumentConflictException}</td>
+ *       <td>409 (Conflict)</td>
+ *       <td>Request conflict with the current state.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DocumentLockedException}</td>
+ *       <td>423 (Locked)</td>
+ *       <td>Resource is locked.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link InvalidDefinitionException}, {@link ConstraintViolationException}</td>
+ *       <td>400 (Bad Request)</td>
+ *       <td>Invalid data format or validation errors.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DatabaseServiceDownException}</td>
+ *       <td>503 (Service Unavailable)</td>
+ *       <td>Database service is unavailable.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DocumentCorruptedException}</td>
+ *       <td>422 (Unprocessable Entity)</td>
+ *       <td>Resource is corrupted; logs exception details.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link TenantContextRequiredException}</td>
+ *       <td>404 (Not Found)</td>
+ *       <td>Specific tenant context is required.</td>
+ *     </tr>
+ *     <tr>
+ *       <td>{@link DatabaseException}</td>
+ *       <td>500 (Internal Server Error)</td>
+ *       <td>Unhandled database error.</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ *
+ * <h3>Error Response:</h3>
+ * The {@code buildResponse} method constructs the error response using the provided HTTP status code
+ * and error message. The error details are encapsulated within an {@code Errors} object. For validation
+ * errors, additional error details may be provided.
+ *
+ * Example JSON output:
+ * <pre>
+ * {
+ *   "error": "Bad Request",
+ *   "status": 400,
+ *   "message": "Invalid data format",
+ *   "errors": [
+ *     {
+ *       "error": "Field cannot be null",
+ *       "rejectedValue": null,
+ *       "context": "fieldName"
+ *     }
+ *   ]
+ * }
+ * </pre>
+ *
+ * <h3>Usage:</h3>
+ * The class is annotated with {@code @ControllerAdvice} to enable its use as a global exception
+ * handler across the application.
+ */
 @ControllerAdvice
 @Slf4j
 public class DatabaseExceptionMapper {
