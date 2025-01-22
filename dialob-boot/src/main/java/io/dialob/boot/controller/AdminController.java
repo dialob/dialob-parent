@@ -18,33 +18,37 @@ package io.dialob.boot.controller;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.AdminApplicationSettings;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Data;
+import lombok.*;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.UUID;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("${admin.context-path:/}")
 public class AdminController extends BaseController {
 
-  private final AdminApplicationSettings adminApplicationSettings;
+  private final AdminApplicationSettings settings;
 
   private final PageSettingsProvider pageSettingsProvider;
 
-  public AdminController(AdminApplicationSettings adminApplicationSettings, PageSettingsProvider pageSettingsProvider) {
-    this.adminApplicationSettings = adminApplicationSettings;
+  public AdminController(AdminApplicationSettings settings, PageSettingsProvider pageSettingsProvider) {
+    this.settings = settings;
     this.pageSettingsProvider = pageSettingsProvider;
   }
 
   @GetMapping(path = {"", "/index.html"}, produces = MediaType.TEXT_HTML_VALUE)
-  public String index(CsrfToken cfrsToken, Model model, HttpServletRequest request) {
+  public String index(CsrfToken cfrsToken, Model model, @RequestParam(name = "tenantId", required = false) String tenantId, HttpServletRequest request) {
     model.addAttribute("_csrf", cfrsToken);
-    model.addAttribute("adminConfig", getAdminConfig(cfrsToken, request));
+    model.addAttribute("adminConfig", getAdminConfig(cfrsToken, tenantId));
     final PageAttributes pageAttributes = pageSettingsProvider.findPageSettings("admin");
     model.addAllAttributes(pageAttributes.getAttributes());
     index(model, request);
@@ -53,47 +57,46 @@ public class AdminController extends BaseController {
 
   @GetMapping(path = "/config.json", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public AdminConfig config(CsrfToken cfrsToken, Model model, HttpServletRequest request)  {
-    return getAdminConfig(cfrsToken, request);
+  public AdminConfig config(CsrfToken cfrsToken, @RequestParam(name = "tenantId", required = false) String tenantId) {
+    return getAdminConfig(cfrsToken, tenantId);
   }
 
   @NonNull
-  public AdminConfig getAdminConfig(CsrfToken cfrsToken, HttpServletRequest request) {
-    AdminConfig adminConfig = new AdminConfig();
-    adminConfig.setCsrf(cfrsToken);
-    adminConfig.setUrl(adminApplicationSettings.getApiUrl());
-    adminConfig.setFillUrl(adminApplicationSettings.getFillingAppUrl());
-    adminConfig.setReviewUrl(adminApplicationSettings.getReviewAppUrl());
-    adminConfig.setDocumentation(adminApplicationSettings.getDocumentation());
-    adminConfig.setComposerUrl(adminApplicationSettings.getComposerAppUrl());
-    adminConfig.setVersioning(adminApplicationSettings.isVersioning());
-    final String tenantId = request.getParameter("tenantId");
-    if (!StringUtils.isBlank(tenantId)) {
-      adminConfig.setTenantId(tenantId);
+  public AdminConfig getAdminConfig(CsrfToken csrf, String tenantId) {
+    var config = AdminConfig.builder()
+      .csrf(csrf)
+      .url(settings.getApiUrl())
+      .fillUrl(settings.getFillingAppUrl())
+      .reviewUrl(settings.getReviewAppUrl())
+      .documentation(settings.getDocumentation())
+      .composerUrl(settings.getComposerAppUrl())
+      .versioning(settings.isVersioning());
+    if (isValidTenantId(tenantId)) {
+      config.tenantId(tenantId);
     }
-    return adminConfig;
+    return config.build();
   }
 
+  private static boolean isValidTenantId(String tenantId) {
+    if (StringUtils.isNotBlank(tenantId)) {
+      try {
+        UUID.fromString(tenantId);
+        return true;
+      } catch (IllegalArgumentException e) {
+        return false;
+      }
+    }
+    return false;
+  }
 
-
-  @Data
-  public static class AdminConfig {
-
-    private String url;
-
-    private String documentation;
-
-    private String fillUrl;
-
-    private String reviewUrl;
-
-    private CsrfToken csrf;
-
-    private String composerUrl;
-
-    private String tenantId;
-
-    private boolean versioning;
-
+  @Builder
+  public record AdminConfig(String url,
+                            String documentation,
+                            String fillUrl,
+                            String reviewUrl,
+                            CsrfToken csrf,
+                            String composerUrl,
+                            String tenantId,
+                            boolean versioning) {
   }
 }

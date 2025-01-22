@@ -34,7 +34,6 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -91,28 +90,47 @@ class AdminControllerTest extends AbstractUIControllerTest {
     when(grantedAuthoritiesMapper.mapAuthorities(anyCollection())).thenAnswer(AdditionalAnswers.returnsFirstArg());
   }
 
-
   @Test
   @WithMockUser(username = "testUser", authorities = {"manager.view"})
   public void adminShouldGetPage() throws Exception {
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
     when(pageAttributes.getTemplate()).thenReturn("admin");
-
-    MvcResult result = mockMvc.perform(get("/").params(tenantParam).accept(MediaType.TEXT_HTML))
+    mockMvc.perform(get("/").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
       .andExpect(content().encoding("UTF-8"))
       .andExpect(xpath("//title").string("Dialob"))
       .andExpect(xpath("//div[@id='root']").exists())
       .andReturn();
+  }
 
-    System.out.println(result.getResponse().getContentAsString());
+  @Test
+  @WithMockUser(username = "testUser", authorities = {"manager.view"})
+  public void adminShouldGetConfig() throws Exception {
+    PageAttributes pageAttributes = mock(PageAttributes.class);
+    when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
+    when(pageAttributes.getTemplate()).thenReturn("admin");
+    mockMvc.perform(get("/config.json").params(tenantParam).accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+      .andExpect(content().encoding("UTF-8"))
+      .andExpect(jsonPath("$.url").value("/api"))
+      .andExpect(jsonPath("$.documentation").value("https://docs.dialob.io"))
+      .andExpect(jsonPath("$.fillUrl").value("/fill"))
+      .andExpect(jsonPath("$.reviewUrl").value("/review"))
+      .andExpect(jsonPath("$.csrf.parameterName").value("_csrf"))
+      .andExpect(jsonPath("$.csrf.headerName").value("X-CSRF-TOKEN"))
+      .andExpect(jsonPath("$.csrf.token").isNotEmpty()) // Ensure the token exists but don't hardcode it
+      .andExpect(jsonPath("$.composerUrl").value("/composer"))
+      .andExpect(jsonPath("$.tenantId").value("00000000-0000-0000-0000-000000000000"))
+      .andExpect(jsonPath("$.versioning").value(false))
+      .andReturn();
   }
 
   @Test
   public void shouldRedirectToAuthorization() throws Exception {
-    MvcResult result = mockMvc.perform(get("/").params(tenantParam).accept(MediaType.TEXT_HTML))
+    mockMvc.perform(get("/").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andDo(print())
       .andExpect(status().isFound())
       .andExpect(redirectedUrlPattern("**/oauth2/authorization/default"))
