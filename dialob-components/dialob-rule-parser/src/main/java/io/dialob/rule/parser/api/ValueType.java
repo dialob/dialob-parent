@@ -28,10 +28,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.Comparator;
 import java.util.function.BinaryOperator;
 
-@SuppressWarnings("unchecked")
 public interface ValueType extends Serializable {
 
   ValueType TIME = PrimitiveValueType.TIME;
@@ -51,8 +49,6 @@ public interface ValueType extends Serializable {
   ValueType DURATION = PrimitiveValueType.DURATION;
 
   ValueType PERCENT = PrimitiveValueType.PERCENT;
-
-  <T> Comparator<T> getComparator();
 
   Class<?> getTypeClass();
 
@@ -87,8 +83,6 @@ public interface ValueType extends Serializable {
   default boolean isArray() {
     return false;
   }
-
-  boolean isPrimitive();
 
   static ValueType arrayOf(@NonNull ValueType valueType) {
     return ArrayValueType.arrayOf(valueType);

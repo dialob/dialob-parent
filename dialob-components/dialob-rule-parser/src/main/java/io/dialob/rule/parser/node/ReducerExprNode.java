@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-@EqualsAndHashCode(callSuper = true, of = {"nodeOperator", "arguments"})
+@EqualsAndHashCode(callSuper = true)
 public class ReducerExprNode extends CallExprNode {
 
   @Serial
@@ -14,6 +14,5 @@ public class ReducerExprNode extends CallExprNode {
   public ReducerExprNode(NodeBase parent, @NonNull NodeOperator nodeOperator, Span span) {
     super(parent, nodeOperator, null, span);
   }
-
 
 }

@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,11 +51,6 @@ public class ArrayValueType implements ValueType {
 
 
   @Override
-  public <T> Comparator<T> getComparator() {
-    return null;
-  }
-
-  @Override
   public boolean isArray() {
     return true;
   }
@@ -69,7 +63,7 @@ public class ArrayValueType implements ValueType {
   @Override
   public Object parseFromString(String string) {
     if (!string.startsWith("[") && string.endsWith("]")) {
-      throw new RuntimeException("No an array.");
+      throw new RuntimeException(String.format("Cannot parse \"%s\". Not an array.", string));
     }
     string = string.substring(1);
     string = string.substring(0,string.length() - 1);
@@ -136,11 +130,6 @@ public class ArrayValueType implements ValueType {
   }
 
   @Override
-  public boolean isPrimitive() {
-    return true;
-  }
-
-  @Override
   public Object parseFromStringWithUnit(String value, String unit) {
     throw new UnsupportedOperationException();
   }
@@ -158,8 +147,7 @@ public class ArrayValueType implements ValueType {
     if (obj == this) {
       return true;
     }
-    if (obj instanceof ArrayValueType) {
-      ArrayValueType other = (ArrayValueType) obj;
+    if (obj instanceof ArrayValueType other) {
       return other.valueType.equals(this.valueType);
     }
     return super.equals(obj);
@@ -190,7 +178,7 @@ public class ArrayValueType implements ValueType {
     boolean present = value != null;
     output.writeBoolNoTag(present);
     if (present) {
-      List list = (List) value;
+      List<?> list = (List<?>) value;
       output.write(valueType.getTypeCode());
       output.writeInt32NoTag(list.size());
       for (Object item : list) {

@@ -26,18 +26,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.function.BinaryOperator;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum PrimitiveValueType implements ValueType {
   TIME {
-    @Override
-    public Comparator<LocalTime> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
     @Override
     public Class<?> getTypeClass() {
       return LocalTime.class;
@@ -109,11 +103,6 @@ public enum PrimitiveValueType implements ValueType {
     }
   },
   DURATION {
-    @Override
-    public Comparator<Duration> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
     @Override
     public BinaryOperator<Duration> sumOp() {
       return (identity, element) -> {
@@ -213,12 +202,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   DATE {
     @Override
-    public Comparator<LocalDate> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-
-    @Override
     public Class<?> getTypeClass() {
       return LocalDate.class;
     }
@@ -287,11 +270,6 @@ public enum PrimitiveValueType implements ValueType {
   },
 
   PERIOD {
-    @Override
-    public Comparator<Period> getComparator() {
-      return null;
-    }
-
     @Override
     public BinaryOperator<Period> sumOp() {
       return (identity, element) -> {
@@ -396,11 +374,6 @@ public enum PrimitiveValueType implements ValueType {
 
   },
   INTEGER {
-    @Override
-    public Comparator<BigInteger> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
     @Override
     public BinaryOperator<BigInteger> sumOp() {
       return (identity, element) -> {
@@ -538,12 +511,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   DECIMAL {
     @Override
-    public Comparator<BigDecimal> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-
-    @Override
     public BinaryOperator<BigDecimal> sumOp() {
       return (identity, element) -> {
         if (identity == null) {
@@ -662,11 +629,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   BOOLEAN {
     @Override
-    public Comparator<Boolean> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public BinaryOperator<Boolean> sumOp() {    // === orOp
       return (identity, element) -> {
         if (identity == null) {
@@ -738,11 +700,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   STRING {
     @Override
-    public Comparator<String> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public BinaryOperator<String> sumOp() {
       return (identity, element) -> {
         if (identity == null) {
@@ -792,11 +749,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   PERCENT {
     @Override
-    public Comparator<BigDecimal> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public Class<?> getTypeClass() {
       return BigDecimal.class;
     }
@@ -833,11 +785,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
   };
-
-  @Override
-  public boolean isPrimitive() {
-    return true;
-  }
 
   public Object negate(Object value) {
     throw new UnsupportedOperationException();
