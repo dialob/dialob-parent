@@ -76,10 +76,6 @@
       <groupId>org.immutables</groupId>
       <artifactId>gson</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.immutables</groupId>
-      <artifactId>mongo</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.hibernate</groupId>

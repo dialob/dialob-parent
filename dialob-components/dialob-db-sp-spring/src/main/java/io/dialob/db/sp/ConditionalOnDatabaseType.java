@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * against the active database type(s). The supported types are defined in {@link DialobSettings.DatabaseType}.
  *
  * Use this annotation on application classes or methods where desired logic or beans should
- * only be included for specific database types, such as MONGODB or JDBC.
+ * only be included for specific database types, such as AZURE_BLOB_STORAGE or JDBC.
  *
  * This annotation can be applied at the type or method level.
  *

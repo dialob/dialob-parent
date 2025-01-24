@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.immutables.gson.Gson;
-import org.immutables.mongo.Mongo;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -59,7 +58,6 @@ import io.dialob.api.validation.WithValidation;
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
-@Mongo.Repository("forms")
 public interface Form extends WithValidation<Form>, FormEntity {
 
   /**
@@ -71,7 +69,6 @@ public interface Form extends WithValidation<Form>, FormEntity {
   @Gson.Named("_id")
   @Id
   @Nullable
-  @Mongo.Id
   String getId();
 
   /**

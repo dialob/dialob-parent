@@ -20,7 +20,6 @@ Dialob backend services
   * **dialob-db-dialob-api** - Form and questionnaire persistence implementation: Use external Dialob API as persistence (obsolete?)
   * **dialob-db-file** - Form and questionnaire persistence implementation: Filesystem
   * **dialob-db-jdbc** - Form and questionnaire persistence implementation: JDBC, database schema definitions and Flyway migrations for MySql and Postgres
-  * **dialob-db-mongo** - Form and questionnaire persistence implementation: MongoDb
   * **dialob-db-s3** - Form and questionnaire persistence implementation: AWS S3 storage
   * **dialob-db-sp-spring** - Spring Boot autoconfiguration for persitence implemenations
   * **dialob-db-spi** - SPI types for persistence implementations
