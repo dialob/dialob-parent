@@ -18,12 +18,6 @@ package io.dialob.db.sp;
 import com.azure.storage.blob.BlobServiceClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.db.assets.AssetFormDatabase;
-import io.dialob.db.assets.repository.AssetRepository;
-import io.dialob.db.assets.repository.GenericAssetRepository;
-import io.dialob.db.assets.serialization.AssetFormDeserializer;
-import io.dialob.db.assets.serialization.AssetFormMetadataRowDeserializer;
-import io.dialob.db.assets.serialization.AssetFormSerializer;
 import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
 import io.dialob.db.azure.blob.storage.QuestionnaireAzureBlobStorageDatabase;
 import io.dialob.db.dialob.api.DialobApiDbSettings;
@@ -306,24 +300,6 @@ public class DialobDbSpAutoConfiguration {
       return new DialobApiQuestionnaireDatabase(dialobApiTemplate);
     }
 
-  }
-
-  @Configuration(proxyBeanMethods = false)
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.ASSETS)
-  public class DialobDbAssetsAutoConfiguration {
-
-    @Bean
-    public FormDatabase assetFormDatabase(ObjectMapper objectMapper, DialobSettings settings) {
-
-      RestTemplate restTemplate = new RestTemplate();
-      AssetRepository assetRepository = new GenericAssetRepository(restTemplate, settings, objectMapper);
-
-      AssetFormSerializer assetFormSerializer = new AssetFormSerializer(objectMapper);
-      AssetFormDeserializer assetFormDeserializer = new AssetFormDeserializer(objectMapper);
-      AssetFormMetadataRowDeserializer assetFormMetadataRowDeserializer = new AssetFormMetadataRowDeserializer(objectMapper);
-
-      return new AssetFormDatabase(assetRepository, assetFormSerializer, assetFormDeserializer, assetFormMetadataRowDeserializer);
-    }
   }
 
   static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {

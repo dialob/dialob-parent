@@ -33,7 +33,6 @@ public class DialobSettings {
     FILEDB,
     DIALOBAPIDB,
     JDBC,
-    ASSETS,
     S3,
     AZURE_BLOB_STORAGE
   }
