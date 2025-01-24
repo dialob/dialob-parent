@@ -28,6 +28,14 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * Implements the {@link QuestionnaireDatabase} interface to store and manage
+ * {@link Questionnaire} documents as blobs in Azure Blob Storage. Extends the
+ * functionality provided by {@link AbstractAzureBlobStorageDatabase}.
+ *
+ * This class provides CRUD operations for {@link Questionnaire} entities stored in Azure Blob
+ * Storage along with metadata-specific query capabilities.
+ */
 public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Questionnaire> implements QuestionnaireDatabase {
 
   public QuestionnaireAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {

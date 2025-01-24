@@ -28,6 +28,21 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * FormAzureBlobStorageDatabase is an implementation of the FormDatabase interface that
+ * provides methods for managing form documents stored in Azure Blob Storage. It extends
+ * the AbstractAzureBlobStorageDatabase to leverage its generic functionality while
+ * specializing it for Form documents.
+ *
+ * Features:
+ * - Interacts with Azure Blob Storage to store, retrieve, and manage form documents.
+ * - Uses JSON serialization/deserialization (via ObjectMapper) for storing and reading document data.
+ * - Supports operations such as saving, deleting, checking existence, and retrieving metadata for forms.
+ * - Provides efficient handling of form metadata with tenant-specific scoping.
+ *
+ * This class handles document-specific operations, including updating document IDs or revisions
+ * as part of the save process.
+ */
 public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Form> implements FormDatabase {
 
   public FormAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {

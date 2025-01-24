@@ -35,6 +35,13 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+/**
+ * Abstract implementation for an Azure Blob Storage-based document database.
+ * This class provides functionalities to manage documents stored as blobs in Azure Blob Storage.
+ * Documents are serialized and deserialized using an {@link ObjectMapper}.
+ *
+ * @param <F> the type of the document entity
+ */
 @Slf4j
 public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocumentDatabase<F> {
 
