@@ -47,7 +47,6 @@
     <module>dialob-form-service-rest</module>
     <module>dialob-form-service</module>
     <module>dialob-function</module>
-    <module>dialob-groovy-functions</module>
     <module>dialob-integration-api</module>
     <module>dialob-integration-queue</module>
     <module>dialob-integration-redis</module>

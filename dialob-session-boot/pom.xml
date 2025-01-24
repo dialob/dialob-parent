@@ -200,10 +200,6 @@
       <groupId>io.dialob</groupId>
       <artifactId>dialob-cloud-gcp</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-groovy-functions</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
