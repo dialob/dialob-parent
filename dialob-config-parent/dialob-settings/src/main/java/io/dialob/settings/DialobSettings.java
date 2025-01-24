@@ -30,7 +30,6 @@ public class DialobSettings {
   public enum DatabaseType {
     NONE,
     FILEDB,
-    DIALOBAPIDB,
     JDBC,
     S3,
     AZURE_BLOB_STORAGE

@@ -1,9 +1,0 @@
-dialob.db:
-  database-type: DIALOBAPIDB
-  dialobapidb:
-    enabled: true
-    uri: http://localhost:8082/api
-    authentication:
-      method: apikey
-      apikey: "localhost:localsecret"
-

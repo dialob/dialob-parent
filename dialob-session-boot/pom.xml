@@ -265,10 +265,6 @@
       <artifactId>dialob-service-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-dialob-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
     </dependency>
