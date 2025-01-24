@@ -25,7 +25,6 @@ import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.validation.WithValidation;
 import org.immutables.gson.Gson;
-import org.immutables.mongo.Mongo;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -45,14 +44,12 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableQuestionnaire.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Mongo.Repository("questionnaires")
 public interface Questionnaire extends WithValidation<Questionnaire>, Serializable {
 
   @JsonProperty("_id")
   @Gson.Named("_id")
   @Id
   @Nullable
-  @Mongo.Id
   String getId();
 
   @JsonProperty("_rev")

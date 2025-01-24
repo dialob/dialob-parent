@@ -22,10 +22,6 @@ import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
 import io.dialob.db.jdbc.DropQuestionnaireToFormDocumentConstraint;
 import io.dialob.db.jdbc.JdbcQuestionnaireDatabase;
-import io.dialob.db.mongo.database.MongoDbFormDatabase;
-import io.dialob.db.mongo.database.MongoDbQuestionnaireDatabase;
-import io.dialob.db.mongo.repository.FormRepository;
-import io.dialob.db.mongo.repository.QuestionnaireRepository;
 import io.dialob.db.s3.FormS3Database;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
@@ -82,14 +78,6 @@ class DialobDbJdbcAutoConfigurationTest {
     public ObjectMapper objectMapper() {
       return new ObjectMapper();
     }
-    @Bean
-    public FormRepository formRepository() {
-      return mock(FormRepository.class);
-    }
-    @Bean
-    public QuestionnaireRepository questionnaireRepository() {
-      return mock(QuestionnaireRepository.class);
-    }
 
     @Bean
     public CurrentTenant currentTenant() {
@@ -128,20 +116,6 @@ class DialobDbJdbcAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobDbJdbcAutoConfigurationTypeMONGODB() {
-    new ApplicationContextRunner()
-      .withPropertyValues("dialob.db.database-type=MONGODB")
-      .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
-      .run(context -> {
-        Assertions.assertThat(context)
-          .hasSingleBean(FormDatabase.class)
-          .hasSingleBean(QuestionnaireDatabase.class)
-          .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
-      });
-  }
-
-  @Test
   public void testDialobDbJdbcAutoConfigurationTypeFILEDB() {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.db.database-type=FILEDB", "dialob.db.file.directory=src")
@@ -157,26 +131,6 @@ class DialobDbJdbcAutoConfigurationTest {
       });
   }
 
-
-  @Test
-  public void testDialobDbJdbcAutoConfigurationTypeNonJDBC() {
-    new ApplicationContextRunner()
-      .withPropertyValues("dialob.db.database-type=MONGODB")
-      .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
-      .run(context -> {
-        Assertions.assertThat(context)
-          .hasSingleBean(FormDatabase.class)
-          .doesNotHaveBean(FormVersionControlDatabase.class)
-          .hasSingleBean(QuestionnaireDatabase.class)
-          .doesNotHaveBean(PlatformTransactionManager.class)
-          .doesNotHaveBean(TransactionTemplate.class)
-          .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
-        Assertions.assertThat(context).getBean(FormDatabase.class).isInstanceOf(MongoDbFormDatabase.class);
-        Assertions.assertThat(context).getBean(QuestionnaireDatabase.class).isInstanceOf(MongoDbQuestionnaireDatabase.class);
-
-      });
-  }
 
   @Test
   public void testDialobDbJdbcAutoConfigurationFormsFILEDBAndQuestoinnairesOnJDBC() {

@@ -28,10 +28,6 @@
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-mongo</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-db-file</artifactId>
     </dependency>
     <dependency>

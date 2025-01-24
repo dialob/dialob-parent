@@ -238,11 +238,6 @@
       </dependency>
       <dependency>
         <groupId>io.dialob</groupId>
-        <artifactId>dialob-db-mongo</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.dialob</groupId>
         <artifactId>dialob-db-file</artifactId>
         <version>${project.version}</version>
       </dependency>

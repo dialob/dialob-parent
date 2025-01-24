@@ -27,11 +27,6 @@ import io.dialob.db.dialob.api.DialobApiTemplate;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
 import io.dialob.db.jdbc.*;
-import io.dialob.db.mongo.MongoQuestionnaireIdObfuscator;
-import io.dialob.db.mongo.database.MongoDbFormDatabase;
-import io.dialob.db.mongo.database.MongoDbQuestionnaireDatabase;
-import io.dialob.db.mongo.repository.FormRepository;
-import io.dialob.db.mongo.repository.QuestionnaireRepository;
 import io.dialob.db.s3.FormS3Database;
 import io.dialob.db.s3.QuestionnaireS3Database;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
@@ -46,7 +41,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -74,35 +68,6 @@ import java.util.function.Predicate;
 @EnableConfigurationProperties(DialobSettings.class)
 @Import(DatabaseExceptionMapper.class)
 public class DialobDbSpAutoConfiguration {
-
-
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
-  @Import({
-    org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration.class
-  })
-  @EnableMongoRepositories
-  public static class DialobDbMongoAutoConfiguration {
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
-    public FormDatabase formDatabase(FormRepository repository) {
-      return new MongoDbFormDatabase(repository);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
-    public QuestionnaireDatabase questionnaireDatabase(QuestionnaireRepository repository, MongoQuestionnaireIdObfuscator mongoQuestionnaireIdObfuscator) {
-      return new MongoDbQuestionnaireDatabase(repository, mongoQuestionnaireIdObfuscator);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(MongoQuestionnaireIdObfuscator.class)
-    public MongoQuestionnaireIdObfuscator mongoQuestionnaireIdObfuscator() {
-      return new MongoQuestionnaireIdObfuscator();
-    }
-  }
-
 
   @Configuration(proxyBeanMethods = false)
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.JDBC)
