@@ -47,7 +47,7 @@ public class ValueSetEntryBuilder extends AbstractItemBuilder<ValueSetEntryBuild
   @Override
   protected void afterExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     requireBooleanExpression(activeWhen, getActiveWhenExpressionErrorType(), errorConsumer);
-    Value<ValueSet.Entry> entryValue = null;
+    Value<ValueSet.Entry> entryValue;
     if (activeWhen != null) {
       entryValue = ImmutableConditionalValue.<ValueSet.Entry>builder()
         .when(activeWhen)

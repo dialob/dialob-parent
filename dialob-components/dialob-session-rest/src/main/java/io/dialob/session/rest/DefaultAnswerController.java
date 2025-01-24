@@ -86,7 +86,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     } catch(DocumentNotFoundException e) {
       return createQuestionnaireNotFoundResponse(sessionId, e);
     } catch(Exception e) {
-      LOGGER.error(String.format("Dialog fetch failed: %s", e.getMessage()), e);
+      LOGGER.error("Dialog fetch failed: {}", e.getMessage(), e);
       return createServiceErrorResponse(e);
     }
     long time = System.nanoTime() - start;

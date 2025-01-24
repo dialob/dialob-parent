@@ -7,12 +7,14 @@ import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.io.Serial;
 import java.util.Objects;
 
 
 @EqualsAndHashCode(callSuper = true, of = {"value", "unit"})
 public class ConstExprNode extends NodeBase {
 
+  @Serial
   private static final long serialVersionUID = 7754763577641440194L;
 
   private final String value;

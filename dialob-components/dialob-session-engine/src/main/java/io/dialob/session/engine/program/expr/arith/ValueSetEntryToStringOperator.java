@@ -73,8 +73,7 @@ public interface ValueSetEntryToStringOperator extends Expression {
   @Override
   @NonNull
   default Set<EventMatcher> getEvalRequiredConditions() {
-    final Set<EventMatcher> deps = new HashSet<>();
-    deps.addAll(getExpression().getEvalRequiredConditions());
+    final Set<EventMatcher> deps = new HashSet<>(getExpression().getEvalRequiredConditions());
     deps.add(EventMatchers.whenValueSetUpdated(getValueSetId()));
     return deps;
   }

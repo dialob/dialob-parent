@@ -6,12 +6,14 @@ import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true, of = {"nodeOperator", "arguments"})
 public class CallExprNode extends NodeBase {
 
+  @Serial
   private static final long serialVersionUID = 9169421768436062924L;
 
   private List<NodeBase> arguments = new ArrayList<>();

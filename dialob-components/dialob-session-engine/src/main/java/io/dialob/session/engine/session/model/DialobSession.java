@@ -31,6 +31,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
@@ -45,6 +46,7 @@ import static io.dialob.session.engine.Utils.*;
 @Slf4j
 public class DialobSession implements ItemStates, Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1180110179877247767L;
 
   public static final ImmutableItemRef QUESTIONNAIRE_REF = (ImmutableItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);

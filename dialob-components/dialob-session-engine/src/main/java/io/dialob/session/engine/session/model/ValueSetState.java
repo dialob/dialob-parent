@@ -23,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +34,7 @@ import java.util.Objects;
 @ToString
 public class ValueSetState implements SessionObject {
 
+  @Serial
   private static final long serialVersionUID = 6040009682715910439L;
 
   private final ValueSetId id;
@@ -44,6 +46,7 @@ public class ValueSetState implements SessionObject {
   @ToString
   public static class Entry implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4632044242844529912L;
 
     private final String id;

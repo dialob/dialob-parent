@@ -276,7 +276,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
   }
 
   private <T> Boolean compare(String operator, Comparable<T> left, T right) {
-    Boolean result;
+    boolean result;
     if (left != null && right != null) {
       final int diff = left.compareTo(right);
       switch (operator) {

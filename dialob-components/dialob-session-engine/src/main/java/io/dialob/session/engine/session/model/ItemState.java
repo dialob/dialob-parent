@@ -30,6 +30,7 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.*;
 
 import static io.dialob.session.engine.Utils.readNullableString;
@@ -40,6 +41,7 @@ import static io.dialob.session.engine.Utils.writeNullableString;
 @ToString
 public class ItemState implements SessionObject {
 
+  @Serial
   private static final long serialVersionUID = -3974128908954128671L;
 
 
@@ -65,7 +67,7 @@ public class ItemState implements SessionObject {
     PENDING
   }
 
-  private static final int DISPLAY_ITEM_BIT = 1 << 0;
+  private static final int DISPLAY_ITEM_BIT = 1;
   private static final int ACTIVE_BIT = 1 << 1;
   private static final int DISABLED_BIT = 1 << 2;
   private static final int REQUIRED_BIT = 1 << 3;

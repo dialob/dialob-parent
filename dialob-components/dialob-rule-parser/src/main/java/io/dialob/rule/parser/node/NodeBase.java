@@ -3,6 +3,7 @@ package io.dialob.rule.parser.node;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 public abstract class NodeBase implements TypedNode, Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1948018522089217375L;
 
   private NodeBase parent;

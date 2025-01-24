@@ -3,11 +3,13 @@ package io.dialob.rule.parser.node;
 import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
 public class NodeOperator implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 3766609755158172243L;
 
   public static final NodeOperator CONST = new NodeOperator("$const", Category.LEAF);

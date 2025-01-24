@@ -27,6 +27,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -71,6 +72,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   private List<String> items = new ArrayList<>();
 
+  @Getter
   private Type type;
 
   private String view;
@@ -158,10 +160,6 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   protected boolean hoistsItem(String itemId) {
     return items.contains(itemId);
-  }
-
-  public Type getType() {
-    return type;
   }
 
   @Override

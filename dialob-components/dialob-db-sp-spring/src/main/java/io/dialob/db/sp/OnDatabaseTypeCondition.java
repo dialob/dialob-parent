@@ -75,8 +75,7 @@ public class OnDatabaseTypeCondition extends SpringBootCondition {
         requiredTypes.add(DialobSettings.DatabaseType.valueOf(databaseTypeProperty.trim().toUpperCase()));
       }
     } catch (IllegalArgumentException e) {
-      LOGGER.error("Unknown database type " + key + "=" + databaseTypeProperty +
-        ". Acceptable values are: " + StringUtils.join(DialobSettings.DatabaseType.values(),","));
+      LOGGER.error("Unknown database type {}={}. Acceptable values are: {}", key, databaseTypeProperty, StringUtils.join(DialobSettings.DatabaseType.values(), ","));
     }
   }
 }

@@ -115,7 +115,7 @@ public class PerQuestionnaireConnectionWebSocketHandler implements WebSocketHand
         this.provider.destroy(handler);
       }
     } catch (Exception t) {
-      LOGGER.warn("Error while destroying " + handler, t);
+      LOGGER.warn("Error while destroying {}", handler, t);
     }
   }
 

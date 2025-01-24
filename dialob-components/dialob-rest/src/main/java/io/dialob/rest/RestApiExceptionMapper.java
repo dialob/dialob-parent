@@ -58,7 +58,7 @@ public class RestApiExceptionMapper {
     }
     Errors errors = errorsBuilder.build();
     HttpStatus httpStatus = resolveHttpStatus(errors);
-    LOGGER.error("Invalid request ("+ httpStatus + "): " + exception.getMessage());
+    LOGGER.error("Invalid request ({}): {}", httpStatus, exception.getMessage());
     return ResponseEntity.status(httpStatus).body(errors);
   }
 
@@ -83,21 +83,12 @@ public class RestApiExceptionMapper {
       .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).build());
   }
 
-//  @ExceptionHandler
-//  public ResponseEntity vonstraintViolationExceptionHandler(@NonNull ConstraintViolationException exception) {
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ImmutableErrors.builder().
-//      addErrors(ImmutableErrors.Error.builder().error(exception.getMessage()).build())
-//      .error(HttpStatus.BAD_REQUEST.getReasonPhrase()).build());
-//  }
-
-
-
   @ExceptionHandler
   public ResponseEntity apiExceptionHandler(@NonNull ApiException exception) {
     Errors errors = exception.getErrors();
     HttpStatus httpStatus = resolveHttpStatus(errors);
     errors = ImmutableErrors.builder().from(errors).error(httpStatus.getReasonPhrase()).build();
-    LOGGER.error("API Error ("+ httpStatus + "): " + exception.getMessage(), exception);
+    LOGGER.error("API Error ({}): {}", httpStatus, exception.getMessage(), exception);
     return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(errors);
   }
 

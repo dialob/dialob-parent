@@ -17,6 +17,7 @@ package io.dialob.cloud.aws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.sns.SnsAsyncClient;
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue;
@@ -29,6 +30,7 @@ public class AbstractEventsToSNSBridge {
 
   private final SnsAsyncClient amazonSNS;
 
+  @Getter
   private final String topicARN;
 
   private final ObjectMapper objectMapper;
@@ -54,12 +56,9 @@ public class AbstractEventsToSNSBridge {
         }
       });
     } catch (JsonProcessingException e) {
-      LOGGER.error("Could not publish event: {}", e);
+      LOGGER.error("Could not publish event: {}", message, e);
     }
   }
 
 
-  public String getTopicARN() {
-    return topicARN;
-  }
 }

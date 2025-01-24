@@ -23,12 +23,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Objects;
 
 @EqualsAndHashCode
 @ToString
 public class ErrorState implements SessionObject {
 
+  @Serial
   private static final long serialVersionUID = -6652593868401573582L;
 
   private final ErrorId targetId;

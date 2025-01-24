@@ -232,7 +232,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   @Override
   public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () ->
-      LOGGER.error("WebSocket transport error. " + this.session.getId(), exception));
+      LOGGER.error("WebSocket transport error. {}", this.session.getId(), exception));
   }
 
   @Override

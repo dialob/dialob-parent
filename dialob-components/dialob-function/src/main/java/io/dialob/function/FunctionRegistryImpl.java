@@ -160,7 +160,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
       // Exception thrown by function
       failure = e.getTargetException().getMessage();
     } catch (Exception e) {
-      LOGGER.warn("Couldn't invoke function " + functionName, e);
+      LOGGER.warn("Couldn't invoke function {}", functionName, e);
       failure = e.getMessage();
     }
     callback.failed(failure);
