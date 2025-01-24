@@ -50,8 +50,6 @@ public class DialobSettings {
 
   private ApiSettings api = new ApiSettings();
 
-  private UaaSettings uaa = new UaaSettings();
-
   private SecuritySettings security = new SecuritySettings();
 
   private Map<String,SubmitHandlerSettings> submitHandlers = new HashMap<>();
@@ -198,17 +196,6 @@ public class DialobSettings {
     }
 
     CorsSettings cors = new CorsSettings();
-  }
-
-  @Data
-  public static class UaaSettings {
-
-    private String url;
-
-    private String clientId;
-
-    private String clientSecret;
-
   }
 
   @Data

@@ -22,7 +22,6 @@ import io.dialob.security.spring.oauth2.*;
 import io.dialob.security.spring.tenant.*;
 import io.dialob.settings.DialobSettings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -72,21 +71,6 @@ public class DialobSecuritySpringAutoConfiguration {
     return filterRegBean;
   }
 
-  @Deprecated // uaa support should be removed
-  static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> uaaGroupNameToTenantMapper(String prefix) {
-    var envPrefix = StringUtils.appendIfMissing(Objects.requireNonNull(prefix), "/");
-    return (GroupGrantedAuthority groupGrantedAuthority) -> {
-      var authority = groupGrantedAuthority.getAuthority();
-      if (authority.contains("/") && authority.startsWith(envPrefix)) {
-        return Stream.of(ImmutableTenantGrantedAuthority.builder()
-            .authority(authority.substring(envPrefix.length()))
-            .tenantId(groupGrantedAuthority.getGroupId())
-          .build());
-      }
-      return Stream.of(groupGrantedAuthority);
-    };
-  }
-
   public static Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> groupNameToTenantMapper(Map<String, Set<String>> groupMapping, Map<String, DialobSettings.TenantSettings.Tenant> tenants) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Number of group mappings: {}, Number of tenants: {}", groupMapping.size(), tenants.size());
@@ -105,18 +89,14 @@ public class DialobSecuritySpringAutoConfiguration {
   }
 
   @Bean
-  @Profile({"uaa | aws | oauth2"})
+  @Profile({"aws | oauth2"})
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper(Environment environment,
                                                            DialobSettings dialobSettings,
                                                            Optional<UsersAndGroupsService> usersAndGroupsService) {
     var operators = new ArrayList<UnaryOperator<Stream<? extends GrantedAuthority>>>();
 
     Function<GroupGrantedAuthority,Stream<? extends GrantedAuthority>> tenantMapper;
-    if (environment.matchesProfiles("uaa")) {
-      tenantMapper = uaaGroupNameToTenantMapper(dialobSettings.getTenant().getEnv());
-    } else {
-      tenantMapper = groupNameToTenantMapper(dialobSettings.getTenant().getGroupToTenants(), dialobSettings.getTenant().getTenants());
-    }
+    tenantMapper = groupNameToTenantMapper(dialobSettings.getTenant().getGroupToTenants(), dialobSettings.getTenant().getTenants());
 
     final var groupPermissions = dialobSettings.getSecurity().getGroupPermissions();
     operators.add(new Groups2GrantedAuthorisations(group -> groupPermissions.getOrDefault(group, Collections.emptySet())));

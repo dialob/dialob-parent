@@ -53,7 +53,6 @@ Dialob backend services
   * **dialob-security** - Common security types 
   * **dialob-security-aws** - AWS ELB Authentication implementation
   * **dialob-security-spring** - Spring security implementation (APIKey, OAuth2)
-  * **dialob-security-uaa** - UAA security implementation
 * **dialob-session-boot** - Spring boot application for Dialob Session API (Form filling backend)
 * **dialob-spring-boot** - Spring boot autoconfigurations
 * **docs** - Additional documentation
@@ -80,7 +79,6 @@ For default configurations, see YML-s in **dialob-config-parent/dialob-settings*
 * **dialobapidb** - Form and questionnaire persistence - Dialob API
 * **filedb** - Form and questionnaire persistence - Filesystem
 * **mongodb** - Form and questionnaire persistence - MongoDb
-* **uaa** - Security implementation UAA (deprecated)
 * **oauth2** - Enabled OAuth 2 authentication
 
 ## Building tasks

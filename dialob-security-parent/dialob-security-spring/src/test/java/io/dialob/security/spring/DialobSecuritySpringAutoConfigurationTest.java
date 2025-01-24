@@ -97,23 +97,6 @@ class DialobSecuritySpringAutoConfigurationTest {
 
 
   @Test
-  public void shouldCreateBeansForUaa() {
-    new ApplicationContextRunner()
-      .withPropertyValues(
-        "spring.profiles.active=uaa",
-        "dialob.security.enabled=true",
-        "dialob.security.groups-claim=true")
-      .withUserConfiguration(
-        DialobSecuritySpringAutoConfiguration.class)
-      .run(context -> {
-        assertThat(context)
-          .hasSingleBean(FilterRegistrationBean.class)
-          .hasSingleBean(GrantedAuthoritiesMapper.class)
-          .hasSingleBean(TenantAccessEvaluator.class);
-      });
-  }
-
-  @Test
   void testGroupNameToTenantMapper() {
     var mapper = DialobSecuritySpringAutoConfiguration.groupNameToTenantMapper(Map.of(
         "g1", Set.of("t1"),
