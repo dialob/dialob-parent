@@ -20,10 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
 import io.dialob.db.azure.blob.storage.QuestionnaireAzureBlobStorageDatabase;
-import io.dialob.db.dialob.api.DialobApiDbSettings;
-import io.dialob.db.dialob.api.DialobApiFormDatabase;
-import io.dialob.db.dialob.api.DialobApiQuestionnaireDatabase;
-import io.dialob.db.dialob.api.DialobApiTemplate;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
 import io.dialob.db.jdbc.*;
@@ -46,7 +42,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.sql.DataSource;
@@ -235,36 +230,6 @@ public class DialobDbSpAutoConfiguration {
         settings.getQuestionnaireDatabase().getAzureBlobStorage().getSuffix()
       );
     }
-  }
-
-
-
-
-
-  @Configuration(proxyBeanMethods = false)
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.DIALOBAPIDB)
-  @EnableConfigurationProperties(DialobApiDbSettings.class)
-  public class DialobDbDialobApiAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean(DialobApiTemplate.class)
-    public DialobApiTemplate dialobApiTemplate(DialobApiDbSettings settings) {
-      RestTemplate restTemplate = new RestTemplate();
-      return new DialobApiTemplate(restTemplate, settings);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
-    public FormDatabase formDatabase(DialobApiTemplate dialobApiTemplate) {
-      return new DialobApiFormDatabase(dialobApiTemplate);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
-    public QuestionnaireDatabase questionnaireDatabase(DialobApiTemplate dialobApiTemplate) {
-      return new DialobApiQuestionnaireDatabase(dialobApiTemplate);
-    }
-
   }
 
   static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {

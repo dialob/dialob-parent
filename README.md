@@ -17,7 +17,6 @@ Dialob backend services
   * **dialob-cloud-gcp** - GCP support: Publish questionnaire and form events to GCP PubSub
   * **dialob-core** - (no function, obsolete)
   * **dialob-db-azure-blob-storage** - Form and questionnaire persistence implementation: Azure Blob Storage
-  * **dialob-db-dialob-api** - Form and questionnaire persistence implementation: Use external Dialob API as persistence (obsolete?)
   * **dialob-db-file** - Form and questionnaire persistence implementation: Filesystem
   * **dialob-db-jdbc** - Form and questionnaire persistence implementation: JDBC, database schema definitions and Flyway migrations for MySql and Postgres
   * **dialob-db-s3** - Form and questionnaire persistence implementation: AWS S3 storage
@@ -74,7 +73,6 @@ For default configurations, see YML-s in **dialob-config-parent/dialob-settings*
 * **jdbc** - Form and questionnaire persistence - JDBC (enabled by default)
 * **ui** - Enable UI components (enabled by default)
 * **aws** - AWS environment: Enable AWS ELB authentication
-* **dialobapidb** - Form and questionnaire persistence - Dialob API
 * **filedb** - Form and questionnaire persistence - Filesystem
 * **mongodb** - Form and questionnaire persistence - MongoDb
 * **oauth2** - Enabled OAuth 2 authentication

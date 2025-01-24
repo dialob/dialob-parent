@@ -36,7 +36,6 @@
     <module>dialob-cloud-gcp</module>
     <module>dialob-core</module>
     <module>dialob-db-azure-blob-storage</module>
-    <module>dialob-db-dialob-api</module>
     <module>dialob-db-file</module>
     <module>dialob-db-jdbc</module>
     <module>dialob-db-s3</module>

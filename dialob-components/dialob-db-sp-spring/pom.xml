@@ -44,10 +44,6 @@
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-dialob-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-settings</artifactId>
     </dependency>
     <dependency>
