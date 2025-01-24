@@ -17,7 +17,6 @@ package io.dialob.db.sp;
 
 import com.azure.storage.blob.BlobServiceClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.db.assets.AssetFormDatabase;
 import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
@@ -139,22 +138,6 @@ class DialobDbJdbcAutoConfigurationTest {
           .hasSingleBean(FormDatabase.class)
           .hasSingleBean(QuestionnaireDatabase.class)
           .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
-      });
-  }
-
-  @Test
-  public void testDialobDbJdbcAutoConfigurationTypeASSETS() {
-    new ApplicationContextRunner()
-      .withPropertyValues("dialob.db.database-type=ASSETS")
-      .withUserConfiguration(MockConfigurations.class)
-      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
-      .run(context -> {
-        Assertions.assertThat(context)
-          .hasSingleBean(FormDatabase.class)
-          .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
-
-        Assertions.assertThat(context).getBean(FormDatabase.class).isInstanceOf(AssetFormDatabase.class);
-
       });
   }
 
