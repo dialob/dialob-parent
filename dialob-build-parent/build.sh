@@ -33,12 +33,23 @@
 
 set -e
 
-export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
+OPTS=""
 
-mvn -B clean install \
-		-Pjib \
+if [[ ! -z "$DOCKER_REGISTRY" ]]; then
+	OPTS="$OPTS -Djib.to.imagePath=$DOCKER_REGISTRY" 
+	PROFILES="$PROFILES jib"
+fi
+
+if [[ ! -z "$GITHUB_REF_NAME" ]]; then
+	OPTS="$OPTS -DbranchName=$GITHUB_REF_NAME"
+else
+	OPTS="$OPTS -DbranchName=$(git rev-parse --abbrev-ref HEAD)"
+fi
+
+if [[ ! -z "$PROFILES" ]]; then
+	PROFILES=-P"$(echo $PROFILES | xargs | tr ' ' ',')"
+fi
+
+./mvnw -B clean install $PROFILES \
     -Dmaven.javadoc.skip=false \
-    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Djib.to.imagePath=$DOCKER_REGISTRY \
-    -DbranchName=$GITHUB_REF_NAME
-
+    $OPTS

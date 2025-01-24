@@ -36,12 +36,9 @@ set -e
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 run_build () {
-	# https://issues.sonatype.org/browse/NEXUS-27902
-	export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
 	./mvnw -B clean deploy \
 			-Prelease,jib \
 			-Dmaven.javadoc.skip=false \
-			-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
 			-Djib.to.imagePath=$DOCKER_REGISTRY \
 			-DbranchName=$GITHUB_REF_NAME
 }
