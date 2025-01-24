@@ -27,7 +27,6 @@ Dialob backend services
   * **dialob-form-service-api** - Form service API types
   * **dialob-form-service-rest** - Form REST service implementation
   * **dialob-function** - Form expression language function registry implementation
-  * **dialob-groovy-functions** - Form expression language function registry for Groovy
   * **dialob-integration-api** - Dialob component integration API types
   * **dialob-integration-queue** - Dialob component integration implementation for Redis
   * **dialob-integration-redis** - Dialob component integration implementation for Redis

@@ -207,10 +207,6 @@
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-groovy-functions</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-spring-boot</artifactId>
     </dependency>
     <dependency>

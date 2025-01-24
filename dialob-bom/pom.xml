@@ -130,11 +130,6 @@
       </dependency>
       <dependency>
         <groupId>io.dialob</groupId>
-        <artifactId>dialob-groovy-functions</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.dialob</groupId>
         <artifactId>dialob-rest</artifactId>
         <version>${project.version}</version>
       </dependency>
