@@ -73,7 +73,6 @@ For default configurations, see YML-s in **dialob-config-parent/dialob-settings*
 * **ui** - Enable UI components (enabled by default)
 * **aws** - AWS environment: Enable AWS ELB authentication
 * **filedb** - Form and questionnaire persistence - Filesystem
-* **mongodb** - Form and questionnaire persistence - MongoDb
 * **oauth2** - Enabled OAuth 2 authentication
 
 ## Building tasks
