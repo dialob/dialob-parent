@@ -30,13 +30,7 @@ import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +40,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -351,6 +347,81 @@ class FormsRestServiceControllerTest {
       .refName("tagi")
       .build()));
 
+
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
+  public void shouldCreateTagWithCreatorParam() throws Exception {
+
+    FormTag newTag = ImmutableFormTag.builder()
+      .name("newtag")
+      .formId("1234")
+      .formName("myform")
+      .creator("user-123")
+      .build();
+
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
+    when(nodeId.getId()).thenReturn("testnode");
+    when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123")).thenReturn(Optional.of(ImmutableFormTag.builder()
+      .formName("myform")
+      .name("newtag")
+      .formId("4321")
+      .creator("user-123")
+      .build()));
+
+    mockMvc.perform(post("/forms/{formId}/tags", "myform")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(tagJson))
+      .andExpect(status().isOk());
+
+    verify(currentTenant,atLeastOnce()).getId();
+    verify(currentTenant).get();
+    verify(nodeId).getId();
+    verify(formVersionControlDatabase).isName("t-123","myform");
+    verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123");
+
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
+  public void shouldCreateTagWithCurrentUserProvider() throws Exception {
+
+    FormTag newTag = ImmutableFormTag.builder()
+      .name("newtag")
+      .formId("1234")
+      .formName("myform")
+      .build();
+
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
+    when(currentUserProvider.getUserId()).thenReturn("user");
+    when(nodeId.getId()).thenReturn("testnode");
+    when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user")).thenReturn(Optional.of(ImmutableFormTag.builder()
+      .formName("myform")
+      .name("newtag")
+      .formId("4321")
+      .creator("user")
+      .build()));
+
+    mockMvc.perform(post("/forms/{formId}/tags", "myform")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(tagJson))
+      .andExpect(status().isOk());
+
+    verify(currentTenant,atLeastOnce()).getId();
+    verify(currentTenant).get();
+    verify(currentUserProvider).getUserId();
+    verify(nodeId).getId();
+    verify(formVersionControlDatabase).isName("t-123","myform");
+    verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user");
 
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
   }

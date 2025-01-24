@@ -197,6 +197,7 @@ const en = {
   'dialogs.versioning.list.header.name': 'Name',
   'dialogs.versioning.list.header.description': 'Description',
   'dialogs.versioning.list.header.created': 'Created',
+  'dialogs.versioning.creator': 'Created by: {creator}',
   'dialogs.versioning.list.header.actions': 'Actions',
   'dialogs.versioning.copy.id': 'Copy ID',
   'dialogs.versioning.copy.new': 'Copy tag as new dialog',

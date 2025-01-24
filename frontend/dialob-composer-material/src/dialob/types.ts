@@ -79,10 +79,11 @@ export type VisibilityType = 'ONLY_ENABLED' | 'SHOW_DISABLED' | 'ALL';
 export type ComposerTag = {
   name: string;
   formName: string;
-  formId: string;
-  description: string;
-  created: string;
+  formId?: string;
+  description?: string;
+  created?: string;
   type: 'NORMAL' | 'MUTABLE';
+  creator?: string;
 }
 
 export type ComposerState = {

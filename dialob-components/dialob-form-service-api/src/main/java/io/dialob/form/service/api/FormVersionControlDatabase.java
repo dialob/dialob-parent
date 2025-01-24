@@ -46,9 +46,10 @@ public interface FormVersionControlDatabase {
    * @param tag the name of the tag to be created
    * @param description a brief description of the tag; can be null
    * @param snapshot a flag indicating whether the tag creation involves creating a snapshot of the form
+   * @param creator the identifier of the user creating the tag
    * @return an {@code Optional<FormTag>} containing the created tag if successful, or an empty {@code Optional} if the operation fails
    */
-  Optional<FormTag> createTagOnLatest(String tenantId, @NonNull String formName, String tag, String description, boolean snapshot);
+  Optional<FormTag> createTagOnLatest(String tenantId, @NonNull String formName, String tag, String description, boolean snapshot, String creator);
 
   /**
    * Deletes the specified form associated with a tenant.
@@ -78,9 +79,10 @@ public interface FormVersionControlDatabase {
    * @param description a brief description of the tag; can be null
    * @param formDocumentIdOrRefName the document ID or reference name of the form to associate with the tag
    * @param type the type of the tag (e.g., NORMAL or MUTABLE); must not be null
+   * @param creator the identifier of the user creating the tag
    * @return an {@code Optional<FormTag>} containing the created tag if successful, or an empty {@code Optional} if the operation fails
    */
-  Optional<FormTag> createTag(String tenantId, @NonNull String formName, String tag, String description, String formDocumentIdOrRefName, @NonNull FormTag.Type type);
+  Optional<FormTag> createTag(String tenantId, @NonNull String formName, String tag, String description, String formDocumentIdOrRefName, @NonNull FormTag.Type type, String creator);
 
   /**
    * Updates the label of a form associated with a specific tenant and form name.

@@ -59,6 +59,9 @@ public interface FormTag extends FormEntity {
   @Nullable
   String getDescription();
 
+  @Nullable
+  String getCreator();
+
   @NotNull
   @Value.Default
   default Type getType() {
