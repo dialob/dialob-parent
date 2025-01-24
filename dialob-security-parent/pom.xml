@@ -33,6 +33,5 @@
     <module>dialob-security</module>
     <module>dialob-security-spring</module>
     <module>dialob-security-aws</module>
-    <module>dialob-security-uaa</module>
   </modules>
 </project>
