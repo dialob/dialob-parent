@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 
 /**
@@ -44,6 +45,11 @@ import java.util.function.BinaryOperator;
  */
 public interface ValueType extends Serializable {
 
+  @NonNull
+  static ValueType initPrimitive(PrimitiveValueType primitiveValueType) {
+    return Objects.requireNonNull(primitiveValueType, "primitiveValueType may not be null");
+  }
+
   /**
    * Represents a value type that corresponds to a time value. This can be used
    * to denote and operate on time-based data in the associated system.
@@ -52,7 +58,7 @@ public interface ValueType extends Serializable {
    * time values, including parsing, serialization, and mathematical operations
    * where applicable.
    */
-  ValueType TIME = PrimitiveValueType.TIME;
+  ValueType TIME = initPrimitive(PrimitiveValueType.TIME);
 
   /**
    * Represents the `DATE` type within the {@code ValueType} system.
@@ -61,14 +67,14 @@ public interface ValueType extends Serializable {
    * associated with this type are defined by the methods in the
    * {@code ValueType} class.
    */
-  ValueType DATE = PrimitiveValueType.DATE;
+  ValueType DATE = initPrimitive(PrimitiveValueType.DATE);
 
   /**
    * A constant representing the STRING value type.
    * This value type is associated with textual or string data.
    * It allows for operations and parsing related to string-based values in a system.
    */
-  ValueType STRING = PrimitiveValueType.STRING;
+  ValueType STRING = initPrimitive(PrimitiveValueType.STRING);
 
   /**
    * Represents a value type for periods, used to define temporal durations or intervals.
@@ -79,7 +85,7 @@ public interface ValueType extends Serializable {
    * spans or intervals and may be associated with operations or parsing mechanisms
    * specific to such representations.
    */
-  ValueType PERIOD = PrimitiveValueType.PERIOD;
+  ValueType PERIOD = initPrimitive(PrimitiveValueType.PERIOD);
 
   /**
    * A predefined constant representing the value type for integer numbers.
@@ -92,7 +98,7 @@ public interface ValueType extends Serializable {
    * The integer type typically corresponds to a whole number representation
    * in Java (e.g., int or Integer).
    */
-  ValueType INTEGER = PrimitiveValueType.INTEGER;
+  ValueType INTEGER = initPrimitive(PrimitiveValueType.INTEGER);
 
   /**
    * Represents the value type for decimal numbers.
@@ -100,14 +106,14 @@ public interface ValueType extends Serializable {
    * This type is typically associated with numerical data that includes fractional parts
    * and supports arithmetic operations like addition, subtraction, multiplication, and division.
    */
-  ValueType DECIMAL = PrimitiveValueType.DECIMAL;
+  ValueType DECIMAL = initPrimitive(PrimitiveValueType.DECIMAL);
 
   /**
    * The `BOOLEAN` value type represents a primitive boolean data type.
    * It encapsulates the concept of binary true/false logic.
    * This type is used to define values and operations applicable to boolean logic.
    */
-  ValueType BOOLEAN = PrimitiveValueType.BOOLEAN;
+  ValueType BOOLEAN = initPrimitive(PrimitiveValueType.BOOLEAN);
 
   /**
    * Represents the value type for durations.
@@ -122,7 +128,7 @@ public interface ValueType extends Serializable {
    * The `DURATION` value type may interact with other value types such as `TIME`, `PERIOD`,
    * and `DATE` to produce composite values or transformations.
    */
-  ValueType DURATION = PrimitiveValueType.DURATION;
+  ValueType DURATION = initPrimitive(PrimitiveValueType.DURATION);
 
   /**
    * A predefined constant representing a percentage value type.
@@ -134,7 +140,7 @@ public interface ValueType extends Serializable {
    * as well as parsing and negation. The exact behavior of these operations
    * is determined by the methods defined in the containing class.
    */
-  ValueType PERCENT = PrimitiveValueType.PERCENT;
+  ValueType PERCENT = initPrimitive(PrimitiveValueType.PERCENT);
 
   /**
    * Returns the Java class type associated with the specific value type.
