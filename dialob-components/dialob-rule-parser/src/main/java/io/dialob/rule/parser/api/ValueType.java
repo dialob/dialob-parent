@@ -124,7 +124,7 @@ public interface ValueType extends Serializable {
     return null;
   }
 
-  default Object coerseFrom(Object value) {
+  default Object coerceFrom(Object value) {
     if (getTypeClass().isAssignableFrom(value.getClass())) {
       return value;
     }

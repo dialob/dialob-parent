@@ -473,7 +473,7 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public Object coerseFrom(Object value) {
+    public Object coerceFrom(Object value) {
       if (value instanceof BigInteger) {
         return value;
       }
@@ -602,7 +602,7 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public Object coerseFrom(Object value) {
+    public Object coerceFrom(Object value) {
       if (value instanceof Number) {
         return BigDecimal.valueOf(((Number) value).doubleValue());
       }

@@ -16,7 +16,6 @@
 package io.dialob.session.engine;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -174,7 +173,7 @@ public class Utils {
         } catch (Exception ignored) {
         }
       }
-      return valueType.coerseFrom(value);
+      return valueType.coerceFrom(value);
     }
     if (value instanceof Collection) {
       return ((Collection)value).stream().map(i -> i instanceof Integer ? BigInteger.valueOf((Integer)i) : i).collect(Collectors.toList());
