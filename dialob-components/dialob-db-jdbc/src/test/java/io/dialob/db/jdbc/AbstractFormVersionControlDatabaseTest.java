@@ -44,13 +44,13 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   @AfterEach
   public void cleanup() {
     final JdbcTemplate template = getJdbcTemplate();
-    LOGGER.info("delete from questionnaire : {}", template.update("delete from questionnaire"));
-    LOGGER.info("delete from form_rev : {}", template.update("delete from form_rev where ref_name is not null"));
-    LOGGER.info("delete from form_rev : {}", template.update("delete from form_rev"));
-    LOGGER.info("delete from form : {}", template.update("delete from form"));
-    LOGGER.info("delete from form_rev_archive : {}", template.update("delete from form_rev_archive"));
-    LOGGER.info("delete from form_archive : {}", template.update("delete from form_archive"));
-    LOGGER.info("delete from form_document : {}", template.update("delete from form_document"));
+    LOGGER.trace("delete from questionnaire : {}", template.update("delete from questionnaire"));
+    LOGGER.trace("delete from form_rev : {}", template.update("delete from form_rev where ref_name is not null"));
+    LOGGER.trace("delete from form_rev : {}", template.update("delete from form_rev"));
+    LOGGER.trace("delete from form : {}", template.update("delete from form"));
+    LOGGER.trace("delete from form_rev_archive : {}", template.update("delete from form_rev_archive"));
+    LOGGER.trace("delete from form_archive : {}", template.update("delete from form_archive"));
+    LOGGER.trace("delete from form_document : {}", template.update("delete from form_document"));
     resetTenant();
   }
 
