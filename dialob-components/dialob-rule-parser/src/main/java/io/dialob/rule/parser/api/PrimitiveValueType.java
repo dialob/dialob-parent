@@ -644,11 +644,8 @@ public enum PrimitiveValueType implements ValueType {
     @Override
     public BinaryOperator<Boolean> multOp() {    // === andOp
       return (identity, element) -> {
-        if (identity == null) {
-          return element;
-        }
-        if (element == null) {
-          return identity;
+        if (identity == null || element == null) {
+          return null;
         }
         return identity && element;
       };
