@@ -43,7 +43,7 @@ import java.util.function.BinaryOperator;
  * Additionally, it includes type compatibility checks and serialization/deserialization
  * methods.
  */
-public interface ValueType extends Serializable {
+public interface ValueType extends Serializable, BaseValueType {
 
   @NonNull
   static ValueType initPrimitive(PrimitiveValueType primitiveValueType) {
@@ -141,13 +141,6 @@ public interface ValueType extends Serializable {
    * is determined by the methods defined in the containing class.
    */
   ValueType PERCENT = initPrimitive(PrimitiveValueType.PERCENT);
-
-  /**
-   * Returns the Java class type associated with the specific value type.
-   *
-   * @return the {@link Class} object that represents the type corresponding to this value type
-   */
-  Class<?> getTypeClass();
 
   /**
    * Parses the provided string and returns its corresponding interpreted object.
@@ -281,15 +274,6 @@ public interface ValueType extends Serializable {
   String getName();
 
   /**
-   * Determines whether the current value type is an array.
-   *
-   * @return true if the value type is an array; false otherwise
-   */
-  default boolean isArray() {
-    return false;
-  }
-
-  /**
    * Creates and returns a {@link ValueType} that represents an array of the specified ValueType.
    *
    * @param valueType the {@link ValueType} of the elements in the array; must not be null
@@ -346,21 +330,6 @@ public interface ValueType extends Serializable {
   }
 
   /**
-   * Attempts to coerce the given value to the type represented by the current value type.
-   * If the provided value's class is assignable to the type class of this value type,
-   * it is returned as-is. Otherwise, null is returned.
-   *
-   * @param value the object to be coerced; must not be null
-   * @return the coerced object if the type is compatible, or null if the coercion fails
-   */
-  default Object coerceFrom(Object value) {
-    if (getTypeClass().isAssignableFrom(value.getClass())) {
-      return value;
-    }
-    return null;
-  }
-
-  /**
    * Returns the type code representing the specific value type.
    * Each value type is associated with a unique byte code.
    *
@@ -368,16 +337,6 @@ public interface ValueType extends Serializable {
    */
   byte getTypeCode();
 
-  /**
-   * Retrieves the {@link ValueType} of an individual item within an array type.
-   * This method is applicable when the current value type represents an array.
-   *
-   * @return the {@link ValueType} of an individual item within the array
-   * @throws IllegalStateException if the current value type is not an array
-   */
-  default ValueType getItemValueType() {
-    throw new IllegalStateException("Not an array value type");
-  }
 
   /**
    * Writes the provided value into the given {@link CodedOutputStream}.
