@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static java.math.BigInteger.TWO;
 import static java.math.BigInteger.ZERO;
@@ -28,7 +28,7 @@ public class ValueTypeTest {
     assertDoesNotThrow(() -> ValueType.DATE.parseFromString("2025-01-01"));
   }
   @Test
-  public void booleanIsParseAble() throws Exception {
+  public void booleanIsParseAble() {
     assertNotNull(ValueType.BOOLEAN, "ValueType.BOOLEAN should not be null");
     assertNull(ValueType.BOOLEAN.parseFromString(null));
     assertTrue((Boolean) ValueType.BOOLEAN.parseFromString("true"));
@@ -37,15 +37,15 @@ public class ValueTypeTest {
 
   @Test
   public void booleanReduction() {
-    assertTrue(Arrays.asList(true, true, true).stream().reduce(ValueType.BOOLEAN.multOp()).get());
-    assertFalse(Arrays.asList(true, false, true).stream().reduce(ValueType.BOOLEAN.multOp()).get());
-    assertTrue(Arrays.asList(true, true, true).stream().reduce(ValueType.BOOLEAN.sumOp()).get());
-    assertFalse(Arrays.asList(false, false, false).stream().reduce(ValueType.BOOLEAN.multOp()).get());
+    assertTrue(Stream.of(true, true, true).reduce(ValueType.BOOLEAN.multOp()).get());
+    assertFalse(Stream.of(true, false, true).reduce(ValueType.BOOLEAN.multOp()).get());
+    assertTrue(Stream.of(true, true, true).reduce(ValueType.BOOLEAN.sumOp()).get());
+    assertFalse(Stream.of(false, false, false).reduce(ValueType.BOOLEAN.multOp()).get());
   }
 
 
   @Test
-  public void integerIsParseable() throws Exception {
+  public void integerIsParseable() {
     assertNotNull(ValueType.INTEGER, "ValueType.INTEGER should not be null");
     assertNull(ValueType.INTEGER.parseFromString(null));
     Assertions.assertEquals(ZERO, ValueType.INTEGER.parseFromString("0"));
@@ -53,45 +53,45 @@ public class ValueTypeTest {
 
   @Test
   public void integerReduction() {
-    assertEquals(BigInteger.valueOf(6), Arrays.asList(ONE, TWO, BigInteger.valueOf(3)).stream().reduce(ValueType.INTEGER.multOp()).get());
-    assertEquals(BigInteger.valueOf(6), Arrays.asList(ONE, TWO, BigInteger.valueOf(3)).stream().reduce(ValueType.INTEGER.sumOp()).get());
-    assertEquals(BigInteger.valueOf(24), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).stream().reduce(ValueType.INTEGER.multOp()).get());
-    assertEquals(BigInteger.valueOf(10), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).stream().reduce(ValueType.INTEGER.sumOp()).get());
-    assertEquals(BigInteger.valueOf(0), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4), ZERO).stream().reduce(ValueType.INTEGER.multOp()).get());
-    assertEquals(BigInteger.valueOf(10), Arrays.asList(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4), ZERO).stream().reduce(ValueType.INTEGER.sumOp()).get());
+    assertEquals(BigInteger.valueOf(6), Stream.of(ONE, TWO, BigInteger.valueOf(3)).reduce(ValueType.INTEGER.multOp()).get());
+    assertEquals(BigInteger.valueOf(6), Stream.of(ONE, TWO, BigInteger.valueOf(3)).reduce(ValueType.INTEGER.sumOp()).get());
+    assertEquals(BigInteger.valueOf(24), Stream.of(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).reduce(ValueType.INTEGER.multOp()).get());
+    assertEquals(BigInteger.valueOf(10), Stream.of(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).reduce(ValueType.INTEGER.sumOp()).get());
+    assertEquals(BigInteger.valueOf(0), Stream.of(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4), ZERO).reduce(ValueType.INTEGER.multOp()).get());
+    assertEquals(BigInteger.valueOf(10), Stream.of(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4), ZERO).reduce(ValueType.INTEGER.sumOp()).get());
   }
 
 
   @Test
-  public void decimalIsParseAble() throws Exception {
+  public void decimalIsParseAble() {
     assertNotNull(ValueType.DECIMAL, "ValueType.DECIMAL should not be null");
     assertNull(ValueType.DECIMAL.parseFromString(null));
     Assertions.assertEquals(BigDecimal.valueOf(0.1), ValueType.DECIMAL.parseFromString("0.1"));
   }
 
   @Test
-  public void dateIsParseAble() throws Exception {
+  public void dateIsParseAble() {
     assertNotNull(ValueType.DATE, "ValueType.DATE should not be null");
     assertNull(ValueType.DATE.parseFromString(null));
     Assertions.assertEquals(LocalDate.of(2016, 2, 1), ValueType.DATE.parseFromString("2016-02-01"));
   }
 
   @Test
-  public void timeIsParseAble() throws Exception {
+  public void timeIsParseAble() {
     assertNotNull(ValueType.TIME, "ValueType.TIME should not be null");
     assertNull(ValueType.TIME.parseFromString(null));
     Assertions.assertEquals(LocalTime.of(23, 45, 10), ValueType.TIME.parseFromString("23:45:10"));
   }
 
   @Test
-  public void periodIsParseAble() throws Exception {
+  public void periodIsParseAble() {
     assertNotNull(ValueType.PERIOD, "ValueType.PERIOD should not be null");
     assertNull(ValueType.PERIOD.parseFromString(null));
     Assertions.assertEquals(Period.of(10, 3, 15), ValueType.PERIOD.parseFromString("P10Y3M15D"));
   }
 
   @Test
-  public void durationIsParseAble() throws Exception {
+  public void durationIsParseAble() {
     assertNotNull(ValueType.DURATION, "ValueType.DURATION should not be null");
     assertNull(ValueType.DURATION.parseFromString(null));
     Assertions.assertEquals(Duration.ofDays(100).plusHours(2), ValueType.DURATION.parseFromString("P100DT2H"));
