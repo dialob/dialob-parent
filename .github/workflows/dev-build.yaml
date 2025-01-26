@@ -2,7 +2,7 @@ on:
   push:
     paths-ignore:
       - 'docs/**'
-      - 'frontends/**'
+      - 'frontend/**'
       - 'utils/**'
       - '**/*.md'
       - 'compose/**'
