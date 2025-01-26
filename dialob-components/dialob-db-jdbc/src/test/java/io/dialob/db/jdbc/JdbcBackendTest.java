@@ -20,11 +20,9 @@ import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
-import io.dialob.security.tenant.Tenant;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.sql.DataSource;
 import java.util.function.Predicate;
 
 public interface JdbcBackendTest {
@@ -32,8 +30,6 @@ public interface JdbcBackendTest {
   ObjectMapper objectMapper = new ObjectMapper();
 
   Predicate<String> IS_ANY_TENANT_PREDICATE = tenantId -> ResysSecurityConstants.DEFAULT_TENANT.id().equals(tenantId);
-
-  DataSource getDataSource();
 
   JdbcFormDatabase getJdbcFormDatabase();
 
@@ -45,9 +41,9 @@ public interface JdbcBackendTest {
 
   QuestionnaireDatabase getQuestionnaireDatabase();
 
-  Tenant setActiveTenant(String tenantId);
+  void setActiveTenant(String tenantId);
 
-  Tenant resetTenant();
+  void resetTenant();
 
   CurrentTenant getCurrentTenant();
 

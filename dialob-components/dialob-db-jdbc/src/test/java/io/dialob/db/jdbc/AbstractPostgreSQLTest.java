@@ -33,7 +33,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Optional;
@@ -125,11 +124,6 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   }
 
 
-
-  default DataSource getDataSource() {
-    return ATTRS.dataSource;
-  }
-
   default JdbcFormDatabase getJdbcFormDatabase() {
     return ATTRS.jdbcFormDatabase;
   }
@@ -159,14 +153,12 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     return ATTRS.currentTenant;
   }
 
-  default Tenant setActiveTenant(String tenantId) {
+  default void setActiveTenant(String tenantId) {
     ATTRS.activeTenant = Tenant.of(tenantId);
-    return ATTRS.activeTenant;
   }
 
-  default Tenant resetTenant() {
+  default void resetTenant() {
     ATTRS.activeTenant = ResysSecurityConstants.DEFAULT_TENANT;
-    return ATTRS.activeTenant;
   }
 
 }

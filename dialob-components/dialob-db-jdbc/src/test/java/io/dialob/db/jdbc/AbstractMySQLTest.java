@@ -31,7 +31,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
@@ -116,10 +115,6 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
     ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new MySQLDatabaseHelper(SCHEMA), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
   }
 
-  default DataSource getDataSource() {
-    return ATTRS.dataSource;
-  }
-
   default JdbcFormDatabase getJdbcFormDatabase() {
     return ATTRS.jdbcFormDatabase;
   }
@@ -151,14 +146,12 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
     return ATTRS.currentTenant;
   }
 
-  default Tenant setActiveTenant(String tenantId) {
+  default void setActiveTenant(String tenantId) {
     ATTRS.activeTenant = Tenant.of(tenantId);
-    return ATTRS.activeTenant;
   }
 
-  default Tenant resetTenant() {
+  default void resetTenant() {
     ATTRS.activeTenant = ResysSecurityConstants.DEFAULT_TENANT;
-    return ATTRS.activeTenant;
   }
 
 }
