@@ -56,14 +56,17 @@ Dialob backend services
   * **apikeygen.js** -- API key generation script
   * **upgradeForm.js** -- Form document upgrade script from Dialob 0.x to 2.x
 * **frontend** - Frontend (filling, composer) libraries and applications
-  * **dialob-fill-api** - Dialob filling API (typings and state management for filling) **Published to npmjs.com as @dialob/fill-api**
-  * **dialob-fill-react** - React hooks and context for Dialob filling **Published to npmjs.com as @dialob/fill-react**
+  * **demo-dialob-io-app** 
+  * **dialob-fill-api** - Dialob filling API (typings and state management for filling) **Published to npmjs.com as [@dialob/fill-api](https://www.npmjs.com/package/@dialob/fill-api)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-api)
+  * **dialob-fill-react** - React hooks and context for Dialob filling **Published to npmjs.com as [@dialob/fill-react](https://www.npmjs.com/package/@dialob/fill-react)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-react)
   * **dialob-fill-demo-material** - Demo Dialob filling application on MUI 5 (used in demo.dialob.io)
-  * **dialob-fill-material** - Dialob filling component library implementation on top of MUI 5  **Published to npmjs.com as @dialob/fill-material**
+  * **dialob-fill-material** - Dialob filling component library implementation on top of MUI 5 **Published to npmjs.com as [@dialob/fill-material](https://www.npmjs.com/package/@dialob/fill-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-material)
   * **dialob-review-material** - Dialob filled form review renderer on MUI 5 **Published internally as @resys/dialob-review-material**
   * **dialob-composer-semantic** - Dialob Composer component library on Semantic UI **Published internally as @resys/dialob-composer**
   * **dialob-composer-semantic-app** - Dialob Composer reference application on Semantic UI (used in demo.dialob.io)
   * **dialob-composer-material** - Dialob Composer component library on Material UI
+  * **dialob-composer-material-custom-app**
+  * **dialob-material-dashboard** Dialob dashboard component library on Material UI **Published to npmjs.com as [@dialob/fill-material](https://www.npmjs.com/package/@dialob/dashboard-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Fdashboard-material)
 
 ## Supported spring profiles
 
