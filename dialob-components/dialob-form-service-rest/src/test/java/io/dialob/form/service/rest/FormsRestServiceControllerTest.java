@@ -86,15 +86,15 @@ import jakarta.inject.Inject;
 class FormsRestServiceControllerTest {
 
   @Configuration(proxyBeanMethods = false)
-  public static class TestConfiguration {
+  static class TestConfiguration {
 
     @Bean
-    public ObjectMapper objectMapper() {
+    ObjectMapper objectMapper() {
       return new ObjectMapper();
     }
 
     @Bean
-    public CsvToFormParser csvToFormParser() {
+    CsvToFormParser csvToFormParser() {
       return new DialobCsvToFormParser();
     }
 
@@ -147,7 +147,7 @@ class FormsRestServiceControllerTest {
   String tenantId = "123";
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     mockMvc = webAppContextSetup(webApplicationContext).build();
     reset(formDatabase);
   }
@@ -156,7 +156,7 @@ class FormsRestServiceControllerTest {
   ObjectMapper objectMapper;
 
   @Test
-  public void shouldReturnForm() throws Exception {
+  void shouldReturnForm() throws Exception {
 
     when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
     when(currentTenant.getId()).thenReturn("t-123");
@@ -173,7 +173,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldNotReturnFormForInvalidId() throws Exception {
+  void shouldNotReturnFormForInvalidId() throws Exception {
 
     when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
     when(currentTenant.getId()).thenReturn("t-123");
@@ -187,7 +187,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postShouldAlwaysCreateNewForm() throws Exception {
+  void postShouldAlwaysCreateNewForm() throws Exception {
     ImmutableForm immutableForm = ImmutableForm.builder()
       .id("123")
       .rev("321")
@@ -228,7 +228,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postCsvShouldAlwaysCreateNewForm() throws Exception {
+  void postCsvShouldAlwaysCreateNewForm() throws Exception {
     StringBuilder csvBuilder = new StringBuilder();
     csvBuilder
       .append("testForm101\n")
@@ -277,7 +277,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postCsvShouldNotCreateNewForm() throws Exception {
+  void postCsvShouldNotCreateNewForm() throws Exception {
     StringBuilder csvBuilder = new StringBuilder();
     csvBuilder
       .append("test Form102\n")
@@ -298,7 +298,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldNotPersistOnDryRun() throws Exception {
+  void shouldNotPersistOnDryRun() throws Exception {
 
     String formJson = objectMapper.writerFor(Form.class).writeValueAsString(testForm);
 
@@ -316,7 +316,7 @@ class FormsRestServiceControllerTest {
 
 
   @Test
-  public void shouldTryUpdateTag() throws Exception {
+  void shouldTryUpdateTag() throws Exception {
 
     FormTag newTag = ImmutableFormTag.builder().refName("tagi").build();
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
@@ -352,7 +352,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldCreateTagWithCreatorParam() throws Exception {
+  void shouldCreateTagWithCreatorParam() throws Exception {
 
     FormTag newTag = ImmutableFormTag.builder()
       .name("newtag")
@@ -389,7 +389,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldCreateTagWithCurrentUserProvider() throws Exception {
+  void shouldCreateTagWithCurrentUserProvider() throws Exception {
 
     FormTag newTag = ImmutableFormTag.builder()
       .name("newtag")
@@ -437,7 +437,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldAddMetadatatoQuery() throws Exception {
+  void shouldAddMetadatatoQuery() throws Exception {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "{\"label\":\"Otsake\"}")
@@ -449,7 +449,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldRejextInvalidMetadatatoQuery() throws Exception {
+  void shouldRejextInvalidMetadatatoQuery() throws Exception {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "\"label\":\"Otsake\"}")
