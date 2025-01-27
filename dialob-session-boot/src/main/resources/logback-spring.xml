@@ -1,26 +1,14 @@
 <configuration>
-  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>
-  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
   <property resource="META-INF/build-info.properties"/>
-  <include resource="logback-settings.xml"/>
-
-  <!-- prevents request GET /manage/logfile getting into infinite loop -->
-  <logger name="org.springframework.security.web.context.HttpSessionSecurityContextRepository$SaveToSessionResponseWrapper" level="WARN"/>
 
   <include optional="true" file="/etc/dialob/logback.xml"/>
 
-
-  <!--<logger name="org.springframework.web.socket" level="TRACE"/>-->
-  
-  <!-- Enable following logging if you want to see servlet container's transport exceptions -->
-  <!--
-  <logger name="org.springframework.web.socket.sockjs.DisconnectedClient" level="TRACE"/>
-  -->
-    <!-- suppress tomcat logging -->
-  <logger name="org.apache.coyote.http11.Http11Processor" level="WARN"/>
   <include optional="true" file="${LOGBACK_SETTINGS_FILE:-/java/config/logback-settings.xml}"/>
+
   <root level="INFO">
-    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="CONSOLE"/>
   </root>
 </configuration>

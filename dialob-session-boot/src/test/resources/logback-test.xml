@@ -2,31 +2,7 @@
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-  <logger name="org.springframework.web.socket" level="INFO"/>
-  <logger name="org.springframework.web" level="INFO"/>
-  <logger name="org.apache.catalina" level="INFO"/>
-  <logger name="org.apache.tomcat" level="INFO"/>
-  <logger name="org.springframework.security" level="INFO"/>
-  <logger name="io.dialob.questionnaire.service.sockjs" level="INFO"/>
-  
-  <!-- prevents request GET /manage/logfile getting into infinite loop -->
-  <logger name="org.springframework.security.web.context.HttpSessionSecurityContextRepository$SaveToSessionResponseWrapper" level="WARN"/>
-
-  <!--<logger name="org.springframework.web.socket" level="TRACE"/>-->
-
-  
-  <!-- Enable following logging if you want to see servlet container's transport exceptions -->
-  <!--
-  <logger name="org.springframework.web.socket.sockjs.DisconnectedClient" level="TRACE"/>
-  -->
-  <logger name="io.dialob.session.engine" level="INFO"/>
-
-  <!-- suppress tomcat logging -->
-  <logger name="org.apache.coyote.http11.Http11Processor" level="WARN"/>
-  <logger name="org.springframework.web.servlet.HandlerMapping.Mappings" level="INFO"/>
-  <logger name="org.springframework.web.servlet" level="INFO"/>
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
   </root>
-
 </configuration>
