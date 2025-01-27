@@ -30,7 +30,14 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: build
-        run: ./mvnw verify -B -Dmaven.javadoc.skip=false -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
-
+      - name: Build
+        run: ./mvnw -B -Dmaven.javadoc.skip=false -Dsonar.projectKey=dialob_dialob-parent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

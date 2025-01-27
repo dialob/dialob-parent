@@ -23,7 +23,7 @@
     <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../dialob-build-parent/pom.xml</relativePath>
+    <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-session-boot</artifactId>
   <packaging>jar</packaging>

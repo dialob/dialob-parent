@@ -34,6 +34,8 @@ if [[ ! -z "$PROFILES" ]]; then
 	PROFILES=-P"$(echo $PROFILES | xargs | tr ' ' ',')"
 fi
 
-./mvnw -B clean install $PROFILES \
+./mvnw -B $PROFILES \
     -Dmaven.javadoc.skip=false \
-    $OPTS
+    -Dsonar.projectKey=dialob_dialob-parent \
+    $OPTS \
+    clean install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
