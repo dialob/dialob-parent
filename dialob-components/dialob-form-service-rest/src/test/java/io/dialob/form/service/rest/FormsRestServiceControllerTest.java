@@ -30,13 +30,7 @@ import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +40,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -90,15 +86,15 @@ import jakarta.inject.Inject;
 class FormsRestServiceControllerTest {
 
   @Configuration(proxyBeanMethods = false)
-  public static class TestConfiguration {
+  static class TestConfiguration {
 
     @Bean
-    public ObjectMapper objectMapper() {
+    ObjectMapper objectMapper() {
       return new ObjectMapper();
     }
 
     @Bean
-    public CsvToFormParser csvToFormParser() {
+    CsvToFormParser csvToFormParser() {
       return new DialobCsvToFormParser();
     }
 
@@ -151,7 +147,7 @@ class FormsRestServiceControllerTest {
   String tenantId = "123";
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     mockMvc = webAppContextSetup(webApplicationContext).build();
     reset(formDatabase);
   }
@@ -160,7 +156,7 @@ class FormsRestServiceControllerTest {
   ObjectMapper objectMapper;
 
   @Test
-  public void shouldReturnForm() throws Exception {
+  void shouldReturnForm() throws Exception {
 
     when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
     when(currentTenant.getId()).thenReturn("t-123");
@@ -177,7 +173,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldNotReturnFormForInvalidId() throws Exception {
+  void shouldNotReturnFormForInvalidId() throws Exception {
 
     when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
     when(currentTenant.getId()).thenReturn("t-123");
@@ -191,7 +187,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postShouldAlwaysCreateNewForm() throws Exception {
+  void postShouldAlwaysCreateNewForm() throws Exception {
     ImmutableForm immutableForm = ImmutableForm.builder()
       .id("123")
       .rev("321")
@@ -232,7 +228,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postCsvShouldAlwaysCreateNewForm() throws Exception {
+  void postCsvShouldAlwaysCreateNewForm() throws Exception {
     StringBuilder csvBuilder = new StringBuilder();
     csvBuilder
       .append("testForm101\n")
@@ -281,7 +277,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postCsvShouldNotCreateNewForm() throws Exception {
+  void postCsvShouldNotCreateNewForm() throws Exception {
     StringBuilder csvBuilder = new StringBuilder();
     csvBuilder
       .append("test Form102\n")
@@ -302,7 +298,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldNotPersistOnDryRun() throws Exception {
+  void shouldNotPersistOnDryRun() throws Exception {
 
     String formJson = objectMapper.writerFor(Form.class).writeValueAsString(testForm);
 
@@ -320,7 +316,7 @@ class FormsRestServiceControllerTest {
 
 
   @Test
-  public void shouldTryUpdateTag() throws Exception {
+  void shouldTryUpdateTag() throws Exception {
 
     FormTag newTag = ImmutableFormTag.builder().refName("tagi").build();
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
@@ -356,6 +352,81 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
+  void shouldCreateTagWithCreatorParam() throws Exception {
+
+    FormTag newTag = ImmutableFormTag.builder()
+      .name("newtag")
+      .formId("1234")
+      .formName("myform")
+      .creator("user-123")
+      .build();
+
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
+    when(nodeId.getId()).thenReturn("testnode");
+    when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123")).thenReturn(Optional.of(ImmutableFormTag.builder()
+      .formName("myform")
+      .name("newtag")
+      .formId("4321")
+      .creator("user-123")
+      .build()));
+
+    mockMvc.perform(post("/forms/{formId}/tags", "myform")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(tagJson))
+      .andExpect(status().isOk());
+
+    verify(currentTenant,atLeastOnce()).getId();
+    verify(currentTenant).get();
+    verify(nodeId).getId();
+    verify(formVersionControlDatabase).isName("t-123","myform");
+    verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123");
+
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
+  void shouldCreateTagWithCurrentUserProvider() throws Exception {
+
+    FormTag newTag = ImmutableFormTag.builder()
+      .name("newtag")
+      .formId("1234")
+      .formName("myform")
+      .build();
+
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
+    when(currentUserProvider.getUserId()).thenReturn("user");
+    when(nodeId.getId()).thenReturn("testnode");
+    when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user")).thenReturn(Optional.of(ImmutableFormTag.builder()
+      .formName("myform")
+      .name("newtag")
+      .formId("4321")
+      .creator("user")
+      .build()));
+
+    mockMvc.perform(post("/forms/{formId}/tags", "myform")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(tagJson))
+      .andExpect(status().isOk());
+
+    verify(currentTenant,atLeastOnce()).getId();
+    verify(currentTenant).get();
+    verify(currentUserProvider).getUserId();
+    verify(nodeId).getId();
+    verify(formVersionControlDatabase).isName("t-123","myform");
+    verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user");
+
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
   void shouldRejectInvalidTagNames() throws Exception {
     mockMvc.perform(put("/forms/{formId}/tags/{tagName}", "myform","newt%ag")
         .contentType(MediaType.APPLICATION_JSON)
@@ -366,7 +437,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldAddMetadatatoQuery() throws Exception {
+  void shouldAddMetadatatoQuery() throws Exception {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "{\"label\":\"Otsake\"}")
@@ -378,7 +449,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldRejextInvalidMetadatatoQuery() throws Exception {
+  void shouldRejextInvalidMetadatatoQuery() throws Exception {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "\"label\":\"Otsake\"}")

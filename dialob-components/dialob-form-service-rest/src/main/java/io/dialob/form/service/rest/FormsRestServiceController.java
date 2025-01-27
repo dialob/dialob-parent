@@ -335,14 +335,15 @@ public class FormsRestServiceController implements FormsRestService {
       String formName = tag.getFormName();
       String tagName = tag.getName();
       String formDocumentId = formId;
+      String userId = tag.getCreator() != null ? tag.getCreator() : currentUserProvider.getUserId();
       if (versionControlDatabase.isName(currentTenant.getId(), formDocumentId)) {
         formDocumentId = tag.getFormId();
       }
       Optional<FormTag> formTag;
       if (formDocumentId == null) {
-        formTag = versionControlDatabase.createTagOnLatest(currentTenant.getId(), formName, tagName, tag.getDescription(), snapshot);
+        formTag = versionControlDatabase.createTagOnLatest(currentTenant.getId(), formName, tagName, tag.getDescription(), snapshot, userId);
       } else {
-        formTag = versionControlDatabase.createTag(currentTenant.getId(), formName, tagName, tag.getDescription(), formDocumentId, tag.getType());
+        formTag = versionControlDatabase.createTag(currentTenant.getId(), formName, tagName, tag.getDescription(), formDocumentId, tag.getType(), userId);
       }
       return fireFormTaggedEvent(formTag);
     }).orElse(ResponseEntity.notFound().build());
