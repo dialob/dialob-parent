@@ -36,11 +36,13 @@ set -e
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 run_build () {
-	./mvnw -B clean deploy \
+	./mvnw -B \
 			-Prelease,jib \
 			-Dmaven.javadoc.skip=false \
 			-Djib.to.imagePath=$DOCKER_REGISTRY \
-			-DbranchName=$GITHUB_REF_NAME
+			-DbranchName=$GITHUB_REF_NAME \
+	    -Dsonar.projectKey=dialob_dialob-parent \
+    	clean deploy org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 }
 
 # No changes, skip release
