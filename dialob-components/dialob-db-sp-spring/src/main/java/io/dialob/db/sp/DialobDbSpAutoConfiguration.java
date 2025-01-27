@@ -80,7 +80,7 @@ public class DialobDbSpAutoConfiguration {
 
       this.schema = settings.getDb().getJdbc().getSchema();
 
-      DatabaseHelper databaseHelper = databaseHandler(jdbcTemplate.getDataSource(), settings.getDb().getJdbc());
+      DatabaseHelper databaseHelper = databaseHandler(Objects.requireNonNull(jdbcTemplate.getDataSource(), "dataSource is null. Configure datasource"), settings.getDb().getJdbc());
 
       Predicate<String> isAnyTenantPredicate = tenantId -> false;
       if (settings.getTenant().getMode() == DialobSettings.TenantSettings.Mode.FIXED) {
@@ -232,7 +232,7 @@ public class DialobDbSpAutoConfiguration {
     }
   }
 
-  static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
+  static DatabaseHelper databaseHandler(@NonNull DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
     try (Connection connection = dataSource.getConnection()) {
       String databaseProductName = connection.getMetaData().getDatabaseProductName();
       if (databaseProductName.startsWith("DB2/")) {
