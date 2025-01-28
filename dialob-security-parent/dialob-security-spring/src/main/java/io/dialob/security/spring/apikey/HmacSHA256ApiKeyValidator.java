@@ -23,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Objects;
+import java.util.Optional;
 
 public class HmacSHA256ApiKeyValidator implements ApiKeyValidator {
 
@@ -42,10 +43,12 @@ public class HmacSHA256ApiKeyValidator implements ApiKeyValidator {
       || apiKey.getEndDateTime().map(now::isAfter).orElse(false)) {
       throw new BadCredentialsException("API key expired");
     }
-    if (requestKey.getToken().isPresent() && apiKey.getHash().isPresent()) {
-      final String token = requestKey.getToken().get();
+    Optional<String> hash = apiKey.getHash();
+    Optional<String> optToken = requestKey.getToken();
+    if (optToken.isPresent() && hash.isPresent()) {
+      final String token = optToken.get();
       try {
-        if (!verifyToken(Base64.getDecoder().decode(token), apiKey.getHash().get())) {
+        if (!verifyToken(Base64.getDecoder().decode(token), hash.get())) {
           throw new BadCredentialsException("Could not validate API key");
         }
       } catch (IllegalStateException | IllegalArgumentException e) {

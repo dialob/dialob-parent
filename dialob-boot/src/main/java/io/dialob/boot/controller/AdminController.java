@@ -18,8 +18,7 @@ package io.dialob.boot.controller;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.AdminApplicationSettings;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.*;
-
+import lombok.Builder;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;

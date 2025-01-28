@@ -40,7 +40,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -49,34 +52,18 @@ public class Utils {
 
   public static Optional<ValueType> mapQuestionTypeToValueType(String type) {
     if (type != null) {
-      switch (type) {
-        case "text":
-          return Optional.of(ValueType.STRING);
-        case "boolean":
-          return Optional.of(ValueType.BOOLEAN);
-        case "list":
-          return Optional.of(ValueType.STRING);
-        case "date":
-          return Optional.of(ValueType.DATE);
-        case "time":
-          return Optional.of(ValueType.TIME);
-        case "number":
-          return Optional.of(ValueType.INTEGER);
-        case "decimal":
-          return Optional.of(ValueType.DECIMAL);
-        case "multichoice":
-          return Optional.of(ValueType.arrayOf(ValueType.STRING));
-        case "rowgroup":
-          return Optional.of(ValueType.arrayOf(ValueType.INTEGER));
-        case "survey":
-          return Optional.of(ValueType.STRING);
-        case "row":
-        case "note":
-        case "group":
-        case "questionnaire":
-        case "surveygroup":
-          return Optional.empty();
-      }
+      return Optional.ofNullable(switch (type) {
+        case Constants.TEXT, Constants.LIST, Constants.SURVEY -> ValueType.STRING;
+        case Constants.BOOLEAN -> ValueType.BOOLEAN;
+        case Constants.DATE -> ValueType.DATE;
+        case Constants.TIME -> ValueType.TIME;
+        case Constants.NUMBER -> ValueType.INTEGER;
+        case Constants.DECIMAL -> ValueType.DECIMAL;
+        case Constants.MULTICHOICE -> ValueType.arrayOf(ValueType.STRING);
+        case Constants.ROWGROUP -> ValueType.arrayOf(ValueType.INTEGER);
+        // ROW, NOTE, GROUP, QUESTIONNAIRE, SURVEYGROUP
+        default -> null;
+      });
     }
     return Optional.empty();
   }
@@ -86,67 +73,29 @@ public class Utils {
   }
 
   public static boolean isContextVariable(@NonNull String type) {
-    return "context".equals(type);
+    return Constants.CONTEXT.equals(type);
   }
 
   public static boolean isProgramVariable(@NonNull String type) {
-    return "variable".equals(type);
+    return Constants.VARIABLE.equals(type);
   }
 
   public static boolean isNote(@NonNull String type) {
-    return "note".equals(type);
+    return Constants.NOTE.equals(type);
   }
 
   public static boolean isRowgroup(@NonNull String type) {
-    return "rowgroup".equals(type);
+    return Constants.ROWGROUP.equals(type);
   }
 
-
-  @NonNull
-  public static String mapValueTypeToType(@NonNull ValueType valueType) {
-    if (valueType == ValueType.STRING) {
-      return "text";
-    }
-    if (valueType == ValueType.BOOLEAN) {
-      return "boolean";
-    }
-    if (valueType.isArray()) {
-      return "list";
-    }
-    if (valueType == ValueType.DATE) {
-      return "date";
-    }
-    if (valueType == ValueType.TIME) {
-      return "time";
-    }
-    if (valueType == ValueType.INTEGER) {
-      return "number";
-    }
-    if (valueType == ValueType.DECIMAL) {
-      return "decimal";
-    }
-    throw new RuntimeException("Unknown question type " + valueType);
-  }
-
-  public static boolean isGroupType(@NonNull ItemState itemState) {
-    return !isQuestionType(itemState);
-  }
 
   public static boolean isQuestionType(@NonNull ItemState itemState) {
-    switch (itemState.getType()) {
-      case Constants.QUESTIONNAIRE:
-      case "group":
-      case "note":
-      case "variable":
-      case "context":
-      case "surveygroup":
-        return false;
-      case "rowgroup":
+    return switch (itemState.getType()) {
+      case Constants.QUESTIONNAIRE, Constants.GROUP, Constants.NOTE, Constants.VARIABLE, Constants.CONTEXT, Constants.SURVEYGROUP -> false;
         // rows are not questions, but row containers answer holds row order on answer.
-        return itemState.getPrototypeId() == null;
-      default:
-        return true;
-    }
+      case Constants.ROWGROUP -> itemState.getPrototypeId() == null;
+      default -> true;
+    };
   }
 
   @Nullable
@@ -278,12 +227,12 @@ public class Utils {
     final boolean present = value != null;
     output.writeBoolNoTag(present);
     if (present) {
-      if (value instanceof String) {
+      if (value instanceof String string) {
         output.write((byte) 1);
-        output.writeStringNoTag((String) value);
-      } else if (value instanceof BigInteger) {
+        output.writeStringNoTag(string);
+      } else if (value instanceof BigInteger bigInteger) {
         output.write((byte) 2);
-        output.writeInt32NoTag((Integer) value);
+        writeBigInteger(output, bigInteger);
       } else if (value instanceof Boolean) {
         output.write((byte) 3);
         output.writeBoolNoTag((Boolean) value);
@@ -330,7 +279,7 @@ public class Utils {
         case 1:
           return input.readString();
         case 2:
-          return input.readInt32();
+          return readBigInteger(input);
         case 3:
           return input.readBool();
         case 4:

@@ -15,27 +15,16 @@
  */
 package io.dialob.form.service;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import io.dialob.api.form.*;
+import io.dialob.form.service.api.validation.CsvToFormParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.form.service.api.validation.CsvToFormParser;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DialobCsvToFormParser implements CsvToFormParser {
 

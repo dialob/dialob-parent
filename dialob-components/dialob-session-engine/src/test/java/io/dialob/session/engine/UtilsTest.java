@@ -15,20 +15,23 @@
  */
 package io.dialob.session.engine;
 
-import io.dialob.rule.parser.api.ArrayValueType;
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.util.Collections;
 
 class UtilsTest {
 
   @Test
-  public void shouldNotSerializeFalseInactiveState() {
+  void shouldNotSerializeFalseInactiveState() {
     ItemState itemState = new ItemState(
       IdUtils.toId("id"),
       null,
@@ -44,7 +47,29 @@ class UtilsTest {
 
   @Test
   void shouldConvertIntegerArraysToBigInteger() {
-    Assertions.assertEquals(Arrays.asList(BigInteger.ONE), Utils.parse(ValueType.arrayOf(ValueType.INTEGER), Arrays.asList(1)));
+    Assertions.assertEquals(Collections.singletonList(BigInteger.ONE), Utils.parse(ValueType.arrayOf(ValueType.INTEGER), Collections.singletonList(1)));
+  }
+
+  @Test
+  void shouldWriteAndRadBigIntegers() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, null);
+    Assertions.assertEquals(1, outputStream.getTotalBytesWritten());
+
+    buffer = new ByteArrayOutputStream();
+    outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, BigInteger.ZERO);
+    Utils.writeObjectValue(outputStream, BigInteger.ONE);
+    Utils.writeObjectValue(outputStream, new BigInteger("98765432109876543210"));
+    Assertions.assertEquals(20, outputStream.getTotalBytesWritten());
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    Assertions.assertEquals(BigInteger.ZERO, Utils.readObjectValue(inputStream));
+    Assertions.assertEquals(BigInteger.ONE, Utils.readObjectValue(inputStream));
+    Assertions.assertEquals(new BigInteger("98765432109876543210"), Utils.readObjectValue(inputStream));
+
   }
 
 }
