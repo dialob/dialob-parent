@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Period;
 import java.util.function.BinaryOperator;
 
 class PrimitiveValueTypeTest {
@@ -51,6 +53,33 @@ class PrimitiveValueTypeTest {
     Assertions.assertEquals(BigInteger.valueOf(-1), PrimitiveValueType.INTEGER.negate(BigInteger.valueOf(1)));
     Assertions.assertEquals(BigInteger.valueOf(0), PrimitiveValueType.INTEGER.negate(BigInteger.valueOf(0)));
     Assertions.assertNull(PrimitiveValueType.INTEGER.negate(null));
+  }
+
+  @Test
+  void testParsePeriodFromStringWithUnit() {
+    Assertions.assertEquals(Period.ofDays(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "days"));
+    Assertions.assertEquals(Period.ofDays(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "day"));
+    Assertions.assertEquals(Period.ofMonths(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "months"));
+    Assertions.assertEquals(Period.ofMonths(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "month"));
+    Assertions.assertEquals(Period.ofWeeks(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "weeks"));
+    Assertions.assertEquals(Period.ofWeeks(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "week"));
+    Assertions.assertEquals(Period.ofYears(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "years"));
+    Assertions.assertEquals(Period.ofYears(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "year"));
+    Assertions.assertEquals(Period.ofYears(1), PrimitiveValueType.PERIOD.parseFromStringWithUnit("P1Y", ""));
+  }
+
+  @Test
+  void testParseDurationFromStringWithUnit() {
+    Assertions.assertEquals(Duration.ofDays(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "days"));
+    Assertions.assertEquals(Duration.ofDays(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "day"));
+    Assertions.assertEquals(Duration.ofHours(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "hours"));
+    Assertions.assertEquals(Duration.ofHours(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "hour"));
+    Assertions.assertEquals(Duration.ofDays(7), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "weeks"));
+    Assertions.assertEquals(Duration.ofDays(7), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "week"));
+    Assertions.assertEquals(Duration.ofMinutes(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "minutes"));
+    Assertions.assertEquals(Duration.ofMinutes(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "minute"));
+    Assertions.assertEquals(Duration.ofSeconds(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "seconds"));
+    Assertions.assertEquals(Duration.ofSeconds(1), PrimitiveValueType.DURATION.parseFromStringWithUnit("1", "second"));
   }
 
 }

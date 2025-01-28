@@ -47,7 +47,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public class Utils {
+public final class Utils {
+
+  private Utils() {}
 
   public static Optional<ValueType> mapQuestionTypeToValueType(String type) {
     if (type != null) {
