@@ -313,9 +313,9 @@ public class Utils {
     if (value == null) {
       return null;
     }
-    if (value instanceof String) {
+    if (value instanceof String s) {
       try {
-        return valueType.parseFromString((String) value);
+        return valueType.parseFromString(s);
       } catch (Exception e) {
         errorListener.accept(createError(id, "INVALID_DEFAULT_VALUE"));
         return null;
@@ -342,8 +342,8 @@ public class Utils {
     if (value instanceof Integer && valueType == ValueType.INTEGER) {
       return value;
     }
-    if (value instanceof Double && valueType == ValueType.DECIMAL) {
-      return BigDecimal.valueOf((Double) value);
+    if (value instanceof Double aDouble && valueType == ValueType.DECIMAL) {
+      return BigDecimal.valueOf(aDouble);
     }
     errorListener.accept(createError(id, "INVALID_DEFAULT_VALUE"));
     return null;

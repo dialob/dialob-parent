@@ -17,6 +17,7 @@ package io.dialob.session.engine;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
@@ -25,8 +26,19 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.*;
 
 class UtilsTest {
 
@@ -47,7 +59,7 @@ class UtilsTest {
 
   @Test
   void shouldConvertIntegerArraysToBigInteger() {
-    Assertions.assertEquals(Collections.singletonList(BigInteger.ONE), Utils.parse(ValueType.arrayOf(ValueType.INTEGER), Collections.singletonList(1)));
+    assertEquals(Collections.singletonList(BigInteger.ONE), Utils.parse(ValueType.arrayOf(ValueType.INTEGER), Collections.singletonList(1)));
   }
 
   @Test
@@ -55,21 +67,59 @@ class UtilsTest {
     var buffer = new ByteArrayOutputStream();
     CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
     Utils.writeObjectValue(outputStream, null);
-    Assertions.assertEquals(1, outputStream.getTotalBytesWritten());
+    assertEquals(1, outputStream.getTotalBytesWritten());
 
     buffer = new ByteArrayOutputStream();
     outputStream = CodedOutputStream.newInstance(buffer);
     Utils.writeObjectValue(outputStream, BigInteger.ZERO);
     Utils.writeObjectValue(outputStream, BigInteger.ONE);
     Utils.writeObjectValue(outputStream, new BigInteger("98765432109876543210"));
-    Assertions.assertEquals(20, outputStream.getTotalBytesWritten());
+    assertEquals(20, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
     var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
-    Assertions.assertEquals(BigInteger.ZERO, Utils.readObjectValue(inputStream));
-    Assertions.assertEquals(BigInteger.ONE, Utils.readObjectValue(inputStream));
-    Assertions.assertEquals(new BigInteger("98765432109876543210"), Utils.readObjectValue(inputStream));
+    assertEquals(BigInteger.ZERO, Utils.readObjectValue(inputStream));
+    assertEquals(BigInteger.ONE, Utils.readObjectValue(inputStream));
+    assertEquals(new BigInteger("98765432109876543210"), Utils.readObjectValue(inputStream));
+  }
 
+
+  @Test
+  void testValidateDefaultValue() {
+    Consumer<FormValidationError> listener = mock();
+    assertNull(Utils.validateDefaultValue("x", ValueType.INTEGER, null, listener));
+    assertEquals(BigInteger.ONE, Utils.validateDefaultValue("x", ValueType.INTEGER, "1", listener));
+    assertEquals(BigDecimal.valueOf(10,1), Utils.validateDefaultValue("x", ValueType.DECIMAL, "1.0", listener));
+    assertEquals(Boolean.TRUE, Utils.validateDefaultValue("x", ValueType.BOOLEAN, "true", listener));
+    assertEquals(LocalDate.of(2025, 1, 28), Utils.validateDefaultValue("x", ValueType.DATE, "2025-01-28", listener));
+    assertEquals(LocalTime.of(14, 14, 55), Utils.validateDefaultValue("x", ValueType.TIME, "14:14:55", listener));
+    assertEquals(Period.ofDays(1), Utils.validateDefaultValue("x", ValueType.PERIOD, "P1D", listener));
+    assertEquals(Duration.ofHours(1), Utils.validateDefaultValue("x", ValueType.DURATION, "PT1H", listener));
+
+    assertEquals(BigDecimal.ONE, Utils.validateDefaultValue("x", ValueType.DECIMAL, BigDecimal.ONE, listener));
+    assertEquals(Boolean.TRUE, Utils.validateDefaultValue("x", ValueType.BOOLEAN, Boolean.TRUE, listener));
+    assertEquals(LocalDate.of(2025, 1, 28), Utils.validateDefaultValue("x", ValueType.DATE, LocalDate.of(2025, 1, 28), listener));
+    assertEquals(LocalTime.of(14, 14, 55), Utils.validateDefaultValue("x", ValueType.TIME, LocalTime.of(14, 14, 55), listener));
+    assertEquals(Period.ofDays(1), Utils.validateDefaultValue("x", ValueType.PERIOD, Period.ofDays(1), listener));
+    assertEquals(Duration.ofHours(1), Utils.validateDefaultValue("x", ValueType.DURATION, Duration.ofHours(1), listener));
+
+    verifyNoInteractions(listener);
+  }
+
+  @Test
+  void testInvalidValidateDefaultValue() {
+    Consumer<FormValidationError> listener = mock();
+    assertNull(Utils.validateDefaultValue("x", ValueType.INTEGER, "x", listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+  }
+
+  @Test
+  void testInvalidValidateDefaultValue2() {
+    Consumer<FormValidationError> listener = mock();
+    assertNull(Utils.validateDefaultValue("x", ValueType.INTEGER, List.of(), listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
   }
 
 }
