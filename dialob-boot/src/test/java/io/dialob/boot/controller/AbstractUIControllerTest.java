@@ -21,9 +21,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dialob.boot.ApplicationAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.endpoint.RestClientAuthorizationCodeTokenResponseClient;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(classes = {
@@ -32,14 +32,13 @@ import org.springframework.test.context.ContextConfiguration;
   GlobalModelAttributesInjector.class,
   AbstractUIControllerTest.TestConfiguration.class
 })
-public class AbstractUIControllerTest extends AbstractControllerTest {
-
+public abstract class AbstractUIControllerTest extends AbstractControllerTest {
 
   public static class TestConfiguration {
 
     @Bean
     public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> oauth2AccessTokenResponseClient() {
-      return new DefaultAuthorizationCodeTokenResponseClient();
+      return new RestClientAuthorizationCodeTokenResponseClient();
     }
 
     @Bean
@@ -49,7 +48,6 @@ public class AbstractUIControllerTest extends AbstractControllerTest {
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
     }
-
 
   }
 
