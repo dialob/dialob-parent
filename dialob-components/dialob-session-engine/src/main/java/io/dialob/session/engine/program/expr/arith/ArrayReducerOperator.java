@@ -50,6 +50,9 @@ public interface ArrayReducerOperator<T> extends Expression {
   @Override
   default Object eval(@NonNull EvalContext evalContext) {
     final List<T> values = (List<T>) getArrayExpression().eval(evalContext);
+    if (values == null) {
+      return null;
+    }
     return values
       .stream()
       .filter(Objects::nonNull)
@@ -63,6 +66,8 @@ public interface ArrayReducerOperator<T> extends Expression {
     return getArrayExpression().getValueType().getItemValueType();
   }
 
+  @NonNull
+  @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getArrayExpression().getEvalRequiredConditions();
   }

@@ -213,19 +213,20 @@ class FormsRestServiceControllerTest {
 
   @Test
   void postCsvShouldAlwaysCreateNewForm() throws Exception {
-    String csvContent = "testForm101\n" +
-      "id,type,fi,et,sv,en\n" +
-      "ghj,Text,Mikä on nimesi,Vad häter du\n" +
-      ",Boolean,Onko näin?,Är det så?,\n" +
-      ",Date,Valitse päivä,,Select day\n" +
-      "hh56,Time,,,Select time\n" +
-      ",Choice,Tee valinta,\n" +
-      ",Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,\n" +
-      ",Integer,number label fi\n" +
-      "gfhf69,Date\n" +
-      ",Time,,test1\n" +
-      "gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test\n" +
-      ",Time,,";
+    String csvContent = """
+      testForm101
+      id,type,fi,et,sv,en
+      ghj,Text,Mikä on nimesi,Vad häter du
+      ,Boolean,Onko näin?,Är det så?,
+      ,Date,Valitse päivä,,Select day
+      hh56,Time,,,Select time
+      ,Choice,Tee valinta,
+      ,Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,
+      ,Integer,number label fi
+      gfhf69,Date
+      ,Time,,test1
+      gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test
+      ,Time,,""";
 
     ImmutableForm immutableForm = ImmutableForm.builder().from(csvToFormParser.parseCsv(csvContent)).id("234").rev("543").build();
 
@@ -260,10 +261,12 @@ class FormsRestServiceControllerTest {
   @Test
   void postCsvShouldNotCreateNewForm() throws Exception {
 
-    String csvContent = "test Form102\n" +
-      "id,type,en,fi\n" +
-      "id1,Text,Mikä on nimesi,Vad häter du\n" +
-      ",Date\n";
+    String csvContent = """
+      test Form102
+      id,type,en,fi
+      id1,Text,Mikä on nimesi,Vad häter du
+      ,Date
+      """;
 
     mockMvc.perform(
       post("/forms", "1234")

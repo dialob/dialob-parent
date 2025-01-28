@@ -123,8 +123,8 @@ public class Utils {
       }
       return valueType.coerceFrom(value);
     }
-    if (value instanceof Collection) {
-      return ((Collection)value).stream().map(i -> i instanceof Integer ? BigInteger.valueOf((Integer)i) : i).toList();
+    if (value instanceof Collection collection) {
+      return collection.stream().map(item -> item instanceof Integer i ? BigInteger.valueOf(i) : item).toList();
     }
     // TODO handle array answers
     return null;

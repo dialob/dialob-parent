@@ -30,6 +30,7 @@ public interface UpdateIsInvalidAnswersCommand extends AbstractUpdateBooleanAttr
       .setInvalidAnswers(evalExpression(context)).get();
   }
 
+  @Override
   default Boolean evalExpression(EvalContext context) {
     Boolean activity = (Boolean) getExpression().eval(context);
     if (activity == null) {

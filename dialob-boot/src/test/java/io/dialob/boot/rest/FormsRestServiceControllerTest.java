@@ -140,6 +140,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   private FunctionRegistry functionRegistry;
 
   @BeforeEach
+  @Override
   public void resetMocks() {
     reset(formDatabase, listenerMock, formVersionControlDatabase);
   }

@@ -83,6 +83,7 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
     return apiKeyRequestMatcher;
   }
 
+  @Override
   protected RequestMatcher requestMatcher() {
     if (requestMatcher == null) {
       List<RequestMatcher> requestMatchers = new ArrayList<>();

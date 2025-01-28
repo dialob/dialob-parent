@@ -34,6 +34,7 @@ import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,6 +70,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 abstract class AbstractFormRepositoryTests {
 
   static final NoExceptionResponseErrorHandler NO_EXCEPTION_RESPONSE_ERROR_HANDLER = new NoExceptionResponseErrorHandler();
@@ -255,6 +257,7 @@ abstract class AbstractFormRepositoryTests {
   private static class NoExceptionResponseErrorHandler extends DefaultResponseErrorHandler {
     @Override
     public void handleError(@NonNull ClientHttpResponse response) {
+      LOGGER.trace("Response error: {}", response);
     }
   }
 

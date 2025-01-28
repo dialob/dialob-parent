@@ -30,6 +30,7 @@ public class CallExprNode extends NodeBase {
     this.nodeOperator = Objects.requireNonNull(nodeOperator);
   }
 
+  @Override
   public CallExprNode addSubnode(@NonNull NodeBase node) {
     node.setParent(this);
     arguments.add(node);
@@ -37,6 +38,7 @@ public class CallExprNode extends NodeBase {
   }
 
   @NonNull
+  @Override
   public NodeOperator getNodeOperator() {
     return nodeOperator;
   }
@@ -108,12 +110,9 @@ public class CallExprNode extends NodeBase {
   public Map<String, ValueType> getDependencies() {
     Map<String, ValueType> dependencies = new HashMap<>();
     for (NodeBase argument : arguments) {
-      if (!getNodeOperator().isOrOp() && argument instanceof CallExprNode callExprNode) {
-        if (callExprNode.getNodeOperator().isOrOp()) {
-          continue;
-        }
+      if (getNodeOperator().isOrOp() || !(argument instanceof CallExprNode callExprNode) || !callExprNode.getNodeOperator().isOrOp()) {
+        dependencies.putAll(argument.getDependencies());
       }
-      dependencies.putAll(argument.getDependencies());
     }
     return dependencies;
   }

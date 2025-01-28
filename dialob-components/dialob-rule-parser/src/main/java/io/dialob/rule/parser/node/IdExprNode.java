@@ -51,6 +51,7 @@ public class IdExprNode extends NodeBase {
     return namespace;
   }
 
+  @Override
   public boolean isIdentifier() {
     return true;
   }
@@ -60,10 +61,12 @@ public class IdExprNode extends NodeBase {
     return id;
   }
 
+  @Override
   public String toTypedString() {
     return id + "[" + getValueType() + "]";
   }
 
+  @Override
   public NodeBase accept(@NonNull ASTVisitor visitor) {
     return visitor.visitIdExpr(this);
   }
