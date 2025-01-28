@@ -15,8 +15,14 @@
  */
 package io.dialob.session.engine.session.model;
 
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,5 +79,20 @@ class IdUtilsTest {
     assertFalse(IdUtils.matches(IdUtils.toId("g1"), IdUtils.toId("g1.0.q")));
     assertFalse(IdUtils.matches(IdUtils.toId("g1.0.q"), IdUtils.toId("g1")));
     assertFalse(IdUtils.matches(IdUtils.toId("g2"), IdUtils.toId("g1")));
+  }
+
+  @Test
+  void readId() throws IOException {
+    ByteArrayOutputStream bo = new ByteArrayOutputStream();
+    CodedOutputStream output = CodedOutputStream.newInstance(bo);
+    IdUtils.writeIdTo(IdUtils.toId("l1"), output);
+    IdUtils.writeIdTo(IdUtils.toId("l1.*.p2"), output);
+    IdUtils.writeIdTo(IdUtils.toId("l1.2"), output);
+    output.flush();
+
+    CodedInputStream stream = CodedInputStream.newInstance(new ByteArrayInputStream(bo.toByteArray()));
+    Assertions.assertEquals(IdUtils.toId("l1"), IdUtils.readIdFrom(stream));
+    Assertions.assertEquals(IdUtils.toId("l1.*.p2"), IdUtils.readIdFrom(stream));
+    Assertions.assertEquals(IdUtils.toId("l1.2"), IdUtils.readIdFrom(stream));
   }
 }

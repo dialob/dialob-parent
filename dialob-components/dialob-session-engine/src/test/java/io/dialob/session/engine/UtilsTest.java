@@ -21,6 +21,7 @@ import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.engine.session.model.ValueSetState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -160,8 +161,16 @@ class UtilsTest {
     verify(listener).accept(any());
     verifyNoMoreInteractions(listener);
     Mockito.reset(listener);
+  }
 
-
+  @Test
+  void testToValueSet() {
+    ValueSetState state = new ValueSetState("vs1");
+    state = state.update().setEntries(List.of(new ValueSetState.Entry("v1", "l1", false))).get();
+    var s = Utils.toValueSet(state);
+    Assertions.assertEquals(1, s.getEntries().size());
+    Assertions.assertEquals("v1", s.getEntries().get(0).getKey());
+    Assertions.assertEquals("l1", s.getEntries().get(0).getValue());
   }
 
 }
