@@ -18,10 +18,10 @@ package io.dialob.api.rest;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.validation.constraints.NotNull;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Value.Immutable

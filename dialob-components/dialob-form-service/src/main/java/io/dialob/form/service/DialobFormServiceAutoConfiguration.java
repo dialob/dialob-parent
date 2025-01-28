@@ -15,15 +15,13 @@
  */
 package io.dialob.form.service;
 
+import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-
-import io.dialob.form.service.api.validation.CsvToFormParser;
 
 @Configuration(proxyBeanMethods = false)
 @ImportResource("classpath:dialob-form-service-cache-context.xml")

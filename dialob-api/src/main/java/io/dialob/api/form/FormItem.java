@@ -22,10 +22,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;

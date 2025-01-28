@@ -43,7 +43,6 @@ import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.groups.Tuple.tuple;

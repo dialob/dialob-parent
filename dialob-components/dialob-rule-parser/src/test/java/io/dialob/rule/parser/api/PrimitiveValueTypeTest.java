@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.function.BinaryOperator;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class PrimitiveValueTypeTest {
 
   @Test

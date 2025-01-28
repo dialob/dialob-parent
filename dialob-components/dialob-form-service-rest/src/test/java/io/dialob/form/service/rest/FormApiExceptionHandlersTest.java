@@ -16,9 +16,7 @@
 package io.dialob.form.service.rest;
 
 import io.dialob.api.rest.Errors;
-import io.dialob.api.rest.ImmutableErrors;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

@@ -24,13 +24,13 @@ import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.validation.WithValidation;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
