@@ -131,25 +131,14 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object parseFromStringWithUnit(String value, String unit) {
-      switch (unit) {
-        case "seconds":
-        case "second":
-          return Duration.ofSeconds(Long.parseLong(value));
-        case "minutes":
-        case "minute":
-          return Duration.ofMinutes(Long.parseLong(value));
-        case "hours":
-        case "hour":
-          return Duration.ofHours(Long.parseLong(value));
-        case "days":
-        case "day":
-          return Duration.ofDays(Long.parseLong(value));
-        case "weeks":
-        case "week":
-          return Duration.ofDays(Long.parseLong(value) * 7L);
-        default:
-          return parseFromString(value);
-      }
+      return switch (unit) {
+        case "seconds", "second" -> Duration.ofSeconds(Long.parseLong(value));
+        case "minutes", "minute" -> Duration.ofMinutes(Long.parseLong(value));
+        case "hours", "hour" -> Duration.ofHours(Long.parseLong(value));
+        case "days", "day" -> Duration.ofDays(Long.parseLong(value));
+        case "weeks", "week" -> Duration.ofDays(Long.parseLong(value) * 7L);
+        default -> parseFromString(value);
+      };
     }
 
     @Override
@@ -290,22 +279,13 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object parseFromStringWithUnit(String value, String unit) {
-      switch (unit) {
-        case "years":
-        case "year":
-          return Period.ofYears(Integer.parseInt(value));
-        case "months":
-        case "month":
-          return Period.ofMonths(Integer.parseInt(value));
-        case "days":
-        case "day":
-          return Period.ofDays(Integer.parseInt(value));
-        case "weeks":
-        case "week":
-          return Period.ofWeeks(Integer.parseInt(value));
-        default:
-          return parseFromString(value);
-      }
+      return switch (unit) {
+        case "years", "year" -> Period.ofYears(Integer.parseInt(value));
+        case "months", "month" -> Period.ofMonths(Integer.parseInt(value));
+        case "days", "day" -> Period.ofDays(Integer.parseInt(value));
+        case "weeks", "week" -> Period.ofWeeks(Integer.parseInt(value));
+        default -> parseFromString(value);
+      };
     }
 
     @Override

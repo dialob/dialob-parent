@@ -279,44 +279,22 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     boolean result;
     if (left != null && right != null) {
       final int diff = left.compareTo(right);
-      switch (operator) {
-        case "!=":
-          result = diff != 0;
-          break;
-        case "<=":
-          result = diff <= 0;
-          break;
-        case ">=":
-          result = diff >= 0;
-          break;
-        case ">":
-          result = diff > 0;
-          break;
-        case "<":
-          result = diff < 0;
-          break;
-        case "=":
-          result = diff == 0;
-          break;
-        default:
-          throw new IllegalStateException("Unknown relation operator " + operator);
-      }
+      result = switch (operator) {
+        case "!=" -> diff != 0;
+        case "<=" -> diff <= 0;
+        case ">=" -> diff >= 0;
+        case ">" -> diff > 0;
+        case "<" -> diff < 0;
+        case "=" -> diff == 0;
+        default -> throw new IllegalStateException("Unknown relation operator " + operator);
+      };
     } else {
       // null <operator> null
-      switch (operator) {
-        case "!=":
-        case ">":
-        case "<":
-          result = false;
-          break;
-        case "<=":
-        case "=":
-        case ">=":
-          result = true;
-          break;
-        default:
-          throw new IllegalStateException("Unknown relation operator " + operator);
-      }
+      result = switch (operator) {
+        case "!=", ">", "<" -> false;
+        case "<=", "=", ">=" -> true;
+        default -> throw new IllegalStateException("Unknown relation operator " + operator);
+      };
       // null <operator> non-null / non-null <operator> null
       if (left != null || right != null) {
         result = !result;

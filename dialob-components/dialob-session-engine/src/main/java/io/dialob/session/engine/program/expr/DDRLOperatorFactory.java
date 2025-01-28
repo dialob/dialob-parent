@@ -112,38 +112,28 @@ public class DDRLOperatorFactory implements OperatorFactory {
         return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.AND).build();
       case OR:
         return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.OR).build();
-      case NE:
-      case EQ:
-      case LT:
-      case LE:
-      case GE:
-      case GT:
+      case NE, EQ, LT, LE, GE, GT:
         return relationOf(operatorSymbol, lhs(arguments), rhs(arguments));
 
-      case NOT_IN:
-      case IN:
+      case NOT_IN, IN:
         expr = ImmutableInOperator.builder().lhs(first(arguments)).rhs(ImmutableExpressionList.builder().addAllExpressions(rest(arguments)).build()).build();
         break;
 
-      case NOT_MATCHES:
-      case MATCHES:
+      case NOT_MATCHES, MATCHES:
         Expression patternExpr = rhs(arguments);
         validateRegexExpression(patternExpr);
         expr = ImmutableMatchesOperator.builder().lhs(lhs(arguments)).rhs(patternExpr).build();
         break;
 
-      case NOT_ANSWERED:
-      case ANSWERED:
+      case NOT_ANSWERED, ANSWERED:
         expr = Operators.isAnswered(varRef(arguments));
         break;
 
-      case NOT_BLANK:
-      case BLANK:
+      case NOT_BLANK, BLANK:
         expr = Operators.isBlank(varRef(arguments));
         break;
 
-      case NOT_NULL:
-      case NULL:
+      case NOT_NULL, NULL:
         expr = Operators.isNull(varRef(arguments));
         break;
 
@@ -151,15 +141,10 @@ public class DDRLOperatorFactory implements OperatorFactory {
         expr = ImmutableCountArrayLengthOperator.builder().itemId(varRef(arguments)).build();
         break;
 
-      case NOT_VALID:
-      case VALID:
+      case NOT_VALID, VALID:
         expr = ImmutableIsValidOperator.of(varRef(arguments));
         break;
-      case SUM:
-      case MIN:
-      case MAX:
-      case ALL:
-      case ANY:
+      case SUM, MIN, MAX, ALL, ANY:
         expr = createArrayReducingOperator(operatorSymbol, nodeValueType, varRef(arguments));
         break;
       default:

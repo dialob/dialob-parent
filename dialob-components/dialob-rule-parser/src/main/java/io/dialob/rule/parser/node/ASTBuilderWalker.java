@@ -276,8 +276,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
       String code;
       boolean ok;
       switch (operator) {
-        case "=":
-        case "!=":
+        case "=", "!=":
           ok = lhs.getValueType().canEqualWith(rhs.getValueType());
           code = CompilerErrorCode.NO_EQUALITY_RELATION_BETWEEN_TYPES;
           break;
@@ -304,7 +303,6 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     if (coercionType == ValueType.TIME) {
       if (stringConstant.getValue().matches("\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?")) {
         stringConstant.setValueType(ValueType.TIME);
-        return;
       }
     }
   }
