@@ -18,7 +18,7 @@ package io.dialob.session.engine.program.expr;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CannotReduceTypeException extends ProgramBuilderException {
@@ -35,7 +35,7 @@ public class CannotReduceTypeException extends ProgramBuilderException {
 
   @Override
   public List<Object> getArgs() {
-    return Arrays.asList(getValueType());
+    return Collections.singletonList(getValueType());
   }
 
 }

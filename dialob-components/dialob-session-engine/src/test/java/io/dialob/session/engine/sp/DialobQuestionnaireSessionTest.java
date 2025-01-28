@@ -239,7 +239,7 @@ class DialobQuestionnaireSessionTest {
   void shouldConvertOldRows() {
     Assertions.assertArrayEquals(
       new String[] {"g.1"},
-      DialobQuestionnaireSession.convertRows(Arrays.asList("g[1]")));
+      DialobQuestionnaireSession.convertRows(List.of("g[1]")));
   }
 
   @Test
@@ -337,7 +337,7 @@ class DialobQuestionnaireSessionTest {
     when(dialobProgram.getItem(any())).thenReturn(Optional.empty());
 
     // when
-    QuestionnaireSession.DispatchActionsResult result = session.dispatchActions(Arrays.asList());
+    QuestionnaireSession.DispatchActionsResult result = session.dispatchActions(List.of());
 
     // expect
     assertNull(result.getActions().getActions());

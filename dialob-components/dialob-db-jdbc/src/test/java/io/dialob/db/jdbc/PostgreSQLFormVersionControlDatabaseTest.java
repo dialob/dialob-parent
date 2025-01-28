@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @Tag("postgresql")
@@ -56,7 +55,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
 
     form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form2);
 
-    List<FormDatabase.FormMetadataRow> rows = new ArrayList<FormDatabase.FormMetadataRow>();
+    List<FormDatabase.FormMetadataRow> rows = new ArrayList<>();
     getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form 2").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form2.getId(), rows.get(0).getId());

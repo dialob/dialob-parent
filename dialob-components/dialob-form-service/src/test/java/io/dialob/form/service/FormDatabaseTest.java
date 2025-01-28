@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -63,7 +63,7 @@ class FormDatabaseTest {
     @Bean
     public CacheManager cacheManager() {
       SimpleCacheManager cacheManager = new SimpleCacheManager();
-      cacheManager.setCaches(Arrays.asList(cache));
+      cacheManager.setCaches(Collections.singletonList(cache));
       return cacheManager;
     }
   }

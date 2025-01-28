@@ -50,7 +50,7 @@ public class RedisQuestionnaireDialobSessionCacheConfiguration {
                                                                            @NonNull QuestionnaireEventPublisher eventPublisher,
                                                                            @NonNull DialobSessionEvalContextFactory sessionContextFactory,
                                                                            @NonNull AsyncFunctionInvoker asyncFunctionInvoker) {
-    return new QuestionnaireDialobSessionRedisSerializer(questionnaireSessionService,
+    return new QuestionnaireDialobSessionRedisSerializer(
       eventPublisher, dialobProgramService, sessionContextFactory, asyncFunctionInvoker, meterRegistry,
       dialobSettings.getSession().getCache().getBufferSize());
   }

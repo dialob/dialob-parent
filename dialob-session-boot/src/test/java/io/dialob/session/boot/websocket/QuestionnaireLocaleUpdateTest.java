@@ -131,7 +131,7 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
             Arrays.asList("Choice 1", "Choice 2")
           );
       })
-      .nextAfterDelay(500l)
+      .nextAfterDelay(500L)
       .setLocale("fi")
       .expectActions(actions -> {
         assertThat(actions.getActions())  // We'll get a full form because FormUpdatedEvent trigger session eviction from cache

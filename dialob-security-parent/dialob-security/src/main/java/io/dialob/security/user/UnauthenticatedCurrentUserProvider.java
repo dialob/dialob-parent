@@ -21,7 +21,7 @@ public class UnauthenticatedCurrentUserProvider implements CurrentUserProvider {
 
   public static final String UNAUTHENTICATED = "unauthenticated";
 
-  public static final CurrentUser UNAUTHENTICATED_USER = new CurrentUser(UNAUTHENTICATED, "unauthenticated", null, null, null);
+  public static final CurrentUser UNAUTHENTICATED_USER = new CurrentUser(UNAUTHENTICATED, UNAUTHENTICATED, null, null, null);
 
   public static final CurrentUserProvider INSTANCE = new UnauthenticatedCurrentUserProvider();
 

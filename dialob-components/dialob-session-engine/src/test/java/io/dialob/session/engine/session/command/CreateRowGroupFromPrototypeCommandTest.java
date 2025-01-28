@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -68,8 +68,8 @@ class CreateRowGroupFromPrototypeCommandTest {
     when(states.getValueSetStates()).thenReturn(Collections.emptyMap());
     when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("g1.*"), null, "text", null, true, null, null, null, null, null)));
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
-    when(groupState1.getItems()).thenReturn(Arrays.asList());
-    when(groupState2.getItems()).thenReturn(Arrays.asList(IdUtils.toId("g1.0")));
+    when(groupState1.getItems()).thenReturn(List.of());
+    when(groupState2.getItems()).thenReturn(List.of(IdUtils.toId("g1.0")));
     when(groupState1.getId()).thenReturn(IdUtils.toId("g1"));
     when(groupState2.getId()).thenReturn(IdUtils.toId("g1"));
 

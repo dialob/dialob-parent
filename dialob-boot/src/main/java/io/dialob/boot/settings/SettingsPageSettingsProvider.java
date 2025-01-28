@@ -96,31 +96,23 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
   }
 
   Map<String, SettingsPageAttributes> findSettings(String page) {
-    switch(page) {
-      case "fill":
-        return settings.getTenants();
-      case "review":
-        return reviewSettings.getTenants();
-      case "admin":
-        return adminApplicationSettings.getTenants();
-      case "composer":
-        return composerApplicationSettings.getTenants();
-    }
-    throw new IllegalStateException("unknown page " + page);
+    return switch (page) {
+      case "fill" -> settings.getTenants();
+      case "review" -> reviewSettings.getTenants();
+      case "admin" -> adminApplicationSettings.getTenants();
+      case "composer" -> composerApplicationSettings.getTenants();
+      default -> throw new IllegalStateException("unknown page " + page);
+    };
   }
 
   SettingsPageAttributes findDefaultSettings(String page) {
-    switch(page) {
-      case "fill":
-        return defaultPageSettings;
-      case "review":
-        return defaultReviewPageSettings;
-      case "admin":
-        return defaultAdminPageSettings;
-      case "composer":
-        return defaultComposerPageSettings;
-    }
-    throw new IllegalStateException("unknown page " + page);
+    return switch (page) {
+      case "fill" -> defaultPageSettings;
+      case "review" -> defaultReviewPageSettings;
+      case "admin" -> defaultAdminPageSettings;
+      case "composer" -> defaultComposerPageSettings;
+      default -> throw new IllegalStateException("unknown page " + page);
+    };
   }
 
   private Optional<String> findTenantFor(String questionnaireId) {

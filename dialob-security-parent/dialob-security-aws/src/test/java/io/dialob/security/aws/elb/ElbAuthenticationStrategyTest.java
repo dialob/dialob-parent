@@ -35,7 +35,7 @@ import org.springframework.security.web.authentication.preauth.RequestHeaderAuth
 
 import java.security.KeyPair;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -54,7 +54,7 @@ class ElbAuthenticationStrategyTest  extends TestBase {
 
     JWTProcessor jwtProcessor = Mockito.mock(JWTProcessor.class);
     AuthenticationManager authenticationManager = Mockito.mock(AuthenticationManager.class);
-    JWTClaimsSet claimSet = new JWTClaimsSet.Builder().claim("cognito:groups",Arrays.asList("admin")).build();
+    JWTClaimsSet claimSet = new JWTClaimsSet.Builder().claim("cognito:groups", List.of("admin")).build();
     when(jwtProcessor.process(anyString(),isNull())).thenReturn(claimSet);
 
     GrantedAuthoritiesMapper grantedAuthoritiesMapper = authorities -> authorities;
@@ -65,7 +65,7 @@ class ElbAuthenticationStrategyTest  extends TestBase {
     authenticationProvider.setPreAuthenticatedUserDetailsService(new ElbPreAuthenticatedGrantedAuthoritiesUserDetailsService());
 
 
-    RequestHeaderAuthenticationFilter filter = elbAuthenticationStrategy.createAuthenticationFilter(new ProviderManager(Arrays.asList(authenticationProvider)));
+    RequestHeaderAuthenticationFilter filter = elbAuthenticationStrategy.createAuthenticationFilter(new ProviderManager(List.of(authenticationProvider)));
 
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
@@ -85,8 +85,8 @@ class ElbAuthenticationStrategyTest  extends TestBase {
     Assertions.assertEquals("00000000-0000-0000-0000-000000000002", authenticationToken.getName());
     Assertions.assertEquals(idToken, authenticationToken.getCredentials());
     Assertions.assertEquals("00000000-0000-0000-0000-000000000002", ((UserDetails)authenticationToken.getPrincipal()).getUsername());
-    Assertions.assertIterableEquals(Arrays.asList(ImmutableGroupGrantedAuthority.of("admin", "admin")), ((UserDetails)authenticationToken.getPrincipal()).getAuthorities());
-    Assertions.assertIterableEquals(Arrays.asList(ImmutableGroupGrantedAuthority.of("admin", "admin")), authenticationToken.getAuthorities());
+    Assertions.assertIterableEquals(List.of(ImmutableGroupGrantedAuthority.of("admin", "admin")), ((UserDetails)authenticationToken.getPrincipal()).getAuthorities());
+    Assertions.assertIterableEquals(List.of(ImmutableGroupGrantedAuthority.of("admin", "admin")), authenticationToken.getAuthorities());
 
     SecurityContextHolder.clearContext();
 

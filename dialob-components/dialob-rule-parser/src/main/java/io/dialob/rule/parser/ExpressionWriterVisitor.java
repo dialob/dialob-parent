@@ -112,14 +112,11 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   }
 
   private String convertUnaryOper(CallExprNode node) {
-    switch (node.getNodeOperator().getOperator()) {
-      case "neg":
-        return "-";
-      case "inv":
-        return "1/";
-      default:
-        throw new IllegalStateException("Unknown unary operator " + node.getNodeOperator().getOperator());
-    }
+    return switch (node.getNodeOperator().getOperator()) {
+      case "neg" -> "-";
+      case "inv" -> "1/";
+      default -> throw new IllegalStateException("Unknown unary operator " + node.getNodeOperator().getOperator());
+    };
   }
 
   private String addBrackets(ExpressionWriterVisitor subVisitor) {

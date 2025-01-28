@@ -297,7 +297,7 @@ class DialobQuestionnaireSessionServiceTest {
         );
         questionnaire(assertion)
           .extracting("activeItem", "availableItems", "allowedActions").containsExactlyInAnyOrder(
-          tuple("page1", asList("page1"), asSet(ANSWER))
+          tuple("page1", List.of("page1"), asSet(ANSWER))
         );
       })
       .answer("question1", "40")
@@ -323,7 +323,7 @@ class DialobQuestionnaireSessionServiceTest {
         );
         questionnaire(assertion)
           .extracting("activeItem", "availableItems", "allowedActions").containsExactlyInAnyOrder(
-          tuple("page1", asList("page1"), asSet(COMPLETE, ANSWER))
+          tuple("page1", List.of("page1"), asSet(COMPLETE, ANSWER))
         );
       })
       .answer("question4", "true")
@@ -352,7 +352,7 @@ class DialobQuestionnaireSessionServiceTest {
       .answer("question5", "59999")
       .assertThat(assertion -> assertion.hasSize(1)
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("question11"), null, null)
+          tuple(REMOVE_ITEMS, List.of("question11"), null, null)
         ))
       .apply();
   }
@@ -535,7 +535,7 @@ class DialobQuestionnaireSessionServiceTest {
       .answer("question1", null)
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.description").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("question2"), null, null, null),
+          tuple(REMOVE_ITEMS, List.of("question2"), null, null, null),
           tuple(ITEM, null, "questionnaire", "is valid testing", null),
           tuple(ITEM, null, "question4", "Question1 is ok false", null),
           tuple(ERROR, null, null, null, "Fill in the missing information.")
@@ -571,7 +571,7 @@ class DialobQuestionnaireSessionServiceTest {
       ))
       .answer("question1", "ok")
       .assertThat(assertion -> assertion.hasSize(1).extracting("type", "ids").contains(
-        tuple(REMOVE_ITEMS, Arrays.asList("question4"))
+        tuple(REMOVE_ITEMS, List.of("question4"))
       ))
       .answer("question1", null)
       .assertThat(assertion -> assertion.hasSize(1).extracting("type", "item.id", "item.disabled").contains(
@@ -708,7 +708,7 @@ class DialobQuestionnaireSessionServiceTest {
     fillForm("io/dialob/session/engine/108-form.json", "io/dialob/session/engine/108-questionnaire.json")
       .assertState(assertion -> assertion.extracting("type", "ids", "item.id", "item.label", "item.activeItem", "item.availableItems").contains(
         tuple(RESET, null, null, null, null, null),
-        tuple(ITEM, null, "questionnaire", "CompleteTest", "page1", Arrays.asList("page1"))
+        tuple(ITEM, null, "questionnaire", "CompleteTest", "page1", List.of("page1"))
       ))
       .complete()
       .assertThat(assertion -> assertion.extracting("type").containsExactly(
@@ -883,7 +883,7 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, "rg1.0", null, false),
           tuple(ITEM, "survey1", null, false),
           tuple(ITEM, "list1", null, false),
-          tuple(ITEM, "rg1", Arrays.asList(BigInteger.ZERO), true),
+          tuple(ITEM, "rg1", List.of(BigInteger.ZERO), true),
           tuple(ITEM, "questionnaire", null, false),
           tuple(ITEM, "multichoice1", Arrays.asList("a", "c"), true),
           tuple(ITEM, "decimal1", 3.141, true),
@@ -1016,7 +1016,7 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, null, "rowgroup1.0.boolean1", "vastaus", null),
           tuple(ITEM, null, "rowgroup1.0", null, Arrays.asList("rowgroup1.0.text1", "rowgroup1.0.boolean1", "rowgroup1.0.number1")),
           tuple(ITEM, null, "rowgroup1.0.text1", "kysy", null),
-          tuple(ITEM, null, "rowgroup1", null, Arrays.asList("rowgroup1.0"))
+          tuple(ITEM, null, "rowgroup1", null, List.of("rowgroup1.0"))
         ))
       .answer("rowgroup1.0.text1", "hello")
       .assertThat(assertion -> assertion
@@ -1174,7 +1174,7 @@ class DialobQuestionnaireSessionServiceTest {
           .extracting("type", "ids", "item.id", "item.label", "item.props").containsExactlyInAnyOrder(
           tuple(RESET, null, null, null, null),
           tuple(LOCALE, null, null, null, null),
-          tuple(ITEM, null, "group1", "The Life of Human", Maps.toMap(Arrays.asList("test"), v -> 1)),
+          tuple(ITEM, null, "group1", "The Life of Human", Maps.toMap(List.of("test"), v -> 1)),
           tuple(ITEM, null, "questionnaire", "Perfect Logic", null),
           tuple(ITEM, null, "page1", "Logic", null),
           tuple(ITEM, null, "name", "Hello What is Your Name?", null)
@@ -1192,7 +1192,7 @@ class DialobQuestionnaireSessionServiceTest {
       .assertThat(assertion -> {
         assertion
           .extracting("type", "ids", "item.id", "item.label", "item.props").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "question3", "So Why Do You Worry asdffdsa?", Maps.toMap(Arrays.asList("test2"), v -> "2"))
+          tuple(ITEM, null, "question3", "So Why Do You Worry asdffdsa?", Maps.toMap(List.of("test2"), v -> "2"))
         );
       })
       .apply();
@@ -1213,7 +1213,7 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(VALUE_SET, null, null, null, null)
         );
       })
-      .answer("multichoice1",Arrays.asList("b"))
+      .answer("multichoice1", List.of("b"))
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.id", "error.code").containsExactlyInAnyOrder(
           tuple(ITEM, null, "text1", "Write something", null, null)
@@ -1388,7 +1388,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
           tuple(ITEM, null, "rg.0.qq", null),
           tuple(ITEM, null, "rg.0", null),
-          tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ZERO))
+          tuple(ITEM, null, "rg", List.of(BigInteger.ZERO))
         ))
       .addRow("rg")
       .assertThat(assertion -> assertion
@@ -1600,7 +1600,7 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(VALUE_SET, null, null, null)
         );
       })
-      .answer("mc",Arrays.asList("1"))
+      .answer("mc", List.of("1"))
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(ITEM, null, "note2", "wohoo"),
@@ -1613,11 +1613,11 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, null, "questionnaire", "test"),
           tuple(ERROR, null, null, null)
         ))
-      .answer("mc",Arrays.asList())
+      .answer("mc", List.of())
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
-          tuple(REMOVE_ITEMS, Arrays.asList("note2"), null, null),
+          tuple(REMOVE_ITEMS, List.of("note2"), null, null),
           tuple(ITEM, null, "questionnaire", "test"),
           tuple(ITEM, null, "note1", "0")
         ))
@@ -1775,9 +1775,9 @@ class DialobQuestionnaireSessionServiceTest {
       .addRow("rowgroup1")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "rowgroup1.0", null, asList("rowgroup1.0.text1"), Set.of(DELETE_ROW)),
+          tuple(ITEM, null, "rowgroup1.0", null, List.of("rowgroup1.0.text1"), Set.of(DELETE_ROW)),
           tuple(ITEM, null, "rowgroup1.0.text1", "Anna syöte", null, null),
-          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), Set.of(ADD_ROW)),
+          tuple(ITEM, null, "rowgroup1", null, List.of("rowgroup1.0"), Set.of(ADD_ROW)),
           tuple(ERROR, null, null, null, null, null)
         ))
       .answer("text2", "hello")
@@ -1794,7 +1794,7 @@ class DialobQuestionnaireSessionServiceTest {
       .addRow("rowgroup1")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "rowgroup1.1", null, asList("rowgroup1.1.text1"), Set.of(DELETE_ROW), null),
+          tuple(ITEM, null, "rowgroup1.1", null, List.of("rowgroup1.1.text1"), Set.of(DELETE_ROW), null),
           tuple(ITEM, null, "rowgroup1.1.text1", "Anna syöte", null, null, null),
           tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0", "rowgroup1.1"), Set.of(ADD_ROW), null),
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER), null),
@@ -1803,7 +1803,7 @@ class DialobQuestionnaireSessionServiceTest {
       .deleteRow("rowgroup1.1") // issue https://github.com/dialob/dialob-parent/issues/15
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "rowgroup1", null, asList("rowgroup1.0"), Set.of(ADD_ROW), null),
+          tuple(ITEM, null, "rowgroup1", null, List.of("rowgroup1.0"), Set.of(ADD_ROW), null),
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.1.text1", "rowgroup1.1"), null, null, null, null, null),
           tuple(REMOVE_ERROR, null, null, null, null, null, "rowgroup1.1.text1")
@@ -1912,7 +1912,7 @@ class DialobQuestionnaireSessionServiceTest {
       .deleteRow("rg.0")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.id", "item.allowedActions").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("rg.0"), null, null, null, null),
+          tuple(REMOVE_ITEMS, List.of("rg.0"), null, null, null, null),
           tuple(ITEM, null, "rg", null, null, Set.of(ADD_ROW))
         ))
       .assertState(assertion -> {
@@ -1982,8 +1982,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   private <T> Set<T> asSet(T... items) {
-    HashSet hashSet = new HashSet<T>();
-    hashSet.addAll(asList(items));
+    HashSet hashSet = new HashSet<T>(asList(items));
     return hashSet;
   }
 

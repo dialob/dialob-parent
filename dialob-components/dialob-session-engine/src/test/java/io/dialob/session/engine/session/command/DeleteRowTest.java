@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ class DeleteRowTest {
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
-      .setValue(Arrays.asList(BigInteger.ONE))
+      .setValue(List.of(BigInteger.ONE))
       .get();
 
     itemState = deleteRow.update(context, itemState);
@@ -57,12 +56,12 @@ class DeleteRowTest {
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
-      .setValue(Arrays.asList(2))
+      .setValue(List.of(2))
       .get();
 
     itemState = deleteRow.update(context, itemState);
 
-    assertEquals(Arrays.asList(2), itemState.getValue());
+    assertEquals(List.of(2), itemState.getValue());
 
   }
 
@@ -78,12 +77,12 @@ class DeleteRowTest {
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
-      .setValue(Arrays.asList(1))
+      .setValue(List.of(1))
       .setRowCanBeRemoved(false)
       .get();
 
     itemState = deleteRow.update(context, itemState);
-    assertEquals(Arrays.asList(1), itemState.getValue());
+    assertEquals(List.of(1), itemState.getValue());
 
     assertEquals(ItemState.Status.OK, itemState.getStatus());
   }

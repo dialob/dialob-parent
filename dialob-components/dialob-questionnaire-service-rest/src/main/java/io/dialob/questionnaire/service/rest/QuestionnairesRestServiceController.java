@@ -287,9 +287,8 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     if (!isValidAnswerValue(answer)) {
       return ResponseEntity.badRequest().body(singletonList(ImmutableError.builder().id(answerId).code("invalid_answer").description("Cannot handle answer data").build()));
     }
-    if (answer instanceof List) {
-      List list = (List) answer;
-      answer = ((List) answer).stream()
+    if (answer instanceof List<?> list) {
+      answer = list.stream()
         .filter(Objects::nonNull)
         .map(Object::toString)
         .collect(Collectors.toList());
@@ -308,8 +307,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       answer instanceof String) {
       return true;
     }
-    if (answer instanceof List) {
-      List<Object> list = (List<Object>) answer;
+    if (answer instanceof List<?> list) {
       return list.stream().map(i -> i == null || i instanceof String).reduce(Boolean.TRUE, (a, i) -> a && i);
     }
     return false;

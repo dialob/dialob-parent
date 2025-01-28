@@ -184,9 +184,11 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID).accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n" +
-        "Something,,No,false\r\n"));
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        TextAnswer,,Yes,true\r
+        Something,,No,false\r
+        """));
   }
 
   @Test
@@ -194,9 +196,11 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=fi").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputFI,text1,BooleanInputFI,boolean1\r\n" +
-        "TextAnswer,,Kyllä,true\r\n" +
-        "Something,,Ei,false\r\n"));
+      .andExpect(content().string("""
+        TextInputFI,text1,BooleanInputFI,boolean1\r
+        TextAnswer,,Kyllä,true\r
+        Something,,Ei,false\r
+        """));
   }
 
   @Test
@@ -204,9 +208,11 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=sv").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string(",text1,1. null,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n" +
-        "Something,,No,false\r\n"));
+      .andExpect(content().string("""
+        ,text1,1. null,boolean1\r
+        TextAnswer,,Yes,true\r
+        Something,,No,false\r
+        """));
   }
 
   @Test
@@ -214,8 +220,10 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?questionnaire=1").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n"));
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        TextAnswer,,Yes,true\r
+        """));
   }
 
   @Test
@@ -242,8 +250,10 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2020-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "Something,,No,false\r\n"));
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        Something,,No,false\r
+        """));
   }
 
   @Test
@@ -251,8 +261,10 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&to=2020-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n"));
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        TextAnswer,,Yes,true\r
+        """));
   }
 
   @Test
@@ -272,8 +284,10 @@ class CSVSerializerTest {
     mockMvc.perform(get("/questionnaires?formId="+SURVEY_FORM_ID).accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("Survey Q 1,survey1,Survey Q 2,survey2,Survey Q 3,survey3\r\n" +
-        "Choice1,a,Choice2,b,,\r\n"));
+      .andExpect(content().string("""
+        Survey Q 1,survey1,Survey Q 2,survey2,Survey Q 3,survey3\r
+        Choice1,a,Choice2,b,,\r
+        """));
   }
 
 }

@@ -44,7 +44,7 @@ public class DialobSecurityAwsAutoConfiguration {
       var resourceRetriever = new DefaultResourceRetriever(5000, 5000);
       return new ElbJWKSource<>(url, resourceRetriever);
     });
-    var keySelector = new JWSVerificationKeySelector<C>(
+    var keySelector = new JWSVerificationKeySelector<>(
       settings.getAws().getElb().getAlgorithms().stream().map(JWSAlgorithm::parse).collect(Collectors.toSet()),
       keySource);
     ConfigurableJWTProcessor<C> jwtProcessor = new DefaultJWTProcessor<>();

@@ -16,7 +16,6 @@
 package io.dialob.integration.redis;
 
 import com.redis.testcontainers.RedisContainer;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -41,12 +40,10 @@ public interface ProvideTestRedis {
   static void startRedis() {
     redis.start();
     var port = redis.getMappedPort(RedisContainer.REDIS_PORT);
-    Socket socket = null;
     InetSocketAddress endpoint = new InetSocketAddress(redis.getHost(), port);
     int i = 100;
     while (--i > 0) {
-      try {
-        socket = new Socket();
+      try(Socket socket = new Socket()) {
         socket.connect(endpoint);
         return;
       } catch (ConnectException e) {
@@ -57,8 +54,6 @@ public interface ProvideTestRedis {
         }
       } catch (IOException e) {
         throw new RuntimeException(e);
-      } finally {
-        IOUtils.closeQuietly(socket);
       }
     }
   }

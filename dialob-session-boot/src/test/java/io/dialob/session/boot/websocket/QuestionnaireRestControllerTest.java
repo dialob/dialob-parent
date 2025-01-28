@@ -39,9 +39,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -136,7 +136,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
       Iterator<Action> i = actions.getActions().iterator();
       Action action = i.next();
       assertEquals(Action.Type.REMOVE_ITEMS, action.getType());
-      assertEquals(Arrays.asList("g1"), action.getIds());
+      assertEquals(List.of("g1"), action.getIds());
 
       action = i.next();
       assertEquals(Action.Type.ITEM, action.getType());
@@ -160,7 +160,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
       Iterator<Action> i = actions.getActions().iterator();
       Action action = i.next();
       assertEquals(Action.Type.REMOVE_ITEMS, action.getType());
-      assertEquals(Arrays.asList("g2"), action.getIds());
+      assertEquals(List.of("g2"), action.getIds());
 
       action = i.next();
       assertEquals(Action.Type.ITEM, action.getType());
@@ -209,12 +209,12 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,          null,            null),
             tuple(Action.Type.ITEM, "selection1", null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("g1")),
             tuple(Action.Type.ITEM, "g1", asList("selection1","note1")),
             tuple(Action.Type.VALUE_SET, null, null)
           );
       }).next()
-      .answerQuestion("selection1", asList("e2"))
+      .answerQuestion("selection1", List.of("e2"))
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.label")
@@ -235,7 +235,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids")
           .containsOnly(
-            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("note1"))
+            tuple(Action.Type.REMOVE_ITEMS, List.of("note1"))
           );
       })
       .execute();
@@ -362,7 +362,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,          null,            null),
             tuple(Action.Type.ITEM, "selection1", null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("g1")),
             tuple(Action.Type.ITEM, "g1", asList("selection1","note1")),
             tuple(Action.Type.VALUE_SET, null, null)
           );
@@ -388,7 +388,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids")
           .containsOnly(
-            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("note1"))
+            tuple(Action.Type.REMOVE_ITEMS, List.of("note1"))
           );
       })
       .execute();
@@ -424,7 +424,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
           .containsOnly(
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,   null, null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("g1")),
             tuple(Action.Type.ITEM, "value1", null),
             tuple(Action.Type.ITEM, "g1", asList("value1","note1")),
             tuple(Action.Type.ITEM, "note1", null)

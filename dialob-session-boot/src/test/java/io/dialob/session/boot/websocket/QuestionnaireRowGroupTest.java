@@ -40,6 +40,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -103,9 +104,9 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
           .containsOnly(
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,  null, null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("p1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("p1")),
             tuple(Action.Type.ITEM, "g1", null),
-            tuple(Action.Type.ITEM, "p1", asList("g1"))
+            tuple(Action.Type.ITEM, "p1", List.of("g1"))
           );
       })
       .next()
@@ -117,7 +118,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
             tuple(Action.Type.ITEM, "g1.0.q1", null, "Kysymys 1"),
             tuple(Action.Type.ITEM, "g1.0.q2", null, "Kysymys 2"),
             tuple(Action.Type.ITEM, "g1.0", asList("g1.0.q1", "g1.0.q2", "g1.0.q3"), "Ryhma"),
-            tuple(Action.Type.ITEM, "g1", asList("g1.0"), "Ryhma")
+            tuple(Action.Type.ITEM, "g1", List.of("g1.0"), "Ryhma")
           );
       }).next()
       .addRow("g1")
@@ -137,7 +138,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
           .extracting("type", "ids", "item.id", "item.items")
           .containsOnly(
             tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.0","g1.0.q2","g1.0.q1"), null, null),
-            tuple(Action.Type.ITEM, null,       "g1", asList("g1.1"))
+            tuple(Action.Type.ITEM, null,       "g1", List.of("g1.1"))
           );
       }).next()
       .answerQuestion("g1.1.q2","wrong answer")
@@ -167,8 +168,8 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
           .containsOnly(
             tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.1","g1.1.q2","g1.1.q1"), null, null, null, null, null),
             tuple(Action.Type.REMOVE_ERROR,     null,                                      null, null, "g1.1.q2", "q2_error1", null),
-            tuple(Action.Type.ITEM,             null,"questionnaire", asList("p1"), null, null, Set.of(Action.Type.ANSWER, Action.Type.COMPLETE)),
-            tuple(Action.Type.ITEM,         null,                                      "g1", asList("g1.2"), null, null, Set.of(ADD_ROW))
+            tuple(Action.Type.ITEM,             null,"questionnaire", List.of("p1"), null, null, Set.of(Action.Type.ANSWER, Action.Type.COMPLETE)),
+            tuple(Action.Type.ITEM,         null,                                      "g1", List.of("g1.2"), null, null, Set.of(ADD_ROW))
           );
       }).next()
       .addRow("g1")

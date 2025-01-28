@@ -127,13 +127,11 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ErrorState> activeError() {
-    return isError("activeError", errorState -> errorState.isActive());
+    return isError("activeError", ErrorState::isActive);
   }
 
   public ArgumentMatcher<ItemState> answeredItem(String itemId) {
-    return isItem("answeredItem", itemState -> {
-      return itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.getId()));
-    });
+    return isItem("answeredItem", itemState -> itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.getId())));
   }
 
   public ArgumentMatcher<ItemState> unansweredItem(String itemId) {

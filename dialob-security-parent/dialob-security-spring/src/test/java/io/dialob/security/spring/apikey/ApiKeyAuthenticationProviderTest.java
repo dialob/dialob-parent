@@ -23,8 +23,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +51,7 @@ class ApiKeyAuthenticationProviderTest {
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
 
     ApiKeyAuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
-    final AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("key", "principal", Arrays.asList(new SimpleGrantedAuthority("ROLE")));
+    final AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("key", "principal", List.of(new SimpleGrantedAuthority("ROLE")));
     assertSame(authentication, authenticationProvider.authenticate(authentication));
     Mockito.verifyNoMoreInteractions(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
   }

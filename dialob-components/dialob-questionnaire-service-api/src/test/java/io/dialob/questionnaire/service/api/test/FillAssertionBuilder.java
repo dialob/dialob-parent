@@ -34,7 +34,7 @@ import org.assertj.core.api.Assertions;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -159,7 +159,7 @@ public class FillAssertionBuilder {
     session = questionnaireSessionBuilder.build();
     for (final ValidationEntry validationEntry : validationEntries) {
       if (validationEntry.action != null) {
-        validationEntry.actions = session.dispatchActions(session.getRevision(), Arrays.asList(validationEntry.action)).getActions();
+        validationEntry.actions = session.dispatchActions(session.getRevision(), Collections.singletonList(validationEntry.action)).getActions();
       } else {
         FormActions formActions =  new FormActions();
         session.buildFullForm(new FormActionsUpdatesCallback(formActions));

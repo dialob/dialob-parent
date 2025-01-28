@@ -59,14 +59,14 @@ class CommandFactoryTest {
 
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList()).get();
+    itemState = itemState.update().setItems(List.of()).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState2 = itemState2.update().setItems(Arrays.asList()).get();
+    itemState2 = itemState2.update().setItems(List.of()).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
   }
@@ -92,20 +92,20 @@ class CommandFactoryTest {
       null,
       null,
       null, null);
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
-    itemState2 = itemState2.update().setItems(Arrays.asList()).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState2 = itemState2.update().setItems(List.of()).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i2", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList()).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of()).get();
+    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
 
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i2", Optional.empty()))).get();
     itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()), ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
   }
@@ -133,7 +133,7 @@ class CommandFactoryTest {
     SessionUpdateCommand command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemState itemState1 = new ItemState(IdUtils.toId("g1"), null, "rowgroup", null, true, null, null, null, null, null);
     ItemState itemRow = new ItemState(IdUtils.toId("g1.0"), null, "group", null, true, null, null, null, null, null);
-    ItemState itemState2 = itemState1.update().setItems(Arrays.asList(IdUtils.toId("g1.0"))).get();
+    ItemState itemState2 = itemState1.update().setItems(List.of(IdUtils.toId("g1.0"))).get();
 
     ItemStates itemStates1 = ImmutableItemStates.builder()
       .putItemStates(itemState1.getId(), itemState1)
@@ -158,9 +158,9 @@ class CommandFactoryTest {
     ItemState updated = Mockito.mock(ItemState.class);
     when(updated.getItems()).thenReturn(Collections.emptyList());
     ItemState original2 = Mockito.mock(ItemState.class);
-    when(original2.getItems()).thenReturn(Arrays.asList(IdUtils.toId("q1")));
+    when(original2.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
     ItemState updated2 = Mockito.mock(ItemState.class);
-    when(updated2.getItems()).thenReturn(Arrays.asList(IdUtils.toId("q1")));
+    when(updated2.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
 
 
     assertFalse(GROUP_ITEMS_CHANGED.test(null, null));

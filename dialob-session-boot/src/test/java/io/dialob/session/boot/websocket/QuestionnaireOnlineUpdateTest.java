@@ -40,6 +40,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -98,12 +99,12 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
           .extracting("type",                     "item.id", "item.type", "item.label", "item.items").containsOnly(
           tuple(Action.Type.RESET,              null,            null,             null,          null),
           tuple(Action.Type.LOCALE,             null,            null,             null,          null),
-          tuple(Action.Type.ITEM,    "questionnaire", "questionnaire",         "Kysely",  asList("g1")),
+          tuple(Action.Type.ITEM,    "questionnaire", "questionnaire",         "Kysely", List.of("g1")),
           tuple(Action.Type.ITEM,               "q1",          "text",        "Kysymys",          null),
-          tuple(Action.Type.ITEM,               "g1",         "group",          "Ryhma",  asList("q1"))
+          tuple(Action.Type.ITEM,               "g1",         "group",          "Ryhma", List.of("q1"))
         );
       })
-      .nextAfterDelay(500l)
+      .nextAfterDelay(500L)
       .answerQuestion("q1", "vastaus")
       .expectActions(actions -> {
         assertThat(actions.getActions()).isNullOrEmpty();
@@ -135,7 +136,7 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
           .extracting("type",                     "item.id", "item.type", "item.label", "item.items", "item.value").containsOnly(
                 tuple(Action.Type.RESET,           null,            null,             null,             null,             null),
                 tuple(Action.Type.LOCALE,          null,            null,             null,             null,             null),
-                tuple(Action.Type.ITEM, "questionnaire", "questionnaire",         "Kysely",     asList("g1"),             null),
+                tuple(Action.Type.ITEM, "questionnaire", "questionnaire",         "Kysely", List.of("g1"),             null),
                 tuple(Action.Type.ITEM,            "q1",          "text",        "Kysymys",             null,        "vastaus"),
                 tuple(Action.Type.ITEM,            "q2",          "text",      "Kysymys 2",             null,             null),
                 tuple(Action.Type.ITEM,            "g1",         "group",          "Ryhma",asList("q1", "q2"),            null)

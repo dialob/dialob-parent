@@ -32,10 +32,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -84,7 +81,7 @@ class CreateDialobSessionProgramVisitorTest {
         .id(IdUtils.toId("rg.*"))
         .type("row")
         .isPrototype(true)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(Arrays.asList(IdUtils.toId("rg.*.q1"))).build()).build());
+        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build()).build());
     });
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
@@ -122,15 +119,15 @@ class CreateDialobSessionProgramVisitorTest {
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     ActiveDialobSessionUpdater sessionUpdater = (ActiveDialobSessionUpdater) contextFactory.createSessionUpdater(dialobProgram, dialobSession, true);
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.addRow("rg"))));
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.addRow("rg"))));
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.addRow("rg"))));
 
     sessionUpdater = (ActiveDialobSessionUpdater) contextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.0.q1", 1))));
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.0.q2", 1))));
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.2.q1", 2.0))));
-    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(Arrays.asList(ActionsFactory.answer("rg.2.q2", 2.0))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.0.q1", 1))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.0.q2", 1))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.2.q1", 2.0))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.2.q2", 2.0))));
 
     assertTrue(dialobSession.getItemState(Operators.ref("rg.0")).isPresent());
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
@@ -223,7 +220,7 @@ class CreateDialobSessionProgramVisitorTest {
       .id(ImmutableItemIdPartial.of(Optional.of(itemId)))
       .type("row")
       .isPrototype(true)
-      .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(Arrays.asList(IdUtils.toId("rg.*.q1"))).build())
+      .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())
       .build();
 
 

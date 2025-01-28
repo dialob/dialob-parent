@@ -18,7 +18,7 @@ package io.dialob.api.questionnaire;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -37,7 +37,7 @@ class AnswerTest {
     assertEquals("q1", answer.getId());
 
     answer = objectMapper.readValue("{\"id\":\"q1\",\"value\":[\"123\"]}", Answer.class);
-    assertEquals(Arrays.asList("123"),answer.getValue());
+    assertEquals(List.of("123"),answer.getValue());
     assertEquals("q1", answer.getId());
 
     answer = objectMapper.readValue("{\"id\":\"q1\",\"value\":123}", Answer.class);

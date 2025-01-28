@@ -120,7 +120,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
             tuple(Action.Type.ITEM,   "question1",     "Question 1")
           );
       })
-    .nextAfterDelay(500l)
+    .nextAfterDelay(500L)
     .answerQuestion("question1", "Weird")
     .expectUpdateWithoutActions()
     .expectActions(actions -> {

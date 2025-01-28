@@ -236,7 +236,8 @@ class FormsRestServiceControllerApiKeyTest {
     HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongtoken");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {
-        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<FormListItem>>() {});
+        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+        });
       } catch (HttpClientErrorException e) {
         assertEquals(403, e.getRawStatusCode());
         throw e;

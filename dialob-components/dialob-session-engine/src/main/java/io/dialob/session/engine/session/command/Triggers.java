@@ -83,7 +83,7 @@ public class Triggers {
   }
 
   public static SessionUpdatedEvent sessionLocaleUpdatedEvent() {
-    return ImmutableSessionLocaleUpdatedEvent.INSTANCE;
+    return SessionLocaleUpdatedEvent.INSTANCE;
   }
 
   public static Event errorActivityUpdatedEvent(@NonNull ErrorId errorId) {

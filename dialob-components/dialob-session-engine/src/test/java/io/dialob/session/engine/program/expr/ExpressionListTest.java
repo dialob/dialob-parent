@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class ExpressionListTest {
@@ -35,19 +34,19 @@ class ExpressionListTest {
       .addExpressions(expr)
       .build();
 
-    Mockito.when(expr.eval(context)).thenReturn(Arrays.asList());
-    Assertions.assertEquals(Arrays.asList(), list.eval(context));
+    Mockito.when(expr.eval(context)).thenReturn(List.of());
+    Assertions.assertEquals(List.of(), list.eval(context));
 
-    Mockito.when(expr.eval(context)).thenReturn(Arrays.asList("a"));
-    Assertions.assertEquals(Arrays.asList("a"), list.eval(context));
+    Mockito.when(expr.eval(context)).thenReturn(List.of("a"));
+    Assertions.assertEquals(List.of("a"), list.eval(context));
 
     Mockito.when(expr.eval(context)).thenReturn("a");
-    Assertions.assertEquals(Arrays.asList("a"), list.eval(context));
+    Assertions.assertEquals(List.of("a"), list.eval(context));
 
 
     List arrayList = new ArrayList<>();
     arrayList.add(null);
     Mockito.when(expr.eval(context)).thenReturn(arrayList);
-    Assertions.assertEquals(Arrays.asList(), list.eval(context));
+    Assertions.assertEquals(List.of(), list.eval(context));
   }
 }

@@ -176,7 +176,7 @@ class QuestionnairesRestControllerApiKeyTest {
 
     httpHeaders.set("x-api-key", Base64.getEncoder().encodeToString(token));
     httpHeaders.set(HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
-    return new HttpEntity<Void>(httpHeaders);
+    return new HttpEntity<>(httpHeaders);
   }
 
   @Test
@@ -213,7 +213,8 @@ class QuestionnairesRestControllerApiKeyTest {
       return null;
     }).when(questionnaireDatabaseMock()).findAllMetadata(anyString(), isNull(), isNull(), isNull(), isNull(), isNull(), any(Consumer.class));
 
-    ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret"), new ParameterizedTypeReference<List<FormListItem>>() {});
+    ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret"), new ParameterizedTypeReference<>() {
+    });
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     List<FormListItem> r = response.getBody();

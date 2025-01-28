@@ -22,7 +22,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +42,7 @@ class GrantedAuthorityTenantsProviderTest {
   @Test
   void shouldReturnListOfTenantsFromAuthorizations() {
 
-    SecurityContextHolder.setContext(new SecurityContextImpl(new TestingAuthenticationToken("","", Arrays.asList(
+    SecurityContextHolder.setContext(new SecurityContextImpl(new TestingAuthenticationToken("","", List.of(
       ImmutableTenantGrantedAuthority.of("12312", "aa")
     ))));
 

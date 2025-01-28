@@ -21,8 +21,6 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,12 +32,7 @@ class ConvertDateMinusDateVisitorTest {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     Mockito.when(variableFinder.typeOf("b")).thenReturn(ValueType.DATE);
-    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(new Answer<Object>() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArguments()[0];
-      }
-    });
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
 
     Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a - b");
     expression.accept(new ConvertDateMinusDateVisitor());

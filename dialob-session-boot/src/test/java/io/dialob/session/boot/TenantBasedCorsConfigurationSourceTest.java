@@ -24,7 +24,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.cors.CorsConfiguration;
 
-import static java.util.Arrays.asList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -64,7 +65,7 @@ class TenantBasedCorsConfigurationSourceTest {
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
-    assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
+    assertIterableEquals(List.of("*"), corsConfiguration.getAllowedOrigins());
 
     verify(request).getParameter("sessionId");
     verify(request).getPathInfo();
@@ -93,7 +94,7 @@ class TenantBasedCorsConfigurationSourceTest {
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
-    assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
+    assertIterableEquals(List.of("*"), corsConfiguration.getAllowedOrigins());
 
     verify(request).getParameter("sessionId");
     verify(questionnaireSessionService).findOne("aabb2233");
@@ -153,7 +154,7 @@ class TenantBasedCorsConfigurationSourceTest {
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
-    assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
+    assertIterableEquals(List.of("*"), corsConfiguration.getAllowedOrigins());
 
     verify(request).getParameter("sessionId");
     verify(questionnaireSessionService).findOne("123abc");

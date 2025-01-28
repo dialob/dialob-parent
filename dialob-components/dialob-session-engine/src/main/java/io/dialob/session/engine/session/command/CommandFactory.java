@@ -210,7 +210,7 @@ public final class CommandFactory {
   }
 
   public static SetLocale setLocale(@NonNull String locale) {
-    return ImmutableSetLocale.of(locale, Arrays.asList(
+    return ImmutableSetLocale.of(locale, Collections.singletonList(
       Triggers.<ItemState>trigger(sessionLocaleUpdatedEvent()).when(ALWAYS)
     ));
   }

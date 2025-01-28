@@ -158,25 +158,14 @@ public class DDRLOperatorFactory implements OperatorFactory {
   }
 
   private Expression createArrayReducingOperator(OperatorSymbol operatorSymbol, ValueType itemValueType, ItemId varRef) {
-    BinaryOperator<?> reducer = null;
-
-    switch(operatorSymbol) {
-      case SUM:
-        reducer = ArrayReducerOperator.sumOp(itemValueType);
-        break;
-      case MIN:
-        reducer = ArrayReducerOperator.minOp(itemValueType);
-        break;
-      case MAX:
-        reducer = ArrayReducerOperator.maxOp(itemValueType);
-        break;
-      case ALL:
-        reducer = ArrayReducerOperator.allOp(itemValueType);
-        break;
-      case ANY:
-        reducer = ArrayReducerOperator.anyOp(itemValueType);
-        break;
-    }
+    BinaryOperator<?> reducer = switch (operatorSymbol) {
+      case SUM -> ArrayReducerOperator.sumOp(itemValueType);
+      case MIN -> ArrayReducerOperator.minOp(itemValueType);
+      case MAX -> ArrayReducerOperator.maxOp(itemValueType);
+      case ALL -> ArrayReducerOperator.allOp(itemValueType);
+      case ANY -> ArrayReducerOperator.anyOp(itemValueType);
+      default -> null;
+    };
 
     if (reducer == null) {
       throw new CannotReduceTypeWithOperatorException(operatorSymbol.name(), itemValueType);
@@ -251,21 +240,15 @@ public class DDRLOperatorFactory implements OperatorFactory {
       lhs = coerceToType(coercedType, lhs);
       rhs = coerceToType(coercedType, rhs);
     }
-    switch(operator) {
-      case NE:
-        return operatorsOf(coercedType).ne(lhs, rhs);
-      case EQ:
-        return operatorsOf(coercedType).eq(lhs, rhs);
-      case LT:
-        return operatorsOf(coercedType).lt(lhs, rhs);
-      case LE:
-        return operatorsOf(coercedType).le(lhs, rhs);
-      case GE:
-        return operatorsOf(coercedType).ge(lhs, rhs);
-      case GT:
-        return operatorsOf(coercedType).gt(lhs, rhs);
-    }
-    throw new RuntimeException("Unknown operator " + operator);
+    return switch (operator) {
+      case NE -> operatorsOf(coercedType).ne(lhs, rhs);
+      case EQ -> operatorsOf(coercedType).eq(lhs, rhs);
+      case LT -> operatorsOf(coercedType).lt(lhs, rhs);
+      case LE -> operatorsOf(coercedType).le(lhs, rhs);
+      case GE -> operatorsOf(coercedType).ge(lhs, rhs);
+      case GT -> operatorsOf(coercedType).gt(lhs, rhs);
+      default -> throw new RuntimeException("Unknown operator " + operator);
+    };
   }
 
   @NonNull

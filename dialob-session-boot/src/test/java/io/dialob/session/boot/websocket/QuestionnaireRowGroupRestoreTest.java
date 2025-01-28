@@ -46,6 +46,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -120,11 +121,11 @@ class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
           .containsOnly(
             tuple(Action.Type.RESET,   null, null, null, null),
             tuple(Action.Type.LOCALE,   null, null, null, null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("p1"), null, "questionnaire"),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("p1"), null, "questionnaire"),
             tuple(Action.Type.ITEM, "g1", asList("g1.2", "g1.1"), asList(2,1), "rowgroup"),
             tuple(Action.Type.ITEM, "g1.1", asList("g1.1.q1", "g1.1.q2", "g1.1.q3"), null, "row"),
             tuple(Action.Type.ITEM, "g1.2", asList("g1.2.q1", "g1.2.q2", "g1.2.q3"), null, "row"),
-            tuple(Action.Type.ITEM, "p1", asList("g1"), null, "group"),
+            tuple(Action.Type.ITEM, "p1", List.of("g1"), null, "group"),
             tuple(Action.Type.ITEM, "g1.1.q1", null, "Hello", "text"),
             tuple(Action.Type.ITEM, "g1.1.q2", null, "correct answer", "text"),
             tuple(Action.Type.ITEM, "g1.1.q3", null, "hello 3", "text"),

@@ -155,16 +155,12 @@ public class IdUtils {
   public static ItemId readIdFrom(CodedInputStream input) throws IOException {
     if (input.readBool()) {
       byte type = input.readRawByte();
-      switch (type) {
-        case 1:
-          return ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
-        case 2:
-          return ImmutableItemIdPartial.of(Optional.ofNullable(readIdFrom(input)));
-        case 3:
-          return ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
-        default:
-          throw new RuntimeException("unknown id type " + type);
-      }
+      return switch (type) {
+        case 1 -> ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
+        case 2 -> ImmutableItemIdPartial.of(Optional.ofNullable(readIdFrom(input)));
+        case 3 -> ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
+        default -> throw new RuntimeException("unknown id type " + type);
+      };
     }
     return null;
   }

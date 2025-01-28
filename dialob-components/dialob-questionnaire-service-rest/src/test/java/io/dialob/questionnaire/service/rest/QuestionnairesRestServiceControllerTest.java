@@ -296,7 +296,7 @@ class QuestionnairesRestServiceControllerTest {
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(questionnaireSession);
     when(questionnaireSession.getErrors()).thenReturn(Collections.emptyList());
-    when(questionnaireSession.dispatchActions(argThat(new HamcrestArgumentMatcher<>(new BaseMatcher<Collection<Action>>() {
+    when(questionnaireSession.dispatchActions(argThat(new HamcrestArgumentMatcher<>(new BaseMatcher<>() {
       @Override
       public boolean matches(Object item) {
         Collection<Action> consumer = (Collection<Action>) item;

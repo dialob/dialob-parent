@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -56,7 +55,7 @@ class IsValidOperatorTest {
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
     ErrorState errorState = new ErrorState(IdUtils.toId("q1"), "error1", "error");
     errorState = errorState.update(context).setActive(true).get();
-    when(context.getErrorStates()).thenReturn(Arrays.asList(errorState));
+    when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertFalse(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
     verify(context).getItemState(IdUtils.toId("q1"));
@@ -72,7 +71,7 @@ class IsValidOperatorTest {
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
     ErrorState errorState = new ErrorState(IdUtils.toId("q2"), "error1", "error");
     errorState = errorState.update(context).setActive(true).get();
-    when(context.getErrorStates()).thenReturn(Arrays.asList(errorState));
+    when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertTrue(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
     verify(context).getItemState(IdUtils.toId("q1"));
@@ -117,7 +116,7 @@ class IsValidOperatorTest {
     when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("rg.1.q1"), null, "text", null, null)));
     ErrorState errorState = new ErrorState(IdUtils.toId("rg.1.q1"), "error1", "error");
     errorState = errorState.update(context).setActive(true).get();
-    when(context.getErrorStates()).thenReturn(Arrays.asList(errorState));
+    when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertFalse(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("rg.*.q1")),anyBoolean());
     verify(context).getItemState(IdUtils.toId("rg.1.q1"));
@@ -133,7 +132,7 @@ class IsValidOperatorTest {
     when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("rg.1.q1"), null, "text", null, null)));
     ErrorState errorState = new ErrorState(IdUtils.toId("rg.2.q1"), "error1", "error");
     errorState = errorState.update(context).setActive(true).get();
-    when(context.getErrorStates()).thenReturn(Arrays.asList(errorState));
+    when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertTrue(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("rg.*.q1")),anyBoolean());
     verify(context).getItemState(IdUtils.toId("rg.1.q1"));

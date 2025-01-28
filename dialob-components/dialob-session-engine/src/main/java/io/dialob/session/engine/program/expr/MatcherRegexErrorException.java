@@ -18,7 +18,6 @@ package io.dialob.session.engine.program.expr;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MatcherRegexErrorException extends ProgramBuilderException {
@@ -36,7 +35,7 @@ public class MatcherRegexErrorException extends ProgramBuilderException {
 
   @Override
   public List<Object> getArgs() {
-    return Arrays.asList(ValueType.STRING);
+    return List.of(ValueType.STRING);
   }
 
 }

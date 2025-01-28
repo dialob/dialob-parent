@@ -192,7 +192,6 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   public QuestionnaireDialobSessionRedisSerializer getQuestionnaireDialobSessionRedisSerializer(int bufferSize) {
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     return new QuestionnaireDialobSessionRedisSerializer(
-      dialobQuestionnaireSessionService,
       eventPublisher, dialobProgramService, sessionContextFactory, asyncFunctionInvoker, Optional.of(meterRegistry),
       bufferSize
     );

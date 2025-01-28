@@ -272,7 +272,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .andExpect(jsonPath("$.ok").value(true))
       ;
     verify(formDatabase, times(1)).save(anyString(), any());
-    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<FormUpdatedEvent>("matches new-form with rev 1") {
+    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<>("matches new-form with rev 1") {
       @Override
       protected boolean matchesSafely(FormUpdatedEvent event) {
         assertEquals("new-form", event.getFormId());
@@ -301,7 +301,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .andExpect(jsonPath("$.rev").value("1"))
       .andExpect(jsonPath("$.ok").value(true));
     verify(formDatabase, times(1)).save(anyString(), any());
-    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<FormUpdatedEvent>("matches new-form with rev 1") {
+    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<>("matches new-form with rev 1") {
       @Override
       protected boolean matchesSafely(FormUpdatedEvent event) {
         assertEquals("new-form", event.getFormId());

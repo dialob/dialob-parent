@@ -270,18 +270,17 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         coerce(stringConstant, coercionType);
       }
 
-      String code;
       boolean ok;
-      switch (operator) {
-        case "=", "!=":
+      var code = switch (operator) {
+        case "=", "!=" -> {
           ok = lhs.getValueType().canEqualWith(rhs.getValueType());
-          code = CompilerErrorCode.NO_EQUALITY_RELATION_BETWEEN_TYPES;
-          break;
-        default:
+          yield CompilerErrorCode.NO_EQUALITY_RELATION_BETWEEN_TYPES;
+        }
+        default -> {
           ok = lhs.getValueType().canOrderWith(rhs.getValueType());
-          code = CompilerErrorCode.NO_ORDER_RELATION_BETWEEN_TYPES;
-          break;
-      }
+          yield CompilerErrorCode.NO_ORDER_RELATION_BETWEEN_TYPES;
+        }
+      };
       if (!ok) {
         errorLogger.logError(code, new Object[]{lhs.getValueType(), rhs.getValueType()}, Span.of(ctx));
       }

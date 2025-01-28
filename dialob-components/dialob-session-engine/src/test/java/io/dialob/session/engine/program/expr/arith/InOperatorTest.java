@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -34,7 +34,7 @@ class InOperatorTest {
     EvalContext context = Mockito.mock(EvalContext.class);
 
     when(lhs.eval(context)).thenReturn("b");
-    when(rhs.eval(context)).thenReturn((Arrays.asList("b")));
+    when(rhs.eval(context)).thenReturn((List.of("b")));
 
     ImmutableInOperator op = ImmutableInOperator.builder()
       .lhs(lhs)
@@ -56,7 +56,7 @@ class InOperatorTest {
     EvalContext context = Mockito.mock(EvalContext.class);
 
     when(lhs.eval(context)).thenReturn("b");
-    when(rhs.eval(context)).thenReturn((Arrays.asList("c")));
+    when(rhs.eval(context)).thenReturn((List.of("c")));
 
     ImmutableInOperator op = ImmutableInOperator.builder()
       .lhs(lhs)

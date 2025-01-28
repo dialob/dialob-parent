@@ -19,7 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 class FixedTenantsProvider implements TenantsProvider {
@@ -32,7 +32,7 @@ class FixedTenantsProvider implements TenantsProvider {
 
   @NonNull
   public List<Tenant> getTenants() {
-    return Arrays.asList(currentTenant.get());
+    return Collections.singletonList(currentTenant.get());
   }
 
 }

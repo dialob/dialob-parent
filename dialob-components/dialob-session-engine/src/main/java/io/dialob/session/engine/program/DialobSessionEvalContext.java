@@ -184,11 +184,7 @@ public class DialobSessionEvalContext implements EvalContext {
   public void registerUpdate(ItemState newState, ItemState oldState) {
     if (newState != oldState) {
       ItemId id;
-      if (oldState != null) {
-        id = oldState.getId();
-      } else {
-        id = newState.getId();
-      }
+      id = Objects.requireNonNullElse(oldState, newState).getId();
       updatedItemIds.add(requireNonNull(id));
     }
   }
@@ -197,11 +193,7 @@ public class DialobSessionEvalContext implements EvalContext {
   public void registerUpdate(ErrorState newState, ErrorState oldState) {
     if (newState != oldState) {
       ErrorId id;
-      if (oldState != null) {
-        id = oldState.getId();
-      } else {
-        id = newState.getId();
-      }
+      id = Objects.requireNonNullElse(oldState, newState).getId();
       updatedErrorIds.add(requireNonNull(id));
     }
   }
@@ -210,11 +202,7 @@ public class DialobSessionEvalContext implements EvalContext {
   public void registerUpdate(@NonNull ValueSetState newState, ValueSetState oldState) {
     if (newState != oldState) {
       ValueSetId id;
-      if (oldState != null) {
-        id = oldState.getId();
-      } else {
-        id = newState.getId();
-      }
+      id = Objects.requireNonNullElse(oldState, newState).getId();
       updatedValueSetIds.add(requireNonNull(id));
     }
   }

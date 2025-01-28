@@ -25,6 +25,8 @@ import java.util.Set;
 
 class DialobApiValidatorLocator {
 
+  private DialobApiValidatorLocator() {}
+
   private static DialobApiValidator validator;
 
   private static DialobApiValidatorFactory validationApiDialobApiValidatorFactory = () -> instance -> {
@@ -36,7 +38,7 @@ class DialobApiValidatorLocator {
     return instance;
   };
 
-  public synchronized static DialobApiValidator locate() {
+  public static synchronized DialobApiValidator locate() {
     if (validator != null) {
       return validator;
     }

@@ -33,18 +33,23 @@ public class BooleanOperators implements Operators {
   }
 
   public InfixOperator<Boolean> le(Expression lhs, Expression rhs) {
-    throw new RuntimeException("No relation operator between boolean types");
+    return noRelationError();
   }
 
   public InfixOperator<Boolean> lt(Expression lhs, Expression rhs) {
-    throw new RuntimeException("No relation operator between boolean types");
+    return noRelationError();
   }
 
   public InfixOperator<Boolean> ge(Expression lhs, Expression rhs) {
-    throw new RuntimeException("No relation operator between boolean types");
+    return noRelationError();
   }
 
   public InfixOperator<Boolean> gt(Expression lhs, Expression rhs) {
+    return noRelationError();
+  }
+
+  private static InfixOperator<Boolean> noRelationError() {
     throw new RuntimeException("No relation operator between boolean types");
   }
+
 }

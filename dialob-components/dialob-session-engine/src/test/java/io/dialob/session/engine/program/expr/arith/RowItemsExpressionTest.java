@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,7 +38,7 @@ class RowItemsExpressionTest {
     when(context.mapTo(any(), eq(true))).then(AdditionalAnswers.returnsFirstArg());
     RowItemsExpression rowItemsExpression = ImmutableRowItemsExpression.builder().addItemIds(IdUtils.toId("q1")).build();
     Collection<ItemId> ids = rowItemsExpression.eval(context);
-    Assertions.assertIterableEquals(Arrays.asList(IdUtils.toId("q1")), ids);
+    Assertions.assertIterableEquals(List.of(IdUtils.toId("q1")), ids);
 
 
   }

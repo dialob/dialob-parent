@@ -22,7 +22,6 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -55,12 +54,12 @@ class IsInvalidAnswersOnActivePageTest {
     ItemState page1 = mock(ItemState.class);
     ItemState q1 = mock(ItemState.class);
 
-    final List<ErrorState> errorStates = Arrays.asList(errorState("q1", true));
+    final List<ErrorState> errorStates = List.of(errorState("q1", true));
     when(context.getErrorStates()).thenReturn(errorStates);
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
     when(questionnaire.getActivePage()).thenReturn(Optional.of(page1Id));
     when(context.getItemState(page1Id)).thenReturn(Optional.of(page1));
-    when(page1.getItems()).thenReturn(Arrays.asList(IdUtils.toId("q1")));
+    when(page1.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(q1));
     when(q1.getId()).thenReturn(IdUtils.toId("q1"));
     when(q1.getType()).thenReturn("text");
@@ -88,14 +87,14 @@ class IsInvalidAnswersOnActivePageTest {
     ItemState group1 = mock(ItemState.class);
     ItemState q1 = mock(ItemState.class);
 
-    final List<ErrorState> errorStates = Arrays.asList(errorState("q1", true));
+    final List<ErrorState> errorStates = List.of(errorState("q1", true));
     when(context.getErrorStates()).thenReturn(errorStates);
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
     when(questionnaire.getActivePage()).thenReturn(Optional.of(page1Id));
     when(context.getItemState(page1Id)).thenReturn(Optional.of(page1));
     when(context.getItemState(group1Id)).thenReturn(Optional.of(group1));
-    when(page1.getItems()).thenReturn(Arrays.asList(group1Id));
-    when(group1.getItems()).thenReturn(Arrays.asList(IdUtils.toId("q1")));
+    when(page1.getItems()).thenReturn(List.of(group1Id));
+    when(group1.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(q1));
     when(context.getItemState(group1Id)).thenReturn(Optional.of(group1));
     when(q1.getId()).thenReturn(IdUtils.toId("q1"));
