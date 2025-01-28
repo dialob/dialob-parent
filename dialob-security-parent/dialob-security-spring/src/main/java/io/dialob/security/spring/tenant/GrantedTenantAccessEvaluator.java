@@ -45,8 +45,8 @@ public class GrantedTenantAccessEvaluator implements TenantAccessEvaluator {
       if (canAccessAnyTenant(authentication)) {
         return true;
       }
-      return authentication.getAuthorities().stream().filter(a -> a instanceof TenantGrantedAuthority)
-        .anyMatch(a -> ((TenantGrantedAuthority) a).getTenantId().equals(tenant.id()));
+      return authentication.getAuthorities().stream()
+        .anyMatch(a -> a instanceof TenantGrantedAuthority tenantGrantedAuthority && tenantGrantedAuthority.getTenantId().equals(tenant.id()));
     }
     return false;
   }

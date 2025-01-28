@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSupplier {
 
-  private Tenant publicTenant;
+  private final Tenant publicTenant;
 
   public DefaultTenantGrantedAuthorityProvider() {
     this(null);
@@ -38,10 +38,12 @@ public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSuppl
   public Optional<Tenant> get() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken token) {
-      return Optional.ofNullable(token.getAuthorities().stream()
+      return Optional.ofNullable(token.getAuthorities()
+        .stream()
         .filter(grantedAuthority -> grantedAuthority instanceof TenantGrantedAuthority)
+        .map(TenantGrantedAuthority.class::cast)
         .findFirst()
-        .map(grantedAuthority -> Tenant.of(((TenantGrantedAuthority) grantedAuthority).getTenantId(), grantedAuthority.getAuthority()))
+        .map(grantedAuthority -> Tenant.of(grantedAuthority.getTenantId(), grantedAuthority.getAuthority()))
         .orElse(publicTenant));
     }
     return Optional.ofNullable(publicTenant);

@@ -66,8 +66,8 @@ public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
   @Override
   public byte[] fromJdbcId(Object oid) {
     UUID uuid;
-    if (oid instanceof UUID) {
-      uuid = (UUID) oid;
+    if (oid instanceof UUID uuid2) {
+      uuid = uuid2;
     } else if (oid instanceof byte[] bytes) {
       if (bytes.length == 16) {
         return bytes;

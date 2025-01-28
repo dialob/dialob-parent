@@ -108,9 +108,10 @@ public class CSVSerializer {
     if (a.isPresent() && a.get().getValue() != null) {
       if (null != valueSetId) {
         // Multichoice
-        if (a.get().getValue() instanceof Collection) {
-          realValue = ((Collection<String>) a.get().getValue())
+        if (a.get().getValue() instanceof Collection<?> collection) {
+          realValue = collection
             .stream()
+            .map(String.class::cast)
             .map(key -> getValuesetAnswer(form, questionnaire, valueSetId, key))
             .collect(Collectors.joining(MULTICHOICE_DELIMITER));
           valueKey = String.join(MULTICHOICE_DELIMITER, ((Collection<String>) a.get().getValue()));

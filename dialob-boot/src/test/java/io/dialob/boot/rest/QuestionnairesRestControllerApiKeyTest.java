@@ -68,6 +68,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -217,6 +218,7 @@ class QuestionnairesRestControllerApiKeyTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     List<FormListItem> r = response.getBody();
+    assertNotNull(r);
     assertEquals(2, r.size());
     assertEquals("l1",r.get(0).getMetadata().getLabel());
     assertEquals("l2",r.get(1).getMetadata().getLabel());

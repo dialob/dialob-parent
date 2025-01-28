@@ -170,11 +170,12 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     if (!(key instanceof String || key instanceof Optional)) {
       throw new IllegalArgumentException("questionnaireSession cache key must be String or Optional");
     }
-    if (!(value instanceof QuestionnaireSession)) {
+    if (value instanceof QuestionnaireSession newSession) {
+      var session = put(newSession);
+      return () -> session;
+    } else {
       throw new IllegalArgumentException("questionnaireSession cache value must be type of QuestionnaireSession");
     }
-    QuestionnaireSession session = put((QuestionnaireSession) value);
-    return () -> session;
   }
 
   @Override
