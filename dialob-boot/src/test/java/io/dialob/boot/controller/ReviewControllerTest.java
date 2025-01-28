@@ -121,7 +121,7 @@ class ReviewControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
-  public void test() throws Exception {
+  void test() throws Exception {
     when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("xx").build()).build());
 
     mockMvc.perform(get("/review/123").params(tenantParam).accept(MediaType.TEXT_HTML))
@@ -139,7 +139,7 @@ class ReviewControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
-  public void shouldNotAcceptInvalidId() throws Exception {
+  void shouldNotAcceptInvalidId() throws Exception {
 
     mockMvc.perform(get("/review/fgerfe").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isBadRequest());

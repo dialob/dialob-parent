@@ -104,7 +104,7 @@ class DependencyResolverVisitorTest {
 
   @Test
   @Disabled
-  public void questionnaireWithPagesAndGroups() {
+  void questionnaireWithPagesAndGroups() {
     DependencyResolverVisitor visitor = createDependencyResolverVisitor();
     Program program = mock(Program.class);
     visitor.startProgram(program);

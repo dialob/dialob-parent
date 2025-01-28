@@ -97,7 +97,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   @Test
   @Disabled
   // functions are not fully implemented yet
-  public void functionsEvaluatingToNonBooleanAreNotAccepted() throws Exception {
+  void functionsEvaluatingToNonBooleanAreNotAccepted() throws Exception {
     when(variableFinder.typeOf("a")).thenReturn(ValueType.INTEGER);
     when(variableFinder.returnTypeOf("value")).thenReturn(ValueType.INTEGER);
     compiler.compile("value(a)", variableFinder, callback);

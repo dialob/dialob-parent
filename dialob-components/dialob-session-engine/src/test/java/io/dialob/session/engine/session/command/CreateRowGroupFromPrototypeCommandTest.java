@@ -89,7 +89,7 @@ class CreateRowGroupFromPrototypeCommandTest {
 
   @Test
   @Disabled
-  public void eventMatcherShouldReactOnItemsChangedEvent() {
+  void eventMatcherShouldReactOnItemsChangedEvent() {
     CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
     Assertions.assertTrue(
       command.getEventMatchers().stream()

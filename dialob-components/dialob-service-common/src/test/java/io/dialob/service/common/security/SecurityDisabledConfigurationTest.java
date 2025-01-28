@@ -67,7 +67,7 @@ class SecurityDisabledConfigurationTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
-  public void shouldRejectPATCHMethod() throws Exception {
+  void shouldRejectPATCHMethod() throws Exception {
     mockMvc.perform(options("/review/123")
       .header("Access-Control-Request-Method","TRACE")
       .header("Access-Control-Request-Headers","origin, x-requested-with")

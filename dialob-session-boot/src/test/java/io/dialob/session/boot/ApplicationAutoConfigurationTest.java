@@ -108,7 +108,7 @@ class ApplicationAutoConfigurationTest {
 
   @Test
   @Disabled // context runner do not mock ServerContainer required by websocket supprt
-  public void testApplicationAutoConfigurationWittWebSocketSupport() {
+  void testApplicationAutoConfigurationWittWebSocketSupport() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(

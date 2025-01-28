@@ -99,7 +99,7 @@ class ComposerControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"composer.view", "itest"})
-  public void test() throws Exception {
+  void test() throws Exception {
 
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("composer")).thenReturn(pageAttributes);

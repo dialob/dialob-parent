@@ -163,7 +163,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "questionnaires.post", "questionnaires.get", "tenant.all"})
-  public void testGetQuestionnaires() throws Exception {
+  void testGetQuestionnaires() throws Exception {
     ImmutableForm.Builder formDocument = ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build())
       .id("123")
@@ -195,7 +195,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest", "tenant.all"})
-  public void shouldReturn404IfQuestionnaireDoNotExists() throws Exception {
+  void shouldReturn404IfQuestionnaireDoNotExists() throws Exception {
     when(questionnaireDatabaseMock().findOne(tenantId, "00000")).thenThrow(new DocumentNotFoundException("not_found"));
     mockMvc.perform(get(uri("api", "questionnaires", "00000")).params(tenantParam))
       .andExpect(status().isNotFound())
@@ -212,7 +212,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.get", "itest", "tenant.all"})
-  public void return200EvenQuestionnairesFormDoNotExists() throws Exception {
+  void return200EvenQuestionnairesFormDoNotExists() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("abc123edf3", "1-invalidQ", "notexists", "1-notexists");
     when(questionnaireDatabaseMock().findOne(tenantId, "abc123edf3")).thenReturn(questionnaire);
 
@@ -225,7 +225,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest"})
-  public void cannotFetchQuestionnairesWithoutAuthority() throws Exception {
+  void cannotFetchQuestionnairesWithoutAuthority() throws Exception {
     mockMvc.perform(get(uri("api", "questionnaires", "abc123edf1")).params(tenantParam))
       .andExpect(status().isForbidden());
     verifyNoMoreInteractions(questionnaireDatabaseMock(), formDatabase);
@@ -233,7 +233,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "tenant.all"})
-  public void cannotDeleteQuestionnairesWithoutAuthority() throws Exception {
+  void cannotDeleteQuestionnairesWithoutAuthority() throws Exception {
     mockMvc.perform(delete(uri("api", "questionnaires", "abc123edf1")).params(tenantParam).with(csrf()))
       .andExpect(status().isForbidden());
     verifyNoMoreInteractions(questionnaireDatabaseMock(), formDatabase);
@@ -241,7 +241,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest","questionnaires.delete", "tenant.all"})
-  public void canDeleteQuestionnairesWithAuthority() throws Exception {
+  void canDeleteQuestionnairesWithAuthority() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
     mockMvc.perform(delete(uri("api", "questionnaires", "abc123edf")).params(tenantParam).with(csrf()))
       .andExpect(status().isOk());
@@ -251,7 +251,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest", "tenant.all"})
-  public void return422WhenTryingToCreateQuestionnaireForNonExistingForm() throws Exception {
+  void return422WhenTryingToCreateQuestionnaireForNonExistingForm() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "notexists", "1-notexists");
     when(formDatabase.exists(tenantId, "notexists")).thenReturn(false);
 
@@ -271,7 +271,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest", "tenant.all"})
-  public void return422WhenTryingToCreateQuestionnaireForINvalidForm() throws Exception {
+  void return422WhenTryingToCreateQuestionnaireForINvalidForm() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "invalid", "1-invalid");
     when(formDatabase.exists(tenantId, "invalid")).thenReturn(true);
     when(formDatabase.findOne(tenantId, "invalid", "1-invalid")).thenReturn(ImmutableForm.builder()
@@ -300,7 +300,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"questionnaires.post", "itest", "tenant.all"})
-  public void return422WhenTryingToCreateQuestionnaireForInvalidForm2() throws Exception {
+  void return422WhenTryingToCreateQuestionnaireForInvalidForm2() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "invalid2", "1-invalid2");
     when(formDatabase.exists(tenantId, "invalid2")).thenReturn(true);
     when(formDatabase.findOne(tenantId, "invalid2", "1-invalid2")).thenReturn(ImmutableForm.builder()

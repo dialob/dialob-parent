@@ -46,7 +46,7 @@ class HmacSHA256ApiKeyGeneratorTest {
 
   @Test
   @Disabled
-  public void generate() throws Exception {
+  void generate() throws Exception {
     ApiKeyGenerator generator = new HmacSHA256ApiKeyGenerator("123".getBytes());
     ApiKey apiKey = generator.generateApiKey(UUID.randomUUID().toString());
     System.out.println("clientId : " + apiKey.getClientId());

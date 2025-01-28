@@ -60,7 +60,7 @@ class LandingControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
-  public void test() throws Exception {
+  void test() throws Exception {
     mockMvc.perform(get("/landing").accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("<title>Dialob</title>")))

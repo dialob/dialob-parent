@@ -92,7 +92,7 @@ class AdminControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"manager.view"})
-  public void adminShouldGetPage() throws Exception {
+  void adminShouldGetPage() throws Exception {
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
     when(pageAttributes.getTemplate()).thenReturn("admin");
@@ -107,7 +107,7 @@ class AdminControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"manager.view"})
-  public void adminShouldGetConfig() throws Exception {
+  void adminShouldGetConfig() throws Exception {
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
     when(pageAttributes.getTemplate()).thenReturn("admin");
