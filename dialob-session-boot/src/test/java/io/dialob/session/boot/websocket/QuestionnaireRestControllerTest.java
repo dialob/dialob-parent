@@ -246,7 +246,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
   @Test
   @Tag("github-107")
-  public void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
+  void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 

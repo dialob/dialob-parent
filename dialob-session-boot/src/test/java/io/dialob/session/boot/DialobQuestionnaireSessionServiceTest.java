@@ -88,7 +88,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Configuration(proxyBeanMethods = false)
-  public static class TestConfiguration {
+  static class TestConfiguration {
 
     @Bean
     public FunctionRegistry functionRegistry() throws VariableNotDefinedException {
@@ -1757,7 +1757,7 @@ class DialobQuestionnaireSessionServiceTest {
   @Tag("github-15")
   @Tag("github-17")
   @Tag("BUG")
-  public void  ghIssue15and17() throws Exception {
+  void  ghIssue15and17() throws Exception {
     fillForm("io/dialob/session/engine/gh-issue-15.json")
       .assertState(assertion -> {
         assertion
@@ -1827,7 +1827,7 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   @Tag("github-29")
-  public void  ghIssue29ConditionalsOnRowGroupActions() throws Exception {
+  void ghIssue29ConditionalsOnRowGroupActions() throws Exception {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
