@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 class VisitableFormTest {
 
   @Test
-  public void shouldCallVisitorInOrder() throws Exception {
+  void shouldCallVisitorInOrder() throws Exception {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
     FormVisitor formVisitor = Mockito.mock(FormVisitor.class);
 
@@ -52,7 +52,7 @@ class VisitableFormTest {
   }
 
   @Test
-  public void shouldCallVisitorInOrder2() throws Exception {
+  void shouldCallVisitorInOrder2() throws Exception {
     Form form = ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder().label("test").build())
       .putData("question1", ImmutableFormItem.builder().id("question1").type("text").build())

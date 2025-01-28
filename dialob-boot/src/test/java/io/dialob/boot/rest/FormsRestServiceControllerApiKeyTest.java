@@ -186,7 +186,7 @@ public class FormsRestServiceControllerApiKeyTest {
   }
 
   @Test
-  public void shouldLookupFormsFromRepository() throws Exception {
+  void shouldLookupFormsFromRepository() throws Exception {
     doAnswer(invocation -> {
       Consumer consumer = (Consumer) invocation.getArguments()[2];
       consumer.accept(new FormDatabase.FormMetadataRow() {
@@ -232,7 +232,7 @@ public class FormsRestServiceControllerApiKeyTest {
   }
 
   @Test
-  public void shouldRejectInvalidKey() throws Exception {
+  void shouldRejectInvalidKey() throws Exception {
     HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongtoken");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {

@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ActionTest {
 
   @Test
-  public void shouldParseAction() throws Exception {
+  void shouldParseAction() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Action action = objectMapper.readValue("{\"type\":\"ANSWER\"}", Action.class);
     assertEquals(ImmutableAction.builder()
@@ -31,7 +31,7 @@ public class ActionTest {
       action);
   }
   @Test
-  public void shouldJsonSerializeAction() throws Exception {
+  void shouldJsonSerializeAction() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
 
     assertEquals("{\"type\":\"ANSWER\"}", objectMapper.writeValueAsString(ImmutableAction.builder()

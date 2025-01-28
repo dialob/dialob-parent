@@ -32,13 +32,13 @@ import static org.mockito.ArgumentMatchers.any;
 class LocalQuestionnaireSessionCacheTest {
 
   @Test
-  public void shouldBeEmptyByDefault() {
+  void shouldBeEmptyByDefault() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
     assertEquals(0, cache.size());
   }
 
   @Test
-  public void shouldReturnNullWhenQuestionnaireIsNotFound() {
+  void shouldReturnNullWhenQuestionnaireIsNotFound() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
     Assertions.assertNull(cache.get("q1"));
     Assertions.assertNull(cache.get("q1", Questionnaire.class));
@@ -46,7 +46,7 @@ class LocalQuestionnaireSessionCacheTest {
   }
 
   @Test
-  public void shouldEvictSessionWhenThereIsPersistenceConflict() {
+  void shouldEvictSessionWhenThereIsPersistenceConflict() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
     Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback = Mockito.mock(Function.class);
     Mockito.when(beforeCloseCallback.apply(any())).thenThrow(DocumentConflictException.class);

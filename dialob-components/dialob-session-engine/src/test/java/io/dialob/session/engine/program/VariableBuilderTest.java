@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 class VariableBuilderTest {
 
   @Test
-  public void shouldValidateContextVariable() {
+  void shouldValidateContextVariable() {
     Consumer<FormValidationError> errorConsumer = Mockito.mock(Consumer.class);
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     String id = "id";
@@ -53,7 +53,7 @@ class VariableBuilderTest {
 
 
   @Test
-  public void shouldValidateContextVariableWithMissingType() {
+  void shouldValidateContextVariableWithMissingType() {
     Consumer<FormValidationError> errorConsumer = Mockito.mock(Consumer.class);
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     String id = "id";

@@ -42,7 +42,7 @@ class DialobSessionTest {
     null, null);
 
   @Test
-  public void noopCommandShouldNotTriggerAnyChanges() {
+  void noopCommandShouldNotTriggerAnyChanges() {
     List<ItemState> items = ImmutableList.of();
     List<ItemState> prototypes = ImmutableList.of();
     List<ValueSetState> valueSets = ImmutableList.of();
@@ -68,7 +68,7 @@ class DialobSessionTest {
   }
 
   @Test
-  public void newItemsShouldTriggerUpdate() {
+  void newItemsShouldTriggerUpdate() {
     List<ItemState> items = ImmutableList.of();
     List<ItemState> prototypes = ImmutableList.of();
     List<ValueSetState> valueSets = ImmutableList.of();
@@ -95,7 +95,7 @@ class DialobSessionTest {
   }
 
   @Test
-  public void removedItemsShouldTriggerUpdate() {
+  void removedItemsShouldTriggerUpdate() {
     List<ItemState> items = ImmutableList.of(ITEM_STATE);
     List<ItemState> prototypes = ImmutableList.of();
     List<ValueSetState> valueSets = ImmutableList.of();
@@ -122,7 +122,7 @@ class DialobSessionTest {
   }
 
   @Test
-  public void itemUpdateShouldTriggerUpdate() {
+  void itemUpdateShouldTriggerUpdate() {
     List<ItemState> items = ImmutableList.of(ITEM_STATE);
     List<ItemState> prototypes = ImmutableList.of();
     List<ValueSetState> valueSets = ImmutableList.of();

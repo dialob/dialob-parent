@@ -180,7 +180,7 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getAllDataByFormId() throws Exception {
+  void getAllDataByFormId() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID).accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
@@ -190,7 +190,7 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getAllDataByFormIdLanguage() throws Exception {
+  void getAllDataByFormIdLanguage() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=fi").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
@@ -200,7 +200,7 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getAllDataByFormIdBooleanLanguageFallback() throws Exception {
+  void getAllDataByFormIdBooleanLanguageFallback() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=sv").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
@@ -210,7 +210,7 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getByQuestionnaireId() throws Exception {
+  void getByQuestionnaireId() throws Exception {
     mockMvc.perform(get("/questionnaires?questionnaire=1").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
@@ -219,26 +219,26 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getByQuestionnaireId2() throws Exception {
+  void getByQuestionnaireId2() throws Exception {
     mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")));
   }
 
   @Test
-  public void getByQuestionnaireIdInvalidId() throws Exception {
+  void getByQuestionnaireIdInvalidId() throws Exception {
     mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc,unacceptable-id").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isBadRequest());
   }
 
   @Test
-  public void getByQuestionnaireIdWrongForm() throws Exception {
+  void getByQuestionnaireIdWrongForm() throws Exception {
     mockMvc.perform(get("/questionnaires?questionnaire=1,3").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void getAllDataByFormIdFilterFrom() throws Exception {
+  void getAllDataByFormIdFilterFrom() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2020-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
@@ -247,7 +247,7 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getAllDataByFormIdFilterTo() throws Exception {
+  void getAllDataByFormIdFilterTo() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&to=2020-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
@@ -256,19 +256,19 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void failNoMatch() throws Exception {
+  void failNoMatch() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2021-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isNotFound());
   }
 
   @Test
-  public void failWithoutCriteria() throws Exception {
+  void failWithoutCriteria() throws Exception {
     mockMvc.perform(get("/questionnaires").accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void getAllDataByFormIdSurvey() throws Exception {
+  void getAllDataByFormIdSurvey() throws Exception {
     mockMvc.perform(get("/questionnaires?formId="+SURVEY_FORM_ID).accept(MediaType.parseMediaType("text/csv")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))

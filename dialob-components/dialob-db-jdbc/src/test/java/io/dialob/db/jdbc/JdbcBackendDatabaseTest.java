@@ -57,7 +57,7 @@ public abstract class JdbcBackendDatabaseTest {
   abstract JdbcBackendDatabase jdbcBackendDatabase(TransactionTemplate transactionTemplate, @NonNull CurrentTenant currentTenant, JdbcTemplate jdbcTemplate, DatabaseHelper databaseHelper, ObjectMapper objectMapper, String schema);
 
   @Test
-  public void shouldThrowDocumentNotFoundExceptionWhenDocumentIsNotFound() throws Exception {
+  void shouldThrowDocumentNotFoundExceptionWhenDocumentIsNotFound() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -98,7 +98,7 @@ public abstract class JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void shouldReturnFoundObject() throws Exception {
+  void shouldReturnFoundObject() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -133,7 +133,7 @@ public abstract class JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void shouldSaveDocumentAndGiveIdAndRevisionOne() throws Exception {
+  void shouldSaveDocumentAndGiveIdAndRevisionOne() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -164,7 +164,7 @@ public abstract class JdbcBackendDatabaseTest {
 
 
   @Test
-  public void shouldSaveDocumentAndIncreaseRevision() throws Exception {
+  void shouldSaveDocumentAndIncreaseRevision() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -196,7 +196,7 @@ public abstract class JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void shouldThrowConflictOnRevisionConflict() throws Exception {
+  void shouldThrowConflictOnRevisionConflict() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -227,7 +227,7 @@ public abstract class JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void shouldDelete() throws Exception {
+  void shouldDelete() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -250,7 +250,7 @@ public abstract class JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void existsReturnsTrueWhenDocumentExists() throws Exception {
+  void existsReturnsTrueWhenDocumentExists() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -280,7 +280,7 @@ public abstract class JdbcBackendDatabaseTest {
     verifyNoMoreInteractions(jdbcTemplate);
   }
   @Test
-  public void existsReturnsFalseWhenDocumentExists() throws Exception {
+  void existsReturnsFalseWhenDocumentExists() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);
@@ -311,7 +311,7 @@ public abstract class JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void castStringRevToIntegerImplicitly() throws Exception {
+  void castStringRevToIntegerImplicitly() throws Exception {
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
     DataSource dataSource = Mockito.mock(DataSource.class);
     Connection connection = Mockito.mock(Connection.class);

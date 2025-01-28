@@ -44,7 +44,7 @@ import static org.mockito.Mockito.*;
 class ElbAuthenticationStrategyTest  extends TestBase {
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
 
     KeyPair kp = createKeyPair();
     Instant now = Instant.now();

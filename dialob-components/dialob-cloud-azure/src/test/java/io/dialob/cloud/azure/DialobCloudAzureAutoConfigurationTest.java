@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DialobCloudAzureAutoConfigurationTest {
 
   @Test
-  public void testDialobCloudAzureAutoConfiguration() {
+  void testDialobCloudAzureAutoConfiguration() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
         DialobCloudAzureAutoConfiguration.class
@@ -41,7 +41,7 @@ class DialobCloudAzureAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobCloudAzureAutoConfigurationDisabled() {
+  void testDialobCloudAzureAutoConfigurationDisabled() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
         DialobCloudAzureAutoConfiguration.class

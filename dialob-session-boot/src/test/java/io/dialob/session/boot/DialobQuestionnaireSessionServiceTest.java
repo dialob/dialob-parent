@@ -280,7 +280,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void issues127and128() throws Exception {
+  void issues127and128() throws Exception {
     fillForm("io/dialob/session/engine/issue-127.json")
       .assertState(assertion -> {
         assertion.hasSize(9)
@@ -358,7 +358,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue21() throws Exception {
+  void issue21() throws Exception {
     fillForm("io/dialob/session/engine/issue21.json")
       .answer("question1", LocalDate.now().plusDays(2).toString())
       .assertThat(assertion -> {
@@ -442,7 +442,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void noteVariableTest() throws Exception {
+  void noteVariableTest() throws Exception {
     fillForm("io/dialob/session/engine/noteVariable.json")
       .answer("question1", "matches")
       .assertThat(assertion -> assertion.hasSize(0))
@@ -460,7 +460,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void multichoiceQuestionTest() throws Exception {
+  void multichoiceQuestionTest() throws Exception {
     fillForm("io/dialob/session/engine/multichoice-question.json")
       .answer("mcquestion", Arrays.asList("A", "C"))
       .assertThat(assertion -> assertion.hasSize(0))
@@ -468,7 +468,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void multichoiceConstraintTestFeature44() throws Exception {
+  void multichoiceConstraintTestFeature44() throws Exception {
     fillForm("io/dialob/session/engine/multichoice-constraint.json")
       .answer("mcquestion", Arrays.asList("A", "C"))
       .assertThat(assertion -> assertion.hasSize(0))
@@ -488,7 +488,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void hiddenGroupTest() throws Exception {
+  void hiddenGroupTest() throws Exception {
     fillForm("io/dialob/session/engine/hiddengroup.json")
       .answer("question1", true)
       .assertThat(assertion -> assertion
@@ -511,7 +511,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void isValidInVariableExpression() throws Exception {
+  void isValidInVariableExpression() throws Exception {
     fillForm("io/dialob/session/engine/is-valid-testing.json")
       .assertState(assertion -> assertion.extracting("type", "ids", "item.id", "item.disabled").containsExactlyInAnyOrder(
         tuple(RESET, null, null, null),
@@ -554,7 +554,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void shouldShowInactiveQuestions() throws Exception {
+  void shouldShowInactiveQuestions() throws Exception {
     fillForm("io/dialob/session/engine/inactive-present.json")
       .assertState(assertion -> assertion.extracting("type", "ids", "item.id", "item.disabled").containsExactlyInAnyOrder(
         tuple(RESET, null, null, null),
@@ -593,7 +593,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void shouldShowAllQuestions() throws Exception {
+  void shouldShowAllQuestions() throws Exception {
     fillForm("io/dialob/session/engine/show-all-items.json")
       .assertState(assertion -> assertion.extracting("type", "ids", "item.id", "item.disabled").containsExactlyInAnyOrder(
         tuple(RESET, null, null, null),
@@ -633,7 +633,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void shouldUseDefaultValueIfNotAnswered() throws Exception {
+  void shouldUseDefaultValueIfNotAnswered() throws Exception {
     fillForm("io/dialob/session/engine/default-values.json")
       .assertState(assertion -> assertion.hasSize(8).extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
         tuple(RESET, null, null, null),
@@ -667,7 +667,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue78() throws Exception {
+  void issue78() throws Exception {
     fillForm("io/dialob/session/engine/issue-78-form.json", "io/dialob/session/engine/issue-78-questionnaire.json")
       .assertState(assertion -> assertion.extracting("type", "item.id", "item.label", "item.required").contains(
         tuple(RESET, null, null, null),
@@ -704,7 +704,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue108() throws Exception {
+  void issue108() throws Exception {
     fillForm("io/dialob/session/engine/108-form.json", "io/dialob/session/engine/108-questionnaire.json")
       .assertState(assertion -> assertion.extracting("type", "ids", "item.id", "item.label", "item.activeItem", "item.availableItems").contains(
         tuple(RESET, null, null, null, null, null),
@@ -718,7 +718,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue111() throws Exception {
+  void issue111() throws Exception {
     fillForm("io/dialob/session/engine/issue-111-form.json", "io/dialob/session/engine/issue-111-questionnaire.json")
       .assertState(assertion -> assertion.extracting("type", "item.id", "item.activeItem", "item.availableItems").contains(
         tuple(ITEM, "questionnaire", "page1", Arrays.asList("page1", "page2", "page5", "page6")
@@ -727,7 +727,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void descriptionAndIssue221() throws Exception {
+  void descriptionAndIssue221() throws Exception {
     fillForm("io/dialob/session/engine/description.json")
       .assertState(assertion -> assertion.extracting("type", "item.id", "item.label", "item.description", "item.view").contains(
         tuple(ITEM, "page1", "page label", "page description", "differentpage"),
@@ -740,7 +740,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void shouldCompile() throws Exception {
+  void shouldCompile() throws Exception {
     final FillAssertionBuilder fillAssertionBuilder = fillForm("io/dialob/session/engine/79.json");
     assertNotNull(fillAssertionBuilder);
     fillAssertionBuilder.apply();
@@ -748,13 +748,13 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void multichoicecompile() throws IOException {
+  void multichoicecompile() throws IOException {
     final FillAssertionBuilder fillAssertionBuilder = fillForm("io/dialob/session/engine/multichoise.json");
     assertNotNull(fillAssertionBuilder);
   }
 
   @Test
-  public void survey() throws Exception {
+  void survey() throws Exception {
     fillForm("io/dialob/session/engine/survey.json")
       .assertState(assertion -> assertion.extracting("type", "item.id", "item.valueSetId").contains(
         tuple(RESET, null, null),
@@ -772,7 +772,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void serializeTest() throws Exception {
+  void serializeTest() throws Exception {
     fillForm("io/dialob/session/engine/serialize.json")
       .assertState(assertion -> assertion.extracting("type", "item.id", "item.valueSetId").containsExactlyInAnyOrder(
         tuple(RESET, null, null),
@@ -896,7 +896,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue164() throws Exception {
+  void issue164() throws Exception {
     fillForm("io/dialob/session/engine/issue-164.json")
       .assertState(assertion -> {
         assertion.hasSize(9)
@@ -929,7 +929,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue169() throws Exception {
+  void issue169() throws Exception {
     fillForm("io/dialob/session/engine/issue-169.json")
       .assertState(assertion -> {
         assertion
@@ -962,7 +962,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue170() throws Exception {
+  void issue170() throws Exception {
     fillForm("io/dialob/session/engine/issue-170.json")
       .assertState(assertion -> {
         assertion
@@ -997,7 +997,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue126() throws Exception {
+  void issue126() throws Exception {
     fillForm("io/dialob/session/engine/issue-126.json")
       .assertState(assertion -> {
         assertion
@@ -1027,7 +1027,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue175() throws Exception {
+  void issue175() throws Exception {
     fillForm("io/dialob/session/engine/issue-175.json")
       .assertState(assertion -> {
         assertion
@@ -1060,7 +1060,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue13() throws Exception {
+  void issue13() throws Exception {
     fillForm("io/dialob/session/engine/issue-13.json")
       .assertState(assertion -> {
         assertion
@@ -1111,7 +1111,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue134() throws Exception {
+  void issue134() throws Exception {
     fillForm("io/dialob/session/engine/issue-134.json")
       .assertState(assertion -> {
         assertion
@@ -1167,7 +1167,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue158() throws Exception {
+  void issue158() throws Exception {
     fillForm("io/dialob/session/engine/issue-158.json")
       .assertState(assertion -> {
         assertion
@@ -1199,7 +1199,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue176() throws Exception {
+  void issue176() throws Exception {
     fillForm("io/dialob/session/engine/issue-176.json")
       .assertState(assertion -> {
         assertion
@@ -1222,7 +1222,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void issue187() throws Exception {
+  void issue187() throws Exception {
     fillForm("io/dialob/session/engine/issue-187.json", "io/dialob/session/engine/issue-187-questionnaire.json")
       .assertState(assertion -> {
         assertion
@@ -1237,7 +1237,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void testDynamicValuesetEntries() throws Exception {
+  void testDynamicValuesetEntries() throws Exception {
     fillForm("io/dialob/session/engine/dynamic-valueset-entries.json")
       .assertState(assertion -> {
         assertion
@@ -1260,7 +1260,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void testPublishedVariables() throws Exception {
+  void testPublishedVariables() throws Exception {
     fillForm(ImmutableForm.builder()
       .id("test")
       .metadata(ImmutableFormMetadata.builder()
@@ -1336,7 +1336,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void testReducer() throws Exception {
+  void testReducer() throws Exception {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1423,7 +1423,7 @@ public class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void testRowCount() throws Exception {
+  void testRowCount() throws Exception {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1515,7 +1515,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void testMultiChoiceCount() throws Exception {
+  void testMultiChoiceCount() throws Exception {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1626,7 +1626,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void issue284() throws Exception {
+  void issue284() throws Exception {
     fillForm("io/dialob/session/engine/issue-284.json")
       .assertState(assertion -> {
         assertion
@@ -1664,7 +1664,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void cannotCompleteWhenQuestionnaireHasMissingAnswers() throws Exception {
+  void cannotCompleteWhenQuestionnaireHasMissingAnswers() throws Exception {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1933,7 +1933,7 @@ public class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  public void issuegh169() throws Exception {
+  void issuegh169() throws Exception {
     fillForm("io/dialob/session/engine/issue-gh-169.json")
       .assertState(assertion -> {
         assertion

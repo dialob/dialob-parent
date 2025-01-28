@@ -53,7 +53,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  public void missingArgumentThrowsNullPointerException() {
+  void missingArgumentThrowsNullPointerException() {
     assertThatThrownBy(() -> compiler.compile("x", null, null)).isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> compiler.compile("x", mock(VariableFinder.class), null)).isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> compiler.compile("x", null, mock(RuleExpressionCompilerCallback.class))).isInstanceOf(NullPointerException.class);
@@ -61,7 +61,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  public void shouldNotAcceptIncompleteExpressions() throws Exception {
+  void shouldNotAcceptIncompleteExpressions() throws Exception {
     when(variableFinder.typeOf("a")).thenReturn(ValueType.TIME);
     compiler.compile("a", variableFinder, callback);
     verify(variableFinder).typeOf("a");
@@ -72,7 +72,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  public void booleanTypeVariablesAreNotCompleteExpressions() throws Exception {
+  void booleanTypeVariablesAreNotCompleteExpressions() throws Exception {
     when(variableFinder.typeOf("a")).thenReturn(ValueType.BOOLEAN);
     compiler.compile("a", variableFinder, callback);
     verify(variableFinder).typeOf("a");
@@ -83,7 +83,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  public void expressionShouldEvaluateToBoolean() throws Exception {
+  void expressionShouldEvaluateToBoolean() throws Exception {
     when(variableFinder.typeOf("a")).thenReturn(ValueType.INTEGER);
     compiler.compile("a + 1", variableFinder, callback);
     verify(variableFinder).typeOf("a");
@@ -109,7 +109,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  public void constantNonBooleanExpressionsAreNotAccepted() throws Exception {
+  void constantNonBooleanExpressionsAreNotAccepted() throws Exception {
     compiler.compile("1", variableFinder, callback);
     compiler.compile("1.0", variableFinder, callback);
     compiler.compile("\"a\"", variableFinder, callback);
@@ -118,18 +118,18 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  public void shouldRenameId() {
+  void shouldRenameId() {
     assertEquals("x + 1", compiler.createIdRenamer("x", "x").apply("x + 1"));
     assertEquals("y + 1", compiler.createIdRenamer("x", "y").apply("x + 1"));
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionOnBlankIds() {
+  void shouldThrowIllegalArgumentExceptionOnBlankIds() {
     assertThatThrownBy(() -> compiler.createIdRenamer("", "x")).isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void shouldNotHandleInvalidExpressions() {
+  void shouldNotHandleInvalidExpressions() {
     assertEquals("x + ", compiler.createIdRenamer("x", "y").apply("x + "));
   }
 

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FormUpdatedEventTest {
 
   @Test
-  public void shouldSerializaIntoJsonAndBack() throws IOException {
+  void shouldSerializaIntoJsonAndBack() throws IOException {
     final FormUpdatedEvent event = ImmutableFormUpdatedEvent.builder()
       .source("node1")
       .tenant(Tenant.of("tent1"))

@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultFunctionsTest {
   @Test
-  public void testIsLyt() {
+  void testIsLyt() {
     assertTrue(DefaultFunctions.isLyt("1572860-0"));
     assertFalse(DefaultFunctions.isLyt("1572860-1"));
     assertFalse(DefaultFunctions.isLyt(null));
@@ -34,7 +34,7 @@ public class DefaultFunctionsTest {
   }
 
   @Test
-  public void testHetu() {
+  void testHetu() {
     assertTrue(DefaultFunctions.isHetu("010170-555D"));
     assertFalse(DefaultFunctions.isHetu(null));
     assertFalse(DefaultFunctions.isHetu(""));

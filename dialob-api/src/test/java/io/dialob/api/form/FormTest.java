@@ -30,7 +30,7 @@ public class FormTest {
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
-  public void metadataIsRequired() {
+  void metadataIsRequired() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableForm.builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
@@ -41,7 +41,7 @@ public class FormTest {
 
 
   @Test
-  public void metadataLabelIsRequired() {
+  void metadataLabelIsRequired() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () ->
       ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().build()).build());
     assertEquals(1, exception.getConstraintViolations().size());
@@ -52,7 +52,7 @@ public class FormTest {
   }
 
   @Test
-  public void testFormItemAdditionalProperties() throws Exception {
+  void testFormItemAdditionalProperties() throws Exception {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("laabeli").putAdditionalProperties("extra","value").build())
       .addValueSets(ImmutableFormValueSet.builder()
         .id("vs1")

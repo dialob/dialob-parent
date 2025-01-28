@@ -43,7 +43,7 @@ import static org.mockito.Mockito.*;
 class DialobQuestionnaireSessionTest {
 
   @Test
-  public void testObjectVisibilityWhenShowInactiveIsFalse() {
+  void testObjectVisibilityWhenShowInactiveIsFalse() {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
@@ -108,7 +108,7 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void testObjectVisibilityWhenShowInactiveIsTrue() {
+  void testObjectVisibilityWhenShowInactiveIsTrue() {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
@@ -172,7 +172,7 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void testObjectVisibilityWhenQuestionClientVisiblityIsAll() {
+  void testObjectVisibilityWhenQuestionClientVisiblityIsAll() {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
@@ -236,14 +236,14 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void shouldConvertOldRows() {
+  void shouldConvertOldRows() {
     Assertions.assertArrayEquals(
       new String[] {"g.1"},
       DialobQuestionnaireSession.convertRows(Arrays.asList("g[1]")));
   }
 
   @Test
-  public void shouldPersistRowGroupContainerIntoAnswers() {
+  void shouldPersistRowGroupContainerIntoAnswers() {
     // given
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
@@ -296,7 +296,7 @@ class DialobQuestionnaireSessionTest {
 
 
   @Test
-  public void shouldNotHandleAnswersOnCompletedQuestionannaires() {
+  void shouldNotHandleAnswersOnCompletedQuestionannaires() {
     // given
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
@@ -350,7 +350,7 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void testObjectVisibilityWhenShowInactiveIsFalse2() {
+  void testObjectVisibilityWhenShowInactiveIsFalse2() {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);

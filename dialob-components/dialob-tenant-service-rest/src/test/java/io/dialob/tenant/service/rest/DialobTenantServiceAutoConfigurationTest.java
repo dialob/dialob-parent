@@ -36,7 +36,7 @@ class DialobTenantServiceAutoConfigurationTest {
   }
 
   @Test
-  public void whenSecurityIsDisabledTenantsProviderIsFixed() {
+  void whenSecurityIsDisabledTenantsProviderIsFixed() {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.security.enabled=false")
       .withUserConfiguration(TestConfiguration.class)
@@ -49,7 +49,7 @@ class DialobTenantServiceAutoConfigurationTest {
   }
 
   @Test
-  public void whenSecurityIsEnabledTenantsProviderIsFromSecurityContext() {
+  void whenSecurityIsEnabledTenantsProviderIsFromSecurityContext() {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.security.enabled=true")
       .withConfiguration(AutoConfigurations.of(DialobTenantServiceAutoConfiguration.class))
@@ -61,7 +61,7 @@ class DialobTenantServiceAutoConfigurationTest {
   }
 
   @Test
-  public void whenSecurityIsEnabledTenantsProviderIsFixedIfRequested() {
+  void whenSecurityIsEnabledTenantsProviderIsFixedIfRequested() {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.security.enabled=true")
       .withPropertyValues("dialob.tenant.mode=FIXED")

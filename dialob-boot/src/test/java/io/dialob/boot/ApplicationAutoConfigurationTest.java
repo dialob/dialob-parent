@@ -79,7 +79,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationWithoutAnyProfile() {
+  void testApplicationAutoConfigurationWithoutAnyProfile() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -101,7 +101,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationWithUIProfile() {
+  void testApplicationAutoConfigurationWithUIProfile() {
     new WebApplicationContextRunner()
       .withSystemProperties(
         "spring.profiles.active=ui",
@@ -129,7 +129,7 @@ class ApplicationAutoConfigurationTest {
       });
   }
   @Test
-  public void testApplicationAutoConfigurationWithUIProfileAndSecurityEnabled() {
+  void testApplicationAutoConfigurationWithUIProfileAndSecurityEnabled() {
     new WebApplicationContextRunner()
       .withSystemProperties(
         "spring.profiles.active=ui",
@@ -172,7 +172,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationWithoutUIProfileAndSecurityEnabled() {
+  void testApplicationAutoConfigurationWithoutUIProfileAndSecurityEnabled() {
     new WebApplicationContextRunner()
       .withSystemProperties(
         "spring.profiles.active=",

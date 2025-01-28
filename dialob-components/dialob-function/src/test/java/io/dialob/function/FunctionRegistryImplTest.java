@@ -38,7 +38,7 @@ public class FunctionRegistryImplTest {
   public static Boolean testFunction1() { return null; }
 
   @Test
-  public void shouldRegisterFunction() throws Exception {
+  void shouldRegisterFunction() throws Exception {
     TaskExecutor taskExecutor = Mockito.mock(TaskExecutor.class);
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(taskExecutor, currentTenant);
@@ -49,7 +49,7 @@ public class FunctionRegistryImplTest {
 
 
   @Test
-  public void shouldThrowExceptionIfFunctionDoNotExists() {
+  void shouldThrowExceptionIfFunctionDoNotExists() {
     Assertions.assertThrows(FunctionRegistryException.class, () -> {
       TaskExecutor taskExecutor = Mockito.mock(TaskExecutor.class);
       CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
@@ -74,7 +74,7 @@ public class FunctionRegistryImplTest {
 
 
   @Test
-  public void shouldRegisterSimpleStaticMethodAsFunction() throws Exception {
+  void shouldRegisterSimpleStaticMethodAsFunction() throws Exception {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
     functionRegistry.configureFunction("isThisOk", FunctionRegistryImplTest.class, false);
@@ -82,7 +82,7 @@ public class FunctionRegistryImplTest {
   }
 
   @Test
-  public void shouldRegisterSimpleStaticMethodAsFunction2() throws Exception {
+  void shouldRegisterSimpleStaticMethodAsFunction2() throws Exception {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
     functionRegistry.configureFunction("isThisOk2", FunctionRegistryImplTest.class, false);
@@ -90,7 +90,7 @@ public class FunctionRegistryImplTest {
   }
 
   @Test
-  public void shouldRegisterSimpleStaticMethodAsFunction3() throws Exception {
+  void shouldRegisterSimpleStaticMethodAsFunction3() throws Exception {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
     functionRegistry.configureFunction("findThing", FunctionRegistryImplTest.class, false);
@@ -99,7 +99,7 @@ public class FunctionRegistryImplTest {
 
 
   @Test
-  public void shouldRegisterDateFunctions() throws Exception {
+  void shouldRegisterDateFunctions() throws Exception {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
     functionRegistry.configureFunction("today", "now", LocalDate.class, false);
@@ -112,7 +112,7 @@ public class FunctionRegistryImplTest {
 
 
   @Test
-  public void shouldReportIfExecutionIsRejected() {
+  void shouldReportIfExecutionIsRejected() {
     TaskExecutor taskExecutor = Mockito.mock(TaskExecutor.class);
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry.FunctionCallback callback = Mockito.mock(FunctionRegistry.FunctionCallback.class);
@@ -123,7 +123,7 @@ public class FunctionRegistryImplTest {
   }
 
   @Test
-  public void testFunctionRegistering() throws Exception {
+  void testFunctionRegistering() throws Exception {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
     DefaultFunctions defaultFunctions = new DefaultFunctions(functionRegistry);

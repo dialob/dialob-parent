@@ -85,7 +85,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
   }
 
   @Test
-  public void shouldEvaluateFunctionAsynchronously() throws Exception {
+  void shouldEvaluateFunctionAsynchronously() throws Exception {
     RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
     functionRegistry.configureFunction("testFunction", QuestionnaireAsyncFunctionExecutorTest.class, true);

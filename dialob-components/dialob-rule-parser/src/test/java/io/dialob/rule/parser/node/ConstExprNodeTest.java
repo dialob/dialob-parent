@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class ConstExprNodeTest {
 
   @Test
-  public void testEquality() {
+  void testEquality() {
     ConstExprNode node = new ConstExprNode(null, "a", null, ValueType.STRING, Span.undefined());
     assertEquals(node, node);
     assertNotEquals(node, null);

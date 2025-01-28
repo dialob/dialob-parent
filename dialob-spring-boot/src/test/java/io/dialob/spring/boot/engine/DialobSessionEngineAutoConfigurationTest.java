@@ -73,7 +73,7 @@ class DialobSessionEngineAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobSessionEngineAutoConfiguration() {
+  void testDialobSessionEngineAutoConfiguration() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobSessionEngineAutoConfiguration.class))
       .withUserConfiguration(MockConfigurations.class)

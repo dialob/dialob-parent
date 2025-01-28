@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 public class GroupBuilderTest {
 
   @Test
-  public void rowGroupGeneratesTeoGroups() {
+  void rowGroupGeneratesTeoGroups() {
     Consumer<FormValidationError> errorConsumer = mock(Consumer.class);
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     GroupBuilder hoistingGroupBuilder = Mockito.mock(GroupBuilder.class);

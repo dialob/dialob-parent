@@ -73,7 +73,7 @@ public class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
   private ApplicationEventPublisher applicationEventPublisher;
 
   @Test
-  public void updateFormLocaleOnline() throws Exception {
+  void updateFormLocaleOnline() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
 
     ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();

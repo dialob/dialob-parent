@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class AnswerTest {
 
   @Test
-  public void shouldParseAnswer() throws Exception {
+  void shouldParseAnswer() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Answer answer = objectMapper.readValue("{\"id\":\"q1\"}", Answer.class);
     assertNull(answer.getValue());

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class GeOperatorTest {
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     GeOperator operator = ImmutableGeOperator.builder().lhs(lh).rhs(rh).build();

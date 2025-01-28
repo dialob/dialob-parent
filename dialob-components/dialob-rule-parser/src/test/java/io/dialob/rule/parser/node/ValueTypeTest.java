@@ -23,13 +23,13 @@ public class ValueTypeTest {
 
 
   @Test
-  public void dateIsParseable() {
+  void dateIsParseable() {
     assertNotNull(PrimitiveValueType.DATE, "PrimitiveValueType.DATE should not be null");
     assertNotNull(ValueType.DATE, "ValueType.DATE should not be null");
     assertDoesNotThrow(() -> ValueType.DATE.parseFromString("2025-01-01"));
   }
   @Test
-  public void booleanIsParseAble() {
+  void booleanIsParseAble() {
     assertNotNull(PrimitiveValueType.BOOLEAN, "PrimitiveValueType.BOOLEAN should not be null");
     assertNotNull(ValueType.BOOLEAN, "ValueType.BOOLEAN should not be null");
     assertNull(ValueType.BOOLEAN.parseFromString(null));
@@ -38,7 +38,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void booleanReduction() {
+  void booleanReduction() {
     assertTrue(Stream.of(true, true, true).reduce(ValueType.BOOLEAN.multOp()).get());
     assertFalse(Stream.of(true, false, true).reduce(ValueType.BOOLEAN.multOp()).get());
     assertTrue(Stream.of(true, true, true).reduce(ValueType.BOOLEAN.sumOp()).get());
@@ -47,7 +47,7 @@ public class ValueTypeTest {
 
 
   @Test
-  public void integerIsParseable() {
+  void integerIsParseable() {
     assertNotNull(PrimitiveValueType.INTEGER, "PrimitiveValueType.INTEGER should not be null");
     assertNotNull(ValueType.INTEGER, "ValueType.INTEGER should not be null");
     assertNull(ValueType.INTEGER.parseFromString(null));
@@ -55,7 +55,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void integerReduction() {
+  void integerReduction() {
     assertEquals(BigInteger.valueOf(6), Stream.of(ONE, TWO, BigInteger.valueOf(3)).reduce(ValueType.INTEGER.multOp()).get());
     assertEquals(BigInteger.valueOf(6), Stream.of(ONE, TWO, BigInteger.valueOf(3)).reduce(ValueType.INTEGER.sumOp()).get());
     assertEquals(BigInteger.valueOf(24), Stream.of(ONE, TWO, BigInteger.valueOf(3), BigInteger.valueOf(4)).reduce(ValueType.INTEGER.multOp()).get());
@@ -66,7 +66,7 @@ public class ValueTypeTest {
 
 
   @Test
-  public void decimalIsParseAble() {
+  void decimalIsParseAble() {
     assertNotNull(PrimitiveValueType.DECIMAL, "PrimitiveValueType.DECIMAL should not be null");
     assertNotNull(ValueType.DECIMAL, "ValueType.DECIMAL should not be null");
     assertNull(ValueType.DECIMAL.parseFromString(null));
@@ -74,7 +74,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void dateIsParseAble() {
+  void dateIsParseAble() {
     assertNotNull(PrimitiveValueType.DATE, "PrimitiveValueType.DATE should not be null");
     assertNotNull(ValueType.DATE, "ValueType.DATE should not be null");
     assertNull(ValueType.DATE.parseFromString(null));
@@ -82,7 +82,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void timeIsParseAble() {
+  void timeIsParseAble() {
     assertNotNull(PrimitiveValueType.TIME, "PrimitiveValueType.TIME should not be null");
     assertNotNull(ValueType.TIME, "ValueType.TIME should not be null");
     assertNull(ValueType.TIME.parseFromString(null));
@@ -90,7 +90,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void periodIsParseAble() {
+  void periodIsParseAble() {
     assertNotNull(PrimitiveValueType.PERIOD, "PrimitiveValueType.PERIOD should not be null");
     assertNotNull(ValueType.PERIOD, "ValueType.PERIOD should not be null");
     assertNull(ValueType.PERIOD.parseFromString(null));
@@ -98,7 +98,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void durationIsParseAble() {
+  void durationIsParseAble() {
     assertNotNull(PrimitiveValueType.DURATION, "PrimitiveValueType.DURATION should not be null");
     assertNotNull(ValueType.DURATION, "ValueType.DURATION should not be null");
     assertNull(ValueType.DURATION.parseFromString(null));
@@ -106,7 +106,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void checkReturnTypeMapping() {
+  void checkReturnTypeMapping() {
     Assertions.assertEquals(ValueType.STRING, ValueType.valueTypeOf(String.class));
     Assertions.assertEquals(ValueType.DECIMAL, ValueType.valueTypeOf(BigDecimal.class));
     Assertions.assertEquals(ValueType.INTEGER, ValueType.valueTypeOf(Integer.class));
@@ -121,7 +121,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void plusTypeReturnTypes() {
+  void plusTypeReturnTypes() {
     Assertions.assertEquals(ValueType.DATE, ValueType.DATE.plusType(ValueType.PERIOD));
     Assertions.assertEquals(ValueType.TIME, ValueType.TIME.plusType(ValueType.DURATION));
     Assertions.assertEquals(ValueType.INTEGER, ValueType.INTEGER.plusType(ValueType.INTEGER));
@@ -140,7 +140,7 @@ public class ValueTypeTest {
     Assertions.assertEquals(ValueType.STRING, ValueType.TIME.plusType(ValueType.STRING));
   }
   @Test
-  public void minusTypeReturnTypes() {
+  void minusTypeReturnTypes() {
     Assertions.assertEquals(ValueType.PERIOD, ValueType.DATE.minusType(ValueType.DATE));
     Assertions.assertEquals(ValueType.DURATION, ValueType.TIME.minusType(ValueType.TIME));
     Assertions.assertEquals(ValueType.INTEGER, ValueType.INTEGER.minusType(ValueType.INTEGER));
@@ -151,14 +151,14 @@ public class ValueTypeTest {
     Assertions.assertEquals(ValueType.DATE, ValueType.DATE.minusType(ValueType.PERIOD));
   }
   @Test
-  public void multipleTypeReturnTypes() {
+  void multipleTypeReturnTypes() {
     Assertions.assertEquals(ValueType.INTEGER, ValueType.INTEGER.multiplyType(ValueType.INTEGER));
     Assertions.assertEquals(ValueType.DECIMAL, ValueType.INTEGER.multiplyType(ValueType.DECIMAL));
     Assertions.assertEquals(ValueType.DECIMAL, ValueType.DECIMAL.multiplyType(ValueType.INTEGER));
     Assertions.assertEquals(ValueType.DECIMAL, ValueType.DECIMAL.multiplyType(ValueType.DECIMAL));
   }
   @Test
-  public void divideTypeReturnTypes() {
+  void divideTypeReturnTypes() {
     Assertions.assertEquals(ValueType.INTEGER, ValueType.INTEGER.divideByType(ValueType.INTEGER));
     Assertions.assertEquals(ValueType.DECIMAL, ValueType.INTEGER.divideByType(ValueType.DECIMAL));
     Assertions.assertEquals(ValueType.DECIMAL, ValueType.DECIMAL.divideByType(ValueType.INTEGER));
@@ -166,7 +166,7 @@ public class ValueTypeTest {
   }
 
   @Test
-  public void valueTypeNames() {
+  void valueTypeNames() {
     Assertions.assertEquals("INTEGER", ValueType.INTEGER.getName());
     Assertions.assertEquals("DATE", ValueType.DATE.getName());
     Assertions.assertEquals("DECIMAL", ValueType.DECIMAL.getName());

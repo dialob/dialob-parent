@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class CallExprNodeTest {
 
   @Test
-  public void testEquality() {
+  void testEquality() {
     CallExprNode node = new CallExprNode(null, NodeOperator.createNodeOperator("+"), ValueType.INTEGER, Span.undefined());
     CallExprNode node2;
     assertEquals(node, node);

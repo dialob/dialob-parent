@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 public class ASTBuilderWalkerTest {
 
   @Test
-  public void shouldLogUnknownVariableAndIdWhenVariableIsNotFound() throws Exception {
+  void shouldLogUnknownVariableAndIdWhenVariableIsNotFound() throws Exception {
     VariableFinder variableFinder = mock(VariableFinder.class);
     ErrorLogger errorLogger = mock(ErrorLogger.class);
 

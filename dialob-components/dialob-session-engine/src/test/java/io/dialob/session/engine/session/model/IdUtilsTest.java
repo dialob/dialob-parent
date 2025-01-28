@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class IdUtilsTest {
 
   @Test
-  public void testToString() {
+  void testToString() {
     assertNull(IdUtils.toString((ItemId) null));
     assertNull(IdUtils.toString((ValueSetId) null));
     assertEquals("var1", IdUtils.toString(IdUtils.toId("var1")));
@@ -40,7 +40,7 @@ class IdUtilsTest {
 
 
   @Test
-  public void testToId() {
+  void testToId() {
     assertNull(IdUtils.toIdNullable(null));
     assertEquals(IdUtils.toId("var1"), IdUtils.toId("var1"));
     assertEquals(ImmutableItemIndex.of(1,Optional.empty()), IdUtils.toId("1"));
@@ -54,7 +54,7 @@ class IdUtilsTest {
 
 
   @Test
-  public void testMatching() {
+  void testMatching() {
     assertTrue(IdUtils.matches(IdUtils.toId("g1"), IdUtils.toId("g1")));
     assertTrue(IdUtils.matches(IdUtils.toId("g1.*"), IdUtils.toId("g1.*")));
     assertTrue(IdUtils.matches(IdUtils.toId("g1.*"), IdUtils.toId("g1.0")));

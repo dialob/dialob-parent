@@ -41,7 +41,7 @@ import static org.mockito.Mockito.mock;
 class ActiveDialobSessionUpdaterTest {
 
   @Test
-  public void shouldSetContextVariable() {
+  void shouldSetContextVariable() {
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
 
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);

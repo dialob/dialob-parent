@@ -60,12 +60,12 @@ public class AnswerControllerTest {
   public AnswerController answerController;
 
   @Test
-  public void answerControllerShouldBeConfigured() {
+  void answerControllerShouldBeConfigured() {
     assertNotNull(answerController);
   }
 
   @Test
-  public void shouldReturn404IfQuestionnaireDoNotExists() {
+  void shouldReturn404IfQuestionnaireDoNotExists() {
     when(questionnaireSessionService.findOne("123")).thenThrow(DocumentNotFoundException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(404, responseEntity.getStatusCode().value());
@@ -73,7 +73,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldReturn404IfQuestionnaireDoNotExists2() {
+  void shouldReturn404IfQuestionnaireDoNotExists2() {
     when(questionnaireSessionService.findOne("123")).thenReturn(null);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(404, responseEntity.getStatusCode().value());
@@ -81,7 +81,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldReturn200AndUpdateActionsForFullForm() {
+  void shouldReturn200AndUpdateActionsForFullForm() {
     QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("123")).thenReturn(session);
     doAnswer(invocation -> {
@@ -103,7 +103,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void answersHandlerShouldReturn404IfQuestionnaireDoNotExists() {
+  void answersHandlerShouldReturn404IfQuestionnaireDoNotExists() {
     when(actionProcessingService.answerQuestion("123", null, Collections.emptyList())).thenThrow(DocumentNotFoundException.class);
     Actions actions = mock(Actions.class);
     ResponseEntity<Actions> responseEntity = answerController.answers("123", actions);
@@ -115,7 +115,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void answersHandlerShouldReturn404IfQuestionnaireDoNotExists2() {
+  void answersHandlerShouldReturn404IfQuestionnaireDoNotExists2() {
     when(actionProcessingService.answerQuestion("123", null, Collections.emptyList())).thenThrow(DocumentNotFoundException.class);
     Actions actions = mock(Actions.class);
     ResponseEntity<Actions> responseEntity = answerController.answers("123", actions);
@@ -127,7 +127,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldReturn200AndUpdateActions() {
+  void shouldReturn200AndUpdateActions() {
     QuestionnaireSession session = mock(QuestionnaireSession.class);
     Actions requestActions = ImmutableActions.builder()
       .rev("aabb")
@@ -156,7 +156,7 @@ public class AnswerControllerTest {
 
 
   @Test
-  public void shouldReturn500WithoutStackByDefault() {
+  void shouldReturn500WithoutStackByDefault() {
     when(questionnaireSessionService.findOne("123")).thenThrow(RuntimeException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(500, responseEntity.getStatusCode().value());

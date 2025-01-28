@@ -74,7 +74,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void testGetQuestionnaires() throws Exception {
+  void testGetQuestionnaires() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("123").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
@@ -105,7 +105,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void testNextPage() throws Exception {
+  void testNextPage() throws Exception {
 
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("testNextPage").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
@@ -180,7 +180,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
+  void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
@@ -332,7 +332,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void shouldInterpolateValueSetEntryy() throws Exception {
+  void shouldInterpolateValueSetEntryy() throws Exception {
 
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryy").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
@@ -398,7 +398,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   }
 
   @Test
-  public void shouldHandleBigDecimalVariables() throws Exception {
+  void shouldHandleBigDecimalVariables() throws Exception {
 
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldHandleBigDecimalVariables").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("bigD").build());

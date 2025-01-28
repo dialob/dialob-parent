@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class EqOperatorTest {
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     EqOperator operator = newEq(lh, rh);
@@ -60,7 +60,7 @@ public class EqOperatorTest {
   }
 
   @Test
-  public void shouldEvalToBoolean() {
+  void shouldEvalToBoolean() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     EqOperator operator = newEq(lh, rh);

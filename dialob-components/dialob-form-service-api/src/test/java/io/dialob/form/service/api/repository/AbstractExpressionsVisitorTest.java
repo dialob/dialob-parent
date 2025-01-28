@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class AbstractExpressionsVisitorTest {
 
   @Test
-  public void emptyDocumentShouldNotHaveExpressions() {
+  void emptyDocumentShouldNotHaveExpressions() {
     Form document = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
     VisitableForm.makeVisitableForm(document).accept(new AbstractExpressionsVisitor() {
       @Override

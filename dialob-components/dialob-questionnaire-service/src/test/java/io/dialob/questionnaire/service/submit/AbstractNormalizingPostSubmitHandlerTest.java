@@ -30,7 +30,7 @@ import java.util.Map;
 class AbstractNormalizingPostSubmitHandlerTest {
 
   @Test
-  public void shouldSerialize() {
+  void shouldSerialize() {
     MutableObject<Map<String, Object>> result = new MutableObject<>();
     AnswerSubmitHandler.Settings settings = Mockito.mock(AnswerSubmitHandler.Settings.class);
     final AbstractNormalizingPostSubmitHandler submitHandler = new AbstractNormalizingPostSubmitHandler() {

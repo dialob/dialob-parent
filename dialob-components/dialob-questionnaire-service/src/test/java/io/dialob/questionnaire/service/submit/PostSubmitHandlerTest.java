@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 public class PostSubmitHandlerTest {
 
   @Test
-  public void shouldMakePostToURL() throws Exception {
+  void shouldMakePostToURL() throws Exception {
     AnswerSubmitHandler.Settings submitHandlerSettings = mock(AnswerSubmitHandler.Settings.class);
     PostSubmitHandler postSubmitHandler  = new PostSubmitHandler();
 
@@ -73,7 +73,7 @@ public class PostSubmitHandlerTest {
   }
 
   @Test
-  public void shouldAddBasicAuthenticationIfCredentialsDefinedOnURL() throws Exception {
+  void shouldAddBasicAuthenticationIfCredentialsDefinedOnURL() throws Exception {
     AnswerSubmitHandler.Settings submitHandlerSettings = mock(AnswerSubmitHandler.Settings.class);
     PostSubmitHandler postSubmitHandler  = new PostSubmitHandler();
 

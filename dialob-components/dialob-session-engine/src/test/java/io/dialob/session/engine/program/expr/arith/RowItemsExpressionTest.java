@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 class RowItemsExpressionTest {
 
   @Test
-  public void test() {
+  void test() {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(), eq(true))).then(AdditionalAnswers.returnsFirstArg());
     RowItemsExpression rowItemsExpression = ImmutableRowItemsExpression.builder().addItemIds(IdUtils.toId("q1")).build();

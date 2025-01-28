@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GrantedAuthorityTenantsProviderTest {
 
   @Test
-  public void shouldReturnEmptyListOfTenantIfUnauthenticated() {
+  void shouldReturnEmptyListOfTenantIfUnauthenticated() {
 
     SecurityContextHolder.createEmptyContext();
 
@@ -41,7 +41,7 @@ class GrantedAuthorityTenantsProviderTest {
   }
 
   @Test
-  public void shouldReturnListOfTenantsFromAuthorizations() {
+  void shouldReturnListOfTenantsFromAuthorizations() {
 
     SecurityContextHolder.setContext(new SecurityContextImpl(new TestingAuthenticationToken("","", Arrays.asList(
       ImmutableTenantGrantedAuthority.of("12312", "aa")

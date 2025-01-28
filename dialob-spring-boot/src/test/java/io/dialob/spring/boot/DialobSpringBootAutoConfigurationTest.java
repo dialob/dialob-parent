@@ -49,7 +49,7 @@ class DialobSpringBootAutoConfigurationTest {
 
 
   @Test
-  public void testDialobSpringBootAutoConfiguration() {
+  void testDialobSpringBootAutoConfiguration() {
     new ApplicationContextRunner()
       .withUserConfiguration(DialobSpringBootAutoConfigurationTest.MockConfigurations.class)
       .withConfiguration(AutoConfigurations.of(

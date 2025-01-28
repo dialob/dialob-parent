@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 public class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
   @Test
-  public void shouldConstructFormProgram() throws Exception {
+  void shouldConstructFormProgram() throws Exception {
     FormFinder formFinder = mock(FormFinder.class);
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);

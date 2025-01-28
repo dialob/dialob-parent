@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class QuestionnaireTest {
 
   @Test
-  public void gsonShouldSerializeCompatibleJson() {
+  void gsonShouldSerializeCompatibleJson() {
     Questionnaire questionnaire = QuestionnaireFactory.questionnaire("12","123");
     Gson gson = new GsonBuilder()
       .registerTypeAdapterFactory(new GsonAdaptersQuestionnaire())
@@ -38,7 +38,7 @@ public class QuestionnaireTest {
 
 
   @Test
-  public void shouldThrowConstraintExceptionOnMissingMetadata() {
+  void shouldThrowConstraintExceptionOnMissingMetadata() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableQuestionnaire.builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
@@ -48,7 +48,7 @@ public class QuestionnaireTest {
   }
 
   @Test
-  public void shouldThrowConstraintExceptionOnPartialMetadata() {
+  void shouldThrowConstraintExceptionOnPartialMetadata() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().build()).build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();

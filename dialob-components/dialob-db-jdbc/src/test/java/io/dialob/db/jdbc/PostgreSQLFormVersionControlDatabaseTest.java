@@ -38,7 +38,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
 
 
   @Test
-  public void saveAndQueryFormsByMetadata() {
+  void saveAndQueryFormsByMetadata() {
 
     setActiveTenant("12341234-1234-1234-1234-123412341236");
 

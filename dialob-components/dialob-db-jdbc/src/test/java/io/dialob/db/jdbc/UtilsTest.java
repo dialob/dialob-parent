@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class UtilsTest {
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     Assertions.assertTrue(Arrays.equals(new byte[16], Utils.toOID("")));
     Assertions.assertNull(Utils.toOID(null));
     Assertions.assertArrayEquals(new byte[] {
@@ -35,40 +35,40 @@ public class UtilsTest {
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionWhenIdTooLong() {
+  void shouldThrowIllegalArgumentExceptionWhenIdTooLong() {
     Assertions.assertThrows(DocumentNotFoundException.class, () -> Utils.toOID("0000000000000000000000000000000000"));
 
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionWhenHoldIllegalCharacters() {
+  void shouldThrowIllegalArgumentExceptionWhenHoldIllegalCharacters() {
     Assertions.assertThrows(DocumentNotFoundException.class, () -> Utils.toOID("0000000000000000000000000000000x"));
   }
 
   @Test
-  public void revisionMustBeInteger() {
+  void revisionMustBeInteger() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> Utils.validateRevValue("a"));
   }
 
   @Test
-  public void revisionMayNotBeBlank() {
+  void revisionMayNotBeBlank() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> Utils.validateRevValue(""));
   }
 
   @Test
-  public void revisionParsesToInteger() {
+  void revisionParsesToInteger() {
     Assertions.assertEquals((Integer)14, Utils.validateRevValue("14"));
     Assertions.assertNull(Utils.validateRevValue(null));
   }
 
   @Test
-  public void generates128BitValue() {
+  void generates128BitValue() {
     Assertions.assertEquals(16, Utils.generateOID().length);
   }
 
 
   @Test
-  public void shouldConvertOIDToString() {
+  void shouldConvertOIDToString() {
     Assertions.assertEquals("00000000000000000000000000000000", Utils.toString(new byte[16]));
     Assertions.assertEquals("f0000000000000000000000000000000", Utils.toString(Utils.toOID("f0000000000000000000000000000000")));
     Assertions.assertEquals("f0000000000000000000000000000001", Utils.toString(Utils.toOID("f0000000000000000000000000000001")));

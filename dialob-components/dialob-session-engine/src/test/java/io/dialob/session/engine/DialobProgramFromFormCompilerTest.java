@@ -44,7 +44,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldSetRequiredOnForAllQuestionsOfRequired() throws Exception {
+  void shouldSetRequiredOnForAllQuestionsOfRequired() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -109,7 +109,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() throws Exception {
+  void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -173,7 +173,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void testIsBlankAndIsNullOperators() throws Exception {
+  void testIsBlankAndIsNullOperators() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -247,7 +247,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void testLocaleUpdateEffectOnErrors() throws Exception {
+  void testLocaleUpdateEffectOnErrors() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -298,7 +298,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldInactivateNestedGroups() throws Exception {
+  void shouldInactivateNestedGroups() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -361,7 +361,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldSubSequentPagesShouldNotPreventNextPage() throws Exception {
+  void shouldSubSequentPagesShouldNotPreventNextPage() throws Exception {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);

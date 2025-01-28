@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class ExpressionTest {
 
   @Test
-  public void testRenameId() {
+  void testRenameId() {
     assertEquals("b", Expression.createExpression("a").renameId("a", "b").toString());
     assertEquals("1 + r", Expression.createExpression("1 + a").renameId("a", "r").toString());
     assertEquals("1 + abc - 5", Expression.createExpression("1 + f - 5").renameId("f", "abc").toString());
@@ -48,7 +48,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void testIdCollecting() {
+  void testIdCollecting() {
     assertThat(Expression.createExpression("a").getAllIds()).containsExactly("a");
     assertThat(Expression.createExpression("1 + r").getAllIds()).containsExactly("r");
     assertThat(Expression.createExpression("a + b").getAllIds()).containsExactly("a", "b");
@@ -56,7 +56,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void shouldEmptyStringGeneratesEmptyAst() {
+  void shouldEmptyStringGeneratesEmptyAst() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "");
@@ -65,7 +65,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void shouldBlankInputGeneratesEmptyAst() {
+  void shouldBlankInputGeneratesEmptyAst() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "   ");
@@ -74,7 +74,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void shouldReportSyntaxError() {
+  void shouldReportSyntaxError() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a a");
@@ -90,7 +90,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotSumBooleanAndInteger() {
+  void cannotSumBooleanAndInteger() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "1+true");
@@ -105,7 +105,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotSumDateAndInteger() throws VariableNotDefinedException {
+  void cannotSumDateAndInteger() throws VariableNotDefinedException {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     when(variableFinder.typeOf("date")).thenReturn(ValueType.DATE);
@@ -122,7 +122,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotComparePeriodAndInteger() {
+  void cannotComparePeriodAndInteger() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "1 day > 1");
@@ -137,7 +137,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotEqualPeriodAndInteger() {
+  void cannotEqualPeriodAndInteger() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "1 day = 1");
@@ -152,7 +152,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void brokenStringShouldNotKillParser() {
+  void brokenStringShouldNotKillParser() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a = 'x ");
@@ -168,7 +168,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void brokenExpectStringForIsBlank() throws Exception {
+  void brokenExpectStringForIsBlank() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     when(variableFinder.mapAlias(any())).then(AdditionalAnswers.returnsFirstArg());
@@ -185,7 +185,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void isNullOperator() throws Exception {
+  void isNullOperator() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     when(variableFinder.mapAlias(any())).then(AdditionalAnswers.returnsFirstArg());

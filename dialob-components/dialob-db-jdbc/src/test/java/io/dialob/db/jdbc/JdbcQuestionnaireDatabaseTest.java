@@ -39,7 +39,7 @@ public class JdbcQuestionnaireDatabaseTest extends JdbcBackendDatabaseTest {
   }
 
   @Test
-  public void testToObject() {
+  void testToObject() {
     String json = "{\"_id\": \"e207ff3feda43167e8ccd5848482cde8\", \"_rev\": \"1\", \"answers\": [{\"id\": \"text2\", \"type\": \"STRING\", \"value\": null}, {\"id\": \"text1\", \"type\": \"STRING\", \"value\": null}], \"metadata\": {\"label\": \"New Form\", " +
       "\"owner\": \"825e9451-8d02-46d3-b5d3-051a9ceb9b74\", \"formId\": \"90bf19f8d87373d2cdc765624578e709\", \"status\": \"NEW\", \"created\": \"2019-02-25T15:39:37.899+0000\", \"creator\": \"825e9451-8d02-46d3-b5d3-051a9ceb9b74\", " +
       "\"language\": \"en\", \"tenantId\": \"itest\", \"lastAnswer\": \"2019-02-25T15:39:37.865+0000\"}, \"activeItem\": \"group1\"}";

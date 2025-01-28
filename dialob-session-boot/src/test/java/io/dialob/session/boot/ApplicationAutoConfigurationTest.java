@@ -52,7 +52,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationWithoutWebSocketSupport() {
+  void testApplicationAutoConfigurationWithoutWebSocketSupport() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -75,7 +75,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationAwsSecurityEnabled() {
+  void testApplicationAutoConfigurationAwsSecurityEnabled() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class FunctionCallOperatorTest {
 
   @Test
-  public void shouldInvokeFunction() {
+  void shouldInvokeFunction() {
 
     Expression arg1 = mock(Expression.class);
     EvalContext context = mock(EvalContext.class);

@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ItemIdPartialTest {
 
   @Test
-  public void test() {
+  void test() {
     ItemId itemIdPartial = ImmutableItemIdPartial.of(Optional.of(ImmutableItemRef.of("i1", Optional.empty())));
     ItemId itemId = IdUtils.toId("i1.3");
     IdUtils.matches(itemIdPartial, itemId);
@@ -32,7 +32,7 @@ public class ItemIdPartialTest {
   }
 
   @Test
-  public void partialErrorsShouldNotMatch() {
+  void partialErrorsShouldNotMatch() {
     ErrorId errorId1 = ImmutableErrorId.of(IdUtils.toId("i1.3"),"ERR");
     ErrorId errorId2 = ImmutableErrorId.of(IdUtils.toId("i2.3"),"ERR");
     assertNotEquals(errorId1,errorId2);
@@ -40,7 +40,7 @@ public class ItemIdPartialTest {
   }
 
   @Test
-  public void partialErrorsShouldMatch() {
+  void partialErrorsShouldMatch() {
     ErrorId errorId1 = ImmutableErrorId.of(IdUtils.toId("i1.*"),"ERR");
     ErrorId errorId2 = ImmutableErrorId.of(IdUtils.toId("i1.3"),"ERR");
     assertNotEquals(errorId1,errorId2);

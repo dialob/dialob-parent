@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 class InOperatorTest {
 
   @Test
-  public void shouldFindFromSet() {
+  void shouldFindFromSet() {
     Expression lhs = Mockito.mock(Expression.class);
     Expression rhs = Mockito.mock(Expression.class);
     EvalContext context = Mockito.mock(EvalContext.class);
@@ -50,7 +50,7 @@ class InOperatorTest {
   }
 
   @Test
-  public void shouldNotFindFromSet() {
+  void shouldNotFindFromSet() {
     Expression lhs = Mockito.mock(Expression.class);
     Expression rhs = Mockito.mock(Expression.class);
     EvalContext context = Mockito.mock(EvalContext.class);

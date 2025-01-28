@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 class ApiKeyAuthenticationProviderTest {
 
   @Test
-  public void shouldIgnoreNullAuthentication() {
+  void shouldIgnoreNullAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -45,7 +45,7 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldIgnoreNonApiKeyAuthentication() {
+  void shouldIgnoreNonApiKeyAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -57,7 +57,7 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldNotReauthenticateValidApiKeyAuthentication() {
+  void shouldNotReauthenticateValidApiKeyAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -69,7 +69,7 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldAuthenticateNonValidApiKeyAuthentication() {
+  void shouldAuthenticateNonValidApiKeyAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -100,7 +100,7 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldThrowAccessDeniedIfApiKeyDoNotExists() {
+  void shouldThrowAccessDeniedIfApiKeyDoNotExists() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);

@@ -70,7 +70,7 @@ public class QuestionnaireDatabaseTest {
   public QuestionnaireDatabase questionnaireDatabase;
 
   @Test
-  public void shouldStoreQuestionnaireIntoCacheIfIsNotThereAlready() {
+  void shouldStoreQuestionnaireIntoCacheIfIsNotThereAlready() {
     final Cache cache = setupCache("questionnaireCache");
     Questionnaire questionnaire = mock(Questionnaire.class);
     doReturn(questionnaire).when(questionnaireDatabaseMock).findOne(tenantId, "123");
@@ -86,7 +86,7 @@ public class QuestionnaireDatabaseTest {
   }
 
   @Test
-  public void shouldReturnQuestionnaireFromCache() {
+  void shouldReturnQuestionnaireFromCache() {
     final Cache cache = setupCache("questionnaireCache");
     Questionnaire questionnaire = mock(Questionnaire.class);
     when(cache.get(Arrays.asList("q","t-123", "123",null))).thenReturn(() -> questionnaire);
@@ -99,7 +99,7 @@ public class QuestionnaireDatabaseTest {
   }
 
   @Test
-  public void shouldCheckQuestionnaireFromCache() {
+  void shouldCheckQuestionnaireFromCache() {
     final Cache cache = setupCache("questionnaireCache");
     doReturn(true).when(questionnaireDatabaseMock).exists("t-123", "123");
 
@@ -115,7 +115,7 @@ public class QuestionnaireDatabaseTest {
 
 
   @Test
-  public void saveShouldUpdateObjectInCacheWithReturnValue() {
+  void saveShouldUpdateObjectInCacheWithReturnValue() {
     final Cache cache = setupCache("questionnaireCache");
     final Questionnaire questionnaireIn = mock(Questionnaire.class);
     final Questionnaire questionnaireOut = mock(Questionnaire.class);
@@ -135,7 +135,7 @@ public class QuestionnaireDatabaseTest {
   }
 
   @Test
-  public void deleteShouldEvictQuestionnaireFromCache() {
+  void deleteShouldEvictQuestionnaireFromCache() {
     final Cache cache = setupCache("questionnaireCache");
 
     questionnaireDatabase.delete(tenantId, "123");

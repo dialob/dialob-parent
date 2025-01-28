@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 class ApiKeyAuthenticationEntryPointTest {
 
   @Test
-  public void shouldMakeJsonErrorResponse() throws IOException, ServletException {
+  void shouldMakeJsonErrorResponse() throws IOException, ServletException {
     final ObjectMapper objectMapper = new ObjectMapper()
       .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)

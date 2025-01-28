@@ -30,7 +30,7 @@ public class FormMetadataTest {
   private ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
-  public void shouldParseLabelsSet() throws Exception {
+  void shouldParseLabelsSet() throws Exception {
     String document = "{\"metadata\":{\"labels\":[],\"label\":\"test\"}}";
     Form formDocument = objectMapper.readValue(document, Form.class);
     assertTrue(formDocument.getMetadata().getLabels().isEmpty());
@@ -58,7 +58,7 @@ public class FormMetadataTest {
   }
 
   @Test
-  public void metadataPropertiesTest() throws Exception {
+  void metadataPropertiesTest() throws Exception {
     String document = "{\"metadata\":{\"someRandomThing\": {\"someKey\": \"someValue\"},\"label\":\"test\"}}";
     Form formDocument = objectMapper.readValue(document, Form.class);
     assertNotNull(formDocument.getMetadata().getAdditionalProperties());

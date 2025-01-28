@@ -50,7 +50,7 @@ public class DDRLExpressionCompilerTest {
 
 
   @Test
-  public void constantIntegerShouldReturnAsInteger() throws Exception {
+  void constantIntegerShouldReturnAsInteger() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = mock(VariableFinder.class);
     final EvalContext evalContext = mock(EvalContext.class);
@@ -66,7 +66,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void todayShouldReturnCurrentDate() throws Exception {
+  void todayShouldReturnCurrentDate() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -92,7 +92,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void nowShouldReturnCurrentTime() throws Exception {
+  void nowShouldReturnCurrentTime() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -120,7 +120,7 @@ public class DDRLExpressionCompilerTest {
 
 
   @Test
-  public void dateDifferenceShouldReturnPeriod() throws Exception {
+  void dateDifferenceShouldReturnPeriod() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -150,7 +150,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void datePlusPeriodShouldReturnDate() throws Exception {
+  void datePlusPeriodShouldReturnDate() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -177,7 +177,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void dateMinusPeriodShouldReturnDate() throws Exception {
+  void dateMinusPeriodShouldReturnDate() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -204,7 +204,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void timeDifferenceShouldReturnDuration() throws Exception {
+  void timeDifferenceShouldReturnDuration() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -233,7 +233,7 @@ public class DDRLExpressionCompilerTest {
     verifyNoMoreInteractions(variableFinder, evalContext, errorConsumer);
   }
   @Test
-  public void timePlusDurationShouldReturnTime() throws Exception {
+  void timePlusDurationShouldReturnTime() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -259,7 +259,7 @@ public class DDRLExpressionCompilerTest {
     verifyNoMoreInteractions(variableFinder, evalContext, errorConsumer);
   }
   @Test
-  public void timeMinusDurationShouldReturnTime() throws Exception {
+  void timeMinusDurationShouldReturnTime() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -286,7 +286,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void periodPlusAndMinusPeriodShouldReturnPeriod() throws Exception {
+  void periodPlusAndMinusPeriodShouldReturnPeriod() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -313,7 +313,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void durationPlusAndMinusDurationShouldReturnDuration() throws Exception {
+  void durationPlusAndMinusDurationShouldReturnDuration() throws Exception {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -340,7 +340,7 @@ public class DDRLExpressionCompilerTest {
 
 
   @Test
-  public void compareDurations() throws Exception {
+  void compareDurations() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -355,7 +355,7 @@ public class DDRLExpressionCompilerTest {
 
 
   @Test
-  public void comparePeriods() throws Exception {
+  void comparePeriods() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -369,7 +369,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void compareDates() throws Exception {
+  void compareDates() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -393,7 +393,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void compareTimes() throws Exception {
+  void compareTimes() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -417,7 +417,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void shouldNotAcceptArrayOnLhsForInOperator() throws Exception {
+  void shouldNotAcceptArrayOnLhsForInOperator() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -452,7 +452,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void shouldExtractAsyncFunctionCalls() throws Exception {
+  void shouldExtractAsyncFunctionCalls() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = new DDRLExpressionCompiler(new DDRLOperatorFactory());
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -473,7 +473,7 @@ public class DDRLExpressionCompilerTest {
   }
 
   @Test
-  public void shouldExtractNestedAsyncFunctionCalls() throws Exception {
+  void shouldExtractNestedAsyncFunctionCalls() throws Exception {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = new DDRLExpressionCompiler(new DDRLOperatorFactory());
     final VariableFinder variableFinder = variableFinderNoAliases();

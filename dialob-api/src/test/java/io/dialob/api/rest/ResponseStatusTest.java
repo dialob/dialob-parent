@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 class ResponseStatusTest {
 
   @Test
-  public void testJsonSerialization() throws Exception {
+  void testJsonSerialization() throws Exception {
     Assertions.assertEquals("{\"ok\":true}", new ObjectMapper().writeValueAsString(ImmutableResponse.builder().ok(true).build()));
     Assertions.assertEquals("{\"ok\":false}", new ObjectMapper().writeValueAsString(ImmutableResponse.builder().ok(false).build()));
     Assertions.assertEquals(ImmutableResponse.builder().ok(true).build(), new ObjectMapper().readValue("{\"ok\":true}", Response.class));

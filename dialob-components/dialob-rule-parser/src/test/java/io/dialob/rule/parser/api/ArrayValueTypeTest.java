@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 public class ArrayValueTypeTest {
 
   @Test
-  public void shouldGetArrayClassOfValueType() {
+  void shouldGetArrayClassOfValueType() {
     assertSame(BigInteger[].class, ValueType.arrayOf(ValueType.INTEGER).getTypeClass());
     assertSame(String[].class, ValueType.arrayOf(ValueType.STRING).getTypeClass());
     assertSame(LocalDate[].class, ValueType.arrayOf(ValueType.DATE).getTypeClass());
@@ -43,12 +43,12 @@ public class ArrayValueTypeTest {
   }
 
   @Test
-  public void shouldGetArrayClassOfArray() {
+  void shouldGetArrayClassOfArray() {
     assertSame(BigInteger[][].class, ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER)).getTypeClass());
   }
 
   @Test
-  public void shouldParseArrayStrings() {
+  void shouldParseArrayStrings() {
     assertArrayEquals(new BigInteger[] {BigInteger.valueOf(1),BigInteger.valueOf(2),BigInteger.valueOf(3)}, (BigInteger[]) ValueType.arrayOf(ValueType.INTEGER).parseFromString("[1,2,3]"));
   }
 }

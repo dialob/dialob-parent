@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 class IsValidOperatorTest {
 
   @Test
-  public void shouldBeValidIfNoErrorStates() {
+  void shouldBeValidIfNoErrorStates() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
@@ -49,7 +49,7 @@ class IsValidOperatorTest {
   }
 
   @Test
-  public void shouldBeNonValidIfErrorStateIsActive() {
+  void shouldBeNonValidIfErrorStateIsActive() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
@@ -65,7 +65,7 @@ class IsValidOperatorTest {
   }
 
   @Test
-  public void shouldBeValidIfNonMatchingErrorStateIsActive() {
+  void shouldBeValidIfNonMatchingErrorStateIsActive() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
@@ -81,7 +81,7 @@ class IsValidOperatorTest {
   }
 
   @Test
-  public void shouldBeValidGroupIsValid() {
+  void shouldBeValidGroupIsValid() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
@@ -95,7 +95,7 @@ class IsValidOperatorTest {
   }
 
   @Test
-  public void shouldBeInvalidGroupIsInvalid() {
+  void shouldBeInvalidGroupIsInvalid() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
@@ -110,7 +110,7 @@ class IsValidOperatorTest {
 
 
   @Test
-  public void shouldLookupInsideOwnRow() {
+  void shouldLookupInsideOwnRow() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("rg.*.q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenReturn(IdUtils.toId("rg.1.q1"));
@@ -126,7 +126,7 @@ class IsValidOperatorTest {
   }
 
   @Test
-  public void errorInOtherGroupShouldNotHaveEffect() {
+  void errorInOtherGroupShouldNotHaveEffect() {
     IsValidOperator operator = ImmutableIsValidOperator.of(IdUtils.toId("rg.*.q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenReturn(IdUtils.toId("rg.1.q1"));

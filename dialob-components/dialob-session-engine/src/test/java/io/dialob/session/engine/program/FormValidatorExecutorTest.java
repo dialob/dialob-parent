@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public class FormValidatorExecutorTest {
 
   @Test
-  public void shouldCombineErrors() {
+  void shouldCombineErrors() {
     FormValidator valA = mock(FormValidator.class);
     when(valA.validate(any(Form.class))).thenReturn(Arrays.asList(
       ImmutableFormValidationError.builder().message("a").build(),

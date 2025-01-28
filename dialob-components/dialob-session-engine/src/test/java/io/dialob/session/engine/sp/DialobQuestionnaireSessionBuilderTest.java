@@ -48,7 +48,7 @@ import static org.mockito.Mockito.*;
 public class DialobQuestionnaireSessionBuilderTest {
 
   @Test
-  public void shouldInitializeSessionWithCorrectActiveItem() {
+  void shouldInitializeSessionWithCorrectActiveItem() {
     final QuestionnaireEventPublisher questionnaireEventPublisher = mock();
     final FormFinder formFinder = mock();
     final FunctionRegistry functionRegistry = mock();

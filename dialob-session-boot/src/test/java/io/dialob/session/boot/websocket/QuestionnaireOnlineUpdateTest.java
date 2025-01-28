@@ -74,7 +74,7 @@ public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
   private ApplicationEventPublisher applicationEventPublisher;
 
   @Test
-  public void updateFormOnline() throws Exception {
+  void updateFormOnline() throws Exception {
     ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
     Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
       FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );

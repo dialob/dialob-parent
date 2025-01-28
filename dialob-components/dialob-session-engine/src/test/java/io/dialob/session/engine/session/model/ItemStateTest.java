@@ -26,7 +26,7 @@ public class ItemStateTest {
 
 
   @Test
-  public void shouldClone() {
+  void shouldClone() {
     ItemState itemState = new ItemState(IdUtils.toId("question1"), null, "text", null, true, null, null, null, null, null);
     ItemState itemState2 = new ItemState(itemState);
     assertNotSame(itemState, itemState2);
@@ -35,7 +35,7 @@ public class ItemStateTest {
   }
 
   @Test
-  public void shouldNotCreateNewIfUpdateHaveNotEffect() {
+  void shouldNotCreateNewIfUpdateHaveNotEffect() {
     ItemState itemState = new ItemState(IdUtils.toId("question1"), null, "text", null, true, null, null, null, null, null);
     EvalContext context = mock(EvalContext.class);
     assertSame(itemState,
@@ -47,7 +47,7 @@ public class ItemStateTest {
 
 
   @Test
-  public void shouldCreateNewIfUpdateHaveNotEffect() {
+  void shouldCreateNewIfUpdateHaveNotEffect() {
     ItemState itemState = new ItemState(IdUtils.toId("question1"), null, "text", null, true, null, null, null, null, null);
     EvalContext context = mock(EvalContext.class);
     ItemState itemState1 = itemState.update()

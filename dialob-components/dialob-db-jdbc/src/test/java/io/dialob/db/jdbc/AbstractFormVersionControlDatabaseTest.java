@@ -55,7 +55,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldSaveAndLoadForm() {
+  void shouldSaveAndLoadForm() {
     Form form = ImmutableForm.builder().name("shouldSaveAndLoadForm").metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
 
     form = getJdbcFormVersionControlDatabase().getFormDatabase().save(getCurrentTenant().getId(), form);
@@ -67,7 +67,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     assertNotNull(form2);
   }
   @Test
-  public void shouldRejectFormWithExistingName() {
+  void shouldRejectFormWithExistingName() {
     Form form1 = ImmutableForm.builder().name("shouldSaveAndLoadForm").metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
     Form form2 = ImmutableForm.builder().name("shouldSaveAndLoadForm").metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
 
@@ -76,7 +76,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldCreateControlledFormEntryWhenNewFormIsCreated() {
+  void shouldCreateControlledFormEntryWhenNewFormIsCreated() {
     Form form = ImmutableForm.builder()
       .name("uusi-lomake-1")
       .metadata(ImmutableFormMetadata.builder()
@@ -94,7 +94,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void shouldNotUpdateTaggedForm() {
+  void shouldNotUpdateTaggedForm() {
     Form form = ImmutableForm.builder()
       .name("uusi-lomake-2")
       .metadata(ImmutableFormMetadata.builder()
@@ -118,7 +118,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldFindAllTags() {
+  void shouldFindAllTags() {
     Form form = ImmutableForm.builder()
       .name("shouldFindAllTags")
       .metadata(ImmutableFormMetadata.builder()
@@ -163,7 +163,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldCreateTagWithNullableCreator() {
+  void shouldCreateTagWithNullableCreator() {
     Form form1 = ImmutableForm.builder()
       .name("form1")
       .metadata(ImmutableFormMetadata.builder()
@@ -187,7 +187,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldFindTag() {
+  void shouldFindTag() {
     Form form1 = ImmutableForm.builder()
       .name("form1")
       .metadata(ImmutableFormMetadata.builder()
@@ -235,7 +235,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldResolveFormIdOnQuestionnaireToLastest() {
+  void shouldResolveFormIdOnQuestionnaireToLastest() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -256,7 +256,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldResolveFormIdOnQuestionnaireToTag() {
+  void shouldResolveFormIdOnQuestionnaireToTag() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -288,7 +288,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void shouldBeAbleToUpdateLastest() {
+  void shouldBeAbleToUpdateLastest() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -325,7 +325,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   }
   @Test
-  public void shouldSnapshotLatestFormOnTagging() {
+  void shouldSnapshotLatestFormOnTagging() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -347,7 +347,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void missingTagShouldntRollbackTransaction() {
+  void missingTagShouldntRollbackTransaction() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -369,7 +369,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void shouldBeAbleToSameTagNameInSeparateTenants() {
+  void shouldBeAbleToSameTagNameInSeparateTenants() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -405,7 +405,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void cannotUseCrossTenantForms() {
+  void cannotUseCrossTenantForms() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -449,7 +449,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void deleteShouldHideFormFromListButRetainFormDocument() {
+  void deleteShouldHideFormFromListButRetainFormDocument() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -486,7 +486,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldBePossibleToCreateFormWithSameNameAgainAfterDelete() {
+  void shouldBePossibleToCreateFormWithSameNameAgainAfterDelete() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -520,7 +520,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     assertTrue(deleted);
   }
   @Test
-  public void shouldAccept128CharactersLongFormName() {
+  void shouldAccept128CharactersLongFormName() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -537,7 +537,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldReject129CharactersLongFormName() {
+  void shouldReject129CharactersLongFormName() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -552,7 +552,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
 
   @Test
-  public void shouldFindQuestionnairesByFormNameAndTag() {
+  void shouldFindQuestionnairesByFormNameAndTag() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -626,7 +626,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void shouldBeAbleToCreateMutableTags() {
+  void shouldBeAbleToCreateMutableTags() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -685,7 +685,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void shouldBeAbleToUpdateMutableTags() {
+  void shouldBeAbleToUpdateMutableTags() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
@@ -744,7 +744,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
 
   @Test
-  public void cannotMoveNormalTag() {
+  void cannotMoveNormalTag() {
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();

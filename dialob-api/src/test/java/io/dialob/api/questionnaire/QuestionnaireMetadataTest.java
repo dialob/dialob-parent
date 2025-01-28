@@ -23,14 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class QuestionnaireMetadataTest {
   @Test
-  public void shouldDeserializeUnknownAttributesToAdditionalProperties() throws Exception {
+  void shouldDeserializeUnknownAttributesToAdditionalProperties() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Questionnaire.Metadata metadata = objectMapper.readValue("{\"formId\":\"123\",\"status\":\"NEW\",\"extraProp\":\"extraValue\"}", Questionnaire.Metadata.class);
     assertTrue(metadata.getAdditionalProperties().size() > 0);
     assertEquals("extraValue", metadata.getAdditionalProperties().get("extraProp"));
   }
   @Test
-  public void shouldSerializeAdditionalPropertiesToJsonAttributes() throws Exception {
+  void shouldSerializeAdditionalPropertiesToJsonAttributes() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Questionnaire.Metadata metadata = ImmutableQuestionnaireMetadata.builder().formId("123").putAdditionalProperties("extraProp","extraValue").build();
     assertEquals("{\"formId\":\"123\",\"status\":\"NEW\",\"extraProp\":\"extraValue\"}", objectMapper.writeValueAsString(metadata));

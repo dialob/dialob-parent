@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class HmacSHA256ApiKeyValidatorTest {
 
   @Test
-  public void shouldVerifyToken() {
+  void shouldVerifyToken() {
     HmacSHA256ApiKeyValidator validator = new HmacSHA256ApiKeyValidator(")cA^!}6uvD0n21,2yNfl[kAl>b|oU*2W".getBytes());
     ApiKey key = new RequestHeaderApiKeyExtractor().createApiKey("3eWxtU1dS02mgRzrmEfSwpL/9wL3/OZWUQdcSDsV");
     final byte[] bytes = Base64.getDecoder().decode(key.getToken().get());
@@ -53,7 +53,7 @@ class HmacSHA256ApiKeyValidatorTest {
 
 
   @Test
-  public void shouldValidate() {
+  void shouldValidate() {
     HmacSHA256ApiKeyValidator validator = new HmacSHA256ApiKeyValidator("hash".getBytes()) {
       @Override
       protected boolean verifyToken(byte[] plain, String hash) {

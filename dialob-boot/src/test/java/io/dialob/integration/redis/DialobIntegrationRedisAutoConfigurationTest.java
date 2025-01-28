@@ -27,7 +27,7 @@ import org.springframework.integration.redis.channel.SubscribableRedisChannel;
 class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
 
   @Test
-  public void shouldSetupRedisChannelWhenRedisIsAvailable() {
+  void shouldSetupRedisChannelWhenRedisIsAvailable() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
         RedisAutoConfiguration.class,
@@ -41,7 +41,7 @@ class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
   }
 
   @Test
-  public void shouldSetupDummyChannelWhenRedisIsNotAvailable() {
+  void shouldSetupDummyChannelWhenRedisIsNotAvailable() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
         DialobIntegrationRedisAutoConfiguration.class

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 class NextPageTest {
 
   @Test
-  public void nextShouldNavigateToFirstActivePage() {
+  void nextShouldNavigateToFirstActivePage() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
@@ -67,7 +67,7 @@ class NextPageTest {
   }
 
   @Test
-  public void nextShouldNotNavigateIfOnLastPage() {
+  void nextShouldNotNavigateIfOnLastPage() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
@@ -84,7 +84,7 @@ class NextPageTest {
   }
 
   @Test
-  public void nextShouldNavigateToNextActivePage() {
+  void nextShouldNavigateToNextActivePage() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
@@ -106,7 +106,7 @@ class NextPageTest {
 
 
   @Test
-  public void nextNotShouldNavigateToNextActivePageWhenNextIsDisabled() {
+  void nextNotShouldNavigateToNextActivePageWhenNextIsDisabled() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);

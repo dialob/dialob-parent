@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 public class CommandFactoryTest {
 
   @Test
-  public void emptyItemsListDoNotTriggerChange() {
+  void emptyItemsListDoNotTriggerChange() {
     ItemState itemState = new ItemState(
       ImmutableItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
@@ -72,7 +72,7 @@ public class CommandFactoryTest {
   }
 
   @Test
-  public void differenceOnItemsShouldTriggerChanges() {
+  void differenceOnItemsShouldTriggerChanges() {
     ItemState itemState = new ItemState(
       ImmutableItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
@@ -111,7 +111,7 @@ public class CommandFactoryTest {
   }
 
   @Test
-  public void shouldNotTriggerItself() {
+  void shouldNotTriggerItself() {
     ItemId itemId = IdUtils.toId("q1");
     Expression expression =
       Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), ImmutableConstant.builder().valueType(ValueType.INTEGER).value(0).build()));
@@ -129,7 +129,7 @@ public class CommandFactoryTest {
   }
 
   @Test
-  public void shouldTriggerRowInstantiationWhenItemsChange() {
+  void shouldTriggerRowInstantiationWhenItemsChange() {
     SessionUpdateCommand command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemState itemState1 = new ItemState(IdUtils.toId("g1"), null, "rowgroup", null, true, null, null, null, null, null);
     ItemState itemRow = new ItemState(IdUtils.toId("g1.0"), null, "group", null, true, null, null, null, null, null);
@@ -151,7 +151,7 @@ public class CommandFactoryTest {
   }
 
   @Test
-  public void testGroupItemsChange() {
+  void testGroupItemsChange() {
 
     ItemState original = Mockito.mock(ItemState.class);
     when(original.getItems()).thenReturn(Collections.emptyList());

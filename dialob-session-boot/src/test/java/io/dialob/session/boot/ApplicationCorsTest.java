@@ -102,7 +102,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldNotGetAnyCorsHeaderWhenCorsIsUndefined() throws Exception {
+  void shouldNotGetAnyCorsHeaderWhenCorsIsUndefined() throws Exception {
     when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(ImmutableActions.builder().build()));
     mockMvc.perform(get(session("123456"))
         .header("Origin", "localhost") // triggers cors evaluation...
@@ -121,7 +121,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetDefaultCorsHeadersIfCorsConfigured() throws Exception {
+  void shouldGetDefaultCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
 
     when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(ImmutableActions.builder().build()));
@@ -153,7 +153,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetPreFlightDefaultCorsHeadersIfCorsConfigured() throws Exception {
+  void shouldGetPreFlightDefaultCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));
@@ -183,7 +183,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetPreFlightTenantSpecificCorsHeadersIfCorsConfigured() throws Exception {
+  void shouldGetPreFlightTenantSpecificCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));
@@ -219,7 +219,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetDefaultCorsIfTenantDoNotHaveCorsDefinedAndDefaultDoNotExists() throws Exception {
+  void shouldGetDefaultCorsIfTenantDoNotHaveCorsDefinedAndDefaultDoNotExists() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id-other");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));

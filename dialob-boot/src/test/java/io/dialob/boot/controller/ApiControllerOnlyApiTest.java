@@ -165,7 +165,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   }
 
   @Test
-  public void cannotAccessFormsWithoutApiKey() throws Exception {
+  void cannotAccessFormsWithoutApiKey() throws Exception {
     mockMvc.perform(get("/api/forms").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isForbidden())
       .andReturn();
@@ -175,7 +175,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   }
 
   @Test
-  public void canAccessFormsWithApiKey() throws Exception {
+  void canAccessFormsWithApiKey() throws Exception {
     ApiKey loadedApiKey = ImmutableApiKey.builder()
       .clientId("30313233-3435-3637-3839-313233343536")
       .tenantId("00000000-0000-0000-0000-000000000000")
@@ -214,7 +214,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
 
 
   @Test
-  public void fetchTenantsWithApiKey() throws Exception {
+  void fetchTenantsWithApiKey() throws Exception {
     ApiKey loadedApiKey = ImmutableApiKey.builder()
       .clientId("30313233-3435-3637-3839-313233343536")
       .tenantId("00000000-0000-0000-0000-000000000000")

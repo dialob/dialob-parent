@@ -27,7 +27,7 @@ public class LtOperatorTest {
 
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     LtOperator operator = ImmutableLtOperator.builder().lhs(lh).rhs(rh).build();

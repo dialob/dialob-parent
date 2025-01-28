@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class TenantBasedCorsConfigurationSourceTest {
 
   @Test
-  public void shouldNotGivePolicyIfNonIsConfigured() throws Exception {
+  void shouldNotGivePolicyIfNonIsConfigured() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -48,7 +48,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldGiveDefaultPolicyIfRequestDoNotMatch() throws Exception {
+  void shouldGiveDefaultPolicyIfRequestDoNotMatch() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -72,7 +72,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldResolveTenantFromQuestionnaireAndGivePolicyConfiguredToThatTenant() throws Exception {
+  void shouldResolveTenantFromQuestionnaireAndGivePolicyConfiguredToThatTenant() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -102,7 +102,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldResolveTenantFromQuestionnaireAndReturnNullWhenDefaultIsNotConfigured() throws Exception {
+  void shouldResolveTenantFromQuestionnaireAndReturnNullWhenDefaultIsNotConfigured() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -130,7 +130,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldResolveTenantFromQuestionnaireAndGiveDefaultPolicyWhenThereIsNonForTenant() throws Exception {
+  void shouldResolveTenantFromQuestionnaireAndGiveDefaultPolicyWhenThereIsNonForTenant() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);

@@ -61,7 +61,7 @@ class DependencyResolverVisitorTest {
 
 
   @Test
-  public void shouldBePossibleToExecuteAgainstEmptyProgram() {
+  void shouldBePossibleToExecuteAgainstEmptyProgram() {
     DependencyResolverVisitor visitor = createDependencyResolverVisitor();
     Program program = mock(Program.class);
     visitor.startProgram(program);
@@ -74,7 +74,7 @@ class DependencyResolverVisitorTest {
 
 
   @Test
-  public void justQuestionnaireShouldPass() {
+  void justQuestionnaireShouldPass() {
     DependencyResolverVisitor visitor = createDependencyResolverVisitor();
     Program program = mock(Program.class);
     visitor.startProgram(program);

@@ -77,7 +77,7 @@ public class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
   private ApplicationEventPublisher applcationApplicationEventPublisher;
 
   @Test
-  public void shouldAddAndRemoveRows() throws Exception {
+  void shouldAddAndRemoveRows() throws Exception {
     ImmutableForm.Builder formBuilder1 = ImmutableForm.builder()
       .id("testGetQuestionnaires-123")
       .rev("1")

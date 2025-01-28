@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 class IsInvalidAnswersOnActivePageTest {
 
   @Test
-  public void shouldReturnFalseIfNoActiveErrorFound() {
+  void shouldReturnFalseIfNoActiveErrorFound() {
     EvalContext context = mock(EvalContext.class);
     final ImmutableIsInvalidAnswersOnActivePage isInvalidAnswersOnActivePage = ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
 
@@ -47,7 +47,7 @@ class IsInvalidAnswersOnActivePageTest {
   }
 
   @Test
-  public void shouldReturnTrueIfErrorFoundOnPage() {
+  void shouldReturnTrueIfErrorFoundOnPage() {
     final ItemId page1Id = IdUtils.toId("page1");
 
     EvalContext context = mock(EvalContext.class);
@@ -78,7 +78,7 @@ class IsInvalidAnswersOnActivePageTest {
   }
 
   @Test
-  public void shouldReturnTrueIfErrorFoundOnPageNestedGroup() {
+  void shouldReturnTrueIfErrorFoundOnPageNestedGroup() {
     final ItemId page1Id = IdUtils.toId("page1");
     final ItemId group1Id = IdUtils.toId("group1");
 

@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 class QuestionBuilderTest {
 
   @Test
-  public void rowGroupItemsWillBePrototypes() {
+  void rowGroupItemsWillBePrototypes() {
     final FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     Program program = programBuilder
@@ -69,7 +69,7 @@ class QuestionBuilderTest {
   }
 
   @Test
-  public void rowGroupCreatesGroupAndGroupPrototype() {
+  void rowGroupCreatesGroupAndGroupPrototype() {
     final FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -115,7 +115,7 @@ class QuestionBuilderTest {
   }
 
   @Test
-  public void testInvalidDefaultValueValidationWhenItemTypeIsUnset() {
+  void testInvalidDefaultValueValidationWhenItemTypeIsUnset() {
     ProgramBuilder programBuilder = mock(ProgramBuilder.class);
     GroupBuilder hoistingGroupBuilder = mock(GroupBuilder.class);
     Consumer<FormValidationError> errorConsumer = mock(Consumer.class);
@@ -137,7 +137,7 @@ class QuestionBuilderTest {
   }
 
   @Test
-  public void testInvalidDefaultValueValidation2() {
+  void testInvalidDefaultValueValidation2() {
     ProgramBuilder programBuilder = mock(ProgramBuilder.class);
     GroupBuilder hoistingGroupBuilder = mock(GroupBuilder.class);
     Consumer<FormValidationError> errorConsumer = mock(Consumer.class);

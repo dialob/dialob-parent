@@ -74,7 +74,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobQuestionnaireServiceAutoConfiguration() {
+  void testDialobQuestionnaireServiceAutoConfiguration() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -92,7 +92,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobQuestionnaireServiceAutoConfiguration1() {
+  void testDialobQuestionnaireServiceAutoConfiguration1() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -110,7 +110,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
       });
   }
   @Test
-  public void testDialobQuestionnaireServiceAutoConfigurationWithAutoSave() {
+  void testDialobQuestionnaireServiceAutoConfigurationWithAutoSave() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(

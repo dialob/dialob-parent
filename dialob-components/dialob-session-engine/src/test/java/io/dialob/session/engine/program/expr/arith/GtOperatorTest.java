@@ -27,7 +27,7 @@ public class GtOperatorTest {
 
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     GtOperator operator = ImmutableGtOperator.builder().lhs(lh).rhs(rh).build();

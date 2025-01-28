@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
 public class DialobProgramTest {
 
   @Test
-  public void emptyProgramShouldNotProduceAnyDependencies() {
+  void emptyProgramShouldNotProduceAnyDependencies() {
     // given
     Program program = mock(Program.class);
     DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
@@ -59,7 +59,7 @@ public class DialobProgramTest {
   }
 
   @Test
-  public void partialMatchersShouldGenerateExactUpdates() {
+  void partialMatchersShouldGenerateExactUpdates() {
     // given
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
@@ -107,7 +107,7 @@ public class DialobProgramTest {
   }
 
   @Test
-  public void variablesShouldFindReferencesFromInternalScope() {
+  void variablesShouldFindReferencesFromInternalScope() {
     // given
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
@@ -158,7 +158,7 @@ public class DialobProgramTest {
   }
 
   @Test
-  public void shouldDetectDependencyLoop() {
+  void shouldDetectDependencyLoop() {
     // given
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);

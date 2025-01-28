@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class FixedTenantsProviderTest {
 
   @Test
-  public void shouldReturnCurrentTenantAsTenant() {
+  void shouldReturnCurrentTenantAsTenant() {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     Mockito.when(currentTenant.get()).thenReturn(Tenant.of("123"));
 

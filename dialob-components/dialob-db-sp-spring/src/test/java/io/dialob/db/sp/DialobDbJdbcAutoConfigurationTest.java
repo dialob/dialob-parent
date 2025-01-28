@@ -93,7 +93,7 @@ class DialobDbJdbcAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobDbJdbcAutoConfigurationTypeJDBC() {
+  void testDialobDbJdbcAutoConfigurationTypeJDBC() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.db.database-type=JDBC",
@@ -116,7 +116,7 @@ class DialobDbJdbcAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobDbJdbcAutoConfigurationTypeFILEDB() {
+  void testDialobDbJdbcAutoConfigurationTypeFILEDB() {
     new ApplicationContextRunner()
       .withPropertyValues("dialob.db.database-type=FILEDB", "dialob.db.file.directory=src")
       .withUserConfiguration(MockConfigurations.class)
@@ -133,7 +133,7 @@ class DialobDbJdbcAutoConfigurationTest {
 
 
   @Test
-  public void testDialobDbJdbcAutoConfigurationFormsFILEDBAndQuestoinnairesOnJDBC() {
+  void testDialobDbJdbcAutoConfigurationFormsFILEDBAndQuestoinnairesOnJDBC() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.db.database-type=NONE",
@@ -163,7 +163,7 @@ class DialobDbJdbcAutoConfigurationTest {
 
 
   @Test
-  public void testDialobDbAutoConfigurationFormsS3AndQuestoinnairesOnJDBC() {
+  void testDialobDbAutoConfigurationFormsS3AndQuestoinnairesOnJDBC() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.db.database-type=NONE",
@@ -191,7 +191,7 @@ class DialobDbJdbcAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobDbAutoConfigurationFormsAzureBSAndQuestoinnairesOnJDBC() {
+  void testDialobDbAutoConfigurationFormsAzureBSAndQuestoinnairesOnJDBC() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.db.database-type=NONE",
@@ -217,7 +217,7 @@ class DialobDbJdbcAutoConfigurationTest {
   }
 
   @Test
-  public void testTestCombination1() {
+  void testTestCombination1() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.db.file.directory=.",

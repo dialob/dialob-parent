@@ -85,7 +85,7 @@ class DefaultAnswerControllerTest {
   }
 
   @Test
-  public void shouldReturnJust400ForInvalidJsonPayload() throws Exception {
+  void shouldReturnJust400ForInvalidJsonPayload() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders
       .post("/session-id")
       .content("{\"rev\":\"heh\",\"actions\":[{}]")

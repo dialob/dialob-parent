@@ -48,7 +48,7 @@ class DialobCacheAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobCacheAutoConfiguration() {
+  void testDialobCacheAutoConfiguration() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobCacheAutoConfiguration.class))
       .withUserConfiguration(TestConfiguration.class)
@@ -67,7 +67,7 @@ class DialobCacheAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobCacheAutoConfigurationWithoutEvictPersistance() {
+  void testDialobCacheAutoConfigurationWithoutEvictPersistance() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobCacheAutoConfiguration.class))
       .withUserConfiguration(TestConfiguration.class)
@@ -102,7 +102,7 @@ class DialobCacheAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobCacheAutoConfigurationWithEvictPersistance() {
+  void testDialobCacheAutoConfigurationWithEvictPersistance() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobCacheAutoConfiguration.class))
       .withUserConfiguration(TestConfiguration.class)
@@ -141,7 +141,7 @@ class DialobCacheAutoConfigurationTest {
 
 
   @Test
-  public void testDialobCacheAutoConfigurationWithoutLocalCache() {
+  void testDialobCacheAutoConfigurationWithoutLocalCache() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobCacheAutoConfiguration.class))
       .withUserConfiguration(TestConfiguration.class)
@@ -161,7 +161,7 @@ class DialobCacheAutoConfigurationTest {
 
   // TODO make redis co-operate with local caching
   @Test
-  public void testDialobCacheAutoConfigurationUsingRedisCache() {
+  void testDialobCacheAutoConfigurationUsingRedisCache() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobCacheAutoConfiguration.class))
       .withUserConfiguration(TestConfiguration.class)

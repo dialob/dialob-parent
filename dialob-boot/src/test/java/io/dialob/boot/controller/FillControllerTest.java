@@ -121,7 +121,7 @@ class FillControllerTest extends AbstractUIControllerTest {
   CurrentTenant currentTenant;
 
   @Test
-  public void shouldRenderFillPageFromURLTemplate() throws Exception {
+  void shouldRenderFillPageFromURLTemplate() throws Exception {
     when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("xx").build()).build());
 
     mockMvc.perform(get("/fill/123").params(tenantParam).accept(MediaType.TEXT_HTML))
@@ -144,7 +144,7 @@ class FillControllerTest extends AbstractUIControllerTest {
   }
 
   @Test
-  public void shouldRenderFillPageFromDefaultTemplateWhenTenantIsNotDefined() throws Exception {
+  void shouldRenderFillPageFromDefaultTemplateWhenTenantIsNotDefined() throws Exception {
     when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("yy").build()).build());
 
     mockMvc.perform(get("/fill/123").params(tenantParam).accept(MediaType.TEXT_HTML))
@@ -165,7 +165,7 @@ class FillControllerTest extends AbstractUIControllerTest {
   }
 
   @Test
-  public void shouldRejectInvalidId() throws Exception {
+  void shouldRejectInvalidId() throws Exception {
     mockMvc.perform(get("/fill/abc\\123").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isBadRequest());
     verifyNoInteractions(questionnaireDatabase);

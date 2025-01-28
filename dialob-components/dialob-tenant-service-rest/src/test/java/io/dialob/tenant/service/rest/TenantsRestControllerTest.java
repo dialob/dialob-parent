@@ -78,7 +78,7 @@ class TenantsRestControllerTest {
   }
 
   @Test
-  public void shouldReturnEmptyTenants() throws Exception {
+  void shouldReturnEmptyTenants() throws Exception {
     Mockito.when(tenantsProvider.getTenants()).thenReturn(Collections.emptyList());
     mockMvc
       .perform(get("/tenants")
@@ -89,7 +89,7 @@ class TenantsRestControllerTest {
   }
 
   @Test
-  public void shouldReturnListOfTenants() throws Exception {
+  void shouldReturnListOfTenants() throws Exception {
     Mockito.when(tenantsProvider.getTenants()).thenReturn(Arrays.asList(
       Tenant.of("0123-321", "hello"),
       Tenant.of("0123-322")

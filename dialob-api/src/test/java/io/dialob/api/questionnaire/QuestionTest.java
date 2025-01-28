@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class QuestionTest {
   @Test
-  public void shouldDeserializePropsToMap() throws Exception {
+  void shouldDeserializePropsToMap() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     ActionItem question = objectMapper.readValue("{\"id\":\"shouldDeserializePropsToMap\",\"type\":\"list\",\"props\":{\"extraProp\":\"extraValue\"}}", ActionItem.class);
     assertEquals("extraValue", question.getProps().get("extraProp"));
@@ -44,7 +44,7 @@ public class QuestionTest {
     assertEquals(null, question.getProps());
   }
   @Test
-  public void shouldSerializeMapToProps() throws Exception {
+  void shouldSerializeMapToProps() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     ActionItem question = ImmutableActionItem.builder()
       .id("shouldSerializeMapToProps")

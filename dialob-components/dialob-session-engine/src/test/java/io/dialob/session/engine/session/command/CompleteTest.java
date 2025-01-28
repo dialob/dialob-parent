@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 class CompleteTest {
 
   @Test
-  public void shouldNotCompleteWhenQuestionnaireHasInvalidAnswers() {
+  void shouldNotCompleteWhenQuestionnaireHasInvalidAnswers() {
     Complete complete = ImmutableComplete.builder().targetId(IdUtils.toId("questionnaire")).build();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState questionnaire = Mockito.mock(ItemState.class);
@@ -39,7 +39,7 @@ class CompleteTest {
   }
 
   @Test
-  public void shouldCompleteWhenQuestionnaireDoNotHaveInvalidAnswers() {
+  void shouldCompleteWhenQuestionnaireDoNotHaveInvalidAnswers() {
     Complete complete = ImmutableComplete.builder().targetId(IdUtils.toId("questionnaire")).build();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState questionnaire = Mockito.mock(ItemState.class);

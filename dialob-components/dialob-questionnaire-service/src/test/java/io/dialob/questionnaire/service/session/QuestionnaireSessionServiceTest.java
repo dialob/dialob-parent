@@ -79,7 +79,7 @@ public class QuestionnaireSessionServiceTest {
   public QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
   @Test
-  public void findOneShouldCacheNonNullResult() {
+  void findOneShouldCacheNonNullResult() {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
@@ -96,7 +96,7 @@ public class QuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void findOneShouldNotCacheNullResult() {
+  void findOneShouldNotCacheNullResult() {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
@@ -112,7 +112,7 @@ public class QuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void findOneWithOpenFalseShouldReturnNullIfItemNotInCache() {
+  void findOneWithOpenFalseShouldReturnNullIfItemNotInCache() {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
@@ -127,7 +127,7 @@ public class QuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void saveShouldCacheResult() {
+  void saveShouldCacheResult() {
     Cache cache = setupCache();
 
     QuestionnaireSession session = mock(QuestionnaireSession.class);

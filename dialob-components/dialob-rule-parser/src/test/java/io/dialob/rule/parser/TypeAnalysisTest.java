@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 public class TypeAnalysisTest {
 
   @Test
-  public void doubleQuotedStringsAreStrings() throws Exception {
+  void doubleQuotedStringsAreStrings() throws Exception {
     // given
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
 
@@ -41,7 +41,7 @@ public class TypeAnalysisTest {
   }
 
   @Test
-  public void singleQuotedStringsAreStrings() throws Exception {
+  void singleQuotedStringsAreStrings() throws Exception {
     // given
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
 
@@ -54,7 +54,7 @@ public class TypeAnalysisTest {
   }
 
   @Test
-  public void additionOf2IntegersResultsInteger() throws Exception {
+  void additionOf2IntegersResultsInteger() throws Exception {
     // given
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
 

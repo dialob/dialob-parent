@@ -58,12 +58,12 @@ public class AnswerControllerWithStackTest {
   public AnswerController answerController;
 
   @Test
-  public void answerControllerShouldBeConfigured() {
+  void answerControllerShouldBeConfigured() {
     assertNotNull(answerController);
   }
 
   @Test
-  public void shouldReturn500WithStackIfEnabled() {
+  void shouldReturn500WithStackIfEnabled() {
     when(questionnaireSessionService.findOne("123")).thenThrow(RuntimeException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(500, responseEntity.getStatusCode().value());
@@ -72,7 +72,7 @@ public class AnswerControllerWithStackTest {
   }
 
   @Test
-  public void shouldReturn500WithStackIfEnabledOnAnswers() {
+  void shouldReturn500WithStackIfEnabledOnAnswers() {
     when(actionProcessingService.answerQuestion(eq("123"), eq("rev-10"), isNotNull())).thenThrow(RuntimeException.class);
     final ResponseEntity<Actions> responseEntity = answerController.answers("123", ImmutableActions.builder()
       .rev("rev-10")

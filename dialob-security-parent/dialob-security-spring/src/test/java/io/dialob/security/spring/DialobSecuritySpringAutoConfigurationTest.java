@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DialobSecuritySpringAutoConfigurationTest {
 
   @Test
-  public void test() {
+  void test() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=",
@@ -50,7 +50,7 @@ class DialobSecuritySpringAutoConfigurationTest {
   }
 
   @Test
-  public void shouldCreateBeansWhenAws() {
+  void shouldCreateBeansWhenAws() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=aws",
@@ -70,7 +70,7 @@ class DialobSecuritySpringAutoConfigurationTest {
   }
 
   @Test
-  public void shouldMapGroupToTenant() {
+  void shouldMapGroupToTenant() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=aws",

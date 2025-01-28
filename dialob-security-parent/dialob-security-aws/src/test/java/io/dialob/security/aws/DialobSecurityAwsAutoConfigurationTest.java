@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DialobSecurityAwsAutoConfigurationTest {
 
   @Test
-  public void shouldNotSetupTypeIfProfileAWSNoSet() {
+  void shouldNotSetupTypeIfProfileAWSNoSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=",
@@ -44,7 +44,7 @@ class DialobSecurityAwsAutoConfigurationTest {
   }
 
   @Test
-  public void shouldSetupTypesIfProfileAWSIsSet() {
+  void shouldSetupTypesIfProfileAWSIsSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=aws",

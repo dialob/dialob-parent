@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 class CreateDialobSessionProgramVisitorTest {
 
   @Test
-  public void prototypeItemsAreCollectedToPrototypes() {
+  void prototypeItemsAreCollectedToPrototypes() {
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
       "session", "en",
       null,
@@ -66,7 +66,7 @@ class CreateDialobSessionProgramVisitorTest {
 
 
   @Test
-  public void prototshouldCreateGroupForRowGroupAndPrototypeGroupForRows() {
+  void prototshouldCreateGroupForRowGroupAndPrototypeGroupForRows() {
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
       "session", "en",
       null,
@@ -93,7 +93,7 @@ class CreateDialobSessionProgramVisitorTest {
   }
 
   @Test
-  public void shouldGetAllItemsById() {
+  void shouldGetAllItemsById() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(
       "tenant",
@@ -205,7 +205,7 @@ class CreateDialobSessionProgramVisitorTest {
 
 
   @Test
-  public void shouldCreateI() {
+  void shouldCreateI() {
     CreateDialobSessionProgramVisitor.InitialValueResolver initialValueResolver = Mockito.mock(CreateDialobSessionProgramVisitor.InitialValueResolver.class);
 
     Program program = Mockito.mock(Program.class);

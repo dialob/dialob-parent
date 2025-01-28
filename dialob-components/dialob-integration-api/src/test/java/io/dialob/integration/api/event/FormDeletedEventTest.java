@@ -27,7 +27,7 @@ public class FormDeletedEventTest {
   private ObjectMapper mapper = new ObjectMapper().registerModules(new Jdk8Module());
 
   @Test
-  public void testConstructorJsonMapping() throws Exception {
+  void testConstructorJsonMapping() throws Exception {
     FormDeletedEvent event = ImmutableFormDeletedEvent.builder().source("node").tenant(Tenant.of("tenante")).formId("formi").build();
     assertEquals("{\"type\":\"FormDeleted\",\"tenant\":{\"id\":\"tenante\"},\"formId\":\"formi\",\"source\":\"node\"}", mapper.writeValueAsString(event));
     event = (FormDeletedEvent) mapper.readValue("{\"type\":\"FormDeleted\",\"source\":\"node1\",\"tenant\":{\"id\":\"tenante2\"},\"formId\":\"formi3\"}", DistributedEvent.class);

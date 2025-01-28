@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 class CreateRowGroupFromPrototypeCommandTest {
 
   @Test
-  public void shouldNotMakeAnyChangesIfPrototypeDoNotExists() {
+  void shouldNotMakeAnyChangesIfPrototypeDoNotExists() {
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemStates states = Mockito.mock(ItemStates.class);
     ItemState groupState1 = Mockito.mock(ItemState.class);
@@ -58,7 +58,7 @@ class CreateRowGroupFromPrototypeCommandTest {
 
 
   @Test
-  public void shouldAddANewItemStateOnStateWhenPrototypeExists() {
+  void shouldAddANewItemStateOnStateWhenPrototypeExists() {
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemStates states = Mockito.mock(ItemStates.class);
     ItemState groupState1 = Mockito.mock(ItemState.class);
@@ -97,7 +97,7 @@ class CreateRowGroupFromPrototypeCommandTest {
   }
 
   @Test
-  public void eventMatcherShouldNotReactOnItemsChangedEventOfDifferentGroup() {
+  void eventMatcherShouldNotReactOnItemsChangedEventOfDifferentGroup() {
     CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
     Assertions.assertFalse(
       command.getEventMatchers().stream()

@@ -65,7 +65,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
 
   @Test
-  public void shouldGetQUESTIONNAIRE_NOT_FOUNDActionIfAskedQuestionnaireDoNotExists2() throws Exception {
+  void shouldGetQUESTIONNAIRE_NOT_FOUNDActionIfAskedQuestionnaireDoNotExists2() throws Exception {
     when(questionnaireDatabase.findOne(eq(tenantId), any())).thenThrow(DocumentNotFoundException.class);
     openSession("q-1")
       .expectActions(actions -> {
@@ -83,7 +83,7 @@ public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
   }
 
   @Test
-  public void connectWebsocketPerQuestionnaireID() throws Exception {
+  void connectWebsocketPerQuestionnaireID() throws Exception {
     when(questionnaireDatabase.findOne(eq(tenantId), any())).thenThrow(DocumentNotFoundException.class);
     openSession("1234")
       .expectActions(actions -> {

@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 class LanguageExpressionTest {
 
   @Test
-  public void shouldGetCurrentLanguageFromContext() {
+  void shouldGetCurrentLanguageFromContext() {
     EvalContext context = Mockito.mock(EvalContext.class);
 
     doReturn("fi").when(context).getLanguage();
@@ -37,7 +37,7 @@ class LanguageExpressionTest {
   }
 
   @Test
-  public void shouldDependOnLocaleChanges() {
+  void shouldDependOnLocaleChanges() {
     LanguageExpression languageExpression = StringOperators.languageOperator();
     assertTrue(languageExpression.getEvalRequiredConditions().iterator().next().matches(SessionLocaleUpdatedEvent.INSTANCE));
   }

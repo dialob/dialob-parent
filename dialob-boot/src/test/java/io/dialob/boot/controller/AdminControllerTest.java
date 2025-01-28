@@ -129,7 +129,7 @@ class AdminControllerTest extends AbstractUIControllerTest {
   }
 
   @Test
-  public void shouldRedirectToAuthorization() throws Exception {
+  void shouldRedirectToAuthorization() throws Exception {
     mockMvc.perform(get("/").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andDo(print())
       .andExpect(status().isFound())

@@ -37,7 +37,7 @@ public class FormItemBeanTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     FormItem formItem = parseFormItem("{\"id\":\"item1\",\"type\":\"text\"}");
     Assertions.assertEquals("item1", formItem.getId());
     Assertions.assertEquals("text", formItem.getType());

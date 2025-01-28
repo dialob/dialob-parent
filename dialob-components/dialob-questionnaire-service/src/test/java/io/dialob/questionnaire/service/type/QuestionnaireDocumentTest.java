@@ -53,7 +53,7 @@ public class QuestionnaireDocumentTest {
     }
 
     @Test
-  public void timestamps() throws Exception {
+  void timestamps() throws Exception {
       Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(Date.from(Instant.parse("2015-10-14T15:58:24.680Z"))).build()).build();
 
       String data = objectMapper.writeValueAsString(questionnaire);

@@ -90,7 +90,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testQuestionCopy() {
+  void testQuestionCopy() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "question1");
     form = resultPair.getLeft();
@@ -103,7 +103,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testQuestionCopyGvs() {
+  void testQuestionCopyGvs() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "question4");
     form = resultPair.getLeft();
@@ -116,7 +116,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testGroupCopy() {
+  void testGroupCopy() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "group1");
     form = resultPair.getLeft();
@@ -142,7 +142,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testUnknownItem() {
+  void testUnknownItem() {
     Form form = loadForm();
     ImmutableForm.Builder builder = ImmutableForm.builder().from(form);
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "IDontExist");

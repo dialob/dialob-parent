@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RestApiExceptionMapperTest {
 
   @Test
-  public void shouldReturnStatus500WhenErrorsDoNotDefinedIt() {
+  void shouldReturnStatus500WhenErrorsDoNotDefinedIt() {
     RestApiExceptionMapper mapper = new RestApiExceptionMapper();
     ResponseEntity entity = mapper.apiExceptionHandler(new ApiException(ImmutableErrors.builder().build()));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
@@ -40,7 +40,7 @@ class RestApiExceptionMapperTest {
   }
 
   @Test
-  public void shouldReturnStatus500WhenErrorsDefinesUnknownStatus() {
+  void shouldReturnStatus500WhenErrorsDefinesUnknownStatus() {
     RestApiExceptionMapper mapper = new RestApiExceptionMapper();
     ResponseEntity entity = mapper.apiExceptionHandler(new ApiException(ImmutableErrors.builder().status(999).build()));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());

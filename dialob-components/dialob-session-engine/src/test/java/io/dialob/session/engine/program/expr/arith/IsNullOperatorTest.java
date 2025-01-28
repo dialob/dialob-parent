@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 public class IsNullOperatorTest {
 
   @Test
-  public void shouldInspectItemById() {
+  void shouldInspectItemById() {
 
     IsNullOperator operator = ImmutableIsNullOperator.builder().itemId((ImmutableItemRef) IdUtils.toId("itemi")).build();
     EvalContext context = Mockito.mock(EvalContext.class);

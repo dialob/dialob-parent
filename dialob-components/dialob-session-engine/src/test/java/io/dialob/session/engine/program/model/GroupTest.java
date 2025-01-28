@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 class GroupTest {
 
   @Test
-  public void shouldAcceptNullPropertyValues() {
+  void shouldAcceptNullPropertyValues() {
     ImmutableGroup.builder()
       .id(IdUtils.toId("x"))
       .type("g")

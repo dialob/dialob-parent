@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DialobCoreAutoConfigurationTest {
 
   @Test
-  public void testDialobCoreAutoConfiguration() {
+  void testDialobCoreAutoConfiguration() {
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobCoreAutoConfiguration.class))
       .run(context -> {

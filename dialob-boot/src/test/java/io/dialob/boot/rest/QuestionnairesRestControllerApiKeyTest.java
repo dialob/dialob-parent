@@ -180,7 +180,7 @@ public class QuestionnairesRestControllerApiKeyTest {
   }
 
   @Test
-  public void shouldLookupQuestionnairesFromRepository() throws Exception {
+  void shouldLookupQuestionnairesFromRepository() throws Exception {
     doReturn("testTenant").when(currentTenant).getId();
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = (Consumer<QuestionnaireDatabase.MetadataRow>) invocation.getArguments()[6];
@@ -229,7 +229,7 @@ public class QuestionnairesRestControllerApiKeyTest {
   }
 
   @Test
-  public void shouldRejectInvalidKey() throws Exception {
+  void shouldRejectInvalidKey() throws Exception {
     var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {

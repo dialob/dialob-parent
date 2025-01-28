@@ -80,7 +80,7 @@ public class QuestionnaireWebSocketHandlerTest {
 
 
   @Test
-  public void shouldDelegateSessionInitToAsyncTask() throws Exception {
+  void shouldDelegateSessionInitToAsyncTask() throws Exception {
     final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
     final QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     final Map<String,Object> attributes = new HashMap<>();
@@ -130,7 +130,7 @@ public class QuestionnaireWebSocketHandlerTest {
   }
 
   @Test
-  public void shouldSendQuestionnaireNotFoundMessageIfQuestionnaireIsNotFound() throws Exception {
+  void shouldSendQuestionnaireNotFoundMessageIfQuestionnaireIsNotFound() throws Exception {
     final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
     final QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     final Map<String,Object> attributes = new HashMap<>();

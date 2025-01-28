@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 public class ExtractURIParametersToAttributesInterceptorTest {
 
   @Test
-  public void shouldNotExtractAnything() throws Exception {
+  void shouldNotExtractAnything() throws Exception {
     ExtractURIParametersToAttributesInterceptor interceptor = new ExtractURIParametersToAttributesInterceptor();
     Map<String,Object> attributes = new HashMap<>();
     WebSocketHandler wsHandler = mock(WebSocketHandler.class);
@@ -49,7 +49,7 @@ public class ExtractURIParametersToAttributesInterceptorTest {
   }
 
   @Test
-  public void shouldExtractId() throws Exception {
+  void shouldExtractId() throws Exception {
     ExtractURIParametersToAttributesInterceptor interceptor = new ExtractURIParametersToAttributesInterceptor("id","id2","id3");
     Map<String,Object> attributes = new HashMap<>();
     WebSocketHandler wsHandler = mock(WebSocketHandler.class);

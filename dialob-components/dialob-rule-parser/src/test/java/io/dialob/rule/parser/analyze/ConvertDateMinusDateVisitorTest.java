@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class ConvertDateMinusDateVisitorTest {
 
   @Test
-  public void shouldConvertDateMinusDateToPeriodBetweenCall() throws Exception {
+  void shouldConvertDateMinusDateToPeriodBetweenCall() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     Mockito.when(variableFinder.typeOf("b")).thenReturn(ValueType.DATE);

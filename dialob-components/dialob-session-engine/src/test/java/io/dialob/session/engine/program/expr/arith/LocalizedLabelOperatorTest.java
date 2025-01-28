@@ -55,7 +55,7 @@ class LocalizedLabelOperatorTest {
   }
 
   @Test
-  public void shouldReturnNullWhenLabelIsNotDefined() {
+  void shouldReturnNullWhenLabelIsNotDefined() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(Collections.emptyMap()));
     when(context.getLanguage()).thenReturn("fi");
     assertNull(operator.eval(context));
@@ -64,7 +64,7 @@ class LocalizedLabelOperatorTest {
   }
 
   @Test
-  public void shouldReturnLocalizeLabel() {
+  void shouldReturnLocalizeLabel() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko","en","Title")));
     when(context.getLanguage()).thenReturn("fi").thenReturn("en");
     assertEquals("Otsikko", operator.eval(context));
@@ -74,7 +74,7 @@ class LocalizedLabelOperatorTest {
   }
 
   @Test
-  public void shouldExpandVariablesNonExistentExapndsToNull() {
+  void shouldExpandVariablesNonExistentExapndsToNull() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));
     when(context.getLanguage()).thenReturn("fi");
     assertEquals("Otsikko null", operator.eval(context));
@@ -90,7 +90,7 @@ class LocalizedLabelOperatorTest {
 
 
   @Test
-  public void shouldExpandStringVariables() {
+  void shouldExpandStringVariables() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn("hello");
@@ -103,7 +103,7 @@ class LocalizedLabelOperatorTest {
   }
 
   @Test
-  public void shouldExpandNumberVariablesWithFormmater() {
+  void shouldExpandNumberVariablesWithFormmater() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1:#,##0}")));
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn(123000);
@@ -113,7 +113,7 @@ class LocalizedLabelOperatorTest {
     verifyNoMoreInteractions(programBuilder, context);
   }
   @Test
-  public void shouldExpandDecimalVariablesWithFormmater() {
+  void shouldExpandDecimalVariablesWithFormmater() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1:#,##0.00}")));
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn(BigDecimal.valueOf(123000));
@@ -123,7 +123,7 @@ class LocalizedLabelOperatorTest {
     verifyNoMoreInteractions(programBuilder, context);
   }
   @Test
-  public void shouldExpandNumberlVariablesWithoutFormmater() {
+  void shouldExpandNumberlVariablesWithoutFormmater() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn(123000);
@@ -135,7 +135,7 @@ class LocalizedLabelOperatorTest {
     verifyNoMoreInteractions(programBuilder, context);
   }
   @Test
-  public void shouldExpandDecimallVariablesWithoutFormmater() {
+  void shouldExpandDecimallVariablesWithoutFormmater() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn(BigDecimal.valueOf(123000.01));
@@ -147,7 +147,7 @@ class LocalizedLabelOperatorTest {
     verifyNoMoreInteractions(programBuilder, context);
   }
   @Test
-  public void shouldInterpolateSelectionToValue() {
+  void shouldInterpolateSelectionToValue() {
     when(programBuilder.findValueSetIdForItem(IdUtils.toId("var1"))).thenReturn(Optional.of("vs1"));
 
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));
@@ -165,7 +165,7 @@ class LocalizedLabelOperatorTest {
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
   @Test
-  public void shouldInterpolateSelectionToLowerCaseValue() {
+  void shouldInterpolateSelectionToLowerCaseValue() {
     when(programBuilder.findValueSetIdForItem(IdUtils.toId("var1"))).thenReturn(Optional.of("vs1"));
 
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1:lowercase}")));
@@ -184,7 +184,7 @@ class LocalizedLabelOperatorTest {
   }
 
   @Test
-  public void shouldInterpolateSelectionToUpperCaseValue() {
+  void shouldInterpolateSelectionToUpperCaseValue() {
     when(programBuilder.findValueSetIdForItem(IdUtils.toId("var1"))).thenReturn(Optional.of("vs1"));
 
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1:uppercase}")));
@@ -202,7 +202,7 @@ class LocalizedLabelOperatorTest {
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
   @Test
-  public void shouldInterpolateSelectionToKeyWhenFormatIsKey() {
+  void shouldInterpolateSelectionToKeyWhenFormatIsKey() {
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1:key}")));
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
@@ -214,7 +214,7 @@ class LocalizedLabelOperatorTest {
   }
 
   @Test
-  public void shouldInterpolateMultichoiceSelectionToValue() {
+  void shouldInterpolateMultichoiceSelectionToValue() {
     when(programBuilder.findValueSetIdForItem(IdUtils.toId("var1"))).thenReturn(Optional.of("vs1"));
 
     LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.createLabel(ImmutableMap.of("fi","Otsikko {var1}")));

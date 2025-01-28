@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 class DialobSessionEvalContextTest {
 
   @Test
-  public void shouldVisitUpdatedItems() {
+  void shouldVisitUpdatedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
@@ -82,7 +82,7 @@ class DialobSessionEvalContextTest {
   }
 
   @Test
-  public void shouldVisitCreatedItems() {
+  void shouldVisitCreatedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
@@ -126,7 +126,7 @@ class DialobSessionEvalContextTest {
   }
 
   @Test
-  public void shouldVisitRemovedItems() {
+  void shouldVisitRemovedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);

@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class ValidationBuilderTest {
 
   @Test
-  public void validationBuilderShouldMapanswerToParentQuestion() {
+  void validationBuilderShouldMapanswerToParentQuestion() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     ValidationBuilder vb = new ValidationBuilder(qb, "ec1");
     when(qb.getAliases()).thenReturn(ImmutableMap.of());
@@ -49,7 +49,7 @@ class ValidationBuilderTest {
   }
 
   @Test
-  public void validationBuilderShouldMergeParentAliases() {
+  void validationBuilderShouldMergeParentAliases() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     ValidationBuilder vb = new ValidationBuilder(qb, "ec1");
     when(qb.getAliases()).thenReturn(ImmutableMap.of("q2", IdUtils.toId("g1.g4")));
@@ -69,7 +69,7 @@ class ValidationBuilderTest {
   }
 
   @Test
-  public void shouldCreateValidationWhenActivationRuleIsUndefined() {
+  void shouldCreateValidationWhenActivationRuleIsUndefined() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     Consumer<FormValidationError> errorConsumer = mock(Consumer.class);
     when(qb.getId()).thenReturn(IdUtils.toId("q1"));

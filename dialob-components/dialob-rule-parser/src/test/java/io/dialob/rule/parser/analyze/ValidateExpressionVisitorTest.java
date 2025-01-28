@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class ValidateExpressionVisitorTest {
 
   @Test
-  public void functionReturningNonBooleanShouldTriggerError() throws Exception {
+  void functionReturningNonBooleanShouldTriggerError() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.returnTypeOf("today", new ValueType[0])).thenReturn(ValueType.DATE);
     Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "today()");
@@ -43,7 +43,7 @@ public class ValidateExpressionVisitorTest {
   }
 
   @Test
-  public void functionReturningBooleanIsAccepted() throws Exception {
+  void functionReturningBooleanIsAccepted() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.returnTypeOf("booleanFunction", new ValueType[0])).thenReturn(ValueType.BOOLEAN);
     Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "booleanFunction()");

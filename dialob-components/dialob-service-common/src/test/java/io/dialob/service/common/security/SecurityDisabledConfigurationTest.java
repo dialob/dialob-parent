@@ -77,7 +77,7 @@ class SecurityDisabledConfigurationTest {
   }
 
   @Test
-  public void shouldAcceptPUTMethod() throws Exception {
+  void shouldAcceptPUTMethod() throws Exception {
     mockMvc.perform(options("/review/123")
       .header("Access-Control-Request-Method","PUT")
       .header("Access-Control-Request-Headers","origin, x-requested-with")

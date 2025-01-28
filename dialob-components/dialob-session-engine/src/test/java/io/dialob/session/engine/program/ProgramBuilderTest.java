@@ -89,7 +89,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldBeVisitable() {
+  void shouldBeVisitable() {
     Program program = buildProgram();
     final AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
     final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant", "session1", "fi", null, (id, item) -> Optional.empty(), valueSetId -> Collections.emptyList(), Maps.newHashMap(), null, null, null);
@@ -131,7 +131,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldNotUpdateInactiveQuestion() {
+  void shouldNotUpdateInactiveQuestion() {
     Program program = buildProgram();
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
@@ -146,7 +146,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldUpdateActiveQuestion() {
+  void shouldUpdateActiveQuestion() {
     Program program = buildProgram();
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
@@ -163,7 +163,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldChangeStateBasedOnActivatinRule() {
+  void shouldChangeStateBasedOnActivatinRule() {
     Program program = buildProgram();
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
@@ -206,7 +206,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void testPageNavigation() {
+  void testPageNavigation() {
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
       .addRoot()
@@ -305,7 +305,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void testErrorTriggering() {
+  void testErrorTriggering() {
     // @formatter:off
     Program program = newProgramBuilder()
       .startProgram()
@@ -343,7 +343,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void testErrorRequired() {
+  void testErrorRequired() {
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
       .addRoot()
@@ -374,7 +374,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void testErrorWhenRequired() {
+  void testErrorWhenRequired() {
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
       .addRoot()
@@ -405,7 +405,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldNotifyAboutUpdatedItems() {
+  void shouldNotifyAboutUpdatedItems() {
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
       .addRoot()
@@ -452,7 +452,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldNotifyAboutUpdatedErrors() {
+  void shouldNotifyAboutUpdatedErrors() {
     // @formatter:off
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
@@ -504,7 +504,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldEvaluateVariableValueExpression() {
+  void shouldEvaluateVariableValueExpression() {
     // @formatter:off
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
@@ -542,7 +542,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldCompileValidationsWithLocalAliasAnswer() {
+  void shouldCompileValidationsWithLocalAliasAnswer() {
     // @formatter:off
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
@@ -582,7 +582,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldCompileRequiredExpressions() {
+  void shouldCompileRequiredExpressions() {
     // @formatter:off
     Program program = newProgramBuilder().startProgram()
       .setId("matches")
@@ -622,7 +622,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldAddVariablesForAsyncFunctionInvocations() throws Exception {
+  void shouldAddVariablesForAsyncFunctionInvocations() throws Exception {
     when(functionRegistry.isAsyncFunction("f1")).thenReturn(true);
     when(functionRegistry.returnTypeOf("f1", ValueType.STRING)).thenReturn(ValueType.BOOLEAN);
 
@@ -668,7 +668,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportCompilationErrorOnVisibility() {
+  void shouldReportCompilationErrorOnVisibility() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -690,7 +690,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportCompilationErrorOnRequirement() {
+  void shouldReportCompilationErrorOnRequirement() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -712,7 +712,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportCompilationErrorOnValidation() {
+  void shouldReportCompilationErrorOnValidation() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -735,7 +735,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportCompilationErrorOnClassname() {
+  void shouldReportCompilationErrorOnClassname() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -757,7 +757,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportCompilationErrorOnValueEntry() {
+  void shouldReportCompilationErrorOnValueEntry() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -791,7 +791,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportInvalidExpressionErrorOnValueEntry() {
+  void shouldReportInvalidExpressionErrorOnValueEntry() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -830,7 +830,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldReportCompilationErrorOnVariable() {
+  void shouldReportCompilationErrorOnVariable() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -849,7 +849,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldNotAcceptNonBooleanExpressionToActiveWhenCondition() {
+  void shouldNotAcceptNonBooleanExpressionToActiveWhenCondition() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -874,7 +874,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldNotAcceptNonBooleanExpressionToRequiredWhenCondition() {
+  void shouldNotAcceptNonBooleanExpressionToRequiredWhenCondition() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -899,7 +899,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldNotAcceptNonBooleanExpressionToValidationCondition() {
+  void shouldNotAcceptNonBooleanExpressionToValidationCondition() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -922,7 +922,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportErrorsCorrectly() {
+  void shouldReportErrorsCorrectly() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -946,7 +946,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldReportCoercionErrorsCorrectly() {
+  void shouldReportCoercionErrorsCorrectly() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     programBuilder.startProgram()
@@ -970,7 +970,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldParseReducerExpressions() {
+  void shouldParseReducerExpressions() {
     // @formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     Program program = programBuilder
@@ -1012,7 +1012,7 @@ public class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldParseReducerExpressions2() {
+  void shouldParseReducerExpressions2() {
     // @formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
     Program program = programBuilder

@@ -42,7 +42,7 @@ class DialobRuleExpressionCompilerTest extends AbstractRuleExpressionCompilerTes
   }
 
   @Test
-  public void testDialobRuleSuccessfulBuild() throws Exception {
+  void testDialobRuleSuccessfulBuild() throws Exception {
     Form form = parseForm("/form_ffrl.json");
 
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
@@ -55,7 +55,7 @@ class DialobRuleExpressionCompilerTest extends AbstractRuleExpressionCompilerTes
   }
 
   @Test
-  public void testDialobRuleFailedBuild() throws Exception {
+  void testDialobRuleFailedBuild() throws Exception {
     Form form = parseForm("/form_ffrl_errors.json");
 
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);

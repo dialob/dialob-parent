@@ -27,7 +27,7 @@ public class LeOperatorTest {
 
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     LeOperator operator = ImmutableLeOperator.builder().lhs(lh).rhs(rh).build();

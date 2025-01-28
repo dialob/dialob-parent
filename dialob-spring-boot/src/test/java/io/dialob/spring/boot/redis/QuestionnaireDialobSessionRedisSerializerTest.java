@@ -117,7 +117,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   }
 
   @Test
-  public void shouldAcceptNullValues() {
+  void shouldAcceptNullValues() {
     QuestionnaireDialobSessionRedisSerializer serializer = getQuestionnaireDialobSessionRedisSerializer(65536);
 
     Assertions.assertNull(serializer.serialize(null));
@@ -127,7 +127,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   }
 
   @Test
-  public void shouldSerializeSimpleSession() {
+  void shouldSerializeSimpleSession() {
     final DialobSessionEvalContext evalContext = Mockito.mock(DialobSessionEvalContext.class);
 
     final QuestionnaireDialobSessionRedisSerializer serializer = getQuestionnaireDialobSessionRedisSerializer(65536);

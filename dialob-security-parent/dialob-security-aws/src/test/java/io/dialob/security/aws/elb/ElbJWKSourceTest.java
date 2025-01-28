@@ -84,7 +84,7 @@ class ElbJWKSourceTest {
 
 
   @Test
-  public void testRSA() throws Exception {
+  void testRSA() throws Exception {
     String jwkSetUriTemplate = "http://localhost:8080/{kid}";
     ResourceRetriever resourceRetriever = Mockito.mock(ResourceRetriever.class);
     Mockito
@@ -108,7 +108,7 @@ class ElbJWKSourceTest {
     Mockito.verifyNoMoreInteractions(resourceRetriever);
   }
   @Test
-  public void testEC() throws Exception {
+  void testEC() throws Exception {
     String jwkSetUriTemplate = "http://localhost:8080/{kid}";
     ResourceRetriever resourceRetriever = Mockito.mock(ResourceRetriever.class);
     Mockito

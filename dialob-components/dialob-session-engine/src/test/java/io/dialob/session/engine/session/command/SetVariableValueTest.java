@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SetVariableValueTest {
 
   @Test
-  public void shouldSetContextValue() {
+  void shouldSetContextValue() {
     ImmutableSetVariableValue setVariableValue = ImmutableSetVariableValue.builder()
       .targetId(IdUtils.toId("c1"))
       .value("new value")

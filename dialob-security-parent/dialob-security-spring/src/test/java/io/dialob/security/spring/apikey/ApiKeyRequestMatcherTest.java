@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class ApiKeyRequestMatcherTest {
 
   @Test
-  public void test() {
+  void test() {
     ServletRequestApiKeyExtractor extractor = Mockito.mock(ServletRequestApiKeyExtractor.class);
     when(extractor.getHeader()).thenReturn("my-header");
     ApiKeyRequestMatcher matcher = new ApiKeyRequestMatcher(extractor);

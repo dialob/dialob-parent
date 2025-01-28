@@ -81,7 +81,7 @@ public class FormDatabaseTest {
   }
 
   @Test
-  public void shouldFetchFromServiceOnce() {
+  void shouldFetchFromServiceOnce() {
     Form document = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
     when(formDatabaseMock.findOne(tenantId, "1","2")).thenReturn(document);
     assertSame(document, formDatabase.findOne(tenantId, "1","2"));
@@ -91,7 +91,7 @@ public class FormDatabaseTest {
   }
 
   @Test
-  public void shouldPassException() {
+  void shouldPassException() {
     Assertions.assertThatExceptionOfType(DocumentNotFoundException.class).isThrownBy(() -> {
       when(formDatabaseMock.findOne(tenantId, "1","2")).thenThrow(DocumentNotFoundException.class);
       formDatabase.findOne(tenantId, "1","2");
@@ -99,7 +99,7 @@ public class FormDatabaseTest {
   }
 
   @Test
-  public void saveShouldPutDocumentInCache() {
+  void saveShouldPutDocumentInCache() {
     Form document = ImmutableForm.builder().id("id-1").rev("rev-1").metadata(ImmutableFormMetadata.builder().label("test").build()).build();
 
     when(formDatabaseMock.findOne(tenantId, "id-1")).thenThrow(DocumentNotFoundException.class);

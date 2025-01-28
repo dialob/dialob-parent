@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class HmacSHA256ApiKeyGeneratorTest {
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     ApiKeyGenerator generator = new HmacSHA256ApiKeyGenerator("123".getBytes());
     ApiKey apiKey = generator.generateApiKey("00000000-0000-0000-0000-000000000000");
     assertEquals("00000000-0000-0000-0000-000000000000", apiKey.getClientId());
@@ -35,7 +35,7 @@ class HmacSHA256ApiKeyGeneratorTest {
   }
 
   @Test
-  public void test2() throws Exception {
+  void test2() throws Exception {
     ApiKeyGenerator generator = new HmacSHA256ApiKeyGenerator("123".getBytes());
     ApiKey apiKey = generator.generateApiKey("00000000-0000-0000-0000-000000000000", new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
     assertEquals("00000000-0000-0000-0000-000000000000", apiKey.getClientId());

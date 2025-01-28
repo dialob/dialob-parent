@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 class FormAzureBlobStorageDatabase2Test {
 
   @Test
-  public void shouldTrimPrefix() {
+  void shouldTrimPrefix() {
 
     BlobContainerClient blobContainerClient = Mockito.mock();
     BlobClient blobClient = Mockito.mock();
@@ -48,7 +48,7 @@ class FormAzureBlobStorageDatabase2Test {
   }
 
   @Test
-  public void shouldApplySuffix() {
+  void shouldApplySuffix() {
 
     BlobContainerClient blobContainerClient = Mockito.mock();
     BlobClient blobClient = Mockito.mock();

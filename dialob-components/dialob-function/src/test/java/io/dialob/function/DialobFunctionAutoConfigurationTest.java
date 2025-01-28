@@ -39,7 +39,7 @@ class DialobFunctionAutoConfigurationTest {
 
 
   @Test
-  public void shouldSetupFunctionRegistryBean() {
+  void shouldSetupFunctionRegistryBean() {
 
     new ApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(DialobFunctionAutoConfiguration.class))

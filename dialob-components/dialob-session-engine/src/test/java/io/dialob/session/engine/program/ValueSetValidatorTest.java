@@ -36,7 +36,7 @@ public class ValueSetValidatorTest {
       ).build();
 
   @Test
-  public void shouldWarnOnEmptySet() {
+  void shouldWarnOnEmptySet() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(
@@ -54,7 +54,7 @@ public class ValueSetValidatorTest {
   }
 
   @Test
-  public void shouldErrorOnDuplicateKeys() {
+  void shouldErrorOnDuplicateKeys() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(
@@ -86,7 +86,7 @@ public class ValueSetValidatorTest {
   }
 
   @Test
-  public void shouldPassValidSet() {
+  void shouldPassValidSet() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(
@@ -114,7 +114,7 @@ public class ValueSetValidatorTest {
   }
 
   @Test
-  public void shouldErrorOnEmptyKey() {
+  void shouldErrorOnEmptyKey() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(

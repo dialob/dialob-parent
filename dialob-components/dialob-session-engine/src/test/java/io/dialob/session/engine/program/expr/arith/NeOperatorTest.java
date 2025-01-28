@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class NeOperatorTest {
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     NeOperator operator = newNe(lh, rh);
@@ -56,7 +56,7 @@ public class NeOperatorTest {
   }
 
   @Test
-  public void shouldEvalToBoolean() {
+  void shouldEvalToBoolean() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     NeOperator operator = newNe(lh, rh);
