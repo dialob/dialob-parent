@@ -45,7 +45,7 @@ class QuestionnaireDocumentTest {
 
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         String data = "{\"_id\":\"609a38a672cf509eeca2b110c1022d35\",\"_rev\":\"1-a2ef6c9c6ab5d9c19603be0698b836b1\",\"answers\":[], \"metadata\": {\"formId\":\"609a38a672cf509eeca2b110c1021f3b\",\"formRev\":\"11-9ea0feacfd5911b129348e4d584679c9\",\"created\":1444838304680}}\n";
         Questionnaire questionnaire = objectMapper.readValue(data, Questionnaire.class);
         Assertions.assertNotNull(questionnaire);

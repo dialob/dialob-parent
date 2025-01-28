@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class AstMatcherTest {
 
     @Test
-    public void simpleNodeMatchersAreCalled() {
+    void simpleNodeMatchersAreCalled() {
         // given
         final Expression expression = Expression.createExpression("1 + a + 3");
         final UnaryOperator<NodeBase> constNodeFunctionMock = mock(UnaryOperator.class);
@@ -54,7 +54,7 @@ class AstMatcherTest {
     }
 
     @Test
-    public void simpleNodeMatchersAreCalledWhenPredicateMatches() {
+    void simpleNodeMatchersAreCalledWhenPredicateMatches() {
         // given
         final Expression expression = Expression.createExpression("1 + a + 3");
         final UnaryOperator<NodeBase> constNode3FunctionMock = mock(UnaryOperator.class);
@@ -81,7 +81,7 @@ class AstMatcherTest {
     }
 
     @Test
-    public void callOperatorMathers() {
+    void callOperatorMathers() {
         // given
         final Expression expression = Expression.createExpression("1 + a + 3");
         final UnaryOperator<NodeBase> callMatcher = mockMatchFunction();
@@ -99,7 +99,7 @@ class AstMatcherTest {
 
 
     @Test
-    public void callOperatorArgumentsMatchers() {
+    void callOperatorArgumentsMatchers() {
         // given
         final Expression expression = Expression.createExpression("1 + a + 3");
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
@@ -124,7 +124,7 @@ class AstMatcherTest {
     }
 
     @Test
-    public void matchersWithHigherPredenceOverridesLowerMatchers() {
+    void matchersWithHigherPredenceOverridesLowerMatchers() {
         // given
         final Expression expression = Expression.createExpression("1 + 3 + 3 + a");
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
@@ -147,7 +147,7 @@ class AstMatcherTest {
     }
 
     @Test
-    public void matchersWithHigherPredenceOverridesLowerMatchers2() {
+    void matchersWithHigherPredenceOverridesLowerMatchers2() {
         // given
         final Expression expression = Expression.createExpression("1 + 3 + 3 + a");
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
@@ -180,7 +180,7 @@ class AstMatcherTest {
 
 
     @Test
-    public void relativeMatchers() {
+    void relativeMatchers() {
         // given
         final Expression expression = Expression.createExpression("1 + a + 3");
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
@@ -207,7 +207,7 @@ class AstMatcherTest {
 
 
     @Test
-    public void shouldMatchOnParentNode() {
+    void shouldMatchOnParentNode() {
         // given
         final Expression expression = Expression.createExpression("a + b + c");
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
@@ -230,35 +230,35 @@ class AstMatcherTest {
 
 
     @Test
-    public void constEvalTest() {
+    void constEvalTest() {
         // given
         assertMinify("6", "1 + 2 + 3");
     }
     @Test
-    public void constEvalTest2() {
+    void constEvalTest2() {
         // given
         assertMinify("-2", "1 + 2 + 3 - 3 - 6 - 8 + 9");
     }
 
     @Test
-    public void stringPlusIsStringCat() {
+    void stringPlusIsStringCat() {
         // given
         assertMinify("\"6a689\"", "1 + 2 + 3 + 'a' + 6 + 8 + 9");
     }
     @Test
-    public void integerMultiply() {
+    void integerMultiply() {
         // given
         assertMinify("24", "1 * 2 * 3 * 4");
     }
 
     @Test
-    public void decimalMultiply() {
+    void decimalMultiply() {
         // given
         assertMinify("26.4", "1 * 2.2 * 3 * 4");
     }
 
     @Test
-    public void divide() {
+    void divide() {
         // given
         assertMinify("0.50", "1 / 2");
         assertMinify("0.33", "1 / 3");
@@ -267,17 +267,17 @@ class AstMatcherTest {
     }
 
     @Test
-    public void negateInteger() {
+    void negateInteger() {
         // given
         assertMinify("-1", "-1");
     }
     @Test
-    public void negateDecimal() {
+    void negateDecimal() {
         // given
         assertMinify("-5.0", "-1.0 * 5");
     }
     @Test
-    public void relOpe() {
+    void relOpe() {
         assertMinify("false", "-1.0 > 5");
         assertMinify("false", "-1.0 >= 5");
         assertMinify("true", "-1.0 <= 5");
@@ -299,7 +299,7 @@ class AstMatcherTest {
     }
 
     @Test
-    public void logicalOper() {
+    void logicalOper() {
         assertMinify("false", "false or false");
         assertMinify("(= a 0)", "true and a = 0");
         assertMinify("false", "false and a = 0");

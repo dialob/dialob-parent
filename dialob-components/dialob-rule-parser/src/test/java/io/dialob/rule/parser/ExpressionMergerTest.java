@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 class ExpressionMergerTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         assertExpressionMerge("1 + 2 + 3 + 4", "(+ 1 2 3 4)");
         assertExpressionMerge("1 + 2", "(+ 1 2)");
         assertExpressionMerge("1 - 1", "(- 1 1)");

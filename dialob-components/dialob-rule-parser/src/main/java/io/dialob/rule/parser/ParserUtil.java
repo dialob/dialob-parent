@@ -20,20 +20,6 @@ import io.dialob.rule.parser.api.ValueType;
 
 public class ParserUtil {
 
-  public static boolean isBuiltInFunction(@NonNull String function) {
-    return "def".equals(function) || "ref".equals(function)
-      || "isAnswered".equals(function)
-      || "isNotAnswered".equals(function)
-      || "in".equals(function)
-      || "notIn".equals(function)
-      || "matches".equals(function)
-      || "notMatches".equals(function)
-      || "not".equals(function)
-      || "neg".equals(function)
-      || isReducerOperator(function)
-      ;
-  }
-
   public static boolean isReducerOperator(@NonNull String reducer) {
     return "sumOf".equals(reducer)
       || "minOf".equals(reducer)
@@ -42,49 +28,19 @@ public class ParserUtil {
       || "anyOf".equals(reducer);
   }
 
-  public static ValueType getReducerOperatorReturnType(@NonNull String reducer, @NonNull ValueType inputType) {
-    switch(reducer) {
-      case "allOf":
-      case "anyOf":
-      case "sumOf":
-      case "minOf":
-      case "maxOf":
-        return inputType;
-    }
-    return null;
-  }
-
   public static ValueType itemTypeToValueType(@NonNull String itemType) {
-    switch (itemType) {
-      case "text":
-      case "list":
-      case "note":
-      case "survey":
-        return ValueType.STRING;
-      case "boolean":
-        return ValueType.BOOLEAN;
-      case "date":
-        return ValueType.DATE;
-      case "time":
-        return ValueType.TIME;
-      case "number":
-        return ValueType.INTEGER;
-      case "decimal":
-        return ValueType.DECIMAL;
-      case "multichoice":
-        return ValueType.arrayOf(ValueType.STRING);
-      case "rowgroup":
-        return ValueType.arrayOf(ValueType.INTEGER);
-      case "questionnaire":
-      case "context":
-      case "variable":
-      case "group":
-      case "surveygroup":
-      case "row":
-        return null;
-      default:
-        throw new RuntimeException(String.format("Unsupported item type %s", itemType));
-    }
+    return switch (itemType) {
+      case "text", "list", "note", "survey" -> ValueType.STRING;
+      case "boolean" -> ValueType.BOOLEAN;
+      case "date" -> ValueType.DATE;
+      case "time" -> ValueType.TIME;
+      case "number" -> ValueType.INTEGER;
+      case "decimal" -> ValueType.DECIMAL;
+      case "multichoice" -> ValueType.arrayOf(ValueType.STRING);
+      case "rowgroup" -> ValueType.arrayOf(ValueType.INTEGER);
+      case "questionnaire", "context", "variable", "group", "surveygroup", "row" -> null;
+      default -> throw new RuntimeException(String.format("Unsupported item type %s", itemType));
+    };
   }
 
 }

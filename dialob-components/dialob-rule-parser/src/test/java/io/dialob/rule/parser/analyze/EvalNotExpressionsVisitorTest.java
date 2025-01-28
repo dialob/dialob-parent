@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EvalNotExpressionsVisitorTest {
 
     @Test
-    public void test() {
+    void test() {
         assertExpressionNot("(and (> a 0) (or false true))", "a > 0 and not not (false or true)");
         assertExpressionNot("(and (> a 0) (and true false))", "a > 0 and not (false or true)");
         assertExpressionNot("(and (> a 0) (and true true))", "a > 0 and not (false or not true)");

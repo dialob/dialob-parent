@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ExpressionWriterVisitorTest {
     @Test
-    public void test() {
+    void test() {
         assertAstDump("1+2+4 > 9","1 + 2 + 4 > 9");
         assertAstDump("1*(hn+4) > 9","1 * (hn + 4) > 9");
         assertAstDump("1/(hn+4) > 9","1 / (hn + 4) > 9");

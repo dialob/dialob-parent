@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class FormDocumentTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         String s = "{\"_id\": \"d34d5d75297bd4ec977c8beb3003c827\",\"_rev\": \"6-5b916f027a4901003f3a64d05331429d\",\"updated\": null,"
                 + "\"saving\": false,\"failed\": null,"
                 + "\"data\": {\"group\": {\"type\": \"group\",\"items\": [\"text\",\"text1\","

@@ -117,7 +117,7 @@ class ApiControllerTest extends AbstractControllerTest {
 
   @Test
   @WithDialobUser(username = "apiUser", authorities = {}, tenants = {})
-  public void fetchTenantsWithoutTenantAccess() throws Exception {
+  void fetchTenantsWithoutTenantAccess() throws Exception {
     mockMvc.perform(get("/api/tenants").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("[]")))
@@ -127,7 +127,7 @@ class ApiControllerTest extends AbstractControllerTest {
 
   @Test
   @WithDialobUser(username = "apiUser", authorities = {}, tenants = {"testi"})
-  public void fetchTenantsWithAccessToOneTenant() throws Exception {
+  void fetchTenantsWithAccessToOneTenant() throws Exception {
     doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("testi", "testi"));
 
     mockMvc.perform(get("/api/tenants").accept(MediaType.APPLICATION_JSON))
@@ -141,7 +141,7 @@ class ApiControllerTest extends AbstractControllerTest {
 
   @Test
   @WithDialobUser(username = "apiUser", authorities = {}, tenants = {})
-  public void cannotAccessFormsWithoutTenant() throws Exception {
+  void cannotAccessFormsWithoutTenant() throws Exception {
 
     mockMvc.perform(get("/api/forms").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isForbidden())
@@ -155,7 +155,7 @@ class ApiControllerTest extends AbstractControllerTest {
 
   @Test
   @WithDialobUser(username = "apiUser", authorities = {Permissions.FORMS_GET, Permissions.QUESTIONNAIRES_GET}, tenants = {"testi"})
-  public void canAccessFormsWithTenant() throws Exception {
+  void canAccessFormsWithTenant() throws Exception {
     doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("testi", "testi"));
 
     doReturn(ResponseEntity.ok(Collections.emptyList())).when(formsRestServiceController).getForms(null);
