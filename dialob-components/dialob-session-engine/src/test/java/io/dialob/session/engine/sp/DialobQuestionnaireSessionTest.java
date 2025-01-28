@@ -349,25 +349,6 @@ class DialobQuestionnaireSessionTest {
     verifyNoMoreInteractions(eventPublisher, dialobProgram);
   }
 
-  @Test
-  void testObjectVisibilityWhenShowInactiveIsFalse2() {
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
-    DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
-      .dialobSession(dialobSession)
-      .dialobProgram(dialobProgram)
-      .rev(questionnaire.getRev())
-      .metadata(questionnaire.getMetadata())
-      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
-      .build();
-  }
 
 
-  }
+}

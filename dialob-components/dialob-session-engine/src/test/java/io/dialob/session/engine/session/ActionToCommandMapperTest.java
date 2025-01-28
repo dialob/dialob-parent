@@ -40,7 +40,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -60,7 +60,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -79,7 +79,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -96,7 +96,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -111,7 +111,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -127,7 +127,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -145,7 +145,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -161,7 +161,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -179,7 +179,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -197,7 +197,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -215,7 +215,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNotNull(command);
@@ -232,7 +232,7 @@ class ActionToCommandMapperTest {
       .build();
 
     // Act
-    Command<?> command = new ActionToCommandMapper().apply(action);
+    Command<?> command = ActionToCommandMapper.INSTANCE.apply(action);
 
     // Assert
     assertNull(command);

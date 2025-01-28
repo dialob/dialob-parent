@@ -269,19 +269,5 @@ public class Reducers {
     }
   }
 
-  public enum Str implements Reducer<String> {
-    CAT {
-      @Override
-      public String reduce(String i, String t2) {
-        return i + t2;
-      }
-    };
-
-    @NonNull
-    @Override
-    public ValueType getValueType() {
-      return ValueType.STRING;
-    }
-  }
 
 }

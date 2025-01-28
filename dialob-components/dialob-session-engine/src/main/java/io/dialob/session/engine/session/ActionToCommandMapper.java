@@ -29,7 +29,9 @@ import static io.dialob.session.engine.session.command.CommandFactory.*;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class ActionToCommandMapper implements Function<Action, Command<?>> {
+public final class ActionToCommandMapper implements Function<Action, Command<?>> {
+
+  private ActionToCommandMapper() {}
 
   public static final ActionToCommandMapper INSTANCE = new ActionToCommandMapper();
 

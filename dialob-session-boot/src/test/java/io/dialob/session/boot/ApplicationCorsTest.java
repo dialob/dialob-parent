@@ -93,7 +93,7 @@ class ApplicationCorsTest {
   }
 
   @BeforeEach
-  public void setupCurrentUser(TestInfo testInfo) {
+  public void setupCurrentUser() {
     Mockito.reset(answerController, questionnaireSessionService);
     dialobSettings.getSession().getRest().getCors().clear();
     this.mockMvc = MockMvcBuilders

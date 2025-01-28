@@ -31,11 +31,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * A controller advice class that maps database-related exceptions to appropriate HTTP responses.
  * This class is used to centralize exception handling and provide consistent responses for various
  * database-related issues.
- *
+ * <p>
  * The class defines multiple exception handlers for specific exceptions, returning corresponding
  * HTTP status codes and error messages. The error responses are structured using the {@code Errors}
  * class, ensuring a standard format for API responses.
- *
+ * <p>
  * Exception Handling:
  * <table>
  *   <caption>Mapping of exceptions to HTTP statuses</caption>
@@ -104,7 +104,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * The {@code buildResponse} method constructs the error response using the provided HTTP status code
  * and error message. The error details are encapsulated within an {@code Errors} object. For validation
  * errors, additional error details may be provided.
- *
+ * <p>
  * Example JSON output:
  * <pre>
  * {

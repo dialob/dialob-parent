@@ -31,25 +31,25 @@ import java.util.Map;
  * This class is responsible for handling the submission of normalized documents
  * to an AWS S3 bucket. It extends the AbstractNormalizingPostSubmitHandler, leveraging
  * its method to normalize the submitted data before sending it to S3.
- *
+ * <p>
  * The class uses AWS SDK's S3Client to facilitate interactions with S3, and
  * Jackson's ObjectMapper to serialize the data into JSON format according to
  * the required configurations.
- *
+ * <p>
  * Features:
  * - Serializes normalized questionnaire data into JSON format.
  * - Sends the serialized document to an S3 bucket, using the document's unique
  *   identifier as the object key.
- *
+ * <p>
  * Constructor Details:
  * - The constructor accepts an S3Client and an ObjectMapper as parameters.
  * - The ObjectMapper is configured to order map entries by keys to ensure
  *   consistent serialization output.
- *
+ * <p>
  * Key Overrides:
  * - The sendDocument method is overridden to handle the process of constructing
  *   and uploading the JSON document to S3.
- *
+ * <p>
  * Logging:
  * - Debug logs are provided to track the process of sending documents to S3.
  * - Errors encountered during the JSON serialization process are logged.

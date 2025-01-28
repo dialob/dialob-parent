@@ -16,6 +16,7 @@
 package io.dialob.security.spring.apikey;
 
 import io.dialob.security.key.ApiKey;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -49,9 +50,10 @@ class HmacSHA256ApiKeyGeneratorTest {
   void generate() throws Exception {
     ApiKeyGenerator generator = new HmacSHA256ApiKeyGenerator("123".getBytes());
     ApiKey apiKey = generator.generateApiKey(UUID.randomUUID().toString());
+    Assertions.assertTrue(apiKey.getToken().isPresent());
+    Assertions.assertTrue(apiKey.getHash().isPresent());
     System.out.println("clientId : " + apiKey.getClientId());
     System.out.println("token : " + apiKey.getToken().get());
     System.out.println("hash  : " + apiKey.getHash().get());
-
   }
 }

@@ -36,7 +36,7 @@ import java.util.function.BinaryOperator;
  * that can be handled within a system. It provides methods for value
  * parsing, operations such as addition and multiplication, and type-related
  * metadata.
- *
+ * <p>
  * ValueType instances may represent types such as integer, decimal, boolean,
  * string, date, time, and others. It supports operations such as negation,
  * logical NOT, parsing from string or string with units, and coercion.
@@ -53,7 +53,7 @@ public interface ValueType extends Serializable, BaseValueType {
   /**
    * Represents a value type that corresponds to a time value. This can be used
    * to denote and operate on time-based data in the associated system.
-   *
+   * <p>
    * The TIME value type encapsulates operations and behaviors specific to
    * time values, including parsing, serialization, and mathematical operations
    * where applicable.
@@ -80,7 +80,7 @@ public interface ValueType extends Serializable, BaseValueType {
    * Represents a value type for periods, used to define temporal durations or intervals.
    * This type is part of the {@code ValueType} enumeration, which describes
    * various primitive and non-primitive data types.
-   *
+   * <p>
    * The {@code PERIOD} value type typically corresponds to a concept of time-based
    * spans or intervals and may be associated with operations or parsing mechanisms
    * specific to such representations.
@@ -89,12 +89,12 @@ public interface ValueType extends Serializable, BaseValueType {
 
   /**
    * A predefined constant representing the value type for integer numbers.
-   *
+   * <p>
    * It is used to indicate that a particular value, field, or parameter
    * is expected to have an integer type. This value type supports arithmetic
    * operations such as addition, subtraction, multiplication, and division,
    * along with other operations appropriate for numeric types.
-   *
+   * <p>
    * The integer type typically corresponds to a whole number representation
    * in Java (e.g., int or Integer).
    */
@@ -119,12 +119,12 @@ public interface ValueType extends Serializable, BaseValueType {
    * Represents the value type for durations.
    * This value type is used to denote time durations and supports
    * operations and parsing specific to duration-based values.
-   *
+   * <p>
    * Key features of the `DURATION` value type include:
    * - Parsing and interpreting strings into duration objects.
    * - Defining operations such as addition and subtraction with other value types.
    * - Supporting negation operations where applicable.
-   *
+   * <p>
    * The `DURATION` value type may interact with other value types such as `TIME`, `PERIOD`,
    * and `DATE` to produce composite values or transformations.
    */
@@ -134,7 +134,7 @@ public interface ValueType extends Serializable, BaseValueType {
    * A predefined constant representing a percentage value type.
    * This value type is typically used to handle percentages in various
    * contexts, such as calculations, formatting, and data interpretation.
-   *
+   * <p>
    * The {@code PERCENT} value type supports operations specific to percentages,
    * including arithmetic operations like addition and multiplication,
    * as well as parsing and negation. The exact behavior of these operations

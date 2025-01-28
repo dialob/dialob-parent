@@ -52,7 +52,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-public class AbstractWebSocketTests implements ProvideTestRedis {
+abstract class AbstractWebSocketTests implements ProvideTestRedis {
 
   String tenantId = "00000000-0000-0000-0000-000000000000";
 

@@ -16,19 +16,26 @@
 package io.dialob.session.engine.program.model;
 
 import io.dialob.session.engine.session.model.IdUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GroupTest {
 
   @Test
   void shouldAcceptNullPropertyValues() {
-    ImmutableGroup.builder()
+    var group = ImmutableGroup.builder()
       .id(IdUtils.toId("x"))
       .type("g")
       .itemsExpression(Mockito.mock(Expression.class))
       .putProps("x", null)
       .build();
+
+    assertNotNull(group.getProps());
+    Assertions.assertTrue(group.getProps().containsKey("x"));
+    Assertions.assertNull(group.getProps().get("x"));
   }
 
 }

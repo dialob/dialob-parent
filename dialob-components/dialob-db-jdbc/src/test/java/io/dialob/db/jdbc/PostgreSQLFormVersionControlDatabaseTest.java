@@ -65,7 +65,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
     getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form.getId(), rows.get(0).getId());
-    assertTrue(Set.of("label1", "label2").equals(rows.get(0).getValue().getLabels()));
+    assertEquals(Set.of("label1", "label2"), rows.get(0).getValue().getLabels());
     rows.clear();
 
 

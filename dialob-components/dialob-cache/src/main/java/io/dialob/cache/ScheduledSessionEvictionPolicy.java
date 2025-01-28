@@ -64,11 +64,11 @@ public class ScheduledSessionEvictionPolicy {
    * Evicts questionnaire sessions from the session cache that meet specific conditions.
    * This method is scheduled to run at a fixed interval defined by the property
    * "dialob.session.cache.evict-rate" (default is 2000 milliseconds).
-   *
+   * <p>
    * A questionnaire session is evicted if:
    * - Its status equals {@link Questionnaire.Metadata.Status#COMPLETED}, or
    * - The time elapsed since its last update exceeds the configured TTL (time-to-live).
-   *
+   * <p>
    * The eviction process identifies sessions that satisfy the criteria and invokes the eviction
    * mechanism for those sessions.
    */

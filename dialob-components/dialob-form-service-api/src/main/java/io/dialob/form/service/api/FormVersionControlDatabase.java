@@ -158,7 +158,8 @@ public interface FormVersionControlDatabase {
    * Moves an existing tag associated with a form to a new location or updates
    * the tag details for the specified tenant.
    *
-   * @param tag the {@code FormTag} object representing the updated tag information,
+   * @param tenantId the identifier of the tenant to which the forms belong
+   * @param updateTag the {@code FormTag} object representing the updated tag information,
    *            including new details or the desired location for moving the tag
    * @return the updated {@code FormTag} wrapped in an {@code Optional} if the operation
    *         was successful, or an empty {@code Optional} if the operation failed

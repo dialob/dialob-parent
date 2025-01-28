@@ -79,7 +79,7 @@ public interface QuestionnaireDatabase {
 
   /**
    * Retrieves metadata for a specific questionnaire associated with the provided tenant identifier.
-   *
+   * <p>
    * This method constructs a {@code MetadataRow} object containing the questionnaire's
    * unique identifier and its metadata.
    *
@@ -95,10 +95,10 @@ public interface QuestionnaireDatabase {
    * Represents a row of metadata associated with a questionnaire.
    * This is an immutable interface that defines two primary attributes:
    * an identifier and a metadata value.
-   *
+   * <p>
    * It is part of the QuestionnaireDatabase and serves as a data transfer object
    * for carrying questionnaire metadata information through the application layers.
-   *
+   * <p>
    * Implementations of this interface ensure immutability and serialization capabilities.
    * The {@code id} uniquely identifies the metadata, while the {@code value}
    * holds the actual metadata details represented by {@link Questionnaire.Metadata}.

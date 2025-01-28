@@ -69,24 +69,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AbstractFormRepositoryTests {
+abstract class AbstractFormRepositoryTests {
 
-  public static final NoExceptionResponseErrorHandler NO_EXCEPTION_RESPONSE_ERROR_HANDLER = new NoExceptionResponseErrorHandler();
+  static final NoExceptionResponseErrorHandler NO_EXCEPTION_RESPONSE_ERROR_HANDLER = new NoExceptionResponseErrorHandler();
 
-  public MockMvc mockMvc;
+  MockMvc mockMvc;
 
-  public String tenantId = "00000000-0000-0000-0000-000000000000";
+  String tenantId = "00000000-0000-0000-0000-000000000000";
 
-  public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  protected MultiValueMap<String, String> tenantParam = new LinkedMultiValueMap<>();
+  MultiValueMap<String, String> tenantParam = new LinkedMultiValueMap<>();
 
-  public AbstractFormRepositoryTests() {
+  AbstractFormRepositoryTests() {
     tenantParam.add("tenantId","00000000-0000-0000-0000-000000000000");
   }
 
-
-  public static class TestConfiguration {
+  static class TestConfiguration {
     @Bean
     @Primary
     public QuestionnaireDatabase questionnaireDatabase() {
@@ -98,17 +97,17 @@ public class AbstractFormRepositoryTests {
   }
 
   @Inject
-  protected QuestionnaireDatabase questionnaireDatabase;
+  QuestionnaireDatabase questionnaireDatabase;
 
   @MockitoBean
-  protected FormDatabase formDatabase;
+  FormDatabase formDatabase;
 
-  public String getContextPath() {
+  String getContextPath() {
     Assertions.fail("add getContextPath method");
     return null;
   }
 
-  public URI uri(String... paths) {
+  URI uri(String... paths) {
     return UriComponentsBuilder.newInstance()
       .scheme("http")
       .host("localhost")
@@ -117,7 +116,7 @@ public class AbstractFormRepositoryTests {
       .build().toUri();
   }
 
-  protected static void defineInMemoryPeristence(QuestionnaireDatabase questionnaireDatabase) {
+  static void defineInMemoryPeristence(QuestionnaireDatabase questionnaireDatabase) {
     HashMap<String, Questionnaire> database = new HashMap<>();
     questionnaireDatabase = AopTestUtils.getTargetObject(questionnaireDatabase);
 
@@ -139,7 +138,7 @@ public class AbstractFormRepositoryTests {
 
 
   @BeforeEach
-  public void resetMocks() {
+  void resetMocks() {
     if (Mockito.mockingDetails(questionnaireDatabase).isMock()) {
       Mockito.reset(questionnaireDatabase);
       defineInMemoryPeristence(questionnaireDatabase);
@@ -150,30 +149,30 @@ public class AbstractFormRepositoryTests {
     }
   }
 
-  protected Form shouldFindForm(Form form) {
+  Form shouldFindForm(Form form) {
     when(formDatabase.findOne(eq(tenantId), eq(form.getId()))).thenReturn(form);
     when(formDatabase.findOne(eq(tenantId), eq(form.getId()), any())).thenReturn(form);
     when(formDatabase.exists(eq(tenantId), eq(form.getId()))).thenReturn(true);
     return form;
   }
 
-  protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, Form formDocument) {
+  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, Form formDocument) {
     return createQuestionnaireDocument(questionnaireId, questionnaireRev, formDocument.getId(), formDocument.getRev());
   }
 
-  protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, Form formDocument, List<ContextValue> context) {
+  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, Form formDocument, List<ContextValue> context) {
     return createQuestionnaireDocument(questionnaireId, questionnaireRev, formDocument.getId(), formDocument.getRev(), context);
   }
 
-  protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev) {
+  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev) {
     return createQuestionnaireDocument(questionnaireId, questionnaireRev, formId, formRev, null);
   }
 
-  protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context) {
+  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context) {
     return createQuestionnaireDocument(questionnaireId, questionnaireRev, formId, formRev, context, builder -> {});
   }
 
-  protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context, Consumer<ImmutableQuestionnaire.Builder> builderCallback) {
+  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context, Consumer<ImmutableQuestionnaire.Builder> builderCallback) {
     ImmutableQuestionnaire.Builder builder = ImmutableQuestionnaire.builder()
       .metadata(ImmutableQuestionnaireMetadata.builder()
         .formId(formId)
@@ -193,14 +192,14 @@ public class AbstractFormRepositoryTests {
     return questionnaire;
   }
 
-  protected FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
     return addItem(formBuilder, Constants.QUESTIONNAIRE, builder -> {
       builder.type(Constants.QUESTIONNAIRE);
       builderConsumer.accept(builder);
     });
   }
 
-  protected FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
     ImmutableFormItem.Builder builder = ImmutableFormItem.builder().id(itemId);
     builderConsumer.accept(builder);
     FormItem formItemBean = builder.build();
@@ -208,14 +207,14 @@ public class AbstractFormRepositoryTests {
     return formItemBean;
   }
 
-  protected FormItem addGroup(ImmutableForm.Builder formBuilder, String groupId, Consumer<ImmutableFormItem.Builder> builderConsumer, String... items) {
+  FormItem addGroup(ImmutableForm.Builder formBuilder, String groupId, Consumer<ImmutableFormItem.Builder> builderConsumer, String... items) {
     return addItem(formBuilder, groupId, builder -> {
       builderConsumer.accept(builder.type("group")
         .items(asList(items)));
     });
   }
 
-  protected Session createQuestionnaire(String formId) throws Exception {
+  Session createQuestionnaire(String formId) throws Exception {
     MvcResult mvcResult = mockMvc
       .perform(post(uri("api","questionnaires")).params(tenantParam)
         .content("{\"metadata\": {\"formId\":\"" + formId + "\"}}")
@@ -228,7 +227,7 @@ public class AbstractFormRepositoryTests {
     return new Session(OBJECT_MAPPER.readValue(response.getContentAsString(), IdAndRevision.class));
   }
 
-  protected Session createEditorQuestionnaire(String formId) throws Exception {
+  Session createEditorQuestionnaire(String formId) throws Exception {
     MvcResult mvcResult = mockMvc
       .perform(post(uri("api", "questionnaires")).params(tenantParam)
           .content("{\"metadata\": {\"formId\":\"" + formId + "\",\"formRev\":\"LATEST\"}}")
@@ -240,7 +239,7 @@ public class AbstractFormRepositoryTests {
     return new Session(OBJECT_MAPPER.readValue(response.getContentAsString(), IdAndRevision.class));
   }
 
-  protected <T> HttpEntity<T> httpEntity(T document, HttpHeaders httpHeaders) {
+  <T> HttpEntity<T> httpEntity(T document, HttpHeaders httpHeaders) {
     if (httpHeaders == null) {
       httpHeaders = new HttpHeaders();
     }
@@ -248,7 +247,7 @@ public class AbstractFormRepositoryTests {
     return new HttpEntity<>(document, httpHeaders);
   }
 
-  protected <T> HttpEntity<T> httpEntity(HttpHeaders httpHeaders) {
+  <T> HttpEntity<T> httpEntity(HttpHeaders httpHeaders) {
     return httpEntity(null, httpHeaders);
   }
 
@@ -259,7 +258,7 @@ public class AbstractFormRepositoryTests {
     }
   }
 
-  protected class Session {
+  class Session {
     IdAndRevision entity;
 
     String revision;
@@ -271,7 +270,7 @@ public class AbstractFormRepositoryTests {
     ParameterizedTypeReference<List<Action>> actionListGenericType = new ParameterizedTypeReference<>() {
     };
 
-    public List<Action> getAllActions() throws Exception {
+    List<Action> getAllActions() throws Exception {
       MvcResult mvcResult = mockMvc.perform(
         get(uri("api", "questionnaires", entity.getId(), "actions")).params(tenantParam)
           .header("FF-Request-Order-Token", revision)
@@ -283,42 +282,42 @@ public class AbstractFormRepositoryTests {
       return OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), (JavaType) actionListGenericType.getType());
     }
 
-    public List<Action> answerQuestion(String questionId, String answer) throws Exception {
+    List<Action> answerQuestion(String questionId, String answer) throws Exception {
       final Action action = ActionsFactory.answer(questionId, answer);
       ResponseEntity<List<Action>> response = postAction(action);
       assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
-    public List<Action> addRow(String rowGroupId) throws Exception {
+    List<Action> addRow(String rowGroupId) throws Exception {
       ResponseEntity<List<Action>> response = postAction(ActionsFactory.addRow(rowGroupId));
       assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
-    public List<Action> deleteRow(String rowId) throws Exception {
+    List<Action> deleteRow(String rowId) throws Exception {
       ResponseEntity<List<Action>> response = postAction(ActionsFactory.deleteRow(rowId));
       assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
-    public List<Action> previousPage() throws Exception {
+    List<Action> previousPage() throws Exception {
       ResponseEntity<List<Action>> response = postAction(Action.Type.PREVIOUS);
       assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
-    public List<Action> nextPage() throws Exception {
+    List<Action> nextPage() throws Exception {
       ResponseEntity<List<Action>> response = postAction(Action.Type.NEXT);
       assertEquals(HttpStatus.OK, response.getStatusCode());
       return response.getBody();
     }
 
-    public ResponseEntity<List<Action>> postAction(Action.Type actionType) throws Exception {
+    ResponseEntity<List<Action>> postAction(Action.Type actionType) throws Exception {
       return postAction(ImmutableAction.builder().type(actionType).build());
     }
 
-    public ResponseEntity<List<Action>> postAction(Action action) throws Exception {
+    ResponseEntity<List<Action>> postAction(Action action) throws Exception {
       List<Action> actions = singletonList(action);
       MvcResult mvcResult = mockMvc.perform(
         post(uri("api", "questionnaires", action.getId(), "actions")).params(tenantParam)
@@ -332,7 +331,7 @@ public class AbstractFormRepositoryTests {
       return OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), (JavaType) actionListGenericType.getType());
     }
 
-    public String getId() {
+    String getId() {
       return entity.getId();
     }
   }
