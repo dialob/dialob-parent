@@ -102,7 +102,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   protected void addItem(Item item) {
     // TODO verify conflicting id
-    if ("questionnaire".equals(item.getType())) {
+    if (Constants.QUESTIONNAIRE.equals(item.getType())) {
       assert rootItem == null;
       rootItem = item;
     } else {

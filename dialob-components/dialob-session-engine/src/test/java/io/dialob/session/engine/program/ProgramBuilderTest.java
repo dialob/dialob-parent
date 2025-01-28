@@ -978,7 +978,9 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
         .setId("matches")
         .addRoot()
           .addItem("rg1")
-          .addItem("note1")
+          .addItem("notesum")
+          .addItem("notemin")
+          .addItem("notemax")
           .build()
         .addRowGroup("rg1")
           .addItem("question2")
@@ -993,18 +995,26 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
           .setType("number")
           .setRequiredWhen("question2 is answered")
           .build()
-        .addQuestion("note1")
-          .setType("note")
-          .setActiveWhen("sum of question2 > 0")
-          .build()
-        .build();
+      .addQuestion("notesum")
+        .setType("note")
+        .setActiveWhen("sum of question2 > 0")
+        .build()
+      .addQuestion("notemin")
+        .setType("note")
+        .setActiveWhen("min of question2 > 0")
+        .build()
+      .addQuestion("notemax")
+        .setType("note")
+        .setActiveWhen("max of question2 > 0")
+        .build()
+      .build();
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(0, errors.size());
 
-    FormItem note = (FormItem) program.getItem(IdUtils.toId("note1")).get();
+    FormItem notesum = (FormItem) program.getItem(IdUtils.toId("notesum")).get();
 
-    BinaryOperator expression = (BinaryOperator) note.getActiveExpression().get();
+    BinaryOperator expression = (BinaryOperator) notesum.getActiveExpression().get();
     GtOperator gtOperator = (GtOperator)expression.getNodes().get(1);
     ArrayReducerOperator arrayReducerOperator = (ArrayReducerOperator)gtOperator.getLhs();
     CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.getArrayExpression();
