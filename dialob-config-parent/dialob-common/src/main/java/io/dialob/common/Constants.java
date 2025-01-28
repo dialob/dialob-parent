@@ -41,6 +41,23 @@ public final class Constants {
   public static final String SESSION_ACCESS_CACHE_MANAGER_BEAN = SESSION_ACCESS_CACHE_NAME + "Manager";
 
   public static final String QUESTIONNAIRE = "questionnaire";
+  public static final String GROUP = "group";
+  public static final String ROWGROUP = "rowgroup";
+  public static final String ROW = "row";
+  public static final String NOTE = "note";
+  public static final String SURVEYGROUP = "surveygroup";
+  public static final String VARIABLE = "variable";
+  public static final String CONTEXT = "context";
+  public static final String TEXT = "text";
+  public static final String LIST = "list";
+  public static final String SURVEY = "survey";
+  public static final String BOOLEAN = "boolean";
+  public static final String DATE = "date";
+  public static final String TIME = "time";
+  public static final String NUMBER = "number";
+  public static final String DECIMAL = "decimal";
+  public static final String MULTICHOICE = "multichoice";
+
   public static final String ERROR_CODE_REQUIRED = "REQUIRED";
 
   public static final String VALID_ID_PATTERN = "^\\p{Alpha}[_\\p{Alnum}]*$";

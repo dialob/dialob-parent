@@ -53,15 +53,15 @@ public class Utils {
   public static Optional<ValueType> mapQuestionTypeToValueType(String type) {
     if (type != null) {
       return Optional.ofNullable(switch (type) {
-        case "text", "list", "survey" -> ValueType.STRING;
-        case "boolean" -> ValueType.BOOLEAN;
-        case "date" -> ValueType.DATE;
-        case "time" -> ValueType.TIME;
-        case "number" -> ValueType.INTEGER;
-        case "decimal" -> ValueType.DECIMAL;
-        case "multichoice" -> ValueType.arrayOf(ValueType.STRING);
-        case "rowgroup" -> ValueType.arrayOf(ValueType.INTEGER);
-        case "row", "note", "group", "questionnaire", "surveygroup" -> null;
+        case Constants.TEXT, Constants.LIST, Constants.SURVEY -> ValueType.STRING;
+        case Constants.BOOLEAN -> ValueType.BOOLEAN;
+        case Constants.DATE -> ValueType.DATE;
+        case Constants.TIME -> ValueType.TIME;
+        case Constants.NUMBER -> ValueType.INTEGER;
+        case Constants.DECIMAL -> ValueType.DECIMAL;
+        case Constants.MULTICHOICE -> ValueType.arrayOf(ValueType.STRING);
+        case Constants.ROWGROUP -> ValueType.arrayOf(ValueType.INTEGER);
+        // ROW, NOTE, GROUP, QUESTIONNAIRE, SURVEYGROUP
         default -> null;
       });
     }
@@ -73,27 +73,27 @@ public class Utils {
   }
 
   public static boolean isContextVariable(@NonNull String type) {
-    return "context".equals(type);
+    return Constants.CONTEXT.equals(type);
   }
 
   public static boolean isProgramVariable(@NonNull String type) {
-    return "variable".equals(type);
+    return Constants.VARIABLE.equals(type);
   }
 
   public static boolean isNote(@NonNull String type) {
-    return "note".equals(type);
+    return Constants.NOTE.equals(type);
   }
 
   public static boolean isRowgroup(@NonNull String type) {
-    return "rowgroup".equals(type);
+    return Constants.ROWGROUP.equals(type);
   }
 
 
   public static boolean isQuestionType(@NonNull ItemState itemState) {
     return switch (itemState.getType()) {
-      case Constants.QUESTIONNAIRE, "group", "note", "variable", "context", "surveygroup" -> false;
+      case Constants.QUESTIONNAIRE, Constants.GROUP, Constants.NOTE, Constants.VARIABLE, Constants.CONTEXT, Constants.SURVEYGROUP -> false;
         // rows are not questions, but row containers answer holds row order on answer.
-      case "rowgroup" -> itemState.getPrototypeId() == null;
+      case Constants.ROWGROUP -> itemState.getPrototypeId() == null;
       default -> true;
     };
   }
