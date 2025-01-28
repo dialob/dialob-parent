@@ -108,8 +108,7 @@ public class CallExprNode extends NodeBase {
   public Map<String, ValueType> getDependencies() {
     Map<String, ValueType> dependencies = new HashMap<>();
     for (NodeBase argument : arguments) {
-      if (!getNodeOperator().isOrOp() && argument instanceof CallExprNode) {
-        CallExprNode callExprNode = (CallExprNode) argument;
+      if (!getNodeOperator().isOrOp() && argument instanceof CallExprNode callExprNode) {
         if (callExprNode.getNodeOperator().isOrOp()) {
           continue;
         }

@@ -22,8 +22,7 @@ import io.dialob.session.engine.session.model.ItemId;
 public interface ReduceOperators {
 
   static ItemId extractPrototypeId(Expression expression) {
-    if (expression instanceof VariableReference) {
-      VariableReference variableReference = (VariableReference) expression;
+    if (expression instanceof VariableReference variableReference) {
       return variableReference.getItemId();
     }
     throw new IllegalStateException("Only id expressions supported for now");

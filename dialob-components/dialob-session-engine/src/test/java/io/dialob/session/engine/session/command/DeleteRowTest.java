@@ -62,7 +62,7 @@ class DeleteRowTest {
 
     itemState = deleteRow.update(context, itemState);
 
-    assertEquals(Arrays.asList(2), ((List<Integer>)itemState.getValue()));
+    assertEquals(Arrays.asList(2), itemState.getValue());
 
   }
 
@@ -83,7 +83,7 @@ class DeleteRowTest {
       .get();
 
     itemState = deleteRow.update(context, itemState);
-    assertEquals(Arrays.asList(1), ((List<Integer>)itemState.getValue()));
+    assertEquals(Arrays.asList(1), itemState.getValue());
 
     assertEquals(ItemState.Status.OK, itemState.getStatus());
   }

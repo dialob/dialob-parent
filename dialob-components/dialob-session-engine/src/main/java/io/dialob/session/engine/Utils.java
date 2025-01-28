@@ -239,8 +239,7 @@ public class Utils {
       } else if (value instanceof Double) {
         output.write((byte) 4);
         output.writeDoubleNoTag((Double) value);
-      } else if (value instanceof List) {
-        List listValue = (List) value;
+      } else if (value instanceof List listValue) {
         final int size = listValue.size();
         if (size == 0) {
           output.write((byte) 0x80); // empty list

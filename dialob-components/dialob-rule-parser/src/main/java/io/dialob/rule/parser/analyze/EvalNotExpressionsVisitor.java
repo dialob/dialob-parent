@@ -23,7 +23,7 @@ public class EvalNotExpressionsVisitor extends AstMatcher {
         // remove not not
         whenMatches(callNode(operator(is("not")).and(lhs(callNode(operator(is("not")))))), node -> {
             CallExprNode callExprNode = ((CallExprNode) node);
-            callExprNode = (CallExprNode) callExprNode.getLhs();
+            callExprNode = callExprNode.getLhs();
             return callExprNode.getLhs();
         });
 

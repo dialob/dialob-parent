@@ -37,8 +37,8 @@ class AstMatcherTest {
         final UnaryOperator<NodeBase> constNodeFunctionMock = mock(UnaryOperator.class);
         final UnaryOperator<NodeBase> idNodeFunctionMock = mock(UnaryOperator.class);
 
-        when(constNodeFunctionMock.apply(any(NodeBase.class))).thenAnswer(invocation -> (NodeBase) invocation.getArguments()[0]);
-        when(idNodeFunctionMock.apply(any(NodeBase.class))).thenAnswer(invocation -> (NodeBase) invocation.getArguments()[0]);
+        when(constNodeFunctionMock.apply(any(NodeBase.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+        when(idNodeFunctionMock.apply(any(NodeBase.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
 
         // when
         final AstMatcher matcher = new AstMatcher() {{
@@ -335,7 +335,7 @@ class AstMatcherTest {
 
     private UnaryOperator<NodeBase> mockMatchFunction() {
         final UnaryOperator<NodeBase> matchFunction = mock(UnaryOperator.class);
-        when(matchFunction.apply(any(NodeBase.class))).thenAnswer(invocation -> (NodeBase) invocation.getArguments()[0]);
+        when(matchFunction.apply(any(NodeBase.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
         return matchFunction;
     }
 

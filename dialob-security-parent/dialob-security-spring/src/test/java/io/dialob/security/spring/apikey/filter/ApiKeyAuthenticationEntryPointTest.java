@@ -47,10 +47,9 @@ class ApiKeyAuthenticationEntryPointTest {
     ApiKeyAuthenticationEntryPoint entryPoint = new ApiKeyAuthenticationEntryPoint();
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-    AuthenticationException authException = new ApiKeyAuthenticationException("Invalid key");;
+    AuthenticationException authException = new ApiKeyAuthenticationException("Invalid key");
 
     OutputStream outputStream = new ByteArrayOutputStream(10000);
-    ;
     Mockito.when(response.getOutputStream()).thenReturn(new DelegatingServletOutputStream(outputStream));
 
     entryPoint.commence(request, response, authException);

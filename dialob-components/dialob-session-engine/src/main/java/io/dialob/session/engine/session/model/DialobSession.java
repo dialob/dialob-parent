@@ -286,21 +286,18 @@ public class DialobSession implements ItemStates, Serializable {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
 
-    if (command instanceof ItemUpdateCommand) {
-      final ItemUpdateCommand itemUpdateCommand = (ItemUpdateCommand) command;
+    if (command instanceof ItemUpdateCommand itemUpdateCommand) {
       ItemId itemId = itemUpdateCommand.getTargetId();
       // TODO scope?
       EvalContext context = createScopedEvalContext(evalContext, itemId);
 
       applyItemUpdateCommand(context, itemUpdateCommand);
       updated();
-    } else if (command instanceof ErrorUpdateCommand) {
-      final ErrorUpdateCommand errorUpdateCommand = (ErrorUpdateCommand) command;
+    } else if (command instanceof ErrorUpdateCommand errorUpdateCommand) {
       EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().getItemId());
       applyErrorUpdateCommand(context, errorUpdateCommand);
       updated();
-    } else if (command instanceof UpdateValueSetCommand) {
-      final UpdateValueSetCommand valueSetCommand = (UpdateValueSetCommand) command;
+    } else if (command instanceof UpdateValueSetCommand valueSetCommand) {
       applyUpdateValueSetCommand(evalContext, valueSetCommand);
       updated();
     } else if (command instanceof SessionUpdateCommand) {

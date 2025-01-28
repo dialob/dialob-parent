@@ -48,8 +48,7 @@ public class RestApiExceptionMapper {
       ImmutableErrors.Error.Builder builder = ImmutableErrors.Error.builder()
         .code(objectError.getCode())
         .error(objectError.getDefaultMessage());
-      if (objectError instanceof FieldError) {
-        FieldError fieldError = (FieldError) objectError;
+      if (objectError instanceof FieldError fieldError) {
         builder = builder
           .context(fieldError.getField())
           .rejectedValue(fieldError.getRejectedValue());
@@ -67,8 +66,7 @@ public class RestApiExceptionMapper {
     ImmutableErrors.Builder builder = ImmutableErrors.builder();
     Throwable cause = exception.getCause();
     String message = exception.getMessage();
-    if (cause instanceof ConstraintViolationException) {
-      ConstraintViolationException cve = (ConstraintViolationException) cause;
+    if (cause instanceof ConstraintViolationException cve) {
       cve.getConstraintViolations().forEach(constraintViolation -> {
         builder.addErrors(ImmutableErrors.Error.builder()
           .error(constraintViolation.getMessage())

@@ -74,8 +74,7 @@ public class AsyncFunctionDependency implements Serializable {
     if (obj == null) {
       return false;
     }
-    if (obj instanceof AsyncFunctionDependency) {
-      AsyncFunctionDependency dependency = (AsyncFunctionDependency) obj;
+    if (obj instanceof AsyncFunctionDependency dependency) {
       return functionRefId.equals(dependency.functionRefId);
     }
     return false;

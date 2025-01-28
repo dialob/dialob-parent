@@ -50,8 +50,7 @@ public interface Program extends ProgramNode {
       itemVisitor.visitItem(getRootItem());
       getItems().forEach(item -> {
         itemVisitor.visitItem(item);
-        if (item instanceof DisplayItem) {
-          DisplayItem displayItem = (DisplayItem) item;
+        if (item instanceof DisplayItem displayItem) {
           errors.addAll(displayItem.getErrors());
         }
       });

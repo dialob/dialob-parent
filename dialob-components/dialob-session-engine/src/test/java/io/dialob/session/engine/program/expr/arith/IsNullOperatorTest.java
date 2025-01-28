@@ -33,16 +33,16 @@ class IsNullOperatorTest {
   @Test
   void shouldInspectItemById() {
 
-    IsNullOperator operator = ImmutableIsNullOperator.builder().itemId((ImmutableItemRef) IdUtils.toId("itemi")).build();
+    IsNullOperator operator = ImmutableIsNullOperator.builder().itemId(IdUtils.toId("itemi")).build();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState item = new ItemState(IdUtils.toId("itemi"), null, "text", null, null);
 
-    when(context.getItemState((ImmutableItemRef) IdUtils.toId("itemi"))).thenReturn(Optional.of(item));
+    when(context.getItemState(IdUtils.toId("itemi"))).thenReturn(Optional.of(item));
 
     assertTrue(operator.eval(context));
 
     item = item.update().setValue("nonnull").get();
-    when(context.getItemState((ImmutableItemRef) IdUtils.toId("itemi"))).thenReturn(Optional.of(item));
+    when(context.getItemState(IdUtils.toId("itemi"))).thenReturn(Optional.of(item));
     assertFalse(operator.eval(context));
 
   }

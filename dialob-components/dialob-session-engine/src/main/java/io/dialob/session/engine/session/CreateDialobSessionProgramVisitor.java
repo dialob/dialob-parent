@@ -272,9 +272,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           List<ItemId> rowItems = ImmutableList.of();
           if (item instanceof Group) {
             Expression expression = ((Group)item).getItemsExpression();
-            if (expression instanceof RowItemsExpression) {
+            if (expression instanceof RowItemsExpression rowItemsExpression) {
               final Scope scope = ImmutableScope.of(itemIdToCreate, ImmutableSet.of());
-              RowItemsExpression rowItemsExpression = (RowItemsExpression) expression;
               rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).collect(Collectors.toList());
             }
           }

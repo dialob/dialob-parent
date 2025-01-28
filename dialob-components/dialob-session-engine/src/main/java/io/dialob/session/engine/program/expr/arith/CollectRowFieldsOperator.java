@@ -59,9 +59,6 @@ public interface CollectRowFieldsOperator extends Expression {
       .map(EventMatchers::whenValueUpdated)
       .ifPresent(matchers::add);
 
-//    matchers.add(EventMatchers.whenItemAdded(getItemId()));
-  //  getItemId().getParent().ifPresent(rowId -> matchers.add(EventMatchers.whenItemRemoved(rowId)));
-
     matchers.add(EventMatchers.whenValueUpdated(getItemId()));
 
     return Collections.unmodifiableSet(matchers);

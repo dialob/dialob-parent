@@ -34,8 +34,7 @@ class GrantedAuthorityTenantsProvider implements TenantsProvider {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     List<Tenant> tenants = Collections.emptyList();
-    if (authentication instanceof AbstractAuthenticationToken) {
-      AbstractAuthenticationToken token = (AbstractAuthenticationToken) authentication;
+    if (authentication instanceof AbstractAuthenticationToken token) {
       tenants = token.getAuthorities().stream()
         .filter(a -> a instanceof TenantGrantedAuthority)
         .map(a -> (TenantGrantedAuthority) a)

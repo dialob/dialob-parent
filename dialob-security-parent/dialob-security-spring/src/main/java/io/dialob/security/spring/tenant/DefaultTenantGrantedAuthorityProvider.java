@@ -37,12 +37,11 @@ public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSuppl
   @Override
   public Optional<Tenant> get() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
-    if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken) {
-      AbstractAuthenticationToken token = (AbstractAuthenticationToken) securityContext.getAuthentication();
+    if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken token) {
       return Optional.ofNullable(token.getAuthorities().stream()
         .filter(grantedAuthority -> grantedAuthority instanceof TenantGrantedAuthority)
         .findFirst()
-        .map(grantedAuthority -> (Tenant) Tenant.of(((TenantGrantedAuthority) grantedAuthority).getTenantId(), grantedAuthority.getAuthority()))
+        .map(grantedAuthority -> Tenant.of(((TenantGrantedAuthority) grantedAuthority).getTenantId(), grantedAuthority.getAuthority()))
         .orElse(publicTenant));
     }
     return Optional.ofNullable(publicTenant);

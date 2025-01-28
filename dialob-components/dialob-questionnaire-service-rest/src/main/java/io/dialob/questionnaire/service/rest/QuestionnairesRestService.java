@@ -186,8 +186,6 @@ public interface QuestionnairesRestService {
     }
   }
 
-  ;
-
   /**
    * Handles HTTP GET requests to produce a CSV response.
    *

@@ -100,8 +100,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   protected NodeBase getLhs() {
     NodeBase node = builder.getTopNode();
-    if (node instanceof CallExprNode) {
-      CallExprNode callExprNode = (CallExprNode) node;
+    if (node instanceof CallExprNode callExprNode) {
       return callExprNode.getLhs();
     }
     return null;
@@ -109,8 +108,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   protected NodeBase getRhs() {
     NodeBase node = builder.getTopNode();
-    if (node instanceof CallExprNode) {
-      CallExprNode callExprNode = (CallExprNode) node;
+    if (node instanceof CallExprNode callExprNode) {
       return callExprNode.getRhs();
     }
     return null;
@@ -157,8 +155,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
   @Override
   public void exitInOperExpr(DialobRuleParser.InOperExprContext ctx) {
     NodeBase rhs = getRhs();
-    if (rhs instanceof IdExprNode) {
-      IdExprNode idExprNode = (IdExprNode) rhs;
+    if (rhs instanceof IdExprNode idExprNode) {
       if (idExprNode.getValueType() == null || !idExprNode.getValueType().isArray()) {
         errorLogger.logError(CompilerErrorCode.ARRAY_TYPE_EXPECTED, new Object[]{rhs}, rhs.getSpan());
       }

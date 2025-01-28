@@ -270,7 +270,7 @@ public class CSVSerializer {
     form.getData().values().stream().forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
     for (Variable variable : form.getVariables()) {
       serializeVariable(variable, questionnaire, records);
-    };
+    }
     printer.printRecord(records);
   }
 

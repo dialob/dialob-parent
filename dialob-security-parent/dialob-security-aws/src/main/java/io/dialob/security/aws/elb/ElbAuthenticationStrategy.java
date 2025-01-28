@@ -62,8 +62,8 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
     final RequestHeaderAuthenticationFilter filter = createAuthenticationFilter(authenticationManager);
     http.addFilter(filter);
 
-    return http.sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+    return http.sessionManagement(httpSecuritySessionManagementConfigurer ->
+      httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
   }
 
   @NonNull

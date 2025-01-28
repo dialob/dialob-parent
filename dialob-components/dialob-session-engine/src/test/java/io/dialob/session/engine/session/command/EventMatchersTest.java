@@ -41,7 +41,7 @@ class EventMatchersTest {
   }
 
   private ItemId toRef(String a) {
-    return (ImmutableItemRef) IdUtils.toId(a);
+    return IdUtils.toId(a);
   }
 
   @Test

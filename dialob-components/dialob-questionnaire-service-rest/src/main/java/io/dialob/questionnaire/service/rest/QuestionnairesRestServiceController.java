@@ -288,7 +288,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       return ResponseEntity.badRequest().body(singletonList(ImmutableError.builder().id(answerId).code("invalid_answer").description("Cannot handle answer data").build()));
     }
     if (answer instanceof List) {
-      // convert to List<String>
+      List list = (List) answer;
       answer = ((List) answer).stream()
         .filter(Objects::nonNull)
         .map(Object::toString)

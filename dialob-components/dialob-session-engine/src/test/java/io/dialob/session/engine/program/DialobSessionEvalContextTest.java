@@ -46,7 +46,7 @@ class DialobSessionEvalContextTest {
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
 
-    when(dialobSession.getItemState((ImmutableItemRef) IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
+    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
@@ -139,7 +139,7 @@ class DialobSessionEvalContextTest {
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
 
-    when(dialobSession.getItemState((ImmutableItemRef) IdUtils.toId("is1"))).thenReturn(Optional.ofNullable(updatedState));
+    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.ofNullable(updatedState));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);

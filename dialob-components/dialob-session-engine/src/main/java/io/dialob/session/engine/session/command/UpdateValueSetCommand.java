@@ -40,8 +40,7 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
   default Set<EventMatcher> getEventMatchers() {
     return getEntries().stream().flatMap(entryValue -> {
       Stream<EventMatcher> eventMatchers = Stream.empty();
-      if (entryValue instanceof ConditionalValue) {
-        ConditionalValue conditionalValue = (ConditionalValue) entryValue;
+      if (entryValue instanceof ConditionalValue conditionalValue) {
         eventMatchers = conditionalValue.getWhen().getEvalRequiredConditions().stream();
       }
       // TODO collect label expressions

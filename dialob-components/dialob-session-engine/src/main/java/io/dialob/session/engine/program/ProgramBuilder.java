@@ -309,8 +309,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   public Optional<GroupBuilder> findHoistingGroup(String id) {
     for (AbstractItemBuilder<?, ?> builder : builders) {
-      if (builder instanceof GroupBuilder) {
-        GroupBuilder groupBuilder = (GroupBuilder) builder;
+      if (builder instanceof GroupBuilder groupBuilder) {
         if (groupBuilder.hoistsItem(id)) {
           return Optional.of(groupBuilder);
         }

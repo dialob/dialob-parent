@@ -50,7 +50,7 @@ class DependencyResolverVisitorTest {
   private Program program;
 
   protected ItemId ref(String itemId) {
-    return (ImmutableItemRef) IdUtils.toId(itemId);
+    return IdUtils.toId(itemId);
   }
 
 

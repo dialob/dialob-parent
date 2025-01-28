@@ -31,8 +31,7 @@ public class OAuth2AuthenticationAspect {
     //Advice
     try {
       Object returnValue = joinPoint.proceed();
-      if (returnValue instanceof OAuth2AccessTokenResponse) {
-        OAuth2AccessTokenResponse token = (OAuth2AccessTokenResponse) returnValue;
+      if (returnValue instanceof OAuth2AccessTokenResponse token) {
         LOGGER.debug("Assigned token scopes: {}", token.getAccessToken().getScopes());
       }
       return returnValue;
@@ -47,8 +46,7 @@ public class OAuth2AuthenticationAspect {
 
     Object arg = joinPoint.getArgs()[0];
     LOGGER.debug("Try authentication: {}", arg);
-    if (arg instanceof OAuth2LoginAuthenticationToken) {
-      OAuth2LoginAuthenticationToken token = (OAuth2LoginAuthenticationToken) arg;
+    if (arg instanceof OAuth2LoginAuthenticationToken token) {
       LOGGER.debug("response code: {}", token.getAuthorizationExchange().getAuthorizationResponse().getCode());
       LOGGER.debug("request state : {}", token.getAuthorizationExchange().getAuthorizationRequest().getState());
       LOGGER.debug("response state: {}", token.getAuthorizationExchange().getAuthorizationResponse().getState());

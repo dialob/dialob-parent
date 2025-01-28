@@ -31,8 +31,7 @@ public class ApiKeyCurrentUserProvider implements CurrentUserProvider {
     final SecurityContext securityContext = SecurityContextHolder.getContext();
     if (securityContext != null) {
       final Authentication authentication = securityContext.getAuthentication();
-      if (authentication instanceof ApiKeyAuthenticationToken) {
-        final ApiKeyAuthenticationToken oAuth2Authentication = (ApiKeyAuthenticationToken) authentication;
+      if (authentication instanceof ApiKeyAuthenticationToken oAuth2Authentication) {
         String userId = (String) oAuth2Authentication.getPrincipal();
         return new CurrentUser(userId, userId, null, null, null);
       }

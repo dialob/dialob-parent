@@ -49,8 +49,7 @@ public class OAuth2SpringSecurityCurrentUserProvider implements CurrentUserProvi
       		userId = authenticatedUserId;
       	}
 
-        if (authentication instanceof OAuth2AuthenticationToken) {
-          final OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) authentication;
+        if (authentication instanceof OAuth2AuthenticationToken oAuth2Authentication) {
           final OAuth2User userAuthentication = oAuth2Authentication.getPrincipal();
           final Map<String,Object> attributes = userAuthentication.getAttributes();
           if (attributes != null) {

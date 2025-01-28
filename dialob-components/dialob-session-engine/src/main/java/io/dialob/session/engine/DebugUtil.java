@@ -44,8 +44,7 @@ public class DebugUtil {
 
   public static String commandToString(Command<?> command) {
     final String commandName = stripImmutablePrefix(command.getClass().getSimpleName());
-    if (command instanceof UpdateCommand) {
-      UpdateCommand updateCommand = (UpdateCommand) command;
+    if (command instanceof UpdateCommand updateCommand) {
       return commandName + "(" + IdUtils.toString(updateCommand.getTargetId()) + ")";
     }
     return commandName;

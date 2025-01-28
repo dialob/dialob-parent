@@ -46,7 +46,7 @@ class DialobApiValidatorLocator {
       factory = dialobApiValidatorFactory;
     }
     return factory.create();
-  };
+  }
 
   public static DialobApiValidator getValidator() {
     if (validator == null) {

@@ -32,8 +32,7 @@ public class PreAuthenticatedCurrentUserProvider implements CurrentUserProvider 
     final SecurityContext securityContext = SecurityContextHolder.getContext();
     if (securityContext != null) {
       final Authentication authentication = securityContext.getAuthentication();
-      if (authentication instanceof PreAuthenticatedAuthenticationToken) {
-        final PreAuthenticatedAuthenticationToken authenticationToken = (PreAuthenticatedAuthenticationToken) authentication;
+      if (authentication instanceof PreAuthenticatedAuthenticationToken authenticationToken) {
         final UserDetails userAuthentication = (UserDetails) authenticationToken.getPrincipal();
         return new CurrentUser(userAuthentication.getUsername(), null, null, null, null);
       }

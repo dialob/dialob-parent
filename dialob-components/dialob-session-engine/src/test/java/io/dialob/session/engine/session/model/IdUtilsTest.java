@@ -26,7 +26,7 @@ class IdUtilsTest {
   @Test
   void testToString() {
     assertNull(IdUtils.toString((ItemId) null));
-    assertNull(IdUtils.toString((ValueSetId) null));
+    assertNull(IdUtils.toString(null));
     assertEquals("var1", IdUtils.toString(IdUtils.toId("var1")));
     assertEquals("1", IdUtils.toString(ImmutableItemIndex.of(1,Optional.empty())));
     assertEquals("10", IdUtils.toString(ImmutableItemIndex.of(10,Optional.empty())));

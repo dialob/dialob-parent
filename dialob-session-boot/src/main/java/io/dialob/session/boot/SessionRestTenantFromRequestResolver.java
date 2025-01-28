@@ -41,7 +41,7 @@ public class SessionRestTenantFromRequestResolver implements TenantFromRequestRe
         return getQuestionnaireSession(sessionId)
           .map(QuestionnaireSession::getTenantId).map(Tenant::of);
       } catch (DocumentNotFoundException dnfe) {
-        /* fall throught */;
+        /* fall throught */
       }
     }
     return Optional.empty();

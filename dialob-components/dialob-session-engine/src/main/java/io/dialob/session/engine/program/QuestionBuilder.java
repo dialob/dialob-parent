@@ -106,7 +106,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
         return Utils.createError(getIdStr(), "VALUE_TYPE_NOT_SET");
       }
       Utils.validateDefaultValue(getIdStr(), getValueType().get(), defaultValue, errorConsumer::accept);
-      return (FormValidationError) null;
+      return null;
     }).ifPresent(errorConsumer);
   }
 

@@ -85,7 +85,7 @@ class LocalizedLabelOperatorTest {
   }
 
   private ItemId ref(String var1) {
-    return (ImmutableItemRef) IdUtils.toId(var1);
+    return IdUtils.toId(var1);
   }
 
 

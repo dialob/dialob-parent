@@ -143,7 +143,7 @@ class DDRLExpressionCompilerTest {
 
     verifyToday(variableFinder);
     verifyVariable(variableFinder, "yesterday");
-    verify(evalContext).getItemValue((ImmutableItemRef) IdUtils.toId("yesterday"));
+    verify(evalContext).getItemValue(IdUtils.toId("yesterday"));
     verify(evalContext).today();
 
     verifyNoMoreInteractions(variableFinder, evalContext, errorConsumer);
@@ -228,7 +228,7 @@ class DDRLExpressionCompilerTest {
     verifyNow(variableFinder);
     verifyVariable(variableFinder, "hourAgo");
     verify(evalContext).now();
-    verify(evalContext).getItemValue((ImmutableItemRef) IdUtils.toId("hourAgo"));
+    verify(evalContext).getItemValue(IdUtils.toId("hourAgo"));
 
     verifyNoMoreInteractions(variableFinder, evalContext, errorConsumer);
   }
@@ -546,7 +546,7 @@ class DDRLExpressionCompilerTest {
   private void defineVariable(VariableFinder variableFinder, EvalContext evalContext, String varName, ValueType valueType, Object value) throws VariableNotDefinedException {
     when(variableFinder.typeOf(varName)).thenReturn(valueType);
     when(variableFinder.findVariableScope(varName)).thenReturn(Optional.empty());
-    when(evalContext.getItemValue((ImmutableItemRef) IdUtils.toId(varName))).thenReturn(value);
+    when(evalContext.getItemValue(IdUtils.toId(varName))).thenReturn(value);
   }
 
 }

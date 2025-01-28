@@ -151,7 +151,7 @@ public class DialobSettings {
 
     public record Tenant(
       String name
-    ) {};
+    ) {}
 
   }
 

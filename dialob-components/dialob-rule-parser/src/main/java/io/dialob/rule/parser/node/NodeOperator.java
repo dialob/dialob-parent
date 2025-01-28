@@ -219,8 +219,7 @@ public class NodeOperator implements Serializable {
     if (obj == this) {
       return true;
     }
-    if (obj instanceof NodeOperator) {
-      NodeOperator other = (NodeOperator) obj;
+    if (obj instanceof NodeOperator other) {
       return other.getCategory() == getCategory() && operator.equals(other.getOperator());
     }
     return false;

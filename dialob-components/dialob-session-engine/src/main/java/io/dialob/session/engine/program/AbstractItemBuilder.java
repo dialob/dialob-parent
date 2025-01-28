@@ -84,7 +84,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T addClassname(@NonNull String className) {
-    return (T) addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
+    return addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
   }
 
   public T addClassname(String when, @NonNull String className) {

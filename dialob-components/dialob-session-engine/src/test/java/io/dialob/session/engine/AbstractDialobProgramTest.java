@@ -151,8 +151,7 @@ public abstract class AbstractDialobProgramTest {
 
       @Override
       public boolean matches(Object item) {
-        if (item instanceof ItemState) {
-          ItemState itemState = (ItemState) item;
+        if (item instanceof ItemState itemState) {
           return matches.apply(itemState);
         }
         return false;
@@ -169,8 +168,7 @@ public abstract class AbstractDialobProgramTest {
 
       @Override
       public boolean matches(Object error) {
-        if (error instanceof ErrorState) {
-          ErrorState errorState = (ErrorState) error;
+        if (error instanceof ErrorState errorState) {
           return matches.apply(errorState);
         }
         return false;
@@ -255,7 +253,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   protected ItemId toRef(String id) {
-    return (ImmutableItemRef) IdUtils.toId(id);
+    return IdUtils.toId(id);
   }
 
 }

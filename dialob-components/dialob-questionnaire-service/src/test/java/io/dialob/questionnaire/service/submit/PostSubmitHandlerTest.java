@@ -64,8 +64,6 @@ class PostSubmitHandlerTest {
     verify(httpHeaders).setAccept(Arrays.asList(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.valueOf("application/*+json"), MediaType.ALL));
     verify(httpHeaders).setContentType(MediaType.APPLICATION_JSON);
     verify(httpHeaders, times(2)).getContentType();
-//    HashMap<String, List<String>> map = Maps.newHashMap();
-//    map.put("Content-Type",Arrays.asList("application/json"));
     verify(httpHeaders).put("Content-Type", List.of("application/json"));
     verify(httpHeaders).getContentLength();
 

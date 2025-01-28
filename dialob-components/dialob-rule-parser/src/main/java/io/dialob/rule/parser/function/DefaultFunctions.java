@@ -82,13 +82,13 @@ public class DefaultFunctions {
     int[] factors = {7, 9, 10, 5, 8, 4, 2};
     int sum = 0;
     for (int i = 0; i < 7; i++) {
-      sum += factors[i] * (int)(lyt.charAt(i) - '0');
+      sum += factors[i] * (lyt.charAt(i) - '0');
     }
     int reminder = sum % 11;
     if (reminder > 0) {
       reminder = 11 - reminder;
     }
-    return (int)(lyt.charAt(8) - '0') == reminder;
+    return (lyt.charAt(8) - '0') == reminder;
   }
 
   public static boolean isNotHetu(String hetu) {

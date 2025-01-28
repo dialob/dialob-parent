@@ -95,7 +95,7 @@ class QuestionnaireWebSocketHandlerTest {
     when(questionnaireSessionService.findOne("123-321")).thenReturn(questionnaireSession);
     when(questionnaireSession.getRevision()).thenReturn("123");
     doAnswer(invocation -> {
-      QuestionnaireSession.UpdatesCallback callback = (QuestionnaireSession.UpdatesCallback) invocation.getArgument(0);
+      QuestionnaireSession.UpdatesCallback callback = invocation.getArgument(0);
       ActionItem textQuestion = ImmutableActionItem.builder()
         .type("text")
         .id("q1")

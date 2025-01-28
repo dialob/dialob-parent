@@ -137,15 +137,13 @@ public class IdUtils {
       return;
     }
     output.writeBoolNoTag(true);
-    if (id instanceof ItemRef) {
-      ItemRef itemRef = (ItemRef) id;
+    if (id instanceof ItemRef itemRef) {
       output.write((byte) 1);
       output.writeStringNoTag(itemRef.getValue());
     } else if (id instanceof ItemIdPartial) {
       output.write((byte) 2);
-    } else if (id instanceof ItemIndex) {
+    } else if (id instanceof ItemIndex itemRef) {
       output.write((byte) 3);
-      ItemIndex itemRef = (ItemIndex) id;
       output.writeInt32NoTag(itemRef.getIndex());
     } else {
       throw new RuntimeException("unknown id type " + id);

@@ -46,7 +46,7 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     FormFinder formFinder = mock(FormFinder.class);
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
-    AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);;
+    AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     QuestionnaireDialobProgramService service = QuestionnaireDialobProgramService.newBuilder().setFormDatabase(formFinder).setProgramFromFormCompiler(programFromFormCompiler).build();
 //    Form formDocument = Mockito.mock(Form.class);
@@ -95,8 +95,6 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(activeItem("questionnaire")), argThat(activeItem("questionnaire")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question9")), argThat(activeItem("question9")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("page2")), argThat(activeItem("page2")));
-//    order.verify(visitor, times(1)).visitUpdatedItemState(argThat(unansweredItem("question6")), argThat(answeredItem("question6")));
-//    order.verify(visitor, times(1)).visitUpdatedItemState(argThat(unansweredItem("question9")), argThat(unansweredItem("question9")));
     order.verify(itemVisitor).end();
     order.verify(visitor).visitUpdatedErrorStates();
     order.verify(errorVisitor).end();

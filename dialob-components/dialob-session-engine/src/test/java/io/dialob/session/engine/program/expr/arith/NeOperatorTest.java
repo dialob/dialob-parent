@@ -67,22 +67,4 @@ class NeOperatorTest {
     return ImmutableNeOperator.builder().lhs(lh).rhs(rh).build();
   }
 
-//  @Test
-//  public void shouldUnionDependencies() {
-//    Expression lh = Mockito.mock(Expression.class);
-//    Expression rh = Mockito.mock(Expression.class);
-//    NeOperator operator = newNe(lh, rh);
-//
-//    when(lh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId(("c"))));
-//    when(rh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")));
-//    Assertions.assertEquals(Sets.<EventMatcher>newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")), operator.getEvalRequiredConditions());
-//
-//    when(lh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId("c")));
-//    when(rh.getEvalRequiredConditions()).thenReturn(Collections.emptySet());
-//    Assertions.assertEquals(Sets.<EventMatcher>newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId("c")), operator.getEvalRequiredConditions());
-//
-//    when(lh.getEvalRequiredConditions()).thenReturn(Collections.emptySet());
-//    when(rh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")));
-//    Assertions.assertEquals(Sets.<EventMatcher>newHashSet(IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")), operator.getEvalRequiredConditions());
-//  }
 }

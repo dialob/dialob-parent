@@ -43,7 +43,7 @@ public interface AbstractDB2Test extends JdbcBackendTest {
   String USERNAME = "db2inst1";
 
   @Container
-  Db2Container container = new Db2Container()
+  Db2Container container = new Db2Container("icr.io/db2_community/db2:11.5.0.0a")
     .acceptLicense()
     .withDatabaseName(DATABASE)
     .withUsername(USERNAME)
