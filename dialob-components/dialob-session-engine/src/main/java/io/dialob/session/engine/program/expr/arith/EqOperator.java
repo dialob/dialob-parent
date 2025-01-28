@@ -39,10 +39,4 @@ public interface EqOperator<T> extends AbstractLogicalOperator {
     return lhsResult.equals(rhsResult);
   }
 
-  @NonNull
-  @Override
-  default ValueType getValueType() {
-    return ValueType.BOOLEAN;
-  }
-
 }

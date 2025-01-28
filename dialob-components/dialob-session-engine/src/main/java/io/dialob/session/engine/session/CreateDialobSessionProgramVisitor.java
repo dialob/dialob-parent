@@ -27,6 +27,7 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.model.*;
+import lombok.Getter;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -50,6 +51,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
   private final Date lastAnswer;
 
+  @Getter
   private DialobSession dialobSession;
 
   private Program program;
@@ -64,6 +66,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
   private final List<ErrorState> errorPrototypes = new ArrayList<>();
 
+  @Getter
   private final List<Command<?>> updates = new ArrayList<>();
 
   private final InitialValueResolver initialValueResolver;
@@ -310,11 +313,4 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     this.dialobSession = new DialobSession(tenantId, sessionId, null, language, items, prototypeItems, valueSets, errors, errorPrototypes, completed, opened, lastAnswer);
   }
 
-  public List<Command<?>> getUpdates() {
-    return updates;
-  }
-
-  public DialobSession getDialobSession() {
-    return dialobSession;
-  }
 }

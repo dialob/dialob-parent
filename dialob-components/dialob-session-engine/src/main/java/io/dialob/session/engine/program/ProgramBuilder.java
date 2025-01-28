@@ -37,6 +37,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.Value;
 
@@ -62,13 +63,10 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   private final Map<ItemId,AbstractItemBuilder<?,?>> types = new HashMap<>();
 
+  @Getter
   private List<FormValidationError> errors = Lists.newArrayList();
 
   private final List<ValueSet> valueSets = new ArrayList<>();
-
-  public List<FormValidationError> getErrors() {
-    return errors;
-  }
 
   @Value.Immutable
   interface CompilableExpression {
@@ -354,9 +352,8 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
     @Override
     public ValueType typeOf(String variableName) throws VariableNotDefinedException {
-      switch (variableName) {
-        case "language":
-          return ValueType.STRING;
+      if (variableName.equals("language")) {
+        return ValueType.STRING;
       }
       AbstractItemBuilder<?, ?> abstractItemBuilder = findVariable(variableName, true);
       if (abstractItemBuilder != null) {

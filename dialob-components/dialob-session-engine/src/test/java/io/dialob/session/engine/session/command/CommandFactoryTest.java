@@ -118,7 +118,7 @@ class CommandFactoryTest {
     //;
     UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(ImmutableErrorId.of(itemId, "err"), expression);
     Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();
-    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).collect(Collectors.toList());
+    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();
     EventMatcher eventMatcher = i.next();
     assertFalse(eventMatcher.matches(eventList.get(0)));
@@ -144,7 +144,7 @@ class CommandFactoryTest {
       .putItemStates(itemState2.getId(), itemState2)
       .build();
 
-    List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).collect(Collectors.toList());
+    List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
 
     assertFalse(events.isEmpty());
     assertEquals(ImmutableItemAddedEvent.of(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.get(0));

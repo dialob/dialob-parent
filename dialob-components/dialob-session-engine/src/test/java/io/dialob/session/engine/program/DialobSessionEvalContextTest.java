@@ -142,7 +142,7 @@ class DialobSessionEvalContextTest {
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
 
-    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.ofNullable(updatedState));
+    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.empty());
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);

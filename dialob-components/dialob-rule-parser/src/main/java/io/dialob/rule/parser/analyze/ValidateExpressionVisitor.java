@@ -21,10 +21,12 @@ import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.NodeOperator;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ValidateExpressionVisitor extends AstMatcher {
 
   private List<RuleExpressionCompilerError> errors = new ArrayList<>();
@@ -49,7 +51,4 @@ public class ValidateExpressionVisitor extends AstMatcher {
     return !errors.isEmpty();
   }
 
-  public List<RuleExpressionCompilerError> getErrors() {
-    return errors;
-  }
 }

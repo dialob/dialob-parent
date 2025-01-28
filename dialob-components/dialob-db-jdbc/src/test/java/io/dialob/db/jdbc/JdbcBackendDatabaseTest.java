@@ -104,7 +104,7 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     Timestamp timestamp = new Timestamp(1000);
     final ResultSet resultSet = Mockito.mock(ResultSet.class);
@@ -139,21 +139,17 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(1).when(jdbcTemplate).update(
       eq("insert into dialob.questionnaire (id,rev,tenant_id,form_document_id,status,created,updated,owner,data) values (?,?,?,?,?,?,?,?,?)"),
-      new Object[] {any(byte[].class), eq(1), eq(""), any(byte[].class), any(String.class), any(Timestamp.class), any(Timestamp.class), isNull(), any(InputStream.class)});
+      any(byte[].class), eq(1), eq(""), any(byte[].class), any(String.class), any(Timestamp.class), any(Timestamp.class), isNull(), any(InputStream.class));
 
     Questionnaire questionnaire = questionnaire(null, Hex.encodeHexString(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
 
     Object document = jdbcBackendDatabase.save("", questionnaire);
 
-    Assertions.assertThat(document).extracting("id","rev").matches(objects -> {
-        return ((String)objects.get(0)).length() == 32 && "1".equals(objects.get(1));
-      });
+    Assertions.assertThat(document).extracting("id","rev").matches(objects -> ((String)objects.get(0)).length() == 32 && "1".equals(objects.get(1)));
 
     //
     verify(jdbcTemplate).update(eq("insert into dialob.questionnaire (id,rev,tenant_id,form_document_id,status,created,updated,owner,data) values (?,?,?,?,?,?,?,?,?)"), any(byte[].class), eq(1), eq(""), any(byte[].class), any(String.class), any(Timestamp.class), any(Timestamp.class), isNull(), any(InputStream.class));
@@ -170,13 +166,11 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(1).when(jdbcTemplate).update(
       eq("update dialob.questionnaire set rev = ?, status = ?, updated = ?, data = ?, owner = ? where id = ? and rev = ? and tenant_id = ?"),
-      new Object[] {eq(13), any(String.class), any(Timestamp.class), any(InputStream.class), isNull(), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12), eq("")});
+      eq(13), any(String.class), any(Timestamp.class), any(InputStream.class), isNull(), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12), eq(""));
 
     Questionnaire questionnaire = ImmutableQuestionnaire.builder()
       .id("12300000000000000000000000000000")
@@ -190,7 +184,7 @@ public abstract class JdbcBackendDatabaseTest {
 
     verify(jdbcTemplate).update(
       eq("update dialob.questionnaire set rev = ?, status = ?, updated = ?, data = ?, owner = ? where id = ? and rev = ? and tenant_id = ?"),
-      new Object[] {eq(13), any(String.class), any(Timestamp.class), any(InputStream.class), isNull(), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12), eq("")});
+      eq(13), any(String.class), any(Timestamp.class), any(InputStream.class), isNull(), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12), eq(""));
     verify(connection).commit();
     verifyNoMoreInteractions(jdbcTemplate);
   }
@@ -202,13 +196,11 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(0).when(jdbcTemplate).update(
       eq("update dialob.questionnaire set rev = ?, updated = ?, label = ?, data = ? where id = ? and rev = ? and tenant_id = ?"),
-      new Object[] {eq(13), any(Timestamp.class), any(String.class), any(InputStream.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12)});
+      eq(13), any(Timestamp.class), any(String.class), any(InputStream.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12));
 
     Questionnaire questionnaire = ImmutableQuestionnaire.builder()
       .id("12300000000000000000000000000000")
@@ -233,9 +225,7 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(1).when(jdbcTemplate).update(
       eq("delete from dialob.questionnaire where id = ? and tenant_id = ?"),
@@ -256,9 +246,7 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(1).when(jdbcTemplate).queryForObject(
       eq("select count(*) from dialob.questionnaire where id = ? and tenant_id = ?"),
@@ -286,8 +274,7 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(0).when(jdbcTemplate).queryForObject(
       eq("select count(*) from dialob.questionnaire where id = ? and tenant_id = ?"),
@@ -317,8 +304,7 @@ public abstract class JdbcBackendDatabaseTest {
     Connection connection = Mockito.mock(Connection.class);
     when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
     when(dataSource.getConnection()).thenReturn(connection);
-    JdbcBackendDatabase jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
-    Timestamp timestamp = new Timestamp(1000);
+    var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
     doReturn(ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build()).when(jdbcTemplate).queryForObject(
       eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and rev = ? and tenant_id = ?"),

@@ -227,7 +227,6 @@ public class FormsRestServiceController implements FormsRestService {
         .badRequest()
         .body(ImmutableFormPutResponse.builder().ok(false).error("INCONSISTENT_ID").reason("_id does not match with resource " + formId).build());
     }
-    final String prevRev = form.getRev();
 
     boolean includeForm = false;
     List<FormValidationError> errors = new ArrayList<>();

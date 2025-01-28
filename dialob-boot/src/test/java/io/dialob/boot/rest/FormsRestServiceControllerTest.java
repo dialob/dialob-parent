@@ -17,7 +17,6 @@ package io.dialob.boot.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
-import io.dialob.api.rest.Errors;
 import io.dialob.boot.Application;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.DialobFormServiceAutoConfiguration;
@@ -52,7 +51,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -227,7 +225,6 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   void shouldReturn404IfFormDoNotExists() throws Exception {
     when(formDatabase.findOne(tenantId, "form-id", null)).thenThrow(new DocumentNotFoundException("not_found"));
-    ResponseEntity<Errors> response;
 
     mockMvc.perform(get(uri("api", "forms", "form-id")).params(tenantParam).accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isNotFound())

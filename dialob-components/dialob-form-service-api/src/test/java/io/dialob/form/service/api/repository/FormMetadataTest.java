@@ -64,7 +64,7 @@ class FormMetadataTest {
     assertNotNull(formDocument.getMetadata().getAdditionalProperties());
     Object obj = formDocument.getMetadata().getAdditionalProperties().get("someRandomThing");
     assertNotNull(obj);
-    assertTrue(obj instanceof Map);
+    assertInstanceOf(Map.class, obj);
     assertEquals("someValue", ((Map) obj).get("someKey"));
   }
 

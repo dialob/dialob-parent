@@ -17,7 +17,6 @@ public class ParseTestBase {
 
   protected String lispExpression(ParseTree parseTree) {
     ParseTreeWalker walker = new ParseTreeWalker();
-    final StringBuilder expressionBuilder = new StringBuilder();
     ASTBuilderWalker builder = new ASTBuilderWalker(null, ASTBuilderWalker.DUMMY_VARIABLE_FINDER, Maps.newHashMap());
     walker.walk(builder, parseTree);
     NodeBase nodeBase = builder.getBuilder().build();
@@ -32,15 +31,6 @@ public class ParseTestBase {
     DialobRuleParser ffRuleParser = new DialobRuleParser(new CommonTokenStream(ffRuleLexer));
     ffRuleParser.setBuildParseTree(true);
     return ffRuleParser.compileUnit();
-  }
-
-  protected NodeBase ast(String expression) {
-    ParseTreeWalker walker = new ParseTreeWalker();
-    final StringBuilder expressionBuilder = new StringBuilder();
-    ASTBuilderWalker builder = new ASTBuilderWalker(null, ASTBuilderWalker.DUMMY_VARIABLE_FINDER, Maps.newHashMap());
-    walker.walk(builder, parseExpression(expression));
-    return builder.getBuilder().build();
-
   }
 
 }

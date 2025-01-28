@@ -17,10 +17,12 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 public class CannotCoerceTypeException extends ProgramBuilderException {
   private final ValueType fromType;
   private final ValueType toType;
@@ -29,14 +31,6 @@ public class CannotCoerceTypeException extends ProgramBuilderException {
     super("CANNOT_COERCE_TYPE");
     this.fromType = fromType;
     this.toType = toType;
-  }
-
-  public ValueType getFromType() {
-    return fromType;
-  }
-
-  public ValueType getToType() {
-    return toType;
   }
 
 

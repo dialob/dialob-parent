@@ -17,6 +17,7 @@ package io.dialob.rule.parser;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.node.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ExpressionMerger implements ASTVisitor {
 
     private int nodeStack = 0;
 
+    @Getter
     private ASTBuilder astBuilder;
 
     private Predicate<NodeBase> shouldMergePredicate;
@@ -106,11 +108,7 @@ public class ExpressionMerger implements ASTVisitor {
         return subNode;
     }
 
-    public ASTBuilder getAstBuilder() {
-        return astBuilder;
-    }
-
-    @Override
+  @Override
     @NonNull
     public NodeBase visitConstExpr(@NonNull ConstExprNode subNode) {
         newArguments.add(subNode);

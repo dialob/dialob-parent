@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class QuestionTest {
   @Test
@@ -41,7 +42,7 @@ class QuestionTest {
     question = objectMapper.readValue("{\"id\":\"shouldDeserializePropsToMap\",\"type\":\"list\",\"props\":{\"extraProp\":[]}}", ActionItem.class);
     assertEquals(Collections.emptyList(), question.getProps().get("extraProp"));
     question = objectMapper.readValue("{\"id\":\"shouldDeserializePropsToMap\",\"type\":\"list\"}", ActionItem.class);
-    assertEquals(null, question.getProps());
+    assertNull(question.getProps());
   }
   @Test
   void shouldSerializeMapToProps() throws Exception {

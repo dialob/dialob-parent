@@ -58,7 +58,7 @@ public class DDRLExpressionCompiler {
     @NonNull Consumer<RuleExpressionCompilerError> errorConsumer)
   {
     final io.dialob.rule.parser.Expression expression = createExpression(variableFinder, asyncFunctionVariables, expressionString);
-    expression.getErrors().forEach(errorConsumer::accept);
+    expression.getErrors().forEach(errorConsumer);
     final NodeBase ast = expression.getAst();
     if (ast == null || !expression.getErrors().isEmpty()) {
       return Optional.empty();

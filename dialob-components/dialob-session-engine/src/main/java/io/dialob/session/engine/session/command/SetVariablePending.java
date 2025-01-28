@@ -26,11 +26,10 @@ public interface SetVariablePending extends AbstractUpdateCommand<ItemId, ItemSt
 
   @NonNull
   default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    ItemState updatedState = itemState.update()
+    return itemState.update()
       .setValue(null)
       .setStatus(ItemState.Status.PENDING)
       .get();
-    return updatedState;
   }
 
 }

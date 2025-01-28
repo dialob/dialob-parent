@@ -10,6 +10,8 @@ import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -26,10 +28,12 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   private final VariableFinder variableFinder;
 
+  @Getter
   private ASTBuilder builder;
 
   private final Map<NodeBase,String> asyncFunctionVariables;
 
+  @Setter
   private ErrorLogger errorLogger = new ErrorLogger() {
     @Override
     public void logError(String errorCode, Span span) {
@@ -77,16 +81,8 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     this.asyncFunctionVariables = asyncFunctionVariables;
   }
 
-  public void setErrorLogger(ErrorLogger errorLogger) {
-    this.errorLogger = errorLogger;
-  }
-
   private void pop() {
     builder = builder.closeExpr();
-  }
-
-  public ASTBuilder getBuilder() {
-    return builder;
   }
 
   protected List<ValueType> getLhsAndRhsValueTypes() {

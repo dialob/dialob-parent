@@ -100,7 +100,6 @@ class QuestionnaireSessionServiceTest {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionServiceMock.findOne("123")).thenReturn(null);
 
     questionnaireSessionService.findOne("123");
@@ -116,8 +115,6 @@ class QuestionnaireSessionServiceTest {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-
     assertNull(questionnaireSessionService.findOne("123", false));
 
     verify(cache).getName();

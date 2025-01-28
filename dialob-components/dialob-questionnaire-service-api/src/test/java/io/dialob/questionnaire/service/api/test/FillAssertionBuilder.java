@@ -179,7 +179,7 @@ public class FillAssertionBuilder {
     Iterator<ValidationEntry> ai = validationEntries.iterator();
     while(ai.hasNext()) {
       final ValidationEntry validationEntry = ai.next();
-      validationEntry.assertter.accept(Assertions.<Action>assertThat(validationEntry.actions.getActions()));
+      validationEntry.assertter.accept(Assertions.assertThat(validationEntry.actions.getActions()));
     }
     assertFalse(ai.hasNext());
   }

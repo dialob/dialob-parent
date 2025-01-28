@@ -57,7 +57,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   protected Expression activeWhen;
 
-  protected Map<String, ? extends Object> props = null;
+  protected Map<String, ?> props = null;
 
   public AbstractItemBuilder(ProgramBuilder programBuilder, P parent, GroupBuilder hoistingGroupBuilder, @NonNull String id) {
     this.programBuilder = programBuilder;

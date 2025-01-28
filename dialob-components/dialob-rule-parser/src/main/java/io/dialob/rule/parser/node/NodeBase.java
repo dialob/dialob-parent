@@ -2,6 +2,8 @@ package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,8 +17,11 @@ public abstract class NodeBase implements TypedNode, Serializable {
   @Serial
   private static final long serialVersionUID = 1948018522089217375L;
 
+  @Getter
+  @Setter
   private NodeBase parent;
 
+  @Getter
   private final Span span;
 
   private ValueType type;
@@ -33,18 +38,6 @@ public abstract class NodeBase implements TypedNode, Serializable {
     this.parent = parent;
     this.span = span;
     this.type = type;
-  }
-
-  public NodeBase getParent() {
-    return parent;
-  }
-
-  public void setParent(NodeBase parent) {
-    this.parent = parent;
-  }
-
-  public Span getSpan() {
-    return span;
   }
 
   @Override
@@ -88,11 +81,11 @@ public abstract class NodeBase implements TypedNode, Serializable {
   public abstract NodeBase accept(@NonNull ASTVisitor visitor);
 
   public String toTypedString() {
-    return toString() + "[" + type + "]";
+    return this + "[" + type + "]";
   }
 
   public String toString(String indent) {
-    return indent + toString();
+    return indent + this;
   }
 
   @Override

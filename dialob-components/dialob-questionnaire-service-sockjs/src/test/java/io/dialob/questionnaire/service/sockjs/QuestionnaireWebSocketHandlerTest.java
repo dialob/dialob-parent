@@ -132,7 +132,6 @@ class QuestionnaireWebSocketHandlerTest {
   @Test
   void shouldSendQuestionnaireNotFoundMessageIfQuestionnaireIsNotFound() throws Exception {
     final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
-    final QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     final Map<String,Object> attributes = new HashMap<>();
     attributes.put("sessionId","123-321");
     when(webSocketSession.getAttributes()).thenReturn(attributes);

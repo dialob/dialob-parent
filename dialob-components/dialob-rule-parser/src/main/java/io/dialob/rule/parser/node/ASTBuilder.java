@@ -3,15 +3,18 @@ package io.dialob.rule.parser.node;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
+import lombok.Getter;
 
 import java.util.List;
 
 public class ASTBuilder {
 
+  @Getter
   private final ASTBuilder parentScopeBuilder;
 
   private NodeBase rootNode = null;
 
+  @Getter
   private NodeBase topNode = null;
 
   public ASTBuilder() {
@@ -20,10 +23,6 @@ public class ASTBuilder {
 
   public ASTBuilder(ASTBuilder parentScopeBuilder) {
     this.parentScopeBuilder = parentScopeBuilder;
-  }
-
-  public ASTBuilder getParentScopeBuilder() {
-    return parentScopeBuilder;
   }
 
   private NodeBase peek() {
@@ -126,10 +125,6 @@ public class ASTBuilder {
   public ASTBuilder closeExpr() {
     pop();
     return this;
-  }
-
-  public NodeBase getTopNode() {
-    return topNode;
   }
 
   public NodeBase build() {

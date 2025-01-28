@@ -133,7 +133,7 @@ class DialobFormValidatorTest {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     when(functionRegistry.isAsyncFunction("count")).thenReturn(false);
 
-    when(functionRegistry.returnTypeOf("count", new ValueType[]{ValueType.arrayOf(ValueType.STRING)})).thenReturn(ValueType.INTEGER);
+    when(functionRegistry.returnTypeOf("count", ValueType.arrayOf(ValueType.STRING))).thenReturn(ValueType.INTEGER);
 
 
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);

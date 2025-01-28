@@ -94,10 +94,7 @@ public class ExpressionWriterVisitor implements ASTVisitor {
       case FUNCTION:
         stringBuilder.append(subVisitor.toString()).append(")");
         break;
-      case LOGICAL:
-        stringBuilder.append(addBrackets(subVisitor));
-        break;
-      case INFIX:
+      case LOGICAL, INFIX:
         stringBuilder.append(addBrackets(subVisitor));
         break;
       case UNARY:

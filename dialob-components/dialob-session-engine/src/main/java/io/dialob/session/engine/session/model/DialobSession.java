@@ -27,6 +27,8 @@ import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.*;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,10 +55,12 @@ public class DialobSession implements ItemStates, Serializable {
 
   private final String tenantId;
 
+  @Getter
   private final String id;
 
   private int asyncUpdateCount;
 
+  @Getter
   private String revision;
 
   @NonNull
@@ -66,6 +70,8 @@ public class DialobSession implements ItemStates, Serializable {
 
   private Date opened;
 
+  @Getter
+  @Setter
   private String language;
 
   private Map<ItemId,ItemState> itemStates = new HashMap<>();
@@ -230,10 +236,6 @@ public class DialobSession implements ItemStates, Serializable {
     return new DialobSession(id, this);
   }
 
-  public String getId() {
-    return id;
-  }
-
   public String getTenantId() {
     if (tenantId == null) {
       return ResysSecurityConstants.DEFAULT_TENANT.id();
@@ -333,7 +335,6 @@ public class DialobSession implements ItemStates, Serializable {
       .flatMap(trigger -> trigger.apply(this, newStates))
       .forEach(event -> evalContext.getEventsConsumer().accept(event));
 
-    MapDifference<ValueSetId,ValueSetState> valueSetDiffs = Maps.difference(newStates.getValueSetStates(), this.valueSetStates);
     MapDifference<ErrorId,ErrorState> errorDiffs = Maps.difference(newStates.getErrorStates(), this.errorStates);
     MapDifference<ItemId,ItemState> itemStatesDiffs = Maps.difference(newStates.getItemStates(), this.itemStates);
 
@@ -427,10 +428,6 @@ public class DialobSession implements ItemStates, Serializable {
     return Optional.ofNullable(errorStates.get(ImmutableErrorId.of(itemId, code)));
   }
 
-  public String getRevision() {
-    return revision;
-  }
-
   @NonNull
   public Instant getLastUpdate() {
     return lastUpdate.toInstant();
@@ -470,14 +467,6 @@ public class DialobSession implements ItemStates, Serializable {
       this.completed = new Date();
     }
     return isCompleted();
-  }
-
-  public String getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
   }
 
   @NonNull

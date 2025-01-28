@@ -92,7 +92,7 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
       if (delayedTasks.isEmpty()) {
         return false;
       }
-      delayedTasks.stream().forEach(super::execute);
+      delayedTasks.forEach(super::execute);
       delayedTasks.clear();
       return true;
     }

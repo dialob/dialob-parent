@@ -46,10 +46,9 @@ public class DialobFormValidator implements FormValidator {
       final List<FormValidationError> errors = e.getErrors();
       result.addAll(errors);
       if (LOGGER.isDebugEnabled()) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Form validation errors for: ").append(form.getId()).append("\n  ")
-          .append(errors.stream().map(error -> error.getItemId() + ": " + error.getMessage()).collect(Collectors.joining("\n  ")));
-        LOGGER.debug(sb.toString());
+        String sb = "Form validation errors for: " + form.getId() + "\n  " +
+          errors.stream().map(error -> error.getItemId() + ": " + error.getMessage()).collect(Collectors.joining("\n  "));
+        LOGGER.debug(sb);
       }
     }
     return result;

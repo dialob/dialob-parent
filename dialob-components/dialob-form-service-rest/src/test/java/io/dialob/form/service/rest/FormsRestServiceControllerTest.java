@@ -213,22 +213,19 @@ class FormsRestServiceControllerTest {
 
   @Test
   void postCsvShouldAlwaysCreateNewForm() throws Exception {
-    StringBuilder csvBuilder = new StringBuilder();
-    csvBuilder
-      .append("testForm101\n")
-      .append("id,type,fi,et,sv,en\n")
-      .append("ghj,Text,Mikä on nimesi,Vad häter du\n")
-      .append(",Boolean,Onko näin?,Är det så?,\n")
-      .append(",Date,Valitse päivä,,Select day\n")
-      .append("hh56,Time,,,Select time\n")
-      .append(",Choice,Tee valinta,\n")
-      .append(",Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,\n")
-      .append(",Integer,number label fi\n")
-      .append("gfhf69,Date\n")
-      .append(",Time,,test1\n")
-      .append("gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test\n")
-      .append(",Time,,");
-    String csvContent = csvBuilder.toString();
+    String csvContent = "testForm101\n" +
+      "id,type,fi,et,sv,en\n" +
+      "ghj,Text,Mikä on nimesi,Vad häter du\n" +
+      ",Boolean,Onko näin?,Är det så?,\n" +
+      ",Date,Valitse päivä,,Select day\n" +
+      "hh56,Time,,,Select time\n" +
+      ",Choice,Tee valinta,\n" +
+      ",Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,\n" +
+      ",Integer,number label fi\n" +
+      "gfhf69,Date\n" +
+      ",Time,,test1\n" +
+      "gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test\n" +
+      ",Time,,";
 
     ImmutableForm immutableForm = ImmutableForm.builder().from(csvToFormParser.parseCsv(csvContent)).id("234").rev("543").build();
 
@@ -262,14 +259,11 @@ class FormsRestServiceControllerTest {
 
   @Test
   void postCsvShouldNotCreateNewForm() throws Exception {
-    StringBuilder csvBuilder = new StringBuilder();
-    csvBuilder
-      .append("test Form102\n")
-      .append("id,type,en,fi\n")
-      .append("id1,Text,Mikä on nimesi,Vad häter du\n")
-      .append(",Date\n");
 
-    String csvContent = csvBuilder.toString();
+    String csvContent = "test Form102\n" +
+      "id,type,en,fi\n" +
+      "id1,Text,Mikä on nimesi,Vad häter du\n" +
+      ",Date\n";
 
     mockMvc.perform(
       post("/forms", "1234")

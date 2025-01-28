@@ -20,6 +20,7 @@ import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class ErrorState implements SessionObject {
 
   private final ErrorId targetId;
 
+  @Getter
   private String label;
 
   private boolean active;
@@ -121,10 +123,6 @@ public class ErrorState implements SessionObject {
 
   public String getCode() {
     return targetId.getCode();
-  }
-
-  public String getLabel() {
-    return label;
   }
 
   @Override

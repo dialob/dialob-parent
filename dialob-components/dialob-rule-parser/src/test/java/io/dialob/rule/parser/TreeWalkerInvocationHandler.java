@@ -124,7 +124,7 @@ public  class TreeWalkerInvocationHandler implements InvocationHandler {
                 return null;
             }
             return "<ERROR>";
-        } catch (NoSuchFieldException e) {
+        } catch (NoSuchFieldException ignored) {
 
         }
         return null;

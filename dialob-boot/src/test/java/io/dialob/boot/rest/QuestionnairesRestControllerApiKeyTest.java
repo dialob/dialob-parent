@@ -172,7 +172,6 @@ class QuestionnairesRestControllerApiKeyTest {
 
     System.arraycopy(UUIDUtils.toBytes(clientId), 0, token, 0, 16);
     System.arraycopy(secretBytes,                 0, token, 16, secretBytes.length);
-    /// UUIDUtils.toBytes(clientId)) + "." + token
 
     httpHeaders.set("x-api-key", Base64.getEncoder().encodeToString(token));
     httpHeaders.set(HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
@@ -234,7 +233,7 @@ class QuestionnairesRestControllerApiKeyTest {
     var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {
-        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+        restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
         });
       } catch (HttpClientErrorException e) {
         assertEquals(HttpStatus.FORBIDDEN, e.getStatusCode());

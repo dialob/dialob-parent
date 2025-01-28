@@ -17,9 +17,6 @@ package io.dialob.questionnaire.service.rest;
 
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.proto.*;
 import io.dialob.api.questionnaire.*;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
@@ -53,7 +50,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -299,7 +295,6 @@ class QuestionnairesRestServiceControllerTest {
     when(questionnaireSession.dispatchActions(argThat(new HamcrestArgumentMatcher<>(new BaseMatcher<>() {
       @Override
       public boolean matches(Object item) {
-        Collection<Action> consumer = (Collection<Action>) item;
         return true;
       }
 
@@ -346,7 +341,6 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldPostNewQuestionnaire() throws Exception {
-    Form formDocument = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("label").build()).build();
     when(formDatabase.exists("t-123", "new-form")).thenReturn(true);
     QuestionnaireSessionBuilder builder = mock(QuestionnaireSessionBuilder.class);
     QuestionnaireSession session = mock(QuestionnaireSession.class);
@@ -473,11 +467,8 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldQueryQuestionnairesAndGetEmptyList() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
 
-    doAnswer(invocation -> {
-      return null;
-    }).when(questionnaireDatabase).findAllMetadata(eq("t-123"), isNull(), isNull(), isNull(), isNull(), isNull(), any());
+    doAnswer(invocation -> null).when(questionnaireDatabase).findAllMetadata(eq("t-123"), isNull(), isNull(), isNull(), isNull(), isNull(), any());
 
     mockMvc.perform(get("/questionnaires").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
@@ -490,7 +481,6 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldQueryActiveQuestionnaires() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
 
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = invocation.getArgument(6);
@@ -533,7 +523,6 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionnaire() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
 
     Questionnaire questionnaire = questionnaire(null, "shouldGetQuestionnaire");
     when(questionnaireDatabase.findOne("t-123", "abc123")).thenReturn(questionnaire);

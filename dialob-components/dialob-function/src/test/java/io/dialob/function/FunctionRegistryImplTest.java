@@ -126,7 +126,7 @@ class FunctionRegistryImplTest {
   void testFunctionRegistering() throws Exception {
     CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
-    DefaultFunctions defaultFunctions = new DefaultFunctions(functionRegistry);
+    new DefaultFunctions(functionRegistry);
     assertSame(ValueType.BOOLEAN, functionRegistry.returnTypeOf("isHetu", ValueType.STRING));
     assertSame(ValueType.BOOLEAN, functionRegistry.returnTypeOf("isNotHetu", ValueType.STRING));
     assertSame(ValueType.BOOLEAN, functionRegistry.returnTypeOf("isLyt", ValueType.STRING));

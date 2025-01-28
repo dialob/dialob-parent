@@ -144,7 +144,6 @@ class FormItemCopierTest {
   @Test
   void testUnknownItem() {
     Form form = loadForm();
-    ImmutableForm.Builder builder = ImmutableForm.builder().from(form);
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "IDontExist");
     assertEquals(1, resultPair.getRight().size());
   }

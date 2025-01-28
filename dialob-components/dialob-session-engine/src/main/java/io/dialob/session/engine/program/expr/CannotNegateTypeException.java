@@ -17,20 +17,18 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class CannotNegateTypeException extends ProgramBuilderException {
   private final ValueType type;
 
   public CannotNegateTypeException(ValueType type) {
     super("CANNOT_NEGATE_TYPE");
     this.type = type;
-  }
-
-  public ValueType getType() {
-    return type;
   }
 
   @Override

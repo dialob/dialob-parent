@@ -104,18 +104,15 @@ class ComposerControllerTest extends AbstractUIControllerTest {
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("composer")).thenReturn(pageAttributes);
 
-    MvcResult result = mockMvc.perform(get("/composer/").params(tenantParam).accept(MediaType.TEXT_HTML))
+    mockMvc.perform(get("/composer/").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("<title>Dialob: Composer</title>")))
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
       .andExpect(content().encoding("UTF-8"))
-      //.andExpect(xpath("//div[@id='app']").exists())
       .andExpect(content().string(containsString("\"filling_app_url\":\"\\/fill\"")))
       .andExpect(content().string(containsString("\"backend_api_url\":\"\\/api\"")))
       .andExpect(content().string(containsString("\"documentation_url\":\"https:\\/\\/docs.dialob.io\"")))
       .andReturn();
-//    System.out.println(result.getResponse().getContentAsString());
-
   }
 
 }

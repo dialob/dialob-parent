@@ -26,6 +26,7 @@ import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
@@ -87,8 +88,10 @@ public class ItemState implements SessionObject {
 
   private final String valueSetId;
 
+  @Getter
   private Status status = Status.NEW;
 
+  @Getter
   private Object answer;
 
   private Object value;
@@ -97,20 +100,25 @@ public class ItemState implements SessionObject {
 
   private int bits = (ACTIVE_BIT | ROWS_CAN_BE_ADDED_BIT);
 
+  @Getter
   private String label;
 
+  @Getter
   private String description;
 
   // indicates whethet questionnaire is completed
 
+  @Getter
   private List<String> classNames = ImmutableList.of();
 
   private List<ItemId> items = ImmutableList.of();
 
+  @Getter
   private List<ItemId> availableItems = ImmutableList.of();
 
   private Map<String, Object> props = new HashMap<>();
 
+  @Getter
   private Set<Action.Type> allowedActions = ImmutableSet.of();
 
   private ItemId activePage;
@@ -342,14 +350,6 @@ public class ItemState implements SessionObject {
     return Optional.ofNullable(valueSetId);
   }
 
-  public Status getStatus() {
-    return status;
-  }
-
-  public Object getAnswer() {
-    return answer;
-  }
-
   public Object getValue() {
     return isActive() && value != null ? value : defaultValue;
   }
@@ -403,33 +403,13 @@ public class ItemState implements SessionObject {
     return (bits & HAS_CUSTOM_PROPS_BIT) != 0;
   }
 
-  public String getLabel() {
-    return label;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public List<String> getClassNames() {
-    return classNames;
-  }
-
   @NonNull
   public List<ItemId> getItems() {
     return items;
   }
 
-  public List<ItemId> getAvailableItems() {
-    return availableItems;
-  }
-
   public Optional<ItemId> getActivePage() {
     return Optional.ofNullable(activePage);
-  }
-
-  public Set<Action.Type> getAllowedActions() {
-    return allowedActions;
   }
 
   @NonNull

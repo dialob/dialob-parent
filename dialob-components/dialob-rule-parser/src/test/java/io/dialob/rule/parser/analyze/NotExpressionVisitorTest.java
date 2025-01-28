@@ -25,8 +25,6 @@ class NotExpressionVisitorTest {
 
     @Test
     void test() {
-        String expr = "true";
-        String expect = "false";
         assertExpressionNot("(notMatches a \".*\")", "a matches '.*'");
 
         assertExpressionNot("false", "true");

@@ -17,20 +17,18 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class CannotReduceTypeException extends ProgramBuilderException {
   private final ValueType valueType;
 
   public CannotReduceTypeException(String message, ValueType valueType) {
     super(message);
     this.valueType = valueType;
-  }
-
-  public ValueType getValueType() {
-    return valueType;
   }
 
   @Override

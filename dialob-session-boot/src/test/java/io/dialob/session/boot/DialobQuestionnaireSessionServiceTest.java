@@ -1982,8 +1982,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   private <T> Set<T> asSet(T... items) {
-    HashSet hashSet = new HashSet<T>(asList(items));
-    return hashSet;
+    return new HashSet<T>(asList(items));
   }
 
 }

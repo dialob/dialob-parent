@@ -25,7 +25,7 @@ class UtilsTest {
 
   @Test
   void test() throws Exception {
-    Assertions.assertTrue(Arrays.equals(new byte[16], Utils.toOID("")));
+    Assertions.assertArrayEquals(new byte[16], Utils.toOID(""));
     Assertions.assertNull(Utils.toOID(null));
     Assertions.assertArrayEquals(new byte[] {
       (byte) 0x63, (byte) 0x57, (byte) 0x02, (byte) 0xE2, (byte) 0xE3, (byte) 0x5f, (byte) 0x4f, (byte) 0x86,

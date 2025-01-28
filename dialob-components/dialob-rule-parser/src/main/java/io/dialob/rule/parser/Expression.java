@@ -22,6 +22,7 @@ import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.*;
+import lombok.Getter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -34,6 +35,7 @@ public class Expression implements ErrorLogger {
 
   private final String expression;
 
+  @Getter
   private NodeBase ast;
 
   private List<RuleExpressionCompilerError> errors = new ArrayList<>();
@@ -148,10 +150,6 @@ public class Expression implements ErrorLogger {
 
   public void accept(ASTVisitor visitor) {
     ast = ast.accept(visitor);
-  }
-
-  public NodeBase getAst() {
-    return ast;
   }
 
   private static class ErrorListener implements ANTLRErrorListener {

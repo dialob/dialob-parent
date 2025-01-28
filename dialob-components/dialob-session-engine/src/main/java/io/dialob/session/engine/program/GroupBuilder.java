@@ -52,16 +52,13 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     ROWGROUP("rowgroup", false),
     SURVEYGROUP("surveygroup", true);
 
+    @Getter
     private final String itemType;
 
     private final boolean haveSubItems;
 
     public boolean haveSubItems() {
       return haveSubItems;
-    }
-
-    public String getItemType() {
-      return itemType;
     }
 
     Type(String itemType, boolean haveSubItems) {

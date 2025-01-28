@@ -26,12 +26,10 @@ import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Collection;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +42,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  void shouldSetRequiredOnForAllQuestionsOfRequired() throws Exception {
+  void shouldSetRequiredOnForAllQuestionsOfRequired() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -109,7 +107,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() throws Exception {
+  void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -150,7 +148,6 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
 
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(addRow(toRef("rg"))));
     assertErrorActive(session, toRef("rg.0.q1"), "REQUIRED");
@@ -173,7 +170,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  void testIsBlankAndIsNullOperators() throws Exception {
+  void testIsBlankAndIsNullOperators() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -209,7 +206,6 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
 
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
@@ -247,7 +243,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  void testLocaleUpdateEffectOnErrors() throws Exception {
+  void testLocaleUpdateEffectOnErrors() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -298,7 +294,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  void shouldInactivateNestedGroups() throws Exception {
+  void shouldInactivateNestedGroups() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -340,7 +336,6 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
 
     assertDisabled(session, toRef("g2"));
@@ -361,7 +356,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  void shouldSubSequentPagesShouldNotPreventNextPage() throws Exception {
+  void shouldSubSequentPagesShouldNotPreventNextPage() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -426,7 +421,6 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
 
     assertEnabled(session, toRef("p1"));

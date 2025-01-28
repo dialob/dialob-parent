@@ -5,12 +5,14 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.Serial;
 import java.util.Objects;
 
 
+@Getter
 @EqualsAndHashCode(callSuper = true, of = {"value", "unit"})
 public class ConstExprNode extends NodeBase {
 
@@ -43,14 +45,6 @@ public class ConstExprNode extends NodeBase {
 
   public boolean isNull() {
     return value == null;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public String getUnit() {
-    return unit;
   }
 
   public Object getAsValueType() {

@@ -45,11 +45,9 @@ class JdbcQuestionnaireDatabaseTest extends JdbcBackendDatabaseTest {
       "\"language\": \"en\", \"tenantId\": \"itest\", \"lastAnswer\": \"2019-02-25T15:39:37.865+0000\"}, \"activeItem\": \"group1\"}";
 
     JdbcTemplate jdbcTemplate = Mockito.mock(JdbcTemplate.class);
-    CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
     DatabaseHelper databaseHelper = Mockito.mock(DatabaseHelper.class);
     TransactionTemplate transactionTemplate = Mockito.mock(TransactionTemplate.class);
     String schema = "public";
-    FormVersionControlDatabase versionControlDatabase;
 
     JdbcQuestionnaireDatabase database = new JdbcQuestionnaireDatabase(jdbcTemplate, databaseHelper, transactionTemplate, objectMapper, schema, Optional.empty(), tenantId -> false);
     Questionnaire questionnaire = database.toObject(

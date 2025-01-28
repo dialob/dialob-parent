@@ -51,11 +51,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public boolean canEqualWith(ValueType rhs) {
-      return rhs == this;
-    }
-
-    @Override
     public ValueType plusType(ValueType rhs) {
       if (rhs == PERIOD || rhs == DATE) {
         return null;
@@ -201,11 +196,6 @@ public enum PrimitiveValueType implements ValueType {
         return null;
       }
       return LocalDate.parse(string);
-    }
-
-    @Override
-    public boolean canEqualWith(ValueType rhs) {
-      return rhs == this;
     }
 
     @Override

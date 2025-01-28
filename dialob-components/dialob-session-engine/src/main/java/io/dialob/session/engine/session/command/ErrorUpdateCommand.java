@@ -36,7 +36,7 @@ public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
     if (getTargetId().isPartial()) {
-      ImmutableSet.Builder<EventMatcher> builder = ImmutableSet.<EventMatcher>builder();
+      ImmutableSet.Builder<EventMatcher> builder = ImmutableSet.builder();
       builder.addAll(eventMatchers);
       builder.add(EventMatchers.whenItemAdded(getTargetId().getItemId()));
       findConcreteItem(getTargetId()).map(EventMatchers::whenItemsChanged).ifPresent(builder::add);

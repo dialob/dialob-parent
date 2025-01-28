@@ -243,7 +243,7 @@ public class FillAssertionBuilder {
     while(ai.hasNext()) {
       final ValidationEntry validationEntry = ai.next();
       if ( validationEntry.getAssertter() != null) {
-        validationEntry.getAssertter().accept(Assertions.<Action>assertThat(validationEntry.actions.getActions()));
+        validationEntry.getAssertter().accept(Assertions.assertThat(validationEntry.actions.getActions()));
       }
     }
     assertFalse(ai.hasNext());

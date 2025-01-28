@@ -76,6 +76,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -178,7 +179,6 @@ class FormsRestServiceControllerApiKeyTest {
 
     System.arraycopy(UUIDUtils.toBytes(clientId), 0, token, 0, 16);
     System.arraycopy(secretBytes,                 0, token, 16, secretBytes.length);
-    /// UUIDUtils.toBytes(clientId)) + "." + token
 
     httpHeaders.set("x-api-key", Base64.getEncoder().encodeToString(token));
     httpHeaders.set(HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
@@ -221,9 +221,10 @@ class FormsRestServiceControllerApiKeyTest {
     HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret");
 
     ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() { });
-    assertEquals(200, response.getStatusCodeValue());
+    assertEquals(200, response.getStatusCode().value());
     verify(formDatabase, times(1)).findAllMetadata(anyString(), isNull(), any());
     List<FormListItem> r = response.getBody();
+    assertNotNull(r);
     assertEquals(2, r.size());
     assertEquals("l1",r.get(0).getMetadata().getLabel());
     assertEquals("l2",r.get(1).getMetadata().getLabel());
@@ -233,13 +234,13 @@ class FormsRestServiceControllerApiKeyTest {
 
   @Test
   void shouldRejectInvalidKey() throws Exception {
-    HttpEntity httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongtoken");
+    var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongtoken");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {
-        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+        restTemplate.exchange("http://localhost:" + port + "/api/forms", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
         });
       } catch (HttpClientErrorException e) {
-        assertEquals(403, e.getRawStatusCode());
+        assertEquals(403, e.getStatusCode().value());
         throw e;
       }
     });

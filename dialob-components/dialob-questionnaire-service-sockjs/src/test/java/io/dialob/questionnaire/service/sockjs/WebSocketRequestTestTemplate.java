@@ -136,6 +136,7 @@ public class WebSocketRequestTestTemplate {
     void addAccept(String name, Expectation expectConsumer);
   }
 
+  @Getter
   public class StepsBuilder {
 
     private WhenMessage whenMessage;
@@ -145,10 +146,6 @@ public class WebSocketRequestTestTemplate {
       steps.add(this.whenMessage);
       this.whenMessage.setExpectations(new OutOfOrderExpectations());
       return new ExpectionBuilder(this);
-    }
-
-    public WhenMessage getWhenMessage() {
-      return whenMessage;
     }
 
     public ExpectionBuilder when(String name, Actions actions) {
@@ -277,7 +274,7 @@ public class WebSocketRequestTestTemplate {
         if(actions.getActions() == null || actions.getActions().isEmpty()) {
           return;
         }
-        LOGGER.error("{} do not match with expectUpdateWithoutActions", actions.toString());
+        LOGGER.error("{} do not match with expectUpdateWithoutActions", actions);
         Assertions.fail("We didn't expect any actions, but got some.");
       });
     }
@@ -329,7 +326,6 @@ public class WebSocketRequestTestTemplate {
           if (step == null) {
             LOGGER.error("Unexpected message {}", message.getPayload());
             handlerFailed.set(true);
-            return;
           } else {
             Expectations expectations = step.getExpectations();
             expectations.accept(message);

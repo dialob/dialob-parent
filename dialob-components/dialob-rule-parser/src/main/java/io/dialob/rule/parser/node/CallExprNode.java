@@ -69,7 +69,7 @@ public class CallExprNode extends NodeBase {
     if (arguments.isEmpty()) {
       return indent + "(" + nodeOperator + ")\n";
     }
-    if (!arguments.stream().anyMatch(node -> node instanceof CallExprNode)) {
+    if (arguments.stream().noneMatch(node -> node instanceof CallExprNode)) {
       return indent + "(" + nodeOperator + " " + arguments.stream().map(Object::toString).collect(Collectors.joining(" ")) + ")";
     }
     return indent + "(" + nodeOperator + "\n" + arguments.stream().map(

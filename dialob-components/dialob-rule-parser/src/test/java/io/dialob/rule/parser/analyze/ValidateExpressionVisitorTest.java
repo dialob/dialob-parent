@@ -31,7 +31,7 @@ class ValidateExpressionVisitorTest {
   @Test
   void functionReturningNonBooleanShouldTriggerError() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
-    Mockito.when(variableFinder.returnTypeOf("today", new ValueType[0])).thenReturn(ValueType.DATE);
+    Mockito.when(variableFinder.returnTypeOf("today")).thenReturn(ValueType.DATE);
     Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "today()");
     final ValidateExpressionVisitor validateExpressionVisitor = new ValidateExpressionVisitor();
     expression.accept(validateExpressionVisitor);
@@ -45,7 +45,7 @@ class ValidateExpressionVisitorTest {
   @Test
   void functionReturningBooleanIsAccepted() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
-    Mockito.when(variableFinder.returnTypeOf("booleanFunction", new ValueType[0])).thenReturn(ValueType.BOOLEAN);
+    Mockito.when(variableFinder.returnTypeOf("booleanFunction")).thenReturn(ValueType.BOOLEAN);
     Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "booleanFunction()");
     final ValidateExpressionVisitor validateExpressionVisitor = new ValidateExpressionVisitor();
     expression.accept(validateExpressionVisitor);

@@ -51,7 +51,8 @@ public interface ProtoTypeItemsAddedEventsProvider extends Triggers.EventsProvid
         getItemPrototypeIds().stream()
           .filter(itemPrototypeId -> IdUtils.matches(itemPrototypeId, itemId))
           .findFirst()
-          .map(foundPrototypeId -> ImmutableItemAddedEvent.of(itemId, foundPrototypeId)).map(Stream::of).orElseGet(Stream::empty)
+          .map(foundPrototypeId -> ImmutableItemAddedEvent.of(itemId, foundPrototypeId))
+          .stream()
       );
   }
 }

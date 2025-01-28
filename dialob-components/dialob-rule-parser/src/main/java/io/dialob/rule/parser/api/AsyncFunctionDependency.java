@@ -15,6 +15,7 @@
  */
 package io.dialob.rule.parser.api;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -23,10 +24,14 @@ import java.util.List;
 
 public class AsyncFunctionDependency implements Serializable {
 
+  @Getter
   private final String functionRefId;
   private final List<String> argumentExpressions;
+  @Getter
   private final String functionName;
+  @Getter
   private final String canonicalFunctionName;
+  @Getter
   private ValueType valueType;
 
   public AsyncFunctionDependency(String functionRefId, String canonicalFunctionName, ValueType valueType, String functionName, List<String> argumentExpressions) {
@@ -40,20 +45,8 @@ public class AsyncFunctionDependency implements Serializable {
     this.canonicalFunctionName = canonicalFunctionName;
   }
 
-  public String getFunctionRefId() {
-    return functionRefId;
-  }
-
-  public String getFunctionName() {
-    return functionName;
-  }
-
   public List<String> getArgumentExpressions() {
     return Collections.unmodifiableList(argumentExpressions);
-  }
-
-  public String getCanonicalFunctionName() {
-    return canonicalFunctionName;
   }
 
   @Override
@@ -80,7 +73,4 @@ public class AsyncFunctionDependency implements Serializable {
     return false;
   }
 
-  public ValueType getValueType() {
-    return valueType;
-  }
 }

@@ -106,8 +106,6 @@ class AstMatcherTest {
         final UnaryOperator<NodeBase> callMatcher2 = mockMatchFunction();
         final UnaryOperator<NodeBase> callMatcher3 = mockMatchFunction();
 
-        System.out.println(expression.getAst());
-
         // when
         final AstMatcher matcher = new AstMatcher() {{
             whenMatches(callNode(args(length(is(1)))), callMatcher1);
@@ -130,8 +128,6 @@ class AstMatcherTest {
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
         final UnaryOperator<NodeBase> callMatcher2 = mockMatchFunction();
 
-        System.out.println(expression.getAst());
-
         // when
         // Note! predence of matchers. If one of matchers matches, rest of matchers are not evaluated
         final AstMatcher matcher = new AstMatcher() {{
@@ -153,8 +149,6 @@ class AstMatcherTest {
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
         final UnaryOperator<NodeBase> callMatcher2 = mockMatchFunction();
         final UnaryOperator<NodeBase> callMatcher3 = mockMatchFunction();
-
-        System.out.println(expression.getAst());
 
         // when
         AstMatcher matcher = new AstMatcher() {{
@@ -187,8 +181,6 @@ class AstMatcherTest {
         final UnaryOperator<NodeBase> callMatcher2 = mockMatchFunction();
         final UnaryOperator<NodeBase> callMatcher3 = mockMatchFunction();
 
-        System.out.println(expression.getAst());
-
         // when
         final AstMatcher matcher = new AstMatcher() {{
             whenMatches(callNode(args(length(is(1)))), callMatcher1);
@@ -212,8 +204,6 @@ class AstMatcherTest {
         final Expression expression = Expression.createExpression("a + b + c");
         final UnaryOperator<NodeBase> callMatcher1 = mockMatchFunction();
         final UnaryOperator<NodeBase> callMatcher2 = mockMatchFunction();
-
-        System.out.println(expression.getAst());
 
         // when
         final AstMatcher matcher = new AstMatcher() {{
@@ -323,8 +313,6 @@ class AstMatcherTest {
     private void assertMinify(String expected, String expressionString) {
         // given
         final Expression expression = Expression.createExpression(expressionString);
-        final ASTBuilder astBuilder = new ASTBuilder();
-        System.out.println(expression.getAst().toString());
         // when
         final AstMatcher matcher = new ModifyingMinifierVisitor();
         expression.accept(matcher);

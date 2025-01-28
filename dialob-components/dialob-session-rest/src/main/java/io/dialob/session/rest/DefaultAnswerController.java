@@ -31,6 +31,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.user.CurrentUser;
 import io.dialob.security.user.CurrentUserProvider;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
   private final ActionProcessingService actionProcessingService;
   private final SessionPermissionEvaluator sessionPermissionEvaluator;
   private final Optional<CurrentUserProvider> currentUserProvider;
+  @Setter
   private long warningThreshold = 2000000000L; // 2 seconds
 
   DefaultAnswerController(
@@ -62,10 +64,6 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     this.sessionPermissionEvaluator = sessionPermissionEvaluator;
     this.returnStackTrace = returnStackTrace;
     this.currentUserProvider = currentUserProvider;
-  }
-
-  public void setWarningThreshold(long warningThreshold) {
-    this.warningThreshold = warningThreshold;
   }
 
   @Override

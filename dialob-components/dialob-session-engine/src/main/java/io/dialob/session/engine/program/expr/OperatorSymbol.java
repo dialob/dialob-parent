@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
+import lombok.Getter;
 
 public enum OperatorSymbol {
   PLUS("+"),
@@ -64,6 +65,7 @@ public enum OperatorSymbol {
 
   private final String symbol;
 
+  @Getter
   private final boolean not;
 
   OperatorSymbol(String symbol) {
@@ -75,7 +77,4 @@ public enum OperatorSymbol {
     this.not = not;
   }
 
-  public boolean isNot() {
-    return not;
-  }
 }

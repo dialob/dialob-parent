@@ -26,11 +26,10 @@ public interface SetVariableFailed extends AbstractUpdateCommand<ItemId, ItemSta
 
   @NonNull
   default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    ItemState updatedState = itemState.update()
+    return itemState.update()
       .setValue(null)
       .setStatus(ItemState.Status.ERROR)
       .get();
-    return updatedState;
   }
 
 }

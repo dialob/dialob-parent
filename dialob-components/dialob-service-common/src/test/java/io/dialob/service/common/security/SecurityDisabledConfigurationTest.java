@@ -57,8 +57,7 @@ class SecurityDisabledConfigurationTest {
   public WebApplicationContext wac;
 
   @BeforeEach
-  public void setupCurrentUser(TestInfo testInfo) {
-    String methodName = testInfo.getDisplayName();
+  public void setupCurrentUser() {
     DefaultMockMvcBuilder builder = MockMvcBuilders
       .webAppContextSetup(this.wac)
       .apply(SecurityMockMvcConfigurers.springSecurity());

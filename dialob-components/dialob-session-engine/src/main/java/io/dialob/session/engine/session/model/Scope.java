@@ -42,7 +42,7 @@ public interface Scope extends Serializable {
   default ItemId mapTo(final ItemId itemId, final boolean ignoreScopeItems) {
     return getScopeId().getParent().map(scopeParent -> {
       ItemId scopedId = itemId;
-      if (!itemId.getParent().isPresent()){
+      if (itemId.getParent().isEmpty()){
         scopedId = ImmutableItemRef.of(itemId.getValue(), Optional.of(getScopeId()));
       } else {
         if (IdUtils.matches(itemId, getScopeId())) {

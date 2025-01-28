@@ -26,7 +26,7 @@ class QuestionnaireMetadataTest {
   void shouldDeserializeUnknownAttributesToAdditionalProperties() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Questionnaire.Metadata metadata = objectMapper.readValue("{\"formId\":\"123\",\"status\":\"NEW\",\"extraProp\":\"extraValue\"}", Questionnaire.Metadata.class);
-    assertTrue(metadata.getAdditionalProperties().size() > 0);
+    assertTrue(!metadata.getAdditionalProperties().isEmpty());
     assertEquals("extraValue", metadata.getAdditionalProperties().get("extraProp"));
   }
   @Test

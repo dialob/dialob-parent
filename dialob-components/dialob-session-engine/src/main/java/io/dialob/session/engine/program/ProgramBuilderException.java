@@ -16,23 +16,19 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.rule.parser.node.NodeBase;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 public abstract class ProgramBuilderException extends RuntimeException {
 
   private NodeBase node;
 
   public ProgramBuilderException(String s) {
     super(s);
-  }
-
-  public void setNode(NodeBase node) {
-    this.node = node;
-  }
-
-  public NodeBase getNode() {
-    return node;
   }
 
   public abstract List<Object> getArgs();

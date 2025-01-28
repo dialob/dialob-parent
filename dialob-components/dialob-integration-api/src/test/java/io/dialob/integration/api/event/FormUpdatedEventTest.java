@@ -22,8 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FormUpdatedEventTest {
 
@@ -39,7 +38,7 @@ class FormUpdatedEventTest {
     String json = objectMapper.writeValueAsString(event);
     assertEquals("{\"type\":\"FormUpdated\",\"tenant\":{\"id\":\"tent1\"},\"formId\":\"formi\",\"source\":\"node1\",\"revision\":\"new\"}", json);
     DistributedEvent event2 = objectMapper.readValue(json, DistributedEvent.class);
-    assertTrue(event2 instanceof FormUpdatedEvent);
+    assertInstanceOf(FormUpdatedEvent.class, event2);
     assertEquals(event, event2);
   }
 }

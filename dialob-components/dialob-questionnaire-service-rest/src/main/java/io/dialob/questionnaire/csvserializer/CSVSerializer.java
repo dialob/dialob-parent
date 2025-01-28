@@ -113,7 +113,7 @@ public class CSVSerializer {
             .stream()
             .map(key -> getValuesetAnswer(form, questionnaire, valueSetId, key))
             .collect(Collectors.joining(MULTICHOICE_DELIMITER));
-          valueKey = ((Collection<String>) a.get().getValue()).stream().collect(Collectors.joining(MULTICHOICE_DELIMITER));
+          valueKey = String.join(MULTICHOICE_DELIMITER, ((Collection<String>) a.get().getValue()));
         } else {
           valueKey = a.get().getValue().toString();
           realValue = getValuesetAnswer(form, questionnaire, valueSetId, valueKey);
@@ -156,14 +156,14 @@ public class CSVSerializer {
         return;
       }
       // Container items
-      if (null != formItem.getItems() && formItem.getItems().size() > 0) {
+      if (null != formItem.getItems() && !formItem.getItems().isEmpty()) {
         // Rowgroup handling
         if ("rowgroup".equals(formItem.getType())) {
           Optional<Answer> a = getAnswer(questionnaire, formItem.getId());
           if (a.isPresent()) {
             List<Integer> rows = (List<Integer>) a.get().getValue();
             if (rows != null) {
-              if (rows.size() > 0) {
+              if (!rows.isEmpty()) {
                 // Rowgroup label row
                 records.add(formItem.getLabel().get(LABEL_LANGUAGE));
                 records.add(formItem.getId());
@@ -209,7 +209,7 @@ public class CSVSerializer {
     if (labelDedups.containsKey(label)) {
       Integer index = labelDedups.get(label) + 1;
       labelDedups.put(label, index);
-      label = index.toString() + ". " + label;
+      label = index + ". " + label;
     }
     else {
       labelDedups.put(label, 0);
@@ -225,19 +225,17 @@ public class CSVSerializer {
         // for multichoice add column for each possible value
         String selectionId = formItem.getValueSetId();
         Optional<FormValueSet> values = form.getValueSets().stream().filter(valueSet -> valueSet.getId().equals(selectionId)).findFirst();
-        if (values.isPresent()) {
-          values.get().getEntries().forEach(entry-> {
-            result.add(dedupLabel(entry.getLabel().get(language), labelDedups));
-            result.add(dedupLabel(entry.getId(), labelDedups));
-          });
-        }
+        values.ifPresent(formValueSet -> formValueSet.getEntries().forEach(entry -> {
+          result.add(dedupLabel(entry.getLabel().get(language), labelDedups));
+          result.add(dedupLabel(entry.getId(), labelDedups));
+        }));
       }
       result.add(dedupLabel(label, labelDedups));
       result.add(formItem.getId());
     }
   }
 
-  public String[] serializeHeader(Form form, String language) throws IOException {
+  public String[] serializeHeader(Form form, String language) {
     List<String> result = new ArrayList<>();
     Map<String, Integer> labelDedups = new HashMap<>();
     form.getData().values().forEach(formItem -> {
@@ -248,11 +246,11 @@ public class CSVSerializer {
         result.add(variable.getName());
       }
     });
-    return result.stream().toArray(String[]::new);
+    return result.toArray(String[]::new);
   }
 
 
-  private void serializeVariable(Variable variable, Questionnaire questionnaire, List<String> records) throws IOException {
+  private void serializeVariable(Variable variable, Questionnaire questionnaire, List<String> records) {
     if (Boolean.TRUE.equals(variable.getContext())) {
       Optional<ContextValue> var = questionnaire.getContext().stream().filter(varValue -> variable.getName().equals(varValue.getId())).findFirst();
       if (var.isPresent()) {
@@ -267,7 +265,7 @@ public class CSVSerializer {
 
   private void serialize(Questionnaire questionnaire, Form form, CSVPrinter printer, String language) throws IOException {
     List<String> records = new ArrayList<>();
-    form.getData().values().stream().forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
+    form.getData().values().forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
     for (Variable variable : form.getVariables()) {
       serializeVariable(variable, questionnaire, records);
     }

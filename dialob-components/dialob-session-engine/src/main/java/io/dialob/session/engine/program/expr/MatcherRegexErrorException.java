@@ -17,9 +17,11 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class MatcherRegexErrorException extends ProgramBuilderException {
 
   private final String regex;
@@ -27,10 +29,6 @@ public class MatcherRegexErrorException extends ProgramBuilderException {
   public MatcherRegexErrorException(String code, String regex) {
     super(code);
     this.regex = regex;
-  }
-
-  public String getRegex() {
-    return regex;
   }
 
   @Override

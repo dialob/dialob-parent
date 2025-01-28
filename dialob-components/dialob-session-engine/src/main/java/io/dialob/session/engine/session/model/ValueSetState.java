@@ -20,6 +20,7 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class ValueSetState implements SessionObject {
   private List<ValueSetState.Entry> entries;
 
 
+  @Getter
   @EqualsAndHashCode
   @ToString
   public static class Entry implements Serializable {
@@ -53,6 +55,12 @@ public class ValueSetState implements SessionObject {
 
     private final String label;
 
+    /**
+     * -- GETTER --
+     *  Is label provided by external service or defined on form.
+     *
+     * @return true when label is from external source
+     */
     private final boolean provided;
 
     public static Entry of(String id, String label) {
@@ -69,22 +77,6 @@ public class ValueSetState implements SessionObject {
       this.provided = provided;
     }
 
-    public String getId() {
-      return id;
-    }
-
-    public String getLabel() {
-      return label;
-    }
-
-    /**
-     * Is label provided by external service or defined on form.
-     *
-     * @return true when label is from external source
-     */
-    public boolean isProvided() {
-      return provided;
-    }
   }
 
   public class UpdateBuilder {

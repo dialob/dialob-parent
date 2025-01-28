@@ -244,11 +244,6 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     });
   }
 
-  @Override
-  public boolean supportsPartialMessages() {
-    return false;
-  }
-
   @NonNull
   @Override
   public Actions answerQuestion(@NonNull String questionnaireId, String revision, @NonNull List<Action> actions) {
@@ -312,7 +307,6 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     } catch (IOException e) {
       LOGGER.info("unparseable message from client {} due error {}", this.session.getId(), e.getMessage());
       LOGGER.debug("message payload: {}", message != null ? message.getPayload() : actions);
-      return;
     }
   }
 

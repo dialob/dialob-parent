@@ -171,7 +171,6 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     whenMatches(callNode(operCategory(is(NodeOperator.Category.RELATION)).and(args(allMatches(constNode(valueType(or(is(ValueType.INTEGER), is(ValueType.DECIMAL)))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
-      BigDecimal sum = BigDecimal.ZERO;
       assert arguments.size() == 2;
       ConstExprNode leftHand = (ConstExprNode) arguments.get(0);
       ConstExprNode rightHand = (ConstExprNode) arguments.get(1);
@@ -188,7 +187,6 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     whenMatches(callNode(operCategory(is(NodeOperator.Category.RELATION)).and(args(allMatches(constNode(valueType(is(ValueType.STRING))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
-      BigDecimal sum = BigDecimal.ZERO;
       assert arguments.size() == 2;
       ConstExprNode leftHand = (ConstExprNode) arguments.get(0);
       ConstExprNode rightHand = (ConstExprNode) arguments.get(1);
@@ -203,7 +201,6 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       BinaryOperator<Boolean> op = null;
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
-      BigDecimal sum = BigDecimal.ZERO;
       // NE|LE|GE|LT|GT|EQ
       Boolean result = null;
       final String operator = callNode.getNodeOperator().getOperator();
@@ -253,7 +250,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       }
 
       // We'll filter constants from call
-      if (newArguments.size() > 0) {
+      if (!newArguments.isEmpty()) {
         ASTBuilder astBuilder = new ASTBuilder().callExprNode(callNode);
         for (NodeBase argument : newArguments) {
           argument.accept(new CloneVisitor(astBuilder));

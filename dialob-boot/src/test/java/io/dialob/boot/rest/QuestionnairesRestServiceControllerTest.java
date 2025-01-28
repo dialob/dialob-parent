@@ -206,7 +206,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
   }
 
   private QuestionnaireDatabase questionnaireDatabaseMock() {
-    return AopTestUtils.<QuestionnaireDatabase>getTargetObject(questionnaireDatabase);
+    return AopTestUtils.getTargetObject(questionnaireDatabase);
   }
 
 
