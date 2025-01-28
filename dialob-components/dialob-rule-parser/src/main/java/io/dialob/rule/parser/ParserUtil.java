@@ -18,7 +18,9 @@ package io.dialob.rule.parser;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 
-public class ParserUtil {
+public final class ParserUtil {
+
+  private ParserUtil() {}
 
   public static boolean isReducerOperator(@NonNull String reducer) {
     return "sumOf".equals(reducer)
