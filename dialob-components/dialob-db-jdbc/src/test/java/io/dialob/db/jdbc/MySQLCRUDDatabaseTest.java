@@ -19,6 +19,6 @@ import org.junit.jupiter.api.Tag;
 
 @Tag("mysql")
 @Tag("container")
-public class MySQLCRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractMySQLTest {
+class MySQLCRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractMySQLTest {
 
 }

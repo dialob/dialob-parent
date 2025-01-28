@@ -49,9 +49,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
 
   private final ListMultimap<String, ConfiguredFunction> configuredFunctions = Multimaps.newListMultimap(new HashMap<>(), ArrayList::new);
 
-  private static final Predicate<ValueType[]> MATCH_OBJECT_ARRAY = args -> {
-    return args.length == 1 && args[0].isArray();
-  };
+  private static final Predicate<ValueType[]> MATCH_OBJECT_ARRAY = args -> args.length == 1 && args[0].isArray();
 
   FunctionRegistryImpl(@NonNull TaskExecutor taskExecutor, CurrentTenant currentTenant) {
     this.taskExecutor = Objects.requireNonNull(taskExecutor);

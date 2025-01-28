@@ -33,7 +33,7 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-public class FunctionRegistryImplTest {
+class FunctionRegistryImplTest {
 
   public static Boolean testFunction1() { return null; }
 

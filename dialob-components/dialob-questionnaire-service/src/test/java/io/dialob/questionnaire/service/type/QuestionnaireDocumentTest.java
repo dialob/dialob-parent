@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Date;
 
-public class QuestionnaireDocumentTest {
+class QuestionnaireDocumentTest {
 
     ObjectMapper objectMapper;
 

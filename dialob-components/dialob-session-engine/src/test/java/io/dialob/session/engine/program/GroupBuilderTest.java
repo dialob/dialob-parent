@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 
 import static org.mockito.Mockito.*;
 
-public class GroupBuilderTest {
+class GroupBuilderTest {
 
   @Test
   void rowGroupGeneratesTeoGroups() {

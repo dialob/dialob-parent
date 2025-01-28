@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
   "dialob.session.rest.enabled=true",
   "dialob.session.returnStackTrace=true"
 })
-public class AnswerControllerWithStackTest {
+class AnswerControllerWithStackTest {
 
   @MockitoBean
   private QuestionnaireSessionService questionnaireSessionService;

@@ -107,7 +107,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   RestApiExceptionMapper.class
 })
 @EnableConfigurationProperties(ServerProperties.class)
-public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
+class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   public interface ListenerMock {
     @EventListener

@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-public class DialobProgramServiceTest extends AbstractDialobProgramTest {
+class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
   @Test
   void shouldConstructFormProgram() throws Exception {

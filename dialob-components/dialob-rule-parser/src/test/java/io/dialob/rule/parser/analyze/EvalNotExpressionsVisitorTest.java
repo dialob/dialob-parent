@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EvalNotExpressionsVisitorTest {
+class EvalNotExpressionsVisitorTest {
 
     @Test
     public void test() {

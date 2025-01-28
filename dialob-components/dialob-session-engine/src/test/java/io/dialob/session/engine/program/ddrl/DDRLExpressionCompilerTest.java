@@ -40,7 +40,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class DDRLExpressionCompilerTest {
+class DDRLExpressionCompilerTest {
   @NonNull
   private DDRLExpressionCompiler createDdrlExpressionCompiler() {
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);

@@ -65,7 +65,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
   DialobRestAutoConfiguration.class})
 @EnableWebMvc
 @WebAppConfiguration
-public class CSVSerializerTest {
+class CSVSerializerTest {
 
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {

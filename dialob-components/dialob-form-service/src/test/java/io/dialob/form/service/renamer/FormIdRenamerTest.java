@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {FormIdRenamerTest.TestConfiguration.class})
-public class FormIdRenamerTest {
+class FormIdRenamerTest {
 
   ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
 

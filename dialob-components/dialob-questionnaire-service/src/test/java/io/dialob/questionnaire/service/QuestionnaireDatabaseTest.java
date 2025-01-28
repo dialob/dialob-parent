@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @EnableCaching
-public class QuestionnaireDatabaseTest {
+class QuestionnaireDatabaseTest {
 
   static QuestionnaireDatabase questionnaireDatabaseMock = mock(QuestionnaireDatabase.class);
 

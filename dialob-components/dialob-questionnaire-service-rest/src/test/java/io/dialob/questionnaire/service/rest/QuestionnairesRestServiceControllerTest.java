@@ -74,7 +74,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
   DialobRestAutoConfiguration.class})
 @EnableWebMvc
 @WebAppConfiguration
-public class QuestionnairesRestServiceControllerTest {
+class QuestionnairesRestServiceControllerTest {
 
   public static final QuestionnaireSession.DispatchActionsResult EMPTY_IMMUTABLE_ACTIONS =
     ImmutableQuestionnaireSession.DispatchActionsResult.builder()

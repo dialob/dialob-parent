@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class FormItemBeanTest {
+class FormItemBeanTest {
   public FormItem parseFormItem(String data) throws IOException {
     final ObjectMapper objectMapper = new ObjectMapper();
     SimpleModule module = new SimpleModule();

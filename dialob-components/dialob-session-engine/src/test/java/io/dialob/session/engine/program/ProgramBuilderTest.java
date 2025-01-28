@@ -43,7 +43,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class ProgramBuilderTest extends AbstractDialobProgramTest {
+class ProgramBuilderTest extends AbstractDialobProgramTest {
 
   FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
 

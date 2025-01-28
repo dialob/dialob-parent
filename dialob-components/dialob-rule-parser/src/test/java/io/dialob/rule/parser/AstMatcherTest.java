@@ -28,7 +28,7 @@ import java.util.function.UnaryOperator;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class AstMatcherTest {
+class AstMatcherTest {
 
     @Test
     public void simpleNodeMatchersAreCalled() {

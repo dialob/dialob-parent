@@ -84,7 +84,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DialobQuestionnaireSessionServiceTest.TestConfiguration.class})
-public class DialobQuestionnaireSessionServiceTest {
+class DialobQuestionnaireSessionServiceTest {
 
 
   @Configuration(proxyBeanMethods = false)

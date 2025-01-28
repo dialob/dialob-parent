@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {FormItemCopierTest.TestConfiguration.class})
-public class FormItemCopierTest {
+class FormItemCopierTest {
 
 
   public static class TestConfiguration {

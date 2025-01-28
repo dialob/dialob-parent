@@ -21,7 +21,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultFunctionsTest {
+class DefaultFunctionsTest {
   @Test
   void testIsLyt() {
     assertTrue(DefaultFunctions.isLyt("1572860-0"));

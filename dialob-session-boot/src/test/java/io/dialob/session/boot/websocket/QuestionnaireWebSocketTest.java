@@ -62,7 +62,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
+class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
 
   @Test
   void shouldGetQUESTIONNAIRE_NOT_FOUNDActionIfAskedQuestionnaireDoNotExists2() throws Exception {

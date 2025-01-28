@@ -23,7 +23,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class AnswerTest {
+class AnswerTest {
 
   @Test
   void shouldParseAnswer() throws Exception {

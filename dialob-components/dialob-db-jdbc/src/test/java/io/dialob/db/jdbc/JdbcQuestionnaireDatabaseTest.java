@@ -31,7 +31,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
 
-public class JdbcQuestionnaireDatabaseTest extends JdbcBackendDatabaseTest {
+class JdbcQuestionnaireDatabaseTest extends JdbcBackendDatabaseTest {
 
   @Override
   JdbcBackendDatabase jdbcBackendDatabase(TransactionTemplate transactionTemplate, @NonNull CurrentTenant currentTenant, JdbcTemplate jdbcTemplate, DatabaseHelper databaseHelper, ObjectMapper objectMapper, String schema) {

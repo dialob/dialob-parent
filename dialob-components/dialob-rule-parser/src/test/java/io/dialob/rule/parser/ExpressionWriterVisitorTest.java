@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class ExpressionWriterVisitorTest {
+class ExpressionWriterVisitorTest {
     @Test
     public void test() {
         assertAstDump("1+2+4 > 9","1 + 2 + 4 > 9");

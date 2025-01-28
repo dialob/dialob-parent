@@ -71,7 +71,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
+class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
 
   @Inject
   private ApplicationEventPublisher applcationApplicationEventPublisher;

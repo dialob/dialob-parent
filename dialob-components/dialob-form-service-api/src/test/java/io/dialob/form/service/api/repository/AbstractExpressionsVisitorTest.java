@@ -21,7 +21,7 @@ import io.dialob.api.form.ImmutableFormMetadata;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AbstractExpressionsVisitorTest {
+class AbstractExpressionsVisitorTest {
 
   @Test
   void emptyDocumentShouldNotHaveExpressions() {

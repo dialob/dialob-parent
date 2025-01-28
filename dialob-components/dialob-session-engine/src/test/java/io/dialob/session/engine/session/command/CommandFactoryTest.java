@@ -33,7 +33,7 @@ import static io.dialob.session.engine.session.command.CommandFactory.ItemStateP
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class CommandFactoryTest {
+class CommandFactoryTest {
 
   @Test
   void emptyItemsListDoNotTriggerChange() {

@@ -110,7 +110,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ReviewApplicationSettings.class
 })
 @EnableWebSecurity
-public class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
+class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @MockitoBean
   private CurrentTenant currentTenant;

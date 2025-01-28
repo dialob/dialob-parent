@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-public class UtilsTest {
+class UtilsTest {
 
   @Test
   void test() throws Exception {

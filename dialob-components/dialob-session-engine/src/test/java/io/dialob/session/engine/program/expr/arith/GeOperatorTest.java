@@ -23,7 +23,7 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.when;
 
-public class GeOperatorTest {
+class GeOperatorTest {
 
   @Test
   void testLogic() {

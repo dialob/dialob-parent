@@ -98,7 +98,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   AdminApplicationSettings.class,
   ReviewApplicationSettings.class
 })
-public class QuestionnairesRestControllerApiKeyTest {
+class QuestionnairesRestControllerApiKeyTest {
 
   public interface ListenerMock {
     @EventListener

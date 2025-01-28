@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-public class FormDocumentTest {
+class FormDocumentTest {
 
     @Test
     public void test() throws Exception {

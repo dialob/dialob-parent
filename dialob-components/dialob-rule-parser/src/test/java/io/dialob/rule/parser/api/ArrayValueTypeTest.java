@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 
-public class ArrayValueTypeTest {
+class ArrayValueTypeTest {
 
   @Test
   void shouldGetArrayClassOfValueType() {

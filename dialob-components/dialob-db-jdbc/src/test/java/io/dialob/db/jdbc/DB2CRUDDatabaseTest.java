@@ -21,6 +21,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @Tag("db2")
 @Tag("container")
-public class DB2CRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractDB2Test {
+class DB2CRUDDatabaseTest extends AbstractCRUDDatabaseTest implements AbstractDB2Test {
 
 }

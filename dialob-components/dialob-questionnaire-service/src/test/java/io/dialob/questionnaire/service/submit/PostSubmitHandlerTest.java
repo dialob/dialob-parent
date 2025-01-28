@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-public class PostSubmitHandlerTest {
+class PostSubmitHandlerTest {
 
   @Test
   void shouldMakePostToURL() throws Exception {

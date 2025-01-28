@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-public class ASTBuilderWalkerTest {
+class ASTBuilderWalkerTest {
 
   @Test
   void shouldLogUnknownVariableAndIdWhenVariableIsNotFound() throws Exception {

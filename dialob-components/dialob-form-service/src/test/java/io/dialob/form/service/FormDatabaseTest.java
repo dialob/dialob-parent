@@ -44,7 +44,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @EnableCaching
-public class FormDatabaseTest {
+class FormDatabaseTest {
 
   String tenantId = "123";
 

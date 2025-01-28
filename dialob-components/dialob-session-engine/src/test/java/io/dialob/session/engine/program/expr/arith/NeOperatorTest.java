@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.when;
 
-public class NeOperatorTest {
+class NeOperatorTest {
 
   @Test
   void testLogic() {

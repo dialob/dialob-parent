@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class QuestionnaireMetadataTest {
+class QuestionnaireMetadataTest {
   @Test
   void shouldDeserializeUnknownAttributesToAdditionalProperties() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();

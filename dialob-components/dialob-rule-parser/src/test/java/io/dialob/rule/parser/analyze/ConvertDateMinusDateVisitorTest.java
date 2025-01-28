@@ -27,7 +27,7 @@ import org.mockito.stubbing.Answer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-public class ConvertDateMinusDateVisitorTest {
+class ConvertDateMinusDateVisitorTest {
 
   @Test
   void shouldConvertDateMinusDateToPeriodBetweenCall() throws Exception {

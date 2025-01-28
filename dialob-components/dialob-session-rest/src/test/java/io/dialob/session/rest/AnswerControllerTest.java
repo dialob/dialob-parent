@@ -45,7 +45,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(classes = {DialobSessionRestAutoConfiguration.class, DialobSettingsAutoConfiguration.class}, properties = {
   "dialob.session.rest.enabled=true"
 })
-public class AnswerControllerTest {
+class AnswerControllerTest {
 
   @MockitoBean
   private QuestionnaireSessionService questionnaireSessionService;

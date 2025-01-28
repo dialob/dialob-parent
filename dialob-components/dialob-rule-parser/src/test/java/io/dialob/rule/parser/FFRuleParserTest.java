@@ -18,7 +18,7 @@ package io.dialob.rule.parser;
 import io.dialob.rule.parser.node.ParseTestBase;
 import org.junit.jupiter.api.Test;
 
-public class FFRuleParserTest extends ParseTestBase {
+class FFRuleParserTest extends ParseTestBase {
   @Test
   void test() throws Exception {
     assertExpressionEquals("", "");

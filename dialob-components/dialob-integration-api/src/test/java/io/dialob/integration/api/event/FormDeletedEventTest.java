@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FormDeletedEventTest {
+class FormDeletedEventTest {
   private ObjectMapper mapper = new ObjectMapper().registerModules(new Jdk8Module());
 
   @Test

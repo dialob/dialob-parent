@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @EnableCaching
-public class QuestionnaireSessionServiceTest {
+class QuestionnaireSessionServiceTest {
 
   static QuestionnaireSessionService questionnaireSessionServiceMock = mock(QuestionnaireSessionService.class);
 

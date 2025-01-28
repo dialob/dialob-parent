@@ -15,7 +15,6 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.FormItem;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableVariable;
@@ -95,7 +94,6 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
       .rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
-    FormItem formItemBean;
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("question1","note1","note2"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","{testResult}"));

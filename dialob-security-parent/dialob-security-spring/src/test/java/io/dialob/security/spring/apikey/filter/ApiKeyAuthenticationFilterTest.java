@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ApiKeyAuthenticationFilterTest {
+class ApiKeyAuthenticationFilterTest {
 
   @Mock
   private AuthenticationManager authenticationManager;

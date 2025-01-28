@@ -68,7 +68,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
+class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
 
   @Inject
   private ApplicationEventPublisher applicationEventPublisher;

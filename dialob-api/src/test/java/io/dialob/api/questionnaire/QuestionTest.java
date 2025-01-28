@@ -24,7 +24,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class QuestionTest {
+class QuestionTest {
   @Test
   void shouldDeserializePropsToMap() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();

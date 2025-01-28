@@ -82,7 +82,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ApiServiceSecurityConfigurer.class
 })
 @EnableConfigurationProperties(DialobSettings.class)
-public class ApiControllerOnlyApiTest extends AbstractControllerTest {
+class ApiControllerOnlyApiTest extends AbstractControllerTest {
 
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {

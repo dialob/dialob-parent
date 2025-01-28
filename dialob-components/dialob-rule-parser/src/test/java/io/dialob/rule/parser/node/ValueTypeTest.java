@@ -17,7 +17,7 @@ import static java.math.BigInteger.TWO;
 import static java.math.BigInteger.ZERO;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ValueTypeTest {
+class ValueTypeTest {
 
   public static final BigInteger ONE = BigInteger.ONE;
 

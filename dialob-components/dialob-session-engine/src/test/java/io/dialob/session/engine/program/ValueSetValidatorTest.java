@@ -25,7 +25,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-public class ValueSetValidatorTest {
+class ValueSetValidatorTest {
   private final ValueSetValidator valueSetValidator = new ValueSetValidator();
   private final Form baseForm = ImmutableForm.builder()
       .name("test")

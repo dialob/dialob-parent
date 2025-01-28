@@ -70,7 +70,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
+class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test

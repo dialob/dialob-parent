@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-public class TypeAnalysisTest {
+class TypeAnalysisTest {
 
   @Test
   void doubleQuotedStringsAreStrings() throws Exception {
