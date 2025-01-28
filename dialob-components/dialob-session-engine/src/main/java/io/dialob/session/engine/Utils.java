@@ -339,8 +339,11 @@ public class Utils {
     if (value instanceof BigDecimal && valueType == ValueType.DECIMAL) {
       return value;
     }
-    if (value instanceof Integer && valueType == ValueType.INTEGER) {
-      return value;
+    if (value instanceof Integer i && valueType == ValueType.INTEGER) {
+      return BigInteger.valueOf(i);
+    }
+    if (value instanceof Long l && valueType == ValueType.INTEGER) {
+      return BigInteger.valueOf(l);
     }
     if (value instanceof Double aDouble && valueType == ValueType.DECIMAL) {
       return BigDecimal.valueOf(aDouble);

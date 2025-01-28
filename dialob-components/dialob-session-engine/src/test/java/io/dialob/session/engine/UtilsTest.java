@@ -23,6 +23,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -96,6 +97,9 @@ class UtilsTest {
     assertEquals(Period.ofDays(1), Utils.validateDefaultValue("x", ValueType.PERIOD, "P1D", listener));
     assertEquals(Duration.ofHours(1), Utils.validateDefaultValue("x", ValueType.DURATION, "PT1H", listener));
 
+    assertEquals(BigInteger.ONE, Utils.validateDefaultValue("x", ValueType.INTEGER, 1, listener));
+    assertEquals(BigInteger.ONE, Utils.validateDefaultValue("x", ValueType.INTEGER, 1L, listener));
+    assertEquals(BigDecimal.valueOf(10,1), Utils.validateDefaultValue("x", ValueType.DECIMAL, 1.0, listener));
     assertEquals(BigDecimal.ONE, Utils.validateDefaultValue("x", ValueType.DECIMAL, BigDecimal.ONE, listener));
     assertEquals(Boolean.TRUE, Utils.validateDefaultValue("x", ValueType.BOOLEAN, Boolean.TRUE, listener));
     assertEquals(LocalDate.of(2025, 1, 28), Utils.validateDefaultValue("x", ValueType.DATE, LocalDate.of(2025, 1, 28), listener));
@@ -120,6 +124,44 @@ class UtilsTest {
     assertNull(Utils.validateDefaultValue("x", ValueType.INTEGER, List.of(), listener));
     verify(listener).accept(any());
     verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.INTEGER, 1.0, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.BOOLEAN, 1, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.DATE, 1, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.TIME, 1, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.DURATION, 1, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.PERIOD, 1, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+    assertNull(Utils.validateDefaultValue("x", ValueType.DECIMAL, 1, listener));
+    verify(listener).accept(any());
+    verifyNoMoreInteractions(listener);
+    Mockito.reset(listener);
+
+
   }
 
 }
