@@ -66,7 +66,7 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
   }
 
   @NonNull
-  public F findOne(@NonNull String tenantId, @NonNull String id, String rev) {
+  public F findOne(@NonNull String ignoredTenantId, @NonNull String id, String ignoredRev) {
     File file = fileRef(id);
     if (!file.exists()) {
       throw new DocumentNotFoundException("document " + id + " do not exists");
@@ -96,12 +96,12 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
     }
   }
 
-  public boolean exists(@NonNull String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String ignoredTenantId, @NonNull String id) {
     File file = fileRef(id);
     return file.exists();
   }
 
-  public boolean delete(String tenantId, @NonNull String id) {
+  public boolean delete(String ignoredTenantId, @NonNull String id) {
     return fileRef(id).delete();
   }
 
