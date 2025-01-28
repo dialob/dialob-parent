@@ -34,7 +34,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.dialob.session.engine.program.expr.arith.Operators.*;
 import static java.util.stream.Collectors.toMap;
@@ -164,9 +164,10 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
   // Add weird backward compatible visibility logic for notes
   private Expression legacyNoteVisibility(Expression disabledExpression, LocalizedLabelOperator labelOperator) {
-    if ("note".equals(type)) {
-        List<Expression> expressions =  labelOperator.getEvalRequiredConditions()
-          .stream()
+    if (Constants.NOTE.equals(type)) {
+      disabledExpression = Operators.or(Stream.concat(
+          labelOperator.getEvalRequiredConditions().stream(),
+          Stream.of(disabledExpression))
           .filter(eventMatcher -> eventMatcher instanceof EventMatchers.TargetIdEventMatcher)
           .map(eventMatcher -> (EventMatchers.TargetIdEventMatcher) eventMatcher)
           .map(itemId -> getProgramBuilder()
@@ -175,10 +176,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
             .<Expression>map(defaultValue -> BooleanOperators.FALSE)
               .orElse(ImmutableIsInactiveOrNullOperator.of(itemId.getTargetId())))
           .filter(expression -> expression != BooleanOperators.FALSE)
-          .collect(Collectors.toList());
-
-      expressions.add(disabledExpression);
-      disabledExpression = Operators.or(expressions.toArray(new Expression[0]));
+        .toArray(Expression[]::new));
   }
     return disabledExpression;
   }

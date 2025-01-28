@@ -29,8 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
-
 @Value.Immutable
 public interface UpdateClassNames extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
@@ -59,7 +57,7 @@ public interface UpdateClassNames extends AbstractUpdateCommand<ItemId,ItemState
     if (stringValues == null) {
       return Collections.emptyList();
     }
-    return stringValues.stream().map(stringValue -> stringValue.eval(context)).collect(toList());
+    return stringValues.stream().map(stringValue -> stringValue.eval(context)).toList();
   }
 
 }

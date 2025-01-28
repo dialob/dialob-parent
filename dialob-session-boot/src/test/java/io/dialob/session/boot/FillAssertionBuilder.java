@@ -18,7 +18,6 @@ package io.dialob.session.boot;
 import io.dialob.api.proto.*;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.cache.QuestionnaireSessionCache;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.questionnaire.service.api.FormActionsUpdatesCallback;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -27,11 +26,9 @@ import io.dialob.questionnaire.service.api.session.*;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
-import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionBuilder;
-import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
 import lombok.Data;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractListAssert;
@@ -69,7 +66,7 @@ public class FillAssertionBuilder {
   // activation triggers fires first actions
   int expectedActionsEventCount = 0;
 
-  private List<ValidationEntry> validationEntries =  new ArrayList<>();
+  private final List<ValidationEntry> validationEntries =  new ArrayList<>();
 
   private String formId;
 
@@ -178,10 +175,9 @@ public class FillAssertionBuilder {
   public void apply() {
     final QuestionnaireEventPublisher applicationEventPublisher = mock(QuestionnaireEventPublisher.class);
 
-    final DialobProgram dialobProgram = dialobProgramService.findByFormId(this.formId);
+    dialobProgramService.findByFormId(this.formId);
     String sessionId = UUID.randomUUID().toString();
 
-    QuestionnaireSessionCache cache = mock(QuestionnaireSessionCache.class);
     final QuestionnaireDatabase questionnaireDatabase = mock(QuestionnaireDatabase.class);
     when(questionnaireDatabase.save(anyString(), any(Questionnaire.class))).then(invocation -> {
       final ImmutableQuestionnaire questionnaire = invocation.getArgument(0);
@@ -197,10 +193,6 @@ public class FillAssertionBuilder {
             sessionContextFactory,
       asyncFunctionInvoker
     );
-
-    QuestionnaireSessionService questionnaireSessionService = new DialobQuestionnaireSessionService(
-      questionnaireDatabase,
-      questionnaireSessionBuilderFactory, currentTenant);
 
     final QuestionnaireSessionBuilder questionnaireSessionBuilder = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder();
     if (this.questionnaire == null) {

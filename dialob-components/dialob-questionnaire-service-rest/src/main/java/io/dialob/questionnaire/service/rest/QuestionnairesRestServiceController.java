@@ -50,7 +50,6 @@ import java.math.BigInteger;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static io.dialob.api.proto.ActionsFactory.*;
 import static java.util.Collections.singletonList;
@@ -273,7 +272,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   {
     return inSession(questionnaireId, questionnaireSession -> {
       updateQuestionnaire(questionnaireSession, answers.stream().map(answer ->
-        ActionsFactory.answer(answer.getId(), answer.getValue())).collect(Collectors.toList()));
+        ActionsFactory.answer(answer.getId(), answer.getValue())).toList());
       return ResponseEntity.ok(questionnaireSession.getErrors());
     });
   }
@@ -291,7 +290,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       answer = list.stream()
         .filter(Objects::nonNull)
         .map(Object::toString)
-        .collect(Collectors.toList());
+        .toList();
     }
     return putQuestionnaireAnswers(questionnaireId, singletonList(QuestionnaireFactory.answer(answerId, answer)));
   }

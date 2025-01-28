@@ -35,7 +35,6 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class ElbBasedPreAuthenticatedWebAuthenticationDetailsSource implements
@@ -72,7 +71,7 @@ public class ElbBasedPreAuthenticatedWebAuthenticationDetailsSource implements
       List<String> stringListClaim = accesstoken.getStringListClaim(groupsClaim);
       if (stringListClaim != null) {
         authorities = grantedAuthoritiesMapper.mapAuthorities(
-          stringListClaim.stream().map(claim -> ImmutableGroupGrantedAuthority.of(claim,claim)).collect(Collectors.toList())
+          stringListClaim.stream().map(claim -> ImmutableGroupGrantedAuthority.of(claim,claim)).toList()
         );
       }
       return new PreAuthenticatedGrantedAuthoritiesWebAuthenticationDetails(

@@ -32,9 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilder> implements BuilderParent {
 
@@ -179,7 +176,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         itemId -> ((ImmutableItemRef) itemId).withParent(ImmutableItemIdPartial.of(Optional.of(getId()))) :
         itemId -> itemId
       )
-      .collect(toList());
+      .toList();
   }
 
   @Override
@@ -247,7 +244,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
       case ROOT -> builder
-          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> ImmutablePair.of((Expression) ImmutableIsActiveOperator.of(item), item)).collect(toList())).build())
+          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> ImmutablePair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
           .isInvalidAnswersExpression(ImmutableIsAnyInvalidAnswersOperator.builder().build());
     });
 
@@ -260,7 +257,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         .type("row")
         .isPrototype(true)
         .valueType(null)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ImmutableItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).collect(Collectors.toList())).build())
+        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ImmutableItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).toList()).build())
         .allowedActionsExpression(ImmutableConditionalListOperator.builder()
             .addItems(ImmutablePair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())

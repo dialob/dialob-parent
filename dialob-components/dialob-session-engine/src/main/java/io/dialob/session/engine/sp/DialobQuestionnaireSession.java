@@ -55,7 +55,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.Utils.*;
 
@@ -480,7 +479,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       @Override
       public Optional<ValueSetVisitor> visitValueSetStates() {
         return Optional.of(valueSetState -> valueSets.add(ImmutableValueSet.builder().id(IdUtils.toString(valueSetState.getId())).entries(
-          valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).collect(Collectors.toList())
+          valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).toList()
         ).build()));
       }
     });

@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.session.command.CommandFactory.ItemStatePredicates.GROUP_ITEMS_CHANGED;
 import static org.junit.jupiter.api.Assertions.*;

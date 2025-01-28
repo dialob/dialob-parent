@@ -29,7 +29,6 @@ import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
@@ -77,7 +76,7 @@ public class DebugUtil {
         command.getTriggers()
           .forEach(trigger ->
             commandToEvent.computeIfAbsent(command, command1 -> new ArrayList<>())
-            .addAll(trigger.getAllEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).collect(toList()))));
+            .addAll(trigger.getAllEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).toList())));
 
     try(OutputStreamWriter writer = new FileWriter("deps.dot")) {
       SortedSet<String> nodes = new TreeSet<>();

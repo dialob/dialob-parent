@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 public class DDRLOperatorFactory implements OperatorFactory {
 
@@ -204,7 +203,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
     return arguments
       .stream()
       .map(argument -> coerceToType(nodeValueType, argument))
-      .collect(Collectors.toList());
+      .toList();
   }
 
   private Expression coerceToType(ValueType nodeValueType, Expression argument) {

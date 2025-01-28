@@ -31,8 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
-
 @Value.Immutable
 public interface CollectRowFieldsOperator extends Expression {
 
@@ -47,7 +45,7 @@ public interface CollectRowFieldsOperator extends Expression {
     return getItemId().getParent().flatMap(ItemId::getParent)
       .map(rgId -> (List<BigInteger>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
       .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber.intValue()))
-    .map(evalContext::getItemValue).collect(toList());
+    .map(evalContext::getItemValue).toList();
   }
 
   @NonNull

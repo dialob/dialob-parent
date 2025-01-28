@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class GrantedAuthorityTenantsProvider implements TenantsProvider {
 
@@ -39,7 +38,7 @@ class GrantedAuthorityTenantsProvider implements TenantsProvider {
         .filter(a -> a instanceof TenantGrantedAuthority)
         .map(a -> (TenantGrantedAuthority) a)
         .map(a -> Tenant.of(a.getTenantId(), a.getAuthority()))
-        .collect(Collectors.toList());
+        .toList();
     }
     return tenants;
   }

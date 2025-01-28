@@ -109,12 +109,12 @@ public class ItemState implements SessionObject {
   // indicates whethet questionnaire is completed
 
   @Getter
-  private List<String> classNames = ImmutableList.of();
+  private List<String> classNames = List.of();
 
-  private List<ItemId> items = ImmutableList.of();
+  private List<ItemId> items = List.of();
 
   @Getter
-  private List<ItemId> availableItems = ImmutableList.of();
+  private List<ItemId> availableItems = List.of();
 
   private Map<String, Object> props = new HashMap<>();
 
@@ -257,7 +257,7 @@ public class ItemState implements SessionObject {
       }
       return ImmutableList.copyOf(ids);
     }
-    return ImmutableList.of();
+    return List.of();
   }
 
   private static List<String> readStringList(CodedInputStream input) throws IOException {
@@ -269,7 +269,7 @@ public class ItemState implements SessionObject {
       }
       return ImmutableList.copyOf(ids);
     }
-    return ImmutableList.of();
+    return List.of();
   }
 
 

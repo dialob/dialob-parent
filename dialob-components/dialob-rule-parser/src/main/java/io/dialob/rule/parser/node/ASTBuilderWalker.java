@@ -19,7 +19,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class ASTBuilderWalker extends DialobRuleBaseListener {
@@ -91,7 +90,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
       .getSubnodes()
       .stream()
       .map(NodeBase::getValueType)
-      .collect(Collectors.toList());
+      .toList();
   }
 
   protected NodeBase getLhs() {

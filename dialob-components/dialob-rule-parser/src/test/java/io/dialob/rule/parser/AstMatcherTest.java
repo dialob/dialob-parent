@@ -16,7 +16,6 @@
 package io.dialob.rule.parser;
 
 import io.dialob.rule.parser.modifier.ModifyingMinifierVisitor;
-import io.dialob.rule.parser.node.ASTBuilder;
 import io.dialob.rule.parser.node.NodeBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

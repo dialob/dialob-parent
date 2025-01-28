@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Value.Immutable
@@ -41,13 +40,13 @@ public interface ExpressionList extends Expression {
       .map(expression -> expression.eval(evalContext))
       .filter(Objects::nonNull)
       .flatMap(o -> {
-        if (o instanceof Collection) {
-          return ((Collection)o).stream();
+        if (o instanceof Collection collection) {
+          return collection.stream();
         }
         return Stream.of(o);
       })
       .filter(Objects::nonNull)
-      .collect(Collectors.toList());
+      .toList();
   }
 
   @NonNull

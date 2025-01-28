@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -31,11 +30,9 @@ import lombok.Getter;
 
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.dialob.session.engine.Utils.*;
-import static java.util.stream.Collectors.toList;
 
 public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
@@ -272,12 +269,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         // Find prototype for each id and instantiate itemstate from it
         ItemState newItem = prototype.withId(itemIdToCreate);
         newItem = program.findItemsBy(id -> IdUtils.matches(id, itemIdToCreate)).findFirst().map(item -> {
-          List<ItemId> rowItems = ImmutableList.of();
+          List<ItemId> rowItems = List.of();
           if (item instanceof Group) {
             Expression expression = ((Group)item).getItemsExpression();
             if (expression instanceof RowItemsExpression rowItemsExpression) {
               final Scope scope = ImmutableScope.of(itemIdToCreate, ImmutableSet.of());
-              rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).collect(Collectors.toList());
+              rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
             }
           }
           final Object newAnswer = initialValueResolver.apply(itemIdToCreate, item).orElse(null);
@@ -300,7 +297,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             .update().setItems(
               ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).collect(toList())
+                .map(rowNumber -> (ItemId) ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).toList()
             ).get();
         }
         return rowGroup;

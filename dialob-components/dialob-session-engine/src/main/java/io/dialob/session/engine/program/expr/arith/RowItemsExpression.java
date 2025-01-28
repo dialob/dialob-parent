@@ -25,8 +25,6 @@ import org.immutables.value.Value;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Value.Immutable
 public interface RowItemsExpression extends Expression {
 
@@ -40,7 +38,7 @@ public interface RowItemsExpression extends Expression {
 
   @Override
   default Collection<ItemId> eval(@NonNull EvalContext evalContext) {
-    return getItemIds().stream().map(itemId -> evalContext.mapTo(itemId, true)).collect(toList());
+    return getItemIds().stream().map(itemId -> evalContext.mapTo(itemId, true)).toList();
   }
 
 }

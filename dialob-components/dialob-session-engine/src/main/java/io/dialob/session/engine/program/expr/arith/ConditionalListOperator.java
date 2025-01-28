@@ -26,7 +26,6 @@ import org.immutables.value.Value;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Value.Immutable
 public interface ConditionalListOperator<T> extends Expression {
@@ -35,7 +34,7 @@ public interface ConditionalListOperator<T> extends Expression {
 
   @Override
   default Object eval(@NonNull EvalContext evalContext) {
-    return getItems().stream().filter(item -> (Boolean) item.getLeft().eval(evalContext)).map(Pair::getRight).collect(Collectors.toList());
+    return getItems().stream().filter(item -> (Boolean) item.getLeft().eval(evalContext)).map(Pair::getRight).toList();
   }
 
   @NonNull

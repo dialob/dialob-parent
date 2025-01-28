@@ -78,7 +78,7 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
   void updateFormOnline() throws Exception {
     ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
     Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
-      FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
+      addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
       addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en", "Ryhma").addItems("q1"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en", "Kysymys"));
       formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());

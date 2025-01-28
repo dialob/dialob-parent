@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,7 +48,7 @@ class DialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
 
     // when
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableTargetEvent.of(IdUtils.toId("question"))).collect(Collectors.toList());
+    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableTargetEvent.of(IdUtils.toId("question"))).toList();
 
     // expect
     assertNotNull(updates);
@@ -98,7 +97,7 @@ class DialobProgramTest {
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
 
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).collect(Collectors.toList());
+    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
 
     // expect
     assertNotNull(updates);
@@ -149,7 +148,7 @@ class DialobProgramTest {
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
 
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).collect(Collectors.toList());
+    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
 
     // expect
     assertNotNull(updates);

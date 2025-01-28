@@ -22,7 +22,6 @@ import io.dialob.form.service.api.validation.FormValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class FormValidatorExecutor {
@@ -38,7 +37,7 @@ public class FormValidatorExecutor {
     return formValidators.stream()
       .map(formValidator -> formValidator.validate(form))
       .flatMap(List::stream)
-      .collect(Collectors.toList());
+      .toList();
   }
 
 }

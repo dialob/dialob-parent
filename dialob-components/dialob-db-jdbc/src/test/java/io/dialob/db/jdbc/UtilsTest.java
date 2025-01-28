@@ -19,12 +19,10 @@ import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 class UtilsTest {
 
   @Test
-  void test() throws Exception {
+  void test() {
     Assertions.assertArrayEquals(new byte[16], Utils.toOID(""));
     Assertions.assertNull(Utils.toOID(null));
     Assertions.assertArrayEquals(new byte[] {

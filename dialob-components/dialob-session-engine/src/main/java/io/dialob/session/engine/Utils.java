@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -125,7 +124,7 @@ public class Utils {
       return valueType.coerceFrom(value);
     }
     if (value instanceof Collection) {
-      return ((Collection)value).stream().map(i -> i instanceof Integer ? BigInteger.valueOf((Integer)i) : i).collect(Collectors.toList());
+      return ((Collection)value).stream().map(i -> i instanceof Integer ? BigInteger.valueOf((Integer)i) : i).toList();
     }
     // TODO handle array answers
     return null;
@@ -135,7 +134,7 @@ public class Utils {
   public static ValueSet toValueSet(@NonNull ValueSetState valueSetState) {
     return ImmutableValueSet.builder()
       .id(IdUtils.toString(valueSetState.getId()))
-      .entries(valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).collect(Collectors.toList())).build();
+      .entries(valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).toList()).build();
   }
 
   @NonNull
@@ -171,7 +170,7 @@ public class Utils {
     }
     if (!itemState.getItems().isEmpty()) {
       // TODO handled indexed references
-      actionItemBuilder.items(itemState.getItems().stream().map(IdUtils::toString).collect(Collectors.toList()));
+      actionItemBuilder.items(itemState.getItems().stream().map(IdUtils::toString).toList());
     }
     actionItemBuilder.label(itemState.getLabel());
     actionItemBuilder.description(itemState.getDescription());
@@ -179,7 +178,7 @@ public class Utils {
       actionItemBuilder.allowedActions(itemState.getAllowedActions());
     }
     if (!itemState.getAvailableItems().isEmpty()) {
-      actionItemBuilder.availableItems(itemState.getAvailableItems().stream().map(IdUtils::toString).collect(Collectors.toList()));
+      actionItemBuilder.availableItems(itemState.getAvailableItems().stream().map(IdUtils::toString).toList());
     }
     itemState.getValueSetId().ifPresent(actionItemBuilder::valueSetId);
     if (post != null) {
@@ -284,7 +283,7 @@ public class Utils {
         case 4:
           return input.readDouble();
         case (byte) 0x80:
-          return ImmutableList.of();
+          return List.of();
         case (byte) 0x81:
           count = input.readInt32();
           String[] strings = new String[count];

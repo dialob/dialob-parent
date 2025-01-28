@@ -15,7 +15,10 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.ImmutableFormValueSet;
+import io.dialob.api.form.ImmutableFormValueSetEntry;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ValueSetEntry;
 import io.dialob.cache.DialobCacheAutoConfiguration;
@@ -38,7 +41,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.tuple;
@@ -78,7 +80,7 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
 
     ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
     Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
-      FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
+      addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
       addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en", "Group").putLabel("fi","Ryhmä").addItems("q1","g2"));
       addItem(formBuilder, "g2", builder -> builder.type("group").putLabel("en", "Group 2").putLabel("fi","Ryhmä 2").addItems("q2"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en", "Question").putLabel("fi","Kysymys").putDescription("en","Hard one").putDescription("fi","Vaikea"));
@@ -121,7 +123,7 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
           tuple(Action.Type.ITEM,            "q1",          "text",       "Question",     "Hard one", null),
           tuple(Action.Type.VALUE_SET,       null,            null,             null,             null, null)
         );
-        assertThat(actions.getActions()).extracting(action -> action.getValueSet() == null ? null : action.getValueSet().getEntries().stream().map(ValueSetEntry::getValue).collect(Collectors.toList()))
+        assertThat(actions.getActions()).extracting(action -> action.getValueSet() == null ? null : action.getValueSet().getEntries().stream().map(ValueSetEntry::getValue).toList())
           .containsOnly(
             null,
             null,
@@ -143,7 +145,7 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
           tuple(Action.Type.ITEM,            "g2",         "group",          "Ryhmä 2",     null, null),
           tuple(Action.Type.VALUE_SET,       null,            null,             null,             null, null)
         );
-        assertThat(actions.getActions()).extracting(action -> action.getValueSet() == null ? null : action.getValueSet().getEntries().stream().map(ValueSetEntry::getValue).collect(Collectors.toList()))
+        assertThat(actions.getActions()).extracting(action -> action.getValueSet() == null ? null : action.getValueSet().getEntries().stream().map(ValueSetEntry::getValue).toList())
           .containsOnly(
             null,
             null,
@@ -165,7 +167,7 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
           tuple(Action.Type.ITEM,            "g2",         "group",          "Group 2",     null, null),
           tuple(Action.Type.VALUE_SET,       null,            null,             null,     null, null)
         );
-        assertThat(actions.getActions()).extracting(action -> action.getValueSet() == null ? null : action.getValueSet().getEntries().stream().map(ValueSetEntry::getValue).collect(Collectors.toList()))
+        assertThat(actions.getActions()).extracting(action -> action.getValueSet() == null ? null : action.getValueSet().getEntries().stream().map(ValueSetEntry::getValue).toList())
           .containsOnly(
             null,
             null,

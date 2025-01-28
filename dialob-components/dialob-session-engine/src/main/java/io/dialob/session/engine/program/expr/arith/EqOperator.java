@@ -16,7 +16,6 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 

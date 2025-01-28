@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.form.service.DialobFormIdRenamer;
 import io.dialob.form.service.DialobFormItemCopier;
 import io.dialob.form.service.api.validation.FormIdRenamer;

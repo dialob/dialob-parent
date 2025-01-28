@@ -15,7 +15,6 @@
  */
 package io.dialob.session.rest;
 
-import com.google.common.collect.ImmutableList;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableActions;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
@@ -29,6 +28,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
 
 import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,7 +77,7 @@ class AnswerControllerWithStackTest {
     when(actionProcessingService.answerQuestion(eq("123"), eq("rev-10"), isNotNull())).thenThrow(RuntimeException.class);
     final ResponseEntity<Actions> responseEntity = answerController.answers("123", ImmutableActions.builder()
       .rev("rev-10")
-      .actions(ImmutableList.of())
+      .actions(List.of())
       .build());
     assertEquals(500, responseEntity.getStatusCode().value());
     assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());

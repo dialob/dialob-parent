@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implements QuestionnaireActionsService {
@@ -222,7 +221,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       if (!actionList.isEmpty()) {
         Actions returnActions = ImmutableActions.builder()
           .rev(prevRev)
-          .actions(actionList.stream().map(action -> ImmutableAction.builder().from(action).serverEvent(true).build()).collect(Collectors.toList()))
+          .actions(actionList.stream().map(action -> ImmutableAction.builder().from(action).serverEvent(true).build()).toList())
           .build();
         sendMessage(returnActions);
       }
@@ -256,7 +255,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
         Actions actions = event.getActions();
         List<Action> filteredActions = actions.getActions().stream()
           .filter(action -> !session.getId().equals(action.getResourceId()))
-          .collect(Collectors.toList());
+          .toList();
         sendMessage(ImmutableActions.builder().from(actions).actions(filteredActions).build());
       } catch (SockJsTransportFailureException transportFailureException) {
         // Occurs normally when client disconnects unexpectedly. Spring have already

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class DialobFormIdRenamer implements FormIdRenamer {
@@ -101,7 +100,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     if (item.getCanRemoveRowWhen() != null) {
       builder.canRemoveRowWhen(idRenamer.apply(item.getCanRemoveRowWhen()));
     }
-    List<Validation> validations = item.getValidations().stream().map(validation -> ImmutableValidation.builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).collect(toList());
+    List<Validation> validations = item.getValidations().stream().map(validation -> (Validation) ImmutableValidation.builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).toList();
     builder.validations(validations);
 
     // Child refs

@@ -18,6 +18,7 @@ package io.dialob.spring.boot;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.program.DialobProgram;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -58,6 +59,7 @@ class DialobSpringBootAutoConfigurationTest {
       .run(context -> {
         CacheManager cacheManager = context.getBean("cacheManager", CacheManager.class);
         Cache dialobProgramsCache = cacheManager.getCache("dialobProgramsCache");
+        Assertions.assertNotNull(dialobProgramsCache);
         DialobProgramService service = context.getBean(DialobProgramService.class);
 
         service.findByFormId("123");

@@ -21,7 +21,6 @@ import org.immutables.value.Value;
 
 import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Value.Immutable
@@ -48,7 +47,7 @@ public interface DynamicTrigger<T> extends Trigger<T> {
   }
 
   default List<Event> getAllEvents() {
-    return getEventsProvider().createEvents(null, null).collect(Collectors.toList());
+    return getEventsProvider().createEvents(null, null).toList();
   }
 
 }

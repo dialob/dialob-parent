@@ -24,8 +24,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-import static java.util.stream.Collectors.toList;
-
 public class DialobFormItemCopier implements FormItemCopier {
 
   private final RuleExpressionCompiler compiler;
@@ -84,7 +82,7 @@ public class DialobFormItemCopier implements FormItemCopier {
       .id(nextID);
     idRenameMap.put(sourceItem.getId(), nextID);
     // Children
-    builder.items(sourceItem.getItems().stream().map(childId -> copySingleItem(formBuilder, form, idRenameMap, formData.get(childId))).collect(toList()));
+    builder.items(sourceItem.getItems().stream().map(childId -> copySingleItem(formBuilder, form, idRenameMap, formData.get(childId))).toList());
 
     // ValueSets
     if (sourceItem.getValueSetId() != null) {
