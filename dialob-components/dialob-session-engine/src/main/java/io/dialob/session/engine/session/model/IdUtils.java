@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.Lists;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -56,7 +55,8 @@ public class IdUtils {
       }
       id = itemId.getParent();
     }
-    return StringUtils.join(Lists.reverse(idChain),".");
+    Collections.reverse(idChain);
+    return StringUtils.join(idChain,".");
   }
 
   @Nullable

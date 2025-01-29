@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.ConstantValue;
@@ -25,6 +24,7 @@ import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,11 +37,11 @@ public interface UpdateClassNames extends AbstractUpdateCommand<ItemId,ItemState
   @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
-    Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
+    Set<EventMatcher> set = new HashSet<>(getExpression().getEvalRequiredConditions());
     if (getTargetId().isPartial()) {
-      return Sets.union(eventMatchers, Set.of(EventMatchers.whenItemAdded(getTargetId())));
+      set.add(EventMatchers.whenItemAdded(getTargetId()));
     }
-    return eventMatchers;
+    return Set.copyOf(set);
   }
 
   @NonNull

@@ -47,6 +47,10 @@
       <groupId>io.dialob</groupId>
       <artifactId>dialob-security-spring</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
 
     <dependency>

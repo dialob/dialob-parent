@@ -41,8 +41,8 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
   @Override
   default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     final ItemState currentItemState = itemStates.getItemStates().get(getTargetId());
-    Set<ItemId> currentItems = currentItemState != null ? Sets.newHashSet(currentItemState.getItems()) : Set.of();
-    Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(Set.of());
+    Set<ItemId> currentItems = currentItemState != null ? Set.copyOf(currentItemState.getItems()) : Set.of();
+    Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
     final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
     final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);

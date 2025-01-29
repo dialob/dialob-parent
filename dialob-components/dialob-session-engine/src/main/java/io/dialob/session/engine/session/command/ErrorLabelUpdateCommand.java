@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ErrorState;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Value.Immutable
@@ -37,13 +37,12 @@ public interface ErrorLabelUpdateCommand extends ErrorUpdateCommand {
   @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
-    Set<EventMatcher> eventMatchers = Sets.union(Set.of(EventMatchers.whenSessionLocaleUpdated()), getExpression().getEvalRequiredConditions());
+    var set = new HashSet<>(getExpression().getEvalRequiredConditions());
+    set.add(EventMatchers.whenSessionLocaleUpdated());
     if (getTargetId().isPartial()) {
-      return Sets.union(eventMatchers, Set.of(EventMatchers.whenItemAdded(getTargetId().getItemId())));
+      set.add(EventMatchers.whenItemAdded(getTargetId().getItemId()));
     }
-    return eventMatchers;
+    return Set.copyOf(set);
   }
-
-
 
 }

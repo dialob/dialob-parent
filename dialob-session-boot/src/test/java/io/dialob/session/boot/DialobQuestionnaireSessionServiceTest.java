@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -1119,7 +1118,7 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(RESET, null, null, null, null, null),
           tuple(LOCALE, null, null, null, null, null),
           tuple(ITEM, null, "group1", null, null, null),
-          tuple(ITEM, null, "questionnaire", "Test NEXT", Sets.newHashSet(Action.Type.ANSWER, Action.Type.NEXT, Action.Type.COMPLETE), null),
+          tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT, Action.Type.COMPLETE), null),
           tuple(ITEM, null, "group2", null, null, null),
           tuple(ITEM, null, "text1", null, null, null),
           tuple(ITEM, null, "enableError", null, null, null)
@@ -1128,13 +1127,13 @@ class DialobQuestionnaireSessionServiceTest {
       .answer("enableError","true")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "questionnaire", "Test NEXT", Sets.newHashSet(Action.Type.ANSWER), null),
+          tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER), null),
           tuple(ERROR, null, null, null, null, "text1")
         ))
       .answer("enableError","false")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "questionnaire", "Test NEXT", Sets.newHashSet(Action.Type.ANSWER, Action.Type.NEXT, Action.Type.COMPLETE), null),
+          tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT, Action.Type.COMPLETE), null),
           tuple(REMOVE_ERROR, null, null, null, null, "text1")
         ))
       .nextPage()
@@ -1144,19 +1143,19 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, null, "page2Error", null, null, null),
           tuple(ITEM, null, "group5", null, null, null),
           tuple(ITEM, null, "group3", null, null, null),
-          tuple(ITEM, null, "questionnaire", "Test NEXT", Sets.newHashSet(Action.Type.ANSWER, Action.Type.PREVIOUS, Action.Type.NEXT, Action.Type.COMPLETE), null)
+          tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.PREVIOUS, Action.Type.NEXT, Action.Type.COMPLETE), null)
         ))
       .answer("page2Error","error")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
-          tuple(ITEM, null, "questionnaire", "Test NEXT", Sets.newHashSet(Action.Type.ANSWER, Action.Type.PREVIOUS), null),
+          tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.PREVIOUS), null),
           tuple(ERROR, null, null, null, null, "page2Error")
         ))
       .previousPage()
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("page2Error", "group5", "group3"), null, null, null, null),
-          tuple(ITEM, null, "questionnaire", "Test NEXT", Sets.newHashSet(Action.Type.ANSWER, Action.Type.NEXT), null),
+          tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT), null),
           tuple(ITEM, null, "group1", null, null, null),
           tuple(ITEM, null, "group2", null, null, null),
           tuple(ITEM, null, "text1", null, null, null),

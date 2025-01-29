@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
@@ -47,7 +46,7 @@ public interface UpdateAllowedActionsCommand extends AbstractUpdateCommand<ItemI
   }
 
   default Set<Action.Type> evalExpression(EvalContext context) {
-    return Sets.newHashSet((Collection<Action.Type>) getExpression().eval(context));
+    return Set.copyOf((Collection<Action.Type>) getExpression().eval(context));
   }
 
 }

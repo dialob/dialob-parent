@@ -1,6 +1,5 @@
 package io.dialob.rule.parser.node;
 
-import com.google.common.base.CaseFormat;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.DialobRuleBaseListener;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -540,7 +540,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     } else {
       op = "is-not-" + status;
     }
-    op = CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, op);
+    op = transformCaseFormat(op);
     final String variableId = variableFinder.mapAlias(ctx.questionId.getText());
     ValueType valueType = null;
     try {
@@ -554,6 +554,21 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     builder = builder
       .callExprNode(op, ValueType.BOOLEAN, Span.of(ctx))
       .idExprNode(namespace, variableId, valueType, Span.of(ctx.questionId)).closeExpr();
+  }
+
+  // abc-fds-erw -> abcGdsErw
+  static String transformCaseFormat(String op) {
+    StringBuilder sb = new StringBuilder();
+    boolean first = true;
+    for (var s : StringUtils.split(op, "-")) {
+      if (!first) {
+        s = StringUtils.capitalize(s);
+      } else {
+        first = false;
+      }
+      sb.append(s);
+    }
+    return sb.toString();
   }
 
   @Override

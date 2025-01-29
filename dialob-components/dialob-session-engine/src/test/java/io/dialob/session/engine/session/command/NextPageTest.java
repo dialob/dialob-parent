@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.Sets;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
@@ -25,6 +24,7 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.dialob.session.engine.session.model.IdUtils.toId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,13 +56,13 @@ class NextPageTest {
 
   private void enableNext(EvalContext context) {
     ItemState questionnaire = Mockito.mock(ItemState.class);
-    when(questionnaire.getAllowedActions()).thenReturn(Sets.newHashSet(Action.Type.NEXT));
+    when(questionnaire.getAllowedActions()).thenReturn(Set.of(Action.Type.NEXT));
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
   }
 
   private void disableNext(EvalContext context) {
     ItemState questionnaire = Mockito.mock(ItemState.class);
-    when(questionnaire.getAllowedActions()).thenReturn(Sets.newHashSet());
+    when(questionnaire.getAllowedActions()).thenReturn(Set.of());
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
   }
 

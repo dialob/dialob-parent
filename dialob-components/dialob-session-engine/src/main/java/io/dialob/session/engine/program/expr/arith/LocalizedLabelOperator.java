@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -32,6 +31,7 @@ import org.immutables.value.Value;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.program.expr.arith.ImmutableToLowerCaseOperator.lowerCaseOf;
 import static io.dialob.session.engine.program.expr.arith.ImmutableToUpperCaseOperator.upperCaseOf;
@@ -115,8 +115,8 @@ public interface LocalizedLabelOperator extends Expression {
       .values()
       .stream()
       .map(Expression::getEvalRequiredConditions)
-      .reduce(Sets::union)
-      .orElse(Collections.emptySet());
+      .flatMap(Collection::stream)
+      .collect(Collectors.toUnmodifiableSet());
   }
 
   @NonNull

@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -23,6 +22,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public interface AbstractUpdateAttributeCommand<T> extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
@@ -35,9 +35,9 @@ public interface AbstractUpdateAttributeCommand<T> extends AbstractUpdateCommand
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
     if (getTargetId().isPartial()) {
-      return Sets.union(eventMatchers, Set.of(
-        EventMatchers.whenItemAdded(getTargetId())
-      ));
+      var set = new HashSet<>(eventMatchers);
+      set.add(EventMatchers.whenItemAdded(getTargetId()));
+      return Set.copyOf(set);
     }
     return eventMatchers;
   }

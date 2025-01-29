@@ -15,13 +15,13 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import com.google.common.collect.Sets;
 import io.dialob.session.engine.session.command.Triggers;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemStates;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -42,7 +42,7 @@ public interface ProtoTypeItemsAddedEventsProvider extends Triggers.EventsProvid
     }
     Set<ItemId> newItems = updatedState.getItemStates().keySet();
     if (originalState != null) {
-      newItems = Sets.newHashSet(newItems);
+      newItems = new HashSet<>(newItems);
       newItems.removeAll(originalState.getItemStates().keySet());
     }
 

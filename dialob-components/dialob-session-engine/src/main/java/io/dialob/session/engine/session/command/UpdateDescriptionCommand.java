@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Value.Immutable
@@ -38,7 +38,9 @@ public interface UpdateDescriptionCommand extends AbstractUpdateAttributeCommand
   @Override
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> parent = AbstractUpdateAttributeCommand.super.getEventMatchers();
-    return ImmutableSet.<EventMatcher>builder().addAll(parent).add(EventMatchers.whenSessionLocaleUpdated()).build();
+    var set = new HashSet<>(parent);
+    set.add(EventMatchers.whenSessionLocaleUpdated());
+    return Set.copyOf(set);
   }
 
 }

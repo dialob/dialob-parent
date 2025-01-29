@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.model.Expression;
@@ -28,6 +27,7 @@ import io.dialob.session.engine.session.model.ValueSetId;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +36,8 @@ import static io.dialob.session.engine.session.command.CommandFactory.*;
 @Slf4j
 class UpdateCommandFactory {
 
-  private final Set<Command<?>> allCommands = Sets.newHashSet();
-  private final Set<ErrorId> targetIds = Sets.newHashSet();
+  private final Set<Command<?>> allCommands = new HashSet<>();
+  private final Set<ErrorId> targetIds = new HashSet<>();
 
   private <C extends Command<?>> C add(C command) {
     assert !allCommands.contains(command);
