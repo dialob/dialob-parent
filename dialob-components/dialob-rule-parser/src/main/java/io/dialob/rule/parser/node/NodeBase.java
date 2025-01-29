@@ -26,15 +26,11 @@ public abstract class NodeBase implements TypedNode, Serializable {
 
   private ValueType type;
 
-  public NodeBase(NodeBase parent) {
-    this(parent, null, null);
-  }
-
-  public NodeBase(NodeBase parent, Span span) {
+  protected NodeBase(NodeBase parent, Span span) {
     this(parent, span, null);
   }
 
-  public NodeBase(NodeBase parent, Span span, ValueType type) {
+  protected NodeBase(NodeBase parent, Span span, ValueType type) {
     this.parent = parent;
     this.span = span;
     this.type = type;
