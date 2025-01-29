@@ -294,6 +294,8 @@ class AstMatcherTest {
 
     assertMinify("P4D", "3 days + 1 day");
     assertMinify("PT4H", "3 hours + 1 hour");
+    assertMinify("P-4D", "-4 days");
+    assertMinify("PT-4H", "-4 hours");
 
     assertMinify("true", "-1 = 5 - 6");
 

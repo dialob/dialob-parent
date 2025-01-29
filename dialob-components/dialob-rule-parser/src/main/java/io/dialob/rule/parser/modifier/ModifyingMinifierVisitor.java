@@ -15,6 +15,7 @@
  */
 package io.dialob.rule.parser.modifier;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.AstMatcher;
 import io.dialob.rule.parser.CloneVisitor;
 import io.dialob.rule.parser.api.ValueType;
@@ -65,7 +66,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     });
 
 
-    whenMatches(callNode(operator(or(is("+"), is("-"))).and(args(allMatches(constNode(valueType(is(ValueType.PERIOD))))))), node -> {
+    whenMatches(callNode(operator(or(is("+"), is("-"), is("neg"))).and(args(allMatches(constNode(valueType(is(ValueType.PERIOD))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
       if (arguments.isEmpty()) {
@@ -96,7 +97,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     });
 
 
-    whenMatches(callNode(operator(or(is("+"), is("-"))).and(args(allMatches(constNode(valueType(is(ValueType.DURATION))))))), node -> {
+    whenMatches(callNode(operator(or(is("+"), is("-"), is("neg"))).and(args(allMatches(constNode(valueType(is(ValueType.DURATION))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
       if (arguments.isEmpty()) {
@@ -272,49 +273,26 @@ public class ModifyingMinifierVisitor extends AstMatcher {
 
   }
 
-  private <T> Boolean compare(String operator, Comparable<T> left, T right) {
-    boolean result;
-    if (left != null && right != null) {
-      final int diff = left.compareTo(right);
-      result = switch (operator) {
-        case "!=" -> diff != 0;
-        case "<=" -> diff <= 0;
-        case ">=" -> diff >= 0;
-        case ">" -> diff > 0;
-        case "<" -> diff < 0;
-        case "=" -> diff == 0;
-        default -> throw new IllegalStateException("Unknown relation operator " + operator);
-      };
-    } else {
-      // null <operator> null
-      result = switch (operator) {
-        case "!=", ">", "<" -> false;
-        case "<=", "=", ">=" -> true;
-        default -> throw new IllegalStateException("Unknown relation operator " + operator);
-      };
-      // null <operator> non-null / non-null <operator> null
-      if (left != null || right != null) {
-        result = !result;
-      }
-    }
-    return result;
+  private <T> Boolean compare(String operator, @NonNull Comparable<T> left, @NonNull T right) {
+    final int diff = left.compareTo(right);
+    return switch (operator) {
+      case "!=" -> diff != 0;
+      case "<=" -> diff <= 0;
+      case ">=" -> diff >= 0;
+      case ">" -> diff > 0;
+      case "<" -> diff < 0;
+      case "=" -> diff == 0;
+      default -> throw new IllegalStateException("Unknown relation operator " + operator);
+    };
   }
 
   private BigDecimal toBigDecimal(ConstExprNode constNode) {
     if (constNode.getValueType() == ValueType.DECIMAL) {
-      Object value = constNode.getAsValueType();
-      if (value != null) {
-        return (BigDecimal) constNode.getAsValueType();
-      }
-      return null;
+      return (BigDecimal) constNode.getAsValueType();
     }
     if (constNode.getValueType() == ValueType.INTEGER) {
-      Object value = constNode.getAsValueType();
-      if (value != null) {
-        return new BigDecimal((BigInteger) value);
-      }
-      return null;
+      return new BigDecimal((BigInteger) constNode.getAsValueType());
     }
-    throw new IllegalStateException();
+    throw new IllegalStateException("Cannot coerce " + constNode + " to DECIMAL");
   }
 }
