@@ -42,9 +42,9 @@ class DialobProgramTest {
   @Test
   void emptyProgramShouldNotProduceAnyDependencies() {
     // given
-    Program program = mock(Program.class);
+    Program program = mock();
     DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    EvalContext evalContext = mock();
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
 
     // when
@@ -60,9 +60,9 @@ class DialobProgramTest {
   @Test
   void partialMatchersShouldGenerateExactUpdates() {
     // given
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    FunctionRegistry functionRegistry = mock();
+    DialobSessionEvalContextFactory sessionContextFactory = mock();
+    EvalContext evalContext = mock();
 
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -108,9 +108,9 @@ class DialobProgramTest {
   @Test
   void variablesShouldFindReferencesFromInternalScope() {
     // given
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    FunctionRegistry functionRegistry = mock();
+    DialobSessionEvalContextFactory sessionContextFactory = mock();
+    EvalContext evalContext = mock();
 
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -159,9 +159,7 @@ class DialobProgramTest {
   @Test
   void shouldDetectDependencyLoop() {
     // given
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    FunctionRegistry functionRegistry = mock();
 
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -177,7 +175,6 @@ class DialobProgramTest {
       .build();
     // @formatter:on
     Assertions.assertThrows(DependencyLoopException.class, () -> DialobProgram.createDialobProgram(program));
-
   }
 
 }

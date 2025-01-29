@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.ddrl;
 
-import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
@@ -30,10 +29,7 @@ import io.dialob.session.engine.program.expr.arith.TimeOperators;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.IdUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -48,7 +44,7 @@ public class DDRLExpressionCompiler {
 
   public DDRLExpressionCompiler(@NonNull OperatorFactory operatorFactory) {
     this.operatorFactory = requireNonNull(operatorFactory);
-    this.asyncFunctionVariables = Maps.newHashMap();
+    this.asyncFunctionVariables = new HashMap<>();
   }
 
   @NonNull

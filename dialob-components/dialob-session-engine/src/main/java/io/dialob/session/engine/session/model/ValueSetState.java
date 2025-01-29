@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -93,7 +92,7 @@ public class ValueSetState implements SessionObject {
     public ValueSetState.UpdateBuilder setEntries(List<ValueSetState.Entry> newEntries) {
       if (!Objects.equals(entries, newEntries)) {
         if (newEntries != null) {
-          state().entries = ImmutableList.copyOf(newEntries);
+          state().entries = List.copyOf(newEntries);
         } else {
           state().entries = null;
         }
@@ -162,7 +161,7 @@ public class ValueSetState implements SessionObject {
       boolean provided = input.readBool();
       entries[i] = new Entry(key, label, provided);
     }
-    state.entries = ImmutableList.copyOf(entries);
+    state.entries = List.of(entries);
     return state;
   }
 

@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -61,7 +60,7 @@ public interface CountArrayLengthOperator extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return ImmutableSet.of(whenValueUpdated(getItemId()));
+    return Set.of(whenValueUpdated(getItemId()));
   }
 
 }

@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -119,7 +117,7 @@ public class ItemState implements SessionObject {
   private Map<String, Object> props = new HashMap<>();
 
   @Getter
-  private Set<Action.Type> allowedActions = ImmutableSet.of();
+  private Set<Action.Type> allowedActions = Set.of();
 
   private ItemId activePage;
 
@@ -171,9 +169,9 @@ public class ItemState implements SessionObject {
       for (int i = 0; i < count; i++ ){
         types[i] = Action.Type.values()[input.readInt32()];
       }
-      state.allowedActions = ImmutableSet.copyOf(types);
+      state.allowedActions = Set.of(types);
     } else {
-      state.allowedActions = ImmutableSet.of();
+      state.allowedActions = Set.of();
     }
     return state;
   }
@@ -255,7 +253,7 @@ public class ItemState implements SessionObject {
       for (int i = 0; i < count; i++) {
         ids[i] = IdUtils.readIdFrom(input);
       }
-      return ImmutableList.copyOf(ids);
+      return List.of(ids);
     }
     return List.of();
   }
@@ -267,7 +265,7 @@ public class ItemState implements SessionObject {
       for (int i = 0; i < count; i++) {
         ids[i] = input.readString();
       }
-      return ImmutableList.copyOf(ids);
+      return List.of(ids);
     }
     return List.of();
   }
@@ -525,28 +523,28 @@ public class ItemState implements SessionObject {
 
     public UpdateBuilder setClassNames(List<String> newClassNames) {
       if (!Objects.equals(classNames, newClassNames)) {
-        state().classNames = ImmutableList.copyOf(newClassNames);
+        state().classNames = List.copyOf(newClassNames);
       }
       return this;
     }
 
     public UpdateBuilder setItems(List<ItemId> newItems) {
       if (!Objects.equals(items, newItems)) {
-        state().items = ImmutableList.copyOf(newItems);
+        state().items = List.copyOf(newItems);
       }
       return this;
     }
 
     public UpdateBuilder setAvailableItems(List<ItemId> newAvailableItems) {
       if (!Objects.equals(availableItems, newAvailableItems)) {
-        state().availableItems = ImmutableList.copyOf(newAvailableItems);
+        state().availableItems = List.copyOf(newAvailableItems);
       }
       return this;
     }
 
     public UpdateBuilder setAllowedActions(Set<Action.Type> newAllowedActions) {
       if (!Objects.equals(allowedActions, newAllowedActions)) {
-        state().allowedActions = ImmutableSet.copyOf(newAllowedActions);
+        state().allowedActions = Set.copyOf(newAllowedActions);
       }
       return this;
     }

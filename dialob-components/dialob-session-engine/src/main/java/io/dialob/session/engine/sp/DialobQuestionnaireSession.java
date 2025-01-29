@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.sp;
 
-import com.google.common.collect.Streams;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -55,6 +54,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static io.dialob.session.engine.Utils.*;
 
@@ -334,7 +334,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         broadcastActions = formActions.getActions();
       } else {
         // Merge user actions with updates for a broadcast
-        broadcastActions = Streams.concat(
+        broadcastActions = Stream.concat(
           actions
             .stream()
             .filter(action -> action.getType().isClientAction()),

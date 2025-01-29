@@ -42,7 +42,7 @@ class ActiveDialobSessionUpdaterTest {
 
   @Test
   void shouldSetContextVariable() {
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
+    FunctionRegistry functionRegistry = mock();
 
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgram program = DialobProgram.createDialobProgram(ImmutableProgram.builder()

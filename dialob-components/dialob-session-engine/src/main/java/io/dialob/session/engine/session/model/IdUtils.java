@@ -41,7 +41,7 @@ public class IdUtils {
     if (itemId == null) {
       return null;
     }
-    List<String> idChain = Lists.newArrayList();
+    var idChain = new ArrayList<String>();
     Optional<ItemId> id = Optional.of(itemId);
     while (id.isPresent()) {
       itemId = id.get();

@@ -51,6 +51,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -908,11 +909,11 @@ class QuestionnairesRestServiceControllerTest {
     Assertions.assertTrue(controller.isValidAnswerValue(BigDecimal.ONE));
     Assertions.assertTrue(controller.isValidAnswerValue(true));
     Assertions.assertTrue(controller.isValidAnswerValue(false));
-    Assertions.assertTrue(controller.isValidAnswerValue(Lists.newArrayList("a", "b")));
-    Assertions.assertFalse(controller.isValidAnswerValue(Lists.newArrayList(1, "b")));
-    Assertions.assertFalse(controller.isValidAnswerValue(Lists.newArrayList("1", 1)));
+    Assertions.assertTrue(controller.isValidAnswerValue(List.of("a", "b")));
+    Assertions.assertFalse(controller.isValidAnswerValue(List.of(1, "b")));
+    Assertions.assertFalse(controller.isValidAnswerValue(List.of("1", 1)));
     Assertions.assertTrue(controller.isValidAnswerValue(Lists.newArrayList(null, "b")));
-    Assertions.assertTrue(controller.isValidAnswerValue(Lists.newArrayList()));
+    Assertions.assertTrue(controller.isValidAnswerValue(List.of()));
   }
 
 }

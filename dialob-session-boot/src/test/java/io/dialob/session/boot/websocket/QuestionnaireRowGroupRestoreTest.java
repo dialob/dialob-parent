@@ -15,7 +15,6 @@
  */
 package io.dialob.session.boot.websocket;
 
-import com.google.common.collect.ImmutableMap;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableValidation;
@@ -47,6 +46,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -91,7 +91,7 @@ class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
       addItem(formBuilder, "g1", builder -> builder.type("rowgroup").putLabel("en","Ryhma").addItems("q1", "q2", "q3"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en","Kysymys 1"));
       addItem(formBuilder, "q2", builder -> builder.type("text").putLabel("en","Kysymys 2").addValidations(
-        ImmutableValidation.builder().message(ImmutableMap.of("en","error")).rule("answer = \"wrong answer\"").build()
+        ImmutableValidation.builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
       ));
       addItem(formBuilder, "q3", builder -> builder.type("text").putLabel("en","Kysymys 3").activeWhen("q2 = \"correct answer\""));
       formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());

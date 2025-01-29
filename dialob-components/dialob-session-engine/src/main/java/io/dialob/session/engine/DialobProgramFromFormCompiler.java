@@ -16,7 +16,6 @@
 package io.dialob.session.engine;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.form.service.api.repository.*;
@@ -77,7 +76,7 @@ public class DialobProgramFromFormCompiler {
           this.answersRequiredByDefault = true;
         }
         if (languages.isEmpty()) {
-          languages = Sets.newHashSet("en");
+          languages = Set.of("en");
         }
       }
 

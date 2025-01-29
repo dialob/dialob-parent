@@ -230,7 +230,7 @@ class CreateDialobSessionProgramVisitorTest {
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
       "session", "en",
       null,
-      initialValueResolver, valueSetId -> Collections.emptyList(), new HashMap(), null, null, null);
+      initialValueResolver, valueSetId -> Collections.emptyList(), new HashMap<>(), null, null, null);
 
     createDialobSessionProgramVisitor.startProgram(program);
     createDialobSessionProgramVisitor.visitItems().ifPresent(itemVisitor -> {

@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
@@ -42,7 +41,7 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
   default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     return getItemPrototypeId().getParent().flatMap(groupId -> {
       Set<ItemId> currentItems = Sets.newHashSet(itemStates.getItemStates().get(groupId).getItems());
-      Set<ItemId> originalItems = context.getOriginalItemState(groupId).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(ImmutableSet.of());
+      Set<ItemId> originalItems = context.getOriginalItemState(groupId).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(Set.of());
 
       final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
       final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
@@ -58,7 +57,7 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return getItemPrototypeId().getParent()
-      .map(groupId -> ImmutableSet.of(whenItemsChanged(groupId)))
-      .orElse(ImmutableSet.of());
+      .map(groupId -> Set.of(whenItemsChanged(groupId)))
+      .orElse(Set.of());
   }
 }

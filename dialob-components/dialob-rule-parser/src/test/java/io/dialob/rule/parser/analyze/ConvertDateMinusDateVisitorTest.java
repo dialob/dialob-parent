@@ -15,12 +15,13 @@
  */
 package io.dialob.rule.parser.analyze;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.Expression;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +35,7 @@ class ConvertDateMinusDateVisitorTest {
     Mockito.when(variableFinder.typeOf("b")).thenReturn(ValueType.DATE);
     Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
 
-    Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a - b");
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - b");
     expression.accept(new ConvertDateMinusDateVisitor());
     assertEquals("(java.time.Period.between b a)",expression.getAst().toString());
   }

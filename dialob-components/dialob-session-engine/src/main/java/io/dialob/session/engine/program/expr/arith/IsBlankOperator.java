@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -48,7 +47,7 @@ public interface IsBlankOperator extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return ImmutableSet.of(
+    return Set.of(
       whenAnsweredUpdated(getQuestionId()),
       whenActiveUpdated(getQuestionId())
     );

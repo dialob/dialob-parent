@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -35,7 +34,7 @@ public interface InitGroupItems extends AbstractUpdateCommand<ItemId, ItemState>
   @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
-    return ImmutableSet.of(EventMatchers.whenItemAdded(getTargetId()));
+    return Set.of(EventMatchers.whenItemAdded(getTargetId()));
   }
 
   @NonNull

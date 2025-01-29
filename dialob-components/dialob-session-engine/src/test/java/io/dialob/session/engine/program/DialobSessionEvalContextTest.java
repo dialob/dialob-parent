@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.DialobSession;
@@ -39,13 +38,13 @@ class DialobSessionEvalContextTest {
   void shouldVisitUpdatedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
+    Consumer<Event> updatesConsumer = Mockito.mock();
 
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = Mockito.mock(ItemState.class);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
 
-    final HashMap<ItemId, ItemState> itemStateHashMap = Maps.newHashMap();
+    final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
 
@@ -137,7 +136,7 @@ class DialobSessionEvalContextTest {
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = null;
 
-    final HashMap<ItemId, ItemState> itemStateHashMap = Maps.newHashMap();
+    final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));

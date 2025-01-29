@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
@@ -58,6 +57,6 @@ public interface IsValidOperator extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return ImmutableSet.of(EventMatchers.errorActivity(EventMatchers.targetError(getItemId())));
+    return Set.of(EventMatchers.errorActivity(EventMatchers.targetError(getItemId())));
   }
 }

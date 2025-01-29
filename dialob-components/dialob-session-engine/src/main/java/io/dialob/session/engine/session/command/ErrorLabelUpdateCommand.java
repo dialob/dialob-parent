@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
@@ -40,7 +39,7 @@ public interface ErrorLabelUpdateCommand extends ErrorUpdateCommand {
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> eventMatchers = Sets.union(Set.of(EventMatchers.whenSessionLocaleUpdated()), getExpression().getEvalRequiredConditions());
     if (getTargetId().isPartial()) {
-      return Sets.union(eventMatchers, ImmutableSet.of(EventMatchers.whenItemAdded(getTargetId().getItemId())));
+      return Sets.union(eventMatchers, Set.of(EventMatchers.whenItemAdded(getTargetId().getItemId())));
     }
     return eventMatchers;
   }

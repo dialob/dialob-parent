@@ -43,10 +43,9 @@ class DeleteRowTest {
       .get();
 
     itemState = deleteRow.update(context, itemState);
-
     assertTrue(((List<Integer>)itemState.getValue()).isEmpty());
-
   }
+
   @Test
   void deleteRowShouldNotRemoveNonExistingRow() throws Exception {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
@@ -60,9 +59,7 @@ class DeleteRowTest {
       .get();
 
     itemState = deleteRow.update(context, itemState);
-
     assertEquals(List.of(2), itemState.getValue());
-
   }
 
   @Test
@@ -71,7 +68,6 @@ class DeleteRowTest {
     final EvalContext context = Mockito.mock(EvalContext.class);
     final ItemState toBeRemoved = Mockito.mock(ItemState.class);
     Mockito.when(toBeRemoved.isRowCanBeRemoved()).thenReturn(false);
-
     Mockito.when(context.getItemState(Mockito.any())).thenReturn(Optional.of(toBeRemoved));
 
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
@@ -83,7 +79,6 @@ class DeleteRowTest {
 
     itemState = deleteRow.update(context, itemState);
     assertEquals(List.of(1), itemState.getValue());
-
     assertEquals(ItemState.Status.OK, itemState.getStatus());
   }
 }

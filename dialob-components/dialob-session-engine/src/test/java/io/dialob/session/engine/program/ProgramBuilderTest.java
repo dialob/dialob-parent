@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Maps;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -92,7 +91,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
   void shouldBeVisitable() {
     Program program = buildProgram();
     final AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
-    final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant", "session1", "fi", null, (id, item) -> Optional.empty(), valueSetId -> Collections.emptyList(), Maps.newHashMap(), null, null, null);
+    final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant", "session1", "fi", null, (id, item) -> Optional.empty(), valueSetId -> Collections.emptyList(), new HashMap<>(), null, null, null);
     program.accept(createDialobSessionProgramVisitor);
 
     final DialobSession session = createDialobSessionProgramVisitor.getDialobSession();
@@ -163,7 +162,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  void shouldChangeStateBasedOnActivatinRule() {
+  void shouldChangeStateBasedOnActivationRule() {
     Program program = buildProgram();
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
@@ -660,6 +659,8 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     Collection<ErrorState> errorStates = session.getErrorStates().values();
+    assertFalse(errorStates.isEmpty());
+    assertEquals(1, errorStates.size());
     assertValueEquals(session, toRef("question1"), null);
     assertNotRequired(session, toRef("question2"));
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setValue(toRef("$$f1_1"), true)));

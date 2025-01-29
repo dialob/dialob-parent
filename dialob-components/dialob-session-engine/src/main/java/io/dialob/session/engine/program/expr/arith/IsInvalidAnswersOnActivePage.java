@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -38,7 +37,7 @@ import static io.dialob.session.engine.session.command.EventMatchers.errorActivi
 @Value.Immutable
 public interface IsInvalidAnswersOnActivePage extends Expression {
 
-  Set<EventMatcher> ANY_ERROR = ImmutableSet.of(errorActivity(anyError()));
+  Set<EventMatcher> ANY_ERROR = Set.of(errorActivity(anyError()));
 
   ItemId getPageContainerId();
 

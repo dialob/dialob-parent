@@ -44,11 +44,11 @@ class DialobQuestionnaireSessionTest {
 
   @Test
   void testObjectVisibilityWhenShowInactiveIsFalse() {
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    QuestionnaireEventPublisher eventPublisher = Mockito.mock();
+    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock();
+    DialobSession dialobSession = Mockito.mock();
+    DialobProgram dialobProgram = Mockito.mock();
+    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock();
     Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
@@ -63,7 +63,7 @@ class DialobQuestionnaireSessionTest {
 
     Predicate<SessionObject> predicate = dialobQuestionnaireSession.getIsVisiblePredicate();
 
-    SessionObject sessionObject = Mockito.mock(SessionObject.class);
+    SessionObject sessionObject = Mockito.mock();
 
     when(sessionObject.isActive()).thenReturn(false);
     when(sessionObject.isDisplayItem()).thenReturn(false);
@@ -296,7 +296,7 @@ class DialobQuestionnaireSessionTest {
 
 
   @Test
-  void shouldNotHandleAnswersOnCompletedQuestionannaires() {
+  void shouldNotHandleAnswersOnCompletedQuestionnaires() {
     // given
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);

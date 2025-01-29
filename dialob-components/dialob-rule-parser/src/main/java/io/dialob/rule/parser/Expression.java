@@ -15,7 +15,6 @@
  */
 package io.dialob.rule.parser;
 
-import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
@@ -41,7 +40,7 @@ public class Expression implements ErrorLogger {
   private List<RuleExpressionCompilerError> errors = new ArrayList<>();
 
   private Expression(@NonNull String expression) {
-    this(ASTBuilderWalker.DUMMY_VARIABLE_FINDER, Maps.newHashMap(), expression);
+    this(ASTBuilderWalker.DUMMY_VARIABLE_FINDER, new HashMap<>(), expression);
   }
 
   private Expression(@NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables, @NonNull String expression) {

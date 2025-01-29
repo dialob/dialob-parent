@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -49,7 +48,7 @@ public interface NotOnPageExpression extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return ImmutableSet.of(EventMatchers.whenActivePageUpdated());
+    return Set.of(EventMatchers.whenActivePageUpdated());
   }
 
 }

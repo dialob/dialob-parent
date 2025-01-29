@@ -15,12 +15,13 @@
  */
 package io.dialob.rule.parser;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.NodeBase;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -84,7 +85,7 @@ class TypeAnalysisTest {
 
   private NodeBase parse(VariableFinder variableFinder, String expressionString) {
     return Expression
-      .createExpression(variableFinder, Maps.newHashMap(), expressionString)
+      .createExpression(variableFinder, new HashMap<>(), expressionString)
       .getAst();
   }
 

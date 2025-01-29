@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
@@ -174,7 +173,7 @@ public final class CommandFactory {
     }
   }
 
-  private static final ImmutableList<Trigger<ItemState>> ACTIVE_PAGE_TRIGGERS = ImmutableList.of(Triggers.<ItemState>trigger(Triggers.activePageUpdatedEvent()).when(ITEM_STATE_CHANGED));
+  private static final List<Trigger<ItemState>> ACTIVE_PAGE_TRIGGERS = List.of(Triggers.<ItemState>trigger(Triggers.activePageUpdatedEvent()).when(ITEM_STATE_CHANGED));
 
   private static final NextPage NEXT_PAGE = ImmutableNextPage.of(ACTIVE_PAGE_TRIGGERS);
 
@@ -223,29 +222,29 @@ public final class CommandFactory {
   }
 
   public static SetVariableFailed setVariableFailed(@NonNull ItemId id) {
-    return ImmutableSetVariableFailed.of(id, ImmutableList.of(
+    return ImmutableSetVariableFailed.of(id, List.of(
       Triggers.<ItemState>trigger(Triggers.statusUpdatedEvent(onTarget(id))).when(ITEM_STATUS_CHANGED)
     ));
   }
 
   public static ItemUpdateCommand deleteRow(@NonNull ItemId toBeRemoved) {
-    return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) ImmutableDeleteRow.of(parent, toBeRemoved, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> ImmutableNopCommand.of(toBeRemoved, emptyList()));
+    return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) ImmutableDeleteRow.of(parent, toBeRemoved, List.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> ImmutableNopCommand.of(toBeRemoved, emptyList()));
   }
 
   public static SetRows addRows(@NonNull ItemId id, @NonNull List<BigInteger> ids) {
-    return ImmutableSetRows.of(id, ids, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED)));
+    return ImmutableSetRows.of(id, ids, List.of(Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED)));
   }
 
   public static AddRow addRow(@NonNull ItemId targetId) {
-    return ImmutableAddRow.of(targetId, ImmutableList.of(Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)));
+    return ImmutableAddRow.of(targetId, List.of(Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)));
   }
 
   public static InitRowGroupItemsCommand initRowGroupItemsCommand(@NonNull ItemId targetId) {
-    return ImmutableInitRowGroupItemsCommand.of(targetId, ImmutableList.of(Triggers.<ItemState>trigger(itemsChangedEvent(onTarget(targetId))).when(GROUP_ITEMS_CHANGED)));
+    return ImmutableInitRowGroupItemsCommand.of(targetId, List.of(Triggers.<ItemState>trigger(itemsChangedEvent(onTarget(targetId))).when(GROUP_ITEMS_CHANGED)));
   }
 
   public static UpdateActivityCommand activityUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateActivityCommand.of(targetId, expression, ImmutableList.of(
+    return ImmutableUpdateActivityCommand.of(targetId, expression, List.of(
       Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_ACTIVITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.activityUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.validityUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED),
@@ -254,19 +253,19 @@ public final class CommandFactory {
   }
 
   public static UpdateRowsCanBeAddedCommand rowsCanBeAddedUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateRowsCanBeAddedCommand.of(targetId, expression, ImmutableList.of(
+    return ImmutableUpdateRowsCanBeAddedCommand.of(targetId, expression, List.of(
       Triggers.<ItemState>trigger(rowsCanBeAddedUpdatedEvent(onTarget(targetId))).when(ROWS_CAN_BE_ADDED_CHANGED)
     ));
   }
 
   public static UpdateRowCanBeRemovedCommand rowCanBeRemovedUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateRowCanBeRemovedCommand.of(targetId, expression, ImmutableList.of(
+    return ImmutableUpdateRowCanBeRemovedCommand.of(targetId, expression, List.of(
       Triggers.<ItemState>trigger(rowCanBeRemovedUpdatedEvent(onTarget(targetId))).when(ROWS_CAN_BE_REMOVED_CHANGED)
     ));
   }
 
   public static UpdateRequiredCommand requiredUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateRequiredCommand.of(targetId, expression, ImmutableList.of(Triggers.<ItemState>trigger(Triggers.requiredUpdatedEvent(onTarget(targetId))).when(ITEM_REQUIRED_CHANGED)));
+    return ImmutableUpdateRequiredCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.requiredUpdatedEvent(onTarget(targetId))).when(ITEM_REQUIRED_CHANGED)));
   }
 
   public static UpdateClassNames updateClassNames(ItemId targetId, Expression expression) {
@@ -274,13 +273,13 @@ public final class CommandFactory {
   }
 
   public static UpdateLabelCommand labelUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateLabelCommand.of(targetId, expression, ImmutableList.of(
+    return ImmutableUpdateLabelCommand.of(targetId, expression, List.of(
       Triggers.<ItemState>trigger(Triggers.labelUpdatedEvent(onTarget(targetId))).when(ITEM_LABEL_CHANGED)
     ));
   }
 
   public static UpdateDescriptionCommand descriptionUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateDescriptionCommand.of(targetId, expression, ImmutableList.of(Triggers.<ItemState>trigger(Triggers.descriptionUpdatedEvent(onTarget(targetId))).when(ITEM_DESCRIPTION_CHANGED)));
+    return ImmutableUpdateDescriptionCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.descriptionUpdatedEvent(onTarget(targetId))).when(ITEM_DESCRIPTION_CHANGED)));
   }
 
   public static UpdateAllowedActionsCommand allowedActionsUpdate(ItemId targetId, Expression expression) {
@@ -288,29 +287,29 @@ public final class CommandFactory {
   }
 
   public static UpdateIsInvalidAnswersCommand updateIsInvalidAnswers(ItemId targetId, Expression expression) {
-    return ImmutableUpdateIsInvalidAnswersCommand.of(targetId, expression, ImmutableList.of(Triggers.<ItemState>trigger(Triggers.anyInvalidAnswersUpdatedEvent())
+    return ImmutableUpdateIsInvalidAnswersCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.anyInvalidAnswersUpdatedEvent())
       .when(ITEM_INVALID_ANSWERS_CHANGED)));
   }
 
   public static UpdateAvailableItemsCommand availableItemsUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateAvailableItemsCommand.of(targetId, expression, ImmutableList.of(Triggers.<ItemState>trigger(Triggers.availableItemsUpdatedEvent())
+    return ImmutableUpdateAvailableItemsCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.availableItemsUpdatedEvent())
       .when(ITEM_STATE_CHANGED)));
   }
 
   public static UpdateDisabledCommand updateDisabled(ItemId targetId, Expression expression) {
-    return ImmutableUpdateDisabledCommand.of(targetId, expression, ImmutableList.of(Triggers.<ItemState>trigger(Triggers.disabledUpdatedEvent(onTarget(targetId)))
+    return ImmutableUpdateDisabledCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.disabledUpdatedEvent(onTarget(targetId)))
       .when(ITEM_STATE_CHANGED)));
   }
 
   public static ItemUpdateCommand updateGroupItems(ItemId targetId, Expression expression) {
     if (targetId instanceof ItemIdPartial) {
-      return ImmutableInitGroupItems.of(targetId, expression, ImmutableList.of(
+      return ImmutableInitGroupItems.of(targetId, expression, List.of(
         // TODO Triggered event do not match correctly on command
         Triggers.trigger(Triggers.groupItemsUpdatedEvent(targetId)).when(ITEM_STATE_CHANGED),
         Triggers.trigger(Triggers.rowGroupItemsInitEvent(targetId)).when(ITEM_STATE_CHANGED)
       ));
     }
-    return ImmutableUpdateGroupItems.of(targetId, expression, ImmutableList.of(
+    return ImmutableUpdateGroupItems.of(targetId, expression, List.of(
       Triggers.trigger(Triggers.groupItemsUpdatedEvent(onTarget(targetId))).when(ITEM_STATE_CHANGED)
     ));
   }
@@ -320,7 +319,7 @@ public final class CommandFactory {
   }
 
   public static UpdateValidationCommand updateValidationCommand(ErrorId errorId, Expression expression) {
-    return ImmutableUpdateValidationCommand.of(errorId, expression, ImmutableList.of(
+    return ImmutableUpdateValidationCommand.of(errorId, expression, List.of(
       Triggers.<ErrorState>trigger(Triggers.validityUpdatedEvent(onTarget(errorId.getItemId()))).when(ERROR_ACTIVITY_CHANGED),
       Triggers.<ErrorState>trigger(Triggers.errorActivityUpdatedEvent(errorId)).when(ERROR_ACTIVITY_CHANGED)
     ));
@@ -331,13 +330,13 @@ public final class CommandFactory {
   }
 
   public static VariableUpdateCommand variableUpdateCommand(ItemId targetId, Expression expression) {
-    return ImmutableVariableUpdateCommand.of(targetId, expression, ImmutableList.of(
+    return ImmutableVariableUpdateCommand.of(targetId, expression, List.of(
       Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)
     ));
   }
 
   public static UpdateValueSetCommand updateValueSet(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
-    return ImmutableUpdateValueSetCommand.of(valueSetId, entries, ImmutableList.of(
+    return ImmutableUpdateValueSetCommand.of(valueSetId, entries, List.of(
       Triggers.<ValueSetState>trigger(ImmutableValueSetUpdatedEvent.of(valueSetId))
         .when(ValueStatePredicates.VALUE_SET_STATE_CHANGED)
       ));
@@ -345,7 +344,7 @@ public final class CommandFactory {
 
   public static SessionUpdateCommand createRowGroupFromPrototypeCommand(ItemId rowProtoTypeId) {
     return ImmutableCreateRowGroupFromPrototypeCommand.of(rowProtoTypeId,
-      ImmutableList.of(
+      List.of(
         trigger(ImmutableRowItemsAddedEventsProvider.of(rowProtoTypeId))
           .when(ItemStatesPredicates.ITEM_STATES_CHANGED),
         trigger(ImmutableRowItemsRemovedEventsProvider.of(rowProtoTypeId))
@@ -355,7 +354,7 @@ public final class CommandFactory {
   }
 
   public static SessionUpdateCommand createRowGroupItemsFromPrototypeCommand(ItemId rowProtoTypeId, List<ItemId> itemPrototypeIds) {
-    return ImmutableCreateRowGroupItemsFromPrototypeCommand.of(rowProtoTypeId, rowProtoTypeId, ImmutableList.of(
+    return ImmutableCreateRowGroupItemsFromPrototypeCommand.of(rowProtoTypeId, rowProtoTypeId, List.of(
       trigger(ImmutableProtoTypeItemsAddedEventsProvider.of(itemPrototypeIds)).when(ItemStatesPredicates.ITEM_STATES_CHANGED)
     ));
   }

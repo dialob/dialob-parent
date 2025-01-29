@@ -224,7 +224,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
   private List<Expression> rest(List<Expression> expressions) {
     Iterator<Expression> i = expressions.iterator();
     if (!i.hasNext()) {
-      return Lists.newArrayList();
+      return List.of();
     }
     i.next();
     return Lists.newArrayList(i);
@@ -239,13 +239,14 @@ public class DDRLOperatorFactory implements OperatorFactory {
       lhs = coerceToType(coercedType, lhs);
       rhs = coerceToType(coercedType, rhs);
     }
+    final Operators operators = operatorsOf(coercedType);
     return switch (operator) {
-      case NE -> operatorsOf(coercedType).ne(lhs, rhs);
-      case EQ -> operatorsOf(coercedType).eq(lhs, rhs);
-      case LT -> operatorsOf(coercedType).lt(lhs, rhs);
-      case LE -> operatorsOf(coercedType).le(lhs, rhs);
-      case GE -> operatorsOf(coercedType).ge(lhs, rhs);
-      case GT -> operatorsOf(coercedType).gt(lhs, rhs);
+      case NE -> operators.ne(lhs, rhs);
+      case EQ -> operators.eq(lhs, rhs);
+      case LT -> operators.lt(lhs, rhs);
+      case LE -> operators.le(lhs, rhs);
+      case GE -> operators.ge(lhs, rhs);
+      case GT -> operators.gt(lhs, rhs);
       default -> throw new RuntimeException("Unknown operator " + operator);
     };
   }

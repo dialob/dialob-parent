@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
@@ -64,7 +63,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
   private final Map<ItemId,AbstractItemBuilder<?,?>> types = new HashMap<>();
 
   @Getter
-  private List<FormValidationError> errors = Lists.newArrayList();
+  private List<FormValidationError> errors = new ArrayList<>();
 
   private final List<ValueSet> valueSets = new ArrayList<>();
 

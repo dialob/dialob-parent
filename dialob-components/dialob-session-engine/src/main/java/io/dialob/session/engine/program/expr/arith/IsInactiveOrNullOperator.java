@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -49,7 +48,7 @@ public interface IsInactiveOrNullOperator extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return ImmutableSet.of(whenValueUpdated(getItemId()), whenActiveUpdated(getItemId()));
+    return Set.of(whenValueUpdated(getItemId()), whenActiveUpdated(getItemId()));
   }
 
 }

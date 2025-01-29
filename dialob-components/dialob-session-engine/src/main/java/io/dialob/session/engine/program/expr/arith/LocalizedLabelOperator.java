@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
@@ -43,7 +42,7 @@ public interface LocalizedLabelOperator extends Expression {
   Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([\\w]*?)(:.*?)?}");
 
   static LocalizedLabelOperator createLocalizedLabelOperator(@NonNull ProgramBuilder programBuilder, @NonNull Label label) {
-    Map<String, Expression> value = Maps.newHashMap();
+    Map<String, Expression> value = new HashMap<>();
     label.getLabels().forEach((key, labelString) -> {
       int i = 0;
       final Matcher matcher = EXPRESSION_PATTERN.matcher(labelString);

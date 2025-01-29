@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.model;
 
-import com.google.common.collect.Streams;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
@@ -73,7 +72,7 @@ public interface Program extends ProgramNode {
   default Stream<Item> findItemsBy(Predicate<ItemId> matcher) {
     Stream<Item> itemStream = getItems().stream().filter(item -> matcher.test(item.getId()));
     if (matcher.test(getRootItem().getId())) {
-      return Streams.concat(Stream.of(getRootItem()), itemStream);
+      return Stream.concat(Stream.of(getRootItem()), itemStream);
     }
     return itemStream;
   }

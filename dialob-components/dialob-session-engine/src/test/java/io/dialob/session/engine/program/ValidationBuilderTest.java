@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.ImmutableMap;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
@@ -34,7 +33,7 @@ class ValidationBuilderTest {
   void validationBuilderShouldMapanswerToParentQuestion() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     ValidationBuilder vb = new ValidationBuilder(qb, "ec1");
-    when(qb.getAliases()).thenReturn(ImmutableMap.of());
+    when(qb.getAliases()).thenReturn(Map.of());
     when(qb.getId()).thenReturn(IdUtils.toId("q1"));
     Map<String, ItemId> aliases = vb.getAliases();
 
@@ -52,7 +51,7 @@ class ValidationBuilderTest {
   void validationBuilderShouldMergeParentAliases() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     ValidationBuilder vb = new ValidationBuilder(qb, "ec1");
-    when(qb.getAliases()).thenReturn(ImmutableMap.of("q2", IdUtils.toId("g1.g4")));
+    when(qb.getAliases()).thenReturn(Map.of("q2", IdUtils.toId("g1.g4")));
     when(qb.getId()).thenReturn(IdUtils.toId("q1"));
 
     Map<String, ItemId> aliases = vb.getAliases();

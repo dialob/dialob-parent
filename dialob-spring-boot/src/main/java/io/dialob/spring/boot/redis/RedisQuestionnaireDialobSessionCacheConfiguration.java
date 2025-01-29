@@ -15,7 +15,6 @@
  */
 package io.dialob.spring.boot.redis;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -36,6 +35,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "dialob.session.cache.type", havingValue = "REDIS")
@@ -62,7 +62,7 @@ public class RedisQuestionnaireDialobSessionCacheConfiguration {
       .cacheDefaults(RedisCacheConfiguration
         .defaultCacheConfig()
         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(dialobSessionSerializer)))
-      .initialCacheNames(ImmutableSet.of(Constants.SESSION_CACHE_NAME))
+      .initialCacheNames(Set.of(Constants.SESSION_CACHE_NAME))
       .disableCreateOnMissingCache()
       .build();
   }

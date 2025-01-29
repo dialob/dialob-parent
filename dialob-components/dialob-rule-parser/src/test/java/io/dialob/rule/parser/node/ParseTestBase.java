@@ -1,12 +1,13 @@
 package io.dialob.rule.parser.node;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.DialobRuleLexer;
 import io.dialob.rule.parser.DialobRuleParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +18,7 @@ public class ParseTestBase {
 
   protected String lispExpression(ParseTree parseTree) {
     ParseTreeWalker walker = new ParseTreeWalker();
-    ASTBuilderWalker builder = new ASTBuilderWalker(null, ASTBuilderWalker.DUMMY_VARIABLE_FINDER, Maps.newHashMap());
+    ASTBuilderWalker builder = new ASTBuilderWalker(null, ASTBuilderWalker.DUMMY_VARIABLE_FINDER, new HashMap<>());
     walker.walk(builder, parseTree);
     NodeBase nodeBase = builder.getBuilder().build();
     if (nodeBase == null) {

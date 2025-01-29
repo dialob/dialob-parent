@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableMap;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.event.ImmutableItemsChangedEvent;
 import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
@@ -29,6 +28,7 @@ import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -45,7 +45,7 @@ class CreateRowGroupFromPrototypeCommandTest {
     ItemState groupState2 = Mockito.mock(ItemState.class);
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
     when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.empty());
-    when(states.getItemStates()).thenReturn(ImmutableMap.of(IdUtils.toId("g1"), groupState2));
+    when(states.getItemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
     CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*"), Collections.emptyList());
     ItemStates newStates = command.update(context, states);
     Assertions.assertSame(states, newStates);
@@ -64,7 +64,7 @@ class CreateRowGroupFromPrototypeCommandTest {
     ItemState groupState1 = Mockito.mock(ItemState.class);
     ItemState groupState2 = Mockito.mock(ItemState.class);
     when(states.getErrorStates()).thenReturn(Collections.emptyMap());
-    when(states.getItemStates()).thenReturn(ImmutableMap.of(IdUtils.toId("g1"), groupState2));
+    when(states.getItemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
     when(states.getValueSetStates()).thenReturn(Collections.emptyMap());
     when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("g1.*"), null, "text", null, true, null, null, null, null, null)));
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));

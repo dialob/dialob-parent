@@ -16,7 +16,6 @@
 package io.dialob.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -37,10 +36,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 import static io.dialob.common.Constants.QUESTIONNAIRE_CACHE_NAME;
@@ -96,7 +92,7 @@ public class DialobCacheAutoConfiguration {
     RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
     return RedisCacheManager.builder(redisConnectionFactory)
       .cacheDefaults(redisCacheConfiguration)
-      .initialCacheNames(ImmutableSet.of(QUESTIONNAIRE_CACHE_NAME))
+      .initialCacheNames(Set.of(QUESTIONNAIRE_CACHE_NAME))
       .disableCreateOnMissingCache()
       .build();
   }

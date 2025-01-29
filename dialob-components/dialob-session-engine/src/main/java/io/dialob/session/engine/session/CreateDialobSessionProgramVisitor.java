@@ -15,9 +15,6 @@
  */
 package io.dialob.session.engine.session;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
@@ -70,7 +67,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
   private Map<ItemId, List<Command<?>>> itemCommands;
 
-  private List<ItemState> rowGroups = Lists.newArrayList();
+  private List<ItemState> rowGroups = new ArrayList<>();
 
   private ItemId activePage;
 
@@ -102,7 +99,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     this.language = language;
     this.initialValueResolver = initialValueResolver;
     this.findProvidedValueSetEntries = findProvidedValueSetEntries;
-    this.itemCommands = itemCommands == null ? ImmutableMap.of() : itemCommands;
+    this.itemCommands = itemCommands == null ? Map.of() : itemCommands;
     this.activePage = activePage != null ? IdUtils.toId(activePage) : null;
     this.completed = completed;
     this.opened = opened;
@@ -239,8 +236,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
   @Override
   public void end() {
-    // TODO this is way too complex. This restores row states from Questionnaire. This decouples DialosSession object from
-    // Questionnaire type. Problems is that this duplicates logic build to commands. Expression evaluation context needs to be simplified.
+    // TODO this is way too complex. This restores row states from Questionnaire. This decouples DialobSession object from
+    // Questionnaire type. Problem is that this duplicates logic build into commands. Expression evaluation context needs to be simplified.
     rowGroups
       .stream()
       .flatMap(rowGroup -> {
@@ -273,7 +270,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           if (item instanceof Group) {
             Expression expression = ((Group)item).getItemsExpression();
             if (expression instanceof RowItemsExpression rowItemsExpression) {
-              final Scope scope = ImmutableScope.of(itemIdToCreate, ImmutableSet.of());
+              final Scope scope = ImmutableScope.of(itemIdToCreate, Set.of());
               rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
             }
           }

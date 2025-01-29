@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
@@ -74,7 +73,7 @@ class DialobSessionTest {
     List<ValueSetState> valueSets = List.of();
     List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
@@ -96,12 +95,12 @@ class DialobSessionTest {
 
   @Test
   void removedItemsShouldTriggerUpdate() {
-    List<ItemState> items = ImmutableList.of(ITEM_STATE);
+    List<ItemState> items = List.of(ITEM_STATE);
     List<ItemState> prototypes = List.of();
     List<ValueSetState> valueSets = List.of();
     List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
@@ -123,12 +122,12 @@ class DialobSessionTest {
 
   @Test
   void itemUpdateShouldTriggerUpdate() {
-    List<ItemState> items = ImmutableList.of(ITEM_STATE);
+    List<ItemState> items = List.of(ITEM_STATE);
     List<ItemState> prototypes = List.of();
     List<ValueSetState> valueSets = List.of();
     List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
       @Override

@@ -36,7 +36,7 @@ class GroupBuilderTest {
 
   @Test
   void rowGroupGeneratesTeoGroups() {
-    Consumer<FormValidationError> errorConsumer = mock(Consumer.class);
+    Consumer<FormValidationError> errorConsumer = mock();
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     GroupBuilder hoistingGroupBuilder = Mockito.mock(GroupBuilder.class);
     QuestionBuilder qb = mock(QuestionBuilder.class);

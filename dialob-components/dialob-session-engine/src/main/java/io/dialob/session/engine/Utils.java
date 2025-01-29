@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -292,14 +291,14 @@ public final class Utils {
           for (int i = 0; i < count; ++i) {
             strings[i] = input.readString();
           }
-          return ImmutableList.copyOf(strings);
+          return List.of(strings);
         case (byte) 0x82:
           count = input.readInt32();
           BigInteger[] integers = new BigInteger[count];
           for (int i = 0; i < count; ++i) {
             integers[i] = readBigInteger(input);
           }
-          return ImmutableList.copyOf(integers);
+          return List.of(integers);
       }
     }
     return null;
