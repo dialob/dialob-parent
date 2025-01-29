@@ -117,9 +117,9 @@ public final class Utils {
       return null;
     }
     if (!valueType.isArray()) {
-      if (value instanceof String) {
+      if (value instanceof String string) {
         try {
-          return valueType.parseFromString((String) value);
+          return valueType.parseFromString(string);
         } catch (Exception ignored) {
         }
       }

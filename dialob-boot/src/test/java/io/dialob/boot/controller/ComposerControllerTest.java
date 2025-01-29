@@ -16,11 +16,10 @@
 package io.dialob.boot.controller;
 
 import io.dialob.boot.security.SecurityConfiguration;
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.boot.settings.*;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +27,8 @@ import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -36,6 +37,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +71,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   SecurityConfiguration.class,
   ComposerController.class,
-  OAuth2ClientAutoConfiguration.class
+  OAuth2ClientAutoConfiguration.class,
+  ComposerControllerTest.Config.class
 })
 @EnableConfigurationProperties({
   AdminApplicationSettings.class,
@@ -79,6 +83,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebSecurity
 @EnableWebMvc
 class ComposerControllerTest extends AbstractUIControllerTest {
+
+  @Configuration(proxyBeanMethods = false)
+  public static class Config {
+
+    @Bean
+    public TenantAccessEvaluator tenantAccessEvaluator() {
+      return tenant -> true;
+    }
+
+    @Bean
+    public PageSettingsProvider settingsPageSettingsProvider(CurrentTenant currentTenant,
+                                                             QuestionnaireDatabase questionnaireDatabase,
+                                                             QuestionnaireApplicationSettings settings,
+                                                             ReviewApplicationSettings reviewSettings,
+                                                             Optional<AdminApplicationSettings> adminApplicationSettings,
+                                                             ComposerApplicationSettings composerApplicationSettings) {
+      return new SettingsPageSettingsProvider(currentTenant, questionnaireDatabase, settings, reviewSettings, composerApplicationSettings, adminApplicationSettings);
+    }
+
+  }
+  @MockitoBean
+  CurrentTenant currentTenant;
+
+  @MockitoBean
+  QuestionnaireDatabase questionnaireDatabase;
 
   @MockitoBean
   public TenantAccessEvaluator tenantAccessEvaluator;

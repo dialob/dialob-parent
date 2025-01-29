@@ -18,6 +18,8 @@ package io.dialob.session.engine;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import io.dialob.api.form.FormValidationError;
+import io.dialob.api.proto.Action;
+import io.dialob.api.proto.ImmutableActionItem;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
@@ -36,7 +38,9 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -171,6 +175,24 @@ class UtilsTest {
     Assertions.assertEquals(1, s.getEntries().size());
     Assertions.assertEquals("v1", s.getEntries().get(0).getKey());
     Assertions.assertEquals("l1", s.getEntries().get(0).getValue());
+  }
+
+  @Test
+  void testToActionItem() {
+    UnaryOperator<ImmutableActionItem.Builder> post = mock();
+    var itemState = new ItemState(IdUtils.toId("item"), null, "list", null, null);
+    itemState = itemState.update()
+      .setItems(List.of(IdUtils.toId("id1")))
+      .setAvailableItems(List.of(IdUtils.toId("id2")))
+      .setAllowedActions(Set.of(Action.Type.SET_VALUE))
+      .get();
+    var action = Utils.toActionItem(itemState, post);
+
+    assertEquals(List.of("id1"), action.getItems());
+    assertEquals(List.of("id2"), action.getAvailableItems());
+    assertEquals(Set.of(Action.Type.SET_VALUE), action.getAllowedActions());
+    Mockito.verify(post).apply(any());
+    Mockito.verifyNoMoreInteractions(post);
   }
 
 }

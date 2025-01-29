@@ -15,12 +15,12 @@
  */
 package io.dialob.boot.controller;
 
+import io.dialob.boot.security.QuestionnaireSecurityConfigurer;
 import io.dialob.boot.security.SecurityConfiguration;
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.boot.settings.*;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +29,16 @@ import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -62,7 +67,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 }, classes = {
   SecurityConfiguration.class,
   AdminController.class,
-  OAuth2ClientAutoConfiguration.class
+  OAuth2ClientAutoConfiguration.class,
+  AdminControllerTest.Config.class
 })
 @EnableConfigurationProperties({
   DialobSettings.class,
@@ -73,11 +79,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 class AdminControllerTest extends AbstractUIControllerTest {
 
+  @Configuration(proxyBeanMethods = false)
+  @Import(QuestionnaireSecurityConfigurer.class)
+  public static class Config {
+
+    @Bean
+    public TenantAccessEvaluator tenantAccessEvaluator() {
+      return tenant -> true;
+    }
+
+    @Bean
+    public PageSettingsProvider settingsPageSettingsProvider(CurrentTenant currentTenant,
+                                                             QuestionnaireDatabase questionnaireDatabase,
+                                                             QuestionnaireApplicationSettings settings,
+                                                             ReviewApplicationSettings reviewSettings,
+                                                             Optional<AdminApplicationSettings> adminApplicationSettings,
+                                                             ComposerApplicationSettings composerApplicationSettings) {
+      return new SettingsPageSettingsProvider(currentTenant, questionnaireDatabase, settings, reviewSettings, composerApplicationSettings, adminApplicationSettings);
+    }
+
+  }
+
+  @MockitoBean
+  CurrentTenant currentTenant;
+
+  @MockitoBean
+  QuestionnaireDatabase questionnaireDatabase;
+
   @MockitoBean
   public TenantAccessEvaluator tenantAccessEvaluator;
 
-  @MockitoBean
-  public PageSettingsProvider pageSettingsProvider;
 
   @MockitoBean
   public GrantedAuthoritiesMapper grantedAuthoritiesMapper;
@@ -91,9 +122,6 @@ class AdminControllerTest extends AbstractUIControllerTest {
   @Test
   @WithMockUser(username = "testUser", authorities = {"manager.view"})
   void adminShouldGetPage() throws Exception {
-    PageAttributes pageAttributes = mock(PageAttributes.class);
-    when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
-    when(pageAttributes.getTemplate()).thenReturn("admin");
     mockMvc.perform(get("/").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
@@ -106,9 +134,6 @@ class AdminControllerTest extends AbstractUIControllerTest {
   @Test
   @WithMockUser(username = "testUser", authorities = {"manager.view"})
   void adminShouldGetConfig() throws Exception {
-    PageAttributes pageAttributes = mock(PageAttributes.class);
-    when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
-    when(pageAttributes.getTemplate()).thenReturn("admin");
     mockMvc.perform(get("/config.json").params(tenantParam).accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
       .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

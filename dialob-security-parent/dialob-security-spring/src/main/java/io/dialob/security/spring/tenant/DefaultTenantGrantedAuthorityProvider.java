@@ -40,7 +40,7 @@ public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSuppl
     if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken token) {
       return Optional.ofNullable(token.getAuthorities()
         .stream()
-        .filter(grantedAuthority -> grantedAuthority instanceof TenantGrantedAuthority)
+        .filter(TenantGrantedAuthority.class::isInstance)
         .map(TenantGrantedAuthority.class::cast)
         .findFirst()
         .map(grantedAuthority -> Tenant.of(grantedAuthority.getTenantId(), grantedAuthority.getAuthority()))
