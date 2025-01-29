@@ -9,7 +9,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public abstract class NodeBase implements TypedNode, Serializable {
@@ -43,15 +42,6 @@ public abstract class NodeBase implements TypedNode, Serializable {
 
   public void setValueType(@NonNull ValueType type) {
     this.type = Objects.requireNonNull(type);
-  }
-
-  @NonNull
-  public Map<String, ValueType> getDependencies() {
-    return Collections.emptyMap();
-  }
-
-  public Map<String, ValueType> getAllDependencies() {
-    return getDependencies();
   }
 
   public boolean isConstant() {

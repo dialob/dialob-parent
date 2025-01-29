@@ -27,8 +27,6 @@ class ASTBuilderTest {
     assertEquals("x", nodeBase.toString());
     assertEquals(ValueType.BOOLEAN, nodeBase.getValueType());
     assertEquals("$id", nodeBase.getNodeOperator().getOperator());
-    assertEquals(1, nodeBase.getAllDependencies().size());
-    assertEquals(ValueType.BOOLEAN, nodeBase.getAllDependencies().get("x"));
     assertNull(nodeBase.getParent());
   }
 
@@ -42,8 +40,6 @@ class ASTBuilderTest {
     assertEquals("(func)", nodeBase.toString());
     assertEquals(ValueType.BOOLEAN, nodeBase.getValueType());
     assertEquals("func", nodeBase.getNodeOperator().getOperator());
-    assertEquals(0, nodeBase.getAllDependencies().size());
-    assertNull(nodeBase.getAllDependencies().get("func"));
     assertNull(nodeBase.getParent());
   }
 

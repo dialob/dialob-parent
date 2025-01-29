@@ -71,12 +71,6 @@ public class IdExprNode extends NodeBase {
     return visitor.visitIdExpr(this);
   }
 
-  @Override
-  @NonNull
-  public Map<String, ValueType> getDependencies() {
-    return idSet;
-  }
-
   @NonNull
   @Override
   public NodeOperator getNodeOperator() {

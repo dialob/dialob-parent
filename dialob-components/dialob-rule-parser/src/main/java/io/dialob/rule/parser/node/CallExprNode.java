@@ -7,7 +7,10 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true, of = {"nodeOperator", "arguments"})
@@ -105,24 +108,4 @@ public class CallExprNode extends NodeBase {
     return visitor.endCallExpr(this);
   }
 
-  @Override
-  @NonNull
-  public Map<String, ValueType> getDependencies() {
-    Map<String, ValueType> dependencies = new HashMap<>();
-    for (NodeBase argument : arguments) {
-      if (getNodeOperator().isOrOp() || !(argument instanceof CallExprNode callExprNode) || !callExprNode.getNodeOperator().isOrOp()) {
-        dependencies.putAll(argument.getDependencies());
-      }
-    }
-    return dependencies;
-  }
-
-  @Override
-  public Map<String, ValueType> getAllDependencies() {
-    Map<String, ValueType> dependencies = new HashMap<>();
-    for (NodeBase argument : arguments) {
-      dependencies.putAll(argument.getAllDependencies());
-    }
-    return dependencies;
-  }
 }
