@@ -27,7 +27,7 @@
   <artifactId>dialob-boot</artifactId>
   <packaging>jar</packaging>
   <properties>
-    <sonar.sources>src/main/java,src/main/resources/templates</sonar.sources>
+    <sonar.sources>pom.xml,src/main/java,src/main/resources/templates</sonar.sources>
   </properties>
   <build>
     <resources>
