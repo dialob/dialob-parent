@@ -15,17 +15,22 @@
  */
 package io.dialob.rule.parser.api;
 
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class ArrayValueTypeTest {
@@ -51,4 +56,28 @@ class ArrayValueTypeTest {
   void shouldParseArrayStrings() {
     assertArrayEquals(new BigInteger[] {BigInteger.valueOf(1),BigInteger.valueOf(2),BigInteger.valueOf(3)}, (BigInteger[]) ValueType.arrayOf(ValueType.INTEGER).parseFromString("[1,2,3]"));
   }
+
+  @Test
+  void readAndWrite() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    var outputStream = CodedOutputStream.newInstance(buffer);
+    ValueType.arrayOf(ValueType.STRING).writeTo(outputStream, null);
+    ValueType.arrayOf(ValueType.STRING).writeTo(outputStream, List.of());
+    ValueType.arrayOf(ValueType.STRING).writeTo(outputStream, List.of("1", "2", "3"));
+    ValueType.arrayOf(ValueType.DECIMAL).writeTo(outputStream, List.of(BigDecimal.valueOf(100,2), BigDecimal.valueOf(1043,2), BigDecimal.valueOf(1010,2)));
+    ValueType.arrayOf(ValueType.arrayOf(ValueType.STRING)).writeTo(outputStream, List.of(List.of("?"), List.of(), List.of("1", "2")));
+
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    assertNull(ValueType.arrayOf(ValueType.STRING).readFrom(inputStream));
+    assertEquals(List.of(), ValueType.arrayOf(ValueType.STRING).readFrom(inputStream));
+    assertEquals(List.of("1", "2", "3"), ValueType.arrayOf(ValueType.STRING).readFrom(inputStream));
+    assertEquals(List.of(BigDecimal.valueOf(100,2), BigDecimal.valueOf(1043,2), BigDecimal.valueOf(1010,2)), ValueType.arrayOf(ValueType.DECIMAL).readFrom(inputStream));
+    assertEquals(List.of(List.of("?"), List.of(), List.of("1", "2")), ValueType.arrayOf(ValueType.STRING).readFrom(inputStream));
+
+    Assertions.assertTrue(inputStream.isAtEnd());
+
+  }
 }
+
