@@ -982,6 +982,9 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
           .addItem("notemin")
           .addItem("notemax")
           .build()
+        .addVariable("var2")
+          .setValueExpression("true")
+          .build()
         .addRowGroup("rg1")
           .addItem("question2")
           .addItem("question3")
@@ -1005,7 +1008,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
         .build()
       .addQuestion("notemax")
         .setType("note")
-        .setActiveWhen("max of question2 > 0")
+        .setActiveWhen("max of question2 > 0 or any of var2 or all of var2")
         .build()
       .build();
     // @formatter:on
