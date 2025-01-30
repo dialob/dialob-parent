@@ -15,8 +15,17 @@
  */
 package io.dialob.session.engine.session.model;
 
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
+import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -57,6 +66,29 @@ class ItemStateTest {
       itemState1);
     assertEquals(ItemState.Status.OK, itemState1.getStatus());
     verifyNoMoreInteractions(context);
+  }
+
+  @Test
+  void shouldSerializeAndDeserialize() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+
+    var itemState1 = new ItemState(IdUtils.toId("questionnaire"), null, "questionnaire", null, true, null, null, null, null, null);
+    itemState1.writeTo(outputStream);
+    var itemState2 = new ItemState(IdUtils.toId("questionnaire"), null, "questionnaire", null, true, null, null, null, null, null);
+    itemState2 = itemState2.update().setAllowedActions(Set.of(Action.Type.ANSWER)).get();
+    itemState2.writeTo(outputStream);
+    var itemState3 = new ItemState(IdUtils.toId("group"), null, "group", null, true, null, null, null, null, null);
+    itemState3 = itemState3.update().setItems(List.of(IdUtils.toId("q1"))).setClassNames(List.of("class1")).get();
+    itemState3.writeTo(outputStream);
+
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    Assertions.assertEquals(itemState1, ItemState.readFrom(inputStream));
+    Assertions.assertEquals(itemState2, ItemState.readFrom(inputStream));
+    Assertions.assertEquals(itemState3, ItemState.readFrom(inputStream));
+
   }
 
 }

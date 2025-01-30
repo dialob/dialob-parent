@@ -36,9 +36,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -47,6 +45,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 class UtilsTest {
+
+  @Test
+  void testQuestionType() {
+    assertEquals(Optional.of(ValueType.TIME), Utils.mapQuestionTypeToValueType("time"));
+    assertEquals(Optional.of(ValueType.arrayOf(ValueType.INTEGER)), Utils.mapQuestionTypeToValueType("rowgroup"));
+  }
 
   @Test
   void shouldNotSerializeFalseInactiveState() {
@@ -69,7 +73,7 @@ class UtilsTest {
   }
 
   @Test
-  void shouldWriteAndRadBigIntegers() throws IOException {
+  void shouldWriteAndReadBigIntegers() throws IOException {
     var buffer = new ByteArrayOutputStream();
     CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
     Utils.writeObjectValue(outputStream, null);
@@ -87,6 +91,52 @@ class UtilsTest {
     assertEquals(BigInteger.ZERO, Utils.readObjectValue(inputStream));
     assertEquals(BigInteger.ONE, Utils.readObjectValue(inputStream));
     assertEquals(new BigInteger("98765432109876543210"), Utils.readObjectValue(inputStream));
+  }
+
+  @Test
+  void shouldWriteAndReadStrings() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, null);
+    assertEquals(1, outputStream.getTotalBytesWritten());
+
+    buffer = new ByteArrayOutputStream();
+    outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeNullableString(outputStream, "null");
+    Utils.writeNullableString(outputStream, null);
+    Utils.writeObjectValue(outputStream, "BigInteger.ZERO");
+    Utils.writeObjectValue(outputStream, List.of("BigInteger.ONE"));
+    Utils.writeObjectValue(outputStream, List.of());
+    assertEquals(45, outputStream.getTotalBytesWritten());
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    assertEquals("null", Utils.readNullableString(inputStream));
+    assertNull(Utils.readNullableString(inputStream));
+    assertEquals("BigInteger.ZERO", Utils.readObjectValue(inputStream));
+    assertEquals(List.of("BigInteger.ONE"), Utils.readObjectValue(inputStream));
+    assertEquals(List.of(), Utils.readObjectValue(inputStream));
+  }
+
+  @Test
+  void shouldWriteAndReadDates() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, null);
+    assertEquals(1, outputStream.getTotalBytesWritten());
+
+    var d = new Date();
+
+    buffer = new ByteArrayOutputStream();
+    outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeNullableDate(outputStream, d);
+    Utils.writeNullableDate(outputStream, null);
+    assertEquals(8, outputStream.getTotalBytesWritten());
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    assertEquals(d, Utils.readNullableDate(inputStream));
+    assertNull(Utils.readNullableDate(inputStream));
   }
 
 
@@ -113,6 +163,14 @@ class UtilsTest {
     assertEquals(Duration.ofHours(1), Utils.validateDefaultValue("x", ValueType.DURATION, Duration.ofHours(1), listener));
 
     verifyNoInteractions(listener);
+  }
+
+  @Test
+  void testParse() {
+    assertEquals(BigInteger.ONE, Utils.parse(ValueType.INTEGER, "1"));
+    assertNull(Utils.parse(ValueType.INTEGER, "A"));
+    assertNull(Utils.parse(ValueType.arrayOf(ValueType.INTEGER), "A"));
+
   }
 
   @Test
@@ -172,9 +230,9 @@ class UtilsTest {
     ValueSetState state = new ValueSetState("vs1");
     state = state.update().setEntries(List.of(new ValueSetState.Entry("v1", "l1", false))).get();
     var s = Utils.toValueSet(state);
-    Assertions.assertEquals(1, s.getEntries().size());
-    Assertions.assertEquals("v1", s.getEntries().get(0).getKey());
-    Assertions.assertEquals("l1", s.getEntries().get(0).getValue());
+    assertEquals(1, s.getEntries().size());
+    assertEquals("v1", s.getEntries().get(0).getKey());
+    assertEquals("l1", s.getEntries().get(0).getValue());
   }
 
   @Test
