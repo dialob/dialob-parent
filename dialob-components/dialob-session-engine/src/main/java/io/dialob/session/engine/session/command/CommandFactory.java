@@ -25,7 +25,6 @@ import io.dialob.session.engine.session.command.event.ImmutableRowItemsRemovedEv
 import io.dialob.session.engine.session.command.event.ImmutableValueSetUpdatedEvent;
 import io.dialob.session.engine.session.model.*;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -42,13 +41,11 @@ public final class CommandFactory {
   private static boolean isNew(Object itemState, Object updateState) {
     return itemState == null && updateState != null;
   }
-  private static boolean isRemoved(Object itemState, Object updateState) {
-    return itemState != null && updateState == null;
-  }
 
   private static boolean isNewOrRemoved(Object itemState, Object updateState) {
     return itemState != updateState && (itemState == null || updateState == null);
   }
+
   private static boolean notSame(Object itemState, Object updateState) {
     return itemState != updateState;
   }
@@ -150,12 +147,6 @@ public final class CommandFactory {
   }
 
   enum ErrorStateMatcher implements BiPredicate<ErrorState, ErrorState> {
-    ERROR_STATE_CHANGED {
-      @Override
-      public boolean test(ErrorState itemState, ErrorState updateState) {
-        return updateState != itemState;
-      }
-    },
     ERROR_ACTIVITY_CHANGED {
       @Override
       public boolean test(ErrorState itemState, ErrorState updateState) {
@@ -229,10 +220,6 @@ public final class CommandFactory {
 
   public static ItemUpdateCommand deleteRow(@NonNull ItemId toBeRemoved) {
     return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) ImmutableDeleteRow.of(parent, toBeRemoved, List.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> ImmutableNopCommand.of(toBeRemoved, emptyList()));
-  }
-
-  public static SetRows addRows(@NonNull ItemId id, @NonNull List<BigInteger> ids) {
-    return ImmutableSetRows.of(id, ids, List.of(Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED)));
   }
 
   public static AddRow addRow(@NonNull ItemId targetId) {
