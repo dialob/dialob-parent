@@ -26,6 +26,9 @@
   </parent>
   <artifactId>dialob-boot</artifactId>
   <packaging>jar</packaging>
+  <properties>
+    <sonar.inclusions>src/main/resources/**/*.html</sonar.inclusions>
+  </properties>
   <build>
     <resources>
       <resource>
