@@ -71,7 +71,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   static BasicDataSource createEmbeddedDatabase() throws Exception {
     ATTRS.container.start();
     String jdbcUrl = "jdbc:postgresql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/postgres";
-    System.out.println("Embedded Postgresql jdbc url: " + jdbcUrl);
+
     ATTRS.dataSource = new BasicDataSource();
     ATTRS.dataSource.setUsername("postgres");
     ATTRS.dataSource.setPassword("postgres");

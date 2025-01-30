@@ -328,7 +328,6 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
       .build()
       .build();
     // @formatter:on
-    System.out.println(program);
 
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
@@ -1026,7 +1025,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
   void shouldParseReducerExpressions2() {
     // @formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();
-    Program program = programBuilder
+    programBuilder
       .startProgram()
       .setId("matches")
       .addRoot()

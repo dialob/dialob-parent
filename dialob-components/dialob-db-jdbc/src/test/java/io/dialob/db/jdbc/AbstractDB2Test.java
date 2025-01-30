@@ -73,7 +73,6 @@ public interface AbstractDB2Test extends JdbcBackendTest {
   static BasicDataSource createEmbeddedDatabase() throws IOException {
 
     String jdbcUrl = container.getJdbcUrl();
-    System.out.println("DB2 jdbc url: " + jdbcUrl);
 
     // Point it to the database
     ATTRS.dataSource = new BasicDataSource();

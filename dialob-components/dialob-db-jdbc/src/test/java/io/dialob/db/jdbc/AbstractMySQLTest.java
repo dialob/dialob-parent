@@ -73,7 +73,6 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
   static BasicDataSource createEmbeddedDatabase() throws IOException {
     ATTRS.container.start();
     String jdbcUrl = "jdbc:mysql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/dialob";
-    System.out.println("Embedded MySQL jdbc url: " + jdbcUrl);
 
     // Point it to the database
     ATTRS.dataSource = new BasicDataSource();
