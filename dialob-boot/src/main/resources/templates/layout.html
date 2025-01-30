@@ -9,7 +9,7 @@
   <meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}"/>
   <link th:each="stylesheet: ${stylesheets}" rel="stylesheet" type="text/css" th:href="${stylesheet.value}"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
-  <script th:if="${reactHook}">__REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__</script>
+  <script th:if="${reactHook}">if (window.parent !== window) window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;</script>
 </head>
 <body>
 <div class="dialob-app-container">
