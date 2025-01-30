@@ -15,18 +15,19 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BooleanOperatorsTest {
 
   @Test
-  void test() {
+  void testBooleanOperators() {
     BooleanOperators op = new BooleanOperators();
-    Assertions.assertThrows(RuntimeException.class, () -> op.le(null, null));
-    Assertions.assertThrows(RuntimeException.class, () -> op.ge(null, null));
-    Assertions.assertThrows(RuntimeException.class, () -> op.lt(null, null));
-    Assertions.assertThrows(RuntimeException.class, () -> op.gt(null, null));
+    assertThrows(RuntimeException.class, () -> op.le(null, null));
+    assertThrows(RuntimeException.class, () -> op.ge(null, null));
+    assertThrows(RuntimeException.class, () -> op.lt(null, null));
+    assertThrows(RuntimeException.class, () -> op.gt(null, null));
   }
 
 }

@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
@@ -23,7 +22,6 @@ import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
@@ -222,12 +220,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
   }
 
   private List<Expression> rest(List<Expression> expressions) {
-    Iterator<Expression> i = expressions.iterator();
-    if (!i.hasNext()) {
-      return List.of();
-    }
-    i.next();
-    return Lists.newArrayList(i);
+    return expressions.stream().skip(1).toList();
   }
 
   private Expression relationOf(OperatorSymbol operator, Expression lhs, Expression rhs) {
