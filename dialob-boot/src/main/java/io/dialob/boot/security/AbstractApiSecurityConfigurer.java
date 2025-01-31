@@ -23,18 +23,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityConfigurer {
-
-  public static final CorsConfiguration PERMIT_ALL = new CorsConfiguration().applyPermitDefaultValues();
-
-  public static final CorsConfiguration ALLOW_SAME_ORIGIN = new CorsConfiguration();
-
-  public static final RequestMatcher SESSION_EXISTS_MATCHER = request -> request.getSession(false) != null;
 
   public AbstractApiSecurityConfigurer(String contextPath,
                                        TenantAccessEvaluator tenantPermissionEvaluator,
@@ -42,7 +35,7 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
     super(contextPath, tenantPermissionEvaluator, authenticationStrategy);
   }
 
-  protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
+  protected HttpSecurity configurePermissions(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
     return http
       .securityMatcher(requestMatcher())

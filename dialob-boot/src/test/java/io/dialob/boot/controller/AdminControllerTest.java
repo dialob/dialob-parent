@@ -22,6 +22,7 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.settings.DialobSettings;
+import io.dialob.tenant.DialobTenantConfigurationAutoConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = MOCK, properties = {
   "tenantId=itest",
   "dialob.security.enabled=true",
+  "dialob.tenant.mode=URL_PARAM",
   "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
   "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
@@ -68,6 +70,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   SecurityConfiguration.class,
   AdminController.class,
   OAuth2ClientAutoConfiguration.class,
+  DialobTenantConfigurationAutoConfiguration.class,
   AdminControllerTest.Config.class
 })
 @EnableConfigurationProperties({
@@ -99,9 +102,6 @@ class AdminControllerTest extends AbstractUIControllerTest {
     }
 
   }
-
-  @MockitoBean
-  CurrentTenant currentTenant;
 
   @MockitoBean
   QuestionnaireDatabase questionnaireDatabase;
@@ -159,5 +159,25 @@ class AdminControllerTest extends AbstractUIControllerTest {
       .andExpect(redirectedUrlPattern("**/oauth2/authorization/default"))
       .andReturn();
   }
+
+  @Test
+  @WithMockUser(username = "testUser", authorities = {"manager.view"})
+  void noTenantSelectedIfNotGivenAsParameter() throws Exception {
+    mockMvc.perform(get("/config.json").accept(MediaType.APPLICATION_JSON))
+      .andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.url").value("/api"))
+      .andExpect(jsonPath("$.documentation").value("https://docs.dialob.io"))
+      .andExpect(jsonPath("$.fillUrl").value("/fill"))
+      .andExpect(jsonPath("$.reviewUrl").value("/review"))
+      .andExpect(jsonPath("$.csrf.headerName").value("X-CSRF-TOKEN"))
+      .andExpect(jsonPath("$.csrf.parameterName").value("_csrf"))
+      .andExpect(jsonPath("$.csrf.token").isNotEmpty()) // Ensure the token exists but don't hardcode it
+      .andExpect(jsonPath("$.composerUrl").value("/composer"))
+      .andExpect(jsonPath("$.tenantId").isEmpty())
+      .andExpect(jsonPath("$.versioning").value(false))
+      .andReturn();
+  }
+
 
 }

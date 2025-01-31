@@ -16,25 +16,23 @@
 package io.dialob.boot.settings;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Configuration(proxyBeanMethods = false)
 @ConfigurationProperties("review")
 @Validated
-@Data
-public class ReviewApplicationSettings {
-
-  private String apiUrl;
-
-  @NotNull
-  private String contextPath = "/review";
-
-  private Map<String, SettingsPageAttributes> tenants = new HashMap<>();
-
+public record ReviewApplicationSettings(
+  @Getter
+  String apiUrl,
+  @Getter
+  @NotNull String contextPath,
+  Map<String, SettingsPageAttributes> tenants
+) {
+  public ReviewApplicationSettings {
+    contextPath = contextPath == null ? "/review" : contextPath;
+    tenants = tenants == null ? Map.of() : Map.copyOf(tenants);
+  }
 }

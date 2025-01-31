@@ -15,6 +15,8 @@
  */
 package io.dialob.security.tenant;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.Objects;
 
 
@@ -34,6 +36,7 @@ public class FixedCurrentTenant implements CurrentTenant {
     this.tenant = Objects.requireNonNull(tenant, "tenant may no be null");
   }
 
+  @NonNull
   @Override
   public Tenant get() {
     return tenant;

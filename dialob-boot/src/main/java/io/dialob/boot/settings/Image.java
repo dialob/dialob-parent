@@ -15,19 +15,19 @@
  */
 package io.dialob.boot.settings;
 
-import lombok.Data;
+import lombok.Getter;
 
-import java.io.Serializable;
-
-@Data
-public class Image implements Serializable {
-
-  private String url;
-
-  private Integer width;
-
-  private Integer height;
-
-  private String title;
-
+/**
+ * Represents an image with its URL, dimensions, and title.
+ */
+public record Image(
+  @Getter
+  String url,
+  @Getter
+  Integer width,
+  @Getter
+  Integer height,
+  @Getter
+  String title
+) {
 }

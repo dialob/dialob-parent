@@ -16,16 +16,17 @@
 package io.dialob.boot.settings;
 
 import io.dialob.boot.controller.PageAttributes;
-import lombok.Data;
+import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Data
-public class SettingsPageAttributes implements PageAttributes {
-
-  Map<String,Object> attributes = new HashMap<>();
-
-  private String template;
-
+public record SettingsPageAttributes(
+  @Getter
+  Map<String, Object> attributes,
+  @Getter
+  String template
+) implements PageAttributes {
+  public SettingsPageAttributes {
+    attributes = attributes != null ? Map.copyOf(attributes) : Map.of();
+  }
 }

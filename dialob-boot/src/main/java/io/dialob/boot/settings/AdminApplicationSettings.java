@@ -16,33 +16,46 @@
 package io.dialob.boot.settings;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents the settings for the Admin application.
+ *
+ * @param apiUrl         the URL of the API
+ * @param fillingAppUrl  the URL of the filling application
+ * @param reviewAppUrl   the URL of the review application
+ * @param composerAppUrl the URL of the composer application
+ * @param documentation  the documentation URL
+ * @param contextPath    the context path, must not be null
+ * @param versioning     flag indicating if form versioning is enabled
+ * @param tenants        a map of tenant settings
+ */
 @Configuration(proxyBeanMethods = false)
 @ConfigurationProperties("admin")
-@Data
-public class AdminApplicationSettings {
-
-  private String apiUrl;
-
-  private String fillingAppUrl;
-
-  private String reviewAppUrl;
-
-  private String composerAppUrl;
-
-  private String documentation;
-
-  @NotNull
-  private String contextPath = "/";
-
-  private boolean versioning;
-
-  private Map<String, SettingsPageAttributes> tenants = new HashMap<>();
-
+public record AdminApplicationSettings(
+  @Getter
+  String apiUrl,
+  @Getter
+  String fillingAppUrl,
+  @Getter
+  String reviewAppUrl,
+  @Getter
+  String composerAppUrl,
+  @Getter
+  String documentation,
+  @Getter
+  @NotNull String contextPath,
+  @Getter
+  boolean versioning,
+  Map<String, SettingsPageAttributes> tenants
+) {
+  public AdminApplicationSettings {
+    contextPath = StringUtils.defaultIfBlank(contextPath, "/");
+    tenants = tenants == null ? Map.of() : Map.copyOf(tenants);
+  }
 }

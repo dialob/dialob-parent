@@ -27,6 +27,7 @@ import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,10 +72,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   FillControllerTest.Config.class,
   FillController.class,
+  GlobalModelAttributesInjector.class
+})
+@EnableConfigurationProperties({
   QuestionnaireApplicationSettings.class,
   ReviewApplicationSettings.class,
   ComposerApplicationSettings.class,
-  GlobalModelAttributesInjector.class
 })
 class FillControllerTest extends AbstractUIControllerTest {
 

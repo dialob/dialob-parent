@@ -17,33 +17,32 @@ package io.dialob.boot.settings;
 
 import io.dialob.common.Constants;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Configuration(proxyBeanMethods = false)
 @ConfigurationProperties(Constants.QUESTIONNAIRE)
 @Validated
-@Data
-public class QuestionnaireApplicationSettings {
-
-  private String socketUrl;
-
-  private String reviewUrl;
-
-  private String restUrl;
-
-  private String connectionMode;
-
-  private String backendApiUrl;
-
-  @NotNull
-  private String contextPath = "/fill";
-
-  private Map<String, SettingsPageAttributes> tenants = new HashMap<>();
-
+public record QuestionnaireApplicationSettings(
+  @Getter
+  String socketUrl,
+  @Getter
+  String reviewUrl,
+  @Getter
+  String restUrl,
+  @Getter
+  String connectionMode,
+  @Getter
+  String backendApiUrl,
+  @Getter
+  @NotNull String contextPath,
+  @Getter
+  Map<String, SettingsPageAttributes> tenants
+) {
+  public QuestionnaireApplicationSettings {
+    contextPath = contextPath == null ? "/fill" : contextPath;
+    tenants = tenants == null ? Map.of() : Map.copyOf(tenants);
+  }
 }

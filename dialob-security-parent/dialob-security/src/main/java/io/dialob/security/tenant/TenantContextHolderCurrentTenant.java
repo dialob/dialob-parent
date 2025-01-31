@@ -54,6 +54,7 @@ public class TenantContextHolderCurrentTenant implements CurrentTenant {
     MDC.remove(LoggingContextKeys.MDC_TENANT_ID_KEY);
   }
 
+  @NonNull
   @Override
   public Tenant get() {
     Tenant tenant = TENANT_THREAD_LOCAL.get();

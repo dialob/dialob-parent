@@ -60,9 +60,9 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
     this.reviewSettings = reviewSettings;
     this.adminApplicationSettings = adminApplicationSettings.orElse(null);
     this.composerApplicationSettings = composerApplicationSettings;
-    this.defaultReviewPageSettings = reviewSettings.getTenants().get("default");
-    this.defaultComposerPageSettings = composerApplicationSettings.getTenants().get("default");
-    this.defaultAdminPageSettings = this.adminApplicationSettings != null ? this.adminApplicationSettings.getTenants().get("default") : null;
+    this.defaultReviewPageSettings = reviewSettings.tenants().get("default");
+    this.defaultComposerPageSettings = composerApplicationSettings.tenants().get("default");
+    this.defaultAdminPageSettings = this.adminApplicationSettings != null ? this.adminApplicationSettings.tenants().get("default") : null;
   }
 
   @NonNull
@@ -75,7 +75,7 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
 
   @NonNull
   @Override
-  public PageAttributes findPageSettingsByTenantId(String page, String tenantId) {
+  public PageAttributes findPageSettingsByTenantId(String page, @NonNull String tenantId) {
     SettingsPageAttributes settingsPageAttributes = findSettings(page).get(tenantId);
     if (settingsPageAttributes == null) {
       settingsPageAttributes = findDefaultSettings(page);
@@ -97,10 +97,10 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
 
   Map<String, SettingsPageAttributes> findSettings(String page) {
     return switch (page) {
-      case "fill" -> settings.getTenants();
-      case "review" -> reviewSettings.getTenants();
-      case "admin" -> adminApplicationSettings.getTenants();
-      case "composer" -> composerApplicationSettings.getTenants();
+      case "fill" -> settings.tenants();
+      case "review" -> reviewSettings.tenants();
+      case "admin" -> adminApplicationSettings.tenants();
+      case "composer" -> composerApplicationSettings.tenants();
       default -> throw new IllegalStateException("unknown page " + page);
     };
   }

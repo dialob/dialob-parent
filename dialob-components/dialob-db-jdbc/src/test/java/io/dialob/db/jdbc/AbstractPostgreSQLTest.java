@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -110,6 +111,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     ATTRS.jdbcTemplate = new JdbcTemplate(ATTRS.dataSource);
     ATTRS.objectMapper = objectMapper;
     ATTRS.currentTenant = new CurrentTenant() {
+      @NonNull
       @Override
       public Tenant get() {
         return ATTRS.activeTenant;
