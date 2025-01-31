@@ -61,12 +61,12 @@ public class AdminController extends BaseController {
   public AdminConfig getAdminConfig(CsrfToken csrf, String tenantId) {
     var config = AdminConfig.builder()
       .csrf(csrf)
-      .url(settings.getApiUrl())
-      .fillUrl(settings.getFillingAppUrl())
-      .reviewUrl(settings.getReviewAppUrl())
-      .documentation(settings.getDocumentation())
-      .composerUrl(settings.getComposerAppUrl())
-      .versioning(settings.isVersioning());
+      .url(settings.apiUrl())
+      .fillUrl(settings.fillingAppUrl())
+      .reviewUrl(settings.reviewAppUrl())
+      .documentation(settings.documentation())
+      .composerUrl(settings.composerAppUrl())
+      .versioning(settings.versioning());
     if (isValidTenantId(tenantId)) {
       config.tenantId(tenantId);
     }

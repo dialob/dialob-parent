@@ -18,6 +18,7 @@ package io.dialob.session.engine;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
+import io.dialob.common.Constants;
 import io.dialob.form.service.api.repository.*;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
@@ -168,13 +169,13 @@ public class DialobProgramFromFormCompiler {
 
             if (StringUtils.isNotBlank(formItem.getRequired())) {
               questionBuilder.setRequiredWhen(formItem.getRequired());
-            } else if (answersRequiredByDefault && !"note".equals(formItem.getType())) {
+            } else if (answersRequiredByDefault && !Constants.NOTE.equals(formItem.getType())) {
               questionBuilder.setRequired(true);
             }
 
             int i = 1;
             // TODO not good idea to use hardcoded filtering here
-            if (!"note".equals(formItem.getType())) {
+            if (!Constants.NOTE.equals(formItem.getType())) {
               for (Validation validationBean : formItem.getValidations()) {
                 questionBuilder.addValidation(formItem.getId() + "_error" + (i++))
                   .setActiveWhen(validationBean.getRule())

@@ -62,33 +62,33 @@ public class VisitableForm {
         }
         if (pages.contains(formItem.getId())) {
           formItem = ImmutableFormItem.builder().from(formItem)
-            .type("page").build();
+            .type(Constants.PAGE).build();
         }
         formItemVisitor.start();
         final String type = formItem.getType();
         if (type != null) {
           switch (type) {
-            case "questionnaire":
+            case Constants.QUESTIONNAIRE:
               formItemVisitor.visitQuestionnaireItem(formItem);
               order.addAll(formItem.getItems());
               break;
-            case "group":
+            case Constants.GROUP:
               formItemVisitor.visitGroup(formItem);
               order.addAll(formItem.getItems());
               break;
-            case "rowgroup":
+            case Constants.ROWGROUP:
               formItemVisitor.visitRowGroup(formItem);
               order.addAll(formItem.getItems());
               break;
-            case "surveygroup":
+            case Constants.SURVEYGROUP:
               formItemVisitor.visitSurveyGroup(formItem);
               order.addAll(formItem.getItems());
               break;
-            case "page":
+            case Constants.PAGE:
               formItemVisitor.visitPage(formItem);
               order.addAll(formItem.getItems());
               break;
-            case "note":
+            case Constants.NOTE:
               formItemVisitor.visitNote(formItem);
               break;
             default:

@@ -45,6 +45,7 @@ public final class Constants {
   public static final String ROWGROUP = "rowgroup";
   public static final String ROW = "row";
   public static final String NOTE = "note";
+  public static final String PAGE = "page";
   public static final String SURVEYGROUP = "surveygroup";
   public static final String VARIABLE = "variable";
   public static final String CONTEXT = "context";

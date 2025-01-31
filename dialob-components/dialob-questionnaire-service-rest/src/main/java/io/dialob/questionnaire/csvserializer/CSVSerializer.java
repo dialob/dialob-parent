@@ -19,12 +19,12 @@ import io.dialob.api.form.*;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,10 +35,19 @@ import java.util.stream.Collectors;
 public class CSVSerializer {
   private static final String LABEL_LANGUAGE = "en";
   private static final Map<String, Map<Boolean, String>> BOOLEAN_TRANSLATION = Map.of("en", Map.of(Boolean.TRUE, "Yes", Boolean.FALSE, "No"),
-                                                                                      "fi", Map.of(Boolean.TRUE, "Kyllä", Boolean.FALSE, "Ei")
+                                                                                      "fi", Map.of(Boolean.TRUE, "Kyll\u00E4", Boolean.FALSE, "Ei"),
+                                                                                      "sv", Map.of(Boolean.TRUE, "Ja", Boolean.FALSE, "Nej")
                                                                                       );
   private static final String MULTICHOICE_DELIMITER = ", ";
-  private static final String[] IGNORED_TYPES = {"questionnaire", "page", "group", "note", "rowgroup", "surveygroup"};
+
+  private static final Set<String> IGNORED_TYPES = Set.of(
+    Constants.QUESTIONNAIRE,
+    Constants.PAGE,
+    Constants.GROUP,
+    Constants.NOTE,
+    Constants.ROWGROUP,
+    Constants.SURVEYGROUP
+  );
   private final QuestionnaireDatabase questionnaireDatabase;
   private final CurrentTenant currentTenant;
 
@@ -153,7 +162,7 @@ public class CSVSerializer {
         return;
       }
 
-      if (ArrayUtils.contains(IGNORED_TYPES, formItem.getType())) {
+      if (IGNORED_TYPES.contains(formItem.getType())) {
         return;
       }
       // Container items
@@ -220,7 +229,7 @@ public class CSVSerializer {
 
   private void addHeaderFormItem(Form form, FormItem formItem, Map<String, Integer> labelDedups, List<String> result, String language) {
     Object exportFlag = formItem.getProps() != null ? formItem.getProps().get("export") : null;
-    if (!(exportFlag != null && "false".equals(exportFlag.toString())) && !ArrayUtils.contains(IGNORED_TYPES, formItem.getType())) {
+    if (!(exportFlag != null && "false".equals(exportFlag.toString())) && !IGNORED_TYPES.contains(formItem.getType())) {
       String label = formItem.getLabel().get(language);
       if (formItem.getType().equals("multichoice")) {
         // for multichoice add column for each possible value

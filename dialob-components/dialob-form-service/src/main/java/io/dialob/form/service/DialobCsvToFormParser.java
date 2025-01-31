@@ -16,6 +16,7 @@
 package io.dialob.form.service;
 
 import io.dialob.api.form.*;
+import io.dialob.common.Constants;
 import io.dialob.form.service.api.validation.CsvToFormParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -30,13 +31,13 @@ public class DialobCsvToFormParser implements CsvToFormParser {
 
   private static final List<String> EXPECTED_HEADERS = List.of("id", "type");
   private static final Map<String, String> ITEM_TYPE_MAP = Map.of(
-    "Text", "text",
-    "Boolean", "boolean",
-    "Date", "date",
-    "Time", "time",
-    "Choice", "list",
-    "Note", "note",
-    "Integer", "number"
+    "Text", Constants.TEXT,
+    "Boolean", Constants.BOOLEAN,
+    "Date", Constants.DATE,
+    "Time", Constants.TIME,
+    "Choice", Constants.LIST,
+    "Note", Constants.NOTE,
+    "Integer", Constants.NUMBER
   );
 
   @Override

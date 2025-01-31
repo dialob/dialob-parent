@@ -29,6 +29,7 @@ public interface ExpressionCompiler {
                   @NonNull String expression,
                   @NonNull AliasesProvider aliasesProvider,
                   @NonNull Consumer<Expression> consumer,
-                  @NonNull FormValidationError.Type type, Optional<Integer> index);
+                  @NonNull FormValidationError.Type type,
+                  Optional<Integer> index);
 
 }

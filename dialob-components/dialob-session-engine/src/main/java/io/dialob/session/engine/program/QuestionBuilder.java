@@ -202,7 +202,12 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   }
 
   @Override
-  public boolean compile(@NonNull ItemId itemId, @NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
+  public boolean compile(@NonNull ItemId itemId,
+                         @NonNull String expression,
+                         @NonNull AliasesProvider aliasesProvider,
+                         @NonNull Consumer<Expression> expressionConsumer,
+                         @NonNull FormValidationError.Type type,
+                         Optional<Integer> index) {
     return compileExpression(expression, aliasesProvider, expressionConsumer, type, index);
   }
 
@@ -235,7 +240,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   }
 
   public Optional<Object> getDefaultValue() {
-    if ("note".equals(type)) {
+    if (Constants.NOTE.equals(type)) {
       return Optional.empty();
     }
     return Optional.ofNullable(defaultValue);
