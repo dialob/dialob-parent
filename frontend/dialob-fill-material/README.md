@@ -7,7 +7,7 @@
 Add dependency
 
 ```
-yarn add @dialob/fill-material
+pnpm add @dialob/fill-material
 ```
 
 Following peer dependencies need to be installed:

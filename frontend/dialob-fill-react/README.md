@@ -18,13 +18,13 @@ Deprecated:
 - ~~`useFillSession()` returns the fill API session object~~
 ## Install
 ```sh
-yarn add @dialob/fill-react @dialob/fill-api
+pnpm add @dialob/fill-react @dialob/fill-api
 ```
 
 ## Migration from 2.x
 
 * Change dependencies: `@resys/dialob-fill-api` -> `@dialob/fill-api` and `@resys/dialob-fill-react` -> `@dialob/fill-react`
-* `yarn install`
+* `pnpm install`
 * Change imports accordingly
 
 ## Quick-start

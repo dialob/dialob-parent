@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "yarn build && yarn publish",
+    "push": "pnpm run build && pnpm run publish",
     "test": "jest"
   },
   "devDependencies": {
