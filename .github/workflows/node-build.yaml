@@ -35,6 +35,8 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
         scope: '@dialob'
         always-auth: true
+        cache-dependency-path: frontend/*/package-lock.json
+
     - name: Get changed files
       id: changed-files
       uses: tj-actions/changed-files@v45
