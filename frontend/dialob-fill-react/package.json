@@ -3,6 +3,8 @@
   "version": "4.0.0",
   "private": false,
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "type": "module",
   "files": [
     "lib",
     "src"
@@ -14,16 +16,16 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "yarn build && yarn publish",
+    "push": "pnpm build && pnpm publish",
     "test": "jest --watch"
   },
   "devDependencies": {
-    "@dialob/fill-api": "^1.4.1",
+    "@dialob/fill-api": "workspace:~",
     "@types/react": "^18.2.0",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
-    "@dialob/fill-api": "^1.4.1",
+    "@dialob/fill-api": "workspace:~",
     "react": "^18.2.0"
   },
   "dependencies": {}

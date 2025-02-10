@@ -7,7 +7,7 @@
 Add dependency
 
 ```
-yarn add @dialob/dialob-review-material
+pnpm add @dialob/dialob-review-material
 
 ```
 

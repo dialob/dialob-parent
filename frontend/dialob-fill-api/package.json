@@ -3,7 +3,9 @@
   "version": "1.4.9",
   "description": "Dialob filling API",
   "private": false,
+  "type": "module",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
@@ -15,7 +17,7 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "yarn build && yarn publish",
+    "push": "pnpm build && pnpm publish",
     "test": "jest"
   },
   "devDependencies": {

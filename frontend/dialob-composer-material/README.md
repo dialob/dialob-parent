@@ -26,7 +26,7 @@
 ## Testing
 
 ```bash
-yarn test
+pnpm run test
 ```
 
 Dialob form modification functions re covered with unit tests in `src/dialob/test/reducer.test.ts`. All modifications done there must have test coverage. 
@@ -34,7 +34,7 @@ Dialob form modification functions re covered with unit tests in `src/dialob/tes
 ## Linting
 
 ```bash
-yarn lint
+pnpm run lint
 ```
 
 Runs ESLint on all files in the project. This should be run before pushing changes to the repository.
@@ -68,7 +68,7 @@ This will enable automatic formatting on save for `.ts` and `.tsx` files. The ru
 ## Building
 
 ```bash
-yarn build
+pnpm build
 ```
 
 Builds static package under dist folder.
@@ -76,7 +76,7 @@ Builds static package under dist folder.
 ## Building and deploying to demo.dialob.io
 
 ```bash
-yarn build-aws
+pnpm run build-aws
 aws sso login
 ./aws-deploy.sh
 ```
@@ -88,7 +88,7 @@ This will build and deploy artifacts to AWS S3, making the template available wi
 ### For development
 
 ```bash
-yarn dev
+pnpm run dev
 ```
 
 Starts development server that hot-reloads changes. Follow on-screen information for additional functions (`o`+`enter` - opens browser etc.)
@@ -96,9 +96,9 @@ Starts development server that hot-reloads changes. Follow on-screen information
 ### Testing built package
 
 ```bash
-yarn preview
+pnpm run preview
 ```
 
-Starts preview server for built application from `/dist` (No hot-reload!). Run `yarn build` first to build the package
+Starts preview server for built application from `/dist` (No hot-reload!). Run `pnpm build` first to build the package
 
 ---

@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dialob/dialob-composer-material": "file:.yalc/@dialob/dialob-composer-material",
+    "@dialob/dialob-composer-material": "workspace:~",
     "@mui/icons-material": "^5.14.20",
     "@mui/material": "^5.14.20",
     "react": "^18.2.0",

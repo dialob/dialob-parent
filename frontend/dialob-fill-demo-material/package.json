@@ -5,9 +5,9 @@
   "proxy": "http://localhost:8080",
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
-    "@dialob/fill-api": "^1.4.7",
-    "@dialob/fill-material": "^1.5.0",
-    "@dialob/fill-react": "^3.1.0",
+    "@dialob/fill-api": "workspace:~",
+    "@dialob/fill-material": "workspace:~",
+    "@dialob/fill-react": "workspace:~",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.1.0",
