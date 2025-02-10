@@ -85,7 +85,3 @@ jobs:
        pnpm install
        pnpm build
        cd ..
-➜
-
-      # env:
-        # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
