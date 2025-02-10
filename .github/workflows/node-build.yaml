@@ -1,0 +1,93 @@
+on:
+  push:
+    paths:
+      - 'frontend/**'
+      - '!**.md'
+    branches:
+      - dev
+      - main
+
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '!**.md'
+    branches:
+      - dev
+      - main
+
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build Frontend from branch - main
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        registry-url: 'https://registry.npmjs.org'
+        scope: '@dialob'
+        always-auth: true
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v45
+      with:
+        dir_names: 'true'
+      # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
+      # with:
+      #   since_last_remote_commit: true
+
+    - run: |
+       cd demo-dialob-io-app
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-composer-material
+       pnpm install
+       pnpm run build:lib
+       cd ..
+       cd dialob-composer-material-custom-app
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-composer-semantic
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-composer-semantic-app
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-fill-api
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-fill-demo-material
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-fill-material
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-fill-react
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-material-dashboard
+       pnpm install
+       pnpm build
+       cd ..
+       cd dialob-review-material
+       pnpm install
+       pnpm build
+       cd ..
+➜
+
+      # env:
+        # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
