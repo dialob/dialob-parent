@@ -1,7 +1,7 @@
 # Dialob Fill API
 ## Install
 ```sh
-yarn add @dialob/fill-api
+npm install @dialob/fill-api
 ```
 
 ## Quick-start

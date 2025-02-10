@@ -13,13 +13,13 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "yarn build && yarn publish",
+    "push": "pnpm run build && pnpm run publish",
     "test": "jest --watch"
   },
   "devDependencies": {
     "@dialob/fill-api": "^1.4.1",
     "@types/react": "^18.2.0",
-    "typescript": "~3.7.5"
+    "typescript": "~5.7.3"
   },
   "peerDependencies": {
     "@dialob/fill-api": "^1.4.1",

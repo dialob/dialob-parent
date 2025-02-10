@@ -7,7 +7,7 @@
 Add dependency
 
 ```
-yarn add @resys/dialob-review-material
+pnpm add @resys/dialob-review-material
 
 ```
 

@@ -8,7 +8,7 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "license": "UNLICENSED",

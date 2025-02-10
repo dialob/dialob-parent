@@ -25,8 +25,8 @@ dialob:
 
 This is Vite application.
 
-Build: `yarn build` \
-Run: `yarn dev` 
+Build: `pnpm run build` \
+Run: `pnpm run dev` 
 
 ## Configuration
 
