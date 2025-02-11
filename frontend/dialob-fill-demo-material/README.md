@@ -194,7 +194,7 @@ This project has one custom Dialob component: AppHeader.
 
 Use Storybook to preview components.  
 
-Do `pnpm run build` to create production build and ensure project compiles
+Do `pnpm build` to create production build and ensure project compiles
 
 ---
 

@@ -68,7 +68,7 @@ This will enable automatic formatting on save for `.ts` and `.tsx` files. The ru
 ## Building
 
 ```bash
-pnpm run build
+pnpm build
 ```
 
 Builds static package under dist folder.
@@ -99,6 +99,6 @@ Starts development server that hot-reloads changes. Follow on-screen information
 pnpm run preview
 ```
 
-Starts preview server for built application from `/dist` (No hot-reload!). Run `pnpm run build` first to build the package
+Starts preview server for built application from `/dist` (No hot-reload!). Run `pnpm build` first to build the package
 
 ---
