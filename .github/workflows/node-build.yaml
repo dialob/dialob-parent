@@ -1,5 +1,7 @@
 on:
   push:
+    paths-ignore:
+      - '**/*.md'
     paths:
       - 'frontend/**'
     branches:
@@ -7,8 +9,8 @@ on:
       - main
 
   pull_request:
-    paths:
-      - 'frontend/**'
+    paths-ignore:
+      - '**/*.md'
     branches:
       - dev
       - main
