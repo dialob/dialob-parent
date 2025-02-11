@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "pnpm run build && pnpm run publish",
+    "push": "pnpm build && pnpm publish",
     "test": "jest --watch"
   },
   "devDependencies": {
