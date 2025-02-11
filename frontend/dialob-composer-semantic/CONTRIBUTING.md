@@ -4,9 +4,9 @@
 
 ## Installation
 
-- Running `pnpm install` in the app's root directory will install everything you need for development.
+- Running `yarn install` in the app's root directory will install everything you need for development.
 
 
 ## Building
 
-- `pnpm run build` creates a production build by default.
+- `npm run build` creates a production build by default.

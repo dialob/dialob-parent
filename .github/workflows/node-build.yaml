@@ -62,14 +62,6 @@ jobs:
        pnpm install
        pnpm build
        cd ..
-       #  cd dialob-composer-semantic
-       #  pnpm install
-       #  pnpm build
-       #  cd ..
-       #  cd dialob-composer-semantic-app
-       #  pnpm install
-       #  pnpm build
-       #  cd ..
        cd dialob-fill-api
        pnpm install
        pnpm build
