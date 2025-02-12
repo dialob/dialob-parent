@@ -26,7 +26,7 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
     marginLeft: theme.spacing(1),
   },
 }));
-    
+
 const SaveItemButton: React.FC = () => {
   const { form, applyItemChanges } = useComposer();
   const { savingState } = useSave();
@@ -35,9 +35,9 @@ const SaveItemButton: React.FC = () => {
   const hasChanges = React.useMemo(() => {
     return (savingState.item && (JSON.stringify(savingState.item) !== JSON.stringify(form.data[savingState.item.id]))) ||
       (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
-      (savingState.composerMetadata?.globalValueSets && 
+      (savingState.composerMetadata?.globalValueSets &&
         (JSON.stringify(savingState.composerMetadata.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets))) ||
-      (savingState.composerMetadata?.aiTranslations && 
+      (savingState.composerMetadata?.aiTranslations &&
         (JSON.stringify(savingState.composerMetadata.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations)));
   }, [savingState, form.data, form.valueSets, form.metadata.composer?.globalValueSets, form.metadata.composer?.aiTranslations]);
 
@@ -62,11 +62,11 @@ const SaveItemButton: React.FC = () => {
   );
 }
 
-const SaveIdButton: React.FC<{ 
-  id: string, 
-  item: DialobItem, 
-  setIdError: React.Dispatch<React.SetStateAction<boolean>>, 
-  setEditMode: React.Dispatch<React.SetStateAction<boolean>> 
+const SaveIdButton: React.FC<{
+  id: string,
+  item: DialobItem,
+  setIdError: React.Dispatch<React.SetStateAction<boolean>>,
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ id, item, setIdError, setEditMode }) => {
   const { form, setForm, setRevision } = useComposer();
   const { changeItemId } = useBackend();

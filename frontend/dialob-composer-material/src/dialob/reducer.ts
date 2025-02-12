@@ -179,7 +179,7 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
 
   // Delete parent ref
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  for (const [parentItemId, item] of Object.entries(state.data)) {
+  for (const [, item] of Object.entries(state.data)) {
     const itemIndex = item.items ? item.items.findIndex(i => i === itemId) : -1;
     if (itemIndex > -1 && item.items) {
       item.items.splice(itemIndex, 1);
@@ -593,7 +593,7 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
   if (copyFrom && copyFrom !== language) {
     // Items
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const [itemId, item] of Object.entries(state.data)) {
+    for (const [, item] of Object.entries(state.data)) {
       // Item label
       if (item.label) {
         item.label[language] = item.label[copyFrom];
@@ -633,7 +633,7 @@ const addLanguage = (state: ComposerState, language: string, copyFrom?: string):
 
 const deleteLanguage = (state: ComposerState, language: string): void => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  for (const [itemId, item] of Object.entries(state.data)) {
+  for (const [, item] of Object.entries(state.data)) {
     if (item.label) {
       delete item.label[language];
     }
