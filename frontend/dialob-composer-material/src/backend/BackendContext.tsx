@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { PropsWithChildren, createContext, useEffect, useRef, useState } from "react";
 import { ComposerState, ComposerTag, INIT_STATE } from "../dialob";
 import { BackendService } from "./BackendService";
 import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
@@ -38,12 +38,11 @@ const INITIAL_BACKEND: BackendState = {
 export const BackendContext = createContext<BackendState>(INITIAL_BACKEND);
 
 export interface BackendProviderProps {
-  children: React.ReactNode;
   formId: string;
   config: DialobComposerConfig;
 }
 
-export const BackendProvider: React.FC<BackendProviderProps> = ({ children, formId, config }) => {
+export const BackendProvider: React.FC<PropsWithChildren<BackendProviderProps>> = ({ children, formId, config }) => {
   const [formData, setFormData] = useState<ComposerState | null>(null);
   const [loaded, setLoaded] = useState(false);
   const backendService = useRef(new BackendService(config));

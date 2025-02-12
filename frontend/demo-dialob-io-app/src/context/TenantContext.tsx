@@ -1,9 +1,9 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, PropsWithChildren } from 'react';
 import { AppConfig, Tenant, TenantContextType } from '../types';
 
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
-export const TenantProvider: React.FC<{ appConfig: AppConfig; children: React.ReactNode }> = ({ appConfig, children }) => {
+export const TenantProvider: React.FC<PropsWithChildren<{ appConfig: AppConfig; }>> = ({ appConfig, children }) => {
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [isLoading, setIsLoading] = useState(true);
