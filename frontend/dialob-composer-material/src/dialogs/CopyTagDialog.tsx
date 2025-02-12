@@ -5,7 +5,6 @@ import { Check, Close } from "@mui/icons-material";
 import { ComposerTag } from "../dialob";
 import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
-import { SaveResult } from "../backend/types";
 
 const CopyTagDialog: React.FC<{ tag: ComposerTag | undefined, onClose: () => void }> = ({ tag, onClose }) => {
   const [id, setId] = React.useState<string>('');
@@ -22,7 +21,6 @@ const CopyTagDialog: React.FC<{ tag: ComposerTag | undefined, onClose: () => voi
       createForm(newForm)
         .then(saveResponse => {
           if (saveResponse.success && saveResponse.result) {
-            const result = saveResponse.result as SaveResult;
             const location = window.location;
             if (location.search.includes('?id=')) {
               location.search = `id=${id}`;

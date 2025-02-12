@@ -18,7 +18,7 @@ const createChildren = (item: DialobItem, items: DialobItems, itemConfig?: ItemC
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
   const theme = useTheme();
   const { form } = useComposer();
   const { editor } = useEditor();

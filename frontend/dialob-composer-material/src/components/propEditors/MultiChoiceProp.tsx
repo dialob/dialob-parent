@@ -10,7 +10,7 @@ export const MultiChoiceProp = (props: any) => {
     return (
       <Autocomplete
         value={value || []}
-        onChange={(e, newValue) => setValue(newValue)}
+        onChange={(_e, newValue) => setValue(newValue)}
         options={inputProps.options}
         renderInput={(params) => (
           <StyledTextField variant='standard' {...params} 

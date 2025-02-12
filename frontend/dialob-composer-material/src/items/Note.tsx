@@ -6,7 +6,7 @@ import { IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
