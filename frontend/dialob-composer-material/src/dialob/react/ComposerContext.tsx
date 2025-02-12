@@ -1,4 +1,4 @@
-import React, { useReducer, Dispatch, useEffect } from 'react';
+import React, { useReducer, Dispatch, useEffect, PropsWithChildren } from 'react';
 import { formReducer } from '../reducer';
 import { ComposerAction } from '../actions';
 import { ComposerState, ComposerCallbacks, INIT_STATE } from '../types';
@@ -12,7 +12,6 @@ export const ComposerContext = React.createContext<{ state: ComposerState, dispa
 export type Middleware = (action: ComposerAction | undefined, state: ComposerState, dispatch: Dispatch<ComposerAction>) => void;
 
 export interface ComposerProviderProps {
-  children: React.ReactNode;
   formData: ComposerState;
   preMiddleware: Middleware[];
   postMiddleware: Middleware[];
@@ -39,7 +38,7 @@ const useReducerWithMiddleware = (reducer: React.Reducer<ComposerState, Composer
   return [state, dispatchUsingMiddleware];
 }
 
-export const ComposerProvider: React.FC<ComposerProviderProps> = ({ children, formData, preMiddleware, postMiddleware }) => {
+export const ComposerProvider: React.FC<PropsWithChildren<ComposerProviderProps>> = ({ children, formData, preMiddleware, postMiddleware }) => {
   const [state, dispatch] = useReducerWithMiddleware(formReducer, formData, preMiddleware, postMiddleware);
 
   return (

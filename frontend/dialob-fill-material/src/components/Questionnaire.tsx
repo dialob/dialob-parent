@@ -1,21 +1,21 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import { Grid } from '@mui/material';
 import { ConfigContext } from '../';
 import { useFillItem } from '@dialob/fill-react';
 
 export interface QuestionnaireProps {
-  children: ReactNode;
+
 };
 
-export const Questionnaire: React.FC<QuestionnaireProps> = ({children}) => {
+export const Questionnaire: React.FC<PropsWithChildren<QuestionnaireProps>> = ({ children }) => {
   const { item: questionnaire } = useFillItem('questionnaire');
   const config = React.useContext(ConfigContext);
 
   const canNavigate = useMemo(() => {
     // Check if page navigation is allowed. If not we disable breadcrumb navigation also
-    return (questionnaire?.allowedActions && (questionnaire?.allowedActions.includes('NEXT') 
-    || questionnaire?.allowedActions.includes('PREVIOUS')
-    || questionnaire?.allowedActions.includes('COMPLETE'))  || false);
+    return (questionnaire?.allowedActions && (questionnaire?.allowedActions.includes('NEXT')
+      || questionnaire?.allowedActions.includes('PREVIOUS')
+      || questionnaire?.allowedActions.includes('COMPLETE')) || false);
   }, [questionnaire?.allowedActions]);
 
   return (

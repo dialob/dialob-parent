@@ -5,10 +5,9 @@ import { RowGroupContext } from '../context/RowGroupContext';
 
 interface ItemProps {
   label: string;
-  children: JSX.Element;
 }
 
-export const Item: React.FC<ItemProps> = ({ label, children }) => {
+export const Item: React.FC<React.PropsWithChildren<ItemProps>> = ({ label, children }) => {
   const inRowGroup = useContext(RowGroupContext);
   if (!inRowGroup) {
     return (
