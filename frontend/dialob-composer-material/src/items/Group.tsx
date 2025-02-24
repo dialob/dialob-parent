@@ -18,7 +18,7 @@ const createChildren = (item: DialobItem, items: DialobItems, itemConfig?: ItemC
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { form } = useComposer();
   const { editor } = useEditor();
@@ -44,7 +44,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => 
 
   return (
     <Element name={item.id}>
-      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }}>
+      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
             <TableRow>
