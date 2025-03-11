@@ -9,7 +9,7 @@ import { checkHttpResponse, handleRejection } from './middleware/checkHttpRespon
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from './types';
 import {
   addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
-  getAdminFormConfigurationList, getAdminFormConfigurationTags
+  getAdminFormConfigurationList
 } from './backend';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CreateDialog } from './components/CreateDialog';
