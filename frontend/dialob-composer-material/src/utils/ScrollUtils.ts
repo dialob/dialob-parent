@@ -41,6 +41,23 @@ export const scrollToItem = (itemId: string, items: DialobItem[], activePage: Di
   }), timeout);
 }
 
+export const scrollToTreeItem = (itemId: string) => {
+  const tree = document.querySelector('#tree-scroll-container') as HTMLElement;
+  const item = document.querySelector(`#tree-item-${itemId}`) as HTMLElement;
+  
+  if (tree && item) {
+    setTimeout(() => {
+      const itemTop = item.offsetTop - tree.offsetTop;
+      tree.scrollTo({
+        top: itemTop,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  }
+};
+
+
 export const scrollToAddedItem = (item: DialobItem) => {
   const viewportOffset = window.innerHeight - MENU_HEIGHT;
   setTimeout(() => scroller.scrollTo(item.id, {

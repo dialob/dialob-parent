@@ -7,7 +7,7 @@ import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+const SimpleField: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
@@ -29,7 +29,7 @@ const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props 
 
   return (
     <Element name={item.id}>
-      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }}>
+      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
             <TableRow>

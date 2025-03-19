@@ -54,15 +54,9 @@ const LocalizedStringEditor: React.FC<{
     setLocalizedString({ ...localizedString, [language]: value });
   }
 
-  const handleDelete = (language: string) => {
-    const newLocalizedString = { ...localizedString };
-    delete newLocalizedString[language];
-    setLocalizedString(newLocalizedString);
-  }
-
   return (
     <>
-      <Box display='flex'>
+      <Box display='flex' width='100%'>
         <Box flexGrow={1} />
         <Button variant={preview ? 'contained' : 'outlined'} endIcon={<Visibility />} onClick={() => setPreview(!preview)}>
           <FormattedMessage id='dialogs.options.preview' />
@@ -74,7 +68,6 @@ const LocalizedStringEditor: React.FC<{
           <Box key={language}>
             <Box display='flex' alignItems='center'>
               <Typography color='text.hint'>{getLanguageName(language)}</Typography>
-              <IconButton size='small' onClick={() => handleDelete(language)} color='error'><Delete /></IconButton>
             </Box>
             {preview ?
               <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}>
