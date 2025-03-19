@@ -140,7 +140,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 
   return (
     <>
-      <Button onClick={handleClick} component='span' endIcon={<KeyboardArrowDown />} variant='text'>
+      <Button onClick={handleClick} component='span' endIcon={<KeyboardArrowDown />} variant='text' sx={{ p: 0 }}>
         <Typography variant='subtitle2'>
           {variable.contextType}
         </Typography>

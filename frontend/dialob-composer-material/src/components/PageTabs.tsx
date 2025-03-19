@@ -108,7 +108,8 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
     e.stopPropagation();
     const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
     const groupTemplate = resolvedConfig.categories.find(c => c.type === 'structure')!.items.find(i => i.config.type === 'group')!.config;
-    addItem(groupTemplate, 'questionnaire');
+    const pageTemplate = { ...groupTemplate, view: 'page' };
+    addItem(pageTemplate, 'questionnaire');
   }
 
   const pages =

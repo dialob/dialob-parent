@@ -142,7 +142,7 @@ const ItemOptionsDialog: React.FC = () => {
             {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.choices' />}><List /></Tooltip>} value='choices' />}
             <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.properties' />}><Dns /></Tooltip>} value='properties' />
           </Tabs>
-          <Box sx={{ p: 2, width: 1 }}>
+          <Box sx={{ p: 2, width: 1, maxWidth: 0.9 }}>
             {activeTab === 'label' && <Editors.Label />}
             {activeTab === 'description' && <Editors.Description />}
             {activeTab === 'rules' && <Editors.Rules />}
