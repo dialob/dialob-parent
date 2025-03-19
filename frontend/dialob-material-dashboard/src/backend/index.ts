@@ -39,6 +39,14 @@ export const getAdminFormConfigurationTags = async (config: DialobAdminConfig, f
   return response;
 }
 
+export const getAdminFormAllTags = async (config: DialobAdminConfig) => {
+  let url = `${config.dialobApiUrl}/api/tags`;
+  const response = await fetchAuth(url, {
+    method: 'GET'
+  }, config);
+  return response;
+}
+
 export const getAdminFormConfiguration = async (formId: string, config: DialobAdminConfig) => {
   let url = `${config.dialobApiUrl}/api/forms/${formId}`;
   const response = await fetchAuth(url, {
