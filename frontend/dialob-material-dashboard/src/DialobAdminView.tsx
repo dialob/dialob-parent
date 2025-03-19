@@ -6,10 +6,10 @@ import {
 } from '@mui/material';
 import { Spinner } from './components/Spinner';
 import { checkHttpResponse, handleRejection } from './middleware/checkHttpResponse';
-import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, Metadata } from './types';
+import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from './types';
 import {
-  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormConfiguration,
-  getAdminFormConfigurationList, getAdminFormConfigurationTags
+  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
+  getAdminFormConfigurationList
 } from './backend';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CreateDialog } from './components/CreateDialog';
@@ -73,28 +73,24 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
           .then((response: Response) => checkHttpResponse(response, config.setLoginRequired));
 
         const data = await response.json();
+        const tagsResponse = await getAdminFormAllTags(config)
+          .then((response: Response) => checkHttpResponse(response, config.setLoginRequired));
+        const allTags: FormTag[] = await tagsResponse.json();
 
-        const enrichedConfigurations = await Promise.all(
-          data.map(async (formConfiguration: FormConfiguration) => {
-            const tagsResponse = await getAdminFormConfigurationTags(config, formConfiguration.id);
-            const tagsData: any = await tagsResponse.json();
-            if (tagsData?.length > 0) {
-              const mappedTags = tagsData?.map((tag: any) => ({
-                latestTagDate: tag.created,
-                latestTagName: tag.name,
-              }));
-
-              const sortedTags = [...mappedTags].sort((a, b) => new Date(b.latestTagDate).getTime() - new Date(a.latestTagDate).getTime());
-              const latestTag = sortedTags[0];
+        const enrichedConfigurations = 
+          data.map((formConfiguration: FormConfiguration) => {
+            const latestTag = allTags.filter(tag => tag.formName == formConfiguration.id)
+              ?.reduce((latest,current) => (current.created > latest.created ? current :latest));
+            if (latestTag) {
               return {
                 ...formConfiguration,
-                latestTagName: latestTag.latestTagName,
-                latestTagDate: latestTag.latestTagDate,
+                latestTagName: latestTag.tagName,
+                latestTagDate: latestTag.created,
               };
             } else {
               return formConfiguration;
             }
-          })
+          }
         );
 
         setFormConfigurations(enrichedConfigurations);

@@ -68,6 +68,14 @@ export const DEFAULT_FORM: DefaultForm = {
   }
 };
 
+export interface FormTag {
+  formLabel: string;
+  formName: string;
+  tagFormId: string;
+  tagName: string;
+  created: Date;
+};
+
 export const DEFAULT_CONFIGURATION_FILTERS: FormConfigurationFilters = {
   label: undefined,
   latestTagDate: undefined,
