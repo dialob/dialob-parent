@@ -54,6 +54,7 @@ const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLEl
   const { editor } = useEditor();
   const isActive = item.id === editor.activePage?.id;
   const variant = isActive ? 'contained' : 'text';
+  const fontWeight = isActive ? 'bold' : 'normal';
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -74,7 +75,7 @@ const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLEl
         color={highlighted ? 'info' : 'primary'}
         endIcon={<OptionsMenu item={item} isPage light={isActive} />}
       >
-        <Typography textTransform='none'>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
+        <Typography textTransform='none' fontWeight={fontWeight}>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
       </Button >
     </Box>
   );
