@@ -126,7 +126,7 @@ const ItemOptionsDialog: React.FC = () => {
       </DialogTitle>
       <DialogContent sx={{ padding: 0, borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
         <Box sx={{ display: 'flex', height: '70vh' }}>
-          <Tabs value={activeTab} onChange={(e, value) => setActiveTab(value)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
+          <Tabs value={activeTab} onChange={(_e, value) => setActiveTab(value)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
             <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.label' />}><Label /></Tooltip>} value='label' />
             <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.description' />}><Description /></Tooltip>} value='description' />
             <Tab icon={

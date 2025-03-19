@@ -7,7 +7,7 @@ import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item, props }) => {
+const SimpleField: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
