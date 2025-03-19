@@ -1,6 +1,6 @@
 {
   "name": "@resys/dialob-review-material",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Material UI components for Dialob review",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -47,5 +47,4 @@
   "resolutions": {
     "@types/react": "^17.0.30"
   }
-
 }
