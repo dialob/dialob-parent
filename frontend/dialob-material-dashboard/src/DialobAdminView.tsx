@@ -79,8 +79,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 
         const enrichedConfigurations = 
           data.map((formConfiguration: FormConfiguration) => {
-            const latestTag = allTags.filter(tag => tag.formName == formConfiguration.id)
-              ?.reduce((latest,current) => (current.created > latest.created ? current :latest));
+            let latestTag = findLatestTag(allTags, formConfiguration.id);
             if (latestTag) {
               return {
                 ...formConfiguration,
@@ -102,6 +101,21 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     fetchFormConfigurations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
+
+  const findLatestTag = (allTags: FormTag[], formId: string):FormTag|undefined => {
+    let latestTag:FormTag|undefined = undefined;
+    allTags.forEach((current) => {
+      if (current.formName == formId) {
+        if (!latestTag) {
+          latestTag = current;
+        }
+        else if (current.created > latestTag.created) {
+          latestTag = current;
+        }
+      }
+    });
+    return latestTag;
+  }
 
   const copyFormConfiguration = (formConfiguration: FormConfiguration) => {
     setSelectedFormConfiguration(formConfiguration);
