@@ -83,7 +83,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
             if (latestTag) {
               return {
                 ...formConfiguration,
-                latestTagName: latestTag.tagName,
+                latestTagName: latestTag.name,
                 latestTagDate: latestTag.created,
               };
             } else {

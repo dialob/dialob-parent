@@ -69,11 +69,11 @@ export const DEFAULT_FORM: DefaultForm = {
 };
 
 export interface FormTag {
-  formLabel: string;
   formName: string;
-  tagFormId: string;
-  tagName: string;
+  name: string;
   created: Date;
+  formId: string;
+  description: string;
 };
 
 export const DEFAULT_CONFIGURATION_FILTERS: FormConfigurationFilters = {
