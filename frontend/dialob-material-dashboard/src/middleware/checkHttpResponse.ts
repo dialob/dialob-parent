@@ -14,7 +14,7 @@ export const handleRejection = (ex: any, setTechnicalError: any) => {
   setTechnicalError();
 }
 
-export const checkSearchHttpResponse = (response: { ok: any; status: number; statusText: string | undefined; }, setLoginRequired: () => any) => {
+export const checkSearchHttpResponse = (response: Response, setLoginRequired: () => any) => {
   if (response.ok || response.status === 404) {
     return response;
   } 

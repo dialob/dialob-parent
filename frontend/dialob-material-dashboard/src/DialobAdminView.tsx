@@ -5,7 +5,7 @@ import {
   Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button
 } from '@mui/material';
 import { Spinner } from './components/Spinner';
-import { checkHttpResponse, handleRejection } from './middleware/checkHttpResponse';
+import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from './types';
 import {
   addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
@@ -74,13 +74,12 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 
         const data = await response.json();
         const tagsResponse = await getAdminFormAllTags(config)
-          .then((response: Response) => checkHttpResponse(response, config.setLoginRequired));
-        const allTags: FormTag[] = await tagsResponse.json();
+          .then((response: Response) => checkSearchHttpResponse(response, config.setLoginRequired));
+        const allTags: FormTag[]|undefined = await tagsResponse.json();
 
         const enrichedConfigurations = 
           data.map((formConfiguration: FormConfiguration) => {
-            const latestTag = allTags.filter(tag => tag.formName == formConfiguration.id)
-              ?.reduce((latest,current) => (current.created > latest.created ? current :latest));
+            let latestTag = findLatestTag(allTags, formConfiguration.id);
             if (latestTag) {
               return {
                 ...formConfiguration,
@@ -102,6 +101,21 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     fetchFormConfigurations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
+
+  const findLatestTag = (allTags: FormTag[]|undefined, formId: string):FormTag|undefined => {
+    let latestTag:FormTag|undefined = undefined;
+    allTags?.forEach((current) => {
+      if (current.formName == formId) {
+        if (!latestTag) {
+          latestTag = current;
+        }
+        else if (current.created > latestTag.created) {
+          latestTag = current;
+        }
+      }
+    });
+    return latestTag;
+  }
 
   const copyFormConfiguration = (formConfiguration: FormConfiguration) => {
     setSelectedFormConfiguration(formConfiguration);
