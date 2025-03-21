@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ public class UnauthenticatedCurrentUserProvider implements CurrentUserProvider {
 
   public static final String UNAUTHENTICATED = "unauthenticated";
 
-  public static final CurrentUser UNAUTHENTICATED_USER = new CurrentUser(UNAUTHENTICATED, "unauthenticated", null, null, null);
+  public static final CurrentUser UNAUTHENTICATED_USER = new CurrentUser(UNAUTHENTICATED, UNAUTHENTICATED, null, null, null);
 
   public static final CurrentUserProvider INSTANCE = new UnauthenticatedCurrentUserProvider();
 

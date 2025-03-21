@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,7 @@ public class OAuth2SpringSecurityCurrentUserProvider implements CurrentUserProvi
       		userId = authenticatedUserId;
       	}
 
-        if (authentication instanceof OAuth2AuthenticationToken) {
-          final OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) authentication;
+        if (authentication instanceof OAuth2AuthenticationToken oAuth2Authentication) {
           final OAuth2User userAuthentication = oAuth2Authentication.getPrincipal();
           final Map<String,Object> attributes = userAuthentication.getAttributes();
           if (attributes != null) {

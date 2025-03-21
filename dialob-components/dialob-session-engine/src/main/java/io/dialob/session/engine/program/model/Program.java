@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.model;
 
-import com.google.common.collect.Streams;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
@@ -50,8 +49,7 @@ public interface Program extends ProgramNode {
       itemVisitor.visitItem(getRootItem());
       getItems().forEach(item -> {
         itemVisitor.visitItem(item);
-        if (item instanceof DisplayItem) {
-          DisplayItem displayItem = (DisplayItem) item;
+        if (item instanceof DisplayItem displayItem) {
           errors.addAll(displayItem.getErrors());
         }
       });
@@ -74,7 +72,7 @@ public interface Program extends ProgramNode {
   default Stream<Item> findItemsBy(Predicate<ItemId> matcher) {
     Stream<Item> itemStream = getItems().stream().filter(item -> matcher.test(item.getId()));
     if (matcher.test(getRootItem().getId())) {
-      return Streams.concat(Stream.of(getRootItem()), itemStream);
+      return Stream.concat(Stream.of(getRootItem()), itemStream);
     }
     return itemStream;
   }

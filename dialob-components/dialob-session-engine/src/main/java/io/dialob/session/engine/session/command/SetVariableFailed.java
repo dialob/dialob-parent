@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,10 @@ public interface SetVariableFailed extends AbstractUpdateCommand<ItemId, ItemSta
 
   @NonNull
   default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    ItemState updatedState = itemState.update()
+    return itemState.update()
       .setValue(null)
       .setStatus(ItemState.Status.ERROR)
       .get();
-    return updatedState;
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,54 +15,8 @@
  */
 package io.dialob.form.service.rest;
 
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormTag;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableFormTag;
+import io.dialob.api.form.*;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.DialobCsvToFormParser;
 import io.dialob.form.service.api.FormDatabase;
@@ -78,6 +32,32 @@ import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.session.engine.program.FormValidatorExecutor;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
@@ -90,15 +70,15 @@ import jakarta.inject.Inject;
 class FormsRestServiceControllerTest {
 
   @Configuration(proxyBeanMethods = false)
-  public static class TestConfiguration {
+  static class TestConfiguration {
 
     @Bean
-    public ObjectMapper objectMapper() {
+    ObjectMapper objectMapper() {
       return new ObjectMapper();
     }
 
     @Bean
-    public CsvToFormParser csvToFormParser() {
+    CsvToFormParser csvToFormParser() {
       return new DialobCsvToFormParser();
     }
 
@@ -151,7 +131,7 @@ class FormsRestServiceControllerTest {
   String tenantId = "123";
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     mockMvc = webAppContextSetup(webApplicationContext).build();
     reset(formDatabase);
   }
@@ -160,7 +140,7 @@ class FormsRestServiceControllerTest {
   ObjectMapper objectMapper;
 
   @Test
-  public void shouldReturnForm() throws Exception {
+  void shouldReturnForm() throws Exception {
 
     when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
     when(currentTenant.getId()).thenReturn("t-123");
@@ -177,7 +157,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldNotReturnFormForInvalidId() throws Exception {
+  void shouldNotReturnFormForInvalidId() throws Exception {
 
     when(formDatabase.findOne(eq("t-123"), eq("1234"), isNull())).thenReturn(testForm);
     when(currentTenant.getId()).thenReturn("t-123");
@@ -191,7 +171,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postShouldAlwaysCreateNewForm() throws Exception {
+  void postShouldAlwaysCreateNewForm() throws Exception {
     ImmutableForm immutableForm = ImmutableForm.builder()
       .id("123")
       .rev("321")
@@ -232,23 +212,21 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postCsvShouldAlwaysCreateNewForm() throws Exception {
-    StringBuilder csvBuilder = new StringBuilder();
-    csvBuilder
-      .append("testForm101\n")
-      .append("id,type,fi,et,sv,en\n")
-      .append("ghj,Text,Mikä on nimesi,Vad häter du\n")
-      .append(",Boolean,Onko näin?,Är det så?,\n")
-      .append(",Date,Valitse päivä,,Select day\n")
-      .append("hh56,Time,,,Select time\n")
-      .append(",Choice,Tee valinta,\n")
-      .append(",Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,\n")
-      .append(",Integer,number label fi\n")
-      .append("gfhf69,Date\n")
-      .append(",Time,,test1\n")
-      .append("gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test\n")
-      .append(",Time,,");
-    String csvContent = csvBuilder.toString();
+  void postCsvShouldAlwaysCreateNewForm() throws Exception {
+    String csvContent = """
+      testForm101
+      id,type,fi,et,sv,en
+      ghj,Text,Mikä on nimesi,Vad häter du
+      ,Boolean,Onko näin?,Är det så?,
+      ,Date,Valitse päivä,,Select day
+      hh56,Time,,,Select time
+      ,Choice,Tee valinta,
+      ,Note,Mitä vaan nyt halutaan esim. Käyttöehdot,,
+      ,Integer,number label fi
+      gfhf69,Date
+      ,Time,,test1
+      gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test
+      ,Time,,""";
 
     ImmutableForm immutableForm = ImmutableForm.builder().from(csvToFormParser.parseCsv(csvContent)).id("234").rev("543").build();
 
@@ -281,15 +259,14 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void postCsvShouldNotCreateNewForm() throws Exception {
-    StringBuilder csvBuilder = new StringBuilder();
-    csvBuilder
-      .append("test Form102\n")
-      .append("id,type,en,fi\n")
-      .append("id1,Text,Mikä on nimesi,Vad häter du\n")
-      .append(",Date\n");
+  void postCsvShouldNotCreateNewForm() throws Exception {
 
-    String csvContent = csvBuilder.toString();
+    String csvContent = """
+      test Form102
+      id,type,en,fi
+      id1,Text,Mikä on nimesi,Vad häter du
+      ,Date
+      """;
 
     mockMvc.perform(
       post("/forms", "1234")
@@ -302,7 +279,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldNotPersistOnDryRun() throws Exception {
+  void shouldNotPersistOnDryRun() throws Exception {
 
     String formJson = objectMapper.writerFor(Form.class).writeValueAsString(testForm);
 
@@ -320,7 +297,7 @@ class FormsRestServiceControllerTest {
 
 
   @Test
-  public void shouldTryUpdateTag() throws Exception {
+  void shouldTryUpdateTag() throws Exception {
 
     FormTag newTag = ImmutableFormTag.builder().refName("tagi").build();
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
@@ -356,6 +333,81 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
+  void shouldCreateTagWithCreatorParam() throws Exception {
+
+    FormTag newTag = ImmutableFormTag.builder()
+      .name("newtag")
+      .formId("1234")
+      .formName("myform")
+      .creator("user-123")
+      .build();
+
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
+    when(nodeId.getId()).thenReturn("testnode");
+    when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123")).thenReturn(Optional.of(ImmutableFormTag.builder()
+      .formName("myform")
+      .name("newtag")
+      .formId("4321")
+      .creator("user-123")
+      .build()));
+
+    mockMvc.perform(post("/forms/{formId}/tags", "myform")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(tagJson))
+      .andExpect(status().isOk());
+
+    verify(currentTenant,atLeastOnce()).getId();
+    verify(currentTenant).get();
+    verify(nodeId).getId();
+    verify(formVersionControlDatabase).isName("t-123","myform");
+    verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123");
+
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
+  void shouldCreateTagWithCurrentUserProvider() throws Exception {
+
+    FormTag newTag = ImmutableFormTag.builder()
+      .name("newtag")
+      .formId("1234")
+      .formName("myform")
+      .build();
+
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+
+    when(currentTenant.getId()).thenReturn("t-123");
+    when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
+    when(currentUserProvider.getUserId()).thenReturn("user");
+    when(nodeId.getId()).thenReturn("testnode");
+    when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user")).thenReturn(Optional.of(ImmutableFormTag.builder()
+      .formName("myform")
+      .name("newtag")
+      .formId("4321")
+      .creator("user")
+      .build()));
+
+    mockMvc.perform(post("/forms/{formId}/tags", "myform")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(tagJson))
+      .andExpect(status().isOk());
+
+    verify(currentTenant,atLeastOnce()).getId();
+    verify(currentTenant).get();
+    verify(currentUserProvider).getUserId();
+    verify(nodeId).getId();
+    verify(formVersionControlDatabase).isName("t-123","myform");
+    verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user");
+
+    verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, formVersionControlDatabase);
+  }
+
+  @Test
   void shouldRejectInvalidTagNames() throws Exception {
     mockMvc.perform(put("/forms/{formId}/tags/{tagName}", "myform","newt%ag")
         .contentType(MediaType.APPLICATION_JSON)
@@ -366,7 +418,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldAddMetadatatoQuery() throws Exception {
+  void shouldAddMetadatatoQuery() throws Exception {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "{\"label\":\"Otsake\"}")
@@ -378,7 +430,7 @@ class FormsRestServiceControllerTest {
   }
 
   @Test
-  public void shouldRejextInvalidMetadatatoQuery() throws Exception {
+  void shouldRejextInvalidMetadatatoQuery() throws Exception {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentUserProvider.getUserId()).thenReturn("user");
     mockMvc.perform(get("/forms?metadata={metadata}", "\"label\":\"Otsake\"}")

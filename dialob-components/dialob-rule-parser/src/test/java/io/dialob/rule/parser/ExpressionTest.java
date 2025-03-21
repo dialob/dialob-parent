@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.rule.parser;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
@@ -24,16 +23,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 
+import java.util.HashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class ExpressionTest {
+class ExpressionTest {
 
   @Test
-  public void testRenameId() {
+  void testRenameId() {
     assertEquals("b", Expression.createExpression("a").renameId("a", "b").toString());
     assertEquals("1 + r", Expression.createExpression("1 + a").renameId("a", "r").toString());
     assertEquals("1 + abc - 5", Expression.createExpression("1 + f - 5").renameId("f", "abc").toString());
@@ -48,7 +49,7 @@ public class ExpressionTest {
   }
 
   @Test
-  public void testIdCollecting() {
+  void testIdCollecting() {
     assertThat(Expression.createExpression("a").getAllIds()).containsExactly("a");
     assertThat(Expression.createExpression("1 + r").getAllIds()).containsExactly("r");
     assertThat(Expression.createExpression("a + b").getAllIds()).containsExactly("a", "b");
@@ -56,28 +57,28 @@ public class ExpressionTest {
   }
 
   @Test
-  public void shouldEmptyStringGeneratesEmptyAst() {
+  void shouldEmptyStringGeneratesEmptyAst() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "");
     assertEquals(0, expression.getErrors().size());
     assertNull(expression.getAst());
   }
 
   @Test
-  public void shouldBlankInputGeneratesEmptyAst() {
+  void shouldBlankInputGeneratesEmptyAst() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "   ");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "   ");
     assertEquals(0, expression.getErrors().size());
     assertNull(expression.getAst());
   }
 
   @Test
-  public void shouldReportSyntaxError() {
+  void shouldReportSyntaxError() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a a");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "a a");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -90,10 +91,10 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotSumBooleanAndInteger() {
+  void cannotSumBooleanAndInteger() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "1+true");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "1+true");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -105,12 +106,12 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotSumDateAndInteger() throws VariableNotDefinedException {
+  void cannotSumDateAndInteger() throws VariableNotDefinedException {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
     when(variableFinder.typeOf("date")).thenReturn(ValueType.DATE);
     when(variableFinder.mapAlias(any())).then(AdditionalAnswers.returnsFirstArg());
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "date + 1");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "date + 1");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -122,10 +123,10 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotComparePeriodAndInteger() {
+  void cannotComparePeriodAndInteger() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "1 day > 1");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "1 day > 1");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -137,10 +138,10 @@ public class ExpressionTest {
   }
 
   @Test
-  public void cannotEqualPeriodAndInteger() {
+  void cannotEqualPeriodAndInteger() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "1 day = 1");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "1 day = 1");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -152,10 +153,10 @@ public class ExpressionTest {
   }
 
   @Test
-  public void brokenStringShouldNotKillParser() {
+  void brokenStringShouldNotKillParser() {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Expression expression;
-    expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a = 'x ");
+    expression = Expression.createExpression(variableFinder, new HashMap<>(), "a = 'x ");
     assertEquals(2, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -168,11 +169,11 @@ public class ExpressionTest {
   }
 
   @Test
-  public void brokenExpectStringForIsBlank() throws Exception {
+  void brokenExpectStringForIsBlank() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     when(variableFinder.mapAlias(any())).then(AdditionalAnswers.returnsFirstArg());
-    Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a is blank");
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a is blank");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
       .extracting(RuleExpressionCompilerError::getErrorCode)
@@ -185,11 +186,11 @@ public class ExpressionTest {
   }
 
   @Test
-  public void isNullOperator() throws Exception {
+  void isNullOperator() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     when(variableFinder.mapAlias(any())).then(AdditionalAnswers.returnsFirstArg());
-    Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a is null");
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a is null");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").isEmpty();
     assertThat(expression.getErrors())

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,36 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class is a custom condition implementation for determining if specific
+ * database-related configuration should be applied based on the active database type.
+ * The condition checks if the database type specified in an {@link ConditionalOnDatabaseType}
+ * annotation matches any of the database types currently configured in the application
+ * environment properties.
+ * <p>
+ * The mechanism involves checking environment keys such as `dialob.db.database-type`,
+ * `dialob.form-database.database-type`, and `dialob.questionnaire-database.database-type`,
+ * and verifying if any of their values align with the database type specified in the annotation.
+ * <p>
+ * If a match is found, the condition is treated as fulfilled, and the configuration
+ * associated with the annotated component will be activated. Otherwise, it will be ignored.
+ * <p>
+ * Logging is provided for cases when database values from configuration properties cannot
+ * be mapped to a known {@link DialobSettings.DatabaseType}. It also suggests acceptable values
+ * to assist debugging invalid configurations.
+ */
 @Slf4j
 public class OnDatabaseTypeCondition extends SpringBootCondition {
 
   @Override
   public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-    Map<String, Object> allAnnotationAttributes =
-      metadata.getAnnotationAttributes(ConditionalOnDatabaseType.class.getName(), false);
-    DialobSettings.DatabaseType databaseType = (DialobSettings.DatabaseType) allAnnotationAttributes.get("value");
+    var allAnnotationAttributes = metadata.getAnnotationAttributes(ConditionalOnDatabaseType.class.getName(), false);
+    if (allAnnotationAttributes == null) {
+      return ConditionOutcome.noMatch("ConditionalOnDatabaseType annotation missing.");
+    }
+    var databaseType = (DialobSettings.DatabaseType) allAnnotationAttributes.get("value");
     if (databaseType == null) {
       return ConditionOutcome.noMatch("database type not defined");
     }
@@ -57,8 +76,7 @@ public class OnDatabaseTypeCondition extends SpringBootCondition {
         requiredTypes.add(DialobSettings.DatabaseType.valueOf(databaseTypeProperty.trim().toUpperCase()));
       }
     } catch (IllegalArgumentException e) {
-      LOGGER.error("Unknown database type " + key + "=" + databaseTypeProperty +
-        ". Acceptable values are: " + StringUtils.join(DialobSettings.DatabaseType.values(),","));
+      LOGGER.error("Unknown database type {}={}. Acceptable values are: {}", key, databaseTypeProperty, StringUtils.join(DialobSettings.DatabaseType.values(), ","));
     }
   }
 }

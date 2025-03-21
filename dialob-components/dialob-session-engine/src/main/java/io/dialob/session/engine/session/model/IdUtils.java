@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.Lists;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -41,7 +40,7 @@ public class IdUtils {
     if (itemId == null) {
       return null;
     }
-    List<String> idChain = Lists.newArrayList();
+    var idChain = new ArrayList<String>();
     Optional<ItemId> id = Optional.of(itemId);
     while (id.isPresent()) {
       itemId = id.get();
@@ -56,7 +55,8 @@ public class IdUtils {
       }
       id = itemId.getParent();
     }
-    return StringUtils.join(Lists.reverse(idChain),".");
+    Collections.reverse(idChain);
+    return StringUtils.join(idChain,".");
   }
 
   @Nullable
@@ -137,15 +137,13 @@ public class IdUtils {
       return;
     }
     output.writeBoolNoTag(true);
-    if (id instanceof ItemRef) {
-      ItemRef itemRef = (ItemRef) id;
+    if (id instanceof ItemRef itemRef) {
       output.write((byte) 1);
       output.writeStringNoTag(itemRef.getValue());
     } else if (id instanceof ItemIdPartial) {
       output.write((byte) 2);
-    } else if (id instanceof ItemIndex) {
+    } else if (id instanceof ItemIndex itemRef) {
       output.write((byte) 3);
-      ItemIndex itemRef = (ItemIndex) id;
       output.writeInt32NoTag(itemRef.getIndex());
     } else {
       throw new RuntimeException("unknown id type " + id);
@@ -157,16 +155,12 @@ public class IdUtils {
   public static ItemId readIdFrom(CodedInputStream input) throws IOException {
     if (input.readBool()) {
       byte type = input.readRawByte();
-      switch (type) {
-        case 1:
-          return ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
-        case 2:
-          return ImmutableItemIdPartial.of(Optional.ofNullable(readIdFrom(input)));
-        case 3:
-          return ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
-        default:
-          throw new RuntimeException("unknown id type " + type);
-      }
+      return switch (type) {
+        case 1 -> ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
+        case 2 -> ImmutableItemIdPartial.of(Optional.ofNullable(readIdFrom(input)));
+        case 3 -> ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
+        default -> throw new RuntimeException("unknown id type " + type);
+      };
     }
     return null;
   }

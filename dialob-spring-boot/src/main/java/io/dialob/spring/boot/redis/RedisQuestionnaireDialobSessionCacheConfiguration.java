@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.spring.boot.redis;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -36,6 +35,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "dialob.session.cache.type", havingValue = "REDIS")
@@ -50,7 +50,7 @@ public class RedisQuestionnaireDialobSessionCacheConfiguration {
                                                                            @NonNull QuestionnaireEventPublisher eventPublisher,
                                                                            @NonNull DialobSessionEvalContextFactory sessionContextFactory,
                                                                            @NonNull AsyncFunctionInvoker asyncFunctionInvoker) {
-    return new QuestionnaireDialobSessionRedisSerializer(questionnaireSessionService,
+    return new QuestionnaireDialobSessionRedisSerializer(
       eventPublisher, dialobProgramService, sessionContextFactory, asyncFunctionInvoker, meterRegistry,
       dialobSettings.getSession().getCache().getBufferSize());
   }
@@ -62,7 +62,7 @@ public class RedisQuestionnaireDialobSessionCacheConfiguration {
       .cacheDefaults(RedisCacheConfiguration
         .defaultCacheConfig()
         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(dialobSessionSerializer)))
-      .initialCacheNames(ImmutableSet.of(Constants.SESSION_CACHE_NAME))
+      .initialCacheNames(Set.of(Constants.SESSION_CACHE_NAME))
       .disableCreateOnMissingCache()
       .build();
   }

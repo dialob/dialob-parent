@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package io.dialob.rule.parser;
 
-import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.*;
+import lombok.Getter;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -34,12 +34,13 @@ public class Expression implements ErrorLogger {
 
   private final String expression;
 
+  @Getter
   private NodeBase ast;
 
   private List<RuleExpressionCompilerError> errors = new ArrayList<>();
 
   private Expression(@NonNull String expression) {
-    this(ASTBuilderWalker.DUMMY_VARIABLE_FINDER, Maps.newHashMap(), expression);
+    this(ASTBuilderWalker.DUMMY_VARIABLE_FINDER, new HashMap<>(), expression);
   }
 
   private Expression(@NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables, @NonNull String expression) {
@@ -148,10 +149,6 @@ public class Expression implements ErrorLogger {
 
   public void accept(ASTVisitor visitor) {
     ast = ast.accept(visitor);
-  }
-
-  public NodeBase getAst() {
-    return ast;
   }
 
   private static class ErrorListener implements ANTLRErrorListener {

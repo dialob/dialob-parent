@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.rest;
 
-import com.google.common.collect.ImmutableList;
 import io.dialob.api.proto.Actions;
 import io.dialob.api.proto.ImmutableActions;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
@@ -30,6 +29,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
 import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,7 +44,7 @@ import static org.mockito.Mockito.when;
   "dialob.session.rest.enabled=true",
   "dialob.session.returnStackTrace=true"
 })
-public class AnswerControllerWithStackTest {
+class AnswerControllerWithStackTest {
 
   @MockitoBean
   private QuestionnaireSessionService questionnaireSessionService;
@@ -58,12 +59,12 @@ public class AnswerControllerWithStackTest {
   public AnswerController answerController;
 
   @Test
-  public void answerControllerShouldBeConfigured() {
+  void answerControllerShouldBeConfigured() {
     assertNotNull(answerController);
   }
 
   @Test
-  public void shouldReturn500WithStackIfEnabled() {
+  void shouldReturn500WithStackIfEnabled() {
     when(questionnaireSessionService.findOne("123")).thenThrow(RuntimeException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(500, responseEntity.getStatusCode().value());
@@ -72,11 +73,11 @@ public class AnswerControllerWithStackTest {
   }
 
   @Test
-  public void shouldReturn500WithStackIfEnabledOnAnswers() {
+  void shouldReturn500WithStackIfEnabledOnAnswers() {
     when(actionProcessingService.answerQuestion(eq("123"), eq("rev-10"), isNotNull())).thenThrow(RuntimeException.class);
     final ResponseEntity<Actions> responseEntity = answerController.answers("123", ImmutableActions.builder()
       .rev("rev-10")
-      .actions(ImmutableList.of())
+      .actions(List.of())
       .build());
     assertEquals(500, responseEntity.getStatusCode().value());
     assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());

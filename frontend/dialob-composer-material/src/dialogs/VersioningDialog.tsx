@@ -39,7 +39,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   }, [open]);
 
   const handleLoadVersion = (tag: ComposerTag) => {
-    loadForm(tag.formId).then(form => {
+    loadForm(tag.formId + '').then(form => {
       if (tag.name === 'LATEST') {
         setForm(form);
         saveForm(form, true)
@@ -70,7 +70,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
     if (tag.name === 'LATEST') {
       downloadForm(form);
     } else {
-      loadForm(tag.formId).then(form => {
+      loadForm(tag.formId + '').then(form => {
         downloadForm(form);
       });
     }
@@ -113,7 +113,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
                   <TableRow key={tag.formId} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
                     <TableCell>
                       <Tooltip
-                        title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.formId)}>
+                        title={<Button endIcon={<ContentCopy />} variant='text' color='inherit' onClick={() => navigator.clipboard.writeText(tag.formId + '')}>
                           <Typography><FormattedMessage id='dialogs.versioning.copy.id' /></Typography>
                         </Button>}
                         placement='left'>
@@ -124,7 +124,9 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
                       </Tooltip>
                     </TableCell>
                     <TableCell sx={{ p: 1 }}><Typography>{tag.description}</Typography></TableCell>
-                    <TableCell sx={{ p: 1 }}><Typography>{new Date(tag.created).toLocaleString('en-GB')}</Typography></TableCell>
+                    <Tooltip title={<FormattedMessage id='dialogs.versioning.creator' values={{ creator: tag.creator }} />} placement="left" disableHoverListener={tag.creator === undefined}>
+                      <TableCell sx={{ p: 1 }}><Typography>{new Date(tag.created + '').toLocaleString('en-GB')}</Typography></TableCell>
+                    </Tooltip>
                     <TableCell align='center'>
                       <Button variant='outlined' color='primary'
                         disabled={tag.name === form._tag || (form._tag === undefined && tag.name === 'LATEST')}

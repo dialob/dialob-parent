@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.questionnaire.service.api.utils;
 
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -37,25 +36,6 @@ public class ConversionUtil {
       return ((Date) answer).toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
     return answer.toString();
-  }
-
-  public static Object toJSONCompatible(Object answer) {
-    if (answer == null) {
-      return null;
-    }
-    if (answer instanceof String[]) {
-      return answer;
-    }
-    if (answer instanceof List) {
-      return answer;
-    }
-    if (answer instanceof Date) {
-      return ((Date) answer).toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-    if (answer instanceof LocalDate) {
-      return answer.toString();
-    }
-    return answer;
   }
 
 }

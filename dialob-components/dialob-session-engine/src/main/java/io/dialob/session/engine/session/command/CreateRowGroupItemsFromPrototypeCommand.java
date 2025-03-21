@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
@@ -42,8 +41,8 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
   @Override
   default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     final ItemState currentItemState = itemStates.getItemStates().get(getTargetId());
-    Set<ItemId> currentItems = currentItemState != null ? Sets.newHashSet(currentItemState.getItems()) : ImmutableSet.of();
-    Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(ImmutableSet.of());
+    Set<ItemId> currentItems = currentItemState != null ? Set.copyOf(currentItemState.getItems()) : Set.of();
+    Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
     final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
     final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
@@ -71,7 +70,7 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
   @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
-    return ImmutableSet.of(
+    return Set.of(
       whenRowGroupItemsInit(getItemPrototypeId()),
       whenItemRemoved(getItemPrototypeId())
     );

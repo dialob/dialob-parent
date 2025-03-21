@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,6 @@ import java.math.BigInteger;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static io.dialob.api.proto.ActionsFactory.*;
 import static java.util.Collections.singletonList;
@@ -273,7 +272,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   {
     return inSession(questionnaireId, questionnaireSession -> {
       updateQuestionnaire(questionnaireSession, answers.stream().map(answer ->
-        ActionsFactory.answer(answer.getId(), answer.getValue())).collect(Collectors.toList()));
+        ActionsFactory.answer(answer.getId(), answer.getValue())).toList());
       return ResponseEntity.ok(questionnaireSession.getErrors());
     });
   }
@@ -287,12 +286,11 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     if (!isValidAnswerValue(answer)) {
       return ResponseEntity.badRequest().body(singletonList(ImmutableError.builder().id(answerId).code("invalid_answer").description("Cannot handle answer data").build()));
     }
-    if (answer instanceof List) {
-      // convert to List<String>
-      answer = ((List) answer).stream()
+    if (answer instanceof List<?> list) {
+      answer = list.stream()
         .filter(Objects::nonNull)
         .map(Object::toString)
-        .collect(Collectors.toList());
+        .toList();
     }
     return putQuestionnaireAnswers(questionnaireId, singletonList(QuestionnaireFactory.answer(answerId, answer)));
   }
@@ -308,8 +306,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       answer instanceof String) {
       return true;
     }
-    if (answer instanceof List) {
-      List<Object> list = (List<Object>) answer;
+    if (answer instanceof List<?> list) {
       return list.stream().map(i -> i == null || i instanceof String).reduce(Boolean.TRUE, (a, i) -> a && i);
     }
     return false;

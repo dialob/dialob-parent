@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,12 @@ import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.UUID;
 
+/**
+ * A helper class for interacting with a PostgreSQL database, extending the functionality
+ * provided by {@code AbstractDatabaseHelper}. This class contains methods specific to
+ * PostgreSQL, such as handling UUID conversion, JSONB objects, and schema-specific
+ * table name generation.
+ */
 public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
 
   public PostgreSQLDatabaseHelper(String schema) {
@@ -60,10 +66,9 @@ public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
   @Override
   public byte[] fromJdbcId(Object oid) {
     UUID uuid;
-    if (oid instanceof UUID) {
-      uuid = (UUID) oid;
-    } else if (oid instanceof byte[]) {
-      byte[] bytes = (byte[]) oid;
+    if (oid instanceof UUID uuid2) {
+      uuid = uuid2;
+    } else if (oid instanceof byte[] bytes) {
       if (bytes.length == 16) {
         return bytes;
       }

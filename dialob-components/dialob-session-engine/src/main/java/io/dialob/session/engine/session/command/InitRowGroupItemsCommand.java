@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ImmutableItemIndex;
@@ -28,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
@@ -42,7 +40,7 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
-    List<ItemId> newItems = rowNumbers.stream().map(row -> ImmutableItemIndex.of(row.intValue(), Optional.of(getTargetId()))).collect(Collectors.toList());
+    var newItems = rowNumbers.stream().map(row -> (ItemId) ImmutableItemIndex.of(row.intValue(), Optional.of(getTargetId()))).toList();
     return itemState.update()
       .setItems(newItems)
       .get();
@@ -51,6 +49,6 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
   @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
-    return ImmutableSet.of(whenValueUpdated(getTargetId()));
+    return Set.of(whenValueUpdated(getTargetId()));
   }
 }

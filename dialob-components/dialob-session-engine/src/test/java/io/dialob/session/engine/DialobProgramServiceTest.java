@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
-import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -39,14 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-public class DialobProgramServiceTest extends AbstractDialobProgramTest {
+class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
   @Test
-  public void shouldConstructFormProgram() throws Exception {
+  void shouldConstructFormProgram() throws Exception {
     FormFinder formFinder = mock(FormFinder.class);
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
-    AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);;
+    AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     QuestionnaireDialobProgramService service = QuestionnaireDialobProgramService.newBuilder().setFormDatabase(formFinder).setProgramFromFormCompiler(programFromFormCompiler).build();
 //    Form formDocument = Mockito.mock(Form.class);
@@ -57,7 +57,7 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
-    DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
     final EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
     final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
@@ -71,22 +71,22 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     InOrder order = Mockito.inOrder(visitor, errorVisitor, itemVisitor, valueSetVisitor);
 
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
-    sessionUpdater.dispatchActions(nextPage());
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
-    sessionUpdater.dispatchActions(answer(toRef("question1"), "35"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "35")));
     assertValueEquals(dialobSession,toRef("question1"), BigInteger.valueOf(35));
 
-    sessionUpdater.dispatchActions(answer(toRef("question3"), "true"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question3"), "true")));
     assertActive(dialobSession, toRef("question3"));
     assertValueEquals(dialobSession,toRef("question3"),true);
-    sessionUpdater.dispatchActions(answer(toRef("question4"), "true"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question4"), "true")));
     assertValueEquals(dialobSession,toRef("question4"),true);
 
-    sessionUpdater.dispatchActions(answer(toRef("question5"), "30001"));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question5"), "30001")));
     assertValueEquals(dialobSession,toRef("question5"),BigInteger.valueOf(30001));
 
-    sessionUpdater.dispatchActions(answer(toRef("question6"), "opt2"))
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question6"), "opt2")))
       .accept(visitor);
     assertValueEquals(dialobSession,toRef("question6"),"opt2");
 
@@ -95,8 +95,6 @@ public class DialobProgramServiceTest extends AbstractDialobProgramTest {
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(activeItem("questionnaire")), argThat(activeItem("questionnaire")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question9")), argThat(activeItem("question9")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("page2")), argThat(activeItem("page2")));
-//    order.verify(visitor, times(1)).visitUpdatedItemState(argThat(unansweredItem("question6")), argThat(answeredItem("question6")));
-//    order.verify(visitor, times(1)).visitUpdatedItemState(argThat(unansweredItem("question9")), argThat(unansweredItem("question9")));
     order.verify(itemVisitor).end();
     order.verify(visitor).visitUpdatedErrorStates();
     order.verify(errorVisitor).end();

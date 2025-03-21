@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,34 @@ public final class Constants {
   public static final String SESSION_ACCESS_CACHE_MANAGER_BEAN = SESSION_ACCESS_CACHE_NAME + "Manager";
 
   public static final String QUESTIONNAIRE = "questionnaire";
+  public static final String GROUP = "group";
+  public static final String ROWGROUP = "rowgroup";
+  public static final String ROW = "row";
+  public static final String NOTE = "note";
+  public static final String PAGE = "page";
+  public static final String SURVEYGROUP = "surveygroup";
+  public static final String VARIABLE = "variable";
+  public static final String CONTEXT = "context";
+  public static final String TEXT = "text";
+  public static final String LIST = "list";
+  public static final String SURVEY = "survey";
+  public static final String BOOLEAN = "boolean";
+  public static final String DATE = "date";
+  public static final String TIME = "time";
+  public static final String NUMBER = "number";
+  public static final String DECIMAL = "decimal";
+  public static final String MULTICHOICE = "multichoice";
+
   public static final String ERROR_CODE_REQUIRED = "REQUIRED";
 
   public static final String VALID_ID_PATTERN = "^\\p{Alpha}[_\\p{Alnum}]*$";
   public static final Pattern VALID_ID_PATTERN_COMPILED = Pattern.compile(VALID_ID_PATTERN);
 
+  /**
+   * A regular expression pattern that defines a valid revision identifier.
+   * This pattern matches strings containing 1 to 64 characters composed of
+   * hexadecimal digits (0-9, a-f, A-F) and hyphens ('-').
+   */
   public static final String VALID_REV_PATTERN = "[\\p{XDigit}-]{1,64}";
   public static final Pattern VALID_REV_PATTERN_COMPILED = Pattern.compile(VALID_REV_PATTERN);
 
@@ -55,7 +78,7 @@ public final class Constants {
   public static final String VALID_FORM_ID_PATTERN = VALID_FORM_NAME_PATTERN;
   public static final Pattern VALID_FORM_ID_PATTERN_COMPILED = Pattern.compile(VALID_FORM_ID_PATTERN);
 
-  public static final String VALID_FORM_TAG_PATTERN = VALID_FORM_NAME_PATTERN;
+  public static final String VALID_FORM_TAG_PATTERN = "[\\p{Alnum}-_.]+";
   public static final Pattern VALID_FORM_TAG_PATTERN_COMPILED = Pattern.compile(VALID_FORM_TAG_PATTERN);
 
   public static final String QUESTIONNAIRE_ID_PATTERN = "[\\p{XDigit}-]{1,64}";

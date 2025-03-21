@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class IdExprNodeTest {
 
   @Test
-  public void testEquality() {
+  void testEquality() {
     IdExprNode node = new IdExprNode(null, null, null, "var", ValueType.STRING, Span.undefined());
     assertEquals(node, node);
     assertNotEquals(node, null);

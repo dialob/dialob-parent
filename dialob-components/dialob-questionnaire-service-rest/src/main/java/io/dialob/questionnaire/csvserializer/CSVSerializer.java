@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ import io.dialob.api.form.*;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,10 +35,19 @@ import java.util.stream.Collectors;
 public class CSVSerializer {
   private static final String LABEL_LANGUAGE = "en";
   private static final Map<String, Map<Boolean, String>> BOOLEAN_TRANSLATION = Map.of("en", Map.of(Boolean.TRUE, "Yes", Boolean.FALSE, "No"),
-                                                                                      "fi", Map.of(Boolean.TRUE, "Kyllä", Boolean.FALSE, "Ei")
+                                                                                      "fi", Map.of(Boolean.TRUE, "Kyll\u00E4", Boolean.FALSE, "Ei"),
+                                                                                      "sv", Map.of(Boolean.TRUE, "Ja", Boolean.FALSE, "Nej")
                                                                                       );
   private static final String MULTICHOICE_DELIMITER = ", ";
-  private static final String[] IGNORED_TYPES = {"questionnaire", "page", "group", "note", "rowgroup", "surveygroup"};
+
+  private static final Set<String> IGNORED_TYPES = Set.of(
+    Constants.QUESTIONNAIRE,
+    Constants.PAGE,
+    Constants.GROUP,
+    Constants.NOTE,
+    Constants.ROWGROUP,
+    Constants.SURVEYGROUP
+  );
   private final QuestionnaireDatabase questionnaireDatabase;
   private final CurrentTenant currentTenant;
 
@@ -49,10 +58,7 @@ public class CSVSerializer {
 
   private Optional<FormValueSetEntry> getChoice(Form form, String valueSetId, Object answer) {
     Optional<FormValueSet> valueSet = form.getValueSets().stream().filter(vs -> vs.getId().equals(valueSetId)).findFirst();
-    if (valueSet.isPresent()) {
-      return valueSet.get().getEntries().stream().filter(vse -> vse.getId().equals(answer)).findFirst();
-    }
-    return Optional.empty();
+    return valueSet.flatMap(formValueSet -> formValueSet.getEntries().stream().filter(vse -> vse.getId().equals(answer)).findFirst());
   }
 
   private String getValuesetAnswer(Form form, Questionnaire questionnaire, String valueSetId, String valueKey) {
@@ -111,12 +117,13 @@ public class CSVSerializer {
     if (a.isPresent() && a.get().getValue() != null) {
       if (null != valueSetId) {
         // Multichoice
-        if (a.get().getValue() instanceof Collection) {
-          realValue = ((Collection<String>) a.get().getValue())
+        if (a.get().getValue() instanceof Collection<?> collection) {
+          realValue = collection
             .stream()
+            .map(String.class::cast)
             .map(key -> getValuesetAnswer(form, questionnaire, valueSetId, key))
             .collect(Collectors.joining(MULTICHOICE_DELIMITER));
-          valueKey = ((Collection<String>) a.get().getValue()).stream().collect(Collectors.joining(MULTICHOICE_DELIMITER));
+          valueKey = String.join(MULTICHOICE_DELIMITER, ((Collection<String>) a.get().getValue()));
         } else {
           valueKey = a.get().getValue().toString();
           realValue = getValuesetAnswer(form, questionnaire, valueSetId, valueKey);
@@ -155,18 +162,18 @@ public class CSVSerializer {
         return;
       }
 
-      if (ArrayUtils.contains(IGNORED_TYPES, formItem.getType())) {
+      if (IGNORED_TYPES.contains(formItem.getType())) {
         return;
       }
       // Container items
-      if (null != formItem.getItems() && formItem.getItems().size() > 0) {
+      if (null != formItem.getItems() && !formItem.getItems().isEmpty()) {
         // Rowgroup handling
         if ("rowgroup".equals(formItem.getType())) {
           Optional<Answer> a = getAnswer(questionnaire, formItem.getId());
           if (a.isPresent()) {
             List<Integer> rows = (List<Integer>) a.get().getValue();
             if (rows != null) {
-              if (rows.size() > 0) {
+              if (!rows.isEmpty()) {
                 // Rowgroup label row
                 records.add(formItem.getLabel().get(LABEL_LANGUAGE));
                 records.add(formItem.getId());
@@ -212,7 +219,7 @@ public class CSVSerializer {
     if (labelDedups.containsKey(label)) {
       Integer index = labelDedups.get(label) + 1;
       labelDedups.put(label, index);
-      label = index.toString() + ". " + label;
+      label = index + ". " + label;
     }
     else {
       labelDedups.put(label, 0);
@@ -222,25 +229,23 @@ public class CSVSerializer {
 
   private void addHeaderFormItem(Form form, FormItem formItem, Map<String, Integer> labelDedups, List<String> result, String language) {
     Object exportFlag = formItem.getProps() != null ? formItem.getProps().get("export") : null;
-    if (!(exportFlag != null && "false".equals(exportFlag.toString())) && !ArrayUtils.contains(IGNORED_TYPES, formItem.getType())) {
+    if (!(exportFlag != null && "false".equals(exportFlag.toString())) && !IGNORED_TYPES.contains(formItem.getType())) {
       String label = formItem.getLabel().get(language);
       if (formItem.getType().equals("multichoice")) {
         // for multichoice add column for each possible value
         String selectionId = formItem.getValueSetId();
         Optional<FormValueSet> values = form.getValueSets().stream().filter(valueSet -> valueSet.getId().equals(selectionId)).findFirst();
-        if (values.isPresent()) {
-          values.get().getEntries().forEach(entry-> {
-            result.add(dedupLabel(entry.getLabel().get(language), labelDedups));
-            result.add(dedupLabel(entry.getId(), labelDedups));
-          });
-        }
+        values.ifPresent(formValueSet -> formValueSet.getEntries().forEach(entry -> {
+          result.add(dedupLabel(entry.getLabel().get(language), labelDedups));
+          result.add(dedupLabel(entry.getId(), labelDedups));
+        }));
       }
       result.add(dedupLabel(label, labelDedups));
       result.add(formItem.getId());
     }
   }
 
-  public String[] serializeHeader(Form form, String language) throws IOException {
+  public String[] serializeHeader(Form form, String language) {
     List<String> result = new ArrayList<>();
     Map<String, Integer> labelDedups = new HashMap<>();
     form.getData().values().forEach(formItem -> {
@@ -251,11 +256,11 @@ public class CSVSerializer {
         result.add(variable.getName());
       }
     });
-    return result.stream().toArray(String[]::new);
+    return result.toArray(String[]::new);
   }
 
 
-  private void serializeVariable(Variable variable, Questionnaire questionnaire, List<String> records) throws IOException {
+  private void serializeVariable(Variable variable, Questionnaire questionnaire, List<String> records) {
     if (Boolean.TRUE.equals(variable.getContext())) {
       Optional<ContextValue> var = questionnaire.getContext().stream().filter(varValue -> variable.getName().equals(varValue.getId())).findFirst();
       if (var.isPresent()) {
@@ -270,10 +275,10 @@ public class CSVSerializer {
 
   private void serialize(Questionnaire questionnaire, Form form, CSVPrinter printer, String language) throws IOException {
     List<String> records = new ArrayList<>();
-    form.getData().values().stream().forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
+    form.getData().values().forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
     for (Variable variable : form.getVariables()) {
       serializeVariable(variable, questionnaire, records);
-    };
+    }
     printer.printRecord(records);
   }
 

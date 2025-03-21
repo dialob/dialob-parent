@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ public class RestApiExceptionMapper {
       ImmutableErrors.Error.Builder builder = ImmutableErrors.Error.builder()
         .code(objectError.getCode())
         .error(objectError.getDefaultMessage());
-      if (objectError instanceof FieldError) {
-        FieldError fieldError = (FieldError) objectError;
+      if (objectError instanceof FieldError fieldError) {
         builder = builder
           .context(fieldError.getField())
           .rejectedValue(fieldError.getRejectedValue());
@@ -58,7 +57,7 @@ public class RestApiExceptionMapper {
     }
     Errors errors = errorsBuilder.build();
     HttpStatus httpStatus = resolveHttpStatus(errors);
-    LOGGER.error("Invalid request ("+ httpStatus + "): " + exception.getMessage());
+    LOGGER.error("Invalid request ({}): {}", httpStatus, exception.getMessage());
     return ResponseEntity.status(httpStatus).body(errors);
   }
 
@@ -67,8 +66,7 @@ public class RestApiExceptionMapper {
     ImmutableErrors.Builder builder = ImmutableErrors.builder();
     Throwable cause = exception.getCause();
     String message = exception.getMessage();
-    if (cause instanceof ConstraintViolationException) {
-      ConstraintViolationException cve = (ConstraintViolationException) cause;
+    if (cause instanceof ConstraintViolationException cve) {
       cve.getConstraintViolations().forEach(constraintViolation -> {
         builder.addErrors(ImmutableErrors.Error.builder()
           .error(constraintViolation.getMessage())
@@ -83,21 +81,12 @@ public class RestApiExceptionMapper {
       .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).build());
   }
 
-//  @ExceptionHandler
-//  public ResponseEntity vonstraintViolationExceptionHandler(@NonNull ConstraintViolationException exception) {
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ImmutableErrors.builder().
-//      addErrors(ImmutableErrors.Error.builder().error(exception.getMessage()).build())
-//      .error(HttpStatus.BAD_REQUEST.getReasonPhrase()).build());
-//  }
-
-
-
   @ExceptionHandler
   public ResponseEntity apiExceptionHandler(@NonNull ApiException exception) {
     Errors errors = exception.getErrors();
     HttpStatus httpStatus = resolveHttpStatus(errors);
     errors = ImmutableErrors.builder().from(errors).error(httpStatus.getReasonPhrase()).build();
-    LOGGER.error("API Error ("+ httpStatus + "): " + exception.getMessage(), exception);
+    LOGGER.error("API Error ({}): {}", httpStatus, exception.getMessage(), exception);
     return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(errors);
   }
 

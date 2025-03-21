@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,19 +26,21 @@ import org.mockito.Mockito;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class LocalQuestionnaireSessionCacheTest {
 
   @Test
-  public void shouldBeEmptyByDefault() {
+  void shouldBeEmptyByDefault() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
     assertEquals(0, cache.size());
   }
 
   @Test
-  public void shouldReturnNullWhenQuestionnaireIsNotFound() {
+  void shouldReturnNullWhenQuestionnaireIsNotFound() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
     Assertions.assertNull(cache.get("q1"));
     Assertions.assertNull(cache.get("q1", Questionnaire.class));
@@ -46,18 +48,36 @@ class LocalQuestionnaireSessionCacheTest {
   }
 
   @Test
-  public void shouldEvictSessionWhenThereIsPersistenceConflict() {
+  void shouldEvictSessionWhenThereIsPersistenceConflict() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
-    Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback = Mockito.mock(Function.class);
-    Mockito.when(beforeCloseCallback.apply(any())).thenThrow(DocumentConflictException.class);
-    var q = Mockito.mock(QuestionnaireSession.class);
-    Mockito.when(q.getSessionId()).thenReturn(Optional.of("123"));
-    Mockito.when(q.getTenantId()).thenReturn("T12");
-    Mockito.when(q.isActive()).thenReturn(true);
+    Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback = mock(Function.class);
+    when(beforeCloseCallback.apply(any())).thenThrow(DocumentConflictException.class);
+    var q = mock(QuestionnaireSession.class);
+    when(q.getSessionId()).thenReturn(Optional.of("123"));
+    when(q.getTenantId()).thenReturn("T12");
+    when(q.isActive()).thenReturn(true);
     cache.put(q);
     Assertions.assertNotNull(cache.get("123"));
     cache.evict("123", beforeCloseCallback);
     Assertions.assertNull(cache.get("123"));
   }
 
+  @Test
+  void shouldWrapSameObject() {
+    LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
+    QuestionnaireSession session = mock();
+    when(session.getSessionId()).thenReturn(Optional.of("123"));
+    assertNull(cache.get("123"));
+    var wrapper = cache.putIfAbsent("123", session);
+    assertNotNull(wrapper);
+    assertSame(session, wrapper.get());
+    assertNotNull(cache.get("123"));
+
+  }
+
+  @Test
+  void doesNotLikeStrangeTypes() {
+    LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
+    Assertions.assertThrows(IllegalArgumentException.class, () -> cache.putIfAbsent("213", null));
+  }
 }

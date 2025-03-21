@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {FormIdRenamerTest.TestConfiguration.class})
-public class FormIdRenamerTest {
+class FormIdRenamerTest {
 
   ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
 
@@ -69,7 +69,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void testQuestionRename() {
+  void testQuestionRename() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "test");
     assertEquals(0, resultPair.getRight().size());
@@ -104,7 +104,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void testVariableRename() {
+  void testVariableRename() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "var", "test");
     form = resultPair.getLeft();
@@ -124,7 +124,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void testVarFormatError() {
+  void testVarFormatError() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "123 abc");
     assertEquals(1, resultPair.getRight().size());
@@ -133,7 +133,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void shouldAcceptUnderscore() {
+  void shouldAcceptUnderscore() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "question_1");
     assertEquals(0, resultPair.getRight().size());
@@ -143,7 +143,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void testItemClash() {
+  void testItemClash() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "question2");
     assertEquals(1, resultPair.getRight().size());
@@ -152,7 +152,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void variableClash() {
+  void variableClash() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "var");
     assertEquals(1, resultPair.getRight().size());
@@ -161,7 +161,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void reservedWordClash() {
+  void reservedWordClash() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "matches");
     assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().get(0).getMessage());
@@ -169,7 +169,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void testQuestionRenameInOperator() {
+  void testQuestionRenameInOperator() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "test");
     form = resultPair.getLeft();
@@ -180,7 +180,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void testRenamerOnInvalidSyntax() {
+  void testRenamerOnInvalidSyntax() {
     Form form = loadForm();
     form = ImmutableForm.builder().from(form).putData("question4", ImmutableFormItem.builder().from(form.getData().get("question4")).activeWhen("\"entry1\" inn question1").build()).build();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "test");
@@ -189,7 +189,7 @@ public class FormIdRenamerTest {
   }
 
   @Test
-  public void issue174() throws IOException {
+  void issue174() throws IOException {
     String formData = "{\"_id\":\"7b2a87b0d7f60e78ec3b5e2164b76c3f\",\"_rev\":\"382\",\"name\":\"testi2\",\"data\":{\"questionnaire\":{\"id\":\"questionnaire\",\"type\":\"questionnaire\",\"items\":[\"group1\"]},\"text2\":{\"id\":\"text2\",\"type\":\"text\",\"label\":{\"en\":\"Kuinka paljon neliöitä asunnossasi on?\"},\"required\":\"boolean1\",\"activeWhen\":\"boolean1\",\"validations\":[{\"message\":{\"en\":\"\"}}]},\"text3\":{\"id\":\"text3\",\"type\":\"text\",\"label\":{\"en\":\"Kerro kissasi rotu\"},\"className\":[\"textbox\"],\"activeWhen\":\"list1\",\"defaultValue\":\"Key1\"},\"boolean1\":{\"id\":\"boolean1\",\"type\":\"boolean\",\"label\":{\"en\":\"Onko sinulla kotivakutuus?\"},\"validations\":[{\"message\":{\"en\":\"\"},\"rule\":\"boolean1 = 'True'\"}]},\"boolean2\":{\"id\":\"boolean2\",\"type\":\"boolean\",\"label\":{\"en\":\"Onko sinulla kissa?\"}},\"surveygroup1\":{\"id\":\"surveygroup1\",\"type\":\"surveygroup\",\"label\":{\"en\":\"Tiedätkö minkä rotuinen kissasi on?\"},\"items\":[\"list1\",\"text3\"],\"activeWhen\":\"boolean2\"},\"group1\":{\"id\":\"group1\",\"type\":\"group\",\"items\":[\"group2\",\"group3\"]},\"group2\":{\"id\":\"group2\",\"type\":\"group\",\"label\":{\"en\":\"Onko sinulla kotivakutuus?\"},\"items\":[\"boolean1\",\"text2\",\"list2\"]},\"list1\":{\"id\":\"list1\",\"type\":\"list\",\"label\":{\"en\":\"\"},\"valueSetId\":\"vs1\"},\"group3\":{\"id\":\"group3\",\"type\":\"group\",\"label\":{\"en\":\"\"},\"items\":[\"surveygroup1\",\"boolean2\"]},\"list2\":{\"id\":\"list2\",\"type\":\"list\",\"label\":{\"en\":\"Onko kyseessä omakotitalo?\"},\"required\":\"text2\",\"activeWhen\":\"text2\",\"validations\":[{\"message\":{\"en\":\"\"},\"rule\":\"text2 > '100'\"}]}},\"metadata\":{\"composer\":{\"transient\":{\"lastItem\":{\"id\":\"boolean2\",\"type\":\"boolean\"}}},\"tenantId\":\"10d66fc4-3da6-4474-9bb0-2aa21b34b29c\",\"created\":\"2019-03-08T10:06:41.454+0000\",\"creator\":\"490c78d9-80b6-4085-bf77-148f8ab79901\",\"lastSaved\":\"2019-03-11T11:36:46.376+0000\",\"label\":\"New Form\",\"languages\":[\"en\"],\"valid\":true,\"savedBy\":\"3a09a7cc-a3b6-49fc-96dc-76d0c242d8d7\"},\"valueSets\":[{\"id\":\"vs1\",\"entries\":[{\"id\":\"Key1\",\"label\":{\"en\":\"Kyllä\"}},{\"id\":\"Key2\",\"label\":{\"en\":\"En\"}}]}]}";
     Form form = objectMapper.readValue(formData, Form.class);
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "text2", "textii");

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Streams;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.form.ImmutableFormValidationError;
@@ -36,7 +33,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -51,8 +47,8 @@ class DependencyResolverVisitor implements ProgramVisitor {
   private Map<Command<?>, Set<Command<?>>> commandsToCommands;
 
   DependencyResolverVisitor() {
-    this.inputUpdates = Maps.newHashMap();
-    this.itemCommands = Maps.newHashMap();
+    this.inputUpdates = new HashMap<>();
+    this.itemCommands = new HashMap<>();
     this.updateCommandFactory = new UpdateCommandFactory();
   }
 
@@ -68,8 +64,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
           groupId = group.getId();
           if (group.isPrototype()) {
             final Expression itemsExpression = group.getItemsExpression();
-            if (itemsExpression instanceof RowItemsExpression) {
-              RowItemsExpression rowItemsExpression = (RowItemsExpression) itemsExpression;
+            if (itemsExpression instanceof RowItemsExpression rowItemsExpression) {
               updateCommandFactory.createRowGroupItemsFromPrototype(groupId, rowItemsExpression.getItemIds());
 
             }
@@ -143,10 +138,10 @@ class DependencyResolverVisitor implements ProgramVisitor {
       .map(command -> (UpdateCommand<?,?>) command)
       .forEach(updateCommand ->
         itemCommands.computeIfAbsent(updateCommand.getTargetId(),
-        targetId -> newArrayList()).add(updateCommand));
+        targetId -> new ArrayList<>()).add(updateCommand));
     updateCommandFactory.getAllCommands().stream().forEach(updateCommand -> updateCommand.getEventMatchers().forEach(
       eventMatcher -> inputUpdates.computeIfAbsent(requireNonNull(eventMatcher),
-        key -> newArrayList()).add(updateCommand)));
+        key -> new ArrayList<>()).add(updateCommand)));
 
 
     commandsToCommands = updateCommandFactory.getAllCommands().stream()
@@ -172,7 +167,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
       do {
         prevSet = entry.getValue();
         set = prevSet.stream()
-          .flatMap(updateCommand -> Streams.concat(Stream.of(updateCommand), commandsToCommands.get(updateCommand).stream()))
+          .flatMap(updateCommand -> Stream.concat(Stream.of(updateCommand), commandsToCommands.get(updateCommand).stream()))
           .collect(Collectors.toSet());
         entry.setValue(set);
         if (set.contains(entry.getKey())) {
@@ -217,7 +212,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
         if (command instanceof UpdateCommand) {
           itemId = ((UpdateCommand) command).getTargetId();
         }
-        throw new DependencyLoopException("dependency loop", ImmutableList.of(ImmutableFormValidationError.builder()
+        throw new DependencyLoopException("dependency loop", List.of(ImmutableFormValidationError.builder()
           .type(FormValidationError.Type.GENERAL)
           .level(FormValidationError.Level.ERROR)
           .message("dependency loop")

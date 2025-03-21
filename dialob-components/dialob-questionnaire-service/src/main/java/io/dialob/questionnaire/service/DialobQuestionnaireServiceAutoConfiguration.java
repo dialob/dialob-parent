@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,9 +83,8 @@ public class DialobQuestionnaireServiceAutoConfiguration {
   public PeriodicPersistenceService periodicPersistenceService(QuestionnaireSessionService questionnaireSessionService,
                                                                QuestionnaireSessionSaveService questionnaireSessionSaveService,
                                                                ThreadPoolTaskScheduler taskScheduler,
-                                                               DialobSettings settings,
-                                                               CurrentTenant currentTenant) {
-    return new PeriodicPersistenceService(questionnaireSessionService, questionnaireSessionSaveService, taskScheduler, settings, currentTenant);
+                                                               DialobSettings settings) {
+    return new PeriodicPersistenceService(questionnaireSessionService, questionnaireSessionSaveService, taskScheduler, settings.getSession().getAutosave().getInterval());
   }
 
   @Bean

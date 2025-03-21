@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class DialobFormIdRenamer implements FormIdRenamer {
@@ -101,14 +100,13 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     if (item.getCanRemoveRowWhen() != null) {
       builder.canRemoveRowWhen(idRenamer.apply(item.getCanRemoveRowWhen()));
     }
-    List<Validation> validations = item.getValidations().stream().map(validation -> ImmutableValidation.builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).collect(toList());
+    List<Validation> validations = item.getValidations().stream().map(validation -> (Validation) ImmutableValidation.builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).toList();
     builder.validations(validations);
 
     // Child refs
     int index = item.getItems().indexOf(oldId);
     if (index > -1) {
-      List<String> newItems = new ArrayList<>();
-      newItems.addAll(item.getItems());
+      List<String> newItems = new ArrayList<>(item.getItems());
       newItems.set(index, newId);
       builder.items(newItems);
     }
@@ -131,8 +129,8 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     }
     UnaryOperator<String> idRenamer = compiler.createIdRenamer(oldId, newId);
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().from(form);
-    formBuilder.data(form.getData().entrySet().stream()
-      .map(itemEntry -> renameItemAndAttributes(itemEntry.getValue(), idRenamer, oldId, newId))
+    formBuilder.data(form.getData().values().stream()
+      .map(formItem -> renameItemAndAttributes(formItem, idRenamer, oldId, newId))
       .collect(toMap(FormItem::getId, item -> item)));
     List<io.dialob.api.form.Variable> updatedVariables = new ArrayList<>();
     // Handle variable expressions

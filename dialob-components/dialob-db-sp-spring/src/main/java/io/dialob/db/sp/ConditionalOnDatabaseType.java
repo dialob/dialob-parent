@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,32 @@ import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;
 
+/**
+ * This annotation is a conditional configuration mechanism used in Spring applications to
+ * conditionally include beans or classes based on the active database type specified
+ * in the application's environment configuration.
+ * <p>
+ * The annotation uses {@link OnDatabaseTypeCondition} to implement the condition-checking logic.
+ * The database type is determined by checking specific environment properties configured for the application.
+ * When the database type defined by this annotation matches one of the database types specified in the
+ * application’s environment, the condition is fulfilled, and the annotated configuration is activated.
+ * <p>
+ * The provided {@link DialobSettings.DatabaseType} value indicates the database type to compare
+ * against the active database type(s). The supported types are defined in {@link DialobSettings.DatabaseType}.
+ * <p>
+ * Use this annotation on application classes or methods where desired logic or beans should
+ * only be included for specific database types, such as AZURE_BLOB_STORAGE or JDBC.
+ * <p>
+ * This annotation can be applied at the type or method level.
+ * <p>
+ * Annotation parameters:
+ * - `value`: Specifies the required {@link DialobSettings.DatabaseType} for the conditional activation.
+ * <p>
+ * Example database-related configuration keys that influence the condition include:
+ * - `dialob.db.database-type`
+ * - `dialob.form-database.database-type`
+ * - `dialob.questionnaire-database.database-type`
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Documented

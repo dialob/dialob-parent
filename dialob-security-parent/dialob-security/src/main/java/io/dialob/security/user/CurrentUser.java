@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
  */
 package io.dialob.security.user;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
+@Getter
 public class CurrentUser implements Serializable {
 
   private final String userId;
@@ -37,23 +40,4 @@ public class CurrentUser implements Serializable {
     this.email = email;
   }
 
-  public String getUserId() {
-    return userId;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getEmail() {
-    return email;
-  }
 }

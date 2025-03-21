@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,27 @@
  */
 package io.dialob.rule.parser.analyze;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.Expression;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-public class ConvertDateMinusDateVisitorTest {
+class ConvertDateMinusDateVisitorTest {
 
   @Test
-  public void shouldConvertDateMinusDateToPeriodBetweenCall() throws Exception {
+  void shouldConvertDateMinusDateToPeriodBetweenCall() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     Mockito.when(variableFinder.typeOf("b")).thenReturn(ValueType.DATE);
-    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(new Answer<Object>() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArguments()[0];
-      }
-    });
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
 
-    Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "a - b");
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - b");
     expression.accept(new ConvertDateMinusDateVisitor());
     assertEquals("(java.time.Period.between b a)",expression.getAst().toString());
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.form.service.DialobFormIdRenamer;
 import io.dialob.form.service.DialobFormItemCopier;
 import io.dialob.form.service.api.validation.FormIdRenamer;
@@ -46,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {FormItemCopierTest.TestConfiguration.class})
-public class FormItemCopierTest {
+class FormItemCopierTest {
 
 
   public static class TestConfiguration {
@@ -90,7 +89,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testQuestionCopy() {
+  void testQuestionCopy() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "question1");
     form = resultPair.getLeft();
@@ -103,7 +102,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testQuestionCopyGvs() {
+  void testQuestionCopyGvs() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "question4");
     form = resultPair.getLeft();
@@ -116,7 +115,7 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testGroupCopy() {
+  void testGroupCopy() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "group1");
     form = resultPair.getLeft();
@@ -142,9 +141,8 @@ public class FormItemCopierTest {
   }
 
   @Test
-  public void testUnknownItem() {
+  void testUnknownItem() {
     Form form = loadForm();
-    ImmutableForm.Builder builder = ImmutableForm.builder().from(form);
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, "IDontExist");
     assertEquals(1, resultPair.getRight().size());
   }

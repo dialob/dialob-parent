@@ -3,6 +3,8 @@ Dialob backend services
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.dialob/dialob-db-s3.svg?label=Maven%20Central&style=for-the-badge)](https://search.maven.org/artifact/io.dialob/dialob-bom)
 ![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License&style=for-the-badge)
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/dialob_dialob-parent?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/summary/overall?id=dialob_dialob-parent)
+[![Sonar Coverage](https://img.shields.io/sonar/coverage/dialob_dialob-parent?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?id=dialob_dialob-parent&metric=coverage&view=list)
 
 ## Where's what
 
@@ -16,12 +18,9 @@ Dialob backend services
   * **dialob-cloud-aws** - AWS support: PostSubmitHandler to S3, publish questionnaire and form events to AWS SNS
   * **dialob-cloud-gcp** - GCP support: Publish questionnaire and form events to GCP PubSub
   * **dialob-core** - (no function, obsolete)
-  * **dialob-db-assets** - Form persistence implementation: Wrench asset service (obsolete)
   * **dialob-db-azure-blob-storage** - Form and questionnaire persistence implementation: Azure Blob Storage
-  * **dialob-db-dialob-api** - Form and questionnaire persistence implementation: Use external Dialob API as persistence (obsolete?)
   * **dialob-db-file** - Form and questionnaire persistence implementation: Filesystem
   * **dialob-db-jdbc** - Form and questionnaire persistence implementation: JDBC, database schema definitions and Flyway migrations for MySql and Postgres
-  * **dialob-db-mongo** - Form and questionnaire persistence implementation: MongoDb
   * **dialob-db-s3** - Form and questionnaire persistence implementation: AWS S3 storage
   * **dialob-db-sp-spring** - Spring Boot autoconfiguration for persitence implemenations
   * **dialob-db-spi** - SPI types for persistence implementations
@@ -30,7 +29,6 @@ Dialob backend services
   * **dialob-form-service-api** - Form service API types
   * **dialob-form-service-rest** - Form REST service implementation
   * **dialob-function** - Form expression language function registry implementation
-  * **dialob-groovy-functions** - Form expression language function registry for Groovy
   * **dialob-integration-api** - Dialob component integration API types
   * **dialob-integration-queue** - Dialob component integration implementation for Redis
   * **dialob-integration-redis** - Dialob component integration implementation for Redis
@@ -53,7 +51,6 @@ Dialob backend services
   * **dialob-security** - Common security types 
   * **dialob-security-aws** - AWS ELB Authentication implementation
   * **dialob-security-spring** - Spring security implementation (APIKey, OAuth2)
-  * **dialob-security-uaa** - UAA security implementation
 * **dialob-session-boot** - Spring boot application for Dialob Session API (Form filling backend)
 * **dialob-spring-boot** - Spring boot autoconfigurations
 * **docs** - Additional documentation
@@ -61,14 +58,17 @@ Dialob backend services
   * **apikeygen.js** -- API key generation script
   * **upgradeForm.js** -- Form document upgrade script from Dialob 0.x to 2.x
 * **frontend** - Frontend (filling, composer) libraries and applications
-  * **dialob-fill-api** - Dialob filling API (typings and state management for filling) **Published to npmjs.com as @dialob/fill-api**
-  * **dialob-fill-react** - React hooks and context for Dialob filling **Published to npmjs.com as @dialob/fill-react**
+  * **demo-dialob-io-app** 
+  * **dialob-fill-api** - Dialob filling API (typings and state management for filling) **Published to npmjs.com as [@dialob/fill-api](https://www.npmjs.com/package/@dialob/fill-api)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-api)
+  * **dialob-fill-react** - React hooks and context for Dialob filling **Published to npmjs.com as [@dialob/fill-react](https://www.npmjs.com/package/@dialob/fill-react)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-react)
   * **dialob-fill-demo-material** - Demo Dialob filling application on MUI 5 (used in demo.dialob.io)
-  * **dialob-fill-material** - Dialob filling component library implementation on top of MUI 5  **Published to npmjs.com as @dialob/fill-material**
+  * **dialob-fill-material** - Dialob filling component library implementation on top of MUI 5 **Published to npmjs.com as [@dialob/fill-material](https://www.npmjs.com/package/@dialob/fill-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-material)
   * **dialob-review-material** - Dialob filled form review renderer on MUI 5 **Published internally as @resys/dialob-review-material**
   * **dialob-composer-semantic** - Dialob Composer component library on Semantic UI **Published internally as @resys/dialob-composer**
   * **dialob-composer-semantic-app** - Dialob Composer reference application on Semantic UI (used in demo.dialob.io)
   * **dialob-composer-material** - Dialob Composer component library on Material UI
+  * **dialob-composer-material-custom-app**
+  * **dialob-material-dashboard** Dialob dashboard component library on Material UI **Published to npmjs.com as [@dialob/fill-material](https://www.npmjs.com/package/@dialob/dashboard-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Fdashboard-material)
 
 ## Supported spring profiles
 
@@ -77,10 +77,7 @@ For default configurations, see YML-s in **dialob-config-parent/dialob-settings*
 * **jdbc** - Form and questionnaire persistence - JDBC (enabled by default)
 * **ui** - Enable UI components (enabled by default)
 * **aws** - AWS environment: Enable AWS ELB authentication
-* **dialobapidb** - Form and questionnaire persistence - Dialob API
 * **filedb** - Form and questionnaire persistence - Filesystem
-* **mongodb** - Form and questionnaire persistence - MongoDb
-* **uaa** - Security implementation UAA (deprecated)
 * **oauth2** - Enabled OAuth 2 authentication
 
 ## Building tasks

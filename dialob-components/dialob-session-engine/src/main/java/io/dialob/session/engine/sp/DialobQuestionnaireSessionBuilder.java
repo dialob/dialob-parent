@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionBuilder {
@@ -105,7 +104,7 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
       }, valueSetId -> questionnaire.getValueSets().stream()
         .filter(valueSet -> valueSet.getId().equals(valueSetId.getValueSetId()))
         .findFirst()
-        .map(valueSet -> valueSet.getEntries().stream().map(entry -> ValueSetState.Entry.of(entry.getKey(), entry.getValue(), true)).collect(toList()))
+        .map(valueSet -> valueSet.getEntries().stream().map(entry -> ValueSetState.Entry.of(entry.getKey(), entry.getValue(), true)).toList())
         .orElse(Collections.emptyList()),
       questionnaire.getMetadata().getCompleted(),
       questionnaire.getMetadata().getOpened(),

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,8 @@
 package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.model.Item;
 import io.dialob.session.engine.program.model.Program;
-import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
 import io.dialob.session.engine.session.CreateDialobSessionProgramVisitor;
 import io.dialob.session.engine.session.command.*;
 import io.dialob.session.engine.session.command.event.*;
@@ -47,9 +45,9 @@ public class DialobProgram implements Serializable {
   @Getter
   private final Program program;
 
-  private final Map<EventMatcher,List<Command<?>>> inputUpdates;
+  private final Map<EventMatcher, List<Command<?>>> inputUpdates;
 
-  private final Map<ItemId,List<Command<?>>> itemCommands;
+  private final Map<ItemId, List<Command<?>>> itemCommands;
 
   private final Map<Command<?>, Set<Command<?>>> commandsToCommands;
 
@@ -142,22 +140,12 @@ public class DialobProgram implements Serializable {
                                      CreateDialobSessionProgramVisitor.ProvidedValueSetEntriesResolver findProvidedValueSetEntries,
                                      Date completed,
                                      Date opened,
-                                     Date lastAnswer)
-  {
+                                     Date lastAnswer) {
     final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, completed, opened, lastAnswer);
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
-    new ActiveDialobSessionUpdater(sessionContextFactory, this, dialobSession, true) {
-      @Override
-      protected void applyUpdates(@NonNull Iterable<Action> actions) {
-        createDialobSessionProgramVisitor.getUpdates().forEach(this::queueCommand);
-        // find first whenActiveUpdated page, if activePage is unset
-        if (activePage == null) {
-          evalQueue.add(CommandFactory.nextPage());
-        }
-      }
-    }.dispatchActions(Collections.emptyList());
-
+    var updater = sessionContextFactory.createSessionUpdater(this, dialobSession, true);
+    updater.applyCommands(createDialobSessionProgramVisitor.getUpdates());
     return dialobSession;
   }
 

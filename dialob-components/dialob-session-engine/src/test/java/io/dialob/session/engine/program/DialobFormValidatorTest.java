@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  public void shouldReportMissingExpressionOnVariable() {
+  void shouldReportMissingExpressionOnVariable() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -65,7 +65,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  public void shouldReportIncompatibleComparison() throws IOException {
+  void shouldReportIncompatibleComparison() throws IOException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -86,7 +86,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  public void issue233() throws IOException {
+  void issue233() throws IOException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -107,7 +107,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  public void issue233b() throws IOException {
+  void issue233b() throws IOException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -129,11 +129,11 @@ class DialobFormValidatorTest {
 
 
   @Test
-  public void issue275() throws IOException, VariableNotDefinedException {
+  void issue275() throws IOException, VariableNotDefinedException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     when(functionRegistry.isAsyncFunction("count")).thenReturn(false);
 
-    when(functionRegistry.returnTypeOf("count", new ValueType[]{ValueType.arrayOf(ValueType.STRING)})).thenReturn(ValueType.INTEGER);
+    when(functionRegistry.returnTypeOf("count", ValueType.arrayOf(ValueType.STRING))).thenReturn(ValueType.INTEGER);
 
 
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -151,7 +151,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  public void validateOfExpressions() throws IOException {
+  void validateOfExpressions() throws IOException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);

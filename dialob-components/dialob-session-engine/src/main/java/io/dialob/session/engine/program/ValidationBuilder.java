@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
@@ -29,6 +28,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -79,8 +79,9 @@ public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, Qu
 
   @Override
   public Map<String, ItemId> getAliases() {
-    return ImmutableMap.<String, ItemId>builder()
-      .putAll(getParent().getAliases()).put("answer", getQuestionId()).build();
+    var map = new HashMap<>(getParent().getAliases());
+    map.put("answer", getQuestionId());
+    return Map.copyOf(map);
   }
 
   @Override

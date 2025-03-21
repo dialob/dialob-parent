@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class QuestionnaireWebSocketHandlerTest {
+class QuestionnaireWebSocketHandlerTest {
 
   @BeforeEach
   public void reset() {
@@ -80,7 +80,7 @@ public class QuestionnaireWebSocketHandlerTest {
 
 
   @Test
-  public void shouldDelegateSessionInitToAsyncTask() throws Exception {
+  void shouldDelegateSessionInitToAsyncTask() throws Exception {
     final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
     final QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     final Map<String,Object> attributes = new HashMap<>();
@@ -95,7 +95,7 @@ public class QuestionnaireWebSocketHandlerTest {
     when(questionnaireSessionService.findOne("123-321")).thenReturn(questionnaireSession);
     when(questionnaireSession.getRevision()).thenReturn("123");
     doAnswer(invocation -> {
-      QuestionnaireSession.UpdatesCallback callback = (QuestionnaireSession.UpdatesCallback) invocation.getArgument(0);
+      QuestionnaireSession.UpdatesCallback callback = invocation.getArgument(0);
       ActionItem textQuestion = ImmutableActionItem.builder()
         .type("text")
         .id("q1")
@@ -130,9 +130,8 @@ public class QuestionnaireWebSocketHandlerTest {
   }
 
   @Test
-  public void shouldSendQuestionnaireNotFoundMessageIfQuestionnaireIsNotFound() throws Exception {
+  void shouldSendQuestionnaireNotFoundMessageIfQuestionnaireIsNotFound() throws Exception {
     final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
-    final QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     final Map<String,Object> attributes = new HashMap<>();
     attributes.put("sessionId","123-321");
     when(webSocketSession.getAttributes()).thenReturn(attributes);

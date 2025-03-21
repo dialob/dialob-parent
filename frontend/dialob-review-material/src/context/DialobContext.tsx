@@ -32,7 +32,7 @@ export class DialobContextType {
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
-    questionnaireValue = this.questionnaire.answers.find(context=>context.id === varName);
+    questionnaireValue = this.questionnaire.answers?.find(context=>context.id === varName);
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
@@ -44,7 +44,7 @@ export class DialobContextType {
 
   public getAnswer(itemId: string, answerId : string | null = null): any {
     let aID = answerId ? answerId : itemId;
-    let answer = this.questionnaire.answers.find(e => e.id === aID);
+    let answer = this.questionnaire.answers?.find(e => e.id === aID);
     if (answer) {
       return answer.value;
     }

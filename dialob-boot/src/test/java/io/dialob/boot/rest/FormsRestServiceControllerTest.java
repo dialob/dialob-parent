@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package io.dialob.boot.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
-import io.dialob.api.rest.Errors;
 import io.dialob.boot.Application;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.DialobFormServiceAutoConfiguration;
@@ -52,7 +51,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -107,7 +105,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   RestApiExceptionMapper.class
 })
 @EnableConfigurationProperties(ServerProperties.class)
-public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
+class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   public interface ListenerMock {
     @EventListener
@@ -142,6 +140,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   private FunctionRegistry functionRegistry;
 
   @BeforeEach
+  @Override
   public void resetMocks() {
     reset(formDatabase, listenerMock, formVersionControlDatabase);
   }
@@ -162,7 +161,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
-  public void shouldLookupFormsFromRepository() throws Exception {
+  void shouldLookupFormsFromRepository() throws Exception {
     doAnswer(invocation -> {
       Consumer consumer = (Consumer) invocation.getArguments()[2];
       consumer.accept(new FormDatabase.FormMetadataRow() {
@@ -204,12 +203,12 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
-  public void shouldLookupFormFromRepository() throws Exception {
+  void shouldLookupFormFromRepository() throws Exception {
 
     Form formDocument = ImmutableForm.builder()
       .id("form-id")
       .rev("2")
-      .metadata(ImmutableFormMetadata.builder().created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).label("test").build())
+      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "form-id", null)).thenReturn(formDocument);
@@ -225,9 +224,8 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
-  public void shouldReturn404IfFormDoNotExists() throws Exception {
+  void shouldReturn404IfFormDoNotExists() throws Exception {
     when(formDatabase.findOne(tenantId, "form-id", null)).thenThrow(new DocumentNotFoundException("not_found"));
-    ResponseEntity<Errors> response;
 
     mockMvc.perform(get(uri("api", "forms", "form-id")).params(tenantParam).accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isNotFound())
@@ -241,7 +239,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
-  public void shouldReturnTemplateForm() throws Exception {
+  void shouldReturnTemplateForm() throws Exception {
     mockMvc.perform(get(uri("api", "forms", "00000000000000000000000000000000")).params(tenantParam).accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.length()").value(4));
@@ -249,7 +247,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldTriggerEventOnFormUpdate() throws Exception {
+  void shouldTriggerEventOnFormUpdate() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
       ImmutableForm arg = (ImmutableForm) invocation.getArguments()[1];
       return arg.withRev("1");
@@ -258,7 +256,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .id("new-form")
       .rev("old")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).label("test").build())
+      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     // We need to return cfrs token on update action
@@ -272,7 +270,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .andExpect(jsonPath("$.ok").value(true))
       ;
     verify(formDatabase, times(1)).save(anyString(), any());
-    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<FormUpdatedEvent>("matches new-form with rev 1") {
+    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<>("matches new-form with rev 1") {
       @Override
       protected boolean matchesSafely(FormUpdatedEvent event) {
         assertEquals("new-form", event.getFormId());
@@ -286,7 +284,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.post", "tenant.all"})
   @Disabled// TODO
-  public void shouldReturnErrorWhenRootITemIsMissing() throws Exception {
+  void shouldReturnErrorWhenRootITemIsMissing() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
       ImmutableForm arg = (ImmutableForm) invocation.getArguments()[0];
       return arg.withRev("1");
@@ -301,7 +299,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .andExpect(jsonPath("$.rev").value("1"))
       .andExpect(jsonPath("$.ok").value(true));
     verify(formDatabase, times(1)).save(anyString(), any());
-    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<FormUpdatedEvent>("matches new-form with rev 1") {
+    verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<>("matches new-form with rev 1") {
       @Override
       protected boolean matchesSafely(FormUpdatedEvent event) {
         assertEquals("new-form", event.getFormId());
@@ -314,13 +312,13 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldRejectUpdateByNameWhenNotForced() throws Exception {
+  void shouldRejectUpdateByNameWhenNotForced() throws Exception {
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
       .thenReturn(Optional.of(ImmutableFormTag.builder().formName("form-name").formId("123-123").created(new Date()).build()));
     Form formDocument = ImmutableForm.builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).build())
+      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
       .build();
 
     // We need to return cfrs token on update action
@@ -336,13 +334,13 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldAcceptUpdateByNameWhenForced() throws Exception {
+  void shouldAcceptUpdateByNameWhenForced() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
 
     Form formDocument = ImmutableForm.builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(new Date(Instant.parse("2015-11-05T12:00:00Z").toEpochMilli())).tenantId("3tt").build())
+      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "123-123")).thenReturn(ImmutableForm.builder().from(formDocument).id("123-123").rev("321").build());
@@ -371,7 +369,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldReturnErrorWhenLabelIsMissing() throws Exception {
+  void shouldReturnErrorWhenLabelIsMissing() throws Exception {
     // We need to return csrf token on update action
     mockMvc.perform(put(uri("api", "forms", "new-form")).params(tenantParam).with(csrf().asHeader())
       .accept(MediaType.APPLICATION_JSON)
@@ -386,7 +384,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @Disabled
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldReturnBadRequestWhenRootItemIsMissing() throws Exception {
+  void shouldReturnBadRequestWhenRootItemIsMissing() throws Exception {
     // We need to return csrf token on update action
     mockMvc.perform(put(uri("api", "forms", "123")).params(tenantParam).with(csrf().asHeader())
       .accept(MediaType.APPLICATION_JSON)
@@ -403,7 +401,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldBeAbleToPutLatestTag() throws Exception {
+  void shouldBeAbleToPutLatestTag() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
     when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(true);
@@ -425,7 +423,7 @@ public class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
-  public void shouldNotModifyIfUpdateIsNotDone() throws Exception {
+  void shouldNotModifyIfUpdateIsNotDone() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
     when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(false);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.db.spi.spring.AbstractDocumentDatabase;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -39,7 +40,9 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
 
   private final S3Client s3Client;
   private final ObjectMapper objectMapper;
+  @Getter
   private final String bucketName;
+  @Getter
   private final String prefix;
 
   public AbstractS3Database(
@@ -56,21 +59,13 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
     this.prefix = prefix;
   }
 
-  public String getPrefix() {
-    return prefix;
-  }
-
-  public String getBucketName() {
-    return bucketName;
-  }
-
   protected abstract String tenantPrefix(String tenantId);
 
   /**
    * Construct S3 object name
    *
-   * @param tenantId
-   * @param id
+   * @param tenantId the ID of the tenant, used as part of the S3 path prefix
+   * @param id       the unique identifier of the object
    * @return object name in storage
    */
   protected String objectName(String tenantId, String id) {
@@ -84,7 +79,7 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
 
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id, String rev) {
+  public F findOne(@NonNull String tenantId, @NonNull String id, String ignoredRev) {
     try {
       String objectName = objectName(tenantId, id);
       ResponseInputStream<GetObjectResponse> s3Object = s3Client.getObject(GetObjectRequest.builder().bucket(this.bucketName).key(objectName).build());
@@ -101,13 +96,13 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
     try {
       return objectMapper.readValue(inputStream, getDocumentClass());
     } catch (IOException e) {
-      LOGGER.error("Object " + objectName + " is corrupted.", e);
+      LOGGER.error("Object {} is corrupted.", objectName, e);
     }
     return null;
   }
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id) {
+  public F findOne(@NonNull String tenantId, @NonNull String id) {
       return findOne(tenantId, id, null);
   }
 
@@ -121,12 +116,12 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
         .continuationToken(continuationToken)
         .build()
       );
-      result.contents().forEach(fileConsumer::accept);
+      result.contents().forEach(fileConsumer);
       continuationToken = result.nextContinuationToken();
     } while (StringUtils.isNotBlank(continuationToken));
   }
 
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     try {
       HeadObjectResponse response = s3Client.headObject(HeadObjectRequest.builder()
         .bucket(this.bucketName)
@@ -176,11 +171,8 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
           .build(),
           RequestBody.fromBytes(objectMapper.writeValueAsBytes(document))
         );
-    } catch (JsonProcessingException e) {
-      LOGGER.error("Failed to write document " + id, e);
-      throw new DocumentCorruptedException("Cannot update document " + id);
-    } catch (SdkClientException e) {
-      LOGGER.error("Failed to write document " + id, e);
+    } catch (JsonProcessingException | SdkClientException e) {
+      LOGGER.error("Failed to write document {}", id, e);
       throw new DocumentCorruptedException("Cannot update document " + id);
     }
     return document;

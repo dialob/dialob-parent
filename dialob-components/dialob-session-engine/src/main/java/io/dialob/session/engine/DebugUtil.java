@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
@@ -44,8 +43,7 @@ public class DebugUtil {
 
   public static String commandToString(Command<?> command) {
     final String commandName = stripImmutablePrefix(command.getClass().getSimpleName());
-    if (command instanceof UpdateCommand) {
-      UpdateCommand updateCommand = (UpdateCommand) command;
+    if (command instanceof UpdateCommand updateCommand) {
       return commandName + "(" + IdUtils.toString(updateCommand.getTargetId()) + ")";
     }
     return commandName;
@@ -78,7 +76,7 @@ public class DebugUtil {
         command.getTriggers()
           .forEach(trigger ->
             commandToEvent.computeIfAbsent(command, command1 -> new ArrayList<>())
-            .addAll(trigger.getAllEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).collect(toList()))));
+            .addAll(trigger.getAllEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).toList())));
 
     try(OutputStreamWriter writer = new FileWriter("deps.dot")) {
       SortedSet<String> nodes = new TreeSet<>();

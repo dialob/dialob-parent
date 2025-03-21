@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ import io.dialob.session.engine.session.model.ItemId;
 public interface ReduceOperators {
 
   static ItemId extractPrototypeId(Expression expression) {
-    if (expression instanceof VariableReference) {
-      VariableReference variableReference = (VariableReference) expression;
+    if (expression instanceof VariableReference variableReference) {
       return variableReference.getItemId();
     }
     throw new IllegalStateException("Only id expressions supported for now");

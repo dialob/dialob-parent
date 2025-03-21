@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GrantedAuthorityTenantsProviderTest {
 
   @Test
-  public void shouldReturnEmptyListOfTenantIfUnauthenticated() {
+  void shouldReturnEmptyListOfTenantIfUnauthenticated() {
 
     SecurityContextHolder.createEmptyContext();
 
@@ -41,9 +40,9 @@ class GrantedAuthorityTenantsProviderTest {
   }
 
   @Test
-  public void shouldReturnListOfTenantsFromAuthorizations() {
+  void shouldReturnListOfTenantsFromAuthorizations() {
 
-    SecurityContextHolder.setContext(new SecurityContextImpl(new TestingAuthenticationToken("","", Arrays.asList(
+    SecurityContextHolder.setContext(new SecurityContextImpl(new TestingAuthenticationToken("","", List.of(
       ImmutableTenantGrantedAuthority.of("12312", "aa")
     ))));
 

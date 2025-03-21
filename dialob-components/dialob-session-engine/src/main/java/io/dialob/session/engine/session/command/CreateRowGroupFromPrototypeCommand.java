@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
@@ -28,7 +27,6 @@ import org.immutables.value.Value;
 import java.util.Objects;
 import java.util.Set;
 
-import static io.dialob.session.engine.session.command.EventMatchers.whenItemsChanged;
 import static java.util.stream.Collectors.toMap;
 
 @Value.Immutable
@@ -41,8 +39,8 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
   @Override
   default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     return getItemPrototypeId().getParent().flatMap(groupId -> {
-      Set<ItemId> currentItems = Sets.newHashSet(itemStates.getItemStates().get(groupId).getItems());
-      Set<ItemId> originalItems = context.getOriginalItemState(groupId).map(state -> (Set<ItemId>) Sets.newHashSet(state.getItems())).orElse(ImmutableSet.of());
+      var currentItems = Set.copyOf(itemStates.getItemStates().get(groupId).getItems());
+      var originalItems = context.getOriginalItemState(groupId).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
       final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
       final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
@@ -58,7 +56,8 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
   @Override
   default Set<EventMatcher> getEventMatchers() {
     return getItemPrototypeId().getParent()
-      .map(groupId -> ImmutableSet.of(whenItemsChanged(groupId)))
-      .orElse(ImmutableSet.of());
+      .map(EventMatchers::whenItemsChanged)
+      .map(Set::of)
+      .orElseGet(Set::of);
   }
 }

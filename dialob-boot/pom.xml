@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright © 2015 - 2021 ReSys (info@dialob.io)
+    Copyright © 2015 - 2025 ReSys (info@dialob.io)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,10 +22,13 @@
     <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../dialob-build-parent/pom.xml</relativePath>
+    <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-boot</artifactId>
   <packaging>jar</packaging>
+  <properties>
+    <sonar.sources>pom.xml,src/main/java,src/main/resources/templates</sonar.sources>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -63,8 +66,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>pl.project13.maven</groupId>
-        <artifactId>git-commit-id-plugin</artifactId>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -207,10 +210,6 @@
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-groovy-functions</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-spring-boot</artifactId>
     </dependency>
     <dependency>
@@ -272,10 +271,6 @@
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
-      <artifactId>dialob-security-uaa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
       <artifactId>dialob-security-aws</artifactId>
     </dependency>
     
@@ -299,7 +294,7 @@
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-api</artifactId>
-      <classifier>test</classifier>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     

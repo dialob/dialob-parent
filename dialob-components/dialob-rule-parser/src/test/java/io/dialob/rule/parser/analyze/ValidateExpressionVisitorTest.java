@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,25 @@
  */
 package io.dialob.rule.parser.analyze;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.Expression;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class ValidateExpressionVisitorTest {
+class ValidateExpressionVisitorTest {
 
   @Test
-  public void functionReturningNonBooleanShouldTriggerError() throws Exception {
+  void functionReturningNonBooleanShouldTriggerError() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
-    Mockito.when(variableFinder.returnTypeOf("today", new ValueType[0])).thenReturn(ValueType.DATE);
-    Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "today()");
+    Mockito.when(variableFinder.returnTypeOf("today")).thenReturn(ValueType.DATE);
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "today()");
     final ValidateExpressionVisitor validateExpressionVisitor = new ValidateExpressionVisitor();
     expression.accept(validateExpressionVisitor);
     assertTrue(validateExpressionVisitor.hasErrors());
@@ -43,10 +44,10 @@ public class ValidateExpressionVisitorTest {
   }
 
   @Test
-  public void functionReturningBooleanIsAccepted() throws Exception {
+  void functionReturningBooleanIsAccepted() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
-    Mockito.when(variableFinder.returnTypeOf("booleanFunction", new ValueType[0])).thenReturn(ValueType.BOOLEAN);
-    Expression expression = Expression.createExpression(variableFinder, Maps.newHashMap(), "booleanFunction()");
+    Mockito.when(variableFinder.returnTypeOf("booleanFunction")).thenReturn(ValueType.BOOLEAN);
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "booleanFunction()");
     final ValidateExpressionVisitor validateExpressionVisitor = new ValidateExpressionVisitor();
     expression.accept(validateExpressionVisitor);
     assertFalse(validateExpressionVisitor.hasErrors());

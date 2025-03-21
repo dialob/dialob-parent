@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 package io.dialob.rule.parser;
 
 import io.dialob.rule.parser.node.NodeBase;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class ExpressionWriterVisitorTest {
+@Slf4j
+class ExpressionWriterVisitorTest {
     @Test
-    public void test() {
+    void test() {
         assertAstDump("1+2+4 > 9","1 + 2 + 4 > 9");
         assertAstDump("1*(hn+4) > 9","1 * (hn + 4) > 9");
         assertAstDump("1/(hn+4) > 9","1 / (hn + 4) > 9");
@@ -55,7 +57,7 @@ public class ExpressionWriterVisitorTest {
         final Expression expression = Expression.createExpression(original);
         assertFalse(expression.hasErrors());
         ast = expression.getAst();
-        System.out.println(ast);
+        LOGGER.debug("{} => {}", expected, ast);
         ast.accept(visitor);
         assertEquals(expected, visitor.toString());
     }

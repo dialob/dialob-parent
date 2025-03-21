@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,18 +26,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.function.BinaryOperator;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum PrimitiveValueType implements ValueType {
   TIME {
-    @Override
-    public Comparator<LocalTime> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
     @Override
     public Class<?> getTypeClass() {
       return LocalTime.class;
@@ -54,11 +48,6 @@ public enum PrimitiveValueType implements ValueType {
     @Override
     public boolean isNegateable() {
       return false;
-    }
-
-    @Override
-    public boolean canEqualWith(ValueType rhs) {
-      return rhs == this;
     }
 
     @Override
@@ -110,11 +99,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   DURATION {
     @Override
-    public Comparator<Duration> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public BinaryOperator<Duration> sumOp() {
       return (identity, element) -> {
         if (identity == null) {
@@ -142,25 +126,14 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object parseFromStringWithUnit(String value, String unit) {
-      switch (unit) {
-        case "seconds":
-        case "second":
-          return Duration.ofSeconds(Long.parseLong(value));
-        case "minutes":
-        case "minute":
-          return Duration.ofMinutes(Long.parseLong(value));
-        case "hours":
-        case "hour":
-          return Duration.ofHours(Long.parseLong(value));
-        case "days":
-        case "day":
-          return Duration.ofDays(Long.parseLong(value));
-        case "weeks":
-        case "week":
-          return Duration.ofDays(Long.parseLong(value) * 7L);
-        default:
-          return parseFromString(value);
-      }
+      return switch (unit) {
+        case "seconds", "second" -> Duration.ofSeconds(Long.parseLong(value));
+        case "minutes", "minute" -> Duration.ofMinutes(Long.parseLong(value));
+        case "hours", "hour" -> Duration.ofHours(Long.parseLong(value));
+        case "days", "day" -> Duration.ofDays(Long.parseLong(value));
+        case "weeks", "week" -> Duration.ofDays(Long.parseLong(value) * 7L);
+        default -> parseFromString(value);
+      };
     }
 
     @Override
@@ -213,12 +186,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   DATE {
     @Override
-    public Comparator<LocalDate> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-
-    @Override
     public Class<?> getTypeClass() {
       return LocalDate.class;
     }
@@ -229,11 +196,6 @@ public enum PrimitiveValueType implements ValueType {
         return null;
       }
       return LocalDate.parse(string);
-    }
-
-    @Override
-    public boolean canEqualWith(ValueType rhs) {
-      return rhs == this;
     }
 
     @Override
@@ -288,11 +250,6 @@ public enum PrimitiveValueType implements ValueType {
 
   PERIOD {
     @Override
-    public Comparator<Period> getComparator() {
-      return null;
-    }
-
-    @Override
     public BinaryOperator<Period> sumOp() {
       return (identity, element) -> {
         if (identity == null) {
@@ -312,22 +269,13 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object parseFromStringWithUnit(String value, String unit) {
-      switch (unit) {
-        case "years":
-        case "year":
-          return Period.ofYears(Integer.parseInt(value));
-        case "months":
-        case "month":
-          return Period.ofMonths(Integer.parseInt(value));
-        case "days":
-        case "day":
-          return Period.ofDays(Integer.parseInt(value));
-        case "weeks":
-        case "week":
-          return Period.ofWeeks(Integer.parseInt(value));
-        default:
-          return parseFromString(value);
-      }
+      return switch (unit) {
+        case "years", "year" -> Period.ofYears(Integer.parseInt(value));
+        case "months", "month" -> Period.ofMonths(Integer.parseInt(value));
+        case "days", "day" -> Period.ofDays(Integer.parseInt(value));
+        case "weeks", "week" -> Period.ofWeeks(Integer.parseInt(value));
+        default -> parseFromString(value);
+      };
     }
 
     @Override
@@ -396,11 +344,6 @@ public enum PrimitiveValueType implements ValueType {
 
   },
   INTEGER {
-    @Override
-    public Comparator<BigInteger> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
     @Override
     public BinaryOperator<BigInteger> sumOp() {
       return (identity, element) -> {
@@ -500,7 +443,7 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public Object coerseFrom(Object value) {
+    public Object coerceFrom(Object value) {
       if (value instanceof BigInteger) {
         return value;
       }
@@ -537,12 +480,6 @@ public enum PrimitiveValueType implements ValueType {
 
   },
   DECIMAL {
-    @Override
-    public Comparator<BigDecimal> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-
     @Override
     public BinaryOperator<BigDecimal> sumOp() {
       return (identity, element) -> {
@@ -635,7 +572,7 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public Object coerseFrom(Object value) {
+    public Object coerceFrom(Object value) {
       if (value instanceof Number) {
         return BigDecimal.valueOf(((Number) value).doubleValue());
       }
@@ -662,11 +599,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   BOOLEAN {
     @Override
-    public Comparator<Boolean> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public BinaryOperator<Boolean> sumOp() {    // === orOp
       return (identity, element) -> {
         if (identity == null) {
@@ -682,11 +614,8 @@ public enum PrimitiveValueType implements ValueType {
     @Override
     public BinaryOperator<Boolean> multOp() {    // === andOp
       return (identity, element) -> {
-        if (identity == null) {
-          return element;
-        }
-        if (element == null) {
-          return identity;
+        if (identity == null || element == null) {
+          return null;
         }
         return identity && element;
       };
@@ -738,11 +667,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   STRING {
     @Override
-    public Comparator<String> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public BinaryOperator<String> sumOp() {
       return (identity, element) -> {
         if (identity == null) {
@@ -792,11 +716,6 @@ public enum PrimitiveValueType implements ValueType {
   },
   PERCENT {
     @Override
-    public Comparator<BigDecimal> getComparator() {
-      return Comparator.naturalOrder();
-    }
-
-    @Override
     public Class<?> getTypeClass() {
       return BigDecimal.class;
     }
@@ -833,11 +752,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
   };
-
-  @Override
-  public boolean isPrimitive() {
-    return true;
-  }
 
   public Object negate(Object value) {
     throw new UnsupportedOperationException();

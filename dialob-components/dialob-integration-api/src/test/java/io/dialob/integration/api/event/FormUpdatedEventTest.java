@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,12 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class FormUpdatedEventTest {
 
   @Test
-  public void shouldSerializaIntoJsonAndBack() throws IOException {
+  void shouldSerializaIntoJsonAndBack() throws IOException {
     final FormUpdatedEvent event = ImmutableFormUpdatedEvent.builder()
       .source("node1")
       .tenant(Tenant.of("tent1"))
@@ -39,7 +39,7 @@ class FormUpdatedEventTest {
     String json = objectMapper.writeValueAsString(event);
     assertEquals("{\"type\":\"FormUpdated\",\"tenant\":{\"id\":\"tent1\"},\"formId\":\"formi\",\"source\":\"node1\",\"revision\":\"new\"}", json);
     DistributedEvent event2 = objectMapper.readValue(json, DistributedEvent.class);
-    assertTrue(event2 instanceof FormUpdatedEvent);
+    assertInstanceOf(FormUpdatedEvent.class, event2);
     assertEquals(event, event2);
   }
 }

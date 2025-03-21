@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FormMetadataTest {
+class FormMetadataTest {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
-  public void shouldParseLabelsSet() throws Exception {
+  void shouldParseLabelsSet() throws Exception {
     String document = "{\"metadata\":{\"labels\":[],\"label\":\"test\"}}";
     Form formDocument = objectMapper.readValue(document, Form.class);
     assertTrue(formDocument.getMetadata().getLabels().isEmpty());
@@ -58,13 +58,13 @@ public class FormMetadataTest {
   }
 
   @Test
-  public void metadataPropertiesTest() throws Exception {
+  void metadataPropertiesTest() throws Exception {
     String document = "{\"metadata\":{\"someRandomThing\": {\"someKey\": \"someValue\"},\"label\":\"test\"}}";
     Form formDocument = objectMapper.readValue(document, Form.class);
     assertNotNull(formDocument.getMetadata().getAdditionalProperties());
     Object obj = formDocument.getMetadata().getAdditionalProperties().get("someRandomThing");
     assertNotNull(obj);
-    assertTrue(obj instanceof Map);
+    assertInstanceOf(Map.class, obj);
     assertEquals("someValue", ((Map) obj).get("someKey"));
   }
 

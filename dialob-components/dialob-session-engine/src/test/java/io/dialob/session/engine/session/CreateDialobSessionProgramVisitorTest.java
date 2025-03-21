@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,9 @@ import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
+import java.math.BigInteger;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -44,7 +41,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 class CreateDialobSessionProgramVisitorTest {
 
   @Test
-  public void prototypeItemsAreCollectedToPrototypes() {
+  void prototypeItemsAreCollectedToPrototypes() {
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
       "session", "en",
       null,
@@ -66,7 +63,7 @@ class CreateDialobSessionProgramVisitorTest {
 
 
   @Test
-  public void prototshouldCreateGroupForRowGroupAndPrototypeGroupForRows() {
+  void prototshouldCreateGroupForRowGroupAndPrototypeGroupForRows() {
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
       "session", "en",
       null,
@@ -84,7 +81,7 @@ class CreateDialobSessionProgramVisitorTest {
         .id(IdUtils.toId("rg.*"))
         .type("row")
         .isPrototype(true)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(Arrays.asList(IdUtils.toId("rg.*.q1"))).build()).build());
+        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build()).build());
     });
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
@@ -93,7 +90,7 @@ class CreateDialobSessionProgramVisitorTest {
   }
 
   @Test
-  public void shouldGetAllItemsById() {
+  void shouldGetAllItemsById() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(
       "tenant",
@@ -121,16 +118,16 @@ class CreateDialobSessionProgramVisitorTest {
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
-    DialobSessionUpdater sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession, true);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.addRow("rg")));
+    ActiveDialobSessionUpdater sessionUpdater = (ActiveDialobSessionUpdater) contextFactory.createSessionUpdater(dialobProgram, dialobSession, true);
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.addRow("rg"))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.addRow("rg"))));
 
-    sessionUpdater = new ActiveDialobSessionUpdater(contextFactory, dialobProgram, dialobSession, false);
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q1", 1)));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.0.q2", 1)));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q1", 2.0)));
-    sessionUpdater.dispatchActions(Arrays.asList(ActionsFactory.answer("rg.2.q2", 2.0)));
+    sessionUpdater = (ActiveDialobSessionUpdater) contextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.0.q1", 1))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.0.q2", 1))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.2.q1", 2.0))));
+    sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(List.of(ActionsFactory.answer("rg.2.q2", 2.0))));
 
     assertTrue(dialobSession.getItemState(Operators.ref("rg.0")).isPresent());
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
@@ -141,7 +138,7 @@ class CreateDialobSessionProgramVisitorTest {
     assertEquals(BigInteger.ONE, dialobSession.getItemState(IdUtils.toId("rg.0.q1")).get().getValue());
     assertEquals(BigDecimal.valueOf(1.0), dialobSession.getItemState(IdUtils.toId("rg.0.q2")).get().getValue());
 
-    EvalContext context = contextFactory.createDialobSessionEvalContext(dialobSession, event -> {}, false);
+    EvalContext context = sessionUpdater.createEvalContext();
 
 //    ItemId test = context.mapTo(IdUtils.toId("q2"), true);
     Optional<ItemState> test = context.findPrototype(IdUtils.toId("q2"));
@@ -205,7 +202,7 @@ class CreateDialobSessionProgramVisitorTest {
 
 
   @Test
-  public void shouldCreateI() {
+  void shouldCreateI() {
     CreateDialobSessionProgramVisitor.InitialValueResolver initialValueResolver = Mockito.mock(CreateDialobSessionProgramVisitor.InitialValueResolver.class);
 
     Program program = Mockito.mock(Program.class);
@@ -223,7 +220,7 @@ class CreateDialobSessionProgramVisitorTest {
       .id(ImmutableItemIdPartial.of(Optional.of(itemId)))
       .type("row")
       .isPrototype(true)
-      .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(Arrays.asList(IdUtils.toId("rg.*.q1"))).build())
+      .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())
       .build();
 
 
@@ -233,7 +230,7 @@ class CreateDialobSessionProgramVisitorTest {
     CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor("tenant",
       "session", "en",
       null,
-      initialValueResolver, valueSetId -> Collections.emptyList(), new HashMap(), null, null, null);
+      initialValueResolver, valueSetId -> Collections.emptyList(), new HashMap<>(), null, null, null);
 
     createDialobSessionProgramVisitor.startProgram(program);
     createDialobSessionProgramVisitor.visitItems().ifPresent(itemVisitor -> {

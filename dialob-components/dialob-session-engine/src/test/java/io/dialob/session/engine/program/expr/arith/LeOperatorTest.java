@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.when;
 
-public class LeOperatorTest {
+class LeOperatorTest {
 
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     LeOperator operator = ImmutableLeOperator.builder().lhs(lh).rhs(rh).build();

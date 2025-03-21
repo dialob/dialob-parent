@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -33,6 +31,7 @@ import org.immutables.value.Value;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.program.expr.arith.ImmutableToLowerCaseOperator.lowerCaseOf;
 import static io.dialob.session.engine.program.expr.arith.ImmutableToUpperCaseOperator.upperCaseOf;
@@ -43,7 +42,7 @@ public interface LocalizedLabelOperator extends Expression {
   Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([\\w]*?)(:.*?)?}");
 
   static LocalizedLabelOperator createLocalizedLabelOperator(@NonNull ProgramBuilder programBuilder, @NonNull Label label) {
-    Map<String, Expression> value = Maps.newHashMap();
+    Map<String, Expression> value = new HashMap<>();
     label.getLabels().forEach((key, labelString) -> {
       int i = 0;
       final Matcher matcher = EXPRESSION_PATTERN.matcher(labelString);
@@ -116,8 +115,8 @@ public interface LocalizedLabelOperator extends Expression {
       .values()
       .stream()
       .map(Expression::getEvalRequiredConditions)
-      .reduce(Sets::union)
-      .orElse(Collections.emptySet());
+      .flatMap(Collection::stream)
+      .collect(Collectors.toUnmodifiableSet());
   }
 
   @NonNull

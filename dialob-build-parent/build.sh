@@ -1,5 +1,6 @@
+#!/usr/bin/env bash
 #
-# Copyright © 2015 - 2021 ReSys (info@dialob.io)
+# Copyright © 2015 - 2025 ReSys (info@dialob.io)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +15,27 @@
 # limitations under the License.
 #
 
-#!/usr/bin/env bash
 set -e
 
-export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
+OPTS=""
 
-mvn -B clean install \
-		-Pjib \
+if [[ ! -z "$DOCKER_REGISTRY" ]]; then
+	OPTS="$OPTS -Djib.to.imagePath=$DOCKER_REGISTRY" 
+	PROFILES="$PROFILES jib"
+fi
+
+if [[ ! -z "$GITHUB_REF_NAME" ]]; then
+	OPTS="$OPTS -DbranchName=$GITHUB_REF_NAME"
+else
+	OPTS="$OPTS -DbranchName=$(git rev-parse --abbrev-ref HEAD)"
+fi
+
+if [[ ! -z "$PROFILES" ]]; then
+	PROFILES=-P"$(echo $PROFILES | xargs | tr ' ' ',')"
+fi
+
+./mvnw -B $PROFILES \
     -Dmaven.javadoc.skip=false \
-    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Djib.to.imagePath=$DOCKER_REGISTRY \
-    -DbranchName=$GITHUB_REF_NAME
-
+    -Dsonar.projectKey=dialob_dialob-parent \
+    $OPTS \
+    clean install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar

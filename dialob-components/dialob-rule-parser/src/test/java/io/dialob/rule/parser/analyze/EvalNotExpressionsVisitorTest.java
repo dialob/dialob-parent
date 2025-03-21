@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EvalNotExpressionsVisitorTest {
+class EvalNotExpressionsVisitorTest {
 
     @Test
-    public void test() {
+    void test() {
         assertExpressionNot("(and (> a 0) (or false true))", "a > 0 and not not (false or true)");
         assertExpressionNot("(and (> a 0) (and true false))", "a > 0 and not (false or true)");
         assertExpressionNot("(and (> a 0) (and true true))", "a > 0 and not (false or not true)");

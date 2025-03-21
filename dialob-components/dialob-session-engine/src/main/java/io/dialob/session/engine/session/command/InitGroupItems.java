@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
@@ -35,7 +34,7 @@ public interface InitGroupItems extends AbstractUpdateCommand<ItemId, ItemState>
   @NonNull
   @Override
   default Set<EventMatcher> getEventMatchers() {
-    return ImmutableSet.of(EventMatchers.whenItemAdded(getTargetId()));
+    return Set.of(EventMatchers.whenItemAdded(getTargetId()));
   }
 
   @NonNull

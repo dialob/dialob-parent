@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,9 +93,8 @@ public class FixedClientApiKeyService implements ClientApiKeyService, ApiKeyAuth
 
   @Override
   public Collection<GrantedAuthority> loadAuthorities(ApiKey apiKey) {
-    List<GrantedAuthority> authorities = new ArrayList<>();
     final ApiKeyEntry apiKeyEntry = apiKeyEntries.get(apiKey.getClientId());
-    authorities.addAll(apiKeyEntry.getGrantedAuthorities());
+    List<GrantedAuthority> authorities = new ArrayList<>(apiKeyEntry.getGrantedAuthorities());
     if (authorities.isEmpty()) {
       // If not key authorities defined fallback to default
       authorities.add(new SimpleGrantedAuthority("forms.post"));

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import io.dialob.settings.DialobSettings;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -93,7 +92,7 @@ class ApplicationCorsTest {
   }
 
   @BeforeEach
-  public void setupCurrentUser(TestInfo testInfo) {
+  public void setupCurrentUser() {
     Mockito.reset(answerController, questionnaireSessionService);
     dialobSettings.getSession().getRest().getCors().clear();
     this.mockMvc = MockMvcBuilders
@@ -102,7 +101,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldNotGetAnyCorsHeaderWhenCorsIsUndefined() throws Exception {
+  void shouldNotGetAnyCorsHeaderWhenCorsIsUndefined() throws Exception {
     when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(ImmutableActions.builder().build()));
     mockMvc.perform(get(session("123456"))
         .header("Origin", "localhost") // triggers cors evaluation...
@@ -121,7 +120,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetDefaultCorsHeadersIfCorsConfigured() throws Exception {
+  void shouldGetDefaultCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
 
     when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(ImmutableActions.builder().build()));
@@ -153,7 +152,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetPreFlightDefaultCorsHeadersIfCorsConfigured() throws Exception {
+  void shouldGetPreFlightDefaultCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));
@@ -183,7 +182,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetPreFlightTenantSpecificCorsHeadersIfCorsConfigured() throws Exception {
+  void shouldGetPreFlightTenantSpecificCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));
@@ -219,7 +218,7 @@ class ApplicationCorsTest {
   }
 
   @Test
-  public void shouldGetDefaultCorsIfTenantDoNotHaveCorsDefinedAndDefaultDoNotExists() throws Exception {
+  void shouldGetDefaultCorsIfTenantDoNotHaveCorsDefinedAndDefaultDoNotExists() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id-other");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));

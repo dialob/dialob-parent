@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,23 @@
 package io.dialob.questionnaire.service.api;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.annotation.Nullable;
+import lombok.Getter;
 
+@Getter
 public class FormDataMissingException extends RuntimeException {
 
+  @NonNull
   private final String formId;
+
+  @Nullable
   private final String formRev;
 
-  public FormDataMissingException(@NonNull String formId, String formRev) {
-    super("Form '" + formId + (formRev != null ? "' rev '" + formRev : "'") + " cannot be loaded.");
+  public FormDataMissingException(@NonNull String formId, @Nullable String formRev) {
+    super("Form '" + formId + (formRev != null ? "' rev '" + formRev : "") + "' cannot be loaded.");
     this.formId = formId;
     this.formRev = formRev;
   }
 
-  @NonNull
-  public String getFormId() {
-    return formId;
-  }
 
-  public String getFormRev() {
-    return formRev;
-  }
 }

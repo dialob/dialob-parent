@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,11 @@ package io.dialob.db.sp;
 import com.azure.storage.blob.BlobServiceClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.db.assets.AssetFormDatabase;
-import io.dialob.db.assets.repository.AssetRepository;
-import io.dialob.db.assets.repository.GenericAssetRepository;
-import io.dialob.db.assets.serialization.AssetFormDeserializer;
-import io.dialob.db.assets.serialization.AssetFormMetadataRowDeserializer;
-import io.dialob.db.assets.serialization.AssetFormSerializer;
 import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
 import io.dialob.db.azure.blob.storage.QuestionnaireAzureBlobStorageDatabase;
-import io.dialob.db.dialob.api.DialobApiDbSettings;
-import io.dialob.db.dialob.api.DialobApiFormDatabase;
-import io.dialob.db.dialob.api.DialobApiQuestionnaireDatabase;
-import io.dialob.db.dialob.api.DialobApiTemplate;
 import io.dialob.db.file.FormFileDatabase;
 import io.dialob.db.file.QuestionnaireFileDatabase;
 import io.dialob.db.jdbc.*;
-import io.dialob.db.mongo.MongoQuestionnaireIdObfuscator;
-import io.dialob.db.mongo.database.MongoDbFormDatabase;
-import io.dialob.db.mongo.database.MongoDbQuestionnaireDatabase;
-import io.dialob.db.mongo.repository.FormRepository;
-import io.dialob.db.mongo.repository.QuestionnaireRepository;
 import io.dialob.db.s3.FormS3Database;
 import io.dialob.db.s3.QuestionnaireS3Database;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
@@ -52,13 +37,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.sql.DataSource;
@@ -81,35 +64,6 @@ import java.util.function.Predicate;
 @Import(DatabaseExceptionMapper.class)
 public class DialobDbSpAutoConfiguration {
 
-
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.MONGODB)
-  @Import({
-    org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration.class
-  })
-  @EnableMongoRepositories
-  public static class DialobDbMongoAutoConfiguration {
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
-    public FormDatabase formDatabase(FormRepository repository) {
-      return new MongoDbFormDatabase(repository);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "MONGODB", matchIfMissing = true)
-    public QuestionnaireDatabase questionnaireDatabase(QuestionnaireRepository repository, MongoQuestionnaireIdObfuscator mongoQuestionnaireIdObfuscator) {
-      return new MongoDbQuestionnaireDatabase(repository, mongoQuestionnaireIdObfuscator);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(MongoQuestionnaireIdObfuscator.class)
-    public MongoQuestionnaireIdObfuscator mongoQuestionnaireIdObfuscator() {
-      return new MongoQuestionnaireIdObfuscator();
-    }
-  }
-
-
   @Configuration(proxyBeanMethods = false)
   @ConditionalOnDatabaseType(DialobSettings.DatabaseType.JDBC)
   public static class DialobDbJdbcAutoConfiguration {
@@ -126,7 +80,7 @@ public class DialobDbSpAutoConfiguration {
 
       this.schema = settings.getDb().getJdbc().getSchema();
 
-      DatabaseHelper databaseHelper = databaseHandler(jdbcTemplate.getDataSource(), settings.getDb().getJdbc());
+      DatabaseHelper databaseHelper = databaseHandler(Objects.requireNonNull(jdbcTemplate.getDataSource(), "dataSource is null. Configure datasource"), settings.getDb().getJdbc());
 
       Predicate<String> isAnyTenantPredicate = tenantId -> false;
       if (settings.getTenant().getMode() == DialobSettings.TenantSettings.Mode.FIXED) {
@@ -278,55 +232,7 @@ public class DialobDbSpAutoConfiguration {
     }
   }
 
-
-
-
-
-  @Configuration(proxyBeanMethods = false)
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.DIALOBAPIDB)
-  @EnableConfigurationProperties(DialobApiDbSettings.class)
-  public class DialobDbDialobApiAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean(DialobApiTemplate.class)
-    public DialobApiTemplate dialobApiTemplate(DialobApiDbSettings settings) {
-      RestTemplate restTemplate = new RestTemplate();
-      return new DialobApiTemplate(restTemplate, settings);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.form-database", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
-    public FormDatabase formDatabase(DialobApiTemplate dialobApiTemplate) {
-      return new DialobApiFormDatabase(dialobApiTemplate);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "dialob.questionnaire-database", name = "database-type", havingValue = "DIALOBAPIDB", matchIfMissing = true)
-    public QuestionnaireDatabase questionnaireDatabase(DialobApiTemplate dialobApiTemplate) {
-      return new DialobApiQuestionnaireDatabase(dialobApiTemplate);
-    }
-
-  }
-
-  @Configuration(proxyBeanMethods = false)
-  @ConditionalOnDatabaseType(DialobSettings.DatabaseType.ASSETS)
-  public class DialobDbAssetsAutoConfiguration {
-
-    @Bean
-    public FormDatabase assetFormDatabase(ObjectMapper objectMapper, DialobSettings settings) {
-
-      RestTemplate restTemplate = new RestTemplate();
-      AssetRepository assetRepository = new GenericAssetRepository(restTemplate, settings, objectMapper);
-
-      AssetFormSerializer assetFormSerializer = new AssetFormSerializer(objectMapper);
-      AssetFormDeserializer assetFormDeserializer = new AssetFormDeserializer(objectMapper);
-      AssetFormMetadataRowDeserializer assetFormMetadataRowDeserializer = new AssetFormMetadataRowDeserializer(objectMapper);
-
-      return new AssetFormDatabase(assetRepository, assetFormSerializer, assetFormDeserializer, assetFormMetadataRowDeserializer);
-    }
-  }
-
-  static DatabaseHelper databaseHandler(DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
+  static DatabaseHelper databaseHandler(@NonNull DataSource dataSource, DialobSettings.DatabaseSettings.JdbcSettings settings) {
     try (Connection connection = dataSource.getConnection()) {
       String databaseProductName = connection.getMetaData().getDatabaseProductName();
       if (databaseProductName.startsWith("DB2/")) {

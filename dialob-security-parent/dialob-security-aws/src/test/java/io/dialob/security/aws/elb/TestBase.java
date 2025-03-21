@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class TestBase {
 
@@ -49,7 +49,7 @@ public class TestBase {
       .issuer("https://example.com/authority")
       .expirationTime(new Date(now.plus(5, ChronoUnit.MINUTES).toEpochMilli()))
       .jwtID("00000000-0000-0000-0000-000000000001")
-      .claim("cognito:groups", Arrays.asList("admin"))
+      .claim("cognito:groups", List.of("admin"))
       .claim("token_use", "access")
       .claim("scope", "openid")
       .claim("version", 2)

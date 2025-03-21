@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright © 2015 - 2021 ReSys (info@dialob.io)
+    Copyright © 2015 - 2025 ReSys (info@dialob.io)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@
 
     <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     <mockito.version>5.15.2</mockito.version>
-    <spring-boot.version>3.4.1</spring-boot.version>
+    <spring-boot.version>3.4.2</spring-boot.version>
     <spring-integration.version>6.4.1</spring-integration.version>
     <spring-security.version>6.4.2</spring-security.version>
     <spring-session.version>3.4.1</spring-session.version>
@@ -76,14 +76,13 @@
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <caffeine.version>3.1.8</caffeine.version>
     <protobuf-java.version>4.29.2</protobuf-java.version>
-    <lombok.version>1.18.34</lombok.version>
+    <lombok.version>1.18.36</lombok.version>
     <commons-text.version>1.12.0</commons-text.version>
     <commons-csv.version>1.12.0</commons-csv.version>
     <commons-validator.version>1.9.0</commons-validator.version>
     <aws-java-sdk.version>2.29.23</aws-java-sdk.version>
     <azure-sdk.version>1.2.28</azure-sdk.version>
     <s3mock-junit5.version>3.12.0</s3mock-junit5.version>
-    <groovy.version>4.0.24</groovy.version>
     <bcpkix-jdk18on.version>1.78.1</bcpkix-jdk18on.version>
     <spring-cloud-gcp.version>5.5.1</spring-cloud-gcp.version> <!-- 1.2.6.RELEASE is broken! -->
     <springdoc.version>1.8.0</springdoc.version>
@@ -247,16 +246,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.groovy</groupId>
-        <artifactId>groovy-json</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
@@ -319,6 +308,12 @@
         <groupId>commons-validator</groupId>
         <artifactId>commons-validator</artifactId>
         <version>${commons-validator.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.antlr</groupId>
@@ -449,6 +444,11 @@
         <version>${immutables.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>mongo</artifactId>
+        <version>${immutables.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.github.ben-manes.caffeine</groupId>
         <artifactId>caffeine</artifactId>
         <version>${caffeine.version}</version>
@@ -498,12 +498,18 @@
       <dependency>
         <groupId>org.jetbrains</groupId>
         <artifactId>annotations</artifactId>
-        <version>24.1.0</version>
+        <version>25.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.adobe.testing</groupId>
         <artifactId>s3mock-junit5</artifactId>
         <version>${s3mock-junit5.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -520,7 +526,7 @@
       <dependency>
         <groupId>com.redis</groupId>
         <artifactId>testcontainers-redis</artifactId>
-        <version>2.2.0</version>
+        <version>2.2.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -559,22 +565,6 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <configuration>
-          <licenseSets>
-            <licenseSet>
-              <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-              <excludes>
-                <exclude>release.version</exclude>
-                <exclude>.m2/**</exclude>
-                <exclude>**/*.g4</exclude>
-                <exclude>**/*.yml</exclude>
-                <exclude>src/test/resources/**</exclude>
-                <exclude>src/main/resources/**</exclude>
-                <exclude>**/ElbJWKSource.java</exclude>
-              </excludes>
-            </licenseSet>
-          </licenseSets>
-        </configuration>
         <executions>
           <execution>
             <goals>
@@ -639,11 +629,11 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.5</version>
+          <version>3.5.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.7.1</version>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
@@ -658,7 +648,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.2</version>
         </plugin>
         <plugin>
           <groupId>org.antlr</groupId>
@@ -666,31 +656,9 @@
           <version>${antlr4.version}</version>
         </plugin>
         <plugin>
-          <groupId>pl.project13.maven</groupId>
-          <artifactId>git-commit-id-plugin</artifactId>
-          <version>4.0.0</version>
-        </plugin>
-        <plugin>
-          <groupId>com.mycila</groupId>
-          <artifactId>license-maven-plugin</artifactId>
-          <version>4.1</version>
-          <configuration>
-            <licenseSets>
-              <licenseSet>
-                <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-                <excludes>
-                  <exclude>**/*.md</exclude>
-                  <exclude>src/test/resources/**</exclude>
-                  <exclude>src/main/resources/**</exclude>
-                  <exclude>**/ElbJWKSource.java</exclude>
-                </excludes>
-              </licenseSet>
-            </licenseSets>
-            <properties>
-              <owner>ReSys</owner>
-              <email>info@dialob.io</email>
-            </properties>
-          </configuration>
+          <groupId>io.github.git-commit-id</groupId>
+          <artifactId>git-commit-id-maven-plugin</artifactId>
+          <version>9.0.1</version>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class ValueSetEntryBuilder extends AbstractItemBuilder<ValueSetEntryBuild
   @Override
   protected void afterExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     requireBooleanExpression(activeWhen, getActiveWhenExpressionErrorType(), errorConsumer);
-    Value<ValueSet.Entry> entryValue = null;
+    Value<ValueSet.Entry> entryValue;
     if (activeWhen != null) {
       entryValue = ImmutableConditionalValue.<ValueSet.Entry>builder()
         .when(activeWhen)

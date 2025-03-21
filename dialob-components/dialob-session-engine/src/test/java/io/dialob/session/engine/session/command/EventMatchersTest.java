@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
  */
 package io.dialob.session.engine.session.command;
 
-import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ImmutableErrorId;
+import io.dialob.session.engine.session.model.ImmutableValueSetId;
+import io.dialob.session.engine.session.model.ItemId;
 import org.junit.jupiter.api.Test;
 
 import static io.dialob.session.engine.session.command.EventMatchers.*;
@@ -26,13 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EventMatchersTest {
 
   @Test
-  public void activePageMatcher() {
+  void activePageMatcher() {
     assertTrue(whenActivePageUpdated().matches(activePageUpdatedEvent()));
     assertFalse(whenActivePageUpdated().matches(availableItemsUpdatedEvent()));
   }
 
   @Test
-  public void errorEventMatchers() {
+  void errorEventMatchers() {
     assertTrue(errorActivity(anyError()).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
     assertTrue(errorActivity(targetError(IdUtils.toId("a"))).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
     assertFalse(errorActivity(targetError(IdUtils.toId("b"))).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
@@ -41,28 +44,28 @@ class EventMatchersTest {
   }
 
   private ItemId toRef(String a) {
-    return (ImmutableItemRef) IdUtils.toId(a);
+    return IdUtils.toId(a);
   }
 
   @Test
-  public void isDisableEventMathcingTest() {
+  void isDisableEventMathcingTest() {
     assertTrue(whenDisabledUpdatedEvent(IdUtils.toId("page2")).matches(disabledUpdatedEvent(onTarget(toRef("page2")))));
     assertFalse(whenDisabledUpdatedEvent(IdUtils.toId("page2")).matches(disabledUpdatedEvent(onTarget(toRef("page1")))));
   }
   @Test
-  public void isActiveEventMathcingTest() {
+  void isActiveEventMathcingTest() {
     assertTrue(whenActiveUpdated(IdUtils.toId("page2")).matches(activityUpdatedEvent(onTarget(toRef("page2")))));
     assertFalse(whenActiveUpdated(IdUtils.toId("page2")).matches(activityUpdatedEvent(onTarget(toRef("page1")))));
   }
 
   @Test
-  public void validateUpdate() {
+  void validateUpdate() {
     assertFalse(whenActiveUpdated(IdUtils.toId("page2")).matches(validityUpdatedEvent(onTarget(toRef("page2")))));
     assertFalse(whenActiveUpdated(IdUtils.toId("page2")).matches(activityUpdatedEvent(onTarget(toRef("page1")))));
   }
 
   @Test
-  public void itemsChanges() {
+  void itemsChanges() {
     assertTrue(whenItemsChanged(IdUtils.toId("g1")).matches(itemsChangedEvent(onTarget(toRef("g1")))));
     assertFalse(whenItemsChanged(IdUtils.toId("g1")).matches(itemsChangedEvent(onTarget(toRef("g2")))));
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -31,7 +32,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
@@ -74,7 +74,6 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
   static BasicDataSource createEmbeddedDatabase() throws IOException {
     ATTRS.container.start();
     String jdbcUrl = "jdbc:mysql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/dialob";
-    System.out.println("Embedded MySQL jdbc url: " + jdbcUrl);
 
     // Point it to the database
     ATTRS.dataSource = new BasicDataSource();
@@ -103,6 +102,7 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
     ATTRS.jdbcTemplate = new JdbcTemplate(ATTRS.dataSource);
     ATTRS.objectMapper = objectMapper;
     ATTRS.currentTenant = new CurrentTenant() {
+      @NonNull
       @Override
       public Tenant get() {
         return ATTRS.activeTenant;
@@ -114,10 +114,6 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
       }
     };
     ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new MySQLDatabaseHelper(SCHEMA), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
-  }
-
-  default DataSource getDataSource() {
-    return ATTRS.dataSource;
   }
 
   default JdbcFormDatabase getJdbcFormDatabase() {
@@ -151,14 +147,12 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
     return ATTRS.currentTenant;
   }
 
-  default Tenant setActiveTenant(String tenantId) {
+  default void setActiveTenant(String tenantId) {
     ATTRS.activeTenant = Tenant.of(tenantId);
-    return ATTRS.activeTenant;
   }
 
-  default Tenant resetTenant() {
+  default void resetTenant() {
     ATTRS.activeTenant = ResysSecurityConstants.DEFAULT_TENANT;
-    return ATTRS.activeTenant;
   }
 
 }

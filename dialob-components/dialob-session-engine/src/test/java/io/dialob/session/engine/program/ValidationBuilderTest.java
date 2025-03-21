@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.ImmutableMap;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
@@ -31,10 +30,10 @@ import static org.mockito.Mockito.*;
 class ValidationBuilderTest {
 
   @Test
-  public void validationBuilderShouldMapanswerToParentQuestion() {
+  void validationBuilderShouldMapanswerToParentQuestion() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     ValidationBuilder vb = new ValidationBuilder(qb, "ec1");
-    when(qb.getAliases()).thenReturn(ImmutableMap.of());
+    when(qb.getAliases()).thenReturn(Map.of());
     when(qb.getId()).thenReturn(IdUtils.toId("q1"));
     Map<String, ItemId> aliases = vb.getAliases();
 
@@ -49,10 +48,10 @@ class ValidationBuilderTest {
   }
 
   @Test
-  public void validationBuilderShouldMergeParentAliases() {
+  void validationBuilderShouldMergeParentAliases() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     ValidationBuilder vb = new ValidationBuilder(qb, "ec1");
-    when(qb.getAliases()).thenReturn(ImmutableMap.of("q2", IdUtils.toId("g1.g4")));
+    when(qb.getAliases()).thenReturn(Map.of("q2", IdUtils.toId("g1.g4")));
     when(qb.getId()).thenReturn(IdUtils.toId("q1"));
 
     Map<String, ItemId> aliases = vb.getAliases();
@@ -69,7 +68,7 @@ class ValidationBuilderTest {
   }
 
   @Test
-  public void shouldCreateValidationWhenActivationRuleIsUndefined() {
+  void shouldCreateValidationWhenActivationRuleIsUndefined() {
     QuestionBuilder qb = mock(QuestionBuilder.class);
     Consumer<FormValidationError> errorConsumer = mock(Consumer.class);
     when(qb.getId()).thenReturn(IdUtils.toId("q1"));

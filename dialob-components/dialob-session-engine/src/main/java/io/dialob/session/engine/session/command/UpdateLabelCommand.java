@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -39,6 +39,8 @@ public interface UpdateLabelCommand extends AbstractUpdateAttributeCommand<Strin
   @Override
   default Set<EventMatcher> getEventMatchers() {
     Set<EventMatcher> parent = AbstractUpdateAttributeCommand.super.getEventMatchers();
-    return ImmutableSet.<EventMatcher>builder().addAll(parent).add(EventMatchers.whenSessionLocaleUpdated()).build();
+    var set = new HashSet<>(parent);
+    set.add(EventMatchers.whenSessionLocaleUpdated());
+    return Set.copyOf(set);
   }
 }

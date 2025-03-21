@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright © 2015 - 2021 ReSys (info@dialob.io)
+    Copyright © 2015 - 2025 ReSys (info@dialob.io)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
     <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../dialob-build-parent/pom.xml</relativePath>
+    <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-security-parent</artifactId>
   <packaging>pom</packaging>
@@ -33,6 +33,5 @@
     <module>dialob-security</module>
     <module>dialob-security-spring</module>
     <module>dialob-security-aws</module>
-    <module>dialob-security-uaa</module>
   </modules>
 </project>

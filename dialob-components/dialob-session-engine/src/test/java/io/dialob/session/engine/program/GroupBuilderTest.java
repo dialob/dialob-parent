@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import java.util.function.Consumer;
 
 import static org.mockito.Mockito.*;
 
-public class GroupBuilderTest {
+class GroupBuilderTest {
 
   @Test
-  public void rowGroupGeneratesTeoGroups() {
-    Consumer<FormValidationError> errorConsumer = mock(Consumer.class);
+  void rowGroupGeneratesTeoGroups() {
+    Consumer<FormValidationError> errorConsumer = mock();
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     GroupBuilder hoistingGroupBuilder = Mockito.mock(GroupBuilder.class);
     QuestionBuilder qb = mock(QuestionBuilder.class);

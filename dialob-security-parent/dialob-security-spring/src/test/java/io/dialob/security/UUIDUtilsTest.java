@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UUIDUtilsTest {
 
   @Test
-  public void shouldThrowIllegalArgumentException() {
+  void shouldThrowIllegalArgumentException() {
     Assertions.assertThatThrownBy(()->UUIDUtils.toUUID(new byte[0]))
       .hasMessage("UUID is 16 bytes long. oid is 0 bytes.")
       .isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void shouldConvertToUUID() {
+  void shouldConvertToUUID() {
     assertEquals("00000000-0000-0000-0000-000000000000", UUIDUtils.toUUID(new byte[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}).toString());
     assertEquals("ff000000-0000-0000-0000-0000000000fe", UUIDUtils.toUUID(new byte[] {(byte)0xff,0,0,0,0,0,0,0,0,0,0,0,0,0,0,(byte)0xfe}).toString());
     assertEquals("01020304-0506-0708-090a-0b0c0d0e0f10", UUIDUtils.toUUID(new byte[] {(byte)0x1,(byte)0x2,(byte)0x3,(byte)0x4,(byte)0x5,(byte)0x6,(byte)0x7,(byte)0x8,
@@ -41,7 +41,7 @@ class UUIDUtilsTest {
   }
 
   @Test
-  public void shouldConvertToBytes() {
+  void shouldConvertToBytes() {
     assertArrayEquals(new byte[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, UUIDUtils.toBytes(UUID.fromString("00000000-0000-0000-0000-000000000000")));
     assertArrayEquals(new byte[] {(byte)0xff,0,0,0,0,0,0,0,0,0,0,0,0,0,0,(byte)0xfe}, UUIDUtils.toBytes(UUID.fromString("ff000000-0000-0000-0000-0000000000fe")));
     assertArrayEquals(new byte[] {(byte)0x1,(byte)0x2,(byte)0x3,(byte)0x4,(byte)0x5,(byte)0x6,(byte)0x7,(byte)0x8,

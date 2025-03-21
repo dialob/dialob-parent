@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-import static java.util.stream.Collectors.toList;
-
 public class DialobFormItemCopier implements FormItemCopier {
 
   private final RuleExpressionCompiler compiler;
@@ -42,7 +40,7 @@ public class DialobFormItemCopier implements FormItemCopier {
     String nextID;
     do {
       nextID = id + ++suffix;
-    } while (formData.keySet().contains(nextID));
+    } while (formData.containsKey(nextID));
     return nextID;
   }
 
@@ -68,7 +66,10 @@ public class DialobFormItemCopier implements FormItemCopier {
     if (composerMetadata == null) {
       return false;
     }
+    @SuppressWarnings("unchecked")
     final var composer = (Map<String, Object>) composerMetadata;
+
+    @SuppressWarnings("unchecked")
     final var globalValueSets = (List<Map<String, String>>) composer.get("globalValueSets");
     return globalValueSets != null && globalValueSets.stream().anyMatch(gvs -> gvs.get("valueSetId").equals(valueSetId));
   }
@@ -81,7 +82,7 @@ public class DialobFormItemCopier implements FormItemCopier {
       .id(nextID);
     idRenameMap.put(sourceItem.getId(), nextID);
     // Children
-    builder.items(sourceItem.getItems().stream().map(childId -> copySingleItem(formBuilder, form, idRenameMap, formData.get(childId))).collect(toList()));
+    builder.items(sourceItem.getItems().stream().map(childId -> copySingleItem(formBuilder, form, idRenameMap, formData.get(childId))).toList());
 
     // ValueSets
     if (sourceItem.getValueSetId() != null) {
@@ -139,9 +140,8 @@ public class DialobFormItemCopier implements FormItemCopier {
     });
 
     // Update variable references within new branch
-    Map<String, FormItem> renamedItems = new HashMap<>();
     ImmutableForm build = formBuilder.build();
-    renamedItems.putAll(build.getData());
+    Map<String, FormItem> renamedItems = new HashMap<>(build.getData());
     idRenamerSingleItem(renamedItems, build, newId, idRenameMap);
     formBuilder.data(renamedItems);
     return Pair.of(formBuilder.build(), errors);

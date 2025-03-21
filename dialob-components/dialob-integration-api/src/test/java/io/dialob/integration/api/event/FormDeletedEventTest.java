@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FormDeletedEventTest {
+class FormDeletedEventTest {
   private ObjectMapper mapper = new ObjectMapper().registerModules(new Jdk8Module());
 
   @Test
-  public void testConstructorJsonMapping() throws Exception {
+  void testConstructorJsonMapping() throws Exception {
     FormDeletedEvent event = ImmutableFormDeletedEvent.builder().source("node").tenant(Tenant.of("tenante")).formId("formi").build();
     assertEquals("{\"type\":\"FormDeleted\",\"tenant\":{\"id\":\"tenante\"},\"formId\":\"formi\",\"source\":\"node\"}", mapper.writeValueAsString(event));
     event = (FormDeletedEvent) mapper.readValue("{\"type\":\"FormDeleted\",\"source\":\"node1\",\"tenant\":{\"id\":\"tenante2\"},\"formId\":\"formi3\"}", DistributedEvent.class);

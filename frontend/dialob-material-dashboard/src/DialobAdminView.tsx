@@ -5,11 +5,11 @@ import {
   Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button
 } from '@mui/material';
 import { Spinner } from './components/Spinner';
-import { checkHttpResponse, handleRejection } from './middleware/checkHttpResponse';
-import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, Metadata } from './types';
+import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware/checkHttpResponse';
+import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from './types';
 import {
-  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormConfiguration,
-  getAdminFormConfigurationList, getAdminFormConfigurationTags
+  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
+  getAdminFormConfigurationList
 } from './backend';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CreateDialog } from './components/CreateDialog';
@@ -73,28 +73,23 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
           .then((response: Response) => checkHttpResponse(response, config.setLoginRequired));
 
         const data = await response.json();
+        const tagsResponse = await getAdminFormAllTags(config)
+          .then((response: Response) => checkSearchHttpResponse(response, config.setLoginRequired));
+        const allTags: FormTag[]|undefined = await tagsResponse.json();
 
-        const enrichedConfigurations = await Promise.all(
-          data.map(async (formConfiguration: FormConfiguration) => {
-            const tagsResponse = await getAdminFormConfigurationTags(config, formConfiguration.id);
-            const tagsData: any = await tagsResponse.json();
-            if (tagsData?.length > 0) {
-              const mappedTags = tagsData?.map((tag: any) => ({
-                latestTagDate: tag.created,
-                latestTagName: tag.name,
-              }));
-
-              const sortedTags = [...mappedTags].sort((a, b) => new Date(b.latestTagDate).getTime() - new Date(a.latestTagDate).getTime());
-              const latestTag = sortedTags[0];
+        const enrichedConfigurations = 
+          data.map((formConfiguration: FormConfiguration) => {
+            let latestTag = findLatestTag(allTags, formConfiguration.id);
+            if (latestTag) {
               return {
                 ...formConfiguration,
-                latestTagName: latestTag.latestTagName,
-                latestTagDate: latestTag.latestTagDate,
+                latestTagName: latestTag.name,
+                latestTagDate: latestTag.created,
               };
             } else {
               return formConfiguration;
             }
-          })
+          }
         );
 
         setFormConfigurations(enrichedConfigurations);
@@ -106,6 +101,21 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     fetchFormConfigurations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
+
+  const findLatestTag = (allTags: FormTag[]|undefined, formId: string):FormTag|undefined => {
+    let latestTag:FormTag|undefined = undefined;
+    allTags?.forEach((current) => {
+      if (current.formName == formId) {
+        if (!latestTag) {
+          latestTag = current;
+        }
+        else if (current.created > latestTag.created) {
+          latestTag = current;
+        }
+      }
+    });
+    return latestTag;
+  }
 
   const copyFormConfiguration = (formConfiguration: FormConfiguration) => {
     setSelectedFormConfiguration(formConfiguration);
@@ -335,11 +345,11 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
   }, [formConfigurations, sortConfig]);
 
   return (
-    <Box pt={6}>
+    <>
       {formConfigurations ? (
-        <Box sx={{ padding: "0 50px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography sx={{ mb: 4 }} variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 3 }}>
+            <Typography variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
             <Box>
               <Button onClick={handleJsonUploadClick}>
                 <SvgIcon fontSize="small" >
@@ -514,6 +524,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
       ) : (
         <Spinner />
       )}
-    </Box>
+    </>
   );
 }

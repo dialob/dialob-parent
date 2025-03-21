@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package io.dialob.spring.boot;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.program.DialobProgram;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
 
 class DialobSpringBootAutoConfigurationTest {
 
-  @Configuration
+  @Configuration(proxyBeanMethods = false)
   @EnableCaching
   public static class MockConfigurations {
     @Bean
@@ -49,7 +50,7 @@ class DialobSpringBootAutoConfigurationTest {
 
 
   @Test
-  public void testDialobSpringBootAutoConfiguration() {
+  void testDialobSpringBootAutoConfiguration() {
     new ApplicationContextRunner()
       .withUserConfiguration(DialobSpringBootAutoConfigurationTest.MockConfigurations.class)
       .withConfiguration(AutoConfigurations.of(
@@ -58,6 +59,7 @@ class DialobSpringBootAutoConfigurationTest {
       .run(context -> {
         CacheManager cacheManager = context.getBean("cacheManager", CacheManager.class);
         Cache dialobProgramsCache = cacheManager.getCache("dialobProgramsCache");
+        Assertions.assertNotNull(dialobProgramsCache);
         DialobProgramService service = context.getBean(DialobProgramService.class);
 
         service.findByFormId("123");

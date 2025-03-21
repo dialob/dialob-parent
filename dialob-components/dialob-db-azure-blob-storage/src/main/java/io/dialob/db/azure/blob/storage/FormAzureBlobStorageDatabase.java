@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,21 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * FormAzureBlobStorageDatabase is an implementation of the FormDatabase interface that
+ * provides methods for managing form documents stored in Azure Blob Storage. It extends
+ * the AbstractAzureBlobStorageDatabase to leverage its generic functionality while
+ * specializing it for Form documents.
+ * <p>
+ * Features:
+ * - Interacts with Azure Blob Storage to store, retrieve, and manage form documents.
+ * - Uses JSON serialization/deserialization (via ObjectMapper) for storing and reading document data.
+ * - Supports operations such as saving, deleting, checking existence, and retrieving metadata for forms.
+ * - Provides efficient handling of form metadata with tenant-specific scoping.
+ * <p>
+ * This class handles document-specific operations, including updating document IDs or revisions
+ * as part of the save process.
+ */
 public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Form> implements FormDatabase {
 
   public FormAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {
@@ -42,7 +57,7 @@ public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDataba
       consumer.accept(ImmutableFormMetadataRow.of(
         id,
         ImmutableFormMetadata.builder()
-          .lastSaved(new Date(object.getProperties().getLastModified().toInstant().toEpochMilli()))
+          .lastSaved(Date.from(object.getProperties().getLastModified().toInstant()))
           .tenantId(tenantId)
           .build()
       ));

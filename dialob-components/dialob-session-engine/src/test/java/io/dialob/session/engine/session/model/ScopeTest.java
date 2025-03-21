@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.Collections;
 class ScopeTest {
 
   @Test
-  public void test() {
+  void test() {
     Scope scope = ImmutableScope.of(IdUtils.toId("row.10"), Collections.emptySet());
     Assertions.assertEquals("row.10.q1", IdUtils.toString(scope.mapTo(IdUtils.toId("row.*.q1"), true)));
     Assertions.assertEquals("row.10", IdUtils.toString(scope.mapTo(IdUtils.toId("row.*"), true)));

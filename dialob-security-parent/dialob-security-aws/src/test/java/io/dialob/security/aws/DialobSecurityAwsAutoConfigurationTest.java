@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DialobSecurityAwsAutoConfigurationTest {
 
   @Test
-  public void shouldNotSetupTypeIfProfileAWSNoSet() {
+  void shouldNotSetupTypeIfProfileAWSNoSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=",
@@ -44,7 +44,7 @@ class DialobSecurityAwsAutoConfigurationTest {
   }
 
   @Test
-  public void shouldSetupTypesIfProfileAWSIsSet() {
+  void shouldSetupTypesIfProfileAWSIsSet() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "spring.profiles.active=aws",

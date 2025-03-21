@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class AddRowTest {
+class AddRowTest {
 
   @Test
-  public void shouldAddRow() {
+  void shouldAddRow() {
     AddRow addRow = CommandFactory.addRow(IdUtils.toId("rows"));
 
     EvalContext context = Mockito.mock(EvalContext.class);
@@ -52,7 +52,7 @@ public class AddRowTest {
   }
 
   @Test
-  public void shouldNotAddRowIfRowsCannotBeAdded() {
+  void shouldNotAddRowIfRowsCannotBeAdded() {
     AddRow addRow = CommandFactory.addRow(IdUtils.toId("rows"));
     EvalContext context = Mockito.mock(EvalContext.class);
 

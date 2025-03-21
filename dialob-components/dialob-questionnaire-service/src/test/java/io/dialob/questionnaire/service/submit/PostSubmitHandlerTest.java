@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-public class PostSubmitHandlerTest {
+class PostSubmitHandlerTest {
 
   @Test
-  public void shouldMakePostToURL() throws Exception {
+  void shouldMakePostToURL() throws Exception {
     AnswerSubmitHandler.Settings submitHandlerSettings = mock(AnswerSubmitHandler.Settings.class);
     PostSubmitHandler postSubmitHandler  = new PostSubmitHandler();
 
@@ -64,8 +64,6 @@ public class PostSubmitHandlerTest {
     verify(httpHeaders).setAccept(Arrays.asList(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.valueOf("application/*+json"), MediaType.ALL));
     verify(httpHeaders).setContentType(MediaType.APPLICATION_JSON);
     verify(httpHeaders, times(2)).getContentType();
-//    HashMap<String, List<String>> map = Maps.newHashMap();
-//    map.put("Content-Type",Arrays.asList("application/json"));
     verify(httpHeaders).put("Content-Type", List.of("application/json"));
     verify(httpHeaders).getContentLength();
 
@@ -73,7 +71,7 @@ public class PostSubmitHandlerTest {
   }
 
   @Test
-  public void shouldAddBasicAuthenticationIfCredentialsDefinedOnURL() throws Exception {
+  void shouldAddBasicAuthenticationIfCredentialsDefinedOnURL() throws Exception {
     AnswerSubmitHandler.Settings submitHandlerSettings = mock(AnswerSubmitHandler.Settings.class);
     PostSubmitHandler postSubmitHandler  = new PostSubmitHandler();
 

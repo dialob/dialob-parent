@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@ package io.dialob.session.engine;
 
 
 import io.dialob.api.form.FormValidationError;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class DialobProgramErrorsException extends DialobProgramBuildException {
 
   private final List<FormValidationError> errors;
@@ -27,10 +29,6 @@ public class DialobProgramErrorsException extends DialobProgramBuildException {
   public DialobProgramErrorsException(String message, List<FormValidationError> errors) {
     super(message);
     this.errors = errors;
-  }
-
-  public List<FormValidationError> getErrors() {
-    return errors;
   }
 
   @Override

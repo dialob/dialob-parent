@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class AstMatcher implements ASTVisitor {
     return nodeBase;
   }
 
-  protected void checkIsThisLast(NodeBase nodeBase) {
+  protected void checkIsThisLast(NodeBase ignoreNodeBase) {
     // placeholder
   }
 
@@ -75,7 +75,7 @@ public class AstMatcher implements ASTVisitor {
     return nodeBase;
   }
 
-  protected void checkMatchingBefore(final NodeBase node) {
+  protected void checkMatchingBefore(final NodeBase ignoredNode) {
     // placeholder
   }
 
@@ -102,6 +102,7 @@ public class AstMatcher implements ASTVisitor {
   }
 
 
+  @SafeVarargs
   public static <T> Predicate<T> or(Predicate<T>... predicates) {
     return object -> {
       for (Predicate<T> predicate : predicates) {
@@ -113,47 +114,29 @@ public class AstMatcher implements ASTVisitor {
     };
   }
 
-  public static <T> Predicate<T> and(Predicate<T>... predicates) {
-    return object -> {
-      for (Predicate<T> predicate : predicates) {
-        if (!predicate.test(object)) {
-          return false;
-        }
-      }
-      return true;
-    };
-  }
-
-
   public static Predicate<NodeBase> stringValue(Predicate<Object> predicate) {
-    return node -> node instanceof ConstExprNode && predicate.test(((ConstExprNode) node).getValue());
+    return node -> node instanceof ConstExprNode cen && predicate.test(cen.getValue());
   }
 
   public static Predicate<NodeBase> value(Predicate<Object> predicate) {
-    return node -> node instanceof ConstExprNode && predicate.test(((ConstExprNode) node).getAsValueType());
+    return node -> node instanceof ConstExprNode cen && predicate.test(cen.getAsValueType());
   }
 
   public static Predicate<NodeBase> valueType(Predicate<ValueType> predicate) {
     return node -> predicate.test(node.getValueType());
   }
 
-  public static Predicate<List<NodeBase>> count(Predicate<Integer> predicate) {
-    return list -> predicate.test(list.size());
-  }
-
-
   public static Predicate<NodeBase> parent(Predicate<NodeBase> predicate) {
     return node -> predicate.test(node.getParent());
   }
 
   public static Predicate<NodeBase> lhs(Predicate<NodeBase> predicate) {
-    return node -> node instanceof CallExprNode && predicate.test(((CallExprNode) node).getLhs());
+    return node -> node instanceof CallExprNode cen && predicate.test(cen.getLhs());
   }
 
   public static Predicate<NodeBase> rhs(Predicate<NodeBase> predicate) {
-    return node -> node instanceof CallExprNode && predicate.test(((CallExprNode) node).getRhs());
+    return node -> node instanceof CallExprNode cen && predicate.test(cen.getRhs());
   }
-
 
   public static Predicate<NodeBase> args(Predicate<List<NodeBase>> predicate) {
     return node -> node instanceof CallExprNode && predicate.test(node.getSubnodes());
@@ -161,15 +144,6 @@ public class AstMatcher implements ASTVisitor {
 
   public static Predicate<List<NodeBase>> length(Predicate<Integer> predicate) {
     return args -> args != null && predicate.test(args.size());
-  }
-
-
-  public static Predicate<List<NodeBase>> first(Predicate<NodeBase> predicate) {
-    return args -> !args.isEmpty() && predicate.test(args.get(0));
-  }
-
-  public static Predicate<List<NodeBase>> last(Predicate<NodeBase> predicate) {
-    return args -> !args.isEmpty() && predicate.test(args.get(args.size() - 1));
   }
 
   public static Predicate<List<NodeBase>> anyMatches(Predicate<NodeBase> predicate) {
@@ -184,50 +158,6 @@ public class AstMatcher implements ASTVisitor {
       }
       return false;
     };
-  }
-
-  public static Predicate<NodeBase> dependencies(Predicate<Map<String, ValueType>> predicate) {
-    return node -> node instanceof CallExprNode && predicate.test(node.getDependencies());
-  }
-
-  public static <T> Predicate<Collection<T>> size(Predicate<Integer> predicate) {
-    return args -> predicate.test(args.size());
-  }
-
-  public static Predicate<NodeBase> isChildOf(NodeBase parentNode) {
-    return args -> {
-      NodeBase node = args;
-      while ((node = node.getParent()) != null) {
-        if (node == parentNode) {
-          return true;
-        }
-      }
-      return false;
-    };
-  }
-
-  public static <K,V> Predicate<Map<K,V>> keys(Predicate<Set<K>> predicate) {
-    return args -> predicate.test(args.keySet());
-  }
-
-  public static <K,V> Predicate<Map<K,V>> values(Predicate<Collection<V>> predicate) {
-    return args -> predicate.test(args.values());
-  }
-
-
-  public static <T> Predicate<Collection<T>> contains(Predicate<T> predicate) {
-    return args -> {
-      for (T t : args) {
-        if (predicate.test(t)) {
-          return true;
-        }
-      }
-      return false;
-    };
-  }
-
-  public static <T> Predicate<Collection<T>> contains(T t) {
-    return args -> args.contains(t);
   }
 
   public static Predicate<List<NodeBase>> allMatches(Predicate<NodeBase> predicate) {
@@ -253,7 +183,6 @@ public class AstMatcher implements ASTVisitor {
     return node -> node instanceof CallExprNode && predicate.test(node.getNodeOperator().getOperator());
   }
 
-
   public static Predicate<NodeBase> callNode() {
     return callNode(any());
   }
@@ -262,17 +191,12 @@ public class AstMatcher implements ASTVisitor {
     return node -> node instanceof CallExprNode && predicate.test(node);
   }
 
-
   public static Predicate<NodeBase> idNode() {
     return idNode(any());
   }
 
   public static Predicate<NodeBase> idNode(@NonNull Predicate<NodeBase> predicate) {
     return node -> node instanceof IdExprNode && predicate.test(node);
-  }
-
-  public static Predicate<NodeBase> id(Predicate<String> predicate) {
-    return node -> node instanceof IdExprNode && predicate.test(((IdExprNode) node).getId());
   }
 
   public static <T> Predicate<T> any() {
@@ -285,14 +209,6 @@ public class AstMatcher implements ASTVisitor {
 
   public static Predicate<NodeBase> constNode(@NonNull Predicate<NodeBase> predicate) {
     return node -> node instanceof ConstExprNode && predicate.test(node);
-  }
-
-  public static Predicate<NodeBase> anyNode() {
-    return anyNode(any());
-  }
-
-  public static Predicate<NodeBase> anyNode(@NonNull Predicate<NodeBase> predicate) {
-    return node -> node != null && predicate.test(node);
   }
 
   public ASTBuilder newASTBuilder() {

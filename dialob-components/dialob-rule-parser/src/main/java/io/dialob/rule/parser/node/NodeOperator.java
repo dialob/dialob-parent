@@ -1,13 +1,14 @@
 package io.dialob.rule.parser.node;
 
-import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
 public class NodeOperator implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 3766609755158172243L;
 
   public static final NodeOperator CONST = new NodeOperator("$const", Category.LEAF);
@@ -26,40 +27,40 @@ public class NodeOperator implements Serializable {
   private static final Map<String, NodeOperator> OPERATORS;
 
   static {
-    OPERATORS = ImmutableMap.<String, NodeOperator>builder()
-      .put("neg", new NodeOperator("neg", Category.UNARY))
-      .put("inv", new NodeOperator("inv", Category.UNARY))
+    OPERATORS = Map.ofEntries(
+      Map.entry("neg", new NodeOperator("neg", Category.UNARY)),
+      Map.entry("inv", new NodeOperator("inv", Category.UNARY)),
 
-      .put("not", new NodeOperator("not", Category.LOGICAL))  // ??
-      .put("and", new NodeOperator("and", Category.LOGICAL))
-      .put("or", new NodeOperator("or", Category.LOGICAL))
+      Map.entry("not", new NodeOperator("not", Category.LOGICAL)), // ??
+      Map.entry("and", new NodeOperator("and", Category.LOGICAL)),
+      Map.entry("or", new NodeOperator("or", Category.LOGICAL)),
 
-      .put("*", new NodeOperator("*", Category.INFIX))
-      .put("/", new NodeOperator("/", Category.INFIX))
-      .put("+", new NodeOperator("+", Category.INFIX))
-      .put("-", new NodeOperator("-", Category.INFIX))
+      Map.entry("*", new NodeOperator("*", Category.INFIX)),
+      Map.entry("/", new NodeOperator("/", Category.INFIX)),
+      Map.entry("+", new NodeOperator("+", Category.INFIX)),
+      Map.entry("-", new NodeOperator("-", Category.INFIX)),
 
-      .put("!=", new NodeOperator("!=", Category.RELATION))
-      .put("=", new NodeOperator("=", Category.RELATION))
-      .put("<", new NodeOperator("<", Category.RELATION))
-      .put("<=", new NodeOperator("<=", Category.RELATION))
-      .put(">", new NodeOperator(">", Category.RELATION))
-      .put(">=", new NodeOperator(">=", Category.RELATION))
-      .put("in", new NodeOperator("in", Category.RELATION))
-      .put("matches", new NodeOperator("matches", Category.RELATION))
-      .put("notIn", new NodeOperator("notIn", Category.RELATION))
-      .put("notMatches", new NodeOperator("notMatches", Category.RELATION))
-      .put("isAnswered", new NodeOperator("isAnswered", Category.RELATION))
-      .put("isNotAnswered", new NodeOperator("isNotAnswered", Category.RELATION))
-      .put("isValid", new NodeOperator("isValid", Category.RELATION))
-      .put("isNotValid", new NodeOperator("isNotValid", Category.RELATION))
+      Map.entry("!=", new NodeOperator("!=", Category.RELATION)),
+      Map.entry("=", new NodeOperator("=", Category.RELATION)),
+      Map.entry("<", new NodeOperator("<", Category.RELATION)),
+      Map.entry("<=", new NodeOperator("<=", Category.RELATION)),
+      Map.entry(">", new NodeOperator(">", Category.RELATION)),
+      Map.entry(">=", new NodeOperator(">=", Category.RELATION)),
+      Map.entry("in", new NodeOperator("in", Category.RELATION)),
+      Map.entry("matches", new NodeOperator("matches", Category.RELATION)),
+      Map.entry("notIn", new NodeOperator("notIn", Category.RELATION)),
+      Map.entry("notMatches", new NodeOperator("notMatches", Category.RELATION)),
+      Map.entry("isAnswered", new NodeOperator("isAnswered", Category.RELATION)),
+      Map.entry("isNotAnswered", new NodeOperator("isNotAnswered", Category.RELATION)),
+      Map.entry("isValid", new NodeOperator("isValid", Category.RELATION)),
+      Map.entry("isNotValid", new NodeOperator("isNotValid", Category.RELATION)),
 
-      .put("sumOf", new NodeOperator("sumOf", Category.FUNCTION))
-      .put("minOf", new NodeOperator("minOf", Category.FUNCTION))
-      .put("maxOf", new NodeOperator("maxOf", Category.FUNCTION))
-      .put("allOf", new NodeOperator("allOf", Category.FUNCTION))
-      .put("anyOf", new NodeOperator("anyOf", Category.FUNCTION))
-      .build();
+      Map.entry("sumOf", new NodeOperator("sumOf", Category.FUNCTION)),
+      Map.entry("minOf", new NodeOperator("minOf", Category.FUNCTION)),
+      Map.entry("maxOf", new NodeOperator("maxOf", Category.FUNCTION)),
+      Map.entry("allOf", new NodeOperator("allOf", Category.FUNCTION)),
+      Map.entry("anyOf", new NodeOperator("anyOf", Category.FUNCTION))
+    );
   }
 
   @NonNull
@@ -217,8 +218,7 @@ public class NodeOperator implements Serializable {
     if (obj == this) {
       return true;
     }
-    if (obj instanceof NodeOperator) {
-      NodeOperator other = (NodeOperator) obj;
+    if (obj instanceof NodeOperator other) {
       return other.getCategory() == getCategory() && operator.equals(other.getOperator());
     }
     return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.cors.CorsConfiguration;
 
-import static java.util.Arrays.asList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class TenantBasedCorsConfigurationSourceTest {
 
   @Test
-  public void shouldNotGivePolicyIfNonIsConfigured() throws Exception {
+  void shouldNotGivePolicyIfNonIsConfigured() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -48,7 +49,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldGiveDefaultPolicyIfRequestDoNotMatch() throws Exception {
+  void shouldGiveDefaultPolicyIfRequestDoNotMatch() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -64,7 +65,7 @@ class TenantBasedCorsConfigurationSourceTest {
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
-    assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
+    assertIterableEquals(List.of("*"), corsConfiguration.getAllowedOrigins());
 
     verify(request).getParameter("sessionId");
     verify(request).getPathInfo();
@@ -72,7 +73,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldResolveTenantFromQuestionnaireAndGivePolicyConfiguredToThatTenant() throws Exception {
+  void shouldResolveTenantFromQuestionnaireAndGivePolicyConfiguredToThatTenant() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -93,7 +94,7 @@ class TenantBasedCorsConfigurationSourceTest {
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
-    assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
+    assertIterableEquals(List.of("*"), corsConfiguration.getAllowedOrigins());
 
     verify(request).getParameter("sessionId");
     verify(questionnaireSessionService).findOne("aabb2233");
@@ -102,7 +103,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldResolveTenantFromQuestionnaireAndReturnNullWhenDefaultIsNotConfigured() throws Exception {
+  void shouldResolveTenantFromQuestionnaireAndReturnNullWhenDefaultIsNotConfigured() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -130,7 +131,7 @@ class TenantBasedCorsConfigurationSourceTest {
   }
 
   @Test
-  public void shouldResolveTenantFromQuestionnaireAndGiveDefaultPolicyWhenThereIsNonForTenant() throws Exception {
+  void shouldResolveTenantFromQuestionnaireAndGiveDefaultPolicyWhenThereIsNonForTenant() throws Exception {
     SessionSettings sessionSettings = new SessionSettings();
     QuestionnaireSessionService questionnaireSessionService = Mockito.mock(QuestionnaireSessionService.class);
     final TenantFromRequestResolver tenantFromRequestResolver = new SessionRestTenantFromRequestResolver(questionnaireSessionService);
@@ -153,7 +154,7 @@ class TenantBasedCorsConfigurationSourceTest {
 
     CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
     assertNotNull(corsConfiguration);
-    assertIterableEquals(asList("*"), corsConfiguration.getAllowedOrigins());
+    assertIterableEquals(List.of("*"), corsConfiguration.getAllowedOrigins());
 
     verify(request).getParameter("sessionId");
     verify(questionnaireSessionService).findOne("123abc");

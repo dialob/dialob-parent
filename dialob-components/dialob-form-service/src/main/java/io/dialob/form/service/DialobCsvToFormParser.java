@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,29 @@
  */
 package io.dialob.form.service;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import io.dialob.api.form.*;
+import io.dialob.common.Constants;
+import io.dialob.form.service.api.validation.CsvToFormParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import io.dialob.api.form.Form;
-import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.form.service.api.validation.CsvToFormParser;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DialobCsvToFormParser implements CsvToFormParser {
 
   private static final List<String> EXPECTED_HEADERS = List.of("id", "type");
   private static final Map<String, String> ITEM_TYPE_MAP = Map.of(
-    "Text", "text",
-    "Boolean", "boolean",
-    "Date", "date",
-    "Time", "time",
-    "Choice", "list",
-    "Note", "note",
-    "Integer", "number"
+    "Text", Constants.TEXT,
+    "Boolean", Constants.BOOLEAN,
+    "Date", Constants.DATE,
+    "Time", Constants.TIME,
+    "Choice", Constants.LIST,
+    "Note", Constants.NOTE,
+    "Integer", Constants.NUMBER
   );
 
   @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class DialobExceptionMapper {
-    @ExceptionHandler
-    public ResponseEntity formDataMissingException(FormDataMissingException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                "{\"error\":\"form_not_found\",\"reason\":\"" +exception.getMessage() + "\"}"
-        );
-    }
 
-
-
+  @ExceptionHandler
+  public ResponseEntity formDataMissingException(FormDataMissingException exception) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+      "{\"error\":\"form_not_found\",\"reason\":\"" + exception.getMessage() + "\"}"
+    );
+  }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -30,7 +31,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.junit.jupiter.Container;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
@@ -44,7 +44,7 @@ public interface AbstractDB2Test extends JdbcBackendTest {
   String USERNAME = "db2inst1";
 
   @Container
-  Db2Container container = new Db2Container()
+  Db2Container container = new Db2Container("icr.io/db2_community/db2:11.5.0.0a")
     .acceptLicense()
     .withDatabaseName(DATABASE)
     .withUsername(USERNAME)
@@ -74,7 +74,6 @@ public interface AbstractDB2Test extends JdbcBackendTest {
   static BasicDataSource createEmbeddedDatabase() throws IOException {
 
     String jdbcUrl = container.getJdbcUrl();
-    System.out.println("DB2 jdbc url: " + jdbcUrl);
 
     // Point it to the database
     ATTRS.dataSource = new BasicDataSource();
@@ -104,6 +103,7 @@ public interface AbstractDB2Test extends JdbcBackendTest {
     ATTRS.jdbcTemplate = new JdbcTemplate(ATTRS.dataSource);
     ATTRS.objectMapper = objectMapper;
     ATTRS.currentTenant = new CurrentTenant() {
+      @NonNull
       @Override
       public Tenant get() {
         return ATTRS.activeTenant;
@@ -115,10 +115,6 @@ public interface AbstractDB2Test extends JdbcBackendTest {
       }
     };
     ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new DB2DatabaseHelper(SCHEMA, null), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
-  }
-
-  default DataSource getDataSource() {
-    return ATTRS.dataSource;
   }
 
   default JdbcFormDatabase getJdbcFormDatabase() {
@@ -146,14 +142,12 @@ public interface AbstractDB2Test extends JdbcBackendTest {
     return ATTRS.currentTenant;
   }
 
-  default Tenant setActiveTenant(String tenantId) {
+  default void setActiveTenant(String tenantId) {
     ATTRS.activeTenant = Tenant.of(tenantId);
-    return ATTRS.activeTenant;
   }
 
-  default Tenant resetTenant() {
+  default void resetTenant() {
     ATTRS.activeTenant = ResysSecurityConstants.DEFAULT_TENANT;
-    return ATTRS.activeTenant;
   }
 
 }

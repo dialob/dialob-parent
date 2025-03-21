@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,32 +22,31 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class ExpressionListTest {
 
   @Test
-  public void shouldFlatLists() {
+  void shouldFlatLists() {
     Expression expr = Mockito.mock(Expression.class);
     EvalContext context = Mockito.mock(EvalContext.class);
     ExpressionList list = ImmutableExpressionList.builder()
       .addExpressions(expr)
       .build();
 
-    Mockito.when(expr.eval(context)).thenReturn(Arrays.asList());
-    Assertions.assertEquals(Arrays.asList(), list.eval(context));
+    Mockito.when(expr.eval(context)).thenReturn(List.of());
+    Assertions.assertEquals(List.of(), list.eval(context));
 
-    Mockito.when(expr.eval(context)).thenReturn(Arrays.asList("a"));
-    Assertions.assertEquals(Arrays.asList("a"), list.eval(context));
+    Mockito.when(expr.eval(context)).thenReturn(List.of("a"));
+    Assertions.assertEquals(List.of("a"), list.eval(context));
 
     Mockito.when(expr.eval(context)).thenReturn("a");
-    Assertions.assertEquals(Arrays.asList("a"), list.eval(context));
+    Assertions.assertEquals(List.of("a"), list.eval(context));
 
 
     List arrayList = new ArrayList<>();
     arrayList.add(null);
     Mockito.when(expr.eval(context)).thenReturn(arrayList);
-    Assertions.assertEquals(Arrays.asList(), list.eval(context));
+    Assertions.assertEquals(List.of(), list.eval(context));
   }
 }

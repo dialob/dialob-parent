@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,16 +39,16 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @Slf4j
-public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
+abstract class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
 
   protected MultiValueMap<String, String> tenantParam = new LinkedMultiValueMap<>();
 
-  public AbstractSecuredRestTests() {
+  AbstractSecuredRestTests() {
     tenantParam.add("tenantId","00000000-0000-0000-0000-000000000000");
   }
 
   @Configuration(proxyBeanMethods = false)
-  public static class TestConfiguration {
+  static class TestConfiguration {
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
       return new StreamingGrantedAuthoritiesMapper(Collections.emptyList());
@@ -62,13 +62,13 @@ public class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
   }
 
   @MockitoBean
-  public CurrentUserProvider currentUserProvider;
+  CurrentUserProvider currentUserProvider;
 
   @Inject
-  public WebApplicationContext wac;
+  WebApplicationContext wac;
 
   @BeforeEach
-  public void setupCurrentUser(TestInfo testInfo) {
+  void setupCurrentUser(TestInfo testInfo) {
     String methodName = testInfo.getDisplayName();
     when(currentUserProvider.get()).thenReturn(new CurrentUser(methodName, methodName, "", "", ""));
     DefaultMockMvcBuilder builder = MockMvcBuilders

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,29 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Service responsible for managing periodic persistence of questionnaire sessions
+ * in response to specific questionnaire-related events. Utilizes a thread pool task scheduler
+ * to schedule and manage save operations for active sessions.
+ * <p>
+ * This service listens for {@link QuestionnaireActionsEvent}, and upon detection,
+ * schedules a task that saves the associated questionnaire session after a configured delay.
+ * If a previously scheduled task for the same questionnaire ID is still active, it is canceled
+ * before scheduling a new one.
+ * <p>
+ * Periodic persistence tasks are only executed for sessions that are not completed.
+ * The save operation is delegated to {@link QuestionnaireSessionSaveService}, which also
+ * leverages caching for returned session data.
+ * <p>
+ * Key components:
+ * - The {@link QuestionnaireSessionService} is utilized to retrieve session details.
+ * - The {@link ThreadPoolTaskScheduler} is used to schedule and execute save operations.
+ * - The {@link DialobSettings} is used to configure the time interval for the autosave tasks.
+ * - The {@link CurrentTenant} enables tenant-aware operations to ensure session persistence aligns with the current tenant context.
+ * <p>
+ * Logging is performed to provide insight into service activation, session save events,
+ * and any relevant debug details.
+ */
 @Slf4j
 public class PeriodicPersistenceService {
 
@@ -38,24 +61,20 @@ public class PeriodicPersistenceService {
 
   private final QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
-  private final ConcurrentHashMap<String, ScheduledFuture> tasks = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, ScheduledFuture<?>> tasks = new ConcurrentHashMap<>();
 
   private final ThreadPoolTaskScheduler scheduler;
 
-  private final DialobSettings settings;
-
-  private final CurrentTenant currentTenant;
+  private final long interval;
 
   PeriodicPersistenceService(@NonNull QuestionnaireSessionService questionnaireSessionService,
                              @NonNull QuestionnaireSessionSaveService questionnaireSessionSaveService,
                              @NonNull ThreadPoolTaskScheduler taskScheduler,
-                             @NonNull DialobSettings settings,
-                             @NonNull CurrentTenant currentTenant) {
+                             long interval) {
     this.questionnaireSessionService = questionnaireSessionService;
     this.questionnaireSessionSaveService = questionnaireSessionSaveService;
     this.scheduler = taskScheduler;
-    this.settings = settings;
-    this.currentTenant = currentTenant;
+    this.interval = interval;
     LOGGER.info("Periodic Persistence Service: activated");
   }
 
@@ -73,7 +92,7 @@ public class PeriodicPersistenceService {
           LOGGER.debug("Periodic Persistence Service: session '{}' stored", qId);
         }
         tasks.remove(qId);
-      }, settings.getSession().getAutosave().getInterval(), TimeUnit.MILLISECONDS);
+      }, interval, TimeUnit.MILLISECONDS);
     });
   }
 }

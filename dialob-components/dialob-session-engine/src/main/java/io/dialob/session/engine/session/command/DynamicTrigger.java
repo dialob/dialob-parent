@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import org.immutables.value.Value;
 
 import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Value.Immutable
@@ -48,7 +47,7 @@ public interface DynamicTrigger<T> extends Trigger<T> {
   }
 
   default List<Event> getAllEvents() {
-    return getEventsProvider().createEvents(null, null).collect(Collectors.toList());
+    return getEventsProvider().createEvents(null, null).toList();
   }
 
 }

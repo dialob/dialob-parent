@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ class SecurityConfigurationTest {
 
 
   @Test
-  public void testSecurityConfigurationTestSecurityDisabled() {
+  void testSecurityConfigurationTestSecurityDisabled() {
     new ApplicationContextRunner()
       .withBean(JWTProcessor.class, () -> mock(JWTProcessor.class))
       .withPropertyValues(
@@ -72,7 +72,7 @@ class SecurityConfigurationTest {
   }
 
   @Test
-  public void testSecurityConfigurationTestSecurityOAuth2Enabled() {
+  void testSecurityConfigurationTestSecurityOAuth2Enabled() {
     new ApplicationContextRunner()
       .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
       .withBean(OAuth2AccessTokenResponseClient.class, () -> mock(OAuth2AccessTokenResponseClient.class))
@@ -102,7 +102,7 @@ class SecurityConfigurationTest {
   }
 
   @Test
-  public void testSecurityConfigurationInAPIOnlyConfiguration() {
+  void testSecurityConfigurationInAPIOnlyConfiguration() {
     new ApplicationContextRunner()
       .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
       .withBean(OAuth2AccessTokenResponseClient.class, () -> mock(OAuth2AccessTokenResponseClient.class))
@@ -129,7 +129,7 @@ class SecurityConfigurationTest {
 
 
   @Test
-  public void testSecurityConfigurationTestSecurityAwsElbEnabled() {
+  void testSecurityConfigurationTestSecurityAwsElbEnabled() {
     new ApplicationContextRunner()
       .withBean(JWTProcessor.class, () -> mock(JWTProcessor.class))
       .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))

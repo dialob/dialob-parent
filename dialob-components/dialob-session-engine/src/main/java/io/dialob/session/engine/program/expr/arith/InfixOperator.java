@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -53,7 +53,9 @@ public interface InfixOperator<T> extends Expression {
     if (rset.isEmpty()) {
       return lset;
     }
-    return ImmutableSet.<EventMatcher>builder().addAll(lset).addAll(rset).build();
+    var set = new HashSet<>(lset);
+    set.addAll(rset);
+    return Set.copyOf(set);
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,10 +62,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
+class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
 
   @Test
-  public void shouldGetQUESTIONNAIRE_NOT_FOUNDActionIfAskedQuestionnaireDoNotExists2() throws Exception {
+  void shouldGetQUESTIONNAIRE_NOT_FOUNDActionIfAskedQuestionnaireDoNotExists2() throws Exception {
     when(questionnaireDatabase.findOne(eq(tenantId), any())).thenThrow(DocumentNotFoundException.class);
     openSession("q-1")
       .expectActions(actions -> {
@@ -83,7 +83,7 @@ public class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
   }
 
   @Test
-  public void connectWebsocketPerQuestionnaireID() throws Exception {
+  void connectWebsocketPerQuestionnaireID() throws Exception {
     when(questionnaireDatabase.findOne(eq(tenantId), any())).thenThrow(DocumentNotFoundException.class);
     openSession("1234")
       .expectActions(actions -> {

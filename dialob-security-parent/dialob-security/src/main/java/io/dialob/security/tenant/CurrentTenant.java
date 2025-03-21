@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,22 @@
  */
 package io.dialob.security.tenant;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 public interface CurrentTenant {
 
   /**
    * @throws NoTenantInScopeException when there is no tenant in scope
    * @return current scope tenant
    */
+  @NonNull
   Tenant get();
 
+  /**
+   * @return current scope tenant id
+   * @throws NoTenantInScopeException when there is no tenant in scope
+   */
+  @NonNull
   default String getId() {
     return get().id();
   }

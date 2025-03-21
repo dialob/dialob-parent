@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
 
   private final Timer updateTime;
 
-  private Optional<CacheManager> sessionCacheManager;
+  private final Optional<CacheManager> sessionCacheManager;
 
   private final QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
@@ -102,7 +102,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
     return Objects.requireNonNull(this.processingTime.record(() -> {
       try {
         int retries = 5;
-        Actions returnActions = null;
+        Actions returnActions;
         do {
           try {
             returnActions = runUpdate(questionnaireId, revision, actions);

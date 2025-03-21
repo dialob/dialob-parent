@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static io.dialob.session.engine.session.command.CommandFactory.ItemStatePredicates.GROUP_ITEMS_CHANGED;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class CommandFactoryTest {
+class CommandFactoryTest {
 
   @Test
-  public void emptyItemsListDoNotTriggerChange() {
+  void emptyItemsListDoNotTriggerChange() {
     ItemState itemState = new ItemState(
       ImmutableItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
@@ -59,20 +58,20 @@ public class CommandFactoryTest {
 
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList()).get();
+    itemState = itemState.update().setItems(List.of()).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState2 = itemState2.update().setItems(Arrays.asList()).get();
+    itemState2 = itemState2.update().setItems(List.of()).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
   }
 
   @Test
-  public void differenceOnItemsShouldTriggerChanges() {
+  void differenceOnItemsShouldTriggerChanges() {
     ItemState itemState = new ItemState(
       ImmutableItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
@@ -92,33 +91,33 @@ public class CommandFactoryTest {
       null,
       null,
       null, null);
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
-    itemState2 = itemState2.update().setItems(Arrays.asList()).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState2 = itemState2.update().setItems(List.of()).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i2", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(Arrays.asList()).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of()).get();
+    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
 
-    itemState = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i2", Optional.empty()))).get();
     itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()), ImmutableItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
   }
 
   @Test
-  public void shouldNotTriggerItself() {
+  void shouldNotTriggerItself() {
     ItemId itemId = IdUtils.toId("q1");
     Expression expression =
       Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), ImmutableConstant.builder().valueType(ValueType.INTEGER).value(0).build()));
     //;
     UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(ImmutableErrorId.of(itemId, "err"), expression);
     Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();
-    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).collect(Collectors.toList());
+    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();
     EventMatcher eventMatcher = i.next();
     assertFalse(eventMatcher.matches(eventList.get(0)));
@@ -129,11 +128,11 @@ public class CommandFactoryTest {
   }
 
   @Test
-  public void shouldTriggerRowInstantiationWhenItemsChange() {
+  void shouldTriggerRowInstantiationWhenItemsChange() {
     SessionUpdateCommand command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemState itemState1 = new ItemState(IdUtils.toId("g1"), null, "rowgroup", null, true, null, null, null, null, null);
     ItemState itemRow = new ItemState(IdUtils.toId("g1.0"), null, "group", null, true, null, null, null, null, null);
-    ItemState itemState2 = itemState1.update().setItems(Arrays.asList(IdUtils.toId("g1.0"))).get();
+    ItemState itemState2 = itemState1.update().setItems(List.of(IdUtils.toId("g1.0"))).get();
 
     ItemStates itemStates1 = ImmutableItemStates.builder()
       .putItemStates(itemState1.getId(), itemState1)
@@ -144,23 +143,23 @@ public class CommandFactoryTest {
       .putItemStates(itemState2.getId(), itemState2)
       .build();
 
-    List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).collect(Collectors.toList());
+    List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
 
     assertFalse(events.isEmpty());
     assertEquals(ImmutableItemAddedEvent.of(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.get(0));
   }
 
   @Test
-  public void testGroupItemsChange() {
+  void testGroupItemsChange() {
 
     ItemState original = Mockito.mock(ItemState.class);
     when(original.getItems()).thenReturn(Collections.emptyList());
     ItemState updated = Mockito.mock(ItemState.class);
     when(updated.getItems()).thenReturn(Collections.emptyList());
     ItemState original2 = Mockito.mock(ItemState.class);
-    when(original2.getItems()).thenReturn(Arrays.asList(IdUtils.toId("q1")));
+    when(original2.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
     ItemState updated2 = Mockito.mock(ItemState.class);
-    when(updated2.getItems()).thenReturn(Arrays.asList(IdUtils.toId("q1")));
+    when(updated2.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
 
 
     assertFalse(GROUP_ITEMS_CHANGED.test(null, null));

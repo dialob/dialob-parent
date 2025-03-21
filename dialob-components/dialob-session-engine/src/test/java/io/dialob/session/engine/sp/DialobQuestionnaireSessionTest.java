@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,12 +43,12 @@ import static org.mockito.Mockito.*;
 class DialobQuestionnaireSessionTest {
 
   @Test
-  public void testObjectVisibilityWhenShowInactiveIsFalse() {
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+  void testObjectVisibilityWhenShowInactiveIsFalse() {
+    QuestionnaireEventPublisher eventPublisher = Mockito.mock();
+    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock();
+    DialobSession dialobSession = Mockito.mock();
+    DialobProgram dialobProgram = Mockito.mock();
+    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock();
     Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
@@ -63,7 +63,7 @@ class DialobQuestionnaireSessionTest {
 
     Predicate<SessionObject> predicate = dialobQuestionnaireSession.getIsVisiblePredicate();
 
-    SessionObject sessionObject = Mockito.mock(SessionObject.class);
+    SessionObject sessionObject = Mockito.mock();
 
     when(sessionObject.isActive()).thenReturn(false);
     when(sessionObject.isDisplayItem()).thenReturn(false);
@@ -108,7 +108,7 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void testObjectVisibilityWhenShowInactiveIsTrue() {
+  void testObjectVisibilityWhenShowInactiveIsTrue() {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
@@ -172,7 +172,7 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void testObjectVisibilityWhenQuestionClientVisiblityIsAll() {
+  void testObjectVisibilityWhenQuestionClientVisiblityIsAll() {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
@@ -236,14 +236,14 @@ class DialobQuestionnaireSessionTest {
   }
 
   @Test
-  public void shouldConvertOldRows() {
+  void shouldConvertOldRows() {
     Assertions.assertArrayEquals(
       new String[] {"g.1"},
-      DialobQuestionnaireSession.convertRows(Arrays.asList("g[1]")));
+      DialobQuestionnaireSession.convertRows(List.of("g[1]")));
   }
 
   @Test
-  public void shouldPersistRowGroupContainerIntoAnswers() {
+  void shouldPersistRowGroupContainerIntoAnswers() {
     // given
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
@@ -288,13 +288,15 @@ class DialobQuestionnaireSessionTest {
         Tuple.tuple("rowg2", Arrays.asList(1,2,3), null)
       );
 
+    assertThat(session.getActiveItems()).containsOnlyOnce("rowg3.1", "rowg", "rowg2");
+
     verify(dialobProgram,times(2)).getItem(any());
     verifyNoMoreInteractions(eventPublisher, dialobProgram);
   }
 
 
   @Test
-  public void shouldNotHandleAnswersOnCompletedQuestionannaires() {
+  void shouldNotHandleAnswersOnCompletedQuestionnaires() {
     // given
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
@@ -335,7 +337,7 @@ class DialobQuestionnaireSessionTest {
     when(dialobProgram.getItem(any())).thenReturn(Optional.empty());
 
     // when
-    QuestionnaireSession.DispatchActionsResult result = session.dispatchActions(Arrays.asList());
+    QuestionnaireSession.DispatchActionsResult result = session.dispatchActions(List.of());
 
     // expect
     assertNull(result.getActions().getActions());
@@ -345,9 +347,8 @@ class DialobQuestionnaireSessionTest {
     assertEquals(2L, session.getDialobSession().getLastAnswer().toEpochMilli());
 
     verifyNoMoreInteractions(eventPublisher, dialobProgram);
-
-
   }
+
 
 
 }

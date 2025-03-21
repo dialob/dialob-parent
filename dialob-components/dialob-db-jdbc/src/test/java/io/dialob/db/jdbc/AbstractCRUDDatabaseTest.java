@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
   }
 
   @Test
-  public void saveAndLoadAndDeleteForm() {
+  void saveAndLoadAndDeleteForm() {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form öä").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
     assertNotNull(form2.getId());
@@ -61,7 +61,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
   @Test
-  public void saveAndUpdate() {
+  void saveAndUpdate() {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
@@ -78,7 +78,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
   @Test
-  public void saveAndFetchList() {
+  void saveAndFetchList() {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
@@ -99,7 +99,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
   @Test
-  public void saveAndFetchListTenantScoped() {
+  void saveAndFetchListTenantScoped() {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
         .id("questionnaire")
@@ -136,7 +136,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
   }
 
   @Test
-  public void saveAndUpdateQuestionnaireWithoutTenant() {
+  void saveAndUpdateQuestionnaireWithoutTenant() {
     setActiveTenant(ResysSecurityConstants.DEFAULT_TENANT.id());
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -159,7 +159,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
   @Test
-  public void saveAndUpdateQuestionnaireWithTenant() {
+  void saveAndUpdateQuestionnaireWithTenant() {
     setActiveTenant("12341234-1234-1234-1234-123412341234");
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -187,7 +187,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
   }
 
   @Test
-  public void saveAndFetchMetadata() {
+  void saveAndFetchMetadata() {
 
     setActiveTenant("12341234-1234-1234-1234-123412341236");
 
@@ -237,7 +237,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
   @Test
-  public void findMetadataShouldThrowDocumentNotFoundException() {
+  void findMetadataShouldThrowDocumentNotFoundException() {
     assertThrows(DocumentNotFoundException.class, () -> getQuestionnaireDatabase().findMetadata(null, "12341234123412341234123412341236"));
     assertThrows(DocumentNotFoundException.class, () -> getQuestionnaireDatabase().findMetadata(null, null));
   }

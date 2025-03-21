@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-public class AbstractWebSocketTests implements ProvideTestRedis {
+abstract class AbstractWebSocketTests implements ProvideTestRedis {
 
   String tenantId = "00000000-0000-0000-0000-000000000000";
 
@@ -81,7 +81,7 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   public static class TestThreadPoolTaskScheduler extends ThreadPoolTaskScheduler {
-    private List<Runnable> delayedTasks = new ArrayList<>();
+    private final List<Runnable> delayedTasks = new ArrayList<>();
 
     @Override
     public void execute(Runnable task) {
@@ -92,7 +92,7 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
       if (delayedTasks.isEmpty()) {
         return false;
       }
-      delayedTasks.stream().forEach(super::execute);
+      delayedTasks.forEach(super::execute);
       delayedTasks.clear();
       return true;
     }
@@ -180,11 +180,10 @@ public class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   protected FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
-    FormItem formItemBean = addItem(formBuilder, "questionnaire", builder -> {
+    return addItem(formBuilder, "questionnaire", builder -> {
       builder.type("questionnaire");
       builderConsumer.accept(builder);
     });
-    return formItemBean;
   }
 
   protected FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {

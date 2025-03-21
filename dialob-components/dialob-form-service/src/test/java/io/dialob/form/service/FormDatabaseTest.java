@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,14 +37,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @EnableCaching
-public class FormDatabaseTest {
+class FormDatabaseTest {
 
   String tenantId = "123";
 
@@ -63,7 +63,7 @@ public class FormDatabaseTest {
     @Bean
     public CacheManager cacheManager() {
       SimpleCacheManager cacheManager = new SimpleCacheManager();
-      cacheManager.setCaches(Arrays.asList(cache));
+      cacheManager.setCaches(Collections.singletonList(cache));
       return cacheManager;
     }
   }
@@ -81,7 +81,7 @@ public class FormDatabaseTest {
   }
 
   @Test
-  public void shouldFetchFromServiceOnce() {
+  void shouldFetchFromServiceOnce() {
     Form document = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
     when(formDatabaseMock.findOne(tenantId, "1","2")).thenReturn(document);
     assertSame(document, formDatabase.findOne(tenantId, "1","2"));
@@ -91,7 +91,7 @@ public class FormDatabaseTest {
   }
 
   @Test
-  public void shouldPassException() {
+  void shouldPassException() {
     Assertions.assertThatExceptionOfType(DocumentNotFoundException.class).isThrownBy(() -> {
       when(formDatabaseMock.findOne(tenantId, "1","2")).thenThrow(DocumentNotFoundException.class);
       formDatabase.findOne(tenantId, "1","2");
@@ -99,7 +99,7 @@ public class FormDatabaseTest {
   }
 
   @Test
-  public void saveShouldPutDocumentInCache() {
+  void saveShouldPutDocumentInCache() {
     Form document = ImmutableForm.builder().id("id-1").rev("rev-1").metadata(ImmutableFormMetadata.builder().label("test").build()).build();
 
     when(formDatabaseMock.findOne(tenantId, "id-1")).thenThrow(DocumentNotFoundException.class);

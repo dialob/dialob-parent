@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.FormItem;
+import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -37,11 +40,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.tuple;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 //
@@ -65,16 +69,16 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
+class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
 
   @Inject
   private ApplicationEventPublisher applicationEventPublisher;
 
   @Test
-  public void updateFormOnline() throws Exception {
+  void updateFormOnline() throws Exception {
     ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
     Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
-      FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
+      addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
       addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en", "Ryhma").addItems("q1"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en", "Kysymys"));
       formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());
@@ -95,12 +99,12 @@ public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
           .extracting("type",                     "item.id", "item.type", "item.label", "item.items").containsOnly(
           tuple(Action.Type.RESET,              null,            null,             null,          null),
           tuple(Action.Type.LOCALE,             null,            null,             null,          null),
-          tuple(Action.Type.ITEM,    "questionnaire", "questionnaire",         "Kysely",  asList("g1")),
+          tuple(Action.Type.ITEM,    "questionnaire", "questionnaire",         "Kysely", List.of("g1")),
           tuple(Action.Type.ITEM,               "q1",          "text",        "Kysymys",          null),
-          tuple(Action.Type.ITEM,               "g1",         "group",          "Ryhma",  asList("q1"))
+          tuple(Action.Type.ITEM,               "g1",         "group",          "Ryhma", List.of("q1"))
         );
       })
-      .nextAfterDelay(500l)
+      .nextAfterDelay(500L)
       .answerQuestion("q1", "vastaus")
       .expectActions(actions -> {
         assertThat(actions.getActions()).isNullOrEmpty();
@@ -115,7 +119,7 @@ public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
         formItemBean = ImmutableFormItem.builder().from(formItemBean).items(asList("q1", "q2")).build();
         updateFormOnlineBuilder2.putData(formItemBean.getId(), formItemBean);
         addItem(updateFormOnlineBuilder2, "q2", builder -> builder.type("text").putLabel("en", "Kysymys 2"));
-        Form formDocument2 = shouldFindForm(updateFormOnlineBuilder2.build());
+        shouldFindForm(updateFormOnlineBuilder2.build());
         applicationEventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder()
           .source("sourc3")
           .formId("updateFormOnline")
@@ -132,7 +136,7 @@ public class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
           .extracting("type",                     "item.id", "item.type", "item.label", "item.items", "item.value").containsOnly(
                 tuple(Action.Type.RESET,           null,            null,             null,             null,             null),
                 tuple(Action.Type.LOCALE,          null,            null,             null,             null,             null),
-                tuple(Action.Type.ITEM, "questionnaire", "questionnaire",         "Kysely",     asList("g1"),             null),
+                tuple(Action.Type.ITEM, "questionnaire", "questionnaire",         "Kysely", List.of("g1"),             null),
                 tuple(Action.Type.ITEM,            "q1",          "text",        "Kysymys",             null,        "vastaus"),
                 tuple(Action.Type.ITEM,            "q2",          "text",      "Kysymys 2",             null,             null),
                 tuple(Action.Type.ITEM,            "g1",         "group",          "Ryhma",asList("q1", "q2"),            null)

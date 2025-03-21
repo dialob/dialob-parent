@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,11 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilder> implements BuilderParent {
 
@@ -51,16 +49,13 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     ROWGROUP("rowgroup", false),
     SURVEYGROUP("surveygroup", true);
 
+    @Getter
     private final String itemType;
 
     private final boolean haveSubItems;
 
     public boolean haveSubItems() {
       return haveSubItems;
-    }
-
-    public String getItemType() {
-      return itemType;
     }
 
     Type(String itemType, boolean haveSubItems) {
@@ -71,6 +66,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   private List<String> items = new ArrayList<>();
 
+  @Getter
   private Type type;
 
   private String view;
@@ -160,10 +156,6 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     return items.contains(itemId);
   }
 
-  public Type getType() {
-    return type;
-  }
-
   @Override
   public Optional<ValueType> getValueType() {
     if (type == Type.ROWGROUP) {
@@ -184,7 +176,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         itemId -> ((ImmutableItemRef) itemId).withParent(ImmutableItemIdPartial.of(Optional.of(getId()))) :
         itemId -> itemId
       )
-      .collect(toList());
+      .toList();
   }
 
   @Override
@@ -194,7 +186,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     requireBooleanExpression(canAddRowWhen, FormValidationError.Type.VISIBILITY, errorConsumer);
 
     Objects.requireNonNull(type, "group type missing");
-    ItemId id = getId();
+    var id = getId();
 
     getHoistingGroup().ifPresent(hoistingGroupBuilder -> {
       if (activeWhen == BooleanOperators.TRUE) {
@@ -218,9 +210,8 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .descriptionExpression(createLabelOperator(description))
       .props(props);
 
-    switch (type) {
-      case ROOT:
-        builder = builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
+    builder = switch (type) {
+      case ROOT -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
           .addItems(ImmutablePair.of(Operators.not(ImmutableIsOnFirstPage.builder().build()), Action.Type.PREVIOUS))
           .addItems(ImmutablePair.of(
             Operators.and(Operators.not(ImmutableIsOnLastPage.builder().build()),
@@ -229,49 +220,33 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
           .addItems(ImmutablePair.of(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()), Action.Type.COMPLETE))
           .addItems(ImmutablePair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
         ).build());
-        break;
-      case PAGE:
-        // Disable page when it's not active
-        builder = builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
-        break;
-      case ROWGROUP:
-        builder = builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
+      // Disable page when it's not active
+      case PAGE -> builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
+      case ROWGROUP -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
           .addItems(ImmutablePair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
-          ).build());
-        builder = builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
-        break;
-      case GROUP:
-      case SURVEYGROUP:
-        // TODO hoisting page??
-        // Disable group when parent group is not active
-        builder = builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
-        break;
-    }
+          ).build())
+          .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+      // TODO hoisting page??
+      // Disable group when parent group is not active
+      case GROUP, SURVEYGROUP -> builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+    };
 
     if (type.haveSubItems()) {
         builder = builder
           .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(itemIds).build());
      }
 
-    switch (type) {
-      case GROUP:
-      case PAGE:
-        // nothing here
-        break;
-      case SURVEYGROUP:
-        builder = builder
+    builder = (switch (type) {
+      // nothing here
+      case GROUP, PAGE -> builder;
+      case SURVEYGROUP -> builder
           .valueSetId(Optional.ofNullable(this.valueSetId));
-        break;
-      case ROWGROUP:
-        builder = builder
+      case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
-        break;
-      case ROOT:
-        builder = builder
-          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> ImmutablePair.of((Expression) ImmutableIsActiveOperator.of(item), item)).collect(toList())).build())
+      case ROOT -> builder
+          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> ImmutablePair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
           .isInvalidAnswersExpression(ImmutableIsAnyInvalidAnswersOperator.builder().build());
-        break;
-    }
+    });
 
     getProgramBuilder().addItem(builder.build());
     if (type == Type.ROWGROUP) {
@@ -282,7 +257,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         .type("row")
         .isPrototype(true)
         .valueType(null)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ImmutableItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).collect(Collectors.toList())).build())
+        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ImmutableItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).toList()).build())
         .allowedActionsExpression(ImmutableConditionalListOperator.builder()
             .addItems(ImmutablePair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())

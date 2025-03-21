@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright © 2015 - 2021 ReSys (info@dialob.io)
+    Copyright © 2015 - 2025 ReSys (info@dialob.io)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
     <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../dialob-build-parent/pom.xml</relativePath>
+    <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-session-boot</artifactId>
   <packaging>jar</packaging>
@@ -58,8 +58,8 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>pl.project13.maven</groupId>
-        <artifactId>git-commit-id-plugin</artifactId>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -200,10 +200,6 @@
       <groupId>io.dialob</groupId>
       <artifactId>dialob-cloud-gcp</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-groovy-functions</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -263,10 +259,6 @@
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-service-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dialob</groupId>
-      <artifactId>dialob-db-dialob-api</artifactId>
     </dependency>
     <dependency>
       <groupId>net.logstash.logback</groupId>

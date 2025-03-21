@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,8 @@ public class ElbAuthenticationStrategy implements AuthenticationStrategy {
     final RequestHeaderAuthenticationFilter filter = createAuthenticationFilter(authenticationManager);
     http.addFilter(filter);
 
-    return http.sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+    return http.sessionManagement(httpSecuritySessionManagementConfigurer ->
+      httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
   }
 
   @NonNull

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
@@ -96,17 +95,17 @@ class AdminControllerAwsElbTest extends AbstractUIControllerTest {
   }
 
   @Test
-  public void adminShouldGetPage() throws Exception {
+  void adminShouldGetPage() throws Exception {
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
     when(pageAttributes.getTemplate()).thenReturn("admin");
 
-    MvcResult result = mockMvc.perform(get("/")
-      .params(tenantParam)
-      .accept(MediaType.TEXT_HTML)
-      .cookie(new Cookie("XSRF-TOKEN", "xsrf-token"))
-      .header("X-Amzn-Oidc-Identity","06805268-ba62-4dc1-bbe0-8ffda94607e5")
-      .header("X-Amzn-Oidc-Accesstoken","eyJraWQiOiJaanBcL0xucTBUNnZLcmJ2RW5WeHRGUThhNDM0YzJaRDJvUFFKWnZtbTdUQT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwNjgwNTI2OC1iYTYyLTRkYzEtYmJlMC04ZmZkYTk0NjA3ZTUiLCJjb2duaXRvOmdyb3VwcyI6WyJvcHJoLmFkbWluIl0sInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoib3BlbmlkIiwiYXV0aF90aW1lIjoxNTcwNzEwNTk1LCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtY2VudHJhbC0xLmFtYXpvbmF3cy5jb21cL2V1LWNlbnRyYWwtMV9vNVR3ekk3a3EiLCJleHAiOjE1NzA3MjEwNDksImlhdCI6MTU3MDcxNzQ0OSwidmVyc2lvbiI6MiwianRpIjoiMTAyOWRjYjItMDQwOC00ZmNjLWJkYzMtMTM0OGIyYzQ3Yzk3IiwiY2xpZW50X2lkIjoiMjhmMGJqbWY3c2pkOWU0bGI1ZXQ1bWRwcWsiLCJ1c2VybmFtZSI6IjA2ODA1MjY4LWJhNjItNGRjMS1iYmUwLThmZmRhOTQ2MDdlNSJ9.lXuIkDDWtqlfPw4wb1OXWNkA5tLyGjSKa5pL-Bds94bcotUI_IO2w9vQc8aR6WFEK6bnflMTAIZ81GHlmcLI_H_XY1nj7ftxaF28dwpk-oiDOEdUhc4SZY-5nu3EMxPkC3pN3d-waJ4bru7Pv6HdNAvfuR5YHRKvVjBfiO3OW2yFzLDJtKz2kPbyqYBcyt6f6zvAJ0Z1Xuh4Tm6jwjTWIbxI1ppVkkpHJ5xLeeJZiRCpgLvAY5rW9Qql25atRpmBjpMUJaEkEwTBnimf4G6S6aVbfrFTX0DYBoeci0jBxeLaCMCwiQPMJg637irO9r23GxGQgt_mubjp2zwzWOXL4A"))
+    mockMvc.perform(get("/")
+        .params(tenantParam)
+        .accept(MediaType.TEXT_HTML)
+        .cookie(new Cookie("XSRF-TOKEN", "xsrf-token"))
+        .header("X-Amzn-Oidc-Identity", "06805268-ba62-4dc1-bbe0-8ffda94607e5")
+        .header("X-Amzn-Oidc-Accesstoken", "eyJraWQiOiJaanBcL0xucTBUNnZLcmJ2RW5WeHRGUThhNDM0YzJaRDJvUFFKWnZtbTdUQT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwNjgwNTI2OC1iYTYyLTRkYzEtYmJlMC04ZmZkYTk0NjA3ZTUiLCJjb2duaXRvOmdyb3VwcyI6WyJvcHJoLmFkbWluIl0sInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoib3BlbmlkIiwiYXV0aF90aW1lIjoxNTcwNzEwNTk1LCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtY2VudHJhbC0xLmFtYXpvbmF3cy5jb21cL2V1LWNlbnRyYWwtMV9vNVR3ekk3a3EiLCJleHAiOjE1NzA3MjEwNDksImlhdCI6MTU3MDcxNzQ0OSwidmVyc2lvbiI6MiwianRpIjoiMTAyOWRjYjItMDQwOC00ZmNjLWJkYzMtMTM0OGIyYzQ3Yzk3IiwiY2xpZW50X2lkIjoiMjhmMGJqbWY3c2pkOWU0bGI1ZXQ1bWRwcWsiLCJ1c2VybmFtZSI6IjA2ODA1MjY4LWJhNjItNGRjMS1iYmUwLThmZmRhOTQ2MDdlNSJ9.lXuIkDDWtqlfPw4wb1OXWNkA5tLyGjSKa5pL-Bds94bcotUI_IO2w9vQc8aR6WFEK6bnflMTAIZ81GHlmcLI_H_XY1nj7ftxaF28dwpk-oiDOEdUhc4SZY-5nu3EMxPkC3pN3d-waJ4bru7Pv6HdNAvfuR5YHRKvVjBfiO3OW2yFzLDJtKz2kPbyqYBcyt6f6zvAJ0Z1Xuh4Tm6jwjTWIbxI1ppVkkpHJ5xLeeJZiRCpgLvAY5rW9Qql25atRpmBjpMUJaEkEwTBnimf4G6S6aVbfrFTX0DYBoeci0jBxeLaCMCwiQPMJg637irO9r23GxGQgt_mubjp2zwzWOXL4A"))
 
       .andExpect(status().isOk())
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))

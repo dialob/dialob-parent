@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @EnableCaching
-public class QuestionnaireSessionServiceTest {
+class QuestionnaireSessionServiceTest {
 
   static QuestionnaireSessionService questionnaireSessionServiceMock = mock(QuestionnaireSessionService.class);
 
@@ -79,7 +79,7 @@ public class QuestionnaireSessionServiceTest {
   public QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
   @Test
-  public void findOneShouldCacheNonNullResult() {
+  void findOneShouldCacheNonNullResult() {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
@@ -96,11 +96,10 @@ public class QuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void findOneShouldNotCacheNullResult() {
+  void findOneShouldNotCacheNullResult() {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionServiceMock.findOne("123")).thenReturn(null);
 
     questionnaireSessionService.findOne("123");
@@ -112,12 +111,10 @@ public class QuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void findOneWithOpenFalseShouldReturnNullIfItemNotInCache() {
+  void findOneWithOpenFalseShouldReturnNullIfItemNotInCache() {
     Cache cache = setupCache();
 
     when(cache.get("123")).thenReturn(null);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-
     assertNull(questionnaireSessionService.findOne("123", false));
 
     verify(cache).getName();
@@ -127,7 +124,7 @@ public class QuestionnaireSessionServiceTest {
   }
 
   @Test
-  public void saveShouldCacheResult() {
+  void saveShouldCacheResult() {
     Cache cache = setupCache();
 
     QuestionnaireSession session = mock(QuestionnaireSession.class);

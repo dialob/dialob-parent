@@ -60,6 +60,7 @@ interface DialobAdminConfig {
 	setTechnicalError: () => void; // function used for reporting technical errors
 	language: string; // Current locale used by your application in ISO language code format ("en","sv","fi" and similar)
 	csrf: CsrfShape | undefined; // Adjust according to your application csrf settings
+  tenantId?: string; // If fixed tenantId is not already set up for the dialob backend environment
 }
 
 interface DialobAdminViewProps {

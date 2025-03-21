@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package io.dialob.rule.parser;
 import io.dialob.rule.parser.node.ParseTestBase;
 import org.junit.jupiter.api.Test;
 
-public class FFRuleParserTest extends ParseTestBase {
+class FFRuleParserTest extends ParseTestBase {
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     assertExpressionEquals("", "");
     assertExpressionEquals("// comment", "");
     assertExpressionEquals("1", "1");

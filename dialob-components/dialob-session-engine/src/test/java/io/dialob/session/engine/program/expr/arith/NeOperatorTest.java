@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.when;
 
-public class NeOperatorTest {
+class NeOperatorTest {
 
   @Test
-  public void testLogic() {
+  void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     NeOperator operator = newNe(lh, rh);
@@ -56,7 +56,7 @@ public class NeOperatorTest {
   }
 
   @Test
-  public void shouldEvalToBoolean() {
+  void shouldEvalToBoolean() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
     NeOperator operator = newNe(lh, rh);
@@ -67,22 +67,4 @@ public class NeOperatorTest {
     return ImmutableNeOperator.builder().lhs(lh).rhs(rh).build();
   }
 
-//  @Test
-//  public void shouldUnionDependencies() {
-//    Expression lh = Mockito.mock(Expression.class);
-//    Expression rh = Mockito.mock(Expression.class);
-//    NeOperator operator = newNe(lh, rh);
-//
-//    when(lh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId(("c"))));
-//    when(rh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")));
-//    Assertions.assertEquals(Sets.<EventMatcher>newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")), operator.getEvalRequiredConditions());
-//
-//    when(lh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId("c")));
-//    when(rh.getEvalRequiredConditions()).thenReturn(Collections.emptySet());
-//    Assertions.assertEquals(Sets.<EventMatcher>newHashSet(IdUtils.toId("a"), IdUtils.toId("b"), IdUtils.toId("c")), operator.getEvalRequiredConditions());
-//
-//    when(lh.getEvalRequiredConditions()).thenReturn(Collections.emptySet());
-//    when(rh.getEvalRequiredConditions()).thenReturn(Sets.newHashSet(IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")));
-//    Assertions.assertEquals(Sets.<EventMatcher>newHashSet(IdUtils.toId("b"), IdUtils.toId("c"), IdUtils.toId("d")), operator.getEvalRequiredConditions());
-//  }
 }

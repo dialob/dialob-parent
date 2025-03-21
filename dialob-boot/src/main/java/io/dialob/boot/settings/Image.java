@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
  */
 package io.dialob.boot.settings;
 
-import lombok.Data;
+import lombok.Getter;
 
-import java.io.Serializable;
-
-@Data
-public class Image implements Serializable {
-
-  private String url;
-
-  private Integer width;
-
-  private Integer height;
-
-  private String title;
-
+/**
+ * Represents an image with its URL, dimensions, and title.
+ */
+public record Image(
+  @Getter
+  String url,
+  @Getter
+  Integer width,
+  @Getter
+  Integer height,
+  @Getter
+  String title
+) {
 }

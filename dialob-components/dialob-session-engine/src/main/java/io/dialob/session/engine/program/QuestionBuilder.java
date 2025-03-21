@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.dialob.session.engine.program.expr.arith.Operators.*;
 import static java.util.stream.Collectors.toMap;
@@ -102,11 +102,11 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   protected void beforeExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     super.beforeExpressionCompilation(errorConsumer);
     getDefaultValue().map(defaultValue -> {
-      if (!getValueType().isPresent()) {
+      if (getValueType().isEmpty()) {
         return Utils.createError(getIdStr(), "VALUE_TYPE_NOT_SET");
       }
-      Utils.validateDefaultValue(getIdStr(), getValueType().get(), defaultValue, errorConsumer::accept);
-      return (FormValidationError) null;
+      Utils.validateDefaultValue(getIdStr(), getValueType().get(), defaultValue, errorConsumer);
+      return null;
     }).ifPresent(errorConsumer);
   }
 
@@ -164,9 +164,10 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
   // Add weird backward compatible visibility logic for notes
   private Expression legacyNoteVisibility(Expression disabledExpression, LocalizedLabelOperator labelOperator) {
-    if ("note".equals(type)) {
-        List<Expression> expressions =  labelOperator.getEvalRequiredConditions()
-          .stream()
+    if (Constants.NOTE.equals(type)) {
+      disabledExpression = Operators.or(Stream.concat(
+          labelOperator.getEvalRequiredConditions().stream(),
+          Stream.of(disabledExpression))
           .filter(eventMatcher -> eventMatcher instanceof EventMatchers.TargetIdEventMatcher)
           .map(eventMatcher -> (EventMatchers.TargetIdEventMatcher) eventMatcher)
           .map(itemId -> getProgramBuilder()
@@ -175,10 +176,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
             .<Expression>map(defaultValue -> BooleanOperators.FALSE)
               .orElse(ImmutableIsInactiveOrNullOperator.of(itemId.getTargetId())))
           .filter(expression -> expression != BooleanOperators.FALSE)
-          .collect(Collectors.toList());
-
-      expressions.add(disabledExpression);
-      disabledExpression = Operators.or(expressions.toArray(new Expression[0]));
+        .toArray(Expression[]::new));
   }
     return disabledExpression;
   }
@@ -204,7 +202,12 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   }
 
   @Override
-  public boolean compile(@NonNull ItemId itemId, @NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
+  public boolean compile(@NonNull ItemId itemId,
+                         @NonNull String expression,
+                         @NonNull AliasesProvider aliasesProvider,
+                         @NonNull Consumer<Expression> expressionConsumer,
+                         @NonNull FormValidationError.Type type,
+                         Optional<Integer> index) {
     return compileExpression(expression, aliasesProvider, expressionConsumer, type, index);
   }
 
@@ -237,7 +240,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   }
 
   public Optional<Object> getDefaultValue() {
-    if ("note".equals(type)) {
+    if (Constants.NOTE.equals(type)) {
       return Optional.empty();
     }
     return Optional.ofNullable(defaultValue);

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,13 @@
  */
 package io.dialob.form.service;
 
+import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-
-import io.dialob.form.service.api.validation.CsvToFormParser;
 
 @Configuration(proxyBeanMethods = false)
 @ImportResource("classpath:dialob-form-service-cache-context.xml")

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class FormItemBeanTest {
+class FormItemBeanTest {
   public FormItem parseFormItem(String data) throws IOException {
     final ObjectMapper objectMapper = new ObjectMapper();
     SimpleModule module = new SimpleModule();
@@ -37,7 +37,7 @@ public class FormItemBeanTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     FormItem formItem = parseFormItem("{\"id\":\"item1\",\"type\":\"text\"}");
     Assertions.assertEquals("item1", formItem.getId());
     Assertions.assertEquals("text", formItem.getType());

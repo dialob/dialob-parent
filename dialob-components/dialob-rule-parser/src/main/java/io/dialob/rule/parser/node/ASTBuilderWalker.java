@@ -1,6 +1,5 @@
 package io.dialob.rule.parser.node;
 
-import com.google.common.base.CaseFormat;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.DialobRuleBaseListener;
@@ -10,14 +9,16 @@ import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class ASTBuilderWalker extends DialobRuleBaseListener {
@@ -26,10 +27,12 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   private final VariableFinder variableFinder;
 
+  @Getter
   private ASTBuilder builder;
 
   private final Map<NodeBase,String> asyncFunctionVariables;
 
+  @Setter
   private ErrorLogger errorLogger = new ErrorLogger() {
     @Override
     public void logError(String errorCode, Span span) {
@@ -77,16 +80,8 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     this.asyncFunctionVariables = asyncFunctionVariables;
   }
 
-  public void setErrorLogger(ErrorLogger errorLogger) {
-    this.errorLogger = errorLogger;
-  }
-
   private void pop() {
     builder = builder.closeExpr();
-  }
-
-  public ASTBuilder getBuilder() {
-    return builder;
   }
 
   protected List<ValueType> getLhsAndRhsValueTypes() {
@@ -95,13 +90,12 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
       .getSubnodes()
       .stream()
       .map(NodeBase::getValueType)
-      .collect(Collectors.toList());
+      .toList();
   }
 
   protected NodeBase getLhs() {
     NodeBase node = builder.getTopNode();
-    if (node instanceof CallExprNode) {
-      CallExprNode callExprNode = (CallExprNode) node;
+    if (node instanceof CallExprNode callExprNode) {
       return callExprNode.getLhs();
     }
     return null;
@@ -109,8 +103,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   protected NodeBase getRhs() {
     NodeBase node = builder.getTopNode();
-    if (node instanceof CallExprNode) {
-      CallExprNode callExprNode = (CallExprNode) node;
+    if (node instanceof CallExprNode callExprNode) {
       return callExprNode.getRhs();
     }
     return null;
@@ -157,11 +150,8 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
   @Override
   public void exitInOperExpr(DialobRuleParser.InOperExprContext ctx) {
     NodeBase rhs = getRhs();
-    if (rhs instanceof IdExprNode) {
-      IdExprNode idExprNode = (IdExprNode) rhs;
-      if (idExprNode.getValueType() == null || !idExprNode.getValueType().isArray()) {
-        errorLogger.logError(CompilerErrorCode.ARRAY_TYPE_EXPECTED, new Object[]{rhs}, rhs.getSpan());
-      }
+    if (rhs instanceof IdExprNode idExprNode && (idExprNode.getValueType() == null || !idExprNode.getValueType().isArray())) {
+      errorLogger.logError(CompilerErrorCode.ARRAY_TYPE_EXPECTED, new Object[]{rhs}, rhs.getSpan());
     }
     NodeBase lhs = getLhs();
     if (lhs.getValueType() != null && lhs.getValueType().isArray()) {
@@ -273,19 +263,17 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         coerce(stringConstant, coercionType);
       }
 
-      String code;
       boolean ok;
-      switch (operator) {
-        case "=":
-        case "!=":
+      var code = switch (operator) {
+        case "=", "!=" -> {
           ok = lhs.getValueType().canEqualWith(rhs.getValueType());
-          code = CompilerErrorCode.NO_EQUALITY_RELATION_BETWEEN_TYPES;
-          break;
-        default:
+          yield CompilerErrorCode.NO_EQUALITY_RELATION_BETWEEN_TYPES;
+        }
+        default -> {
           ok = lhs.getValueType().canOrderWith(rhs.getValueType());
-          code = CompilerErrorCode.NO_ORDER_RELATION_BETWEEN_TYPES;
-          break;
-      }
+          yield CompilerErrorCode.NO_ORDER_RELATION_BETWEEN_TYPES;
+        }
+      };
       if (!ok) {
         errorLogger.logError(code, new Object[]{lhs.getValueType(), rhs.getValueType()}, Span.of(ctx));
       }
@@ -304,7 +292,6 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     if (coercionType == ValueType.TIME) {
       if (stringConstant.getValue().matches("\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?")) {
         stringConstant.setValueType(ValueType.TIME);
-        return;
       }
     }
   }
@@ -553,7 +540,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     } else {
       op = "is-not-" + status;
     }
-    op = CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, op);
+    op = transformCaseFormat(op);
     final String variableId = variableFinder.mapAlias(ctx.questionId.getText());
     ValueType valueType = null;
     try {
@@ -567,6 +554,21 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
     builder = builder
       .callExprNode(op, ValueType.BOOLEAN, Span.of(ctx))
       .idExprNode(namespace, variableId, valueType, Span.of(ctx.questionId)).closeExpr();
+  }
+
+  // abc-fds-erw -> abcGdsErw
+  static String transformCaseFormat(String op) {
+    StringBuilder sb = new StringBuilder();
+    boolean first = true;
+    for (var s : StringUtils.split(op, "-")) {
+      if (!first) {
+        s = StringUtils.capitalize(s);
+      } else {
+        first = false;
+      }
+      sb.append(s);
+    }
+    return sb.toString();
   }
 
   @Override

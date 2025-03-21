@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,33 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.util.Map;
 
+/**
+ * This class is responsible for handling the submission of normalized documents
+ * to an AWS S3 bucket. It extends the AbstractNormalizingPostSubmitHandler, leveraging
+ * its method to normalize the submitted data before sending it to S3.
+ * <p>
+ * The class uses AWS SDK's S3Client to facilitate interactions with S3, and
+ * Jackson's ObjectMapper to serialize the data into JSON format according to
+ * the required configurations.
+ * <p>
+ * Features:
+ * - Serializes normalized questionnaire data into JSON format.
+ * - Sends the serialized document to an S3 bucket, using the document's unique
+ *   identifier as the object key.
+ * <p>
+ * Constructor Details:
+ * - The constructor accepts an S3Client and an ObjectMapper as parameters.
+ * - The ObjectMapper is configured to order map entries by keys to ensure
+ *   consistent serialization output.
+ * <p>
+ * Key Overrides:
+ * - The sendDocument method is overridden to handle the process of constructing
+ *   and uploading the JSON document to S3.
+ * <p>
+ * Logging:
+ * - Debug logs are provided to track the process of sending documents to S3.
+ * - Errors encountered during the JSON serialization process are logged.
+ */
 @Slf4j
 public class S3NormalizingPostSubmitHandler extends AbstractNormalizingPostSubmitHandler {
 
@@ -39,6 +66,15 @@ public class S3NormalizingPostSubmitHandler extends AbstractNormalizingPostSubmi
     this.objectMapper = objectMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
   }
 
+  /**
+   * Sends a document to an AWS S3 bucket. The document is serialized to JSON format and
+   * stored in the specified bucket with a key derived from the document's unique identifier.
+   *
+   * @param submitHandlerSettings the settings containing properties required for submission,
+   *                              including the target S3 bucket.
+   * @param entries a map representing the document to be sent, where the document's unique
+   *                identifier is assumed to be stored under the "_id" key.
+   */
   @Override
   protected void sendDocument(AnswerSubmitHandler.Settings submitHandlerSettings, Map<String, Object> entries) {
     LOGGER.debug("sending {} to aws bucket {}", entries.get("_id"), submitHandlerSettings.getProperties().get("bucket"));

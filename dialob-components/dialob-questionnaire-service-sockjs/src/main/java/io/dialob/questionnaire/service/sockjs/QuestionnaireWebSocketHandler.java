@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implements QuestionnaireActionsService {
@@ -222,7 +221,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       if (!actionList.isEmpty()) {
         Actions returnActions = ImmutableActions.builder()
           .rev(prevRev)
-          .actions(actionList.stream().map(action -> ImmutableAction.builder().from(action).serverEvent(true).build()).collect(Collectors.toList()))
+          .actions(actionList.stream().map(action -> ImmutableAction.builder().from(action).serverEvent(true).build()).toList())
           .build();
         sendMessage(returnActions);
       }
@@ -232,7 +231,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   @Override
   public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () ->
-      LOGGER.error("WebSocket transport error. " + this.session.getId(), exception));
+      LOGGER.error("WebSocket transport error. {}", this.session.getId(), exception));
   }
 
   @Override
@@ -242,11 +241,6 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       publishDisconnectionEvent(closeStatus);
       this.session = null;
     });
-  }
-
-  @Override
-  public boolean supportsPartialMessages() {
-    return false;
   }
 
   @NonNull
@@ -261,7 +255,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
         Actions actions = event.getActions();
         List<Action> filteredActions = actions.getActions().stream()
           .filter(action -> !session.getId().equals(action.getResourceId()))
-          .collect(Collectors.toList());
+          .toList();
         sendMessage(ImmutableActions.builder().from(actions).actions(filteredActions).build());
       } catch (SockJsTransportFailureException transportFailureException) {
         // Occurs normally when client disconnects unexpectedly. Spring have already
@@ -312,7 +306,6 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     } catch (IOException e) {
       LOGGER.info("unparseable message from client {} due error {}", this.session.getId(), e.getMessage());
       LOGGER.debug("message payload: {}", message != null ? message.getPayload() : actions);
-      return;
     }
   }
 

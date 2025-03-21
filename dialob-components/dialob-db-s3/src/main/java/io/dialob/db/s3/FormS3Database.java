@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class FormS3Database extends AbstractS3Database<Form> implements FormData
       consumer.accept(ImmutableFormMetadataRow.of(
         id,
         ImmutableFormMetadata.builder()
-          .lastSaved(new Date(object.lastModified().toEpochMilli()))
+          .lastSaved(Date.from(object.lastModified()))
           .tenantId(tenantId)
           .build()
       ));

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ class FormAzureBlobStorageDatabaseTest {
   }
 
   @Test
-  public void shouldGetSameObjectBackFromStorage() {
+  void shouldGetSameObjectBackFromStorage() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -74,7 +74,7 @@ class FormAzureBlobStorageDatabaseTest {
   }
 
   @Test
-  public void shouldRevisionObject() {
+  void shouldRevisionObject() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -91,20 +91,20 @@ class FormAzureBlobStorageDatabaseTest {
 
 
   @Test
-  public void shouldThrowDocumentNotFoundExceptionIfObjectNotFound() {
+  void shouldThrowDocumentNotFoundExceptionIfObjectNotFound() {
     var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Assertions.assertThrows(DocumentNotFoundException.class, () -> database.findOne("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
 
   @Test
-  public void shouldGetFalseFromExistsWhenDocumentDoNotExists() {
+  void shouldGetFalseFromExistsWhenDocumentDoNotExists() {
     var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Assertions.assertFalse(database.exists("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
   @Test
-  public void shouldGetTrueFromExistsWhenDocumentDoExists() {
+  void shouldGetTrueFromExistsWhenDocumentDoExists() {
     var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -117,14 +117,14 @@ class FormAzureBlobStorageDatabaseTest {
   }
 
   @Test
-  public void shouldBeAbleDeleteNonExistingDocument() {
+  void shouldBeAbleDeleteNonExistingDocument() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Assertions.assertFalse(database.exists("00000000-0000-0000-0000-000000000000", "not-exists"));
     Assertions.assertFalse(database.delete("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
   @Test
-  public void shouldBeAbleDeleteExistingDocument() {
+  void shouldBeAbleDeleteExistingDocument() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -139,7 +139,7 @@ class FormAzureBlobStorageDatabaseTest {
   }
 
   @Test
-  public void shouldScanBucket() {
+  void shouldScanBucket() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobServiceClient.createBlobContainer("should-scan-bucket"), objectMapper, "forms", null);
 
     Consumer<BlobItem> scanner = Mockito.mock();

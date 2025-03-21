@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * The ScheduledSessionEvictionPolicy class is responsible for controlling the eviction of
+ * questionnaire sessions from a cache based on predefined conditions. This class supports scheduled
+ * eviction of sessions and responds to events to ensure the cache remains up-to-date and optimized.
+ * The eviction policy can be customized using a session eviction callback.
+ */
 @Slf4j
 public class ScheduledSessionEvictionPolicy {
 
@@ -54,6 +60,18 @@ public class ScheduledSessionEvictionPolicy {
     this.ttl = ttl != null ? ttl: 60000;
   }
 
+  /**
+   * Evicts questionnaire sessions from the session cache that meet specific conditions.
+   * This method is scheduled to run at a fixed interval defined by the property
+   * "dialob.session.cache.evict-rate" (default is 2000 milliseconds).
+   * <p>
+   * A questionnaire session is evicted if:
+   * - Its status equals {@link Questionnaire.Metadata.Status#COMPLETED}, or
+   * - The time elapsed since its last update exceeds the configured TTL (time-to-live).
+   * <p>
+   * The eviction process identifies sessions that satisfy the criteria and invokes the eviction
+   * mechanism for those sessions.
+   */
   @Scheduled(fixedRateString = "${dialob.session.cache.evict-rate:2000}")
   public void evictQuietSessions() {
     LOGGER.debug("evictQuietSessions");

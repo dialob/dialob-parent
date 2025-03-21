@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package io.dialob.rule.parser.modifier;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.AstMatcher;
 import io.dialob.rule.parser.CloneVisitor;
 import io.dialob.rule.parser.api.ValueType;
@@ -65,7 +66,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     });
 
 
-    whenMatches(callNode(operator(or(is("+"), is("-"))).and(args(allMatches(constNode(valueType(is(ValueType.PERIOD))))))), node -> {
+    whenMatches(callNode(operator(or(is("+"), is("-"), is("neg"))).and(args(allMatches(constNode(valueType(is(ValueType.PERIOD))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
       if (arguments.isEmpty()) {
@@ -96,7 +97,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     });
 
 
-    whenMatches(callNode(operator(or(is("+"), is("-"))).and(args(allMatches(constNode(valueType(is(ValueType.DURATION))))))), node -> {
+    whenMatches(callNode(operator(or(is("+"), is("-"), is("neg"))).and(args(allMatches(constNode(valueType(is(ValueType.DURATION))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
       if (arguments.isEmpty()) {
@@ -171,7 +172,6 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     whenMatches(callNode(operCategory(is(NodeOperator.Category.RELATION)).and(args(allMatches(constNode(valueType(or(is(ValueType.INTEGER), is(ValueType.DECIMAL)))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
-      BigDecimal sum = BigDecimal.ZERO;
       assert arguments.size() == 2;
       ConstExprNode leftHand = (ConstExprNode) arguments.get(0);
       ConstExprNode rightHand = (ConstExprNode) arguments.get(1);
@@ -188,7 +188,6 @@ public class ModifyingMinifierVisitor extends AstMatcher {
     whenMatches(callNode(operCategory(is(NodeOperator.Category.RELATION)).and(args(allMatches(constNode(valueType(is(ValueType.STRING))))))), node -> {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
-      BigDecimal sum = BigDecimal.ZERO;
       assert arguments.size() == 2;
       ConstExprNode leftHand = (ConstExprNode) arguments.get(0);
       ConstExprNode rightHand = (ConstExprNode) arguments.get(1);
@@ -203,7 +202,6 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       BinaryOperator<Boolean> op = null;
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
-      BigDecimal sum = BigDecimal.ZERO;
       // NE|LE|GE|LT|GT|EQ
       Boolean result = null;
       final String operator = callNode.getNodeOperator().getOperator();
@@ -253,7 +251,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       }
 
       // We'll filter constants from call
-      if (newArguments.size() > 0) {
+      if (!newArguments.isEmpty()) {
         ASTBuilder astBuilder = new ASTBuilder().callExprNode(callNode);
         for (NodeBase argument : newArguments) {
           argument.accept(new CloneVisitor(astBuilder));
@@ -275,71 +273,26 @@ public class ModifyingMinifierVisitor extends AstMatcher {
 
   }
 
-  private <T> Boolean compare(String operator, Comparable<T> left, T right) {
-    Boolean result;
-    if (left != null && right != null) {
-      final int diff = left.compareTo(right);
-      switch (operator) {
-        case "!=":
-          result = diff != 0;
-          break;
-        case "<=":
-          result = diff <= 0;
-          break;
-        case ">=":
-          result = diff >= 0;
-          break;
-        case ">":
-          result = diff > 0;
-          break;
-        case "<":
-          result = diff < 0;
-          break;
-        case "=":
-          result = diff == 0;
-          break;
-        default:
-          throw new IllegalStateException("Unknown relation operator " + operator);
-      }
-    } else {
-      // null <operator> null
-      switch (operator) {
-        case "!=":
-        case ">":
-        case "<":
-          result = false;
-          break;
-        case "<=":
-        case "=":
-        case ">=":
-          result = true;
-          break;
-        default:
-          throw new IllegalStateException("Unknown relation operator " + operator);
-      }
-      // null <operator> non-null / non-null <operator> null
-      if (left != null || right != null) {
-        result = !result;
-      }
-    }
-    return result;
+  private <T> Boolean compare(String operator, @NonNull Comparable<T> left, @NonNull T right) {
+    final int diff = left.compareTo(right);
+    return switch (operator) {
+      case "!=" -> diff != 0;
+      case "<=" -> diff <= 0;
+      case ">=" -> diff >= 0;
+      case ">" -> diff > 0;
+      case "<" -> diff < 0;
+      case "=" -> diff == 0;
+      default -> throw new IllegalStateException("Unknown relation operator " + operator);
+    };
   }
 
   private BigDecimal toBigDecimal(ConstExprNode constNode) {
     if (constNode.getValueType() == ValueType.DECIMAL) {
-      Object value = constNode.getAsValueType();
-      if (value != null) {
-        return (BigDecimal) constNode.getAsValueType();
-      }
-      return null;
+      return (BigDecimal) constNode.getAsValueType();
     }
     if (constNode.getValueType() == ValueType.INTEGER) {
-      Object value = constNode.getAsValueType();
-      if (value != null) {
-        return new BigDecimal((BigInteger) value);
-      }
-      return null;
+      return new BigDecimal((BigInteger) constNode.getAsValueType());
     }
-    throw new IllegalStateException();
+    throw new IllegalStateException("Cannot coerce " + constNode + " to DECIMAL");
   }
 }

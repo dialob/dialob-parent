@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @Tag("postgresql")
@@ -38,7 +37,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
 
 
   @Test
-  public void saveAndQueryFormsByMetadata() {
+  void saveAndQueryFormsByMetadata() {
 
     setActiveTenant("12341234-1234-1234-1234-123412341236");
 
@@ -56,7 +55,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
 
     form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form2);
 
-    List<FormDatabase.FormMetadataRow> rows = new ArrayList<FormDatabase.FormMetadataRow>();
+    List<FormDatabase.FormMetadataRow> rows = new ArrayList<>();
     getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form 2").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form2.getId(), rows.get(0).getId());
@@ -65,7 +64,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
     getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form.getId(), rows.get(0).getId());
-    assertTrue(Set.of("label1", "label2").equals(rows.get(0).getValue().getLabels()));
+    assertEquals(Set.of("label1", "label2"), rows.get(0).getValue().getLabels());
     rows.clear();
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@ import static org.mockito.Mockito.mock;
 class ActiveDialobSessionUpdaterTest {
 
   @Test
-  public void shouldSetContextVariable() {
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
+  void shouldSetContextVariable() {
+    FunctionRegistry functionRegistry = mock();
 
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgram program = DialobProgram.createDialobProgram(ImmutableProgram.builder()
@@ -64,8 +64,8 @@ class ActiveDialobSessionUpdaterTest {
     Assertions.assertNull(itemState.get().getValue());
 
     final Action setValue = ActionsFactory.setValue("c1", "new value");
-    DialobSessionUpdater updater = new ActiveDialobSessionUpdater(contextFactory, program, session, true);
-    updater.dispatchActions(Collections.singletonList(setValue));
+    DialobSessionUpdater updater = contextFactory.createSessionUpdater(program, session, true);
+    updater.applyCommands(ActionToCommandMapper.toCommands(Collections.singletonList(setValue)));
 
 
     itemState = session.getItemState(IdUtils.toId("c1"));

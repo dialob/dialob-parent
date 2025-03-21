@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class FormS3DatabaseTest {
   }
 
   @Test
-  public void shouldGetSameObjectBackFromStorage(final S3Client s3Client) throws Exception {
+  void shouldGetSameObjectBackFromStorage(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -58,7 +58,7 @@ class FormS3DatabaseTest {
   }
 
   @Test
-  public void shouldRevisionObject(final S3Client s3Client) throws Exception {
+  void shouldRevisionObject(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -75,20 +75,20 @@ class FormS3DatabaseTest {
 
 
   @Test
-  public void shouldThrowDocumentNotFoundExceptionIfObjectNotFound(final S3Client s3Client) throws Exception {
+  void shouldThrowDocumentNotFoundExceptionIfObjectNotFound(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Assertions.assertThrows(DocumentNotFoundException.class, () -> database.findOne("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
 
   @Test
-  public void shouldGetFalseFromExistsWhenDocumentDoNotExists(final S3Client s3Client) throws Exception {
+  void shouldGetFalseFromExistsWhenDocumentDoNotExists(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Assertions.assertFalse(database.exists("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
   @Test
-  public void shouldGetTrueFromExistsWhenDocumentDoExists(final S3Client s3Client) throws Exception {
+  void shouldGetTrueFromExistsWhenDocumentDoExists(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -101,14 +101,14 @@ class FormS3DatabaseTest {
   }
 
   @Test
-  public void shouldBeAbleDeleteNonExistingDocument(final S3Client s3Client) throws Exception {
+  void shouldBeAbleDeleteNonExistingDocument(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Assertions.assertFalse(database.exists("00000000-0000-0000-0000-000000000000", "not-exists"));
     Assertions.assertFalse(database.delete("00000000-0000-0000-0000-000000000000", "not-exists"));
   }
 
   @Test
-  public void shouldBeAbleDeleteExistingDocument(final S3Client s3Client) throws Exception {
+  void shouldBeAbleDeleteExistingDocument(final S3Client s3Client) throws Exception {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
     Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
       .metadata(ImmutableFormMetadata.builder()
@@ -123,7 +123,7 @@ class FormS3DatabaseTest {
   }
 
   @Test
-  public void shouldScanBucket(final S3Client s3Client) throws Exception {
+  void shouldScanBucket(final S3Client s3Client) throws Exception {
     s3Client.createBucket(CreateBucketRequest.builder().bucket("should-scan-bucket").build());
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "should-scan-bucket", "forms");
 

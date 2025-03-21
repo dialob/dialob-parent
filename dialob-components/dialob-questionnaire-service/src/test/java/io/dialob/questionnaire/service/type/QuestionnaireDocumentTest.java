@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Date;
 
-public class QuestionnaireDocumentTest {
+class QuestionnaireDocumentTest {
 
     ObjectMapper objectMapper;
 
@@ -45,16 +45,16 @@ public class QuestionnaireDocumentTest {
 
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         String data = "{\"_id\":\"609a38a672cf509eeca2b110c1022d35\",\"_rev\":\"1-a2ef6c9c6ab5d9c19603be0698b836b1\",\"answers\":[], \"metadata\": {\"formId\":\"609a38a672cf509eeca2b110c1021f3b\",\"formRev\":\"11-9ea0feacfd5911b129348e4d584679c9\",\"created\":1444838304680}}\n";
         Questionnaire questionnaire = objectMapper.readValue(data, Questionnaire.class);
         Assertions.assertNotNull(questionnaire);
-        Assertions.assertEquals(new Date(Instant.parse("2015-10-14T15:58:24.680Z").toEpochMilli()), questionnaire.getMetadata().getCreated());
+        Assertions.assertEquals(Date.from(Instant.parse("2015-10-14T15:58:24.680Z")), questionnaire.getMetadata().getCreated());
     }
 
     @Test
-  public void timestamps() throws Exception {
-      Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(new Date(Instant.parse("2015-10-14T15:58:24.680Z").toEpochMilli())).build()).build();
+  void timestamps() throws Exception {
+      Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(Date.from(Instant.parse("2015-10-14T15:58:24.680Z"))).build()).build();
 
       String data = objectMapper.writeValueAsString(questionnaire);
       Assertions.assertEquals("{\"metadata\":{\"formId\":\"123\",\"status\":\"OPEN\",\"created\":\"2015-10-14T15:58:24.680+00:00\"}}", data);

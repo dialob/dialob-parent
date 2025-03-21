@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,12 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Represents a local implementation of the {@link QuestionnaireSessionCache} interface that uses an
+ * in-memory cache to manage {@link QuestionnaireSession} instances.
+ * This class provides functionality to cache, retrieve, evict, and clear questionnaire sessions
+ * while supporting custom eviction logic.
+ */
 @Slf4j
 public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache {
 
@@ -134,7 +140,9 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     if (valueWrapper == null) {
       return null;
     }
-    return (T) valueWrapper.get();
+    @SuppressWarnings("unchecked")
+    T value = (T) valueWrapper.get();
+    return value;
   }
 
   @Override
@@ -147,7 +155,9 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
         throw new ValueRetrievalException(key, valueLoader, e);
       }
     }
-    return (T) valueWrapper.get();
+    @SuppressWarnings("unchecked")
+    T value = (T) valueWrapper.get();
+    return value;
   }
 
   @Override
@@ -160,11 +170,12 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
     if (!(key instanceof String || key instanceof Optional)) {
       throw new IllegalArgumentException("questionnaireSession cache key must be String or Optional");
     }
-    if (!(value instanceof QuestionnaireSession)) {
+    if (value instanceof QuestionnaireSession newSession) {
+      var session = put(newSession);
+      return () -> session;
+    } else {
       throw new IllegalArgumentException("questionnaireSession cache value must be type of QuestionnaireSession");
     }
-    QuestionnaireSession session = put((QuestionnaireSession) value);
-    return () -> session;
   }
 
   @Override

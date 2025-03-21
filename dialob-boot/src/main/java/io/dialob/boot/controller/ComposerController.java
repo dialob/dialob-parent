@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,8 @@ package io.dialob.boot.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dialob.boot.settings.ComposerApplicationSettings;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Data;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -34,11 +33,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequestMapping("${composer.context-path:/composer}")
 @Slf4j
 public class ComposerController extends BaseController {
+
   @Value("${info.build.version}")
   private String version;
 
-
-  private ComposerApplicationSettings settings;
+  private final ComposerApplicationSettings settings;
 
   private final PageSettingsProvider pageSettingsProvider;
 
@@ -52,11 +51,11 @@ public class ComposerController extends BaseController {
                          @RequestHeader(value = "Host", required = false) String host,
                          @RequestHeader(value = "X-Real-IP", required = false) String realIp,
                          @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
-                         CsrfToken cfrsToken,
+                         CsrfToken csrfToken,
+                         @RequestParam(name = "tenantId", required = false) String tenantId,
                          Model model,
                          HttpServletRequest request) {
-                           return composer(forwardedFor,host,realIp,forwardedProto,null,cfrsToken,model,request);
-
+    return composer(forwardedFor, host, realIp, forwardedProto, null, csrfToken, tenantId, model, request);
   }
 
 
@@ -67,6 +66,7 @@ public class ComposerController extends BaseController {
                          @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
                          @PathVariable("id") String formId,
                          CsrfToken cfrsToken,
+                         @RequestParam(name = "tenantId", required = false) String tenantId,
                          Model model,
                          HttpServletRequest request) {
     if (LOGGER.isDebugEnabled()) {
@@ -78,12 +78,12 @@ public class ComposerController extends BaseController {
     if ("index.html".equals(formId)) {
       formId = null;
     }
-    index(model,request);
+    index(model, request);
     if (isBlank(forwardedProto)) {
       forwardedProto = request.getScheme();
     }
 
-    AppConfig appConfig = getJavascriptAppConfig(host, forwardedProto, formId, cfrsToken, request);
+    ComposerConfig appConfig = getJavascriptAppConfig(host, forwardedProto, formId, cfrsToken, tenantId);
     model.addAttribute("contextPath", settings.getUrl());
     model.addAttribute("subApplicationName", settings.getSubApplicationName());
     model.addAttribute("appConfig", appConfig);
@@ -95,64 +95,48 @@ public class ComposerController extends BaseController {
 
   @GetMapping(path = "/{id}/config.json", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public AppConfig config(@RequestHeader(value = "Host", required = false) String host,
-                          @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
-                          @PathVariable("id") String formId,
-                          CsrfToken cfrsToken, HttpServletRequest request) {
-    return getJavascriptAppConfig(host, forwardedProto, formId, cfrsToken, request);
+  public ComposerConfig config(@RequestHeader(value = "Host", required = false) String host,
+                               @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto,
+                               @PathVariable("id") String formId,
+                               CsrfToken cfrsToken,
+                               @RequestParam(name = "tenantId", required = false) String tenantId) {
+    return getJavascriptAppConfig(host, forwardedProto, formId, cfrsToken, tenantId);
   }
 
-  protected AppConfig getJavascriptAppConfig(String host,
-                                             String forwardedProto,
-                                             String formId,
-                                             CsrfToken cfrsToken,
-                                             HttpServletRequest request) {
+  protected ComposerConfig getJavascriptAppConfig(String host,
+                                                  String forwardedProto,
+                                                  String formId,
+                                                  CsrfToken cfrsToken,
+                                                  @RequestParam(name = "tenantId", required = false) String tenantId) {
     String fillingAppUrl = settings.getFillingAppUrl();
     if (isBlank(fillingAppUrl)) {
       fillingAppUrl = forwardedProto + "://" + host;
     }
-    AppConfig appConfig = new AppConfig();
-    appConfig.setFormId(formId);
-    appConfig.setBackendApiUrl(settings.getBackendApiUrl());
-    appConfig.setDocumentationUrl(settings.getDocumentationUrl());
-    appConfig.setFillingAppUrl(fillingAppUrl);
-    appConfig.setAdminAppUrl(settings.getAdminAppUrl());
-    if (cfrsToken != null) {
-      appConfig.setCsrf(cfrsToken.getToken());
-      appConfig.setCsrfHeader(cfrsToken.getHeaderName());
-    }
-    final String tenantId = request.getParameter("tenantId");
-    if (!StringUtils.isBlank(tenantId)) {
-      appConfig.setTenantId(tenantId);
-    }
-    appConfig.setVersion(version);
-    return appConfig;
+    return ComposerConfig.builder()
+      .formId(formId)
+      .backendApiUrl(settings.getBackendApiUrl())
+      .documentationUrl(settings.getDocumentationUrl())
+      .fillingAppUrl(fillingAppUrl)
+      .adminAppUrl(settings.getAdminAppUrl())
+      .csrf(cfrsToken != null ? cfrsToken.getToken() : null)
+      .csrfHeader(cfrsToken != null ? cfrsToken.getHeaderName() : null)
+      .tenantId(isValidTenantId(tenantId) ? tenantId : null)
+      .version(version)
+      .build();
   }
 
-
-  @Data
-  public static class AppConfig {
-
-    @JsonProperty("backend_api_url")
-    private String backendApiUrl;
-
-    @JsonProperty("documentation_url")
-    private String documentationUrl;
-
-    @JsonProperty("filling_app_url")
-    private String fillingAppUrl;
-
-    private String csrf;
-
-    private String csrfHeader;
-
-    private String formId;
-
-    private String adminAppUrl;
-
-    private String tenantId;
-
-    private String version;
+  @Builder
+  public record ComposerConfig(
+    @JsonProperty("backend_api_url") String backendApiUrl,
+    @JsonProperty("documentation_url") String documentationUrl,
+    @JsonProperty("filling_app_url") String fillingAppUrl,
+    String csrf,
+    String csrfHeader,
+    String formId,
+    String adminAppUrl,
+    String tenantId,
+    String version
+  ) {
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityConfigurer {
-
-  public static final CorsConfiguration PERMIT_ALL = new CorsConfiguration().applyPermitDefaultValues();
-
-  public static final CorsConfiguration ALLOW_SAME_ORIGIN = new CorsConfiguration();
-
-  public static final RequestMatcher SESSION_EXISTS_MATCHER = request -> request.getSession(false) != null;
 
   public AbstractApiSecurityConfigurer(String contextPath,
                                        TenantAccessEvaluator tenantPermissionEvaluator,
@@ -42,7 +35,7 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
     super(contextPath, tenantPermissionEvaluator, authenticationStrategy);
   }
 
-  protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
+  protected HttpSecurity configurePermissions(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
     return http
       .securityMatcher(requestMatcher())
@@ -57,6 +50,7 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
           .requestMatchers(antMatcher(HttpMethod.POST,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_POST)
           .requestMatchers(antMatcher(HttpMethod.PUT,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_PUT)
           .requestMatchers(antMatcher(HttpMethod.DELETE,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_DELETE)
+          .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/tags/**")).hasAuthority(Permissions.FORMS_GET)
           .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/tenants/**")).authenticated()
           .anyRequest().denyAll());
     // @formatter:on

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ class LandingControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
-  public void test() throws Exception {
+  void test() throws Exception {
     mockMvc.perform(get("/landing").accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("<title>Dialob</title>")))

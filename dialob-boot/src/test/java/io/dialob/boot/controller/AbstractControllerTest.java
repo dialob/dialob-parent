@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package io.dialob.boot.controller;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,8 +44,7 @@ public abstract class AbstractControllerTest {
   }
 
   @BeforeEach
-  public void setupCurrentUser(TestInfo testInfo) {
-    String methodName = testInfo.getDisplayName();
+  public void setupCurrentUser() {
     DefaultMockMvcBuilder builder = MockMvcBuilders
       .webAppContextSetup(this.wac)
       .apply(springSecurity());

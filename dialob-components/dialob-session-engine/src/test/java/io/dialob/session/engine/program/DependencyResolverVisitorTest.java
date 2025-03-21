@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -50,7 +49,7 @@ class DependencyResolverVisitorTest {
   private Program program;
 
   protected ItemId ref(String itemId) {
-    return (ImmutableItemRef) IdUtils.toId(itemId);
+    return IdUtils.toId(itemId);
   }
 
 
@@ -61,7 +60,7 @@ class DependencyResolverVisitorTest {
 
 
   @Test
-  public void shouldBePossibleToExecuteAgainstEmptyProgram() {
+  void shouldBePossibleToExecuteAgainstEmptyProgram() {
     DependencyResolverVisitor visitor = createDependencyResolverVisitor();
     Program program = mock(Program.class);
     visitor.startProgram(program);
@@ -74,7 +73,7 @@ class DependencyResolverVisitorTest {
 
 
   @Test
-  public void justQuestionnaireShouldPass() {
+  void justQuestionnaireShouldPass() {
     DependencyResolverVisitor visitor = createDependencyResolverVisitor();
     Program program = mock(Program.class);
     visitor.startProgram(program);
@@ -92,7 +91,7 @@ class DependencyResolverVisitorTest {
     visitor.end();
     assertTrue(visitor.getInputUpdates().isEmpty());
     assertThat(visitor.getItemCommands()).hasSize(1)
-      .containsEntry(ref("questionnaire"), asList(
+      .containsEntry(ref("questionnaire"), List.of(
         updateGroupItems(ref("questionnaire"), ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build()))
       );
     verifyNoMoreInteractions(program);
@@ -104,7 +103,7 @@ class DependencyResolverVisitorTest {
 
   @Test
   @Disabled
-  public void questionnaireWithPagesAndGroups() {
+  void questionnaireWithPagesAndGroups() {
     DependencyResolverVisitor visitor = createDependencyResolverVisitor();
     Program program = mock(Program.class);
     visitor.startProgram(program);
@@ -139,21 +138,21 @@ class DependencyResolverVisitorTest {
       itemVisitor.visitItem(ImmutableGroup.builder()
         .id(IdUtils.toId("page1group2"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList()).build())
+        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
         .build());
       itemVisitor.visitItem(ImmutableGroup.builder()
         .id(IdUtils.toId("page2group1"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList()).build())
+        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
         .build());
       itemVisitor.visitItem(ImmutableGroup.builder()
         .id(IdUtils.toId("page2group2"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(STRING_ARRAY_VALUE_TYPE).value(asList()).build())
+        .itemsExpression(ImmutableConstant.builder().valueType(STRING_ARRAY_VALUE_TYPE).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
         .build());
@@ -242,14 +241,14 @@ IsActiveTargetEventMatcher{targetMatcher=TargetIdEventMatcher{targetId=group1}}=
       .containsEntry(IdUtils.toId("questionnaire"), asList(
         updateGroupItems(ref("questionnaire"), stringArray("page1", "page2")),
         CommandFactory.updateIsInvalidAnswers(ref("questionnaire"), Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()))))
-      .containsEntry(IdUtils.toId("page1"), asList(updateGroupItems(ref("page1"), stringArray("page1group1", "page1group2"))))
-      .containsEntry(IdUtils.toId("page2"), asList(updateGroupItems(ref("page2"), stringArray("page2group1", "page2group2"))))
+      .containsEntry(IdUtils.toId("page1"), List.of(updateGroupItems(ref("page1"), stringArray("page1group1", "page1group2"))))
+      .containsEntry(IdUtils.toId("page2"), List.of(updateGroupItems(ref("page2"), stringArray("page2group1", "page2group2"))))
       .containsEntry(IdUtils.toId("page1group1"), asList(updateDisabled(ref("page1group1"), ImmutableIsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group1"), stringArray("page1group1item1","page1group1item2"))))
       .containsEntry(IdUtils.toId("page1group2"), asList(updateDisabled(ref("page1group2"), ImmutableIsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group2"), stringArray())))
       .containsEntry(IdUtils.toId("page2group1"), asList(updateDisabled(ref("page2group1"), ImmutableIsDisabledOperator.of(ref("page2"))), updateGroupItems(ref("page2group1"), stringArray())))
       .containsEntry(IdUtils.toId("page2group2"), asList(updateDisabled(ref("page2group2"), ImmutableIsDisabledOperator.of(ref("page2"))), updateGroupItems(ref("page2group2"), stringArray())))
-      .containsEntry(IdUtils.toId("page1group1item1"), asList(updateDisabled(ref("page1group1item1"), ImmutableIsDisabledOperator.of(ref("group1")))))
-      .containsEntry(IdUtils.toId("page1group1item2"), asList(updateDisabled(ref("page1group1item2"), ImmutableIsDisabledOperator.of(ref("group1")))))
+      .containsEntry(IdUtils.toId("page1group1item1"), List.of(updateDisabled(ref("page1group1item1"), ImmutableIsDisabledOperator.of(ref("group1")))))
+      .containsEntry(IdUtils.toId("page1group1item2"), List.of(updateDisabled(ref("page1group1item2"), ImmutableIsDisabledOperator.of(ref("group1")))))
     ;
 
 

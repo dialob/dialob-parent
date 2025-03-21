@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,13 @@ import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.*;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
@@ -45,16 +48,19 @@ import static io.dialob.session.engine.Utils.*;
 @Slf4j
 public class DialobSession implements ItemStates, Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1180110179877247767L;
 
   public static final ImmutableItemRef QUESTIONNAIRE_REF = (ImmutableItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);
 
   private final String tenantId;
 
+  @Getter
   private final String id;
 
   private int asyncUpdateCount;
 
+  @Getter
   private String revision;
 
   @NonNull
@@ -64,6 +70,8 @@ public class DialobSession implements ItemStates, Serializable {
 
   private Date opened;
 
+  @Getter
+  @Setter
   private String language;
 
   private Map<ItemId,ItemState> itemStates = new HashMap<>();
@@ -228,10 +236,6 @@ public class DialobSession implements ItemStates, Serializable {
     return new DialobSession(id, this);
   }
 
-  public String getId() {
-    return id;
-  }
-
   public String getTenantId() {
     if (tenantId == null) {
       return ResysSecurityConstants.DEFAULT_TENANT.id();
@@ -284,21 +288,18 @@ public class DialobSession implements ItemStates, Serializable {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
 
-    if (command instanceof ItemUpdateCommand) {
-      final ItemUpdateCommand itemUpdateCommand = (ItemUpdateCommand) command;
+    if (command instanceof ItemUpdateCommand itemUpdateCommand) {
       ItemId itemId = itemUpdateCommand.getTargetId();
       // TODO scope?
       EvalContext context = createScopedEvalContext(evalContext, itemId);
 
       applyItemUpdateCommand(context, itemUpdateCommand);
       updated();
-    } else if (command instanceof ErrorUpdateCommand) {
-      final ErrorUpdateCommand errorUpdateCommand = (ErrorUpdateCommand) command;
+    } else if (command instanceof ErrorUpdateCommand errorUpdateCommand) {
       EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().getItemId());
       applyErrorUpdateCommand(context, errorUpdateCommand);
       updated();
-    } else if (command instanceof UpdateValueSetCommand) {
-      final UpdateValueSetCommand valueSetCommand = (UpdateValueSetCommand) command;
+    } else if (command instanceof UpdateValueSetCommand valueSetCommand) {
       applyUpdateValueSetCommand(evalContext, valueSetCommand);
       updated();
     } else if (command instanceof SessionUpdateCommand) {
@@ -334,7 +335,6 @@ public class DialobSession implements ItemStates, Serializable {
       .flatMap(trigger -> trigger.apply(this, newStates))
       .forEach(event -> evalContext.getEventsConsumer().accept(event));
 
-    MapDifference<ValueSetId,ValueSetState> valueSetDiffs = Maps.difference(newStates.getValueSetStates(), this.valueSetStates);
     MapDifference<ErrorId,ErrorState> errorDiffs = Maps.difference(newStates.getErrorStates(), this.errorStates);
     MapDifference<ItemId,ItemState> itemStatesDiffs = Maps.difference(newStates.getItemStates(), this.itemStates);
 
@@ -428,10 +428,6 @@ public class DialobSession implements ItemStates, Serializable {
     return Optional.ofNullable(errorStates.get(ImmutableErrorId.of(itemId, code)));
   }
 
-  public String getRevision() {
-    return revision;
-  }
-
   @NonNull
   public Instant getLastUpdate() {
     return lastUpdate.toInstant();
@@ -471,14 +467,6 @@ public class DialobSession implements ItemStates, Serializable {
       this.completed = new Date();
     }
     return isCompleted();
-  }
-
-  public String getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
   }
 
   @NonNull

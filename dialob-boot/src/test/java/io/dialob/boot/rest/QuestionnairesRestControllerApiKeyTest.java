@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,6 +68,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -98,7 +99,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   AdminApplicationSettings.class,
   ReviewApplicationSettings.class
 })
-public class QuestionnairesRestControllerApiKeyTest {
+class QuestionnairesRestControllerApiKeyTest {
 
   public interface ListenerMock {
     @EventListener
@@ -172,15 +173,14 @@ public class QuestionnairesRestControllerApiKeyTest {
 
     System.arraycopy(UUIDUtils.toBytes(clientId), 0, token, 0, 16);
     System.arraycopy(secretBytes,                 0, token, 16, secretBytes.length);
-    /// UUIDUtils.toBytes(clientId)) + "." + token
 
     httpHeaders.set("x-api-key", Base64.getEncoder().encodeToString(token));
     httpHeaders.set(HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
-    return new HttpEntity<Void>(httpHeaders);
+    return new HttpEntity<>(httpHeaders);
   }
 
   @Test
-  public void shouldLookupQuestionnairesFromRepository() throws Exception {
+  void shouldLookupQuestionnairesFromRepository() throws Exception {
     doReturn("testTenant").when(currentTenant).getId();
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = (Consumer<QuestionnaireDatabase.MetadataRow>) invocation.getArguments()[6];
@@ -213,10 +213,12 @@ public class QuestionnairesRestControllerApiKeyTest {
       return null;
     }).when(questionnaireDatabaseMock()).findAllMetadata(anyString(), isNull(), isNull(), isNull(), isNull(), isNull(), any(Consumer.class));
 
-    ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret"), new ParameterizedTypeReference<List<FormListItem>>() {});
+    ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"localsecret"), new ParameterizedTypeReference<>() {
+    });
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     List<FormListItem> r = response.getBody();
+    assertNotNull(r);
     assertEquals(2, r.size());
     assertEquals("l1",r.get(0).getMetadata().getLabel());
     assertEquals("l2",r.get(1).getMetadata().getLabel());
@@ -229,11 +231,11 @@ public class QuestionnairesRestControllerApiKeyTest {
   }
 
   @Test
-  public void shouldRejectInvalidKey() throws Exception {
+  void shouldRejectInvalidKey() throws Exception {
     var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {
-        ResponseEntity<List<FormListItem>> response = restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+        restTemplate.exchange("http://localhost:" + port + "/api/questionnaires", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
         });
       } catch (HttpClientErrorException e) {
         assertEquals(HttpStatus.FORBIDDEN, e.getStatusCode());

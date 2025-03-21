@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.FormItem;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableVariable;
@@ -43,7 +42,6 @@ import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.groups.Tuple.tuple;
@@ -86,7 +84,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
   }
 
   @Test
-  public void shouldEvaluateFunctionAsynchronously() throws Exception {
+  void shouldEvaluateFunctionAsynchronously() throws Exception {
     RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
     functionRegistry.configureFunction("testFunction", QuestionnaireAsyncFunctionExecutorTest.class, true);
@@ -96,7 +94,6 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
       .rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
-    FormItem formItemBean;
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("question1","note1","note2"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","{testResult}"));
@@ -123,7 +120,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
             tuple(Action.Type.ITEM,   "question1",     "Question 1")
           );
       })
-    .nextAfterDelay(500l)
+    .nextAfterDelay(500L)
     .answerQuestion("question1", "Weird")
     .expectUpdateWithoutActions()
     .expectActions(actions -> {

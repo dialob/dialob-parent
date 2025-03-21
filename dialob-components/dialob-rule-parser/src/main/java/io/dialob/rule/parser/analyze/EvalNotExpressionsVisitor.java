@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ public class EvalNotExpressionsVisitor extends AstMatcher {
         // remove not not
         whenMatches(callNode(operator(is("not")).and(lhs(callNode(operator(is("not")))))), node -> {
             CallExprNode callExprNode = ((CallExprNode) node);
-            callExprNode = (CallExprNode) callExprNode.getLhs();
+            callExprNode = callExprNode.getLhs();
             return callExprNode.getLhs();
         });
 

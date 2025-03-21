@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import com.google.common.collect.Sets;
 import io.dialob.session.engine.session.command.Triggers;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemStates;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -39,7 +39,7 @@ public interface RowItemsAddedEventsProvider extends Triggers.EventsProvider<Ite
     }
     Set<ItemId> newItems = updatedState.getItemStates().keySet();
     if (originalState != null) {
-      newItems = Sets.newHashSet(newItems);
+      newItems = new HashSet<>(newItems);
       newItems.removeAll(originalState.getItemStates().keySet());
     }
     return newItems.stream().map(itemId -> ImmutableItemAddedEvent.of(itemId, getRowProtoTypeId()));

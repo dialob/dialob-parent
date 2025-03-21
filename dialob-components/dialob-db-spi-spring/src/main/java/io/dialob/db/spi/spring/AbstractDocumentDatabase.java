@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 package io.dialob.db.spi.spring;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.Getter;
 import org.springframework.data.annotation.Version;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 public abstract class AbstractDocumentDatabase<T> {
 
+  @Getter
   private final Class<? extends T> documentClass;
 
   private final ReflectionEntityInformation idEntityInformation;
@@ -34,10 +36,6 @@ public abstract class AbstractDocumentDatabase<T> {
     this.revEntityInformation = new ReflectionEntityInformation(documentClass, Version.class);
     Assert.isTrue(idEntityInformation.getIdType() == String.class, "id type is not String on type " + documentClass.getCanonicalName());
     Assert.isTrue(revEntityInformation.getIdType() == String.class, "version type is not String on type " + documentClass.getCanonicalName());
-  }
-
-  public Class<? extends T> getDocumentClass() {
-    return documentClass;
   }
 
   @Nullable

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +34,7 @@ import java.util.Objects;
 @ToString
 public class ValueSetState implements SessionObject {
 
+  @Serial
   private static final long serialVersionUID = 6040009682715910439L;
 
   private final ValueSetId id;
@@ -40,16 +42,24 @@ public class ValueSetState implements SessionObject {
   private List<ValueSetState.Entry> entries;
 
 
+  @Getter
   @EqualsAndHashCode
   @ToString
   public static class Entry implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4632044242844529912L;
 
     private final String id;
 
     private final String label;
 
+    /**
+     * -- GETTER --
+     *  Is label provided by external service or defined on form.
+     *
+     * @return true when label is from external source
+     */
     private final boolean provided;
 
     public static Entry of(String id, String label) {
@@ -66,22 +76,6 @@ public class ValueSetState implements SessionObject {
       this.provided = provided;
     }
 
-    public String getId() {
-      return id;
-    }
-
-    public String getLabel() {
-      return label;
-    }
-
-    /**
-     * Is label provided by external service or defined on form.
-     *
-     * @return true when label is from external source
-     */
-    public boolean isProvided() {
-      return provided;
-    }
   }
 
   public class UpdateBuilder {
@@ -98,7 +92,7 @@ public class ValueSetState implements SessionObject {
     public ValueSetState.UpdateBuilder setEntries(List<ValueSetState.Entry> newEntries) {
       if (!Objects.equals(entries, newEntries)) {
         if (newEntries != null) {
-          state().entries = ImmutableList.copyOf(newEntries);
+          state().entries = List.copyOf(newEntries);
         } else {
           state().entries = null;
         }
@@ -167,7 +161,7 @@ public class ValueSetState implements SessionObject {
       boolean provided = input.readBool();
       entries[i] = new Entry(key, label, provided);
     }
-    state.entries = ImmutableList.copyOf(entries);
+    state.entries = List.of(entries);
     return state;
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
 
   private final ListMultimap<String, ConfiguredFunction> configuredFunctions = Multimaps.newListMultimap(new HashMap<>(), ArrayList::new);
 
-  private static final Predicate<ValueType[]> MATCH_OBJECT_ARRAY = args -> {
-    return args.length == 1 && args[0].isArray();
-  };
+  private static final Predicate<ValueType[]> MATCH_OBJECT_ARRAY = args -> args.length == 1 && args[0].isArray();
 
   FunctionRegistryImpl(@NonNull TaskExecutor taskExecutor, CurrentTenant currentTenant) {
     this.taskExecutor = Objects.requireNonNull(taskExecutor);
@@ -160,7 +158,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
       // Exception thrown by function
       failure = e.getTargetException().getMessage();
     } catch (Exception e) {
-      LOGGER.warn("Couldn't invoke function " + functionName, e);
+      LOGGER.warn("Couldn't invoke function {}", functionName, e);
       failure = e.getMessage();
     }
     callback.failed(failure);

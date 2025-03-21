@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -26,6 +25,7 @@ import io.dialob.session.engine.session.command.EventMatcher;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.immutables.value.Value;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,9 +70,9 @@ public interface FunctionCallOperator extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    final ImmutableSet.Builder<EventMatcher> deps = ImmutableSet.builder();
+    final var deps = new HashSet<EventMatcher>();
     getArgs().forEach(arg -> deps.addAll(arg.getEvalRequiredConditions()));
-    return deps.build();
+    return Set.copyOf(deps);
   }
 
 }

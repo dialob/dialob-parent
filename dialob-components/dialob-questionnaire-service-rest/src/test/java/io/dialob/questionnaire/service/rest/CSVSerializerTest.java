@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
   DialobRestAutoConfiguration.class})
 @EnableWebMvc
 @WebAppConfiguration
-public class CSVSerializerTest {
+class CSVSerializerTest {
+
+  public static final MediaType MEDIA_TYPE_CSV = MediaType.parseMediaType("text/csv");
 
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {
@@ -180,100 +182,114 @@ public class CSVSerializerTest {
   }
 
   @Test
-  public void getAllDataByFormId() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+FORM_ID).accept(MediaType.parseMediaType("text/csv")))
+  void getAllDataByFormId() throws Exception {
+    mockMvc.perform(get("/questionnaires?formId="+FORM_ID).accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n" +
-        "Something,,No,false\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        TextAnswer,,Yes,true\r
+        Something,,No,false\r
+        """));
   }
 
   @Test
-  public void getAllDataByFormIdLanguage() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=fi").accept(MediaType.parseMediaType("text/csv")))
+  void getAllDataByFormIdLanguage() throws Exception {
+    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=fi").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputFI,text1,BooleanInputFI,boolean1\r\n" +
-        "TextAnswer,,Kyllä,true\r\n" +
-        "Something,,Ei,false\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        TextInputFI,text1,BooleanInputFI,boolean1\r
+        TextAnswer,,Kyllä,true\r
+        Something,,Ei,false\r
+        """));
   }
 
   @Test
-  public void getAllDataByFormIdBooleanLanguageFallback() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=sv").accept(MediaType.parseMediaType("text/csv")))
+  void getAllDataByFormIdBooleanLanguageFallback() throws Exception {
+    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&language=ug").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string(",text1,1. null,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n" +
-        "Something,,No,false\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        ,text1,1. null,boolean1\r
+        TextAnswer,,Yes,true\r
+        Something,,No,false\r
+        """));
   }
 
   @Test
-  public void getByQuestionnaireId() throws Exception {
-    mockMvc.perform(get("/questionnaires?questionnaire=1").accept(MediaType.parseMediaType("text/csv")))
+  void getByQuestionnaireId() throws Exception {
+    mockMvc.perform(get("/questionnaires?questionnaire=1").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        TextAnswer,,Yes,true\r
+        """));
   }
 
   @Test
-  public void getByQuestionnaireId2() throws Exception {
-    mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc").accept(MediaType.parseMediaType("text/csv")))
+  void getByQuestionnaireId2() throws Exception {
+    mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV));
   }
 
   @Test
-  public void getByQuestionnaireIdInvalidId() throws Exception {
-    mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc,unacceptable-id").accept(MediaType.parseMediaType("text/csv")))
+  void getByQuestionnaireIdInvalidId() throws Exception {
+    mockMvc.perform(get("/questionnaires?questionnaire=715d10726ca9d9348e2d29eff33267bc,unacceptable-id").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isBadRequest());
   }
 
   @Test
-  public void getByQuestionnaireIdWrongForm() throws Exception {
-    mockMvc.perform(get("/questionnaires?questionnaire=1,3").accept(MediaType.parseMediaType("text/csv")))
+  void getByQuestionnaireIdWrongForm() throws Exception {
+    mockMvc.perform(get("/questionnaires?questionnaire=1,3").accept(MEDIA_TYPE_CSV))
       .andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void getAllDataByFormIdFilterFrom() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2020-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
+  void getAllDataByFormIdFilterFrom() throws Exception {
+    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2020-10-03T07:04:00").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "Something,,No,false\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        Something,,No,false\r
+        """));
   }
 
   @Test
-  public void getAllDataByFormIdFilterTo() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&to=2020-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
+  void getAllDataByFormIdFilterTo() throws Exception {
+    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&to=2020-10-03T07:04:00").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("TextInputEN,text1,BooleanInputEN,boolean1\r\n" +
-        "TextAnswer,,Yes,true\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        TextInputEN,text1,BooleanInputEN,boolean1\r
+        TextAnswer,,Yes,true\r
+        """));
   }
 
   @Test
-  public void failNoMatch() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2021-10-03T07:04:00").accept(MediaType.parseMediaType("text/csv")))
+  void failNoMatch() throws Exception {
+    mockMvc.perform(get("/questionnaires?formId="+FORM_ID+"&from=2021-10-03T07:04:00").accept(MEDIA_TYPE_CSV))
       .andExpect(status().isNotFound());
   }
 
   @Test
-  public void failWithoutCriteria() throws Exception {
-    mockMvc.perform(get("/questionnaires").accept(MediaType.parseMediaType("text/csv")))
+  void failWithoutCriteria() throws Exception {
+    mockMvc.perform(get("/questionnaires").accept(MEDIA_TYPE_CSV))
       .andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void getAllDataByFormIdSurvey() throws Exception {
-    mockMvc.perform(get("/questionnaires?formId="+SURVEY_FORM_ID).accept(MediaType.parseMediaType("text/csv")))
+  void getAllDataByFormIdSurvey() throws Exception {
+    mockMvc.perform(get("/questionnaires").param("formId", SURVEY_FORM_ID).accept(MEDIA_TYPE_CSV))
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.parseMediaType("text/csv")))
-      .andExpect(content().string("Survey Q 1,survey1,Survey Q 2,survey2,Survey Q 3,survey3\r\n" +
-        "Choice1,a,Choice2,b,,\r\n"));
+      .andExpect(content().contentType(MEDIA_TYPE_CSV))
+      .andExpect(content().string("""
+        Survey Q 1,survey1,Survey Q 2,survey2,Survey Q 3,survey3\r
+        Choice1,a,Choice2,b,,\r
+        """));
   }
 
 }

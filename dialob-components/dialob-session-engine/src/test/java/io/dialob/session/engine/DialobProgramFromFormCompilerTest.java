@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,13 @@ import io.dialob.api.proto.Action;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
+import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Collection;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +42,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
   }
 
   @Test
-  public void shouldSetRequiredOnForAllQuestionsOfRequired() throws Exception {
+  void shouldSetRequiredOnForAllQuestionsOfRequired() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -84,35 +82,32 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
-//    assertEquals(1, errorStates.size());
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
     assertErrorActive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), "answer")));
     assertErrorInactive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), "answer")));
     assertErrorInactive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), null)));
     assertErrorInactive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), null)));
     assertErrorActive(session, toRef("q1"), "REQUIRED");
     assertErrorInactive(session, toRef("q2"), "REQUIRED");
     assertErrorInactive(session, toRef("n1"), "REQUIRED");
-
 
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
 
   @Test
-  public void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() throws Exception {
+  void shouldSetRequiredOnForAllQuestionsOfRequiredInMultiRow() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -152,22 +147,21 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
-    dialobSessionUpdater.dispatchActions(addRow(toRef("rg")));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(addRow(toRef("rg"))));
     assertErrorActive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q1"), "answer")));
     assertErrorInactive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q2"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q2"), "answer")));
     assertErrorInactive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q2"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q2"), null)));
     assertErrorInactive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
-    dialobSessionUpdater.dispatchActions(answer(toRef("rg.0.q1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("rg.0.q1"), null)));
     assertErrorActive(session, toRef("rg.0.q1"), "REQUIRED");
     assertErrorInactive(session, toRef("rg.0.q2"), "REQUIRED");
 
@@ -176,7 +170,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void testIsBlankAndIsNullOperators() throws Exception {
+  void testIsBlankAndIsNullOperators() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -211,37 +205,36 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), "answer")));
     assertErrorInactive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), "answer"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), "answer")));
     assertErrorInactive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), null)));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), null));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), null)));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q1"), " "));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q1"), " ")));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorActive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), ""));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), "")));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q2"), " "));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q2"), " ")));
     assertErrorActive(session, toRef("q1"), "q1_error1");
     assertErrorInactive(session, toRef("q2"), "q2_error1");
 
@@ -250,7 +243,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void testLocaleUpdateEffectOnErrors() throws Exception {
+  void testLocaleUpdateEffectOnErrors() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -285,14 +278,14 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
     assertErrorLabel(session, toRef("q1"), "q1_error1","fi");
     assertErrorLabel(session, toRef("q2"), "q2_error1","fi");
-    dialobSessionUpdater.dispatchActions(setLocale("en"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
     assertErrorLabel(session, toRef("q1"), "q1_error1","en");
     assertErrorLabel(session, toRef("q2"), "q2_error1","en");
-    dialobSessionUpdater.dispatchActions(setLocale("fi"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("fi")));
     assertErrorLabel(session, toRef("q1"), "q1_error1","fi");
     assertErrorLabel(session, toRef("q2"), "q2_error1","fi");
 
@@ -301,7 +294,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldInactivateNestedGroups() throws Exception {
+  void shouldInactivateNestedGroups() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -342,9 +335,8 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
-    dialobSessionUpdater.dispatchActions(setLocale("en"));
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
 
     assertDisabled(session, toRef("g2"));
     assertDisabled(session, toRef("g22"));
@@ -364,7 +356,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
 
   @Test
-  public void shouldSubSequentPagesShouldNotPreventNextPage() throws Exception {
+  void shouldSubSequentPagesShouldNotPreventNextPage() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
@@ -428,9 +420,8 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
-    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, DialobQuestionnaireSession.State.ACTIVE);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
-    dialobSessionUpdater.dispatchActions(setLocale("en"));
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(setLocale("en")));
 
     assertEnabled(session, toRef("p1"));
     assertDisabled(session, toRef("p2"));
@@ -451,7 +442,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertDisallowedAction(session, Action.Type.PREVIOUS);
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q111"), "Hello"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q111"), "Hello")));
     assertErrorInactive(session, toRef("q111"), "REQUIRED");
     assertErrorActive(session, toRef("q211"), "REQUIRED");
     assertErrorActive(session, toRef("q311"), "REQUIRED");
@@ -462,14 +453,14 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
     //
-    dialobSessionUpdater.dispatchActions(nextPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertAllowedAction(session, Action.Type.ANSWER);
     assertDisallowedAction(session, Action.Type.NEXT);
     assertAllowedAction(session, Action.Type.PREVIOUS);
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
     //
-    dialobSessionUpdater.dispatchActions(answer(toRef("q211"), "Hello"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q211"), "Hello")));
     assertErrorInactive(session, toRef("q111"), "REQUIRED");
     assertErrorInactive(session, toRef("q211"), "REQUIRED");
     assertErrorActive(session, toRef("q311"), "REQUIRED");
@@ -480,14 +471,14 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
     //
-    dialobSessionUpdater.dispatchActions(nextPage());
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
     assertAllowedAction(session, Action.Type.ANSWER);
     assertDisallowedAction(session, Action.Type.NEXT);
     assertAllowedAction(session, Action.Type.PREVIOUS);
     assertDisallowedAction(session, Action.Type.COMPLETE);
 
 
-    dialobSessionUpdater.dispatchActions(answer(toRef("q311"), "Hello"));
+    dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("q311"), "Hello")));
     assertErrorInactive(session, toRef("q111"), "REQUIRED");
     assertErrorInactive(session, toRef("q211"), "REQUIRED");
     assertErrorInactive(session, toRef("q311"), "REQUIRED");

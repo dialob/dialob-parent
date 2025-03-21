@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -32,7 +31,7 @@ import static io.dialob.session.engine.session.command.EventMatchers.errorActivi
 @Value.Immutable
 public interface IsAnyInvalidAnswersOperator extends Expression {
 
-  Set<EventMatcher> ANY_ERROR = ImmutableSet.of(errorActivity(anyError()));
+  Set<EventMatcher> ANY_ERROR = Set.of(errorActivity(anyError()));
 
   @Override
   default Boolean eval(@NonNull EvalContext context) {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration(proxyBeanMethods = false)
 @EnableAutoConfiguration(excludeName = {
   "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
-  "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
-  "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
 })
 @EnableScheduling
 @EnableAsync

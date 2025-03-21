@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -33,12 +33,12 @@ import static org.mockito.Mockito.when;
 class RowItemsExpressionTest {
 
   @Test
-  public void test() {
+  void test() {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(), eq(true))).then(AdditionalAnswers.returnsFirstArg());
     RowItemsExpression rowItemsExpression = ImmutableRowItemsExpression.builder().addItemIds(IdUtils.toId("q1")).build();
     Collection<ItemId> ids = rowItemsExpression.eval(context);
-    Assertions.assertIterableEquals(Arrays.asList(IdUtils.toId("q1")), ids);
+    Assertions.assertIterableEquals(List.of(IdUtils.toId("q1")), ids);
 
 
   }

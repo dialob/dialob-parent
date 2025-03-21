@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,19 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.rule.parser.node.NodeBase;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 public abstract class ProgramBuilderException extends RuntimeException {
 
   private NodeBase node;
 
   public ProgramBuilderException(String s) {
     super(s);
-  }
-
-  public void setNode(NodeBase node) {
-    this.node = node;
-  }
-
-  public NodeBase getNode() {
-    return node;
   }
 
   public abstract List<Object> getArgs();

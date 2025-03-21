@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -70,14 +70,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
+class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void testGetQuestionnaires() throws Exception {
+  void testGetQuestionnaires() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("123").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
-    FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
+    addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
 
 
     Form form = formBuilder.build();
@@ -88,14 +88,6 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
     createAndOpenSession("123", "321")
       .expectActivated()
-//      .expectActions(actions -> {
-//        Assertions.assertThat(actions.getActions())
-//          .extracting("type", "item.id", "item.items")
-//          .containsOnly(
-//            tuple(Action.Type.RESET,   null, null),
-//            tuple(Action.Type.ITEM, "questionnaire", asList())
-//          );
-//      })
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
@@ -113,12 +105,12 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void testNextPage() throws Exception {
+  void testNextPage() throws Exception {
 
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("testNextPage").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
-    FormItem formItemBean = addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1", "g2"));
+    addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1", "g2"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1"));
     addItem(formBuilder, "g2", builder -> builder.type("group").putLabel("en","Group2"));
 
@@ -144,7 +136,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
       Iterator<Action> i = actions.getActions().iterator();
       Action action = i.next();
       assertEquals(Action.Type.REMOVE_ITEMS, action.getType());
-      assertEquals(Arrays.asList("g1"), action.getIds());
+      assertEquals(List.of("g1"), action.getIds());
 
       action = i.next();
       assertEquals(Action.Type.ITEM, action.getType());
@@ -168,7 +160,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
       Iterator<Action> i = actions.getActions().iterator();
       Action action = i.next();
       assertEquals(Action.Type.REMOVE_ITEMS, action.getType());
-      assertEquals(Arrays.asList("g2"), action.getIds());
+      assertEquals(List.of("g2"), action.getIds());
 
       action = i.next();
       assertEquals(Action.Type.ITEM, action.getType());
@@ -188,7 +180,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
+  void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
@@ -217,12 +209,12 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,          null,            null),
             tuple(Action.Type.ITEM, "selection1", null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("g1")),
             tuple(Action.Type.ITEM, "g1", asList("selection1","note1")),
             tuple(Action.Type.VALUE_SET, null, null)
           );
       }).next()
-      .answerQuestion("selection1", asList("e2"))
+      .answerQuestion("selection1", List.of("e2"))
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.label")
@@ -243,7 +235,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids")
           .containsOnly(
-            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("note1"))
+            tuple(Action.Type.REMOVE_ITEMS, List.of("note1"))
           );
       })
       .execute();
@@ -254,7 +246,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
   @Test
   @Tag("github-107")
-  public void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
+  void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
 
@@ -340,7 +332,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
 
   @Test
-  public void shouldInterpolateValueSetEntryy() throws Exception {
+  void shouldInterpolateValueSetEntryy() throws Exception {
 
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryy").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
@@ -370,7 +362,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,          null,            null),
             tuple(Action.Type.ITEM, "selection1", null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("g1")),
             tuple(Action.Type.ITEM, "g1", asList("selection1","note1")),
             tuple(Action.Type.VALUE_SET, null, null)
           );
@@ -396,7 +388,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids")
           .containsOnly(
-            tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("note1"))
+            tuple(Action.Type.REMOVE_ITEMS, List.of("note1"))
           );
       })
       .execute();
@@ -406,7 +398,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   }
 
   @Test
-  public void shouldHandleBigDecimalVariables() throws Exception {
+  void shouldHandleBigDecimalVariables() throws Exception {
 
     ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldHandleBigDecimalVariables").rev("321")
       .metadata(ImmutableFormMetadata.builder().label("bigD").build());
@@ -432,7 +424,7 @@ public class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
           .containsOnly(
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,   null, null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("g1")),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("g1")),
             tuple(Action.Type.ITEM, "value1", null),
             tuple(Action.Type.ITEM, "g1", asList("value1","note1")),
             tuple(Action.Type.ITEM, "note1", null)

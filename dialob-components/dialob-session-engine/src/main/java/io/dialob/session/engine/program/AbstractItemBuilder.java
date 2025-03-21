@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   protected Expression activeWhen;
 
-  protected Map<String, ? extends Object> props = null;
+  protected Map<String, ?> props = null;
 
   public AbstractItemBuilder(ProgramBuilder programBuilder, P parent, GroupBuilder hoistingGroupBuilder, @NonNull String id) {
     this.programBuilder = programBuilder;
@@ -84,7 +84,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T addClassname(@NonNull String className) {
-    return (T) addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
+    return addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
   }
 
   public T addClassname(String when, @NonNull String className) {

@@ -15,19 +15,34 @@
 #
 
 #!/usr/bin/env bash
+#
+# Copyright © 2015 - 2025 ReSys (info@dialob.io)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 set -e
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 run_build () {
-	# https://issues.sonatype.org/browse/NEXUS-27902
-	export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
-	./mvnw -B clean deploy \
+	./mvnw -B \
 			-Prelease,jib \
 			-Dmaven.javadoc.skip=false \
-			-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
 			-Djib.to.imagePath=$DOCKER_REGISTRY \
-			-DbranchName=$GITHUB_REF_NAME
+			-DbranchName=$GITHUB_REF_NAME \
+	    -Dsonar.projectKey=dialob_dialob-parent \
+    	clean deploy org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 }
 
 # No changes, skip release

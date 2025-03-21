@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.boot.websocket;
 
-import com.google.common.collect.ImmutableMap;
 import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableValidation;
@@ -46,6 +45,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -71,13 +72,13 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
-public class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
+class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
 
   @Inject
   private ApplicationEventPublisher applcationApplicationEventPublisher;
 
   @Test
-  public void shouldAddAndRemoveRows() throws Exception {
+  void shouldAddAndRemoveRows() throws Exception {
     ImmutableForm.Builder formBuilder1 = ImmutableForm.builder()
       .id("testGetQuestionnaires-123")
       .rev("1")
@@ -90,7 +91,7 @@ public class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
       addItem(formBuilder, "g1", builder -> builder.type("rowgroup").putLabel("en","Ryhma").addItems("q1", "q2", "q3"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en","Kysymys 1"));
       addItem(formBuilder, "q2", builder -> builder.type("text").putLabel("en","Kysymys 2").addValidations(
-        ImmutableValidation.builder().message(ImmutableMap.of("en","error")).rule("answer = \"wrong answer\"").build()
+        ImmutableValidation.builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
       ));
       addItem(formBuilder, "q3", builder -> builder.type("text").putLabel("en","Kysymys 3").activeWhen("q2 = \"correct answer\""));
       formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());
@@ -120,11 +121,11 @@ public class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
           .containsOnly(
             tuple(Action.Type.RESET,   null, null, null, null),
             tuple(Action.Type.LOCALE,   null, null, null, null),
-            tuple(Action.Type.ITEM, "questionnaire", asList("p1"), null, "questionnaire"),
+            tuple(Action.Type.ITEM, "questionnaire", List.of("p1"), null, "questionnaire"),
             tuple(Action.Type.ITEM, "g1", asList("g1.2", "g1.1"), asList(2,1), "rowgroup"),
             tuple(Action.Type.ITEM, "g1.1", asList("g1.1.q1", "g1.1.q2", "g1.1.q3"), null, "row"),
             tuple(Action.Type.ITEM, "g1.2", asList("g1.2.q1", "g1.2.q2", "g1.2.q3"), null, "row"),
-            tuple(Action.Type.ITEM, "p1", asList("g1"), null, "group"),
+            tuple(Action.Type.ITEM, "p1", List.of("g1"), null, "group"),
             tuple(Action.Type.ITEM, "g1.1.q1", null, "Hello", "text"),
             tuple(Action.Type.ITEM, "g1.1.q2", null, "correct answer", "text"),
             tuple(Action.Type.ITEM, "g1.1.q3", null, "hello 3", "text"),

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,13 +127,11 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ErrorState> activeError() {
-    return isError("activeError", errorState -> errorState.isActive());
+    return isError("activeError", ErrorState::isActive);
   }
 
   public ArgumentMatcher<ItemState> answeredItem(String itemId) {
-    return isItem("answeredItem", itemState -> {
-      return itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.getId()));
-    });
+    return isItem("answeredItem", itemState -> itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.getId())));
   }
 
   public ArgumentMatcher<ItemState> unansweredItem(String itemId) {
@@ -151,8 +149,7 @@ public abstract class AbstractDialobProgramTest {
 
       @Override
       public boolean matches(Object item) {
-        if (item instanceof ItemState) {
-          ItemState itemState = (ItemState) item;
+        if (item instanceof ItemState itemState) {
           return matches.apply(itemState);
         }
         return false;
@@ -169,8 +166,7 @@ public abstract class AbstractDialobProgramTest {
 
       @Override
       public boolean matches(Object error) {
-        if (error instanceof ErrorState) {
-          ErrorState errorState = (ErrorState) error;
+        if (error instanceof ErrorState errorState) {
           return matches.apply(errorState);
         }
         return false;
@@ -255,7 +251,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   protected ItemId toRef(String id) {
-    return (ImmutableItemRef) IdUtils.toId(id);
+    return IdUtils.toId(id);
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 package io.dialob.boot.controller;
 
 import io.dialob.boot.security.SecurityConfiguration;
-import io.dialob.boot.settings.AdminApplicationSettings;
-import io.dialob.boot.settings.ComposerApplicationSettings;
-import io.dialob.boot.settings.QuestionnaireApplicationSettings;
-import io.dialob.boot.settings.ReviewApplicationSettings;
+import io.dialob.boot.settings.*;
+import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +27,8 @@ import org.mockito.AdditionalAnswers;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -35,8 +36,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,7 +71,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   SecurityConfiguration.class,
   ComposerController.class,
-  OAuth2ClientAutoConfiguration.class
+  OAuth2ClientAutoConfiguration.class,
+  ComposerControllerTest.Config.class
 })
 @EnableConfigurationProperties({
   AdminApplicationSettings.class,
@@ -80,6 +83,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebSecurity
 @EnableWebMvc
 class ComposerControllerTest extends AbstractUIControllerTest {
+
+  @Configuration(proxyBeanMethods = false)
+  public static class Config {
+
+    @Bean
+    public TenantAccessEvaluator tenantAccessEvaluator() {
+      return tenant -> true;
+    }
+
+    @Bean
+    public PageSettingsProvider settingsPageSettingsProvider(CurrentTenant currentTenant,
+                                                             QuestionnaireDatabase questionnaireDatabase,
+                                                             QuestionnaireApplicationSettings settings,
+                                                             ReviewApplicationSettings reviewSettings,
+                                                             Optional<AdminApplicationSettings> adminApplicationSettings,
+                                                             ComposerApplicationSettings composerApplicationSettings) {
+      return new SettingsPageSettingsProvider(currentTenant, questionnaireDatabase, settings, reviewSettings, composerApplicationSettings, adminApplicationSettings);
+    }
+
+  }
+  @MockitoBean
+  CurrentTenant currentTenant;
+
+  @MockitoBean
+  QuestionnaireDatabase questionnaireDatabase;
 
   @MockitoBean
   public TenantAccessEvaluator tenantAccessEvaluator;
@@ -99,23 +127,20 @@ class ComposerControllerTest extends AbstractUIControllerTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"composer.view", "itest"})
-  public void test() throws Exception {
+  void test() throws Exception {
 
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("composer")).thenReturn(pageAttributes);
 
-    MvcResult result = mockMvc.perform(get("/composer/").params(tenantParam).accept(MediaType.TEXT_HTML))
+    mockMvc.perform(get("/composer/").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("<title>Dialob: Composer</title>")))
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
       .andExpect(content().encoding("UTF-8"))
-      //.andExpect(xpath("//div[@id='app']").exists())
       .andExpect(content().string(containsString("\"filling_app_url\":\"\\/fill\"")))
       .andExpect(content().string(containsString("\"backend_api_url\":\"\\/api\"")))
       .andExpect(content().string(containsString("\"documentation_url\":\"https:\\/\\/docs.dialob.io\"")))
       .andReturn();
-//    System.out.println(result.getResponse().getContentAsString());
-
   }
 
 }

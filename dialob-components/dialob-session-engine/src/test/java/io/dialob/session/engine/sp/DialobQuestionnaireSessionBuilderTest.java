@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class DialobQuestionnaireSessionBuilderTest {
+class DialobQuestionnaireSessionBuilderTest {
 
   @Test
-  public void shouldInitializeSessionWithCorrectActiveItem() {
+  void shouldInitializeSessionWithCorrectActiveItem() {
     final QuestionnaireEventPublisher questionnaireEventPublisher = mock();
     final FormFinder formFinder = mock();
     final FunctionRegistry functionRegistry = mock();
@@ -75,7 +75,7 @@ public class DialobQuestionnaireSessionBuilderTest {
     when(formFinder.findForm("123", null)).thenReturn(form);
     when(dialobProgram.createSession(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(dialobSession);
     when(questionnaireSessionSaveService.save(any())).then(AdditionalAnswers.returnsFirstArg());
-    when(dialobSessionUpdater.dispatchActions(any())).thenReturn(consumer);
+    when(dialobSessionUpdater.applyCommands(any())).thenReturn(consumer);
     when(dialobSession.getLastUpdate()).thenReturn(Instant.now());
 
     DialobQuestionnaireSessionBuilder builder = new DialobQuestionnaireSessionBuilder(questionnaireEventPublisher,

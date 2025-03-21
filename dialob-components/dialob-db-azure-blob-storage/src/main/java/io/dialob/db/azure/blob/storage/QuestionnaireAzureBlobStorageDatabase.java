@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,14 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * Implements the {@link QuestionnaireDatabase} interface to store and manage
+ * {@link Questionnaire} documents as blobs in Azure Blob Storage. Extends the
+ * functionality provided by {@link AbstractAzureBlobStorageDatabase}.
+ * <p>
+ * This class provides CRUD operations for {@link Questionnaire} entities stored in Azure Blob
+ * Storage along with metadata-specific query capabilities.
+ */
 public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStorageDatabase<Questionnaire> implements QuestionnaireDatabase {
 
   public QuestionnaireAzureBlobStorageDatabase(BlobContainerClient blobContainerClient, ObjectMapper objectMapper, String prefix, String suffix) {
@@ -42,7 +50,7 @@ public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStor
       consumer.accept(ImmutableMetadataRow.of(
         id,
         ImmutableQuestionnaireMetadata.builder()
-          .lastAnswer(new Date(object.getProperties().getLastModified().toInstant().toEpochMilli()))
+          .lastAnswer(Date.from(object.getProperties().getLastModified().toInstant()))
           .build()
       ));
     });

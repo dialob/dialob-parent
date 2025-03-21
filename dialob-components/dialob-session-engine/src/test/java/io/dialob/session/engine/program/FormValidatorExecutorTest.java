@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FormValidatorExecutorTest {
+class FormValidatorExecutorTest {
 
   @Test
-  public void shouldCombineErrors() {
+  void shouldCombineErrors() {
     FormValidator valA = mock(FormValidator.class);
     when(valA.validate(any(Form.class))).thenReturn(Arrays.asList(
       ImmutableFormValidationError.builder().message("a").build(),

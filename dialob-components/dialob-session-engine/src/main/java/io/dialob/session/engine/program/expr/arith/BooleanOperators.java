@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,18 +33,23 @@ public class BooleanOperators implements Operators {
   }
 
   public InfixOperator<Boolean> le(Expression lhs, Expression rhs) {
-    throw new RuntimeException("No relation operator between boolean types");
+    return noRelationError();
   }
 
   public InfixOperator<Boolean> lt(Expression lhs, Expression rhs) {
-    throw new RuntimeException("No relation operator between boolean types");
+    return noRelationError();
   }
 
   public InfixOperator<Boolean> ge(Expression lhs, Expression rhs) {
-    throw new RuntimeException("No relation operator between boolean types");
+    return noRelationError();
   }
 
   public InfixOperator<Boolean> gt(Expression lhs, Expression rhs) {
+    return noRelationError();
+  }
+
+  private static InfixOperator<Boolean> noRelationError() {
     throw new RuntimeException("No relation operator between boolean types");
   }
+
 }

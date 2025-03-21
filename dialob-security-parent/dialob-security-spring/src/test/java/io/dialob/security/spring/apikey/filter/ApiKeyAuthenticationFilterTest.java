@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ApiKeyAuthenticationFilterTest {
+class ApiKeyAuthenticationFilterTest {
 
   @Mock
   private AuthenticationManager authenticationManager;
@@ -71,7 +71,7 @@ public class ApiKeyAuthenticationFilterTest {
   private FilterChain filterChain;
 
   @Test
-  public void shouldThrowBadCredentialsExceptionIfKeyCouldNotBeExtracted() {
+  void shouldThrowBadCredentialsExceptionIfKeyCouldNotBeExtracted() {
     Assertions.assertThrows(BadCredentialsException.class, () -> {
       try {
         apiKeyAuthenticationFilter.attemptAuthentication(request);
@@ -83,7 +83,7 @@ public class ApiKeyAuthenticationFilterTest {
   }
 
   @Test
-  public void shouldThrowAccessDeniedExceptionIfRequestIsAlreadyAuthenticated() {
+  void shouldThrowAccessDeniedExceptionIfRequestIsAlreadyAuthenticated() {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
       try {
         SecurityContextHolder.setStrategyName("MODE_GLOBAL");
@@ -100,7 +100,7 @@ public class ApiKeyAuthenticationFilterTest {
 
 
   @Test
-  public void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated() throws Exception {
+  void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated() throws Exception {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
       ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
       ApiKeyAuthenticationToken apiAuthenticationToken = Mockito.mock(ApiKeyAuthenticationToken.class);
@@ -120,7 +120,7 @@ public class ApiKeyAuthenticationFilterTest {
   }
 
   @Test
-  public void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated2() throws Exception {
+  void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated2() throws Exception {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
       ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
       try {
@@ -137,7 +137,7 @@ public class ApiKeyAuthenticationFilterTest {
   }
 
   @Test
-  public void shouldAcceptValidatedKey() throws Exception {
+  void shouldAcceptValidatedKey() throws Exception {
     ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
     ApiKeyAuthenticationToken apiAuthenticationToken = Mockito.mock(ApiKeyAuthenticationToken.class);
     when(keyRequestExtractor.extract(request)).thenReturn(apiKey);
@@ -153,7 +153,7 @@ public class ApiKeyAuthenticationFilterTest {
 
 
   @Test
-  public void shouldCallNextFilterIfRequestDoMatch() throws Exception {
+  void shouldCallNextFilterIfRequestDoMatch() throws Exception {
     when(requestMatcher.matches(request)).thenReturn(false);
     when(request.getDispatcherType()).thenReturn(DispatcherType.REQUEST);
 

@@ -9,7 +9,7 @@ export interface ItemConfig {
 export interface ItemConfigItem {
   matcher: (item: DialobItem) => boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: React.FC<{ item: DialobItem, props?: any }>,
+  component: React.FC<{ item: DialobItem } & Record<string, any>>,
   props: ConfigItemProps
 }
 

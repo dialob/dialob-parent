@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,41 @@
 package io.dialob.boot.settings;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Configuration(proxyBeanMethods = false)
+/**
+ * Configuration properties for the Composer application.
+ */
 @ConfigurationProperties("composer")
 @Validated
-@Data
-public class ComposerApplicationSettings {
-
-  private String backendApiUrl;
-
-  private String documentationUrl;
-
-  private String fillingAppUrl;
-
-  private String subApplicationName;
-
-  private String url;
-
-  @NotNull
-  private String contextPath = "/composer";
-
-  private String adminAppUrl;
-
-  private Map<String, SettingsPageAttributes> tenants = new HashMap<>();
-
+public record ComposerApplicationSettings(
+  @Getter
+  String backendApiUrl,
+  @Getter
+  String documentationUrl,
+  @Getter
+  String fillingAppUrl,
+  @Getter
+  String subApplicationName,
+  @Getter
+  String url,
+  @Getter
+  @NotNull String contextPath,
+  @Getter
+  String adminAppUrl,
+  Map<String, SettingsPageAttributes> tenants
+) {
+  /**
+   * Constructor for ComposerApplicationSettings.
+   * Ensures contextPath is not null and initializes tenants map if null.
+   */
+  public ComposerApplicationSettings {
+    contextPath = contextPath == null ? "/composer" : contextPath;
+    tenants = tenants == null ? Map.of() : Map.copyOf(tenants);
+  }
 }
+

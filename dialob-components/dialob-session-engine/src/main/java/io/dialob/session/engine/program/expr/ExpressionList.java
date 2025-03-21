@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr;
 
-import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
@@ -23,11 +22,7 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.immutables.value.Value;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Value.Immutable
@@ -41,13 +36,13 @@ public interface ExpressionList extends Expression {
       .map(expression -> expression.eval(evalContext))
       .filter(Objects::nonNull)
       .flatMap(o -> {
-        if (o instanceof Collection) {
-          return ((Collection)o).stream();
+        if (o instanceof Collection collection) {
+          return collection.stream();
         }
         return Stream.of(o);
       })
       .filter(Objects::nonNull)
-      .collect(Collectors.toList());
+      .toList();
   }
 
   @NonNull
@@ -59,9 +54,9 @@ public interface ExpressionList extends Expression {
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    final ImmutableSet.Builder<EventMatcher> deps = ImmutableSet.builder();
+    var deps = new HashSet<EventMatcher>();
     getExpressions().forEach(arg -> deps.addAll(arg.getEvalRequiredConditions()));
-    return deps.build();
+    return Set.copyOf(deps);
   }
 
 }

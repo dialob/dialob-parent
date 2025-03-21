@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,7 @@ package io.dialob.boot.security;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.AuthenticationStrategy;
-import io.dialob.security.spring.apikey.ApiKeyAuthoritiesProvider;
 import io.dialob.security.spring.apikey.ApiKeyRequestMatcher;
-import io.dialob.security.spring.apikey.ApiKeyValidator;
-import io.dialob.security.spring.apikey.ClientApiKeyService;
 import io.dialob.security.spring.filter.ApiKeyAuthenticationFilter;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.settings.DialobSettings;
@@ -53,13 +50,7 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
 
   public static final RequestMatcher SESSION_NOT_EXISTS_MATCHER = request -> request.getSession(false) == null;
 
-  private final ClientApiKeyService apiKeyService;
-
-  private final ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider;
-
   private final ServletRequestApiKeyExtractor keyRequestExtractor;
-
-  private final ApiKeyValidator apiKeyValidator;
 
   private final AuthenticationManager authenticationManager;
 
@@ -69,20 +60,14 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
 
   private RequestMatcher apiKeyRequestMatcher;
 
-  public ApiServiceSecurityConfigurer(@NonNull ClientApiKeyService apiKeyService,
-                                      @NonNull ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider,
-                                      @NonNull ApiKeyValidator apiKeyValidator,
-                                      @NonNull DialobSettings settings,
+  public ApiServiceSecurityConfigurer(@NonNull DialobSettings settings,
                                       @NonNull ServletRequestApiKeyExtractor keyRequestExtractor,
                                       @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                       @NonNull AuthenticationStrategy authenticationStrategy,
                                       @NonNull AuthenticationManager authenticationManager,
                                       @NonNull Environment env) {
     super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
-    this.apiKeyService = apiKeyService;
-    this.apiKeyAuthoritiesProvider = apiKeyAuthoritiesProvider;
     this.keyRequestExtractor = keyRequestExtractor;
-    this.apiKeyValidator = apiKeyValidator;
     this.authenticationManager = authenticationManager;
     this.allRequests = env.acceptsProfiles(Profiles.of("!ui"));
   }
@@ -98,6 +83,7 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
     return apiKeyRequestMatcher;
   }
 
+  @Override
   protected RequestMatcher requestMatcher() {
     if (requestMatcher == null) {
       List<RequestMatcher> requestMatchers = new ArrayList<>();

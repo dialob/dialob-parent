@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,9 +60,9 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
     this.reviewSettings = reviewSettings;
     this.adminApplicationSettings = adminApplicationSettings.orElse(null);
     this.composerApplicationSettings = composerApplicationSettings;
-    this.defaultReviewPageSettings = reviewSettings.getTenants().get("default");
-    this.defaultComposerPageSettings = composerApplicationSettings.getTenants().get("default");
-    this.defaultAdminPageSettings = this.adminApplicationSettings != null ? this.adminApplicationSettings.getTenants().get("default") : null;
+    this.defaultReviewPageSettings = reviewSettings.tenants().get("default");
+    this.defaultComposerPageSettings = composerApplicationSettings.tenants().get("default");
+    this.defaultAdminPageSettings = this.adminApplicationSettings != null ? this.adminApplicationSettings.tenants().get("default") : null;
   }
 
   @NonNull
@@ -75,7 +75,7 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
 
   @NonNull
   @Override
-  public PageAttributes findPageSettingsByTenantId(String page, String tenantId) {
+  public PageAttributes findPageSettingsByTenantId(String page, @NonNull String tenantId) {
     SettingsPageAttributes settingsPageAttributes = findSettings(page).get(tenantId);
     if (settingsPageAttributes == null) {
       settingsPageAttributes = findDefaultSettings(page);
@@ -96,31 +96,23 @@ public class SettingsPageSettingsProvider implements PageSettingsProvider {
   }
 
   Map<String, SettingsPageAttributes> findSettings(String page) {
-    switch(page) {
-      case "fill":
-        return settings.getTenants();
-      case "review":
-        return reviewSettings.getTenants();
-      case "admin":
-        return adminApplicationSettings.getTenants();
-      case "composer":
-        return composerApplicationSettings.getTenants();
-    }
-    throw new IllegalStateException("unknown page " + page);
+    return switch (page) {
+      case "fill" -> settings.tenants();
+      case "review" -> reviewSettings.tenants();
+      case "admin" -> adminApplicationSettings.tenants();
+      case "composer" -> composerApplicationSettings.tenants();
+      default -> throw new IllegalStateException("unknown page " + page);
+    };
   }
 
   SettingsPageAttributes findDefaultSettings(String page) {
-    switch(page) {
-      case "fill":
-        return defaultPageSettings;
-      case "review":
-        return defaultReviewPageSettings;
-      case "admin":
-        return defaultAdminPageSettings;
-      case "composer":
-        return defaultComposerPageSettings;
-    }
-    throw new IllegalStateException("unknown page " + page);
+    return switch (page) {
+      case "fill" -> defaultPageSettings;
+      case "review" -> defaultReviewPageSettings;
+      case "admin" -> defaultAdminPageSettings;
+      case "composer" -> defaultComposerPageSettings;
+      default -> throw new IllegalStateException("unknown page " + page);
+    };
   }
 
   private Optional<String> findTenantFor(String questionnaireId) {

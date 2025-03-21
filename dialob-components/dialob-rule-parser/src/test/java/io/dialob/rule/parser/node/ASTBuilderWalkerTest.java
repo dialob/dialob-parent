@@ -1,24 +1,24 @@
 package io.dialob.rule.parser.node;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.DialobRuleParser;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
-import org.antlr.v4.runtime.Token;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 
-public class ASTBuilderWalkerTest {
+class ASTBuilderWalkerTest {
 
   @Test
-  public void shouldLogUnknownVariableAndIdWhenVariableIsNotFound() throws Exception {
+  void shouldLogUnknownVariableAndIdWhenVariableIsNotFound() throws Exception {
     VariableFinder variableFinder = mock(VariableFinder.class);
     ErrorLogger errorLogger = mock(ErrorLogger.class);
 
     DialobRuleParser.IdExprRuleContext ctx = mock(DialobRuleParser.IdExprRuleContext.class);
-    ctx.var = mock(Token.class);
+    ctx.var = mock();
     when(ctx.var.getText()).thenReturn("x");
     when(ctx.var.getStartIndex()).thenReturn(0);
     when(ctx.var.getStopIndex()).thenReturn(1);
@@ -26,7 +26,7 @@ public class ASTBuilderWalkerTest {
     when(variableFinder.mapAlias("x")).thenReturn("x");
     when(variableFinder.typeOf("x")).thenThrow(new VariableNotDefinedException("x"));
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, Maps.newHashMap());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
     astBuilderWalker.setErrorLogger(errorLogger);
     astBuilderWalker.enterIdExprRule(ctx);
 

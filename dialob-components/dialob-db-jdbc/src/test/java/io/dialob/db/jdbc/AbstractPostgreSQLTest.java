@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -33,7 +34,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Optional;
@@ -72,7 +72,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   static BasicDataSource createEmbeddedDatabase() throws Exception {
     ATTRS.container.start();
     String jdbcUrl = "jdbc:postgresql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/postgres";
-    System.out.println("Embedded Postgresql jdbc url: " + jdbcUrl);
+
     ATTRS.dataSource = new BasicDataSource();
     ATTRS.dataSource.setUsername("postgres");
     ATTRS.dataSource.setPassword("postgres");
@@ -111,6 +111,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     ATTRS.jdbcTemplate = new JdbcTemplate(ATTRS.dataSource);
     ATTRS.objectMapper = objectMapper;
     ATTRS.currentTenant = new CurrentTenant() {
+      @NonNull
       @Override
       public Tenant get() {
         return ATTRS.activeTenant;
@@ -124,11 +125,6 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     ATTRS.jdbcFormDatabase = new JdbcFormDatabase(ATTRS.jdbcTemplate, new PostgreSQLDatabaseHelper(SCHEMA), ATTRS.transactionTemplate, ATTRS.objectMapper, SCHEMA, IS_ANY_TENANT_PREDICATE);
   }
 
-
-
-  default DataSource getDataSource() {
-    return ATTRS.dataSource;
-  }
 
   default JdbcFormDatabase getJdbcFormDatabase() {
     return ATTRS.jdbcFormDatabase;
@@ -159,14 +155,12 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
     return ATTRS.currentTenant;
   }
 
-  default Tenant setActiveTenant(String tenantId) {
+  default void setActiveTenant(String tenantId) {
     ATTRS.activeTenant = Tenant.of(tenantId);
-    return ATTRS.activeTenant;
   }
 
-  default Tenant resetTenant() {
+  default void resetTenant() {
     ATTRS.activeTenant = ResysSecurityConstants.DEFAULT_TENANT;
-    return ATTRS.activeTenant;
   }
 
 }

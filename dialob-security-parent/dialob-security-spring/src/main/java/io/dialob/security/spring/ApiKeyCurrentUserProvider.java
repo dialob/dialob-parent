@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ public class ApiKeyCurrentUserProvider implements CurrentUserProvider {
     final SecurityContext securityContext = SecurityContextHolder.getContext();
     if (securityContext != null) {
       final Authentication authentication = securityContext.getAuthentication();
-      if (authentication instanceof ApiKeyAuthenticationToken) {
-        final ApiKeyAuthenticationToken oAuth2Authentication = (ApiKeyAuthenticationToken) authentication;
+      if (authentication instanceof ApiKeyAuthenticationToken oAuth2Authentication) {
         String userId = (String) oAuth2Authentication.getPrincipal();
         return new CurrentUser(userId, userId, null, null, null);
       }

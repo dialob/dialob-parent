@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
-
 @Value.Immutable
 public interface CollectRowFieldsOperator extends Expression {
 
@@ -47,7 +45,7 @@ public interface CollectRowFieldsOperator extends Expression {
     return getItemId().getParent().flatMap(ItemId::getParent)
       .map(rgId -> (List<BigInteger>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
       .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber.intValue()))
-    .map(evalContext::getItemValue).collect(toList());
+    .map(evalContext::getItemValue).toList();
   }
 
   @NonNull
@@ -58,9 +56,6 @@ public interface CollectRowFieldsOperator extends Expression {
       .flatMap(ItemId::getParent)
       .map(EventMatchers::whenValueUpdated)
       .ifPresent(matchers::add);
-
-//    matchers.add(EventMatchers.whenItemAdded(getItemId()));
-  //  getItemId().getParent().ifPresent(rowId -> matchers.add(EventMatchers.whenItemRemoved(rowId)));
 
     matchers.add(EventMatchers.whenValueUpdated(getItemId()));
 

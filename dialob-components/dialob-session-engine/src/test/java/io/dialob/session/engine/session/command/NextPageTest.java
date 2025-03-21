@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.command;
 
-import com.google.common.collect.Sets;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
@@ -25,6 +24,7 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.dialob.session.engine.session.model.IdUtils.toId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 class NextPageTest {
 
   @Test
-  public void nextShouldNavigateToFirstActivePage() {
+  void nextShouldNavigateToFirstActivePage() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
@@ -56,18 +56,18 @@ class NextPageTest {
 
   private void enableNext(EvalContext context) {
     ItemState questionnaire = Mockito.mock(ItemState.class);
-    when(questionnaire.getAllowedActions()).thenReturn(Sets.newHashSet(Action.Type.NEXT));
+    when(questionnaire.getAllowedActions()).thenReturn(Set.of(Action.Type.NEXT));
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
   }
 
   private void disableNext(EvalContext context) {
     ItemState questionnaire = Mockito.mock(ItemState.class);
-    when(questionnaire.getAllowedActions()).thenReturn(Sets.newHashSet());
+    when(questionnaire.getAllowedActions()).thenReturn(Set.of());
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
   }
 
   @Test
-  public void nextShouldNotNavigateIfOnLastPage() {
+  void nextShouldNotNavigateIfOnLastPage() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
@@ -84,7 +84,7 @@ class NextPageTest {
   }
 
   @Test
-  public void nextShouldNavigateToNextActivePage() {
+  void nextShouldNavigateToNextActivePage() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
@@ -106,7 +106,7 @@ class NextPageTest {
 
 
   @Test
-  public void nextNotShouldNavigateToNextActivePageWhenNextIsDisabled() {
+  void nextNotShouldNavigateToNextActivePageWhenNextIsDisabled() {
     NextPage nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);

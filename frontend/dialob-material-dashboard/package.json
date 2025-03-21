@@ -1,6 +1,6 @@
 {
   "name": "@dialob/dashboard-material",
-  "version": "1.2.3",
+  "version": "1.2.9",
   "description": "Material UI dashboard component for Dialob",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

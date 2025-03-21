@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,23 @@ import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Objects;
 
 @EqualsAndHashCode
 @ToString
 public class ErrorState implements SessionObject {
 
+  @Serial
   private static final long serialVersionUID = -6652593868401573582L;
 
   private final ErrorId targetId;
 
+  @Getter
   private String label;
 
   private boolean active;
@@ -119,10 +123,6 @@ public class ErrorState implements SessionObject {
 
   public String getCode() {
     return targetId.getCode();
-  }
-
-  public String getLabel() {
-    return label;
   }
 
   @Override

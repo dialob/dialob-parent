@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ public interface ExpressionCompiler {
                   @NonNull String expression,
                   @NonNull AliasesProvider aliasesProvider,
                   @NonNull Consumer<Expression> consumer,
-                  @NonNull FormValidationError.Type type, Optional<Integer> index);
+                  @NonNull FormValidationError.Type type,
+                  Optional<Integer> index);
 
 }

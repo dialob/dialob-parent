@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class ReflectionEntityInformation<T, ID extends Serializable> extends Abs
     });
 
     if (this.field == null && this.method == null) {
-      Assert.notNull(this.field, String.format("No field or method annotated with %s found!", annotation.toString()));
+      Assert.notNull(this.field, String.format("No field or method annotated with %s found!", annotation));
     }
     if (this.field != null) {
       ReflectionUtils.makeAccessible(field);

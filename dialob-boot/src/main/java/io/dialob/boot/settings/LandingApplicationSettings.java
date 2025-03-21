@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,28 @@
  */
 package io.dialob.boot.settings;
 
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Configuration(proxyBeanMethods = false)
 @ConfigurationProperties("landing")
-@Data
-public class LandingApplicationSettings {
-  private String apiUrl;
-
-  private String fillingAppUrl;
-
-  private String composerAppUrl;
-
-  private String adminAppUrl;
-
-  private String contextPath;
-
-  private Map<String, SettingsPageAttributes> tenants = new HashMap<>();
-
-
+public record LandingApplicationSettings(
+  @Getter
+  String apiUrl,
+  @Getter
+  String fillingAppUrl,
+  @Getter
+  String composerAppUrl,
+  @Getter
+  String adminAppUrl,
+  @Getter
+  String contextPath,
+  @Getter
+  Map<String, SettingsPageAttributes> tenants
+) {
+  public LandingApplicationSettings {
+    contextPath = contextPath == null ? "/" : contextPath;
+    tenants = tenants == null ? Map.of() : Map.copyOf(tenants);
+  }
 }

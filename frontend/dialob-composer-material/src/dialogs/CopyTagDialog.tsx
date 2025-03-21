@@ -17,7 +17,7 @@ const CopyTagDialog: React.FC<{ tag: ComposerTag | undefined, onClose: () => voi
   }
 
   const handleCreateNew = () => {
-    loadForm(tag.formId, tag.name).then(form => {
+    loadForm(tag.formId + '', tag.name).then(form => {
       const newForm = { ...form, _id: undefined, _rev: undefined, _tag: undefined, name: id };
       createForm(newForm)
         .then(saveResponse => {

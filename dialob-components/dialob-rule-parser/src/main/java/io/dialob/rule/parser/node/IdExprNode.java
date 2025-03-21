@@ -6,6 +6,7 @@ import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true, of = {"id", "namespace"})
 public class IdExprNode extends NodeBase {
 
+  @Serial
   private static final long serialVersionUID = -3176730634816602189L;
 
   private final String scopeId;
@@ -49,6 +51,7 @@ public class IdExprNode extends NodeBase {
     return namespace;
   }
 
+  @Override
   public boolean isIdentifier() {
     return true;
   }
@@ -58,18 +61,14 @@ public class IdExprNode extends NodeBase {
     return id;
   }
 
+  @Override
   public String toTypedString() {
     return id + "[" + getValueType() + "]";
   }
 
+  @Override
   public NodeBase accept(@NonNull ASTVisitor visitor) {
     return visitor.visitIdExpr(this);
-  }
-
-  @Override
-  @NonNull
-  public Map<String, ValueType> getDependencies() {
-    return idSet;
   }
 
   @NonNull

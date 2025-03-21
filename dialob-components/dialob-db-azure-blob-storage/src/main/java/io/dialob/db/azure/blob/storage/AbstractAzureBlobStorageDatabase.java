@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,13 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+/**
+ * Abstract implementation for an Azure Blob Storage-based document database.
+ * This class provides functionalities to manage documents stored as blobs in Azure Blob Storage.
+ * Documents are serialized and deserialized using an {@link ObjectMapper}.
+ *
+ * @param <F> the type of the document entity
+ */
 @Slf4j
 public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocumentDatabase<F> {
 
@@ -80,7 +87,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
 
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id, String rev) {
+  public F findOne(@NonNull String tenantId, @NonNull String id, String rev) {
     try {
       String objectName = objectName(tenantId, id);
       InputStream blob = this.blobContainerClient
@@ -106,7 +113,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
   }
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id) {
+  public F findOne(@NonNull String tenantId, @NonNull String id) {
       return findOne(tenantId, id, null);
   }
 
@@ -118,7 +125,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
       .forEach(fileConsumer);
 }
 
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String tenantId, @NonNull String id) {
     return this.blobContainerClient
       .getBlobClient(objectName(tenantId, id))
       .exists();

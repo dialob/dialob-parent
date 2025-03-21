@@ -2,47 +2,37 @@ package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public abstract class NodeBase implements TypedNode, Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1948018522089217375L;
 
+  @Getter
+  @Setter
   private NodeBase parent;
 
+  @Getter
   private final Span span;
 
   private ValueType type;
 
-  public NodeBase(NodeBase parent) {
-    this(parent, null, null);
-  }
-
-  public NodeBase(NodeBase parent, Span span) {
+  protected NodeBase(NodeBase parent, Span span) {
     this(parent, span, null);
   }
 
-  public NodeBase(NodeBase parent, Span span, ValueType type) {
+  protected NodeBase(NodeBase parent, Span span, ValueType type) {
     this.parent = parent;
     this.span = span;
     this.type = type;
-  }
-
-  public NodeBase getParent() {
-    return parent;
-  }
-
-  public void setParent(NodeBase parent) {
-    this.parent = parent;
-  }
-
-  public Span getSpan() {
-    return span;
   }
 
   @Override
@@ -52,15 +42,6 @@ public abstract class NodeBase implements TypedNode, Serializable {
 
   public void setValueType(@NonNull ValueType type) {
     this.type = Objects.requireNonNull(type);
-  }
-
-  @NonNull
-  public Map<String, ValueType> getDependencies() {
-    return Collections.emptyMap();
-  }
-
-  public Map<String, ValueType> getAllDependencies() {
-    return getDependencies();
   }
 
   public boolean isConstant() {
@@ -86,11 +67,11 @@ public abstract class NodeBase implements TypedNode, Serializable {
   public abstract NodeBase accept(@NonNull ASTVisitor visitor);
 
   public String toTypedString() {
-    return toString() + "[" + type + "]";
+    return this + "[" + type + "]";
   }
 
   public String toString(String indent) {
-    return indent + toString();
+    return indent + this;
   }
 
   @Override
@@ -98,10 +79,9 @@ public abstract class NodeBase implements TypedNode, Serializable {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof NodeBase)) {
+    if (!(obj instanceof NodeBase other)) {
       return false;
     }
-    NodeBase other = (NodeBase) obj;
     return other.type == type;
   }
 

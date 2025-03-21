@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-public class ValueSetValidatorTest {
+class ValueSetValidatorTest {
   private final ValueSetValidator valueSetValidator = new ValueSetValidator();
   private final Form baseForm = ImmutableForm.builder()
       .name("test")
@@ -36,7 +36,7 @@ public class ValueSetValidatorTest {
       ).build();
 
   @Test
-  public void shouldWarnOnEmptySet() {
+  void shouldWarnOnEmptySet() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(
@@ -54,7 +54,7 @@ public class ValueSetValidatorTest {
   }
 
   @Test
-  public void shouldErrorOnDuplicateKeys() {
+  void shouldErrorOnDuplicateKeys() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(
@@ -86,7 +86,7 @@ public class ValueSetValidatorTest {
   }
 
   @Test
-  public void shouldPassValidSet() {
+  void shouldPassValidSet() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(
@@ -114,7 +114,7 @@ public class ValueSetValidatorTest {
   }
 
   @Test
-  public void shouldErrorOnEmptyKey() {
+  void shouldErrorOnEmptyKey() {
     ImmutableForm testForm = ImmutableForm.builder()
       .from(baseForm)
       .addValueSets(

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
@@ -41,8 +40,6 @@ import java.util.Optional;
 @Slf4j
 public class QuestionnaireDialobSessionRedisSerializer implements RedisSerializer<DialobQuestionnaireSession> {
 
-  private final QuestionnaireSessionService questionnaireSessionService;
-
   private final QuestionnaireEventPublisher eventPublisher;
 
   private final DialobProgramService dialobProgramService;
@@ -57,14 +54,12 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
 
   private final int bufferSize;
 
-  public QuestionnaireDialobSessionRedisSerializer(@NonNull QuestionnaireSessionService questionnaireSessionService,
-                                                   QuestionnaireEventPublisher eventPublisher,
+  public QuestionnaireDialobSessionRedisSerializer(QuestionnaireEventPublisher eventPublisher,
                                                    DialobProgramService dialobProgramService,
                                                    DialobSessionEvalContextFactory sessionContextFactory,
                                                    AsyncFunctionInvoker asyncFunctionInvoker,
                                                    @NonNull Optional<MeterRegistry> meterRegistry,
                                                    int bufferSize) {
-    this.questionnaireSessionService = questionnaireSessionService;
     this.eventPublisher = eventPublisher;
     this.dialobProgramService = dialobProgramService;
     this.sessionContextFactory = sessionContextFactory;

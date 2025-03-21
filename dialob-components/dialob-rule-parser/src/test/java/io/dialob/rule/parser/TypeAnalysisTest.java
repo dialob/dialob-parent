@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
  */
 package io.dialob.rule.parser;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.NodeBase;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-public class TypeAnalysisTest {
+class TypeAnalysisTest {
 
   @Test
-  public void doubleQuotedStringsAreStrings() throws Exception {
+  void doubleQuotedStringsAreStrings() throws Exception {
     // given
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
 
@@ -41,7 +42,7 @@ public class TypeAnalysisTest {
   }
 
   @Test
-  public void singleQuotedStringsAreStrings() throws Exception {
+  void singleQuotedStringsAreStrings() throws Exception {
     // given
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
 
@@ -54,7 +55,7 @@ public class TypeAnalysisTest {
   }
 
   @Test
-  public void additionOf2IntegersResultsInteger() throws Exception {
+  void additionOf2IntegersResultsInteger() throws Exception {
     // given
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
 
@@ -84,7 +85,7 @@ public class TypeAnalysisTest {
 
   private NodeBase parse(VariableFinder variableFinder, String expressionString) {
     return Expression
-      .createExpression(variableFinder, Maps.newHashMap(), expressionString)
+      .createExpression(variableFinder, new HashMap<>(), expressionString)
       .getAst();
   }
 

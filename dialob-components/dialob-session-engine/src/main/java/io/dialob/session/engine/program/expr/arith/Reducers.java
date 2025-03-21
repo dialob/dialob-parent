@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class Reducers {
       return Int.DIV;
     }
   };
-  public static final OperatorTemplate<BigDecimal> DECIMAL_OPERATOR_TEMPLATE = new OperatorTemplate<BigDecimal>() {
+  public static final OperatorTemplate<BigDecimal> DECIMAL_OPERATOR_TEMPLATE = new OperatorTemplate<>() {
     @Override
     public Reducer<BigDecimal> add() {
       return Number.ADD;
@@ -69,7 +69,7 @@ public class Reducers {
       return Number.DIV;
     }
   };
-  public static final OperatorTemplate<Period> PERIOD_OPERATOR_TEMPLATE = new OperatorTemplate<Period>() {
+  public static final OperatorTemplate<Period> PERIOD_OPERATOR_TEMPLATE = new OperatorTemplate<>() {
     @Override
     public Reducer<Period> add() {
       return PeriodOps.ADD;
@@ -90,7 +90,7 @@ public class Reducers {
       throw new IllegalStateException("periods cannot be divided");
     }
   };
-  public static final OperatorTemplate<Duration> DURATION_OPERATOR_TEMPLATE = new OperatorTemplate<Duration>() {
+  public static final OperatorTemplate<Duration> DURATION_OPERATOR_TEMPLATE = new OperatorTemplate<>() {
     @Override
     public Reducer<Duration> add() {
       return DurationOps.ADD;
@@ -269,19 +269,5 @@ public class Reducers {
     }
   }
 
-  public enum Str implements Reducer<String> {
-    CAT {
-      @Override
-      public String reduce(String i, String t2) {
-        return i + t2;
-      }
-    };
-
-    @NonNull
-    @Override
-    public ValueType getValueType() {
-      return ValueType.STRING;
-    }
-  }
 
 }

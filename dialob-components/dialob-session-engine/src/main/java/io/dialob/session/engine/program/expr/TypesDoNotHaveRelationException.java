@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 public class TypesDoNotHaveRelationException extends ProgramBuilderException {
 
   private final ValueType lhs;
@@ -31,14 +33,6 @@ public class TypesDoNotHaveRelationException extends ProgramBuilderException {
     super(message);
     this.lhs = lhs;
     this.rhs = rhs;
-  }
-
-  public ValueType getLhs() {
-    return lhs;
-  }
-
-  public ValueType getRhs() {
-    return rhs;
   }
 
   @Override

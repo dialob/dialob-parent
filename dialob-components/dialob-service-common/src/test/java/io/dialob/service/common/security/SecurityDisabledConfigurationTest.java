@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package io.dialob.service.common.security;
 import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -57,8 +56,7 @@ class SecurityDisabledConfigurationTest {
   public WebApplicationContext wac;
 
   @BeforeEach
-  public void setupCurrentUser(TestInfo testInfo) {
-    String methodName = testInfo.getDisplayName();
+  public void setupCurrentUser() {
     DefaultMockMvcBuilder builder = MockMvcBuilders
       .webAppContextSetup(this.wac)
       .apply(SecurityMockMvcConfigurers.springSecurity());
@@ -67,7 +65,7 @@ class SecurityDisabledConfigurationTest {
 
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
-  public void shouldRejectPATCHMethod() throws Exception {
+  void shouldRejectPATCHMethod() throws Exception {
     mockMvc.perform(options("/review/123")
       .header("Access-Control-Request-Method","TRACE")
       .header("Access-Control-Request-Headers","origin, x-requested-with")
@@ -77,7 +75,7 @@ class SecurityDisabledConfigurationTest {
   }
 
   @Test
-  public void shouldAcceptPUTMethod() throws Exception {
+  void shouldAcceptPUTMethod() throws Exception {
     mockMvc.perform(options("/review/123")
       .header("Access-Control-Request-Method","PUT")
       .header("Access-Control-Request-Headers","origin, x-requested-with")

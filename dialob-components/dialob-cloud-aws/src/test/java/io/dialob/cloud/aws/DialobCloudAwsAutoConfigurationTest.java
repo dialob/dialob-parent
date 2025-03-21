@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class DialobCloudAwsAutoConfigurationTest {
   }
 
   @Test
-  public void shouldConfigureTopicsWhenARNAvailable() {
+  void shouldConfigureTopicsWhenARNAvailable() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.aws.enabled=true",
@@ -66,7 +66,7 @@ class DialobCloudAwsAutoConfigurationTest {
   }
 
   @Test
-  public void shouldDisableTopicWhenARNNotdefined() {
+  void shouldDisableTopicWhenARNNotdefined() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.aws.enabled=true",
@@ -84,7 +84,7 @@ class DialobCloudAwsAutoConfigurationTest {
   }
 
   @Test
-  public void shouldDisableTopicsWhenARNNotdefined() {
+  void shouldDisableTopicsWhenARNNotdefined() {
     new ApplicationContextRunner()
       .withPropertyValues(
         "dialob.aws.enabled=true"
@@ -101,7 +101,7 @@ class DialobCloudAwsAutoConfigurationTest {
   }
 
   @Test
-  public void shouldDisableTopicsWhenDialobAwsEnabledIsUndefined() {
+  void shouldDisableTopicsWhenDialobAwsEnabledIsUndefined() {
     new ApplicationContextRunner()
       .withUserConfiguration(MockConfigurations.class, DialobSettings.class)
       .withConfiguration(AutoConfigurations.of(DialobCloudAwsAutoConfiguration.class))

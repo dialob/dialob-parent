@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   ApiServiceSecurityConfigurer.class
 })
 @EnableConfigurationProperties(DialobSettings.class)
-public class ApiControllerOnlyApiTest extends AbstractControllerTest {
+class ApiControllerOnlyApiTest extends AbstractControllerTest {
 
   @Configuration(proxyBeanMethods = false)
   public static class TestConfiguration {
@@ -165,7 +165,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   }
 
   @Test
-  public void cannotAccessFormsWithoutApiKey() throws Exception {
+  void cannotAccessFormsWithoutApiKey() throws Exception {
     mockMvc.perform(get("/api/forms").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isForbidden())
       .andReturn();
@@ -175,7 +175,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
   }
 
   @Test
-  public void canAccessFormsWithApiKey() throws Exception {
+  void canAccessFormsWithApiKey() throws Exception {
     ApiKey loadedApiKey = ImmutableApiKey.builder()
       .clientId("30313233-3435-3637-3839-313233343536")
       .tenantId("00000000-0000-0000-0000-000000000000")
@@ -214,7 +214,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
 
 
   @Test
-  public void fetchTenantsWithApiKey() throws Exception {
+  void fetchTenantsWithApiKey() throws Exception {
     ApiKey loadedApiKey = ImmutableApiKey.builder()
       .clientId("30313233-3435-3637-3839-313233343536")
       .tenantId("00000000-0000-0000-0000-000000000000")
@@ -222,7 +222,7 @@ public class ApiControllerOnlyApiTest extends AbstractControllerTest {
       .build();
     doReturn(Optional.of(loadedApiKey)).when(clientApiKeyService).findByClientId("30313233-3435-3637-3839-313233343536");
     doNothing().when(apiKeyValidator).validateApiKey(eq(loadedApiKey), any(ApiKey.class));
-    doReturn(Arrays.asList(
+    doReturn(List.of(
       ImmutableTenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
       .when(apiKeyAuthoritiesProvider).loadAuthorities(loadedApiKey);
     doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000"));

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -26,10 +24,12 @@ import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.*;
 
 import static io.dialob.session.engine.Utils.readNullableString;
@@ -40,6 +40,7 @@ import static io.dialob.session.engine.Utils.writeNullableString;
 @ToString
 public class ItemState implements SessionObject {
 
+  @Serial
   private static final long serialVersionUID = -3974128908954128671L;
 
 
@@ -65,7 +66,7 @@ public class ItemState implements SessionObject {
     PENDING
   }
 
-  private static final int DISPLAY_ITEM_BIT = 1 << 0;
+  private static final int DISPLAY_ITEM_BIT = 1;
   private static final int ACTIVE_BIT = 1 << 1;
   private static final int DISABLED_BIT = 1 << 2;
   private static final int REQUIRED_BIT = 1 << 3;
@@ -85,8 +86,10 @@ public class ItemState implements SessionObject {
 
   private final String valueSetId;
 
+  @Getter
   private Status status = Status.NEW;
 
+  @Getter
   private Object answer;
 
   private Object value;
@@ -95,21 +98,26 @@ public class ItemState implements SessionObject {
 
   private int bits = (ACTIVE_BIT | ROWS_CAN_BE_ADDED_BIT);
 
+  @Getter
   private String label;
 
+  @Getter
   private String description;
 
   // indicates whethet questionnaire is completed
 
-  private List<String> classNames = ImmutableList.of();
+  @Getter
+  private List<String> classNames = List.of();
 
-  private List<ItemId> items = ImmutableList.of();
+  private List<ItemId> items = List.of();
 
-  private List<ItemId> availableItems = ImmutableList.of();
+  @Getter
+  private List<ItemId> availableItems = List.of();
 
   private Map<String, Object> props = new HashMap<>();
 
-  private Set<Action.Type> allowedActions = ImmutableSet.of();
+  @Getter
+  private Set<Action.Type> allowedActions = Set.of();
 
   private ItemId activePage;
 
@@ -161,9 +169,9 @@ public class ItemState implements SessionObject {
       for (int i = 0; i < count; i++ ){
         types[i] = Action.Type.values()[input.readInt32()];
       }
-      state.allowedActions = ImmutableSet.copyOf(types);
+      state.allowedActions = Set.of(types);
     } else {
-      state.allowedActions = ImmutableSet.of();
+      state.allowedActions = Set.of();
     }
     return state;
   }
@@ -245,9 +253,9 @@ public class ItemState implements SessionObject {
       for (int i = 0; i < count; i++) {
         ids[i] = IdUtils.readIdFrom(input);
       }
-      return ImmutableList.copyOf(ids);
+      return List.of(ids);
     }
-    return ImmutableList.of();
+    return List.of();
   }
 
   private static List<String> readStringList(CodedInputStream input) throws IOException {
@@ -257,9 +265,9 @@ public class ItemState implements SessionObject {
       for (int i = 0; i < count; i++) {
         ids[i] = input.readString();
       }
-      return ImmutableList.copyOf(ids);
+      return List.of(ids);
     }
-    return ImmutableList.of();
+    return List.of();
   }
 
 
@@ -340,14 +348,6 @@ public class ItemState implements SessionObject {
     return Optional.ofNullable(valueSetId);
   }
 
-  public Status getStatus() {
-    return status;
-  }
-
-  public Object getAnswer() {
-    return answer;
-  }
-
   public Object getValue() {
     return isActive() && value != null ? value : defaultValue;
   }
@@ -401,33 +401,13 @@ public class ItemState implements SessionObject {
     return (bits & HAS_CUSTOM_PROPS_BIT) != 0;
   }
 
-  public String getLabel() {
-    return label;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public List<String> getClassNames() {
-    return classNames;
-  }
-
   @NonNull
   public List<ItemId> getItems() {
     return items;
   }
 
-  public List<ItemId> getAvailableItems() {
-    return availableItems;
-  }
-
   public Optional<ItemId> getActivePage() {
     return Optional.ofNullable(activePage);
-  }
-
-  public Set<Action.Type> getAllowedActions() {
-    return allowedActions;
   }
 
   @NonNull
@@ -543,28 +523,28 @@ public class ItemState implements SessionObject {
 
     public UpdateBuilder setClassNames(List<String> newClassNames) {
       if (!Objects.equals(classNames, newClassNames)) {
-        state().classNames = ImmutableList.copyOf(newClassNames);
+        state().classNames = List.copyOf(newClassNames);
       }
       return this;
     }
 
     public UpdateBuilder setItems(List<ItemId> newItems) {
       if (!Objects.equals(items, newItems)) {
-        state().items = ImmutableList.copyOf(newItems);
+        state().items = List.copyOf(newItems);
       }
       return this;
     }
 
     public UpdateBuilder setAvailableItems(List<ItemId> newAvailableItems) {
       if (!Objects.equals(availableItems, newAvailableItems)) {
-        state().availableItems = ImmutableList.copyOf(newAvailableItems);
+        state().availableItems = List.copyOf(newAvailableItems);
       }
       return this;
     }
 
     public UpdateBuilder setAllowedActions(Set<Action.Type> newAllowedActions) {
       if (!Objects.equals(allowedActions, newAllowedActions)) {
-        state().allowedActions = ImmutableSet.copyOf(newAllowedActions);
+        state().allowedActions = Set.copyOf(newAllowedActions);
       }
       return this;
     }

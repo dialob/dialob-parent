@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,23 @@ public interface SessionObject extends Serializable {
 
   <I extends ItemId> I getId();
 
+  /**
+   * @return true when item is relevant to questionnaire.
+   */
   default boolean isActive() {
     return true;
   }
 
+  /**
+   * @return true if item should not be shown to user
+   */
   default boolean isDisabled() {
     return false;
   }
 
+  /**
+   * @return true if item is not variable or something similar that will not be shown to user.
+   */
   default boolean isDisplayItem() {
     return false;
   }

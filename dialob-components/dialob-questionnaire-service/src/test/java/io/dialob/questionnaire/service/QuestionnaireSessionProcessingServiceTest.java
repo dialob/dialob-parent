@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 class QuestionnaireSessionProcessingServiceTest {
 
   @Test
-  public void shouldNotPublicCompleteEventIfNotCompleted() throws Exception {
+  void shouldNotPublicCompleteEventIfNotCompleted() throws Exception {
     QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     CacheManager sessionCacheManager = mock(CacheManager.class);
@@ -73,7 +73,7 @@ class QuestionnaireSessionProcessingServiceTest {
 
 
   @Test
-  public void shouldPublishCompleteEventIfCompleted() throws Exception {
+  void shouldPublishCompleteEventIfCompleted() throws Exception {
     QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     CacheManager sessionCacheManager = mock(CacheManager.class);
@@ -112,7 +112,7 @@ class QuestionnaireSessionProcessingServiceTest {
   }
 
   @Test
-  public void shouldRejectUpdatesToCompletedQuestionnaires() throws Exception {
+  void shouldRejectUpdatesToCompletedQuestionnaires() throws Exception {
     QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     CacheManager sessionCacheManager = mock(CacheManager.class);
@@ -144,7 +144,7 @@ class QuestionnaireSessionProcessingServiceTest {
 
 
   @Test
-  public void shouldRetryUpdateIfConflicted() throws Exception {
+  void shouldRetryUpdateIfConflicted() throws Exception {
     QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     CacheManager sessionCacheManager = mock(CacheManager.class);
@@ -186,7 +186,7 @@ class QuestionnaireSessionProcessingServiceTest {
   }
 
   @Test
-  public void shouldThrowConflictExceptionAfterTooManyFailures() throws Exception {
+  void shouldThrowConflictExceptionAfterTooManyFailures() throws Exception {
     QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     CacheManager sessionCacheManager = mock(CacheManager.class);
@@ -220,7 +220,7 @@ class QuestionnaireSessionProcessingServiceTest {
   }
 
   @Test
-  public void shouldNotRetryWhenThereIsATechnicalException() throws Exception {
+  void shouldNotRetryWhenThereIsATechnicalException() throws Exception {
     QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     CacheManager sessionCacheManager = mock(CacheManager.class);

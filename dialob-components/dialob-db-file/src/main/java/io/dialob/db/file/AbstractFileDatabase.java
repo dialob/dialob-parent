@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
   }
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id, String rev) {
+  public F findOne(@NonNull String ignoredTenantId, @NonNull String id, String ignoredRev) {
     File file = fileRef(id);
     if (!file.exists()) {
       throw new DocumentNotFoundException("document " + id + " do not exists");
@@ -84,7 +84,7 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
   }
 
   @NonNull
-  public F findOne(String tenantId, @NonNull String id) {
+  public F findOne(@NonNull String tenantId, @NonNull String id) {
     return findOne(tenantId, id, null);
   }
 
@@ -96,12 +96,12 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
     }
   }
 
-  public boolean exists(String tenantId, @NonNull String id) {
+  public boolean exists(@NonNull String ignoredTenantId, @NonNull String id) {
     File file = fileRef(id);
     return file.exists();
   }
 
-  public boolean delete(String tenantId, @NonNull String id) {
+  public boolean delete(String ignoredTenantId, @NonNull String id) {
     return fileRef(id).delete();
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.springframework.integration.redis.channel.SubscribableRedisChannel;
 class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
 
   @Test
-  public void shouldSetupRedisChannelWhenRedisIsAvailable() {
+  void shouldSetupRedisChannelWhenRedisIsAvailable() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
         RedisAutoConfiguration.class,
@@ -41,7 +41,7 @@ class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
   }
 
   @Test
-  public void shouldSetupDummyChannelWhenRedisIsNotAvailable() {
+  void shouldSetupDummyChannelWhenRedisIsNotAvailable() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
         DialobIntegrationRedisAutoConfiguration.class

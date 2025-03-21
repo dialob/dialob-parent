@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class ExtractURIParametersToAttributesInterceptorTest {
+class ExtractURIParametersToAttributesInterceptorTest {
 
   @Test
-  public void shouldNotExtractAnything() throws Exception {
+  void shouldNotExtractAnything() throws Exception {
     ExtractURIParametersToAttributesInterceptor interceptor = new ExtractURIParametersToAttributesInterceptor();
     Map<String,Object> attributes = new HashMap<>();
     WebSocketHandler wsHandler = mock(WebSocketHandler.class);
@@ -49,7 +49,7 @@ public class ExtractURIParametersToAttributesInterceptorTest {
   }
 
   @Test
-  public void shouldExtractId() throws Exception {
+  void shouldExtractId() throws Exception {
     ExtractURIParametersToAttributesInterceptor interceptor = new ExtractURIParametersToAttributesInterceptor("id","id2","id3");
     Map<String,Object> attributes = new HashMap<>();
     WebSocketHandler wsHandler = mock(WebSocketHandler.class);

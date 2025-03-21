@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,8 +73,7 @@ public interface ValueSetEntryToStringOperator extends Expression {
   @Override
   @NonNull
   default Set<EventMatcher> getEvalRequiredConditions() {
-    final Set<EventMatcher> deps = new HashSet<>();
-    deps.addAll(getExpression().getEvalRequiredConditions());
+    final Set<EventMatcher> deps = new HashSet<>(getExpression().getEvalRequiredConditions());
     deps.add(EventMatchers.whenValueSetUpdated(getValueSetId()));
     return deps;
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 class ApiKeyAuthenticationEntryPointTest {
 
   @Test
-  public void shouldMakeJsonErrorResponse() throws IOException, ServletException {
+  void shouldMakeJsonErrorResponse() throws IOException, ServletException {
     final ObjectMapper objectMapper = new ObjectMapper()
       .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
@@ -47,10 +47,9 @@ class ApiKeyAuthenticationEntryPointTest {
     ApiKeyAuthenticationEntryPoint entryPoint = new ApiKeyAuthenticationEntryPoint();
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-    AuthenticationException authException = new ApiKeyAuthenticationException("Invalid key");;
+    AuthenticationException authException = new ApiKeyAuthenticationException("Invalid key");
 
     OutputStream outputStream = new ByteArrayOutputStream(10000);
-    ;
     Mockito.when(response.getOutputStream()).thenReturn(new DelegatingServletOutputStream(outputStream));
 
     entryPoint.commence(request, response, authException);

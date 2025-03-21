@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
 
   @Configuration(proxyBeanMethods = false)
   @EnableScheduling
+  @EnableConfigurationProperties(DialobSettings.class)
   public static class TestConfiguration {
 
     @Bean
@@ -52,11 +54,6 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
     @Bean
     public MeterRegistry meterRegistry() {
       return new SimpleMeterRegistry();
-    }
-
-    @Bean
-    public DialobSettings dialobSettings() {
-      return Mockito.mock(DialobSettings.class);
     }
 
     @Bean
@@ -77,7 +74,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobQuestionnaireServiceAutoConfiguration() {
+  void testDialobQuestionnaireServiceAutoConfiguration() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -95,7 +92,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   }
 
   @Test
-  public void testDialobQuestionnaireServiceAutoConfiguration1() {
+  void testDialobQuestionnaireServiceAutoConfiguration1() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -113,7 +110,7 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
       });
   }
   @Test
-  public void testDialobQuestionnaireServiceAutoConfigurationWithAutoSave() {
+  void testDialobQuestionnaireServiceAutoConfigurationWithAutoSave() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(

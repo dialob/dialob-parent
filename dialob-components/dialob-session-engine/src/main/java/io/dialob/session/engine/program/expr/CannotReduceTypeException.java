@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.ProgramBuilderException;
+import lombok.Getter;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class CannotReduceTypeException extends ProgramBuilderException {
   private final ValueType valueType;
 
@@ -29,13 +31,9 @@ public class CannotReduceTypeException extends ProgramBuilderException {
     this.valueType = valueType;
   }
 
-  public ValueType getValueType() {
-    return valueType;
-  }
-
   @Override
   public List<Object> getArgs() {
-    return Arrays.asList(getValueType());
+    return Collections.singletonList(getValueType());
   }
 
 }

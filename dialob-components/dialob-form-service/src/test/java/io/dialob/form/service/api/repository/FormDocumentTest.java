@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-public class FormDocumentTest {
+class FormDocumentTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         String s = "{\"_id\": \"d34d5d75297bd4ec977c8beb3003c827\",\"_rev\": \"6-5b916f027a4901003f3a64d05331429d\",\"updated\": null,"
                 + "\"saving\": false,\"failed\": null,"
                 + "\"data\": {\"group\": {\"type\": \"group\",\"items\": [\"text\",\"text1\","
@@ -42,7 +42,7 @@ public class FormDocumentTest {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         Form formDocument = mapper.readValue(s, Form.class);
         assertEquals(6, formDocument.getData().size());
-        assertEquals(new Date(Instant.parse("2015-10-09T13:34:01.622Z").toEpochMilli()), formDocument.getMetadata().getCreated());
+        assertEquals(Date.from(Instant.parse("2015-10-09T13:34:01.622Z")), formDocument.getMetadata().getCreated());
         assertNotNull(formDocument);
     }
 

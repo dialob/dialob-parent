@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class GrantedAuthorityTenantsProvider implements TenantsProvider {
 
@@ -34,13 +33,12 @@ class GrantedAuthorityTenantsProvider implements TenantsProvider {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     List<Tenant> tenants = Collections.emptyList();
-    if (authentication instanceof AbstractAuthenticationToken) {
-      AbstractAuthenticationToken token = (AbstractAuthenticationToken) authentication;
+    if (authentication instanceof AbstractAuthenticationToken token) {
       tenants = token.getAuthorities().stream()
         .filter(a -> a instanceof TenantGrantedAuthority)
         .map(a -> (TenantGrantedAuthority) a)
         .map(a -> Tenant.of(a.getTenantId(), a.getAuthority()))
-        .collect(Collectors.toList());
+        .toList();
     }
     return tenants;
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ class TenantsRestControllerTest {
   }
 
   @Test
-  public void shouldReturnEmptyTenants() throws Exception {
+  void shouldReturnEmptyTenants() throws Exception {
     Mockito.when(tenantsProvider.getTenants()).thenReturn(Collections.emptyList());
     mockMvc
       .perform(get("/tenants")
@@ -89,7 +89,7 @@ class TenantsRestControllerTest {
   }
 
   @Test
-  public void shouldReturnListOfTenants() throws Exception {
+  void shouldReturnListOfTenants() throws Exception {
     Mockito.when(tenantsProvider.getTenants()).thenReturn(Arrays.asList(
       Tenant.of("0123-321", "hello"),
       Tenant.of("0123-322")

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DeleteRowTest {
 
   @Test
-  public void deleteRowShouldChangeRowStatusToBeRemoved() throws Exception {
+  void deleteRowShouldChangeRowStatusToBeRemoved() throws Exception {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
@@ -40,16 +39,15 @@ class DeleteRowTest {
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
-      .setValue(Arrays.asList(BigInteger.ONE))
+      .setValue(List.of(BigInteger.ONE))
       .get();
 
     itemState = deleteRow.update(context, itemState);
-
     assertTrue(((List<Integer>)itemState.getValue()).isEmpty());
-
   }
+
   @Test
-  public void deleteRowShouldNotRemoveNonExistingRow() throws Exception {
+  void deleteRowShouldNotRemoveNonExistingRow() throws Exception {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
@@ -57,34 +55,30 @@ class DeleteRowTest {
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
-      .setValue(Arrays.asList(2))
+      .setValue(List.of(2))
       .get();
 
     itemState = deleteRow.update(context, itemState);
-
-    assertEquals(Arrays.asList(2), ((List<Integer>)itemState.getValue()));
-
+    assertEquals(List.of(2), itemState.getValue());
   }
 
   @Test
-  public void deleteRowCannotRemoveRowWhenRowsMayNotBeRemoved() throws Exception {
+  void deleteRowCannotRemoveRowWhenRowsMayNotBeRemoved() throws Exception {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
     final ItemState toBeRemoved = Mockito.mock(ItemState.class);
     Mockito.when(toBeRemoved.isRowCanBeRemoved()).thenReturn(false);
-
     Mockito.when(context.getItemState(Mockito.any())).thenReturn(Optional.of(toBeRemoved));
 
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
-      .setValue(Arrays.asList(1))
+      .setValue(List.of(1))
       .setRowCanBeRemoved(false)
       .get();
 
     itemState = deleteRow.update(context, itemState);
-    assertEquals(Arrays.asList(1), ((List<Integer>)itemState.getValue()));
-
+    assertEquals(List.of(1), itemState.getValue());
     assertEquals(ItemState.Status.OK, itemState.getStatus());
   }
 }

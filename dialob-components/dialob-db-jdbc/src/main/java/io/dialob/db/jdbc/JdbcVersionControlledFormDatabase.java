@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,25 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+/**
+ * JdbcVersionControlledFormDatabase is an implementation of a version-controlled
+ * form database that uses JDBC for persistence. It handles operations related
+ * to form documents, versioning, tagging, and metadata management, providing
+ * capabilities essential for a version-aware form storage system. The class
+ * supports multi-tenancy and ensures proper tenant context handling as part
+ * of the operations.
+ * <p>
+ * This class operates on relational database tables for storing forms,
+ * form documents, revisions, and tags, using SQL queries
+ * managed through JdbcTemplate and transaction management using TransactionTemplate.
+ * It integrates form behavior such as snapshots, tags, and label updates in
+ * a version-controlled manner.
+ */
 public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVersionControlDatabase, JdbcDatabase {
 
   public static final String LATEST = "LATEST";
@@ -72,6 +85,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     .formId(Utils.toString(getDatabaseHelper().fromJdbcId(rs.getBytes(5))))
     .type(FormTag.Type.valueOf(rs.getString(6).trim()))
     .refName(rs.getString(7))
+    .creator(rs.getString(8))
     .build();
 
   public JdbcVersionControlledFormDatabase(JdbcTemplate jdbcTemplate,
@@ -129,15 +143,14 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
   }
 
   @Override
-  public Optional<FormTag> createTag(@NonNull String tenantId, @NonNull String formName, String newTag, String description, String formDocumentIdOrRefName, @NonNull FormTag.Type type) {
+  public Optional<FormTag> createTag(@NonNull String tenantId, @NonNull String formName, String newTag, String description, String formDocumentIdOrRefName, @NonNull FormTag.Type type, String creator) {
     assertTenantContextDefined(tenantId);
     try {
-      String resolvedFormDocumentId = null;
+      String resolvedFormDocumentId;
       String resolvedRefName = null;
 
       if (type == FormTag.Type.NORMAL) {
         resolvedFormDocumentId = formDocumentIdOrRefName;
-        resolvedRefName = null;
         if (!exists(tenantId, resolvedFormDocumentId)){
           return Optional.empty();
         }
@@ -157,6 +170,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         sqlParameters.add(toJdbcId(Utils.toOID(formDocumentId)));
         sqlParameters.add(type.name());
         sqlParameters.add(refName);
+        sqlParameters.add(creator);
 
         StringBuilder where = new StringBuilder(" where name = ?");
         sqlParameters.add(formName);
@@ -164,7 +178,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         sqlParameters.add(tenantId);
 
 
-        int updated = template.update("insert into " + formRevTableName + " (tenant_id,form_name, name, description, form_document_id, type, ref_name) select tenant_id, name, ?, ?, ?, ?, ? from " + formTableName + where.toString(), sqlParameters.toArray());
+        int updated = template.update("insert into " + formRevTableName + " (tenant_id,form_name, name, description, form_document_id, type, ref_name, creator) select tenant_id, name, ?, ?, ?, ?, ?, ? from " + formTableName + where, sqlParameters.toArray());
         if (updated > 0) {
           return findTag(tenantId, formName, newTag);
         }
@@ -176,7 +190,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
   }
 
   @Override
-  public Optional<FormTag> createTagOnLatest(String tenantId, @NonNull String formName, String tag, String description, boolean snapshot) {
+  public Optional<FormTag> createTagOnLatest(String tenantId, @NonNull String formName, String tag, String description, boolean snapshot, String creator) {
     assertTenantContextDefined(tenantId);
     if (snapshot) {
       String latestFormId = findTag(tenantId, formName, LATEST).map(FormTag::getFormId).orElse(null);
@@ -184,7 +198,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         return Optional.empty();
       }
       latestFormId = createSnapshot(tenantId, latestFormId);
-      return createTag(tenantId, formName, tag, description, latestFormId, FormTag.Type.NORMAL);
+      return createTag(tenantId, formName, tag, description, latestFormId, FormTag.Type.NORMAL, creator);
     }
     try {
       return doTransaction(template -> {
@@ -192,12 +206,13 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         sqlParameters.add(tag);
         sqlParameters.add(description);
         sqlParameters.add(FormTag.Type.NORMAL.name());
+        sqlParameters.add(creator);
 
         StringBuilder where = new StringBuilder(" where name = ?");
         sqlParameters.add(formName);
         where.append(" and tenant_id = ?");
         sqlParameters.add(tenantId);
-        int updated = template.update("insert into " + formRevTableName + " (tenant_id, form_name, name, description, type, form_document_id) select tenant_id, name, ?, ?, ?, latest_form_id from " + formTableName + where, sqlParameters.toArray());
+        int updated = template.update("insert into " + formRevTableName + " (tenant_id, form_name, name, description, type, form_document_id, creator) select tenant_id, name, ?, ?, ?, latest_form_id, ? from " + formTableName + where, sqlParameters.toArray());
         if (updated > 0) {
           return findTag(tenantId, formName, tag);
         }
@@ -287,7 +302,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       where = where + " and tenant_id = ?";
       sqlParameters.add(tenantId);
 
-      return template.query("select form_name, name, description, created, form_document_id, type, ref_name from " + formRevTableName + " where " + where, formTagRowMapper, sqlParameters.toArray());
+      return template.query("select form_name, name, description, created, form_document_id, type, ref_name, creator from " + formRevTableName + " where " + where, formTagRowMapper, sqlParameters.toArray());
     });
   }
 
@@ -298,9 +313,9 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       try {
         // tags are unique within tenant, not globally
         if (name == null || name.equalsIgnoreCase(LATEST)) {
-          return Optional.ofNullable(template.queryForObject("select name, 'LATEST', null, created, latest_form_id, 'NORMAL', null from " + formTableName + " where name = ? and tenant_id = ?", formTagRowMapper, formName, tenantId));
+          return Optional.ofNullable(template.queryForObject("select name, 'LATEST', null, created, latest_form_id, 'NORMAL', null, null from " + formTableName + " where name = ? and tenant_id = ?", formTagRowMapper, formName, tenantId));
         } else {
-          return Optional.ofNullable(template.queryForObject("select form_name, name, description, created, form_document_id, type, ref_name from " + formRevTableName + " where form_name = ? and name = ? and tenant_id = ?", formTagRowMapper, formName, name, tenantId));
+          return Optional.ofNullable(template.queryForObject("select form_name, name, description, created, form_document_id, type, ref_name, creator from " + formRevTableName + " where form_name = ? and name = ? and tenant_id = ?", formTagRowMapper, formName, name, tenantId));
         }
       } catch (EmptyResultDataAccessException e) {
         return Optional.empty();
@@ -334,11 +349,8 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       }
       terms.add("tenant_id = ?");
       params.add(tenantId);
-      String where = "";
-      if (!terms.isEmpty()) {
-        where = " where " + String.join(" and ", terms);
-      }
-      return template.query("select form_name, name, description, created, form_document_id, type, ref_name from " + formRevTableName + where, formTagRowMapper, params.toArray(new Object[0]));
+      String where = " where " + String.join(" and ", terms);
+      return template.query("select form_name, name, description, created, form_document_id, type, ref_name, creator from " + formRevTableName + where, formTagRowMapper, params.toArray(new Object[0]));
     });
   }
 
@@ -351,7 +363,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     return doTransaction(template -> findTag(tenantId, updateTag.getFormName(), updateTag.getRefName()).map(tag -> {
       // Can make ref only to normal tag
       if (tag.getType() != FormTag.Type.NORMAL) {
-        throw new DocumentCorruptedException(String.format("Referred tag must be immutable", updateTag.getFormName(), updateTag.getName()));
+        throw new DocumentCorruptedException(String.format("Form %s referred tag %s must be immutable", updateTag.getFormName(), updateTag.getName()));
       }
       int count = template.update("update " + formRevTableName + " set updated = current_timestamp, form_document_id = ?, ref_name = ?, description = ? where type = 'MUTABLE' and form_name = ? and name = ? and tenant_id = ?",
         toJdbcId(Utils.toOID(tag.getFormId())),
@@ -470,7 +482,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         conditions.add("data->'metadata' @> ?");
         params.add(getDatabaseHelper().jsonObject(objectMapper, metadata));
       }
-      String where = conditions.stream().collect(Collectors.joining(" and "));
+      String where = String.join(" and ", conditions);
       if (StringUtils.isNotBlank(where)) {
         where = " where " + where;
       }

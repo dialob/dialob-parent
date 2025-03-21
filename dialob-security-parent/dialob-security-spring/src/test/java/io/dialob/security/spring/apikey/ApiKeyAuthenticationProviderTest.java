@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 class ApiKeyAuthenticationProviderTest {
 
   @Test
-  public void shouldIgnoreNullAuthentication() {
+  void shouldIgnoreNullAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -45,19 +45,19 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldIgnoreNonApiKeyAuthentication() {
+  void shouldIgnoreNonApiKeyAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
 
     ApiKeyAuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
-    final AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("key", "principal", Arrays.asList(new SimpleGrantedAuthority("ROLE")));
+    final AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("key", "principal", List.of(new SimpleGrantedAuthority("ROLE")));
     assertSame(authentication, authenticationProvider.authenticate(authentication));
     Mockito.verifyNoMoreInteractions(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
   }
 
   @Test
-  public void shouldNotReauthenticateValidApiKeyAuthentication() {
+  void shouldNotReauthenticateValidApiKeyAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -69,7 +69,7 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldAuthenticateNonValidApiKeyAuthentication() {
+  void shouldAuthenticateNonValidApiKeyAuthentication() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
@@ -100,7 +100,7 @@ class ApiKeyAuthenticationProviderTest {
   }
 
   @Test
-  public void shouldThrowAccessDeniedIfApiKeyDoNotExists() {
+  void shouldThrowAccessDeniedIfApiKeyDoNotExists() {
     ClientApiKeyService apiKeyService = Mockito.mock(ClientApiKeyService.class);
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);

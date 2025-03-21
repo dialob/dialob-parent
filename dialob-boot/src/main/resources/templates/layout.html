@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:fragment="common_content(header,applicationContent,footer,scripts)">
 <head>
   <title>Dialob</title>
@@ -9,7 +9,7 @@
   <meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}"/>
   <link th:each="stylesheet: ${stylesheets}" rel="stylesheet" type="text/css" th:href="${stylesheet.value}"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
-  <script th:if="${reactHook}">__REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__</script>
+  <script th:if="${reactHook}">if (window.parent !== window) window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;</script>
 </head>
 <body>
 <div class="dialob-app-container">
@@ -17,7 +17,7 @@
     <div class="dialob-app-top">
       <img th:if="${logo}" th:src="${logo.url}" th:width="${logo.width}" th:height="${logo.height}" width="180"
            height="40"
-           src="https://cdn.resys.io/dialob_logo.svg"/><span class="dialob-app-title"></span>
+           src="https://cdn.resys.io/dialob_logo.svg" alt="logo"/><span class="dialob-app-title"></span>
       <span th:if="${subApplicationName}" th:text="${subApplicationName}" class="dialob-app-subtitle">Composer</span>
     </div>
   </header>

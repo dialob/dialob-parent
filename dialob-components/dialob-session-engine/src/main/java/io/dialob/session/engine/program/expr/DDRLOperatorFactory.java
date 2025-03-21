@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program.expr;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
@@ -23,12 +22,10 @@ import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 public class DDRLOperatorFactory implements OperatorFactory {
 
@@ -112,38 +109,28 @@ public class DDRLOperatorFactory implements OperatorFactory {
         return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.AND).build();
       case OR:
         return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.OR).build();
-      case NE:
-      case EQ:
-      case LT:
-      case LE:
-      case GE:
-      case GT:
+      case NE, EQ, LT, LE, GE, GT:
         return relationOf(operatorSymbol, lhs(arguments), rhs(arguments));
 
-      case NOT_IN:
-      case IN:
+      case NOT_IN, IN:
         expr = ImmutableInOperator.builder().lhs(first(arguments)).rhs(ImmutableExpressionList.builder().addAllExpressions(rest(arguments)).build()).build();
         break;
 
-      case NOT_MATCHES:
-      case MATCHES:
+      case NOT_MATCHES, MATCHES:
         Expression patternExpr = rhs(arguments);
         validateRegexExpression(patternExpr);
         expr = ImmutableMatchesOperator.builder().lhs(lhs(arguments)).rhs(patternExpr).build();
         break;
 
-      case NOT_ANSWERED:
-      case ANSWERED:
+      case NOT_ANSWERED, ANSWERED:
         expr = Operators.isAnswered(varRef(arguments));
         break;
 
-      case NOT_BLANK:
-      case BLANK:
+      case NOT_BLANK, BLANK:
         expr = Operators.isBlank(varRef(arguments));
         break;
 
-      case NOT_NULL:
-      case NULL:
+      case NOT_NULL, NULL:
         expr = Operators.isNull(varRef(arguments));
         break;
 
@@ -151,15 +138,10 @@ public class DDRLOperatorFactory implements OperatorFactory {
         expr = ImmutableCountArrayLengthOperator.builder().itemId(varRef(arguments)).build();
         break;
 
-      case NOT_VALID:
-      case VALID:
+      case NOT_VALID, VALID:
         expr = ImmutableIsValidOperator.of(varRef(arguments));
         break;
-      case SUM:
-      case MIN:
-      case MAX:
-      case ALL:
-      case ANY:
+      case SUM, MIN, MAX, ALL, ANY:
         expr = createArrayReducingOperator(operatorSymbol, nodeValueType, varRef(arguments));
         break;
       default:
@@ -173,25 +155,14 @@ public class DDRLOperatorFactory implements OperatorFactory {
   }
 
   private Expression createArrayReducingOperator(OperatorSymbol operatorSymbol, ValueType itemValueType, ItemId varRef) {
-    BinaryOperator<?> reducer = null;
-
-    switch(operatorSymbol) {
-      case SUM:
-        reducer = ArrayReducerOperator.sumOp(itemValueType);
-        break;
-      case MIN:
-        reducer = ArrayReducerOperator.minOp(itemValueType);
-        break;
-      case MAX:
-        reducer = ArrayReducerOperator.maxOp(itemValueType);
-        break;
-      case ALL:
-        reducer = ArrayReducerOperator.allOp(itemValueType);
-        break;
-      case ANY:
-        reducer = ArrayReducerOperator.anyOp(itemValueType);
-        break;
-    }
+    BinaryOperator<?> reducer = switch (operatorSymbol) {
+      case SUM -> ArrayReducerOperator.sumOp(itemValueType);
+      case MIN -> ArrayReducerOperator.minOp(itemValueType);
+      case MAX -> ArrayReducerOperator.maxOp(itemValueType);
+      case ALL -> ArrayReducerOperator.allOp(itemValueType);
+      case ANY -> ArrayReducerOperator.anyOp(itemValueType);
+      default -> null;
+    };
 
     if (reducer == null) {
       throw new CannotReduceTypeWithOperatorException(operatorSymbol.name(), itemValueType);
@@ -230,7 +201,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
     return arguments
       .stream()
       .map(argument -> coerceToType(nodeValueType, argument))
-      .collect(Collectors.toList());
+      .toList();
   }
 
   private Expression coerceToType(ValueType nodeValueType, Expression argument) {
@@ -249,12 +220,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
   }
 
   private List<Expression> rest(List<Expression> expressions) {
-    Iterator<Expression> i = expressions.iterator();
-    if (!i.hasNext()) {
-      return Lists.newArrayList();
-    }
-    i.next();
-    return Lists.newArrayList(i);
+    return expressions.stream().skip(1).toList();
   }
 
   private Expression relationOf(OperatorSymbol operator, Expression lhs, Expression rhs) {
@@ -266,21 +232,16 @@ public class DDRLOperatorFactory implements OperatorFactory {
       lhs = coerceToType(coercedType, lhs);
       rhs = coerceToType(coercedType, rhs);
     }
-    switch(operator) {
-      case NE:
-        return operatorsOf(coercedType).ne(lhs, rhs);
-      case EQ:
-        return operatorsOf(coercedType).eq(lhs, rhs);
-      case LT:
-        return operatorsOf(coercedType).lt(lhs, rhs);
-      case LE:
-        return operatorsOf(coercedType).le(lhs, rhs);
-      case GE:
-        return operatorsOf(coercedType).ge(lhs, rhs);
-      case GT:
-        return operatorsOf(coercedType).gt(lhs, rhs);
-    }
-    throw new RuntimeException("Unknown operator " + operator);
+    final Operators operators = operatorsOf(coercedType);
+    return switch (operator) {
+      case NE -> operators.ne(lhs, rhs);
+      case EQ -> operators.eq(lhs, rhs);
+      case LT -> operators.lt(lhs, rhs);
+      case LE -> operators.le(lhs, rhs);
+      case GE -> operators.ge(lhs, rhs);
+      case GT -> operators.gt(lhs, rhs);
+      default -> throw new RuntimeException("Unknown operator " + operator);
+    };
   }
 
   @NonNull

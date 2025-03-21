@@ -6,12 +6,17 @@ import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true, of = {"nodeOperator", "arguments"})
 public class CallExprNode extends NodeBase {
 
+  @Serial
   private static final long serialVersionUID = 9169421768436062924L;
 
   private List<NodeBase> arguments = new ArrayList<>();
@@ -28,6 +33,7 @@ public class CallExprNode extends NodeBase {
     this.nodeOperator = Objects.requireNonNull(nodeOperator);
   }
 
+  @Override
   public CallExprNode addSubnode(@NonNull NodeBase node) {
     node.setParent(this);
     arguments.add(node);
@@ -35,6 +41,7 @@ public class CallExprNode extends NodeBase {
   }
 
   @NonNull
+  @Override
   public NodeOperator getNodeOperator() {
     return nodeOperator;
   }
@@ -67,7 +74,7 @@ public class CallExprNode extends NodeBase {
     if (arguments.isEmpty()) {
       return indent + "(" + nodeOperator + ")\n";
     }
-    if (!arguments.stream().anyMatch(node -> node instanceof CallExprNode)) {
+    if (arguments.stream().noneMatch(node -> node instanceof CallExprNode)) {
       return indent + "(" + nodeOperator + " " + arguments.stream().map(Object::toString).collect(Collectors.joining(" ")) + ")";
     }
     return indent + "(" + nodeOperator + "\n" + arguments.stream().map(
@@ -101,28 +108,4 @@ public class CallExprNode extends NodeBase {
     return visitor.endCallExpr(this);
   }
 
-  @Override
-  @NonNull
-  public Map<String, ValueType> getDependencies() {
-    Map<String, ValueType> dependencies = new HashMap<>();
-    for (NodeBase argument : arguments) {
-      if (!getNodeOperator().isOrOp() && argument instanceof CallExprNode) {
-        CallExprNode callExprNode = (CallExprNode) argument;
-        if (callExprNode.getNodeOperator().isOrOp()) {
-          continue;
-        }
-      }
-      dependencies.putAll(argument.getDependencies());
-    }
-    return dependencies;
-  }
-
-  @Override
-  public Map<String, ValueType> getAllDependencies() {
-    Map<String, ValueType> dependencies = new HashMap<>();
-    for (NodeBase argument : arguments) {
-      dependencies.putAll(argument.getAllDependencies());
-    }
-    return dependencies;
-  }
 }

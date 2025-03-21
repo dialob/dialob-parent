@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
+import lombok.Getter;
 
 public enum OperatorSymbol {
   PLUS("+"),
@@ -64,6 +65,7 @@ public enum OperatorSymbol {
 
   private final String symbol;
 
+  @Getter
   private final boolean not;
 
   OperatorSymbol(String symbol) {
@@ -75,7 +77,4 @@ public enum OperatorSymbol {
     this.not = not;
   }
 
-  public boolean isNot() {
-    return not;
-  }
 }

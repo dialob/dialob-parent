@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public interface Scope extends Serializable {
   default ItemId mapTo(final ItemId itemId, final boolean ignoreScopeItems) {
     return getScopeId().getParent().map(scopeParent -> {
       ItemId scopedId = itemId;
-      if (!itemId.getParent().isPresent()){
+      if (itemId.getParent().isEmpty()){
         scopedId = ImmutableItemRef.of(itemId.getValue(), Optional.of(getScopeId()));
       } else {
         if (IdUtils.matches(itemId, getScopeId())) {

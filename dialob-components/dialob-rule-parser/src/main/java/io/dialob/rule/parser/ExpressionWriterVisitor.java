@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,10 +94,7 @@ public class ExpressionWriterVisitor implements ASTVisitor {
       case FUNCTION:
         stringBuilder.append(subVisitor.toString()).append(")");
         break;
-      case LOGICAL:
-        stringBuilder.append(addBrackets(subVisitor));
-        break;
-      case INFIX:
+      case LOGICAL, INFIX:
         stringBuilder.append(addBrackets(subVisitor));
         break;
       case UNARY:
@@ -112,14 +109,11 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   }
 
   private String convertUnaryOper(CallExprNode node) {
-    switch (node.getNodeOperator().getOperator()) {
-      case "neg":
-        return "-";
-      case "inv":
-        return "1/";
-      default:
-        throw new IllegalStateException("Unknown unary operator " + node.getNodeOperator().getOperator());
-    }
+    return switch (node.getNodeOperator().getOperator()) {
+      case "neg" -> "-";
+      case "inv" -> "1/";
+      default -> throw new IllegalStateException("Unknown unary operator " + node.getNodeOperator().getOperator());
+    };
   }
 
   private String addBrackets(ExpressionWriterVisitor subVisitor) {

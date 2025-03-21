@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,26 @@
 package io.dialob.session.engine.program.model;
 
 import io.dialob.session.engine.session.model.IdUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GroupTest {
 
   @Test
-  public void shouldAcceptNullPropertyValues() {
-    ImmutableGroup.builder()
+  void shouldAcceptNullPropertyValues() {
+    var group = ImmutableGroup.builder()
       .id(IdUtils.toId("x"))
       .type("g")
       .itemsExpression(Mockito.mock(Expression.class))
       .putProps("x", null)
       .build();
+
+    assertNotNull(group.getProps());
+    Assertions.assertTrue(group.getProps().containsKey("x"));
+    Assertions.assertNull(group.getProps().get("x"));
   }
 
 }

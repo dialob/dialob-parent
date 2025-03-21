@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
@@ -37,6 +36,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.Value;
 
@@ -62,13 +62,10 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   private final Map<ItemId,AbstractItemBuilder<?,?>> types = new HashMap<>();
 
-  private List<FormValidationError> errors = Lists.newArrayList();
+  @Getter
+  private List<FormValidationError> errors = new ArrayList<>();
 
   private final List<ValueSet> valueSets = new ArrayList<>();
-
-  public List<FormValidationError> getErrors() {
-    return errors;
-  }
 
   @Value.Immutable
   interface CompilableExpression {
@@ -104,7 +101,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   protected void addItem(Item item) {
     // TODO verify conflicting id
-    if ("questionnaire".equals(item.getType())) {
+    if (Constants.QUESTIONNAIRE.equals(item.getType())) {
       assert rootItem == null;
       rootItem = item;
     } else {
@@ -309,8 +306,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   public Optional<GroupBuilder> findHoistingGroup(String id) {
     for (AbstractItemBuilder<?, ?> builder : builders) {
-      if (builder instanceof GroupBuilder) {
-        GroupBuilder groupBuilder = (GroupBuilder) builder;
+      if (builder instanceof GroupBuilder groupBuilder) {
         if (groupBuilder.hoistsItem(id)) {
           return Optional.of(groupBuilder);
         }
@@ -355,9 +351,8 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
     @Override
     public ValueType typeOf(String variableName) throws VariableNotDefinedException {
-      switch (variableName) {
-        case "language":
-          return ValueType.STRING;
+      if (variableName.equals("language")) {
+        return ValueType.STRING;
       }
       AbstractItemBuilder<?, ?> abstractItemBuilder = findVariable(variableName, true);
       if (abstractItemBuilder != null) {

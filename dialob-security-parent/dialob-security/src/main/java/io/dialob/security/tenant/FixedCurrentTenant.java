@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package io.dialob.security.tenant;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -34,6 +36,7 @@ public class FixedCurrentTenant implements CurrentTenant {
     this.tenant = Objects.requireNonNull(tenant, "tenant may no be null");
   }
 
+  @NonNull
   @Override
   public Tenant get() {
     return tenant;

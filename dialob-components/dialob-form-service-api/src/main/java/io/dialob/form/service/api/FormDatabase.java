@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,11 @@ import org.immutables.value.Value;
 
 import java.util.function.Consumer;
 
+/**
+ * Represents an interface for managing form documents in a database.
+ * Allows for operations such as retrieving, saving, checking existence,
+ * deleting, and querying metadata of form documents.
+ */
 public interface FormDatabase {
 
   @NonNull

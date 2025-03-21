@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class DialobSecurityAwsAutoConfiguration {
       var resourceRetriever = new DefaultResourceRetriever(5000, 5000);
       return new ElbJWKSource<>(url, resourceRetriever);
     });
-    var keySelector = new JWSVerificationKeySelector<C>(
+    var keySelector = new JWSVerificationKeySelector<>(
       settings.getAws().getElb().getAlgorithms().stream().map(JWSAlgorithm::parse).collect(Collectors.toSet()),
       keySource);
     ConfigurableJWTProcessor<C> jwtProcessor = new DefaultJWTProcessor<>();

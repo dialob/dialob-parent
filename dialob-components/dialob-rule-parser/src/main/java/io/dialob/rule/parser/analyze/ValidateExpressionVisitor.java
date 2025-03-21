@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,12 @@ import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.NodeOperator;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ValidateExpressionVisitor extends AstMatcher {
 
   private List<RuleExpressionCompilerError> errors = new ArrayList<>();
@@ -49,7 +51,4 @@ public class ValidateExpressionVisitor extends AstMatcher {
     return !errors.isEmpty();
   }
 
-  public List<RuleExpressionCompilerError> getErrors() {
-    return errors;
-  }
 }

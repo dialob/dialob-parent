@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableFormMetadata;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FormListItem implements Serializable {
 
+  @Getter
   @JsonProperty
   private String id;
 
@@ -46,20 +50,9 @@ public class FormListItem implements Serializable {
     }
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public Form.Metadata getMetadata() {
     ensureMetadata();
     return metadata;
   }
 
-  public void setMetadata(Form.Metadata metadata) {
-    this.metadata = metadata;
-  }
 }

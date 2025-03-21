@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,8 +124,7 @@ public final class EventMatchers {
 
     @Override
     default boolean matches(Event event) {
-      if (event instanceof TargetEvent) {
-        TargetEvent targetEvent = (TargetEvent) event;
+      if (event instanceof TargetEvent targetEvent) {
         return IdUtils.matches(getTargetId(), targetEvent.getTargetId());
       }
       return false;
@@ -298,8 +297,7 @@ public final class EventMatchers {
 
     @Override
     default boolean matches(Event event) {
-      if (event instanceof ErrorEvent) {
-        ErrorEvent errorEvent = (ErrorEvent) event;
+      if (event instanceof ErrorEvent errorEvent) {
         return getTargetId().equals(errorEvent.getErrorId().getItemId());
       }
       return false;
@@ -313,8 +311,7 @@ public final class EventMatchers {
 
     @Override
     default boolean matches(Event event) {
-      if (event instanceof ErrorEvent) {
-        ErrorEvent targetEvent = (ErrorEvent) event;
+      if (event instanceof ErrorEvent targetEvent) {
         return getErrorId().equals(targetEvent.getErrorId());
       }
       return false;
@@ -348,8 +345,7 @@ public final class EventMatchers {
   interface ValueSetUpdatedEventMatcher extends ValueSetEventMatcher {
     @Override
     default boolean matches(Event event) {
-      if (event instanceof ValueSetUpdatedEvent) {
-        ValueSetUpdatedEvent targetEvent = (ValueSetUpdatedEvent) event;
+      if (event instanceof ValueSetUpdatedEvent targetEvent) {
         return getValueSetId().equals(targetEvent.getValueSetId());
       }
       return false;

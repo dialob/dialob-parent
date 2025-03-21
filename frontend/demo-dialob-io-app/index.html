@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Dialob App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script th:if="${adminConfig}" th:inline="javascript" defer>
+      var appConfig = /*[[${adminConfig}]]*/ {};
+      
+      var apiUrlOverride = "%VITE_DIALOB_API_URL%";
+  
+      if (!apiUrlOverride.startsWith("%")) {
+        console.log("LocalMode", apiUrlOverride, appConfig);
+        
+        appConfig = {
+          url: apiUrlOverride,
+          credentialMode: 'omit',
+          version: '0.0.0-local',
+        };
+      }
+      
+      // Wait for deferred module load
+      function checkRender() {
+        if (window.renderDialobApp === undefined) {
+          console.log("Check...");
+          window.setTimeout(checkRender, 1000);
+        } else {
+          window.renderDialobApp(document.getElementById("root"), appConfig);
+        }
+      }
+          
+      checkRender();
+    </script>
+  </body>
+</html>

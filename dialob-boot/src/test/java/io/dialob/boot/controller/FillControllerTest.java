@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,10 +72,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {
   FillControllerTest.Config.class,
   FillController.class,
+  GlobalModelAttributesInjector.class
+})
+@EnableConfigurationProperties({
   QuestionnaireApplicationSettings.class,
   ReviewApplicationSettings.class,
   ComposerApplicationSettings.class,
-  GlobalModelAttributesInjector.class
 })
 class FillControllerTest extends AbstractUIControllerTest {
 
@@ -121,7 +124,7 @@ class FillControllerTest extends AbstractUIControllerTest {
   CurrentTenant currentTenant;
 
   @Test
-  public void shouldRenderFillPageFromURLTemplate() throws Exception {
+  void shouldRenderFillPageFromURLTemplate() throws Exception {
     when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("xx").build()).build());
 
     mockMvc.perform(get("/fill/123").params(tenantParam).accept(MediaType.TEXT_HTML))
@@ -144,7 +147,7 @@ class FillControllerTest extends AbstractUIControllerTest {
   }
 
   @Test
-  public void shouldRenderFillPageFromDefaultTemplateWhenTenantIsNotDefined() throws Exception {
+  void shouldRenderFillPageFromDefaultTemplateWhenTenantIsNotDefined() throws Exception {
     when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("yy").build()).build());
 
     mockMvc.perform(get("/fill/123").params(tenantParam).accept(MediaType.TEXT_HTML))
@@ -165,7 +168,7 @@ class FillControllerTest extends AbstractUIControllerTest {
   }
 
   @Test
-  public void shouldRejectInvalidId() throws Exception {
+  void shouldRejectInvalidId() throws Exception {
     mockMvc.perform(get("/fill/abc\\123").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isBadRequest());
     verifyNoInteractions(questionnaireDatabase);

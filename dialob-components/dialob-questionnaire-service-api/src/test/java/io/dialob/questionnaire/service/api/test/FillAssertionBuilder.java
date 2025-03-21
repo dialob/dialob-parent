@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.assertj.core.api.Assertions;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -159,7 +159,7 @@ public class FillAssertionBuilder {
     session = questionnaireSessionBuilder.build();
     for (final ValidationEntry validationEntry : validationEntries) {
       if (validationEntry.action != null) {
-        validationEntry.actions = session.dispatchActions(session.getRevision(), Arrays.asList(validationEntry.action)).getActions();
+        validationEntry.actions = session.dispatchActions(session.getRevision(), Collections.singletonList(validationEntry.action)).getActions();
       } else {
         FormActions formActions =  new FormActions();
         session.buildFullForm(new FormActionsUpdatesCallback(formActions));
@@ -179,7 +179,7 @@ public class FillAssertionBuilder {
     Iterator<ValidationEntry> ai = validationEntries.iterator();
     while(ai.hasNext()) {
       final ValidationEntry validationEntry = ai.next();
-      validationEntry.assertter.accept(Assertions.<Action>assertThat(validationEntry.actions.getActions()));
+      validationEntry.assertter.accept(Assertions.assertThat(validationEntry.actions.getActions()));
     }
     assertFalse(ai.hasNext());
   }

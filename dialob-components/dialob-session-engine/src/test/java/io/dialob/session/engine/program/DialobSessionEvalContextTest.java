@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,12 @@
  */
 package io.dialob.session.engine.program;
 
-import com.google.common.collect.Maps;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.model.DialobSession;
+import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -33,20 +35,20 @@ import static org.mockito.Mockito.*;
 class DialobSessionEvalContextTest {
 
   @Test
-  public void shouldVisitUpdatedItems() {
+  void shouldVisitUpdatedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
+    Consumer<Event> updatesConsumer = Mockito.mock();
 
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = Mockito.mock(ItemState.class);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
 
-    final HashMap<ItemId, ItemState> itemStateHashMap = Maps.newHashMap();
+    final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
 
-    when(dialobSession.getItemState((ImmutableItemRef) IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
+    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
@@ -82,7 +84,7 @@ class DialobSessionEvalContextTest {
   }
 
   @Test
-  public void shouldVisitCreatedItems() {
+  void shouldVisitCreatedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
@@ -126,7 +128,7 @@ class DialobSessionEvalContextTest {
   }
 
   @Test
-  public void shouldVisitRemovedItems() {
+  void shouldVisitRemovedItems() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
@@ -134,12 +136,12 @@ class DialobSessionEvalContextTest {
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = null;
 
-    final HashMap<ItemId, ItemState> itemStateHashMap = Maps.newHashMap();
+    final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
     when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
 
-    when(dialobSession.getItemState((ImmutableItemRef) IdUtils.toId("is1"))).thenReturn(Optional.ofNullable(updatedState));
+    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.empty());
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);

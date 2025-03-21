@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
@@ -42,18 +41,18 @@ class DialobSessionTest {
     null, null);
 
   @Test
-  public void noopCommandShouldNotTriggerAnyChanges() {
-    List<ItemState> items = ImmutableList.of();
-    List<ItemState> prototypes = ImmutableList.of();
-    List<ValueSetState> valueSets = ImmutableList.of();
-    List<ErrorState> errors = ImmutableList.of();
+  void noopCommandShouldNotTriggerAnyChanges() {
+    List<ItemState> items = List.of();
+    List<ItemState> prototypes = List.of();
+    List<ValueSetState> valueSets = List.of();
+    List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
     EvalContext context = Mockito.mock(EvalContext.class);
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
       public List<Trigger<ItemStates>> getTriggers() {
-        return ImmutableList.of();
+        return List.of();
       }
 
       @NonNull
@@ -68,18 +67,18 @@ class DialobSessionTest {
   }
 
   @Test
-  public void newItemsShouldTriggerUpdate() {
-    List<ItemState> items = ImmutableList.of();
-    List<ItemState> prototypes = ImmutableList.of();
-    List<ValueSetState> valueSets = ImmutableList.of();
-    List<ErrorState> errors = ImmutableList.of();
+  void newItemsShouldTriggerUpdate() {
+    List<ItemState> items = List.of();
+    List<ItemState> prototypes = List.of();
+    List<ValueSetState> valueSets = List.of();
+    List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
       public List<Trigger<ItemStates>> getTriggers() {
-        return ImmutableList.of();
+        return List.of();
       }
 
       @NonNull
@@ -95,18 +94,18 @@ class DialobSessionTest {
   }
 
   @Test
-  public void removedItemsShouldTriggerUpdate() {
-    List<ItemState> items = ImmutableList.of(ITEM_STATE);
-    List<ItemState> prototypes = ImmutableList.of();
-    List<ValueSetState> valueSets = ImmutableList.of();
-    List<ErrorState> errors = ImmutableList.of();
+  void removedItemsShouldTriggerUpdate() {
+    List<ItemState> items = List.of(ITEM_STATE);
+    List<ItemState> prototypes = List.of();
+    List<ValueSetState> valueSets = List.of();
+    List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
       public List<Trigger<ItemStates>> getTriggers() {
-        return ImmutableList.of();
+        return List.of();
       }
 
       @NonNull
@@ -122,18 +121,18 @@ class DialobSessionTest {
   }
 
   @Test
-  public void itemUpdateShouldTriggerUpdate() {
-    List<ItemState> items = ImmutableList.of(ITEM_STATE);
-    List<ItemState> prototypes = ImmutableList.of();
-    List<ValueSetState> valueSets = ImmutableList.of();
-    List<ErrorState> errors = ImmutableList.of();
+  void itemUpdateShouldTriggerUpdate() {
+    List<ItemState> items = List.of(ITEM_STATE);
+    List<ItemState> prototypes = List.of();
+    List<ValueSetState> valueSets = List.of();
+    List<ErrorState> errors = List.of();
     DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
       public List<Trigger<ItemStates>> getTriggers() {
-        return ImmutableList.of();
+        return List.of();
       }
 
       @NonNull

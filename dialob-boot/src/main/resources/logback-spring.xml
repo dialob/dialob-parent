@@ -4,25 +4,10 @@
   <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
   <property resource="META-INF/build-info.properties"/>
 
-  <logger name="io.dialob" level="INFO"/>
-  <logger name="io.dialob.questionnaire.service.api.FormActionsUpdatesCallback" level="WARN"/>
-  <logger name="org.springframework.boot.context" level="INFO"/>
-  <logger name="org.springframework.security" level="INFO"/>
-  <logger name="io.dialob.boot.security" level="INFO"/>
-  <logger name="org.springframework.integration" level="INFO"/>
-  <logger name="org.springframework.web" level="INFO"/>
-  <logger name="org.springframework.data.mongodb" level="INFO"/>
-  <logger name="org.apache.catalina" level="INFO"/>
-  <logger name="org.apache.tomcat" level="INFO"/>
-  <logger name="org.springframework.aop" level="INFO"/>
+  <include optional="true" file="/etc/dialob/logback.xml"/>
 
   <include optional="true" file="${LOGBACK_SETTINGS_FILE:-/java/config/logback-settings.xml}"/>
 
-  <!-- prevents request GET /manage/logfile getting into infinite loop -->
-  <logger name="org.springframework.security.web.context.HttpSessionSecurityContextRepository$SaveToSessionResponseWrapper" level="WARN"/>
-
-  <logger name="org.apache.coyote.http11.Http11Processor" level="WARN"/>
-  <include optional="true" file="/etc/dialob/logback.xml"/>
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
   </root>

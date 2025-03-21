@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationWithoutWebSocketSupport() {
+  void testApplicationAutoConfigurationWithoutWebSocketSupport() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -75,7 +75,7 @@ class ApplicationAutoConfigurationTest {
   }
 
   @Test
-  public void testApplicationAutoConfigurationAwsSecurityEnabled() {
+  void testApplicationAutoConfigurationAwsSecurityEnabled() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(
@@ -108,7 +108,7 @@ class ApplicationAutoConfigurationTest {
 
   @Test
   @Disabled // context runner do not mock ServerContainer required by websocket supprt
-  public void testApplicationAutoConfigurationWittWebSocketSupport() {
+  void testApplicationAutoConfigurationWittWebSocketSupport() {
     new WebApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
       .withConfiguration(AutoConfigurations.of(

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
   default Set<EventMatcher> getEventMatchers() {
     return getEntries().stream().flatMap(entryValue -> {
       Stream<EventMatcher> eventMatchers = Stream.empty();
-      if (entryValue instanceof ConditionalValue) {
-        ConditionalValue conditionalValue = (ConditionalValue) entryValue;
+      if (entryValue instanceof ConditionalValue conditionalValue) {
         eventMatchers = conditionalValue.getWhen().getEvalRequiredConditions().stream();
       }
       // TODO collect label expressions
@@ -59,7 +58,7 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
             .filter(Objects::nonNull)
             .map(entry -> ValueSetState.Entry.of(entry.getKey(), (String) entry.getLabel().eval(context))),
           state.getEntries().stream().filter(ValueSetState.Entry::isProvided))
-        .collect(Collectors.toList());
+        .toList();
     return state.update().setEntries(entries).get();
   }
 

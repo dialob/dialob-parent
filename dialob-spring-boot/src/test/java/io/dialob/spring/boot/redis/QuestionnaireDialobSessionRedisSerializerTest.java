@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   }
 
   @Test
-  public void shouldAcceptNullValues() {
+  void shouldAcceptNullValues() {
     QuestionnaireDialobSessionRedisSerializer serializer = getQuestionnaireDialobSessionRedisSerializer(65536);
 
     Assertions.assertNull(serializer.serialize(null));
@@ -127,9 +127,8 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   }
 
   @Test
-  public void shouldSerializeSimpleSession() {
+  void shouldSerializeSimpleSession() {
     final DialobSessionEvalContext evalContext = Mockito.mock(DialobSessionEvalContext.class);
-    when(sessionContextFactory.createDialobSessionEvalContext(any(), any(), anyBoolean())).thenReturn(evalContext);
 
     final QuestionnaireDialobSessionRedisSerializer serializer = getQuestionnaireDialobSessionRedisSerializer(65536);
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
@@ -150,8 +149,8 @@ class QuestionnaireDialobSessionRedisSerializerTest {
     when(formDatabase.findOne(eq(tenantId), eq("test-form"), isNull())).thenReturn(form);
     when(dialobProgramService.findByFormIdAndRev(eq("test-form"), isNull())).thenReturn(dialobProgram);
 
-    when(sessionContextFactory.createSessionUpdater(same(dialobProgram), any(), any()))
-      .thenAnswer(invocation -> new ActiveDialobSessionUpdater((DialobSessionEvalContextFactory) invocation.getMock(), dialobProgram, invocation.getArgument(1), false));
+    when(sessionContextFactory.createSessionUpdater(same(dialobProgram), any(), anyBoolean()))
+      .thenAnswer(invocation -> new ActiveDialobSessionUpdater((e) -> evalContext, dialobProgram));
 
     //     return ;
     final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
@@ -180,8 +179,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
     verify(dialobProgramService, times(2)).findByFormIdAndRev("test-form", null);
     verify(eventPublisher).opened(any());
     verify(formDatabase).findOne(tenantId, "test-form", null);
-    verify(sessionContextFactory).createSessionUpdater(same(dialobProgram), any(), any());
-    verify(sessionContextFactory, times(2)).createDialobSessionEvalContext(any(), any(), anyBoolean());
+    verify(sessionContextFactory, times(2)).createSessionUpdater(same(dialobProgram), any(), anyBoolean());
 
     Mockito.verifyNoMoreInteractions(dialobProgramService,
       eventPublisher,
@@ -194,7 +192,6 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   public QuestionnaireDialobSessionRedisSerializer getQuestionnaireDialobSessionRedisSerializer(int bufferSize) {
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
     return new QuestionnaireDialobSessionRedisSerializer(
-      dialobQuestionnaireSessionService,
       eventPublisher, dialobProgramService, sessionContextFactory, asyncFunctionInvoker, Optional.of(meterRegistry),
       bufferSize
     );

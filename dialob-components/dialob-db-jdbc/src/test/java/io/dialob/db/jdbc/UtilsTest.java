@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,11 @@ import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
-public class UtilsTest {
+class UtilsTest {
 
   @Test
-  public void test() throws Exception {
-    Assertions.assertTrue(Arrays.equals(new byte[16], Utils.toOID("")));
+  void test() {
+    Assertions.assertArrayEquals(new byte[16], Utils.toOID(""));
     Assertions.assertNull(Utils.toOID(null));
     Assertions.assertArrayEquals(new byte[] {
       (byte) 0x63, (byte) 0x57, (byte) 0x02, (byte) 0xE2, (byte) 0xE3, (byte) 0x5f, (byte) 0x4f, (byte) 0x86,
@@ -35,40 +33,40 @@ public class UtilsTest {
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionWhenIdTooLong() {
+  void shouldThrowIllegalArgumentExceptionWhenIdTooLong() {
     Assertions.assertThrows(DocumentNotFoundException.class, () -> Utils.toOID("0000000000000000000000000000000000"));
 
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionWhenHoldIllegalCharacters() {
+  void shouldThrowIllegalArgumentExceptionWhenHoldIllegalCharacters() {
     Assertions.assertThrows(DocumentNotFoundException.class, () -> Utils.toOID("0000000000000000000000000000000x"));
   }
 
   @Test
-  public void revisionMustBeInteger() {
+  void revisionMustBeInteger() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> Utils.validateRevValue("a"));
   }
 
   @Test
-  public void revisionMayNotBeBlank() {
+  void revisionMayNotBeBlank() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> Utils.validateRevValue(""));
   }
 
   @Test
-  public void revisionParsesToInteger() {
+  void revisionParsesToInteger() {
     Assertions.assertEquals((Integer)14, Utils.validateRevValue("14"));
     Assertions.assertNull(Utils.validateRevValue(null));
   }
 
   @Test
-  public void generates128BitValue() {
+  void generates128BitValue() {
     Assertions.assertEquals(16, Utils.generateOID().length);
   }
 
 
   @Test
-  public void shouldConvertOIDToString() {
+  void shouldConvertOIDToString() {
     Assertions.assertEquals("00000000000000000000000000000000", Utils.toString(new byte[16]));
     Assertions.assertEquals("f0000000000000000000000000000000", Utils.toString(Utils.toOID("f0000000000000000000000000000000")));
     Assertions.assertEquals("f0000000000000000000000000000001", Utils.toString(Utils.toOID("f0000000000000000000000000000001")));

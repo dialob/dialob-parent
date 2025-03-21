@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,24 +32,23 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class DialobProgramTest {
+class DialobProgramTest {
 
   @Test
-  public void emptyProgramShouldNotProduceAnyDependencies() {
+  void emptyProgramShouldNotProduceAnyDependencies() {
     // given
-    Program program = mock(Program.class);
+    Program program = mock();
     DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    EvalContext evalContext = mock();
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
 
     // when
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableTargetEvent.of(IdUtils.toId("question"))).collect(Collectors.toList());
+    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableTargetEvent.of(IdUtils.toId("question"))).toList();
 
     // expect
     assertNotNull(updates);
@@ -59,11 +58,11 @@ public class DialobProgramTest {
   }
 
   @Test
-  public void partialMatchersShouldGenerateExactUpdates() {
+  void partialMatchersShouldGenerateExactUpdates() {
     // given
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    FunctionRegistry functionRegistry = mock();
+    DialobSessionEvalContextFactory sessionContextFactory = mock();
+    EvalContext evalContext = mock();
 
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -98,7 +97,7 @@ public class DialobProgramTest {
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
 
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).collect(Collectors.toList());
+    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
 
     // expect
     assertNotNull(updates);
@@ -107,11 +106,11 @@ public class DialobProgramTest {
   }
 
   @Test
-  public void variablesShouldFindReferencesFromInternalScope() {
+  void variablesShouldFindReferencesFromInternalScope() {
     // given
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    FunctionRegistry functionRegistry = mock();
+    DialobSessionEvalContextFactory sessionContextFactory = mock();
+    EvalContext evalContext = mock();
 
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -149,7 +148,7 @@ public class DialobProgramTest {
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
 
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).collect(Collectors.toList());
+    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
 
     // expect
     assertNotNull(updates);
@@ -158,11 +157,9 @@ public class DialobProgramTest {
   }
 
   @Test
-  public void shouldDetectDependencyLoop() {
+  void shouldDetectDependencyLoop() {
     // given
-    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
-    DialobSessionEvalContextFactory sessionContextFactory = mock(DialobSessionEvalContextFactory.class);
-    EvalContext evalContext = mock(EvalContext.class);
+    FunctionRegistry functionRegistry = mock();
 
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
     // @formatter:off
@@ -178,7 +175,6 @@ public class DialobProgramTest {
       .build();
     // @formatter:on
     Assertions.assertThrows(DependencyLoopException.class, () -> DialobProgram.createDialobProgram(program));
-
   }
 
 }

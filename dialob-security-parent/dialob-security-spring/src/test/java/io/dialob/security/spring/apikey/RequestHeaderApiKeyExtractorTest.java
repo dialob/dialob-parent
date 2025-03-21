@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class RequestHeaderApiKeyExtractorTest {
 
   @Test
-  public void shouldDecodeValidKey() {
+  void shouldDecodeValidKey() {
     //String t = Base64.getEncoder().encodeToString(UUIDUtils.toBytes(UUID.fromString("00000000-0000-0000-0000-000000000000")));
     RequestHeaderApiKeyExtractor extractor = new RequestHeaderApiKeyExtractor();
     ApiKey apiKey = extractor.createApiKey("cHPxQW1tSreqmhbKbXoyxCjoYxcUYq1v09kN/WOq");
@@ -49,7 +49,7 @@ class RequestHeaderApiKeyExtractorTest {
  */
 
   @Test
-  public void shouldTryCustomHeader() {
+  void shouldTryCustomHeader() {
     RequestHeaderApiKeyExtractor extractor = new RequestHeaderApiKeyExtractor("MY-KEY");
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
@@ -62,7 +62,7 @@ class RequestHeaderApiKeyExtractorTest {
 
 
   @Test
-  public void shouldReturnAlreadyExractedKey() {
+  void shouldReturnAlreadyExractedKey() {
     RequestHeaderApiKeyExtractor extractor = new RequestHeaderApiKeyExtractor();
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     ApiKey apiKey = ImmutableApiKey.of("123");
@@ -75,7 +75,7 @@ class RequestHeaderApiKeyExtractorTest {
   }
 
   @Test
-  public void shouldNotExtractInvalidKeyAndSetItTORequest() {
+  void shouldNotExtractInvalidKeyAndSetItTORequest() {
     RequestHeaderApiKeyExtractor extractor = new RequestHeaderApiKeyExtractor();
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
@@ -88,7 +88,7 @@ class RequestHeaderApiKeyExtractorTest {
     Mockito.verifyNoMoreInteractions(request);
   }
   @Test
-  public void shouldExtractKeyAndSetItTORequest() {
+  void shouldExtractKeyAndSetItTORequest() {
     RequestHeaderApiKeyExtractor extractor = new RequestHeaderApiKeyExtractor();
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 

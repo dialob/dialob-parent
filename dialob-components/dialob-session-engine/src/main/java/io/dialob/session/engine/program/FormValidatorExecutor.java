@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import io.dialob.form.service.api.validation.FormValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class FormValidatorExecutor {
@@ -38,7 +37,7 @@ public class FormValidatorExecutor {
     return formValidators.stream()
       .map(formValidator -> formValidator.validate(form))
       .flatMap(List::stream)
-      .collect(Collectors.toList());
+      .toList();
   }
 
 }

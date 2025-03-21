@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 - 2021 ReSys (info@dialob.io)
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSupplier {
 
-  private Tenant publicTenant;
+  private final Tenant publicTenant;
 
   public DefaultTenantGrantedAuthorityProvider() {
     this(null);
@@ -37,12 +37,13 @@ public class DefaultTenantGrantedAuthorityProvider implements DefaultTenantSuppl
   @Override
   public Optional<Tenant> get() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
-    if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken) {
-      AbstractAuthenticationToken token = (AbstractAuthenticationToken) securityContext.getAuthentication();
-      return Optional.ofNullable(token.getAuthorities().stream()
-        .filter(grantedAuthority -> grantedAuthority instanceof TenantGrantedAuthority)
+    if (securityContext != null && securityContext.getAuthentication() instanceof AbstractAuthenticationToken token) {
+      return Optional.ofNullable(token.getAuthorities()
+        .stream()
+        .filter(TenantGrantedAuthority.class::isInstance)
+        .map(TenantGrantedAuthority.class::cast)
         .findFirst()
-        .map(grantedAuthority -> (Tenant) Tenant.of(((TenantGrantedAuthority) grantedAuthority).getTenantId(), grantedAuthority.getAuthority()))
+        .map(grantedAuthority -> Tenant.of(grantedAuthority.getTenantId(), grantedAuthority.getAuthority()))
         .orElse(publicTenant));
     }
     return Optional.ofNullable(publicTenant);
