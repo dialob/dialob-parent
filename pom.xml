@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-parent</artifactId>
   <groupId>io.dialob</groupId>
-  <version>999-SNAPSHOT</version>
+  <version>2.2.8</version>
   <packaging>pom</packaging>
   <inceptionYear>2015 - 2025</inceptionYear>
 
