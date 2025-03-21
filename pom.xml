@@ -90,7 +90,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <jib-maven-plugin.version>3.4.3</jib-maven-plugin.version>
+    <jib-maven-plugin.version>3.4.5</jib-maven-plugin.version>
     <sonar.coverage.jacoco.xmlReportPaths>
       ${project.basedir}/dialob-coverage-report/target/site/jacoco-aggregate/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
