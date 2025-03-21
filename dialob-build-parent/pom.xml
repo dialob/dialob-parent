@@ -88,7 +88,7 @@
     <springdoc.version>1.8.0</springdoc.version>
     <testcontainers.version>1.20.6</testcontainers.version>
     <tomcat-embed-el.version>10.1.39</tomcat-embed-el.version>
-    <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
+    <spotbugs-annotations.version>4.9.3</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
     <commons-compress.version>1.27.1</commons-compress.version>
   </properties>
