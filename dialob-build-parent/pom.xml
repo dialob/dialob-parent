@@ -71,7 +71,7 @@
     <spring-integration.version>6.4.3</spring-integration.version>
     <spring-security.version>6.4.4</spring-security.version>
     <spring-session.version>3.4.2</spring-session.version>
-    <swagger.version>2.2.21</swagger.version>
+    <swagger.version>2.2.29</swagger.version>
     <validation-api.version>3.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <caffeine.version>3.1.8</caffeine.version>
