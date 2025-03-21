@@ -50,6 +50,7 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
           .requestMatchers(antMatcher(HttpMethod.POST,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_POST)
           .requestMatchers(antMatcher(HttpMethod.PUT,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_PUT)
           .requestMatchers(antMatcher(HttpMethod.DELETE,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_DELETE)
+          .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/tags/**")).hasAuthority(Permissions.FORMS_GET)
           .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/tenants/**")).authenticated()
           .anyRequest().denyAll());
     // @formatter:on
