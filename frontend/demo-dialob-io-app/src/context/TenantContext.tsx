@@ -16,7 +16,7 @@ export const TenantProvider: React.FC<{ appConfig: AppConfig; children: React.Re
       setIsLoading(true);
       try {
         const apiUrl = appConfig.url.includes('://') ? appConfig.url : baseUrl + appConfig.url;
-        const response = await fetch(`${apiUrl}/api/tenants`, {
+        const response = await fetch(`${apiUrl}/tenants`, {
           method: 'GET',
           credentials: appConfig.credentialMode || 'same-origin',
           headers: appConfig.csrf ? { [appConfig.csrf.headerName]: appConfig.csrf.token } : undefined,
