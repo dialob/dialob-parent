@@ -1,7 +1,7 @@
 import { Action } from './actions';
 import { DialobError } from './error';
 import { DialobResponse, Transport } from './transport';
-import produce from 'immer';
+import { produce } from 'immer';
 
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE', response?: DialobResponse) => void;
 export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;

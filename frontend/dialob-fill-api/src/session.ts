@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 import { Action } from './actions';
 import { DialobError } from './error';
 import { updateState, initState, SessionError, SessionItem, SessionState, SessionValueSet } from './state';
