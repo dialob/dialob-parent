@@ -1,6 +1,6 @@
 {
   "name": "@dialob/fill-api",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "Dialob filling API",
   "main": "lib/index.js",
   "files": [
