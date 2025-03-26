@@ -39,7 +39,7 @@
     "@types/node": "^20.10.4",
     "@uiw/react-codemirror": "^4.21.21",
     "file-saver": "^2.0.5",
-    "immer": "^10.0.3",
+    "immer": "^10.1.1",
     "jest": "^29.7.0",
     "lodash.camelcase": "^4.3.0",
     "papaparse": "^5.4.1",
