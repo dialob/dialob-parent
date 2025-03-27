@@ -50,6 +50,7 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   }, [editor.highlightedItem, item.id])
 
   return (
+    // @ts-ignore
     <Element name={item.id}>
       <TableContainer component={GroupPaper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
         <StyledTable errorBorderColor={errorBorderColor}>
