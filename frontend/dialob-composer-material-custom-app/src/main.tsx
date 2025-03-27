@@ -373,4 +373,4 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: BackendType
   )
 };
 
-window.renderDialobComposer = renderDialobComposer;
+(window as any).renderDialobComposer = renderDialobComposer;
