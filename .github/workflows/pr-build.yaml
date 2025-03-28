@@ -6,6 +6,7 @@ on:
       - '**/*.md'
       - 'compose/**'
       - 'dev-env/**'
+      - 'frontend/**'
     branches:
       - dev
       - dev-*

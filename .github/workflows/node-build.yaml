@@ -1,0 +1,53 @@
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+    paths:
+      - 'frontend/**'
+    branches:
+      - dev
+      - main
+
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+    branches:
+      - dev
+      - main
+
+  workflow_dispatch:
+
+name: node - build - frontend
+
+jobs:
+  build:
+    name: Build Frontend from branch - main
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        registry-url: 'https://registry.npmjs.org'
+        scope: '@dialob'
+        always-auth: true
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Install dependencies
+      run: |
+        pnpm -r install
+
+    - name: Build
+      run: |
+        pnpm -r build
