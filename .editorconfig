@@ -23,56 +23,11 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = true
-indent_style = tab
+indent_style = space
+indent_size = 2
 
-
-[Jenkinsfile]
+[*.{js,jsx,ts,tsx,json,py,java,drl,g4}]
 trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
 
-[*.js]
+[*.{yml,yaml}]
 trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-
-[*.json]
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-
-[*.py]
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 4
-
-[*.java]
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-
-[*.xml]
-indent_style = space
-indent_size = 2
-
-[*.html]
-indent_style = space
-indent_size = 2
-
-[*.drl]
-indent_style = space
-indent_size = 2
-
-[*.g4]
-indent_style = space
-indent_size = 2
-
-[*.yml]
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-
-[*.yaml]
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
