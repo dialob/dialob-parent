@@ -4,20 +4,20 @@ import { Typography, Link, Table, TableHead, TableBody, TableRow, TableCell, Div
 import Markdown from 'react-markdown';
 
 interface HeadingRendererProps {
-	level: number;
+  level: number;
 }
 
 interface LinkRendererProps {
-	href: string;
+  href: string;
 }
 
 const HLEVEL_MAPPING: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6')[] = [
-	'h1',
-	'h2',
-	'h3',
-	'h4',
-	'h5',
-	'h6'
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6'
 ];
 
 const HeadingRenderer: React.FC<PropsWithChildren<HeadingRendererProps>> = ({ children, level }) => <Typography variant={HLEVEL_MAPPING[level - 1]} gutterBottom>{children}</Typography>;
@@ -32,24 +32,24 @@ const DividerRenderer: React.FC = () => <Divider variant='middle' />;
 const ListRenderer: React.FC<PropsWithChildren<{}>> = ({ children }) => <Typography variant='body1'>{children}</Typography>;
 
 const renderers = {
-	heading: HeadingRenderer,
-	paragraph: ParagraphRenderer,
-	link: LinkRenderer,
-	table: TableRenderer,
-	tableHead: TableHeadRenderer,
-	tableBody: TableBodyRenderer,
-	tableRow: TableRowRenderer,
-	tableCell: TableCellRenderer,
-	thematicBreak: DividerRenderer,
-	list: ListRenderer,
+  heading: HeadingRenderer,
+  paragraph: ParagraphRenderer,
+  link: LinkRenderer,
+  table: TableRenderer,
+  tableHead: TableHeadRenderer,
+  tableBody: TableBodyRenderer,
+  tableRow: TableRowRenderer,
+  tableCell: TableCellRenderer,
+  thematicBreak: DividerRenderer,
+  list: ListRenderer,
 };
 
 export interface MarkdownViewProps {
-	text: string;
+  text: string;
 }
 
 export const MarkdownView: React.FC<MarkdownViewProps> = ({ text }) => {
-	return (
-		<Markdown source={text} escapeHtml renderers={renderers} />
-	);
+  return (
+    <Markdown source={text} escapeHtml renderers={renderers} />
+  );
 }
