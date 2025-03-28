@@ -29,10 +29,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
       with:
         version: 10
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
@@ -40,51 +42,12 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
         scope: '@dialob'
         always-auth: true
-        cache-dependency-path: frontend/*/pnpm-lock.yaml
+        cache-dependency-path: pnpm-lock.yaml
 
-    - name: Get changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v45
-      with:
-        dir_names: 'true'
-      # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-      # with:
-      #   since_last_remote_commit: true
+    - name: Install dependencies
+      run: |
+        pnpm -r install
 
-    - run: |
-       cd demo-dialob-io-app
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-composer-material
-       pnpm install
-       pnpm run build:lib
-       cd ..
-       cd dialob-composer-material-custom-app
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-fill-api
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-fill-demo-material
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-fill-material
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-fill-react
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-material-dashboard
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-review-material
-       pnpm install
-       pnpm build
-       cd ..
+    - name: Build
+      run: |
+        pnpm -r build
