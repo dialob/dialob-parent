@@ -45,6 +45,6 @@
     "react-intl": "^5.20.10",
     "react-markdown": "^7.0.1",
     "react-number-format": "^4.7.3",
-    "typescript": "^4.2"
+    "typescript": "^5.8.2"
   }
 }
