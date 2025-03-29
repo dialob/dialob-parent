@@ -32,20 +32,18 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.31",
+    "@types/node": "^22.13.14",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.9",
-    "babel-loader": "8.1.0",
-    "react-scripts": "^5.0.1",
-    "ts-loader": "^7.0.5",
-    "typescript": "^4.9.5"
+    "@vitejs/plugin-react": "^4.3.4",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build-aws": "export PUBLIC_URL=\"//cdn.resys.io/dialob/dialob-fill-demo-material/main\"; react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

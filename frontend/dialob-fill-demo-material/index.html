@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <title>Dialob</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div class="body-content" id="root"></div>
+</body>
+<!-- htmlmin:ignore -->
+<script type="module" src="src/index.tsx"></script>
+<script th:if="${formConnectionOptions}" th:inline="javascript">
+  var endpointUrl =
+      /*[[${formConnectionOptions.restUrlBase}]]*/ "%VITE_DIALOB_ENDPOINT%";
+
+  var formConnectionOptions = /*[[${formConnectionOptions}]]*/ {};
+
+  let sessionId =
+      /*[[${formConnectionOptions.questionnaireId}]]*/ "%VITE_DIALOB_SESSION_ID%";
+  if (!sessionId || sessionId.startsWith("%")) {
+    const urlParams = new URLSearchParams(window.location.search);
+    sessionId = urlParams.get("id");
+    if (!sessionId) {
+      // Compatibility with demo.dialob.io
+      const route = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+      if (route.length === 32) {
+        sessionId = route;
+        if (formConnectionOptions.restUrlBase) {
+          endpointUrl = formConnectionOptions.restUrlBase;
+        }
+      }
+    }
+  }
+  window.renderDialob(document.getElementById("root"), sessionId, {
+    endpoint:
+      endpointUrl,
+    transport: {
+      mode: "rest"
+    }
+  });
+</script>
+<!-- htmlmin:ignore -->
+
+</html>

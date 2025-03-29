@@ -9,12 +9,12 @@ interface AppProps {
   themeIndex: number;
 }
 
-export const App: React.FC<AppProps> = ({ setLocale, setThemeIndex, themeIndex, children }) => {
+export const App: React.FC<React.PropsWithChildren<AppProps>> = ({ setLocale, setThemeIndex, themeIndex, children }) => {
   return (
       <ThemeProvider theme={THEMES[themeIndex].theme}>
         <AppHeader setLocale={setLocale} themeIndex={themeIndex} setThemeIndex={setThemeIndex} />
         <Container maxWidth='xl'>
-          {children || {}}
+          {children}
         </Container>
       </ThemeProvider>
   );
