@@ -14,6 +14,7 @@
     "@dialob/dialob-composer": "workspace:~",
     "immutable": "4.3.7",
     "react": "^18.3.1",
+    "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",
     "react-dom": "^18.3.1",
     "semantic-ui-css": "^2.5.0",
