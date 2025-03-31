@@ -1,19 +1,19 @@
 import { SessionConfig } from './config';
 import { DialobError, DialobRequestError } from './error';
-import { Session, SessionOptions } from './session';
-import { SessionError, SessionItem, SessionValueSet } from './state';
+import { Session, type SessionOptions } from './session';
+import type { SessionError, SessionItem, SessionValueSet } from './state';
 import { RESTTransport, Transport } from './transport';
 
 export function newSession(sessionId: string, config: SessionConfig, options?: SessionOptions): Session {
   let { transport } = config;
-  if(!transport) {
+  if (!transport) {
     transport = {
       mode: 'rest',
       credentials: 'same-origin',
     };
   }
   let transportObj: Transport;
-  switch(transport.mode) {
+  switch (transport.mode) {
     case 'rest':
       transportObj = new RESTTransport(config.endpoint, transport);
       break;
@@ -26,5 +26,14 @@ export function newSession(sessionId: string, config: SessionConfig, options?: S
 }
 
 export * from './actions';
-export { SessionConfig as Config, Session, SessionError, SessionItem, SessionValueSet, SessionOptions, DialobError, DialobRequestError };
+export {
+  type SessionConfig as Config,
+  Session,
+  type SessionError,
+  type SessionItem,
+  type SessionValueSet,
+  type SessionOptions,
+  DialobError,
+  DialobRequestError
+};
 export default { newSession };
