@@ -18,10 +18,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:lib": "tsc && vite build --config vite.config.lib.ts",
+    "build:app": "tsc && vite build --config vite.config.app.ts",
     "build-aws": "vite build --base=https://cdn.resys.io/dialob-composer-material/dev/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
+    "preview": "vite preview --config vite.config.app.ts",
     "test": "jest"
   },
   "dependencies": {
