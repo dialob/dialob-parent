@@ -16,7 +16,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dialob/dashboard-material": "workspace:~",
+    "@dialob/dashboard-material": "workspace:~1.2.9",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",

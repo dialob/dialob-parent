@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dialob/dialob-composer": "workspace:~",
+    "@dialob/dialob-composer": "workspace:~2.10.5-1",
     "immutable": "4.3.7",
     "react": "^18.3.1",
     "react-dnd": "10.0.2",

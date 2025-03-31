@@ -19,7 +19,7 @@ importers:
   frontend/demo-dialob-io-app:
     dependencies:
       '@dialob/dashboard-material':
-        specifier: workspace:~
+        specifier: workspace:~1.2.9
         version: link:../dialob-material-dashboard
       '@emotion/react':
         specifier: ^11.11.1
@@ -231,7 +231,7 @@ importers:
   frontend/dialob-composer-material-custom-app:
     dependencies:
       '@dialob/dialob-composer-material':
-        specifier: workspace:~
+        specifier: workspace:~0.0.1
         version: link:../dialob-composer-material
       '@mui/icons-material':
         specifier: ^5.14.20
@@ -356,7 +356,7 @@ importers:
   frontend/dialob-composer-semantic-app:
     dependencies:
       '@dialob/dialob-composer':
-        specifier: workspace:~
+        specifier: workspace:~2.10.5-1
         version: link:../dialob-composer-semantic
       immutable:
         specifier: 4.3.7
@@ -442,13 +442,13 @@ importers:
         specifier: ^2.11.0
         version: 2.17.0(date-fns@2.30.0)
       '@dialob/fill-api':
-        specifier: workspace:~
+        specifier: workspace:~1.4.9
         version: link:../dialob-fill-api
       '@dialob/fill-material':
-        specifier: workspace:~
+        specifier: workspace:~1.5.5
         version: link:../dialob-fill-material
       '@dialob/fill-react':
-        specifier: workspace:~
+        specifier: workspace:~4.0.0
         version: link:../dialob-fill-react
       '@emotion/react':
         specifier: ^11.5.0
@@ -545,10 +545,10 @@ importers:
         specifier: ^2.11.0
         version: 2.17.0(date-fns@2.30.0)
       '@dialob/fill-api':
-        specifier: workspace:~
+        specifier: workspace:~1.4.9
         version: link:../dialob-fill-api
       '@dialob/fill-react':
-        specifier: workspace:~
+        specifier: workspace:~4.0.0
         version: link:../dialob-fill-react
       '@mui/icons-material':
         specifier: ^5.11.0
@@ -597,7 +597,7 @@ importers:
         version: 18.3.1
     devDependencies:
       '@dialob/fill-api':
-        specifier: workspace:~
+        specifier: workspace:~1.4.9
         version: link:../dialob-fill-api
       '@types/react':
         specifier: ^18.2.0
@@ -14012,7 +14012,7 @@ snapshots:
       case-sensitive-paths-webpack-plugin: 2.4.0
       core-js: 3.41.0
       css-loader: 3.6.0(webpack@4.47.0)
-      file-loader: 6.2.0(webpack@5.98.0)
+      file-loader: 6.2.0(webpack@4.47.0)
       find-up: 5.0.0
       fork-ts-checker-webpack-plugin: 4.1.6(eslint@8.57.1)(typescript@5.8.2)(webpack@4.47.0)
       glob: 7.2.3
@@ -14377,7 +14377,7 @@ snapshots:
       core-js: 3.41.0
       css-loader: 3.6.0(webpack@4.47.0)
       express: 4.21.2
-      file-loader: 6.2.0(webpack@4.47.0)
+      file-loader: 6.2.0(webpack@5.98.0)
       find-up: 5.0.0
       fs-extra: 9.1.0
       html-webpack-plugin: 4.5.2(webpack@4.47.0)
