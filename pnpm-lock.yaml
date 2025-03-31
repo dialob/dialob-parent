@@ -373,6 +373,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      redux:
+        specifier: 4.0.5
+        version: 4.0.5
       semantic-ui-css:
         specifier: ^2.5.0
         version: 2.5.0
