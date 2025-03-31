@@ -58,8 +58,10 @@ jobs:
        cd dialob-composer-material
        yarn install
        yarn run build:lib
+       npx yalc publish
        cd ..
        cd dialob-composer-material-custom-app
+       npx yalc update
        yarn install
        yarn build
        cd ..
