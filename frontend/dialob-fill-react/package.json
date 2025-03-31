@@ -1,6 +1,7 @@
 {
   "name": "@dialob/fill-react",
   "version": "4.0.0",
+  "private": false,
   "main": "lib/index.js",
   "files": [
     "lib",
