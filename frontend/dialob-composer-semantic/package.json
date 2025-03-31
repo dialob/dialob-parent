@@ -1,5 +1,5 @@
 {
-  "name": "@resys/dialob-composer",
+  "name": "@dialob/dialob-composer",
   "version": "2.10.5-1",
   "description": "dialob-composer React component",
   "main": "lib/index.js",
@@ -49,9 +49,5 @@
     "always-auth": true
   },
   "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@git.resys.io:22222/dialob/dialob-composer-v2.git"
-  }
+  "license": "MIT"
 }

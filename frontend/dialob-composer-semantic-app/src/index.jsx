@@ -4,7 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import {combineReducers, applyMiddleware, createStore} from 'redux';
 import {Provider} from 'react-redux';
-import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '@resys/dialob-composer';
+import {DialobComposer, createDialobComposerReducer, createDialobComposerMiddleware, DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG} from '@dialob/dialob-composer';
 import 'semantic-ui-css/semantic.min.css';
 
 const renderDialobComposer = (target, appConfig) => {

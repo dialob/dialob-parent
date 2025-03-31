@@ -1,5 +1,5 @@
 {
-  "name": "@resys/dialob-review-material",
+  "name": "@dialob/dialob-review-material",
   "version": "1.0.4",
   "description": "Material UI components for Dialob review",
   "main": "lib/index.js",

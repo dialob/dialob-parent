@@ -7,7 +7,7 @@
 Add dependency
 
 ```
-yarn add @resys/dialob-review-material
+yarn add @dialob/dialob-review-material
 
 ```
 
@@ -39,7 +39,7 @@ The following peer dependencies need to be installed for mui v5:
 
 ```ts
 import React from 'react';
-import { MaterialDialobReview } from '@resys/dialob-review-material';
+import { MaterialDialobReview } from '@dialob/dialob-review-material';
 
 const ReviewWrapper : React.FC = () => {
   return (

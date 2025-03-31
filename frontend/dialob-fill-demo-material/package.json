@@ -1,5 +1,5 @@
 {
-  "name": "dialob-fill-demo-material",
+  "name": "@dialob/dialob-fill-demo-material",
   "version": "1.0.1",
   "private": true,
   "proxy": "http://localhost:8080",

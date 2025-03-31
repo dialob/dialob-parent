@@ -1,5 +1,5 @@
 {
-  "name": "dialob-composer-custom",
+  "name": "@dialob/dialob-composer-custom",
   "private": true,
   "version": "0.0.0",
   "type": "module",
