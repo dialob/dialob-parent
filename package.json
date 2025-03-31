@@ -3,7 +3,8 @@
   "version": "2.2.8",
   "private": true,
   "scripts": {
-    "ci:publish": "pnpm publish -r --no-git-checks && pnpm changeset tag"
+    "ci:publish": "pnpm publish -r --no-git-checks && pnpm changeset tag",
+    "ci:version": "pnpm changeset version && pnpm install --lockfile-only"
   },
   "dependencies": {
     "@types/node": "^22.13.14"
