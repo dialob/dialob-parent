@@ -29,10 +29,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'pnpm'
         registry-url: 'https://registry.npmjs.org'
         scope: '@dialob'
         always-auth: true
@@ -51,42 +56,42 @@ jobs:
        pnpm build
        cd ..
        cd dialob-composer-material
-       pnpm install
-       pnpm run build:lib
+       yarn install
+       yarn run build:lib
        cd ..
        cd dialob-composer-material-custom-app
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
        cd dialob-composer-semantic
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
        cd dialob-composer-semantic-app
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
        cd dialob-fill-api
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
        cd dialob-fill-demo-material
        pnpm install
        pnpm build
        cd ..
        cd dialob-fill-material
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
        cd dialob-fill-react
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
        cd dialob-material-dashboard
        pnpm install
        pnpm build
        cd ..
        cd dialob-review-material
-       pnpm install
-       pnpm build
+       yarn install
+       yarn build
        cd ..
