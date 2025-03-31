@@ -217,6 +217,34 @@
     "@babel/helper-validator-identifier" "^7.25.7"
     to-fast-properties "^2.0.0"
 
+"@dialob/dialob-composer@2.10.5-1":
+  version "2.10.5-1"
+  resolved "https://registry.yarnpkg.com/@dialob/dialob-composer/-/dialob-composer-2.10.5-1.tgz#80c01aef2de5641eb8d39c8e92b643c06135a7c8"
+  integrity sha512-NA+yeq/xNjJilL2kN0rZfg71WoQJTdY7ialDBlxe5sEBe0hlrCY1CheyNNy5sz1q6RzaNuGwMMxw1a7o/bylIQ==
+  dependencies:
+    "@resys/react-redux-scroll" "0.2.3"
+    "@resys/understood" "2.1.1"
+    classnames "2.2.6"
+    codemirror "5.58.1"
+    file-saver "2.0.2"
+    immutable "3.8.2"
+    lodash.debounce "^4.0.8"
+    lodash.escaperegexp "^4.1.2"
+    memoizee "0.4.14"
+    moment "2.24.0"
+    papaparse "^5.3.0"
+    prop-types "^15.7.2"
+    react-autosuggest "^10.0.2"
+    react-dnd "10.0.2"
+    react-dnd-html5-backend "10.0.2"
+    react-dom "16.13.1"
+    react-markdown "^4.3.1"
+    react-redux "7.2.1"
+    redux "4.0.5"
+    remove-markdown "0.3.0"
+    semantic-ui-react "2.0.3"
+    use-lodash-debounce "^1.1.0"
+
 "@esbuild/aix-ppc64@0.25.1":
   version "0.25.1"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.1.tgz#c33cf6bbee34975626b01b80451cbb72b4c6c91d"
@@ -526,37 +554,9 @@
   resolved "https://registry.yarnpkg.com/@react-dnd/shallowequal/-/shallowequal-2.0.0.tgz#a3031eb54129f2c66b2753f8404266ec7bf67f0a"
   integrity sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==
 
-"@resys/dialob-composer@2.10.5-1":
-  version "2.10.5-1"
-  resolved "https://repo.resys.io/repository/npm/@resys/dialob-composer/-/dialob-composer-2.10.5-1.tgz#924db150e583c1fe329762df4871c8aece19f83b"
-  integrity sha512-KtQE7B6xBLSxoOA9GxO050YnRcBXqb5nytFTU/KLd29uVJ7v9h2fikKfkp8LBRGhSEkGf9HnzpwvNVgaSLGOdg==
-  dependencies:
-    "@resys/react-redux-scroll" "0.2.3"
-    "@resys/understood" "2.1.1"
-    classnames "2.2.6"
-    codemirror "5.58.1"
-    file-saver "2.0.2"
-    immutable "3.8.2"
-    lodash.debounce "^4.0.8"
-    lodash.escaperegexp "^4.1.2"
-    memoizee "0.4.14"
-    moment "2.24.0"
-    papaparse "^5.3.0"
-    prop-types "^15.7.2"
-    react-autosuggest "^10.0.2"
-    react-dnd "10.0.2"
-    react-dnd-html5-backend "10.0.2"
-    react-dom "16.13.1"
-    react-markdown "^4.3.1"
-    react-redux "7.2.1"
-    redux "4.0.5"
-    remove-markdown "0.3.0"
-    semantic-ui-react "2.0.3"
-    use-lodash-debounce "^1.1.0"
-
 "@resys/react-redux-scroll@0.2.3":
   version "0.2.3"
-  resolved "https://repo.resys.io/repository/npm/@resys/react-redux-scroll/-/react-redux-scroll-0.2.3.tgz#aa91f285536df5f62a4e1722b9e49d8047ddd7d5"
+  resolved "https://registry.yarnpkg.com/@resys/react-redux-scroll/-/react-redux-scroll-0.2.3.tgz#aa91f285536df5f62a4e1722b9e49d8047ddd7d5"
   integrity sha512-xif5VDkM9eSB0bluo4ZXoGa4JveY9oa5XN3q/nGu+Jfn8X2gJ1Euij91H4coDFyqWVKwKI9Z/+JudAXUMIsM0A==
   dependencies:
     hoist-non-react-statics "^2.5.5"
@@ -565,7 +565,7 @@
 
 "@resys/understood@2.1.1":
   version "2.1.1"
-  resolved "https://repo.resys.io/repository/npm/@resys/understood/-/understood-2.1.1.tgz#30485c2511bff1f45ba867073146b10660a9c1d5"
+  resolved "https://registry.yarnpkg.com/@resys/understood/-/understood-2.1.1.tgz#30485c2511bff1f45ba867073146b10660a9c1d5"
   integrity sha512-rIppBh64MWdl9EUzIEIc4nJMwCu7qB4FsSSvZayYVNM4s9Q8rwSOx0BUkOL8W8q3O4OY7NGzkpAouQr5Ok625Q==
   dependencies:
     immer "^1.3.1"

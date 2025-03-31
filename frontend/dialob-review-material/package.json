@@ -1,14 +1,15 @@
 {
-  "name": "@resys/dialob-review-material",
+  "name": "@dialob/dialob-review-material",
   "version": "1.0.4",
   "description": "Material UI components for Dialob review",
+  "private": false,
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "license": "UNLICENSED",

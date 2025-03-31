@@ -55,7 +55,7 @@ export const Dialob: React.FC<DialobProps> = ({session, locale}) => {
 };
 ```
 
-`<Item>` is a component that renders an actual fill component depending on item's properties. You have to provide your own depending on application needs. (See example here: https://git.resys.io/dialob/dialob-fill-material-demo/-/blob/master/src/dialob/Item.tsx  (needs better docs))
+`<Item>` is a component that renders an actual fill component depending on item's properties. You have to provide your own depending on application needs. (See example [here](https://github.com/dialob/dialob-parent/blob/dev/frontend/dialob-fill-demo-material/src/dialob/Item.tsx))
 
 ### Component types
 

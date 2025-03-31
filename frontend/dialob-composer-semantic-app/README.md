@@ -4,7 +4,7 @@ Reference implementation of an application for Dialob Composer
 
 Dialob backend requirement **2.x**
 
-Uses `@resys/dialob-composer` as implementation. ( https://git.resys.io/dialob/dialob-composer-v2 )
+Uses `@dialob/dialob-composer` as implementation.
 
 ## Deployment 
 

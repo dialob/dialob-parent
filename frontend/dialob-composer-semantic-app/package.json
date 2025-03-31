@@ -1,5 +1,5 @@
 {
-  "name": "dialob-composer-generic-app",
+  "name": "@dialob/dialob-composer-generic-app",
   "version": "1.1.0",
   "description": "Describe dialob-composer-generic-app here",
   "private": true,
@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@resys/dialob-composer": "2.10.5-1",
+    "@dialob/dialob-composer": "2.10.5-1",
     "immutable": "4.3.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

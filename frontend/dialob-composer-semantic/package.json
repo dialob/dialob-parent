@@ -1,7 +1,8 @@
 {
-  "name": "@resys/dialob-composer",
+  "name": "@dialob/dialob-composer",
   "version": "2.10.5-1",
   "description": "dialob-composer React component",
+  "private": false,
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -45,13 +46,9 @@
     "typescript": "^5.8.2"
   },
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@git.resys.io:22222/dialob/dialob-composer-v2.git"
-  }
+  "license": "MIT"
 }
