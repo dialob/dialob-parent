@@ -61,7 +61,7 @@ jobs:
        npx yalc publish
        cd ..
        cd dialob-composer-material-custom-app
-       npx yalc update
+       npx yalc add @dialob/dialob-composer-material
        yarn install
        yarn build
        cd ..
