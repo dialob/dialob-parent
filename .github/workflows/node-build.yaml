@@ -53,6 +53,7 @@ jobs:
         pnpm -r test
 
     - name: Create Release Pull Request
+      if: github.event_name != 'pull_request'
       uses: changesets/action@v1
       id: changesets
       with:
