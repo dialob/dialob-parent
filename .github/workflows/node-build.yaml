@@ -119,9 +119,7 @@ jobs:
           cd temp
           CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
           TARGET=s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXT#"./"}
-          echo aws s3 sync $EXPIRES --exclude '*.html' --cache-control public,max-age=3600 $CONTEXT $TARGET
-          aws s3 sync $EXPIRES --exclude '*.html' --cache-control public,max-age=3600 $CONTEXT $TARGET
-          echo aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT $TARGET
+          aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT $TARGET
           aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT $TARGET
           cd ..
           rm -Rf temp
