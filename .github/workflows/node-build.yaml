@@ -48,6 +48,32 @@ jobs:
       run: |
         pnpm -r install
 
-    - name: Build
+    - name: Test
       run: |
-        pnpm -r build
+        pnpm -r test
+
+    - name: Create Release Pull Request
+      uses: changesets/action@v1
+      id: changesets
+      with:
+        title: Version Frontend Packages
+        commit: Version Frontend Packages
+        publish: pnpm ci:publish
+        version: pnpm ci:version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+    - name: Package distributions
+      if: steps.changesets.outputs.published == 'true'
+      run: ./dialob-build-parent/distribution-packages.sh
+      env:
+        PUBLISHED_PACKAGES: '${{ steps.changesets.outputs.publishedPackages }}'
+        ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
+
+    - name: Upload distributions
+      if: steps.changesets.outputs.published == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'artifacts'
+        path: ${{ github.workspace }}/artifacts
