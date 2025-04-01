@@ -118,8 +118,8 @@ jobs:
           tar -C temp -xzvf artifacts/$PROJECT
           cd temp
           CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
-          aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/$CONTEXT
-          aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/$CONTEXT
+          aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXTX#"./"}
+          aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXTX#"./"}
           cd ..
           rm -Rf temp
         done
