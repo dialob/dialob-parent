@@ -1,12 +1,12 @@
 on:
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'utils/**'
-      - '**/*.md'
-      - 'compose/**'
-      - 'dev-env/**'
-      - 'frontend/**'
+    paths:
+      - '!docs/**'
+      - '!utils/**'
+      - '!**/*.md'
+      - '!compose/**'
+      - '!dev-env/**'
+      - '!frontend/**'
     branches:
       - dev
       - dev-*

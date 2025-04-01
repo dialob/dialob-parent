@@ -5,6 +5,8 @@ on:
       - '!**.md'
       - '.changeset/**'
       - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
     branches:
       - dev
       - main
