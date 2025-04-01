@@ -3,6 +3,8 @@ on:
     paths:
       - 'frontend/**'
       - '!**.md'
+      - '.changeset/**'
+      - 'package.json'
     branches:
       - dev
       - main
