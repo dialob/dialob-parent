@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
+import { Box, IconButton, Link, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
 import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, LabelAction } from '../types';
 import { editAdminFormConfiguration } from '../backend';
@@ -130,31 +130,19 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
     <>
       {filteredRow && (
         <TableRow>
-          <TableCell sx={{ textAlign: "center" }}>
-            <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.edit" })} placement='top-end' arrow>
-              <IconButton
-                onClick={function (e: any) {
-                  e.preventDefault();
-                  window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`);
-                }}
-              >
-                <SvgIcon fontSize="small"><EditIcon /></SvgIcon>
-              </IconButton>
-            </Tooltip>
+          <TableCell>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`}
+              onClick={function (e: any) {
+                e.preventDefault();
+                window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`);
+              }}
+            >
+              {formConfiguration.metadata.label || intl.formatMessage({ id: "adminUI.dialog.emptyTitle" })}
+            </Link>
           </TableCell>
-          <TableCell sx={{ textAlign: "center" }}>
-            <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.copy" })} placement='top-end' arrow>
-              <IconButton
-                onClick={function (e: any) {
-                  e.preventDefault();
-                  copyFormConfiguration(formConfiguration)
-                }}
-              >
-                <SvgIcon fontSize="small"><ContentCopyIcon /></SvgIcon>
-              </IconButton>
-            </Tooltip>
-          </TableCell>
-          <TableCell>{formConfiguration.metadata.label || intl.formatMessage({ id: "adminUI.dialog.emptyTitle" })}</TableCell>
           <TableCell>{formConfiguration?.latestTagName}</TableCell>
           <TableCell>{formConfiguration?.latestTagDate && new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration?.latestTagDate))}</TableCell>
           <TableCell>{new Intl.DateTimeFormat(config.language, dateOptions).format(new Date(formConfiguration.metadata.lastSaved))}</TableCell>
@@ -162,29 +150,39 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
             <LabelChips labels={formConfiguration.metadata.labels} onUpdate={updateLabels} />
           </TableCell>
           <TableCell sx={{ textAlign: "center" }}>
-            <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>
-              <IconButton
-                onClick={function (e: any) {
-                  e.preventDefault();
-                  deleteFormConfiguration(formConfiguration);
-                }}
-                color='error'
-              >
-                <SvgIcon fontSize="small"><CloseIcon /></SvgIcon>
-              </IconButton>
-            </Tooltip>
-          </TableCell>
-          <TableCell sx={{ textAlign: "center" }}>
-            <Tooltip title={intl.formatMessage({ id: "download" })} placement='top-end' arrow>
-              <IconButton
-                onClick={function (e: any) {
-                  e.preventDefault();
-                  downloadFormConfiguration();
-                }}
-              >
-                <SvgIcon fontSize="small"><DownloadIcon /></SvgIcon>
-              </IconButton>
-            </Tooltip>
+            <Box display="flex">
+              <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.copy" })} placement='top-end' arrow>
+                <IconButton
+                  onClick={function (e: any) {
+                    e.preventDefault();
+                    copyFormConfiguration(formConfiguration)
+                  }}
+                >
+                  <SvgIcon fontSize="small"><ContentCopyIcon /></SvgIcon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>
+                <IconButton
+                  onClick={function (e: any) {
+                    e.preventDefault();
+                    deleteFormConfiguration(formConfiguration);
+                  }}
+                  color='error'
+                >
+                  <SvgIcon fontSize="small"><CloseIcon /></SvgIcon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={intl.formatMessage({ id: "download" })} placement='top-end' arrow>
+                <IconButton
+                  onClick={function (e: any) {
+                    e.preventDefault();
+                    downloadFormConfiguration();
+                  }}
+                >
+                  <SvgIcon fontSize="small"><DownloadIcon /></SvgIcon>
+                </IconButton>
+              </Tooltip>
+            </Box>
           </TableCell>
         </TableRow>
       )}
