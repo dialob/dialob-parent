@@ -39,6 +39,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "dist": "pnpm run build --base=$DIST_BASE",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

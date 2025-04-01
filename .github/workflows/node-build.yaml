@@ -18,6 +18,8 @@ on:
   workflow_dispatch:
 
 name: node - build - frontend
+env:
+  CDN_DOMAIN: ${{ vars.CDN_DOMAIN }}
 
 jobs:
   build:
@@ -66,14 +68,12 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Package distributions
-      if: steps.changesets.outputs.published == 'true'
-      run: ./dialob-build-parent/distribution-packages.sh
+      run: ./dialob-build-parent/distribution-packages.sh -o $ARTIFACT_OUTPUT
       env:
-        PUBLISHED_PACKAGES: '${{ steps.changesets.outputs.publishedPackages }}'
+        PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
         ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
 
     - name: Upload distributions
-      if: steps.changesets.outputs.published == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: 'artifacts'
