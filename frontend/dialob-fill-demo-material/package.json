@@ -28,10 +28,6 @@
     "@storybook/addon-links": "^6.5.15",
     "@storybook/addons": "^6.5.15",
     "@storybook/react": "^6.5.15",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
     "@types/node": "^22.13.14",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.9",
@@ -43,7 +39,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "test": "vitest",
+    "dist": "pnpm run build --base=$DIST_BASE",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

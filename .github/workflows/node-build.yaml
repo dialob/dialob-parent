@@ -17,7 +17,13 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 name: node - build - frontend
+env:
+  CDN_DOMAIN: ${{ vars.CDN_DOMAIN }}
 
 jobs:
   build:
@@ -48,6 +54,73 @@ jobs:
       run: |
         pnpm -r install
 
+    - name: Test
+      run: |
+        pnpm -r test
+
     - name: Build
       run: |
         pnpm -r build
+  
+    - name: Create Release Pull Request
+      if: github.event_name != 'pull_request'
+      uses: changesets/action@v1
+      id: changesets
+      with:
+        title: Version Frontend Packages
+        commit: Version Frontend Packages
+        publish: pnpm ci:publish
+        version: pnpm ci:version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+    - name: Package distributions
+      run: ./distribution-packages.sh -o $ARTIFACT_OUTPUT
+      env:
+        PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
+        ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
+        CDN_DOMAIN: cdn.resys.io
+
+    - name: Upload distributions
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'artifacts'
+        path: ${{ github.workspace }}/artifacts
+
+  publish:
+    name: Publish Frontend
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: ${{ secrets.ASSUME_ROLE }}
+        role-session-name: DialobArtifacts
+
+    - name: Download distributions
+      uses: actions/download-artifact@v4
+      with:
+        name: 'artifacts'
+        path: ${{ github.workspace }}/artifacts
+
+    - name: Publish assets
+      run: |
+        if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          EXPIRY_DATE=`date -I -d '30 days'`
+          echo "Pull request's upload expires on $EXPIRY_DATE"
+          EXPIRES="--expires $EXPIRY_DATE"
+        fi
+        for PROJECT in `ls -1 artifacts`; do
+          mkdir temp
+          tar -C temp -xzvf artifacts/$PROJECT
+          cd temp
+          CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
+          TARGET=s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXT#"./"}
+          aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT $TARGET
+          aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT $TARGET
+          cd ..
+          rm -Rf temp
+        done

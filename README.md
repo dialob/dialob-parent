@@ -166,3 +166,26 @@ mvn clean test -D"groups=db2" -D"excludedGroups=postgresql,mysql"
 
 ---
 [https://dialob.io](https://dialob.io)
+
+## Release
+
+### Backend
+
+Merge release version to `main` branch. Github pipeline will execute release and publish artifacts to maven central.
+
+### Frontend
+
+Frontend projects are published using [Changesets](https://github.com/changesets/changesets). 
+
+#### Making a release
+
+1. Use command `pnpm changeset` to select component(s) for a release. 
+2. Commit and push *changeset* to git.
+3. Github action will create pull request for a release. After merging changeset into dev branch github action does actual release.
+
+> [!IMPORTANT]
+> If there is a peer dependency to project to be released, changeset will trigger major update on dependand project. See more details [here](https://github.com/changesets/changesets/issues/1011). We should avoid making unnecessary major releases.
+
+> [!NOTE]
+> `patch` release does not trigger internal releases. Only patched packages will be released. 
+

@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:aws": "vite build --base=https://cdn.resys.io/demo-dialob-io-app/dev/",
+    "dist": "pnpm run build --base=$DIST_BASE",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
