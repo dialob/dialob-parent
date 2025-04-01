@@ -38,7 +38,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.2",
-    "vite": "^6.2.3"
+    "vite": "^6.2.4"
   },
   "scripts": {
     "start": "vite",
