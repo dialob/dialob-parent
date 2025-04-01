@@ -1,7 +1,7 @@
 {
   "name": "@dialob/demo-dialob-io-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist-lib/index.js",
   "types": "dist-lib/index.d.ts",
