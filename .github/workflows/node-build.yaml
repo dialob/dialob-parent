@@ -17,6 +17,10 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 name: node - build - frontend
 env:
   CDN_DOMAIN: ${{ vars.CDN_DOMAIN }}
@@ -86,6 +90,7 @@ jobs:
 
   publish:
     name: Publish Frontend
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Configure AWS Credentials
