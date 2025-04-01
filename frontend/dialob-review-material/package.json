@@ -12,7 +12,7 @@
     "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "rm -rf ./lib && tsc",
     "clean": "rm -rf ./lib"

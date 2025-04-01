@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist-lib/index.js",
   "types": "dist-lib/index.d.ts",
+  "license": "Apache-2.0",
   "files": [
     "dist-lib"
   ],

@@ -50,6 +50,5 @@
     "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
-  "author": "",
   "license": "MIT"
 }

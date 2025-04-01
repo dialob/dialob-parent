@@ -9,7 +9,6 @@
   "files": [
     "lib"
   ],
-  "author": "Oskar Köök <oskar.kook@resys.io>",
   "license": "Apache-2.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
@@ -17,7 +16,6 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc",
-    "push": "pnpm build && pnpm publish",
     "test": "jest"
   },
   "devDependencies": {
