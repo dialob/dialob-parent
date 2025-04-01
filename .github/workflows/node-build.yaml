@@ -55,6 +55,8 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm -r install
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Test
       run: |
