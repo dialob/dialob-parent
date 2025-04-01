@@ -110,7 +110,7 @@ jobs:
       run: |
         if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
           EXPIRY_DATE=`date -I -d '30 days'`
-          echo "Pull request expires $EXPIRY_DATE"
+          echo "Pull request's upload expires on $EXPIRY_DATE"
           EXPIRES="--expires $EXPIRY_DATE"
         fi
         for PROJECT in `ls -1 artifacts`; do
@@ -118,8 +118,14 @@ jobs:
           tar -C temp -xzvf artifacts/$PROJECT
           cd temp
           CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
-          aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXTX#"./"}
-          aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXTX#"./"}
+          echo "EXPIRES = $EXPIRES"
+          echo "CONTEXT = $CONTEXT"
+          TARGET=s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXTX#"./"}
+          echo "TARGET = $TARGET"
+          echo aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT $TARGET
+          echo aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT $TARGET
+          aws s3 cp $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT $TARGET
+          aws s3 cp $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT $TARGET
           cd ..
           rm -Rf temp
         done
