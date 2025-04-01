@@ -114,7 +114,7 @@ test('Add new item, callback', () => {
 
   const callbacks: ComposerCallbacks = {
     onAddItem: (_state: ComposerState, item: DialobItem) => {
-      console.log('Called!', item);
+      // console.log('Called!', item);
     }
   }
 
