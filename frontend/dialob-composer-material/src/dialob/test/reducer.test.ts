@@ -4,8 +4,6 @@ import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
 import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString } from '../types';
 
-console.log('testform', testForm);
-
 test('find next item identifier existing', () => {
   const itemTemplate: DialobItem = {
     id: '',
