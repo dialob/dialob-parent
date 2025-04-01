@@ -2,9 +2,6 @@
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
-export CDN_DOMAIN=cdn.resys.io
-export GITHUB_REPOSITORY_OWNER=dialob
-
 DIST=$SCRIPT_DIR/dist.sh
 
 if [ -z "$PUBLISHED_PACKAGES" ]; then

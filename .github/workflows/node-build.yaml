@@ -72,14 +72,53 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Package distributions
-
       run: ./distribution-packages.sh -o $ARTIFACT_OUTPUT
       env:
         PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
         ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
+        CDN_DOMAIN: cdn.resys.io
 
     - name: Upload distributions
       uses: actions/upload-artifact@v4
       with:
         name: 'artifacts'
         path: ${{ github.workspace }}/artifacts
+
+  publish:
+    name: Publish Frontend
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: ${{ secrets.ASSUME_ROLE }}
+        role-session-name: DialobArtifacts
+
+    - name: Download distributions
+      uses: actions/download-artifact@v4
+      with:
+        name: 'artifacts'
+        path: ${{ github.workspace }}/artifacts
+
+
+    - name: Publish assets
+      if: github.event_name != 'pull_request'
+      run: |
+        if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          EXPIRES="--expires `date -I -d '30 days'`"
+        fi
+        for PROJECT in `ls -1 artifacts`; do
+          mkdir temp
+          tar -C temp -xzvf artifacts/$PROJECT
+          cd temp
+          CONTEXT=`find . -depth 2`
+          aws s3 sync $EXPIRES --exclude '*.html' --delete --cache-control public,max-age=3600 $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/$CONTEXT
+          aws s3 sync $EXPIRES --include '*.html' --cache-control no-cache $CONTEXT s3://${{ secrets.CDN_S3_BUCKET }}/dialob/$CONTEXT
+          cd ..
+          rm -Rf temp
+        done
+
+        
+
+        --expires  "$(date -d '+6 months' --utc +'%Y-%m-%dT%H:%M:%SZ')"

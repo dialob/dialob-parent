@@ -76,6 +76,5 @@ DIST_BASE=https://${CDN_DOMAIN}/${GITHUB_REPOSITORY_OWNER}/${PROJECT_NAME}/${VER
 cd -
 
 if [ -e "$PROJECT_DIR/dist" ]; then
-  tar vzcf $OUTDIR/$PROJECT_NAME-${VERSION//\//-}.tar.gz --transform "s|^.|$PROJECT_NAME/$VERSION|" --show-stored-names -C $PROJECT_DIR/dist .
+  gtar vzcf $OUTDIR/$PROJECT_NAME-${VERSION//\//-}.tar.gz --transform "s|^.|$PROJECT_NAME/$VERSION|" --show-stored-names -C $PROJECT_DIR/dist .
 fi
--
