@@ -2,4 +2,4 @@
 "@dialob/demo-dialob-io-app": major
 ---
 
-First release
+First release of `@dialob/demo-dialob-io-app`
