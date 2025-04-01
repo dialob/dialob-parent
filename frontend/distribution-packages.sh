@@ -4,7 +4,7 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 DIST=$SCRIPT_DIR/dist.sh
 
-if [ -z "$PUBLISHED_PACKAGES" ]; then
+if [ -z "$PUBLISHED_PACKAGES" ] || [ "$PUBLISHED_PACKAGES" = "[]" ]; then
   for PROJECT in $(pnpm -r ls --json | jq -r '.[] | .path'); do
     echo $PROJECT
     $DIST $PROJECT $*
