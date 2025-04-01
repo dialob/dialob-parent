@@ -47,7 +47,7 @@
     "typescript": "^5.8.2"
   },
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
   "author": "",
