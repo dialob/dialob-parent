@@ -106,9 +106,7 @@ jobs:
         name: 'artifacts'
         path: ${{ github.workspace }}/artifacts
 
-
     - name: Publish assets
-      if: github.event_name != 'pull_request'
       run: |
         if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
           EXPIRES="--expires `date -I -d '30 days'`"
