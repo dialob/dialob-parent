@@ -52,7 +52,7 @@ const messages: { [key: string]: any } = {
     'adminUI.formConfiguration.lastSaved': "Muokattu",
     'adminUI.formConfiguration.latestTagDate': "Viimeisin tunniste",
     'adminUI.formConfiguration.latestTagName': "Viimeisin tunnistenimi",
-    'adminUI.formConfiguration.labels': 'Tunnisteet',
+    'adminUI.formConfiguration.labels': 'Luokat',
     'adminUI.dialog.formName': "Lomakkeen nimi",
     'adminUI.dialog.formLabel': "Lomakkeen otsikko",
     'adminUI.dialog.emptyTitle': "(Nimetön)",

@@ -75,9 +75,9 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
         const data = await response.json();
         const tagsResponse = await getAdminFormAllTags(config)
           .then((response: Response) => checkSearchHttpResponse(response, config.setLoginRequired));
-        const allTags: FormTag[]|undefined = await tagsResponse.json();
+        const allTags: FormTag[] | undefined = await tagsResponse.json();
 
-        const enrichedConfigurations = 
+        const enrichedConfigurations =
           data.map((formConfiguration: FormConfiguration) => {
             let latestTag = findLatestTag(allTags, formConfiguration.id);
             if (latestTag) {
@@ -90,7 +90,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
               return formConfiguration;
             }
           }
-        );
+          );
 
         setFormConfigurations(enrichedConfigurations);
       } catch (error) {
@@ -102,8 +102,8 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
 
-  const findLatestTag = (allTags: FormTag[]|undefined, formId: string):FormTag|undefined => {
-    let latestTag:FormTag|undefined = undefined;
+  const findLatestTag = (allTags: FormTag[] | undefined, formId: string): FormTag | undefined => {
+    let latestTag: FormTag | undefined = undefined;
     allTags?.forEach((current) => {
       if (current.formName == formId) {
         if (!latestTag) {
@@ -350,7 +350,15 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
         <Box>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 3 }}>
             <Typography variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
-            <Box>
+            <Box display="flex" gap={1}>
+              <Button
+                onClick={function (e: any) {
+                  e.preventDefault();
+                  addFormConfiguration();
+                }}
+              >
+                <SvgIcon fontSize="medium"><AddIcon /></SvgIcon>
+              </Button>
               <Button onClick={handleJsonUploadClick}>
                 <SvgIcon fontSize="small" >
                   <FileUploadIcon />
@@ -364,7 +372,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                 hidden
                 onChange={(e) => uploadJsonDialogForm(e)}
               />
-              <Button onClick={handleCsvUploadClick} sx={{ ml: 1 }}>
+              <Button onClick={handleCsvUploadClick}>
                 <SvgIcon fontSize="small">
                   <FileUploadIcon />
                 </SvgIcon>
@@ -383,20 +391,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell width="3%" sx={{ textAlign: "center" }}>
-                    <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.add" })} placement='top-end' arrow>
-                      <IconButton
-                        onClick={function (e: any) {
-                          e.preventDefault();
-                          addFormConfiguration();
-                        }}
-                      >
-                        <SvgIcon fontSize="medium"><AddIcon /></SvgIcon>
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell width="3%"></TableCell>
-                  <TableCell width="20%">
+                  <TableCell width="22%">
                     <SortField
                       active={sortConfig.field === 'label'}
                       direction={sortConfig.field === 'label' ? sortConfig.direction : 'asc'}
@@ -404,7 +399,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="20%">
+                  <TableCell width="22%">
                     <SortField
                       active={sortConfig.field === 'latestTagName'}
                       direction={sortConfig.field === 'latestTagName' ? sortConfig.direction : 'asc'}
@@ -412,7 +407,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="15%" sx={{ minWidth: "220px" }}>
+                  <TableCell width="17%" sx={{ minWidth: "220px" }}>
                     <SortField
                       active={sortConfig.field === 'latestTagDate'}
                       direction={sortConfig.field === 'latestTagDate' ? sortConfig.direction : 'asc'}
@@ -420,7 +415,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="15%" sx={{ minWidth: "220px" }}>
+                  <TableCell width="17%" sx={{ minWidth: "220px" }}>
                     <SortField
                       active={sortConfig.field === 'lastSaved'}
                       direction={sortConfig.field === 'lastSaved' ? sortConfig.direction : 'asc'}
@@ -431,8 +426,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                   <TableCell width="18%">
                     <FormattedMessage id={"adminUI.formConfiguration.labels"} />
                   </TableCell>
-                  <TableCell width="3%" />
-                  <TableCell width="3%" sx={{ textAlign: "center" }}>
+                  <TableCell width="4%" sx={{ textAlign: "right" }}>
                     <Tooltip title={intl.formatMessage({ id: "download.all" })} placement='top-end' arrow>
                       <IconButton
                         onClick={function (e: any) {
@@ -448,8 +442,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell />
-                  <TableCell />
                   <TableCell>
                     <OutlinedInput
                       sx={{ height: '40px' }}
@@ -488,7 +480,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                       value={filters.labels}
                     />
                   </TableCell>
-                  <TableCell />
                   <TableCell />
                 </TableRow>
                 {sortedFormConfigurations.map((formConfiguration: FormConfiguration, index: number) =>
