@@ -11,12 +11,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build-aws": "vite build --base=https://cdn.resys.io/demo-dialob-io-app/dev/",
+    "build:aws": "vite build --base=https://cdn.resys.io/demo-dialob-io-app/dev/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dialob/dashboard-material": "^1.2.9",
+    "@dialob/dashboard-material": "workspace:~1.2.9",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",

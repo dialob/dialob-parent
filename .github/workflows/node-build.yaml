@@ -40,60 +40,14 @@ jobs:
         node-version: '20'
         registry-url: 'https://registry.npmjs.org'
         scope: '@dialob'
+        cache: 'pnpm'
         always-auth: true
-    - name: Get changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v45
-      with:
-        dir_names: 'true'
-      # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-      # with:
-      #   since_last_remote_commit: true
+        cache-dependency-path: pnpm-lock.yaml
 
-    - run: |
-       cd demo-dialob-io-app
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-composer-material
-       yarn install
-       yarn run build:lib
-       npx yalc publish
-       cd ..
-       cd dialob-composer-material-custom-app
-       npx yalc add @dialob/dialob-composer-material
-       yarn install
-       yarn build
-       cd ..
-       cd dialob-composer-semantic
-       yarn install
-       yarn build
-       cd ..
-       cd dialob-composer-semantic-app
-       yarn install
-       yarn build
-       cd ..
-       cd dialob-fill-api
-       yarn install
-       yarn build
-       cd ..
-       cd dialob-fill-demo-material
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-fill-material
-       yarn install
-       yarn build
-       cd ..
-       cd dialob-fill-react
-       yarn install
-       yarn build
-       cd ..
-       cd dialob-material-dashboard
-       pnpm install
-       pnpm build
-       cd ..
-       cd dialob-review-material
-       yarn install
-       yarn build
-       cd ..
+    - name: Install dependencies
+      run: |
+        pnpm -r install
+
+    - name: Build
+      run: |
+        pnpm -r build

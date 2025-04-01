@@ -1,0 +1,19 @@
+{
+  "name": "@dialob/dialob-parent",
+  "version": "2.2.8",
+  "private": true,
+  "scripts": {
+    "ci:publish": "pnpm publish -r --no-git-checks && pnpm changeset tag"
+  },
+  "dependencies": {
+    "@types/node": "^22.13.14"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.28.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "eslint"
+    ]
+  }
+}

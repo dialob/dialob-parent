@@ -11,10 +11,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dialob/dialob-composer": "2.10.5-1",
+    "@dialob/dialob-composer": "workspace:~2.10.5-1",
     "immutable": "4.3.7",
     "react": "^18.3.1",
+    "react-dnd": "10.0.2",
+    "react-dnd-html5-backend": "10.0.2",
     "react-dom": "^18.3.1",
+    "react-redux": "7.2.1",
+    "redux": "4.0.5",
     "semantic-ui-css": "^2.5.0",
     "semantic-ui-react": "^2.1.5"
   },
