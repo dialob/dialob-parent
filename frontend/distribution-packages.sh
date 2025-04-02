@@ -19,5 +19,6 @@ else
 fi
 
 if [ -e "$GITHUB_OUTPUT" ]; then
-  echo "artifacts=$(jq --compact-output --null-input '[ $ARGS.positional | .[] | select( . != "" ) ]' --args  -- "${OUTPUT[@]}")" >> $GITHUB_OUTPUT
+  ARTIFACTS=$(jq --compact-output --null-input '[ $ARGS.positional | .[] | select( . != "" ) ]' --args -- ${OUTPUT[@]})
+  echo "artifacts=${ARTIFACTS}" | tee -a $GITHUB_OUTPUT
 fi
