@@ -43,7 +43,7 @@ fi
 HAS_DIST=`jq '.scripts | has("dist")' < $PACKAGE_JSON`
 if [ "$HAS_DIST" = "false" ]; then
   echo "$(basename $PROJECT_DIR): No dist target "
-  exit 0
+  exit 1
 fi
 
 if [ -z "$OUTDIR" ]; then
@@ -76,5 +76,6 @@ DIST_BASE=https://${CDN_DOMAIN}/${GITHUB_REPOSITORY_OWNER}/${PROJECT_NAME}/${VER
 cd -
 
 if [ -e "$PROJECT_DIR/dist" ]; then
-  tar vzcf $OUTDIR/$PROJECT_NAME-${VERSION//\//-}.tar.gz --transform "s|^.|$PROJECT_NAME/$VERSION|" --show-stored-names -C $PROJECT_DIR/dist .
+  FILENAME=$PROJECT_NAME-${VERSION//\//-}.tar.gz
+  tar vzcf $OUTDIR/$FILENAME --transform "s|^.|$PROJECT_NAME/$VERSION|" -C $PROJECT_DIR/dist .
 fi

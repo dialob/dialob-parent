@@ -189,3 +189,11 @@ Frontend projects are published using [Changesets](https://github.com/changesets
 > [!NOTE]
 > `patch` release does not trigger internal releases. Only patched packages will be released. 
 
+#### Release steps dissected 
+
+- `pnpm changeset` 
+  Creates changeset request file under folder `.changeset`
+- `pnpm changeset version` 
+  updates `package.json` and changelogs based on request in. `.changeset`. Removes request file created in previous step.
+- `pnpm install --lockfile-only` 
+  Updates pnpm lockfile to reflect changes from version bump.
