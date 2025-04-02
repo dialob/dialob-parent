@@ -13,7 +13,7 @@ if [ -z "$PUBLISHED_PACKAGES" ] || [ "$PUBLISHED_PACKAGES" = "[]" ]; then
     $DIST $PROJECT_PATH $* && PROJECT_NAMES+=("$(echo $PROJECT | jq -r .name)")
   done
 else
-  for PROJECT_NAME in `comm -12 <(echo $PUBLISHED_PACKAGES | jq -r '.[] | .name') <(pnpm m ls --json | jq -r '.[] | select(.private) | .name')`; do
+  for PROJECT_NAME in `comm -12 <(echo $PUBLISHED_PACKAGES | jq -r '.[] | .name' | sort) <(pnpm m ls --json | jq -r '.[] | select(.private) | .name' | sort)`; do
     $DIST -r $(pnpm -r --filter=$PROJECT_NAME ls --json | jq -r '.[] | .path') $* && PROJECT_NAMES+=("$PROJECT_NAME")
   done
 fi
