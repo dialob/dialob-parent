@@ -35,6 +35,8 @@ jobs:
   build:
     name: Build Frontend from branch - main
     runs-on: ubuntu-latest
+    outputs:
+      artifacts: ${{ steps.distribution-packages.outputs.artifacts }}
     defaults:
       run:
         working-directory: frontend
@@ -84,6 +86,7 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Package distributions
+      id: distribution-packages
       run: ./distribution-packages.sh -o $ARTIFACT_OUTPUT
       env:
         PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
@@ -100,6 +103,7 @@ jobs:
     name: Publish Frontend
     needs: build
     runs-on: ubuntu-latest
+    if: ${{ needs.build.outputs.artifacts != null && needs.build.outputs.artifacts != '[]' }}
     steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -109,6 +113,7 @@ jobs:
         role-session-name: DialobArtifacts
 
     - name: Download distributions
+      id: download
       uses: actions/download-artifact@v4
       with:
         name: 'artifacts'
@@ -121,9 +126,9 @@ jobs:
           echo "Pull request's upload expires on $EXPIRY_DATE"
           EXPIRES="--expires $EXPIRY_DATE"
         fi
-        for PROJECT in `ls -1 artifacts`; do
+        for PROJECT in `ls -1 $DOWNLOAD_PATH`; do
           mkdir temp
-          tar -C temp -xzvf artifacts/$PROJECT
+          tar -C temp -xzvf $DOWNLOAD_PATH/$PROJECT
           cd temp
           CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
           TARGET=s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXT#"./"}
@@ -132,3 +137,5 @@ jobs:
           cd ..
           rm -Rf temp
         done
+      env:
+        DOWNLOAD_PATH: ${{ steps.download.outputs.download-path }}
