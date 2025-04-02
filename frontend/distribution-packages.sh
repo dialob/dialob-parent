@@ -9,12 +9,12 @@ OUTPUT=()
 if [ -z "$PUBLISHED_PACKAGES" ] || [ "$PUBLISHED_PACKAGES" = "[]" ]; then
   for PROJECT in $(pnpm -r ls --json | jq -r '.[] | .path'); do
     $DIST $PROJECT $*
-    OUTPUT+="$PROJECT"
+    OUTPUT+=$PROJECT
   done
 else
   for PROJECT in `comm -12 <(echo $PUBLISHED_PACKAGES | jq -r '.[] | .name') <(pnpm m ls --json | jq -r '.[] | select(.private) | .name')`; do
     $DIST -r $(pnpm -r --filter=$PROJECT ls --json | jq -r '.[] | .path') $*
-    OUTPUT+="$PROJECT
+    OUTPUT+=$PROJECT
   done
 fi
 
