@@ -1,5 +1,12 @@
 # @dialob/demo-dialob-io-app
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @dialob/dashboard-material@1.2.10
+
 ## 0.1.1
 
 ### Patch Changes
