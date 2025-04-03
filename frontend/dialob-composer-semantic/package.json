@@ -11,6 +11,7 @@
   "scripts": {
     "build": "rm -rf ./lib && tsc && pnpm run copy-files",
     "clean": "rm -rf ./lib",
+    "lint": "eslint",
     "copy-files": "copyfiles -u 1 src/*.css lib/"
   },
   "dependencies": {
@@ -42,9 +43,14 @@
     "react": "16.13.x"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
     "copyfiles": "^2.4.1",
+    "eslint": "^9.23.0",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^15.9.0",
     "react": "16.13.1",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
