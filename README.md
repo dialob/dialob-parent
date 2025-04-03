@@ -164,9 +164,6 @@ DB2 container startup is very slow, and if you are using an ARM-based computer, 
 mvn clean test -D"groups=db2" -D"excludedGroups=postgresql,mysql"
 ```
 
----
-[https://dialob.io](https://dialob.io)
-
 ## Release
 
 ### Backend
@@ -178,6 +175,8 @@ Merge release version to `main` branch. Github pipeline will execute release and
 Frontend projects are published using [Changesets](https://github.com/changesets/changesets). 
 
 #### Making a release
+
+This is for maintainer, who has commit right to `dev` branch:
 
 1. Use command `pnpm changeset` to select component(s) for a release. 
 2. Commit and push *changeset* to git.
@@ -197,3 +196,35 @@ Frontend projects are published using [Changesets](https://github.com/changesets
   updates `package.json` and changelogs based on request in. `.changeset`. Removes request file created in previous step.
 - `pnpm install --lockfile-only` 
   Updates pnpm lockfile to reflect changes from version bump.
+
+#### Frontend library release process step-by-step
+
+This is for developer who do not have rights to directly commit to `dev` branch, specifically for "patch" level release:
+
+In case a release of a frontend library is needed to be published to npmjs.com follow these steps.
+
+- Create a local branch of the repository for the release
+- `pnpm changeset && pnpm changeset version && pnpm install --lockfile-only`
+- Select the library to be released
+- Review and commit the resulting changes
+- Create a pull request for the branch and assign it to a maintainer for a review
+- After the maintainer has merged the branch, CI/CD pipeline will build the library release and deploy it to npmjs.com
+
+> [!IMPORTANT]
+> If you release dialob/fill-api and @dialob/fill-material has peerdep to it. changeset will bump major version on @dialob/fill-material. To avoid this you need to manually revert change back before committing the changeset PR.
+
+#### Frontend application deployment to demo.dialob.io
+
+Frontend applications under dialob-parent repository that depend on any library will be built automatically by the CI/CD pipeline on changes in the application or library in the dev branch and artifacts will be uploaded into the CDN as follows:
+
+- `https://cdn.resys.io/dialob/demo-dialob-io-app/dev/`
+- `https://cdn.resys.io/dialob/dialob-admin-ui/dev/`
+- `https://cdn.resys.io/dialob/dialob-composer-custom/dev/`
+- `https://cdn.resys.io/dialob/dialob-composer-generic-app/dev/`
+- `https://cdn.resys.io/dialob/dialob-composer-material/dev/`
+- `https://cdn.resys.io/dialob/dialob-fill-demo-material/dev/`
+- `https://cdn.resys.io/dialob/dialob-review-ui-app/dev/`
+
+demo.dialob.io dialob-api container needs restarting to make the changes visible in the site.
+
+  
