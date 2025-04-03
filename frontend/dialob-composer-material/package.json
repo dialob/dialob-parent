@@ -19,7 +19,6 @@
     "build": "tsc && vite build",
     "build:app": "tsc && vite build --config vite.config.app.ts",
     "dist": "pnpm run build:app --base=$DIST_BASE",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --config vite.config.app.ts",
     "test": "jest"
   },
@@ -61,10 +60,6 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
-    "eslint": "^8.53.0",
-    "eslint-plugin-formatjs": "^4.13.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
     "typescript": "^5.8.2",
     "vite": "^6.2.4"
   },

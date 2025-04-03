@@ -8,7 +8,6 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "dist": "pnpm run build --base=$DIST_BASE",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
