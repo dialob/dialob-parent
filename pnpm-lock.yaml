@@ -19,7 +19,7 @@ importers:
   frontend/demo-dialob-io-app:
     dependencies:
       '@dialob/dashboard-material':
-        specifier: workspace:~2.0.0
+        specifier: workspace:~1.2.10
         version: link:../dialob-material-dashboard
       '@emotion/react':
         specifier: ^11.11.1

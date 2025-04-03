@@ -1,6 +1,6 @@
 {
   "name": "@dialob/dashboard-material",
-  "version": "2.0.0",
+  "version": "1.2.10",
   "description": "Material UI dashboard component for Dialob",
   "private": false,
   "publishConfig": {

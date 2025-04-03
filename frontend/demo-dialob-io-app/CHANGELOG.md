@@ -5,7 +5,7 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @dialob/dashboard-material@2.0.0
+  - @dialob/dashboard-material@1.2.10
 
 ## 0.1.1
 
