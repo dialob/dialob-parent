@@ -19,7 +19,7 @@ export const BreadCrumbs: React.FC<BreadCrumbsProps> = ({ items, activeItem, can
       return false;
     }
 
-    for (let id of items) {
+    for (const id of items) {
       // check if we don't have any accessible page information available within fill session
       // if not, we can't get page labels for breadcrumbs. This means that "show only active questions" option was set for the form, which
       // turns off the breadcrumbs

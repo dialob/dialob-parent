@@ -79,7 +79,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 
         const enrichedConfigurations =
           data.map((formConfiguration: FormConfiguration) => {
-            let latestTag = findLatestTag(allTags, formConfiguration.id);
+            const latestTag = findLatestTag(allTags, formConfiguration.id);
             if (latestTag) {
               return {
                 ...formConfiguration,

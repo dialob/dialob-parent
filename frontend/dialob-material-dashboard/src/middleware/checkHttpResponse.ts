@@ -5,7 +5,7 @@ export const checkHttpResponse = (response: Response, setLoginRequired: () => an
   else if (response.status === 403 || response.status === 401){
     setLoginRequired()
   }
-  let error = new Error(response.statusText);
+  const error = new Error(response.statusText);
   return Promise.reject(error);
 }
 
@@ -21,6 +21,6 @@ export const checkSearchHttpResponse = (response: Response, setLoginRequired: ()
   else if (response.status === 403 || response.status === 401){
     setLoginRequired();
   }
-  let error = new Error(response.statusText);
+  const error = new Error(response.statusText);
   return Promise.reject(error);
 }

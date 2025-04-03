@@ -33,7 +33,7 @@ const palette: Palette = {
 	},
 };
 
-let theme = createTheme({
+const theme = createTheme({
 	breakpoints: {
 		keys: ["xs", "sm", "md", "lg", "xl"],
 		values: { xs: 0, sm: 530, md: 870, lg: 1250, xl: 1920 }

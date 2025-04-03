@@ -1,7 +1,7 @@
 import { DialobAdminConfig } from "..";
 
 export const getHeaders = (config: DialobAdminConfig) => {
-  let headers: any = {
+  const headers: any = {
     Accept: 'application/json',
     'Content-Type': 'application/json; charset=utf-8'
   };
@@ -52,7 +52,7 @@ export const getAdminFormAllTags = async (config: DialobAdminConfig) => {
 }
 
 export const getAdminFormConfiguration = async (formId: string, config: DialobAdminConfig) => {
-  let baseUrl = `${config.dialobApiUrl}/api/forms/${formId}`;
+  const baseUrl = `${config.dialobApiUrl}/api/forms/${formId}`;
   const { tenantId } = config;
   const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
   const response = await fetchAuth(url, {
@@ -62,7 +62,7 @@ export const getAdminFormConfiguration = async (formId: string, config: DialobAd
 }
 
 export const addAdminFormConfiguration = async (form: any, config: DialobAdminConfig) => {
-  let baseUrl = `${config.dialobApiUrl}/api/forms`;
+  const baseUrl = `${config.dialobApiUrl}/api/forms`;
   const { tenantId } = config;
   const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;  
   const response = await fetchAuth(url, {
@@ -73,7 +73,7 @@ export const addAdminFormConfiguration = async (form: any, config: DialobAdminCo
 }
 
 export const addAdminFormConfigurationFromCsv = async (csvData: string, config: DialobAdminConfig) => {
-  let baseUrl = `${config.dialobApiUrl}/api/forms`;
+  const baseUrl = `${config.dialobApiUrl}/api/forms`;
   const { tenantId } = config;
   const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
   const response = await fetchAuth(url, {
@@ -87,7 +87,7 @@ export const addAdminFormConfigurationFromCsv = async (csvData: string, config: 
 };
 
 export const editAdminFormConfiguration = async (form: any, config: DialobAdminConfig) => {
-  let baseUrl = `${config.dialobApiUrl}/api/forms/${form.name}?force=true`;
+  const baseUrl = `${config.dialobApiUrl}/api/forms/${form.name}?force=true`;
   const { tenantId } = config;
   const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
   const response = await fetchAuth(url, {
@@ -98,7 +98,7 @@ export const editAdminFormConfiguration = async (form: any, config: DialobAdminC
 }
 
 export const deleteAdminFormConfiguration = async (formId: string, config: DialobAdminConfig) => {
-  let baseUrl = `${config.dialobApiUrl}/api/forms/${formId}`;
+  const baseUrl = `${config.dialobApiUrl}/api/forms/${formId}`;
   const { tenantId } = config;
   const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;  
   const response = await fetchAuth(url, {

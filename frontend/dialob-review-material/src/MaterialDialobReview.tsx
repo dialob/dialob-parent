@@ -19,7 +19,7 @@ export const MaterialDialobReview: React.FC<MaterialDialobReviewProps> = ({ form
   const documentTitle = title || formData.metadata.label;
 
   const rootItem = (() => {
-    for (let id in formData.data) {
+    for (const id in formData.data) {
       if (formData.data[id].type === 'questionnaire') return formData.data[id];
     }
     return null;

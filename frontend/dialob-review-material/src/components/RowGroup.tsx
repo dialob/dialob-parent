@@ -23,7 +23,7 @@ export const RowGroup: React.FC<ItemProps> = ({ item }) => {
   const classes = useStyles();
 
   const getRowIds = item => {
-    let result: string[] = [];
+    const result: string[] = [];
     const answer = dC.getAnswer(item.id);
     if (answer) {
       answer.forEach(a => {

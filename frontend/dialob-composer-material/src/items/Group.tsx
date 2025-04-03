@@ -24,7 +24,7 @@ const GroupPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 4
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { form } = useComposer();
