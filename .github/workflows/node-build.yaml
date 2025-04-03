@@ -69,6 +69,7 @@ jobs:
         pnpm -r --no-bail lint
 
     - name: Test
+      if: always() # Ignore lint errors
       run: |
         pnpm -r test
   
