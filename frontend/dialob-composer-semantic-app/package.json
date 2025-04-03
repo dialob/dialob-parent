@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "description": "Describe dialob-composer-generic-app here",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "host": "vite --host",

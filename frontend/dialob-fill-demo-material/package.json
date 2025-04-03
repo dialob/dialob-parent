@@ -2,6 +2,7 @@
   "name": "@dialob/dialob-fill-demo-material",
   "version": "1.0.1",
   "private": true,
+  "type": "module",
   "proxy": "http://localhost:8080",
   "license": "Apache-2.0",
   "dependencies": {
