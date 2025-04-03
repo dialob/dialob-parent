@@ -199,19 +199,24 @@ This is for maintainer, who has commit right to `dev` branch:
 
 #### Frontend library release process step-by-step
 
-This is for developer who do not have rights to directly commit to `dev` branch, specifically for "patch" level release:
+This is for developer who do not have rights to directly commit to `dev` branch.
 
 In case a release of a frontend library is needed to be published to npmjs.com follow these steps.
 
 - Create a local branch of the repository for the release
 - `pnpm changeset && pnpm changeset version && pnpm install --lockfile-only`
-- Select the library to be released
+- On prompt **Which packages would you like to include?** Select the libraries to be released (use space to select, enter to confirm)
+- On prompt **Which packages should have a major bump?** Select the libraries that need major version (**major**.minor.patch) to be increased or press enter to select none
+- On prompt **Which packages should have a minor bump?** Select the libraries that need minor version (major.**minor**.patch) to be increased or press enter to select none
+- Libraries that were not selected in previous last steps will get their patch version (major.minor.**patch**) increased, confirm the proposed version numbers
+- On prompt **Please enter a summary for this change (this will be in the changelogs).** Provide a summary text describing the relase for changelog file
 - Review and commit the resulting changes
 - Create a pull request for the branch and assign it to a maintainer for a review
+- You can modify the version numbers / changelog text in the files if adjustment is needed. Run `pnpm install --lockfile-only` to update the lockfile if you modified any version numbers by hand.
 - After the maintainer has merged the branch, CI/CD pipeline will build the library release and deploy it to npmjs.com
 
 > [!IMPORTANT]
-> If you release dialob/fill-api and @dialob/fill-material has peerdep to it. changeset will bump major version on @dialob/fill-material. To avoid this you need to manually revert change back before committing the changeset PR.
+> If you release dialob/fill-api and @dialob/fill-material has peerdep to it. changeset will bump major version on @dialob/fill-material. To avoid this you need to manually revert change back and rub `pnpm install --lockfile-only` before committing the changeset PR.
 
 #### Frontend application deployment to demo.dialob.io
 
