@@ -13,7 +13,6 @@
   "scripts": {
     "dev": "vite --config vite.config.ts --port 3000",
     "build": "vite build && tsc --emitDeclarationOnly",
-    "dist": "pnpm run build --base=$DIST_BASE",
     "tscbuild": "rm -rf ./dist && tsc"
   },
   "keywords": [],
