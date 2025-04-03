@@ -64,10 +64,14 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
+    - name: Lint
+      run: |
+        pnpm -r --no-bail lint || exit 0
+
     - name: Test
       run: |
         pnpm -r test
-
+  
     - name: Build
       run: |
         pnpm -r build

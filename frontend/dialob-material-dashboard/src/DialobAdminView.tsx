@@ -99,7 +99,6 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
     };
 
     fetchFormConfigurations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
 
   const findLatestTag = (allTags: FormTag[] | undefined, formId: string): FormTag | undefined => {

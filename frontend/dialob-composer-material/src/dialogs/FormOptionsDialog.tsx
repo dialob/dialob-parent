@@ -32,7 +32,7 @@ const FormLabels: React.FC = () => {
   const [label, setLabel] = React.useState<string>('');
 
   const handleAdd = () => {
-    if (label && label.length > 0 && !formLabels.includes(label) ) {
+    if (label && label.length > 0 && !formLabels.includes(label)) {
       setMetadataValue('labels', [...formLabels, label]);
       setLabel('');
     }
@@ -48,7 +48,7 @@ const FormLabels: React.FC = () => {
       <Typography fontWeight='bold' sx={{ mt: 2 }}><FormattedMessage id='dialogs.form.options.labels' /></Typography>
       {formLabels.length > 0 && <Box sx={{ mb: 1 }}>
         {formLabels.map((label) => (
-          <Chip sx={{ mr: 1 }} label={label} onDelete={() => handleDelete(label)}/>
+          <Chip sx={{ mr: 1 }} label={label} onDelete={() => handleDelete(label)} />
         ))}
       </Box>}
       <TextField
@@ -56,8 +56,8 @@ const FormLabels: React.FC = () => {
         label={<FormattedMessage id='dialogs.form.options.labels.add' />}
         onChange={(e) => setLabel(e.target.value)} fullWidth
         InputProps={{
-        endAdornment: <IconButton onClick={handleAdd}><Add /></IconButton>
-      }} />
+          endAdornment: <IconButton onClick={handleAdd}><Add /></IconButton>
+        }} />
     </>
   )
 }
@@ -87,7 +87,6 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, setMetadataValue]);
 
   React.useEffect(() => {
@@ -96,14 +95,12 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     if (visibilityMode && visibilityMode !== visibility) {
       setMetadataValue('questionClientVisibility', visibilityMode);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibilityMode, setMetadataValue]);
 
   React.useEffect(() => {
     if (required && required !== form.metadata?.answersRequiredByDefault) {
       setMetadataValue('answersRequiredByDefault', required);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [required, setMetadataValue]);
 
   return (

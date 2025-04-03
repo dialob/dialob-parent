@@ -28,14 +28,12 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   const LATEST_TAG: ComposerTag = React.useMemo(() => ({
     formId: form._id + '', name: 'LATEST', formName: form.name, description: 'Latest version',
     created: new Date().toISOString(), type: 'NORMAL'
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }), []);
 
   React.useEffect(() => {
     if (open) {
       getTags(form.name).then(setTags);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const handleLoadVersion = (tag: ComposerTag) => {

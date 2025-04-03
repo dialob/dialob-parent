@@ -16,6 +16,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "rm -rf ./lib && tsc",
+    "lint": "eslint",
     "clean": "rm -rf ./lib"
   },
   "peerDependencies": {
@@ -35,6 +36,7 @@
     "@date-io/date-fns": "^2.11.0",
     "@dialob/fill-api": "workspace:~1.4.9",
     "@dialob/fill-react": "workspace:~4.0.0",
+    "@eslint/js": "^9.23.0",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.0",
     "@mui/system": "^5.11.0",
@@ -42,11 +44,19 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.9",
     "date-fns": "^2.0.0",
+    "eslint": "^9.23.0",
+    "eslint-plugin-formatjs": "^5.3.1",
+    "eslint-plugin-jest": "^28.11.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.9.0",
     "react": "^18.0.9",
     "react-dom": "^18.0.9",
     "react-intl": "^5.20.10",
     "react-markdown": "^7.0.1",
     "react-number-format": "^4.7.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
   }
 }
