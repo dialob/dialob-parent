@@ -20,7 +20,6 @@ const PropItem: React.FC<{
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
@@ -32,7 +31,7 @@ const PropItem: React.FC<{
         <Typography sx={{ p: 1 }}>{prop.key}</Typography>
       </TableCell>
       <TableCell>
-        {propEditor ? propEditor.component({value, setValue, ...propEditor.props}) : InputProp({value, setValue})}
+        {propEditor ? propEditor.component({ value, setValue, ...propEditor.props }) : InputProp({ value, setValue })}
       </TableCell>
     </TableRow>
   );

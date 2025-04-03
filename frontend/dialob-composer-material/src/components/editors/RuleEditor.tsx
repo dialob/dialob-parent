@@ -48,7 +48,6 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ruleCode]);
 
   if (!item) {

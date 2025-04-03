@@ -43,7 +43,6 @@ const LocalizedStringEditor: React.FC<{
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localizedString]);
 
   if (!item || (type === 'validations' && rule === undefined)) {

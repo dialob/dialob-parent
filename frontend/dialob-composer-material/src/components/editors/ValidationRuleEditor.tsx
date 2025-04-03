@@ -32,7 +32,6 @@ const ValidationRuleEditor: React.FC = () => {
     if (activeRule === undefined || !validationRules.some((r) => r.index === activeRule.index)) {
       setActiveRule(validationRules.length > 0 ? validationRules[0] : undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
   React.useEffect(() => {
@@ -47,7 +46,6 @@ const ValidationRuleEditor: React.FC = () => {
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRule?.validationRule.rule]);
 
   if (!item) {

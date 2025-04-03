@@ -29,7 +29,6 @@ const DefaultValueEditor: React.FC = () => {
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   if (!item) {
