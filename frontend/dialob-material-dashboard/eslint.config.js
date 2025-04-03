@@ -3,6 +3,9 @@ import globals from "globals";
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
+import pluginReactHooks from "eslint-plugin-react-hooks";
+import pluginReactRefresh from "eslint-plugin-react-refresh";
+import formatjs from 'eslint-plugin-formatjs'
 
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -14,6 +17,13 @@ export default defineConfig([
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   pluginReact.configs.flat['jsx-runtime'],
+  pluginReactRefresh.configs.vite,
+  {
+    plugins: {
+      formatjs,
+      'react-hooks': pluginReactHooks,
+    }
+  },
   {
     rules: {
       "react/prop-types": "off", // React 19+ uses TypeScript for prop types and this rule is not needed
