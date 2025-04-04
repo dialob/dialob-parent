@@ -9,7 +9,6 @@
     "host": "vite --host",
     "build": "vite build",
     "dist": "pnpm run build --base $DIST_BASE",
-    "lint": "eslint",
     "preview": "vite preview"
   },
   "dependencies": {
