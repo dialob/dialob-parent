@@ -154,9 +154,6 @@ importers:
       immer:
         specifier: ^10.1.1
         version: 10.1.1
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.28)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.17.28)(typescript@5.8.2))
       lodash.camelcase:
         specifier: ^4.3.0
         version: 4.3.0
@@ -236,6 +233,9 @@ importers:
       globals:
         specifier: ^15.9.0
         version: 15.15.0
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.17.28)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.17.28)(typescript@5.8.2))
       typescript:
         specifier: ^5.8.2
         version: 5.8.2
@@ -2849,14 +2849,14 @@ packages:
     resolution: {integrity: sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==}
 
   '@resys/react-redux-scroll@0.2.3':
-    resolution: {integrity: sha512-xif5VDkM9eSB0bluo4ZXoGa4JveY9oa5XN3q/nGu+Jfn8X2gJ1Euij91H4coDFyqWVKwKI9Z/+JudAXUMIsM0A==}
+    resolution: {integrity: sha1-qpHyhVNt9fYqThciueSdgEfd19U=}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0
       redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
 
   '@resys/understood@2.1.1':
-    resolution: {integrity: sha512-rIppBh64MWdl9EUzIEIc4nJMwCu7qB4FsSSvZayYVNM4s9Q8rwSOx0BUkOL8W8q3O4OY7NGzkpAouQr5Ok625Q==}
+    resolution: {integrity: sha1-MEhcJRG/8fRbqGcHMUaxBmCpwdU=}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       react: 16.x
