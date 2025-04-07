@@ -44,6 +44,5 @@ const store = createStore(reducer, applyMiddleware(...createDialobComposerMiddle
   , target);
 };
 
-// @ts-ignore
 window.renderDialobComposer = renderDialobComposer;
 

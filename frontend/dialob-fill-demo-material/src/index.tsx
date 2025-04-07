@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import messages from './intl';
-import {CssBaseline} from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { IntlProvider } from 'react-intl';
 import DialobFill, { Config, Session as DialobSession } from '@dialob/fill-api';
 import { Dialob } from './dialob/Dialob';
@@ -26,7 +26,7 @@ const AppRoot: React.FC<AppRootProps> = ({ session }) => {
       <CssBaseline />
       <IntlProvider locale={locale} messages={messages[locale]}>
         <App setLocale={setLocale} setThemeIndex={setThemeIndex} themeIndex={themeIndex} >
-            <Dialob key={session?.id} session={session} locale={locale} onComplete={onComplete} />
+          <Dialob key={session?.id} session={session} locale={locale} onComplete={onComplete} />
         </App>
       </IntlProvider>
     </>
@@ -38,5 +38,5 @@ const renderDialob = (target: HTMLElement, sessionId: string, config: Config) =>
   ReactDOM.render(<AppRoot session={session} />, target);
 };
 
-// @ts-ignore
+// @ts-expect-error window is a global object without specified type
 window.renderDialob = renderDialob;

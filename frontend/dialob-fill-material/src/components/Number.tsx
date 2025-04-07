@@ -4,17 +4,16 @@ import * as React from 'react';
 import { TextField, Box } from '@mui/material';
 import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
-import NumberFormat from 'react-number-format';
+import NumberFormat, { InputAttributes } from 'react-number-format';
 
 interface FormattedNumberFieldProps {
-  onChange: (event: {target: {name: string; value: string}}) => void;
+  onChange: (event: { target: { name: string; value: string } }) => void;
   name: string;
   decimalSeparator: string;
   integer: boolean;
 }
 
-//@ts-ignore
-const FormattedNumberField = React.forwardRef<NumberFormat, FormattedNumberFieldProps>(
+const FormattedNumberField = React.forwardRef<NumberFormat<InputAttributes>, FormattedNumberFieldProps>(
   function FormattedNumberField(props: FormattedNumberFieldProps, ref) {
     const { onChange, name, integer, decimalSeparator, ...other } = props;
     return (
@@ -42,10 +41,10 @@ export interface NumberProps {
   integer: boolean;
 };
 
-export const Number: React.FC<NumberProps> = ({number, errors, integer}) => {
-  const {setAnswer} = useFillActions();
+export const Number: React.FC<NumberProps> = ({ number, errors, integer }) => {
+  const { setAnswer } = useFillActions();
   const locale = useFillLocale();
-  
+
   return (
     <DescriptionWrapper text={number.description} title={number.label}>
       <Box sx={getLayoutStyleFromProps(number.props)}>

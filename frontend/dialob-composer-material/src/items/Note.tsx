@@ -26,7 +26,6 @@ const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...p
   }, [editor.highlightedItem, item.id])
 
   return (
-    // @ts-ignore
     <Element name={item.id}>
       <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
         <Table>
