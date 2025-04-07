@@ -175,9 +175,6 @@ importers:
       react-scroll:
         specifier: ^1.9.0
         version: 1.9.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.3(@types/node@20.17.28)(rollup@4.39.0)(typescript@5.8.2)(vite@6.2.5(@types/node@20.17.28)(jiti@1.21.7)(terser@5.39.0)(yaml@2.7.1))
     devDependencies:
       '@eslint/js':
         specifier: ^9.23.0
@@ -245,6 +242,9 @@ importers:
       vite:
         specifier: ^6.2.5
         version: 6.2.5(@types/node@20.17.28)(jiti@1.21.7)(terser@5.39.0)(yaml@2.7.1)
+      vite-plugin-dts:
+        specifier: ^4.5.3
+        version: 4.5.3(@types/node@20.17.28)(rollup@4.39.0)(typescript@5.8.2)(vite@6.2.5(@types/node@20.17.28)(jiti@1.21.7)(terser@5.39.0)(yaml@2.7.1))
 
   frontend/dialob-composer-material-custom-app:
     dependencies:
