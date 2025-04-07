@@ -18,7 +18,7 @@
     "@resys/react-redux-scroll": "0.2.3",
     "@resys/understood": "2.1.1",
     "classnames": "2.2.6",
-    "codemirror": "5.58.1",
+    "codemirror": "5.58.2",
     "file-saver": "2.0.2",
     "immutable": "3.8.2",
     "lodash": "^4.17.21",
