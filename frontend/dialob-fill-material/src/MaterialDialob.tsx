@@ -25,7 +25,6 @@ export const MaterialDialob: React.FC<PropsWithChildren<MaterialDialobProps>> = 
 
   return (
     <ConfigContext.Provider value={{ errors, description, breadCrumbs }} >
-      {/*@ts-ignore*/}
       <Session key={session.id} session={session} locale={locale}>
         <IntlProvider locale={session.getLocale() || locale} messages={messages === undefined ? builtInMessages[locale] : messages}>
           {children}

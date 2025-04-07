@@ -48,7 +48,6 @@ export const Group: React.FC<PropsWithChildren<GroupProps>> = ({ group, children
 
 
   return (
-    /*@ts-ignore*/
     <GroupContext.Provider value={{ level: groupCtx.level < 6 ? groupCtx.level + 1 : groupCtx.level }}>
       <Fade in={true}>
         {border && !invisible ? (

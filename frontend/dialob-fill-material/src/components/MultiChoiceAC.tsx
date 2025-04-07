@@ -27,20 +27,17 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
       <Box sx={getLayoutStyleFromProps(multichoice.props)}>
         <Autocomplete
           multiple
-          noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}
+          noOptionsText={intl.formatMessage({ id: 'autocomplete.nooptions' })}
           options={entries}
           getOptionLabel={c => c?.value || ''}
-          // @ts-ignore
           value={multichoice.value ? multichoice.value.map(v => entries.find(e => e.key === v)) : []}
           isOptionEqualToValue={(option, value) => option?.key === value?.key}
           fullWidth
           autoComplete
           onChange={(event: any, newValue: (ValueSetEntry | undefined)[]) => {
-            // @ts-ignore
             setAnswer(multichoice.id, newValue?.map(c => c?.key));
           }}
           renderInput={params => <TextField {...params} inputProps={{ ...params.inputProps, autoComplete: 'new-password' }} label={multichoice.label}
-            // @ts-ignore 
             error={errors.length > 0}
             helperText={<RenderErrors errors={errors} />}
           />}
