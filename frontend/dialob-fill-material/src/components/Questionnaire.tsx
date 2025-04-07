@@ -3,9 +3,7 @@ import { Grid } from '@mui/material';
 import { ConfigContext } from '../';
 import { useFillItem } from '@dialob/fill-react';
 
-export interface QuestionnaireProps {
-
-};
+export type QuestionnaireProps = object;
 
 export const Questionnaire: React.FC<PropsWithChildren<QuestionnaireProps>> = ({ children }) => {
   const { item: questionnaire } = useFillItem('questionnaire');

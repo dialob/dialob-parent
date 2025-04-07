@@ -14,8 +14,7 @@ export const EditorContext = React.createContext<{ state: EditorState, dispatch:
   dispatch: () => null
 });
 
-export interface ComposerProviderProps {
-}
+export type ComposerProviderProps = object
 
 export const EditorProvider: React.FC<PropsWithChildren<ComposerProviderProps>> = ({ children }) => {
   const [state, dispatch] = useReducer(editorReducer, INITIAL_EDITOR);
