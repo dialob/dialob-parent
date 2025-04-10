@@ -135,7 +135,7 @@ importers:
         version: 5.17.1(@emotion/react@11.14.0(@types/react@18.3.20)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.20)(react@18.3.1))(@types/react@18.3.20)(react@18.3.1))(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@uiw/react-codemirror':
         specifier: ^4.21.21
-        version: 4.23.10(@babel/runtime@7.27.0)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.4)(codemirror@5.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.23.10(@babel/runtime@7.27.0)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.4)(codemirror@5.58.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       file-saver:
         specifier: ^2.0.5
         version: 2.0.5
@@ -313,8 +313,8 @@ importers:
         specifier: 2.2.6
         version: 2.2.6
       codemirror:
-        specifier: 5.58.1
-        version: 5.58.1
+        specifier: 5.58.2
+        version: 5.58.2
       file-saver:
         specifier: 2.0.2
         version: 2.0.2
@@ -2584,14 +2584,14 @@ packages:
     resolution: {integrity: sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==}
 
   '@resys/react-redux-scroll@0.2.3':
-    resolution: {integrity: sha1-qpHyhVNt9fYqThciueSdgEfd19U=}
+    resolution: {integrity: sha512-xif5VDkM9eSB0bluo4ZXoGa4JveY9oa5XN3q/nGu+Jfn8X2gJ1Euij91H4coDFyqWVKwKI9Z/+JudAXUMIsM0A==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0
       redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
 
   '@resys/understood@2.1.1':
-    resolution: {integrity: sha1-MEhcJRG/8fRbqGcHMUaxBmCpwdU=}
+    resolution: {integrity: sha512-rIppBh64MWdl9EUzIEIc4nJMwCu7qB4FsSSvZayYVNM4s9Q8rwSOx0BUkOL8W8q3O4OY7NGzkpAouQr5Ok625Q==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       react: 16.x
@@ -4215,8 +4215,8 @@ packages:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
 
-  codemirror@5.58.1:
-    resolution: {integrity: sha512-UGb/ueu20U4xqWk8hZB3xIfV2/SFqnSLYONiM3wTMDqko0bsYrsAkGGhqUzbRkYm89aBKPyHtuNEbVWF9FTFzw==}
+  codemirror@5.58.2:
+    resolution: {integrity: sha512-K/hOh24cCwRutd1Mk3uLtjWzNISOkm4fvXiMO7LucCrqbh6aJDdtqUziim3MZUI6wOY0rvY1SlL1Ork01uMy6w==}
 
   collapse-white-space@1.0.6:
     resolution: {integrity: sha512-jEovNnrhMuqyCcjfEJA56v0Xq8SkIoPKDyaHahwo3POf4qcSXqMYuwNcOTzp74vTsR9Tn08z4MxWqAhcekogkQ==}
@@ -12857,7 +12857,7 @@ snapshots:
       '@codemirror/state': 6.5.2
       '@codemirror/view': 6.36.4
 
-  '@uiw/react-codemirror@4.23.10(@babel/runtime@7.27.0)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.4)(codemirror@5.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-codemirror@4.23.10(@babel/runtime@7.27.0)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.4)(codemirror@5.58.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.27.0
       '@codemirror/commands': 6.8.0
@@ -12865,7 +12865,7 @@ snapshots:
       '@codemirror/theme-one-dark': 6.1.2
       '@codemirror/view': 6.36.4
       '@uiw/codemirror-extensions-basic-setup': 4.23.10(@codemirror/autocomplete@6.18.6)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/view@6.36.4)
-      codemirror: 5.58.1
+      codemirror: 5.58.2
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
@@ -14002,7 +14002,7 @@ snapshots:
 
   co@4.6.0: {}
 
-  codemirror@5.58.1: {}
+  codemirror@5.58.2: {}
 
   collapse-white-space@1.0.6: {}
 
