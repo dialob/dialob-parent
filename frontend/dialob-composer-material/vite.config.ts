@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: 'dist-lib',
     lib: {
       entry: path.resolve(__dirname, 'src/lib/index.ts'), // Set entry point to the lib index file
-      name: '@dialob/dialob-composer-material',
+      name: '@dialob/composer-material',
       fileName: 'index',
       formats: ['es'], // Only generate ESM bundle
     },

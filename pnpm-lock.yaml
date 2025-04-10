@@ -248,7 +248,7 @@ importers:
 
   frontend/dialob-composer-material-custom-app:
     dependencies:
-      '@dialob/dialob-composer-material':
+      '@dialob/composer-material':
         specifier: workspace:~0.0.1
         version: link:../dialob-composer-material
       '@mui/icons-material':

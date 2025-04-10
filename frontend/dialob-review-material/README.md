@@ -7,7 +7,7 @@
 Add dependency
 
 ```
-pnpm add @dialob/dialob-review-material
+pnpm add @dialob/review-material
 
 ```
 
@@ -39,7 +39,7 @@ The following peer dependencies need to be installed for mui v5:
 
 ```ts
 import React from 'react';
-import { MaterialDialobReview } from '@dialob/dialob-review-material';
+import { MaterialDialobReview } from '@dialob/review-material';
 
 const ReviewWrapper : React.FC = () => {
   return (

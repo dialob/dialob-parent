@@ -4,7 +4,7 @@ This is a demo app to show how to use custom configuration for Dialob Composer a
 
 ## Main steps
 
-1. Import the library `@dialob/dialob-composer-material`
+1. Import the library `@dialob/composer-material`
 2. Create a function to render the Dialob Composer component with custom configuration
 
 The function should import `DialobComposer` component from the library and render it into the target element. The function should be called with the target element and the configuration object as arguments.
