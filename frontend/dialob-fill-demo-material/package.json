@@ -25,11 +25,12 @@
     "react-number-format": "^4.7.3"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3",
     "@eslint/js": "^9.23.0",
-    "@storybook/addon-actions": "^6.5.15",
-    "@storybook/addon-links": "^6.5.15",
-    "@storybook/addons": "^6.5.15",
-    "@storybook/react": "^6.5.15",
+    "@storybook/addon-actions": "^8.6.12",
+    "@storybook/addon-links": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/react-vite": "^8.6.12",
     "@types/node": "^22.13.14",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.9",
@@ -37,6 +38,7 @@
     "eslint": "^9.23.0",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^15.9.0",
+    "storybook": "^8.6.12",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.29.0",
@@ -47,8 +49,8 @@
     "build": "vite build",
     "dist": "pnpm run build --base=$DIST_BASE",
     "lint": "eslint",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "eslintConfig": {
     "extends": [
