@@ -1,7 +1,3 @@
-
-> [!IMPORTANT]
-> This package have been renamed as `@dialob/review-material`
-
 # Dialob Review Components for Material UI
 
 ## Application Setup

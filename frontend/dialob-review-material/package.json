@@ -1,5 +1,5 @@
 {
-  "name": "@dialob/dialob-review-material",
+  "name": "@dialob/review-material",
   "version": "1.0.5",
   "description": "Material UI components for Dialob review",
   "private": false,
