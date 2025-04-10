@@ -35,7 +35,7 @@
     "date-fns": "^2.30.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^5.20.10"
+    "react-intl": "^7.1.10"
   },
   "devDependencies": {
     "@emotion/react": "^11.10.5",
@@ -62,7 +62,7 @@
     "globals": "^15.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-intl": "^5.20.10",
+    "react-intl": "^7.1.10",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1",
     "vite": "^6.2.6",
