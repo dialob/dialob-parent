@@ -1,3 +1,7 @@
+
+> [!IMPORTANT]
+> This package have been renamed as `@dialob/composer-material`
+
 # Dialob Composer Material
 
 ## Where's what
