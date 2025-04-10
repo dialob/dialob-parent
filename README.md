@@ -68,7 +68,7 @@ Dialob Backend Services
   * **dialob-composer-semantic-app** - Dialob Composer reference application on Semantic UI (used in demo.dialob.io).
   * **dialob-composer-material** - Dialob Composer component library on Material UI.
   * **dialob-composer-material-custom-app**.
-  * **dialob-material-dashboard** - Dialob dashboard component library on Material UI. **Published to npmjs.com as [@dialob/dashboard-material](https://www.npmjs.com/package/@dialob/dashboard-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Fdashboard-material).
+  * **dialob-dashboard-material** - Dialob dashboard component library on Material UI. **Published to npmjs.com as [@dialob/dashboard-material](https://www.npmjs.com/package/@dialob/dashboard-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Fdashboard-material).
 
 ## Supported Spring Profiles
 
