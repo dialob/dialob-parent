@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This application is deprecated!
+
 # Dialog Composer Reference Application
 
 Reference implementation of an application for Dialob Composer
