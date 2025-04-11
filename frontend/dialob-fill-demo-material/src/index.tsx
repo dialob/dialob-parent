@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import messages from './intl';
 import { CssBaseline } from '@mui/material';
@@ -33,10 +33,8 @@ const AppRoot: React.FC<AppRootProps> = ({ session }) => {
   );
 }
 
-const renderDialob = (target: HTMLElement, sessionId: string, config: Config) => {
+export const renderDialob = (target: HTMLElement, sessionId: string, config: Config) => {
   const session = sessionId ? DialobFill.newSession(sessionId, config) : null;
-  ReactDOM.render(<AppRoot session={session} />, target);
+  const root = createRoot(target);
+  root.render(<AppRoot session={session} />);
 };
-
-// @ts-expect-error window is a global object without specified type
-window.renderDialob = renderDialob;
