@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useFillItem } from './useFillItem';
 import { useFillSession } from './useFillSession';
-import { Session, SessionItem, SessionError, DialobError } from '@dialob/fill-api';
+import { Session, SessionItem, SessionError } from '@dialob/fill-api';
 
 jest.mock('./useFillSession');
 
@@ -48,7 +48,7 @@ describe('useFillItem', () => {
     const mockUpdatedItem = { id: 'item1', items: ['child1'] } as SessionItem<'group'>;
     const mockUpdatedErrors: SessionError[] = [{ id: 'id2', code: 'error2', description: 'Error 2' }];
 
-		mockSession.getItem.mockImplementation((id) => {
+    mockSession.getItem.mockImplementation((id) => {
       if (id === 'item1') return mockItem;
       return undefined;
     });
@@ -60,7 +60,7 @@ describe('useFillItem', () => {
     expect(result.current.errors).toEqual(mockErrors);
     expect(result.current.availableItems).toEqual([]);
 
-		mockSession.getItem.mockImplementation((id) => {
+    mockSession.getItem.mockImplementation((id) => {
       if (id === 'item1') return mockUpdatedItem;
       return undefined;
     });
