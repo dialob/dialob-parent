@@ -17,7 +17,7 @@ export interface TimeFieldProps {
 const formatToWire = (value: any): string => {
   try {
     return format(value, timeFormat);
-  } catch (error) {
+  } catch {
     return '';
   }
 }

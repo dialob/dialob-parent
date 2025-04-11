@@ -32,7 +32,7 @@ export interface DateFieldProps {
 const formatToWire = (value: any): string => {
   try {
     return format(value, 'yyyy-MM-dd');
-  } catch (error) {
+  } catch {
     return '';
   }
 }

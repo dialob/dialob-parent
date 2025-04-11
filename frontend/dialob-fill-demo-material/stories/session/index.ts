@@ -3,8 +3,7 @@ import { SessionState, initState, updateState } from '@dialob/fill-api/lib/state
 import { onUpdateFn, onErrorFn } from '@dialob/fill-api/lib/session';
 import { SyncQueue } from '@dialob/fill-api/lib/sync-queue';
 
-import { Transport } from '@dialob/fill-api/lib/transport';
-import { SessionOptions, Action, SessionItem, SessionError, SessionValueSet, Session } from '@dialob/fill-api';
+import { Action, SessionItem, SessionError, SessionValueSet, Session } from '@dialob/fill-api';
 
 
 const sessionData = ((sessionJSON) as any).default;
@@ -12,16 +11,16 @@ const sessionData = ((sessionJSON) as any).default;
 
 class FakeSyncQueue {
 
-  on(props: any) {
+  on() {
   }
 
   getId() {
     return "86088c3cf4ace4581a41f741cb0dcfff";
   }
-  pull(props?: any) {
+  pull() {
     return sessionData;
   }
-  add(props?: any) {
+  add() {
 
   }
 
@@ -135,10 +134,10 @@ class FakeSession {
     return this.syncQueue.getId();
   }
 
-  public on(type: Event | string, listener: Function): void {
+  public on(): void {
   }
 
-  public removeListener(type: Event, listener: Function): any {
+  public removeListener(): void {
   }
 };
 

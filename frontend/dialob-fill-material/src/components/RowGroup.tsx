@@ -1,6 +1,6 @@
 import { ItemAction } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
-import React, { ReactNode, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Typography, Grid, Button, Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';

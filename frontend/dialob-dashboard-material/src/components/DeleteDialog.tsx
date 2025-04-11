@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
-import { DialogContent, DialogTitle, Box, Divider, Typography, DialogActions, Theme, Button, Dialog } from '@mui/material';
+import { DialogContent, DialogTitle, Box, Divider, Typography, DialogActions, Button, Dialog } from '@mui/material';
 import { deleteAdminFormConfiguration } from '../backend';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
 import { FormConfiguration } from '../types';
@@ -27,7 +27,7 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
     deleteAdminFormConfiguration(formConfiguration?.id!, config)
       .then((response: Response) => checkHttpResponse(response, config.setLoginRequired))
       .then((response: { json: () => any; }) => response.json())
-      .then((response: any) => {
+      .then(() => {
         handleDeleteModalClose();
         setFetchAgain(prevState => !prevState);
       })

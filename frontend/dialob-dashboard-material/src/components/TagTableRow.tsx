@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, Link, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';

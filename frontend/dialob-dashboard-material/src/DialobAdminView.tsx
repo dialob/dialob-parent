@@ -22,8 +22,6 @@ import { DialobAdminConfig } from './index';
 import CustomDatePicker from './components/CustomDatePicker';
 import SortField from './components/SortField';
 
-const CSV_PARSING_ERROR = "CSV_PARSING_ERROR";
-
 export interface DialobAdminViewProps {
   config: DialobAdminConfig;
   showNotification?: (message: string, severity: 'success' | 'error') => void;
