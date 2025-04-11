@@ -47,8 +47,8 @@ const FormLabels: React.FC = () => {
     <>
       <Typography fontWeight='bold' sx={{ mt: 2 }}><FormattedMessage id='dialogs.form.options.labels' /></Typography>
       {formLabels.length > 0 && <Box sx={{ mb: 1 }}>
-        {formLabels.map((label) => (
-          <Chip sx={{ mr: 1 }} label={label} onDelete={() => handleDelete(label)} />
+        {formLabels.map((label, index) => (
+          <Chip key={index} sx={{ mr: 1 }} label={label} onDelete={() => handleDelete(label)} />
         ))}
       </Box>}
       <TextField
