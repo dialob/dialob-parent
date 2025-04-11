@@ -22,7 +22,7 @@ The following peer dependencies need to be installed for mui v5:
     "@mui/material": "^5.0.4",
     "@mui/styles": "^5.0.1",
     "react-intl": "^7.1.*",
-    "react-markdown": "^4.3.*",
+    "react-markdown": "^10.1.0",
     "@date-io/date-fns": "^2.11.*",
     "date-fns": "^2.0.0"
 }

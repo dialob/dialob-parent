@@ -8,7 +8,7 @@ interface HeadingRendererProps {
 }
 
 interface LinkRendererProps {
-  href: string;
+  href?: string;
 }
 
 const HLEVEL_MAPPING: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6')[] = [
@@ -50,6 +50,6 @@ export interface MarkdownViewProps {
 
 export const MarkdownView: React.FC<MarkdownViewProps> = ({ text }) => {
   return (
-    <Markdown source={text} escapeHtml renderers={renderers} />
+    <Markdown skipHtml components={renderers}>{text}</Markdown>
   );
 }

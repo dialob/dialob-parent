@@ -44,7 +44,7 @@ export const Group: React.FC<ItemProps> = ({ item }) => {
           </Grid>
 
           {
-            description && <Markdown source={description} escapeHtml />
+            description && <Markdown skipHtml>{description}</Markdown>
           }
 
           {items.map((i, k) => <Grid data-type='group-item-grid' key={k} item xs={12}>{i}</Grid>)}

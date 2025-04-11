@@ -21,7 +21,7 @@
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
     "react-intl": "^7.1.10",
-    "react-markdown": "^7.0.1",
+    "react-markdown": "^10.1.0",
     "react-number-format": "^4.7.3"
   },
   "devDependencies": {

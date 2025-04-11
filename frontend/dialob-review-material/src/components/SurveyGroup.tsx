@@ -81,7 +81,7 @@ export const SurveyGroup: React.FC<ItemProps> = ({ item }) => {
           </Grid>
 
           {
-            description && <Markdown source={description} escapeHtml />
+            description && <Markdown skipHtml>{description}</Markdown>
           }
 
           <Grid item xs={12}>
