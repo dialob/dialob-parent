@@ -38,3 +38,11 @@ export const renderDialob = (target: HTMLElement, sessionId: string, config: Con
   const root = createRoot(target);
   root.render(<AppRoot session={session} />);
 };
+
+declare global {
+  interface Window {
+    renderDialob: (target: HTMLElement, sessionId: string, config: Config) => void;
+  }
+}
+
+window.renderDialob = renderDialob;

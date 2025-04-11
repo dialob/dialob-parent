@@ -25,7 +25,6 @@
 <!-- htmlmin:ignore -->
 <script type="module" src="src/index.tsx"></script>
 <script type="module" th:if="${formConnectionOptions}" th:inline="javascript" vite-ignore>
-  import { renderDialob } from "./src/index.tsx";
   var endpointUrl =
       /*[[${formConnectionOptions.restUrlBase}]]*/ "%VITE_DIALOB_ENDPOINT%";
 
@@ -47,7 +46,7 @@
       }
     }
   }
-  renderDialob(document.getElementById("root"), sessionId, {
+  window.renderDialob(document.getElementById("root"), sessionId, {
     endpoint:
       endpointUrl,
     transport: {
