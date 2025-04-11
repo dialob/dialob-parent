@@ -7,7 +7,7 @@ import pluginReact from "eslint-plugin-react";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default defineConfig([
-  globalIgnores(["build/", "lib/*", "coverage/*"]),
+  globalIgnores(["build/", "dist/*", "lib/*", "coverage/*"]),
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"], languageOptions: { globals: globals.browser } },
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"] },
