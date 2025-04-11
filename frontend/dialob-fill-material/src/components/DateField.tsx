@@ -3,22 +3,25 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
 import { TextField, Box } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {format} from 'date-fns';
+import { format } from 'date-fns';
 import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
-import enGB from 'date-fns/locale/en-GB';
-import enUS from 'date-fns/locale/en-US';
-import fi from 'date-fns/locale/fi';
-import sv from 'date-fns/locale/sv';
-import et from 'date-fns/locale/et';
+
+import {
+  sv,
+  fi,
+  et,
+  enGB,
+  enUS,
+} from 'date-fns/locale';
 
 const DATE_FORMAT_MAPPING: { [key: string]: string } = {
-  'en': enGB.formatLong?.date({width: 'short'}),
-  'en-gb': enGB.formatLong?.date({width: 'short'}),
-  'en-us': enUS.formatLong?.date({width: 'short'}),
-  'fi': fi.formatLong?.date({width: 'short'}),
-  'sv': sv.formatLong?.date({width: 'short'}),
-  'et': et.formatLong?.date({width: 'short'})
+  'en': enGB.formatLong?.date({ width: 'short' }),
+  'en-gb': enGB.formatLong?.date({ width: 'short' }),
+  'en-us': enUS.formatLong?.date({ width: 'short' }),
+  'fi': fi.formatLong?.date({ width: 'short' }),
+  'sv': sv.formatLong?.date({ width: 'short' }),
+  'et': et.formatLong?.date({ width: 'short' })
 }
 
 export interface DateFieldProps {
@@ -63,7 +66,8 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
               required={datefield.required}
               error={errors.length > 0}
               helperText={<RenderErrors errors={errors} />}
-            />)}
+            />)
+          }
           }
         />
       </Box>
