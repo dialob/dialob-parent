@@ -22,7 +22,7 @@ Following peer dependencies need to be installed:
   "@mui/system": "^5.11.0",
   "@mui/x-date-pickers": "^5.0.12",
   "date-fns": "^2.0.0",
-  "react-intl": "^5.20.*",
+  "react-intl": "^7.1.*",
   "react-markdown": "^7.0.*",
   "react-number-format": "^4.7.*"
 }

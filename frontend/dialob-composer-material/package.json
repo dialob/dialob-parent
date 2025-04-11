@@ -40,7 +40,7 @@
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^6.6.2",
+    "react-intl": "^7.1.10",
     "react-markdown": "^9.0.1",
     "react-scroll": "^1.9.0"
   },
@@ -78,7 +78,7 @@
     "@mui/material": "^5.14.20",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^6.6.2",
+    "react-intl": "^7.1.10",
     "react-scroll": "^1.9.0"
   }
 }
