@@ -3,25 +3,25 @@ import { useEffect, useState, useRef } from 'react';
 import { useFillSession } from './useFillSession';
 
 function getAvailableItems(session: Session, id: string | undefined, prevValue: boolean[]): boolean[] {
-  if(!id) {
+  if (!id) {
     return prevValue.length > 0 ? [] : prevValue;
   }
 
   const item = session.getItem(id);
-  if(!item || !item.items) {
+  if (!item || !item.items) {
     return prevValue.length > 0 ? [] : prevValue;
   }
 
   let isSame = true;
   const newValue = item.items.map((itemId, index) => {
     const visible = session.getItem(itemId) !== undefined;
-    if(isSame && prevValue[index] !== visible) {
+    if (isSame && prevValue[index] !== visible) {
       isSame = false;
     }
     return visible;
   });
 
-  if(isSame) return prevValue;
+  if (isSame) return prevValue;
   return newValue;
 };
 
@@ -44,7 +44,7 @@ export function useFillItem<T extends ItemType>(id: string | undefined): FillIte
   const prevAvailableItems = useRef(availableItems);
 
   useEffect(() => {
-    if(!id) return;
+    if (!id) return;
 
     const updateItem = () => {
       setItem(() => session.getItem(id) as SessionItem<T> | undefined);
@@ -52,10 +52,10 @@ export function useFillItem<T extends ItemType>(id: string | undefined): FillIte
 
     const updateErrors = () => {
       const newErrors = session.getItemErrors(id);
-      if(newErrors) {
+      if (newErrors) {
         setErrors(newErrors);
         prevErrors.current = newErrors;
-      } else if(prevErrors.current.length > 0) {
+      } else if (prevErrors.current.length > 0) {
         const empty: typeof errors = [];
         setErrors(empty);
         prevErrors.current = empty;
@@ -82,11 +82,11 @@ export function useFillItem<T extends ItemType>(id: string | undefined): FillIte
   }, [session, id, prevErrors, prevAvailableItems, setItem, setErrors, setAvailableItems]);
 
   let visibleItems: string[];
-  if(!item || !item.items) {
+  if (!item || !item.items) {
     visibleItems = [];
   } else {
     visibleItems = item.items.filter((id) => {
-      if(session.getItem(id) === undefined) {
+      if (session.getItem(id) === undefined) {
         return false;
       }
       return true;
