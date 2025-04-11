@@ -1,6 +1,6 @@
 import { ItemAction } from '@dialob/fill-api';
 import { useFillActions, useFillSession } from '@dialob/fill-react';
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid, Button, Dialog, DialogTitle, DialogActions, Paper, Theme } from '@mui/material';
 import { Remove } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
@@ -31,7 +31,7 @@ export interface RowProps {
 };
 export const Row: React.FC<RowProps> = ({ row, children }) => {
   const session = useFillSession();
-  const {deleteRow} = useFillActions();
+  const { deleteRow } = useFillActions();
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
   const rowGroupContext = useContext(RowGroupContext);
   const removeRow = () => {
@@ -39,12 +39,12 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
     deleteRow(row.id);
   };
   let responsiveProps = {};
-	const backgroundColor = row.props?.color;
+  const backgroundColor = row.props?.color;
   const spacesTop = parseInt(row.props?.spacesTop ?? undefined);
   const spacesBottom = parseInt(row.props?.spacesBottom ?? undefined);
   const paperSx = {
     p: 1,
-		...(backgroundColor && { backgroundColor: (theme: Theme) => theme.palette.background.default }),
+    ...(backgroundColor && { backgroundColor: (theme: Theme) => theme.palette.background.default }),
     ...(spacesTop && { marginTop: spacesTop }),
     ...(spacesBottom && { marginBottom: spacesBottom })
   }
@@ -53,8 +53,7 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
 
   let columns = rowGroupContext.rowGroup?.props?.columns || 1;
   columns = columns > 4 ? 4 : columns;
-  //@ts-ignore
-  const lg: ColumnType = columns > 1 ? Math.floor(12 / columns) : undefined;
+  const lg = columns > 1 ? Math.floor(12 / columns) : undefined;
 
   responsiveProps = {
     xs: 12,
@@ -72,12 +71,12 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
           ))}
         </Grid>
         <Grid container spacing={1} justifyContent='center'>
-          <Grid item xs={1} sx={{mt: 1, textAlign: 'center'}} >
+          <Grid item xs={1} sx={{ mt: 1, textAlign: 'center' }} >
             <Button size='small' color='primary' variant='contained' startIcon={<Remove />} onClick={() => setConfirmationOpen(true)} disabled={!(row.allowedActions && row.allowedActions.includes('DELETE_ROW'))}><FormattedMessage id='row.remove.button' /></Button>
           </Grid>
         </Grid>
       </Paper>
-      <ConfirmationDialog isOpen={isConfirmationOpen} onClose={() => setConfirmationOpen(false)} onRemove={removeRow}/>
+      <ConfirmationDialog isOpen={isConfirmationOpen} onClose={() => setConfirmationOpen(false)} onRemove={removeRow} />
     </>
   );
 }

@@ -3,15 +3,14 @@ import { ItemAction } from '@dialob/fill-api';
 import { Description } from './Description';
 import { GroupContext } from '../context/GroupContext';
 import { useFillSession, useFillValueSet } from '@dialob/fill-react';
-import React, { ReactNode, useContext } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 import { Survey } from './Survey';
 
 export interface SurveyGroupProps {
   surveyGroup: ItemAction<'surveygroup'>['item'];
-  children: ReactNode;
 };
 
-export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children }) => {
+export const SurveyGroup: React.FC<PropsWithChildren<SurveyGroupProps>> = ({ surveyGroup, children }) => {
   const valueSet = useFillValueSet(surveyGroup.valueSetId);
   const session = useFillSession();
   const groupCtx = useContext(GroupContext);
@@ -40,7 +39,7 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
   return (
     <GroupContext.Provider value={{ level: groupCtx.level < 6 ? groupCtx.level + 1 : groupCtx.level }}>
       <Fade in={true}>
-        <Paper elevation={groupCtx.level} sx={{p: 2}}>
+        <Paper elevation={groupCtx.level} sx={{ p: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant='h3'>
@@ -50,11 +49,11 @@ export const SurveyGroup: React.FC<SurveyGroupProps> = ({ surveyGroup, children 
             </Grid>
 
             <Grid item xs={12}>
-              <Box sx={{display: 'grid', alignItems: 'center', width: '100%', gridAutoFlow: vertical ? 'column': 'row', gridTemplateRows: `repeat(${rowCount}, auto)`, gridTemplateColumns: `30% repeat(${colCount}, fit-content(30%))` }}>
+              <Box sx={{ display: 'grid', alignItems: 'center', width: '100%', gridAutoFlow: vertical ? 'column' : 'row', gridTemplateRows: `repeat(${rowCount}, auto)`, gridTemplateColumns: `30% repeat(${colCount}, fit-content(30%))` }}>
                 <Box></Box>
                 {
                   valueSet && valueSet.entries.map(entry => (
-                    <Box sx={{p: 1, fontWeight: 'bold'}} key={entry.key}>{entry.value}</Box>
+                    <Box sx={{ p: 1, fontWeight: 'bold' }} key={entry.key}>{entry.value}</Box>
                   ))
                 }
                 {

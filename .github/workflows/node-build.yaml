@@ -1,0 +1,145 @@
+on:
+  push:
+    paths:
+      - 'frontend/**'
+      - '!**.md'
+      - '.changeset/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+    branches:
+      - dev
+      - main
+
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '!**.md'
+    branches:
+      - dev
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+  issues: write
+  pull-requests: write
+
+name: node - build - frontend
+env:
+  CDN_DOMAIN: ${{ vars.CDN_DOMAIN }}
+
+jobs:
+  build:
+    name: Build Frontend from branch - main
+    runs-on: ubuntu-latest
+    outputs:
+      artifacts: ${{ steps.distribution-packages.outputs.artifacts }}
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        registry-url: 'https://registry.npmjs.org'
+        scope: '@dialob'
+        cache: 'pnpm'
+        always-auth: true
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Install dependencies
+      run: |
+        pnpm -r install
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+    - name: Lint
+      run: |
+        pnpm -r --no-bail lint || exit 0
+
+    - name: Test
+      run: |
+        pnpm -r test
+  
+    - name: Build
+      run: |
+        pnpm -r build
+  
+    - name: Create Release Pull Request
+      if: github.event_name != 'pull_request'
+      uses: changesets/action@v1
+      id: changesets
+      with:
+        title: Version Frontend Packages
+        commit: Version Frontend Packages
+        publish: pnpm ci:publish
+        version: pnpm ci:version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+    - name: Package distributions
+      id: distribution-packages
+      run: ./distribution-packages.sh -o $ARTIFACT_OUTPUT
+      env:
+        PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
+        ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
+        CDN_DOMAIN: cdn.resys.io
+
+    - name: Upload distributions
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'artifacts'
+        path: ${{ github.workspace }}/artifacts
+
+  publish:
+    name: Publish Frontend
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.outputs.artifacts != null && needs.build.outputs.artifacts != '[]' }}
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: ${{ secrets.ASSUME_ROLE }}
+        role-session-name: DialobArtifacts
+
+    - name: Download distributions
+      id: download
+      uses: actions/download-artifact@v4
+      with:
+        name: 'artifacts'
+        path: ${{ github.workspace }}/artifacts
+
+    - name: Publish assets
+      run: |
+        if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          EXPIRY_DATE=`date -I -d '30 days'`
+          echo "Pull request's upload expires on $EXPIRY_DATE"
+          EXPIRES="--expires $EXPIRY_DATE"
+        fi
+        for PROJECT in `ls -1 $DOWNLOAD_PATH`; do
+          mkdir temp
+          tar -C temp -xzvf $DOWNLOAD_PATH/$PROJECT
+          cd temp
+          CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
+          TARGET=s3://${{ secrets.CDN_S3_BUCKET }}/dialob/${CONTEXT#"./"}
+          aws s3 sync $EXPIRES --exclude '*.html' --acl public-read --delete --cache-control public,max-age=3600 $CONTEXT $TARGET
+          aws s3 sync $EXPIRES --include '*.html' --acl public-read --cache-control no-cache $CONTEXT $TARGET
+          cd ..
+          rm -Rf temp
+        done
+      env:
+        DOWNLOAD_PATH: ${{ steps.download.outputs.download-path }}

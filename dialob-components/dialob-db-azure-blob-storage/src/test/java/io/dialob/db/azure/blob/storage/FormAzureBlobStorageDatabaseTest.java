@@ -38,7 +38,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 class FormAzureBlobStorageDatabaseTest {
 
 
-  private static final String AZURITE_IMAGE = "mcr.microsoft.com/azure-storage/azurite:3.32.0";
+  private static final String AZURITE_IMAGE = "mcr.microsoft.com/azure-storage/azurite:3.33.0";
   private static final GenericContainer<?> AZURITE_CONTAINER = new GenericContainer<>(AZURITE_IMAGE)
     .withCommand("azurite-blob", "--blobHost", "0.0.0.0")
     .withExposedPorts(10000);

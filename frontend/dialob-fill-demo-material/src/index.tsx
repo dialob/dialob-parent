@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import messages from './intl';
-import {CssBaseline} from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { IntlProvider } from 'react-intl';
 import DialobFill, { Config, Session as DialobSession } from '@dialob/fill-api';
 import { Dialob } from './dialob/Dialob';
@@ -26,17 +26,23 @@ const AppRoot: React.FC<AppRootProps> = ({ session }) => {
       <CssBaseline />
       <IntlProvider locale={locale} messages={messages[locale]}>
         <App setLocale={setLocale} setThemeIndex={setThemeIndex} themeIndex={themeIndex} >
-            <Dialob key={session?.id} session={session} locale={locale} onComplete={onComplete} />
+          <Dialob key={session?.id} session={session} locale={locale} onComplete={onComplete} />
         </App>
       </IntlProvider>
     </>
   );
 }
 
-const renderDialob = (target: HTMLElement, sessionId: string, config: Config) => {
+export const renderDialob = (target: HTMLElement, sessionId: string, config: Config) => {
   const session = sessionId ? DialobFill.newSession(sessionId, config) : null;
-  ReactDOM.render(<AppRoot session={session} />, target);
+  const root = createRoot(target);
+  root.render(<AppRoot session={session} />);
 };
 
-// @ts-ignore
+declare global {
+  interface Window {
+    renderDialob: (target: HTMLElement, sessionId: string, config: Config) => void;
+  }
+}
+
 window.renderDialob = renderDialob;

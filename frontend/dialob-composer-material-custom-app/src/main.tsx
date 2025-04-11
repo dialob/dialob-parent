@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BackendTypes, DefaultTypes, DialobComposer, PropEditors, SimpleField, Group, Note } from '@dialob/dialob-composer-material';
+import { BackendTypes, DefaultTypes, DialobComposer, PropEditors, SimpleField, Group, Note } from '@dialob/composer-material';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { siteTheme } from './siteTheme';
 import { Circle, Phone, CropSquare, BlurLinear, TableRows, MoreHoriz, Place, TextFormat, Schedule, CalendarMonth, Tag, Euro, CheckBox, KeyboardArrowDown, List, ErrorOutline, Note as NoteIcon } from '@mui/icons-material';
@@ -298,7 +298,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
               message: {
                 "en": "Phone number format is incorrect, format is optional country code starting with +, optional area code in parenthesis and 4-15 numbers",
                 "fi": "Puhelinnumeron muoto on väärä, muoto on valinnainen maakoodi, joka alkaa +, valinnainen suuntanumero suluissa ja 4-15 numeroa",
-                "sv": "Telefonnummerformatet är felaktigt, formatet är valfri landskod som börjar med +, valfritt riktnummer inom parentes och 4-15 siffror" 
+                "sv": "Telefonnummerformatet är felaktigt, formatet är valfri landskod som börjar med +, valfritt riktnummer inom parentes och 4-15 siffror"
               },
               rule: "answer not matches \"^(\\+[0-9]{1,3}\\s?)?(\\([0-9]{1,5}\\)\\s?)?(?:[0-9]\\s?){3,14}[0-9]$\""
             }
@@ -314,7 +314,7 @@ export const ITEMTYPE_CONFIG: DefaultTypes.ItemTypeConfig = {
               message: {
                 "en": "Phone number format is incorrect, format is optional country code starting with +, optional area code in parenthesis and 4-15 numbers",
                 "fi": "Puhelinnumeron muoto on väärä, muoto on valinnainen maakoodi, joka alkaa +, valinnainen suuntanumero suluissa ja 4-15 numeroa",
-                "sv": "Telefonnummerformatet är felaktigt, formatet är valfri landskod som börjar med +, valfritt riktnummer inom parentes och 4-15 siffror" 
+                "sv": "Telefonnummerformatet är felaktigt, formatet är valfri landskod som börjar med +, valfritt riktnummer inom parentes och 4-15 siffror"
               },
               rule: "answer not matches \"^((\\+[0-9]{1,3}\\s?)?(\\([0-9]{1,5}\\)\\s?)?(?:[0-9]\\s?){3,14}[0-9])|()$\""
             }
@@ -373,4 +373,4 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: BackendType
   )
 };
 
-window.renderDialobComposer = renderDialobComposer;
+(window as any).renderDialobComposer = renderDialobComposer;

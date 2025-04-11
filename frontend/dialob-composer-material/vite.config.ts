@@ -1,15 +1,38 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import path from 'path';
+import dts from 'vite-plugin-dts';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3000,
-    /*
-    proxy: {
-      '/': 'http://localhost:3000'
-    }
-    */
+  plugins: [dts({ rollupTypes: true })], // Use dts plugin to generate type definitions
+  build: {
+    outDir: 'dist-lib',
+    lib: {
+      entry: path.resolve(__dirname, 'src/lib/index.ts'), // Set entry point to the lib index file
+      name: '@dialob/composer-material',
+      fileName: 'index',
+      formats: ['es'], // Only generate ESM bundle
+    },
+    rollupOptions: {
+      // Exclude dependencies that shouldn't be bundled (since they will be used from the parent app)
+      external: [
+        'react',
+        'react-dom',
+        'react-intl',
+        'react-scroll',
+        '@mui/material',
+        '@mui/icons-material',
+      ],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          'react-intl': 'ReactIntl',
+          'react-scroll': 'ReactScroll',
+          '@mui/material': 'MaterialUI',
+          '@mui/icons-material': 'MaterialUIIcons',
+        },
+      },
+    },
   },
-})
+});
+

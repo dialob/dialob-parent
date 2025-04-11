@@ -33,8 +33,7 @@ export interface FillItem<T extends ItemType> {
 export function useFillItem<T extends ItemType>(id: string | undefined): FillItem<T> {
   const session = useFillSession();
 
-  const initialValue = id ? session.getItem(id) : undefined;
-  const [item, setItem] = useState<SessionItem | undefined>(initialValue);
+  const [item, setItem] = useState<SessionItem<T> | undefined>(() => id ? session.getItem(id) as SessionItem<T> : undefined);
 
   const initialErrors = id ? session.getItemErrors(id) || [] : [];
   const [errors, setErrors] = useState<SessionError[]>(initialErrors);
@@ -48,7 +47,7 @@ export function useFillItem<T extends ItemType>(id: string | undefined): FillIte
     if(!id) return;
 
     const updateItem = () => {
-      setItem(session.getItem(id));
+      setItem(() => session.getItem(id) as SessionItem<T> | undefined);
     }
 
     const updateErrors = () => {

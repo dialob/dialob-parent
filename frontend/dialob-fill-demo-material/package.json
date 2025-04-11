@@ -1,13 +1,15 @@
 {
-  "name": "dialob-fill-demo-material",
+  "name": "@dialob/dialob-fill-demo-material",
   "version": "1.0.1",
   "private": true,
+  "type": "module",
   "proxy": "http://localhost:8080",
+  "license": "Apache-2.0",
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
-    "@dialob/fill-api": "^1.4.7",
-    "@dialob/fill-material": "^1.5.0",
-    "@dialob/fill-react": "^3.1.0",
+    "@dialob/fill-api": "workspace:~1.4.9",
+    "@dialob/fill-material": "workspace:~1.5.5",
+    "@dialob/fill-react": "workspace:~4.0.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.1.0",
@@ -15,56 +17,39 @@
     "@mui/material": "^5.11.0",
     "@mui/system": "^5.11.0",
     "@mui/x-date-pickers": "^5.0.12",
-    "@storybook/preset-create-react-app": "^3.1.5",
     "date-fns": "^2.16.1",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
-    "react-intl": "^5.20.10",
-    "react-markdown": "^7.0.1",
+    "react-intl": "^7.1.10",
+    "react-markdown": "^10.1.0",
     "react-number-format": "^4.7.3"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^6.5.15",
-    "@storybook/addon-links": "^6.5.15",
-    "@storybook/addons": "^6.5.15",
-    "@storybook/react": "^6.5.15",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.31",
-    "@types/react": "^18.0.20",
-    "@types/react-dom": "^18.0.9",
-    "babel-loader": "8.1.0",
-    "react-scripts": "^5.0.1",
-    "ts-loader": "^7.0.5",
-    "typescript": "^4.4.2"
+    "@chromatic-com/storybook": "^3.2.6",
+    "@eslint/js": "^9.24.0",
+    "@storybook/addon-actions": "^8.6.12",
+    "@storybook/addon-links": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/react-vite": "^8.6.12",
+    "@types/node": "^22.14.0",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.24.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^15.15.0",
+    "storybook": "^8.6.12",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.1",
+    "vite": "^6.2.6"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build-aws": "export PUBLIC_URL=\"//cdn.resys.io/dialob/dialob-fill-demo-material/main\"; react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "start": "vite",
+    "build": "vite build",
+    "dist": "pnpm run build --base=$DIST_BASE",
+    "lint": "eslint",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }

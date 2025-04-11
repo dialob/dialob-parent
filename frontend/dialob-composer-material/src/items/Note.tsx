@@ -5,8 +5,9 @@ import { DialobItem } from '../dialob';
 import { IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
@@ -27,7 +28,7 @@ const Note: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
 
   return (
     <Element name={item.id}>
-      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }}>
+      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
         <Table>
           <TableBody>
             <TableRow>

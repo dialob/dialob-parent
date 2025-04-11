@@ -1,13 +1,15 @@
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
-      - 'frontend/**'
-      - 'utils/**'
-      - '**/*.md'
-      - 'compose/**'
-      - 'dev-env/**'
-      - 'api/**'
+    paths:
+      - 'dialob-*/**'
+      - 'pom.xml'
+      - '!docs/**'
+      - '!frontend/**'
+      - '!utils/**'
+      - '!**/*.md'
+      - '!compose/**'
+      - '!dev-env/**'
+      - '!api/**'
     branches:
       - dev
 

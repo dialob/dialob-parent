@@ -103,7 +103,6 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
       }
     }, 300);
     return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
 
   return (
@@ -140,7 +139,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 
   return (
     <>
-      <Button onClick={handleClick} component='span' endIcon={<KeyboardArrowDown />} variant='text'>
+      <Button onClick={handleClick} component='span' endIcon={<KeyboardArrowDown />} variant='text' sx={{ p: 0 }}>
         <Typography variant='subtitle2'>
           {variable.contextType}
         </Typography>
@@ -166,7 +165,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
       updateContextVariable(variable.name, variable.contextType, defaultValue);
     }, 300);
     return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [defaultValue]);
 
   return (
@@ -189,7 +188,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
       updateExpressionVariable(variable.name, expression);
     }, 300);
     return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [expression]);
 
   return (

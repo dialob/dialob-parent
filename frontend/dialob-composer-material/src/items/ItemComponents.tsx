@@ -73,8 +73,10 @@ const resolveTypeName = (type: string, itemTypeConfig: ItemTypeConfig): string =
   return type;
 }
 
-export const IdField: React.FC<{ item: DialobItem }> = ({ item }) => {
+export const IdField: React.FC<{ item: DialobItem, group?: true }> = ({ item, group }) => {
   const { setActiveItem, setItemOptionsActiveTab } = useEditor();
+  const variant = group ? 'body2' : 'body1';
+  const fontWeight = group ? 'bold' : undefined;
 
   const handleClick = () => {
     setActiveItem(item);
@@ -83,7 +85,7 @@ export const IdField: React.FC<{ item: DialobItem }> = ({ item }) => {
 
   return (
     <ItemHeaderButton variant='text' color='inherit' onClick={handleClick}>
-      <Typography>{item.id}</Typography>
+      <Typography variant={variant} fontWeight={fontWeight}>{item.id}</Typography>
     </ItemHeaderButton>
   );
 }
@@ -431,8 +433,7 @@ export const VisibilityField: React.FC<{ item: DialobItem }> = ({ item }) => {
       onClick={handleClick}
     >
       {item.activeWhen ?
-        <Typography fontFamily='monospace' textTransform='none'>
-          {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+        <Typography fontFamily='monospace' textTransform='none' fontSize={14}>
           {item.activeWhen.length > MAX_RULE_LENGTH ? item.activeWhen.substring(0, MAX_RULE_LENGTH) + '...' : item.activeWhen}
         </Typography> :
         <Typography color='text.hint'>

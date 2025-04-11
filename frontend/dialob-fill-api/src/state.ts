@@ -1,4 +1,4 @@
-import produce, { enableMapSet } from 'immer';
+import { produce, enableMapSet } from 'immer';
 import { DialobError } from './error';
 import { Action, ErrorAction, ItemAction, ItemType, ValueSetAction } from './actions';
 

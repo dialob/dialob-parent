@@ -20,7 +20,7 @@ Builds static package under dist folder.
 ## Building and deploying to demo.dialob.io
 
 ```bash
-pnpm build-aws
+pnpm build:aws
 aws sso login
 ./aws-deploy.sh
 ```

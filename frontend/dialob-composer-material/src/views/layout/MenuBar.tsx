@@ -158,7 +158,6 @@ const MenuBar: React.FC = () => {
       setSearchMatches(matches);
     }, 500);
     return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKeyword]);
 
   return (
@@ -173,7 +172,6 @@ const MenuBar: React.FC = () => {
       <AppBar position="fixed" color='inherit' sx={{ zIndex: theme.zIndex.drawer + 1, marginRight: -SCROLLBAR_WIDTH }}>
         <Stack direction='row' divider={<Divider orientation='vertical' flexItem />}>
           <Box sx={{ display: 'flex', alignItems: 'center', ...headerPaddingSx }}>
-            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
             <Typography sx={{ fontWeight: 'bold' }}>Dialob Composer</Typography>
             <Typography sx={{ ml: 1 }}>
               {form.metadata.label}

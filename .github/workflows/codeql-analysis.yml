@@ -13,12 +13,14 @@ name: "CodeQL"
 
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
-      - 'utils/**'
-      - '**/*.md'
-      - 'compose/**'
-      - 'dev-env/**'
+    paths:
+      - 'dialob-*/**'
+      - 'frontend/**'
+      - '!docs/**'
+      - '!utils/**'
+      - '!**/*.md'
+      - '!compose/**'
+      - '!dev-env/**'
     branches:
       - main
       - dev
@@ -26,12 +28,12 @@ on:
       - dev-2.1
   pull_request:
     # The branches below must be a subset of the branches above
-    paths-ignore:
-      - 'docs/**'
-      - 'utils/**'
-      - '**/*.md'
-      - 'compose/**'
-      - 'dev-env/**'
+    paths:
+      - '!docs/**'
+      - '!utils/**'
+      - '!**/*.md'
+      - '!compose/**'
+      - '!dev-env/**'
     branches:
       - main
       - dev

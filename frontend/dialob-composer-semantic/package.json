@@ -1,14 +1,16 @@
 {
-  "name": "@resys/dialob-composer",
+  "name": "@dialob/dialob-composer",
   "version": "2.10.5-1",
   "description": "dialob-composer React component",
+  "private": false,
+  "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "rm -rf ./lib && tsc && yarn copy-files",
+    "build": "rm -rf ./lib && tsc && pnpm run copy-files",
     "clean": "rm -rf ./lib",
     "copy-files": "copyfiles -u 1 src/*.css lib/"
   },
@@ -16,9 +18,10 @@
     "@resys/react-redux-scroll": "0.2.3",
     "@resys/understood": "2.1.1",
     "classnames": "2.2.6",
-    "codemirror": "5.58.1",
+    "codemirror": "5.58.2",
     "file-saver": "2.0.2",
     "immutable": "3.8.2",
+    "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "lodash.escaperegexp": "^4.1.2",
     "memoizee": "0.4.14",
@@ -40,18 +43,18 @@
     "react": "16.13.x"
   },
   "devDependencies": {
+    "@eslint/js": "^9.24.0",
     "copyfiles": "^2.4.1",
+    "eslint": "^9.24.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^15.15.0",
     "react": "16.13.1",
-    "typescript": "^4.7.4"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.1"
   },
   "publishConfig": {
-    "registry": "https://repo.resys.io/repository/npm/",
+    "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@git.resys.io:22222/dialob/dialob-composer-v2.git"
-  }
+  "license": "MIT"
 }

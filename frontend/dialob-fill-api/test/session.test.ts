@@ -3,7 +3,7 @@ import { DialobRequestError } from '../src/error';
 import { Session, SessionOptions } from '../src/session';
 import { MockTransport } from './mocks/mock-transport';
 
-jest.useFakeTimers();
+jest.useFakeTimers({legacyFakeTimers: true});
 
 // https://stackoverflow.com/a/51045733
 const flushPromises = () => new Promise(setImmediate);
@@ -41,8 +41,8 @@ test('fetching from local state does not make any calls over the transport mecha
   session.getValueSet('some-valueset');
   session.getAllItems();
 
-  expect(transport.getFullState).not.toBeCalled();
-  expect(transport.update).not.toBeCalled();
+  expect(transport.getFullState).not.toHaveBeenCalled();
+  expect(transport.update).not.toHaveBeenCalled();
 });
 
 test('pulls data from transport layer and updates state', async () => {
@@ -72,7 +72,7 @@ test('pulls data from transport layer and updates state', async () => {
   });
 
   await session.pull();
-  expect(transport.getFullState).toBeCalled();
+  expect(transport.getFullState).toHaveBeenCalled();
   expect(session.getItem('number-item')).toBe(action1.item);
   expect(session.getItem('text-item')).toBe(action2.item);
 });
@@ -152,12 +152,12 @@ test('batches actions and syncs data after specified `syncWait` time', async () 
   session.deleteRow('rowgroup0_row0');
   session.complete();
 
-  expect(transport.update).not.toBeCalled();
+  expect(transport.update).not.toHaveBeenCalled();
   jest.advanceTimersByTime(150);
-  expect(transport.update).not.toBeCalled();
+  expect(transport.update).not.toHaveBeenCalled();
   jest.advanceTimersByTime(50);
-  expect(transport.update).toBeCalledTimes(1);
-  expect(transport.update).toBeCalledWith('session.test.ts', [
+  expect(transport.update).toHaveBeenCalledTimes(1);
+  expect(transport.update).toHaveBeenCalledWith('session.test.ts', [
     {
       type: 'ANSWER',
       id: 'item1',
@@ -204,7 +204,7 @@ test('does not batch an answer to the same item multiple times', async () => {
   session.setAnswer('item1', 'Second answer');
 
   jest.runAllTimers();
-  expect(transport.update).toBeCalledWith('session.test.ts', [
+  expect(transport.update).toHaveBeenCalledWith('session.test.ts', [
     {
       type: 'ANSWER',
       id: 'item1',
@@ -279,7 +279,7 @@ test('syncs new actions that were queued during previous sync', async () => {
 
   jest.advanceTimersByTime(200);
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(2);
+  expect(transport.update).toHaveBeenCalledTimes(2);
   expect(transport.update.mock.calls[1][1]).toEqual([
     {
       type: 'ANSWER',
@@ -352,15 +352,15 @@ test('syncs new actions after syncWait if no actions that need to be immediately
 
   jest.advanceTimersByTime(1000);
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(1);
+  expect(transport.update).toHaveBeenCalledTimes(1);
 
   jest.advanceTimersByTime(5000);
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(1);
+  expect(transport.update).toHaveBeenCalledTimes(1);
 
   jest.advanceTimersByTime(4000);
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(2);
+  expect(transport.update).toHaveBeenCalledTimes(2);
   expect(transport.update.mock.calls[1][1]).toEqual([
     {
       type: 'ANSWER',
@@ -428,7 +428,7 @@ test('syncs new actions immediately if an action was queued that needs to be imm
   session.setAnswer('item1', 'change again');
   jest.advanceTimersByTime(50);
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(1);
+  expect(transport.update).toHaveBeenCalledTimes(1);
 
   session.setAnswer('item1', 'second sync');
   session.next();
@@ -436,7 +436,7 @@ test('syncs new actions immediately if an action was queued that needs to be imm
 
   jest.advanceTimersByTime(100);
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(2);
+  expect(transport.update).toHaveBeenCalledTimes(2);
   expect(transport.update.mock.calls[1][1]).toEqual([
     {
       type: 'ANSWER',
@@ -481,8 +481,8 @@ test('calls event handlers on state update', async () => {
   session.on('update', onUpdate);
   session.setAnswer('item1', 'new-text');
 
-  expect(onUpdate).toBeCalledTimes(1);
-  expect(onUpdate).lastCalledWith();
+  expect(onUpdate).toHaveBeenCalledTimes(1);
+  expect(onUpdate).toHaveBeenLastCalledWith();
 });
 
 test('calls event handlers on sync update', async () => {
@@ -493,7 +493,7 @@ test('calls event handlers on sync update', async () => {
   session.on('sync', onSync);
 
   await flushPromises();
-  expect(onUpdate).not.toBeCalled();
+  expect(onUpdate).not.toHaveBeenCalled();
 
   const transportResponse = {
     rev: 120,
@@ -519,11 +519,11 @@ test('calls event handlers on sync update', async () => {
   transport.getFullState.mockReturnValue(transportResponse);
 
   await session.pull();
-  expect(onUpdate).toBeCalledTimes(1);
-  expect(onSync).toBeCalledTimes(2);
+  expect(onUpdate).toHaveBeenCalledTimes(1);
+  expect(onSync).toHaveBeenCalledTimes(2);
 
-  expect(onSync).toBeCalledWith('INPROGRESS');
-  expect(onSync).toBeCalledWith('DONE', transportResponse);
+  expect(onSync).toHaveBeenCalledWith('INPROGRESS');
+  expect(onSync).toHaveBeenCalledWith('DONE', transportResponse);
 });
 
 test('does not throw when fetch fails', async () => {
@@ -582,9 +582,9 @@ test('throws error if item does not exist', () => {
   const { session } = makeSession();
   expect(() => {
     session.setAnswer('someItem', 'yes');
-  }).toThrowError(`No item found with id 'someItem'`);
+  }).toThrow(`No item found with id 'someItem'`);
 });
 
 test('throws error if syncWait is smaller than -1', () => {
-  expect(() => makeSession({ syncWait: -2 })).toThrowError('syncWait must be -1 or higher!');
+  expect(() => makeSession({ syncWait: -2 })).toThrow('syncWait must be -1 or higher!');
 });

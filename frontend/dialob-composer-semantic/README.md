@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This package is deprecated!
+
 # dialob-composer
 
 ## Exports

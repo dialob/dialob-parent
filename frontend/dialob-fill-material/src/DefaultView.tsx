@@ -5,20 +5,20 @@ import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle,
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-
-
-import svLocale from 'date-fns/locale/sv';
-import fiLocale from 'date-fns/locale/fi';
-import etLocale from 'date-fns/locale/et';
-import enLocale from 'date-fns/locale/en-GB';
-import msLocale from 'date-fns/locale/ms';
+import {
+  sv as svLocale,
+  fi as fiLocale,
+  et as etLocale,
+  enGB as enLocale,
+  ms as msLocale
+} from 'date-fns/locale';
 
 const localeMap = {
   en: enLocale,
   et: etLocale,
   fi: fiLocale,
   sv: svLocale,
-	ms: msLocale,
+  ms: msLocale,
 };
 
 import { FormattedMessage } from 'react-intl';
@@ -31,7 +31,7 @@ export interface DefaultViewProps {
   onComplete?: (session: Session) => void;
 };
 
-export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) => {
+export const DefaultView: React.FC<DefaultViewProps> = ({ children, onComplete }) => {
   const { item: questionnaire } = useFillItem('questionnaire');
   const session = useFillSession();
   const sessionLocale = useFillLocale();
@@ -62,7 +62,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
     setCompleteConfirmationOpen(true);
   }
 
-  if(!session.id) {
+  if (!session.id) {
     return (
       <>
         <div>
@@ -72,9 +72,9 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
     )
   } else if (!questionnaire) {
     return (
-      <Grid container={true} justifyContent='center' alignItems='center' style={{minHeight: '100vh'}}>
+      <Grid container={true} justifyContent='center' alignItems='center' style={{ minHeight: '100vh' }}>
         <Grid item>
-          <CircularProgress size={50}/>
+          <CircularProgress size={50} />
         </Grid>
       </Grid>
     );
@@ -82,7 +82,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
 
   if (completed) {
     return (
-      <Paper style={{marginTop: '2em', padding: '2em'}}>
+      <Paper style={{ marginTop: '2em', padding: '2em' }}>
         <Typography variant='h2'><FormattedMessage id='form.completed' /></Typography>
       </Paper>
     );
@@ -90,58 +90,58 @@ export const DefaultView: React.FC<DefaultViewProps> = ({children, onComplete}) 
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <Typography variant='h1'>{questionnaire.label}</Typography>
-          </Grid>
-          {
-             questionnaire.items && questionnaire.activeItem ?
-              <Questionnaire>
-                {questionnaire.items && children([questionnaire.activeItem])}
-              </Questionnaire>
-              : null
-          }
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Typography variant='h1'>{questionnaire.label}</Typography>
         </Grid>
+        {
+          questionnaire.items && questionnaire.activeItem ?
+            <Questionnaire>
+              {questionnaire.items && children([questionnaire.activeItem])}
+            </Questionnaire>
+            : null
+        }
+      </Grid>
 
-          {questionnaire.allowedActions && (
-          <Grid container justifyContent='space-between' spacing={3} style={{marginTop: '1em', marginBottom: '1em'}}>
-            <Grid item >
-              {questionnaire.allowedActions.includes('PREVIOUS') && (
-                <Button variant='contained' onClick={() => {window.scrollTo(0, 0); fillActions.previous();}} startIcon={<ChevronLeftIcon />}>
-                  <FormattedMessage id='page.previous' />
-                </Button>
-              )}
-            </Grid>
-            <Grid item>
-              {!questionnaire.allowedActions.includes('NEXT') && (
-                <Button variant='contained' color='primary'
-                  disabled={!questionnaire.allowedActions.includes('COMPLETE')}
-                  onClick={preComplete}>
-                    <FormattedMessage id='complete' />
-                </Button>
-              )}
-            </Grid>
-            <Grid item >
-              {questionnaire.allowedActions.includes('NEXT') && (
-                <Button variant='contained' onClick={() => {window.scrollTo(0, 0); fillActions.next();}} endIcon={<ChevronRightIcon />}>
-                  <FormattedMessage id='page.next' />
-                </Button>
-              )}
-            </Grid>
+      {questionnaire.allowedActions && (
+        <Grid container justifyContent='space-between' spacing={3} style={{ marginTop: '1em', marginBottom: '1em' }}>
+          <Grid item >
+            {questionnaire.allowedActions.includes('PREVIOUS') && (
+              <Button variant='contained' onClick={() => { window.scrollTo(0, 0); fillActions.previous(); }} startIcon={<ChevronLeftIcon />}>
+                <FormattedMessage id='page.previous' />
+              </Button>
+            )}
           </Grid>
-          )}
-          <Dialog open={completeConfirmationOpen}>
-            <DialogTitle><FormattedMessage id='complete.confirmation.title' /></DialogTitle>
-            <DialogContent>
-              <Typography variant='body1'>
-                <FormattedMessage id='complete.confirmation.message' />
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setCompleteConfirmationOpen(false)} color='secondary'><FormattedMessage id='complete.confirmation.cancel' /></Button>
-                <Button onClick={() => fillActions.complete()} color='primary' autoFocus><FormattedMessage id='complete.confirmation.confirm' /></Button>
-            </DialogActions>
-          </Dialog>
+          <Grid item>
+            {!questionnaire.allowedActions.includes('NEXT') && (
+              <Button variant='contained' color='primary'
+                disabled={!questionnaire.allowedActions.includes('COMPLETE')}
+                onClick={preComplete}>
+                <FormattedMessage id='complete' />
+              </Button>
+            )}
+          </Grid>
+          <Grid item >
+            {questionnaire.allowedActions.includes('NEXT') && (
+              <Button variant='contained' onClick={() => { window.scrollTo(0, 0); fillActions.next(); }} endIcon={<ChevronRightIcon />}>
+                <FormattedMessage id='page.next' />
+              </Button>
+            )}
+          </Grid>
+        </Grid>
+      )}
+      <Dialog open={completeConfirmationOpen}>
+        <DialogTitle><FormattedMessage id='complete.confirmation.title' /></DialogTitle>
+        <DialogContent>
+          <Typography variant='body1'>
+            <FormattedMessage id='complete.confirmation.message' />
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCompleteConfirmationOpen(false)} color='secondary'><FormattedMessage id='complete.confirmation.cancel' /></Button>
+          <Button onClick={() => fillActions.complete()} color='primary' autoFocus><FormattedMessage id='complete.confirmation.confirm' /></Button>
+        </DialogActions>
+      </Dialog>
     </LocalizationProvider>
   )
 }

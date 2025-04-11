@@ -32,7 +32,7 @@ export class DialobContextType {
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
-    questionnaireValue = this.questionnaire.answers.find(context=>context.id === varName);
+    questionnaireValue = this.questionnaire.answers?.find(context=>context.id === varName);
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
@@ -43,8 +43,8 @@ export class DialobContextType {
   }
 
   public getAnswer(itemId: string, answerId : string | null = null): any {
-    let aID = answerId ? answerId : itemId;
-    let answer = this.questionnaire.answers.find(e => e.id === aID);
+    const aID = answerId ? answerId : itemId;
+    const answer = this.questionnaire.answers?.find(e => e.id === aID);
     if (answer) {
       return answer.value;
     }
@@ -57,7 +57,7 @@ export class DialobContextType {
 
   public createItem(itemId: string, answerId: string | null = null, isMainGroupItem: boolean = false): JSX.Element | null {
     const item =  this.form.data[itemId];
-    let configItem = this.config.items.find(c => c.matcher(item, isMainGroupItem));
+    const configItem = this.config.items.find(c => c.matcher(item, isMainGroupItem));
     if (!configItem) {
       return null;
     }

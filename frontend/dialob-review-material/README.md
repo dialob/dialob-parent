@@ -7,7 +7,7 @@
 Add dependency
 
 ```
-yarn add @resys/dialob-review-material
+pnpm add @dialob/review-material
 
 ```
 
@@ -21,8 +21,8 @@ The following peer dependencies need to be installed for mui v5:
     "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.0.4",
     "@mui/styles": "^5.0.1",
-    "react-intl": "^5.3.*",
-    "react-markdown": "^4.3.*",
+    "react-intl": "^7.1.*",
+    "react-markdown": "^10.1.0",
     "@date-io/date-fns": "^2.11.*",
     "date-fns": "^2.0.0"
 }
@@ -39,7 +39,7 @@ The following peer dependencies need to be installed for mui v5:
 
 ```ts
 import React from 'react';
-import { MaterialDialobReview } from '@resys/dialob-review-material';
+import { MaterialDialobReview } from '@dialob/review-material';
 
 const ReviewWrapper : React.FC = () => {
   return (

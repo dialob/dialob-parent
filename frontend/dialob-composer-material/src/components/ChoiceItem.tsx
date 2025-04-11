@@ -33,7 +33,6 @@ const getLabel = (entry: ValueSetEntry, language: string) => {
     return <></>;
   }
   if (localizedLabel.length > MAX_CHOICE_LABEL_LENGTH) {
-    // eslint-disable-next-line formatjs/no-literal-string-in-jsx
     return <Typography>{localizedLabel.substring(0, MAX_CHOICE_LABEL_LENGTH) + '...'}</Typography>;
   }
   return <Typography>{localizedLabel}</Typography>;
@@ -67,7 +66,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idValue]);
 
   React.useEffect(() => {
@@ -80,7 +78,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rule]);
 
   React.useEffect(() => {
@@ -90,7 +87,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
       }, 300);
       return () => clearTimeout(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localizedString]);
 
   const handleUpdate = (value: string, language: string) => {

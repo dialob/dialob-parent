@@ -39,7 +39,6 @@ const ComposerLayoutView: React.FC = () => {
           setLoading(false);
         }
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -53,7 +52,7 @@ const ComposerLayoutView: React.FC = () => {
       <Box display='flex'>
         <MenuBar />
         <Drawer variant="permanent">
-          <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }}>
+          <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }} id='tree-scroll-container'>
             <NavigationPane />
           </Box>
         </Drawer>

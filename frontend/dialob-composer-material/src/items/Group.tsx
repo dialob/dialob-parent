@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
-import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
+import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow, alpha, styled, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem, DialobItems, useComposer } from '../dialob';
 import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMenu, StyledTable, VisibilityField } from './ItemComponents';
@@ -17,8 +17,15 @@ const createChildren = (item: DialobItem, items: DialobItems, itemConfig?: ItemC
     .map(item => itemFactory(item, itemConfig));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
+const GroupPaper = styled(Paper)(({ theme }) => ({
+  border: 1,
+  borderColor: theme.palette.grey[500],
+  borderStyle: 'solid',
+  borderRadius: 4
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { form } = useComposer();
   const { editor } = useEditor();
@@ -44,7 +51,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
 
   return (
     <Element name={item.id}>
-      <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }}>
+      <TableContainer component={GroupPaper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
         <StyledTable errorBorderColor={errorBorderColor}>
           <TableBody>
             <TableRow>
@@ -54,7 +61,7 @@ const Group: React.FC<{ item: DialobItem, props?: any }> = ({ item }) => {
                 </IconButton>
               </TableCell>
               <TableCell width='20%'>
-                <IdField item={item} />
+                <IdField item={item} group />
               </TableCell>
               <TableCell>
                 <LabelField item={item} />

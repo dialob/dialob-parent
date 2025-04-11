@@ -1,0 +1,71 @@
+{
+  "name": "@dialob/dashboard-material",
+  "version": "1.2.10",
+  "description": "Material UI dashboard component for Dialob",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "always-auth": true
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite --config vite.config.ts --port 3000",
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "lint": "eslint",
+    "tscbuild": "rm -rf ./dist && tsc"
+  },
+  "keywords": [],
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es.js",
+  "types": "dist/types/index.d.ts",
+  "peerDependencies": {
+    "@mui/icons-material": "^5.1.0",
+    "@mui/material": "^5.1.0",
+    "@mui/system": "^5.11.0",
+    "@mui/x-date-pickers": "^6.5.0",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.9",
+    "date-fns": "^2.30.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^7.1.10"
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@eslint/js": "^9.24.0",
+    "@mui/icons-material": "^5.1.0",
+    "@mui/material": "^5.1.0",
+    "@mui/styles": "^5.10.15",
+    "@mui/system": "^5.11.0",
+    "@mui/x-date-pickers": "^6.5.0",
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^20.17.30",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "date-fns": "^2.30.0",
+    "eslint": "^9.24.0",
+    "eslint-plugin-formatjs": "^5.3.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "file-saver": "^2.0.5",
+    "formik": "^2.2.9",
+    "globals": "^15.15.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-intl": "^7.1.10",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.1",
+    "vite": "^6.2.6",
+    "yup": "^1.6.1"
+  }
+}

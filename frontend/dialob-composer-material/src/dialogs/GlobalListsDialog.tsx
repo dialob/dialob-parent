@@ -64,7 +64,6 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       }
       setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
 
   React.useEffect(() => {
@@ -78,7 +77,6 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         return () => clearTimeout(id);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name])
 
   const handleClose = () => {
@@ -186,7 +184,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
               <Stack sx={{ mr: 3 }}>
                 {globalValueSets?.map(gvs => {
                   const errorColor = getItemErrorColor(editor.errors, gvs.id);
-                  return <Button key={gvs.id} variant={gvs.id === currentValueSet?.id ? 'contained' : 'outlined'} color={errorColor}
+                  return <Button key={gvs.id} variant={gvs.id === currentValueSet?.id ? 'contained' : 'outlined'} color={errorColor} sx={{ textTransform: 'none' }}
                     onClick={() => setCurrentValueSet({ id: gvs.id, entries: gvs.entries })}>
                     {gvs.label}
                   </Button>

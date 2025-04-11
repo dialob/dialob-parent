@@ -3,7 +3,7 @@
 ## Building and deploying to demo.dialob.io
 
 ```bash
-yarn build-aws
+pnpm run build:aws
 aws sso login
 ./aws-deploy.sh
 ```
@@ -123,8 +123,7 @@ For more information on createMuiTheme, props, and overrides, see this helpful g
 
 Prerequisites:
 
-1. yarn package manager  
-https://yarnpkg.com/
+1. pnpm package manager  
 
 ---
 
@@ -195,7 +194,7 @@ This project has one custom Dialob component: AppHeader.
 
 Use Storybook to preview components.  
 
-Do `yarn build` to create production build and ensure project compiles
+Do `pnpm build` to create production build and ensure project compiles
 
 ---
 
@@ -218,7 +217,7 @@ https://bareynol.github.io/mui-theme-creator/
 
 ## Quick start to creating fill application
 
-1. Run `yarn storybook` to preview components locally.
+1. Run `pnpm run storybook` to preview components locally.
 
 2. package.json: Change the "name" to your project name.
 
