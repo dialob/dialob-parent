@@ -8,7 +8,7 @@ interface QuestionnaireItemProps extends ItemProps {
   title: string;
 }
 
-export const Questionnaire: React.FC<QuestionnaireItemProps> = ({ item, title }) => {
+export const Questionnaire: React.FC<QuestionnaireItemProps> = ({ item }) => {
   const dC = useContext(DialobContext);
 
   const items = item.items ? item.items.map(id => dC.createItem(id, null, true)) : null;
