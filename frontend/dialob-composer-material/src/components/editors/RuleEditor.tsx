@@ -68,8 +68,8 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
       <Box>
         <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} errors={itemErrors} />
       </Box>
-      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
-        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </Box>
   );

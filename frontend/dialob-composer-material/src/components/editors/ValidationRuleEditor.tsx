@@ -114,8 +114,8 @@ const ValidationRuleEditor: React.FC = () => {
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
       </Box>
-      {itemErrors?.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
-        <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+      {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+        <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
     </>
   );

@@ -88,8 +88,8 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
           <TextField value={name} onChange={e => setName(e.target.value)} fullWidth />
           <Typography fontWeight='bold' sx={{ mt: 2 }}><FormattedMessage id='dialogs.create.tag.desc' /></Typography>
           <TextareaAutosize value={desc} onChange={e => setDesc(e.target.value)} minRows={4} />
-          {tagErrors && tagErrors.length > 0 && tagErrors.map((error, index) => <Alert severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
-            <Typography key={index} color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+          {tagErrors && tagErrors.length > 0 && tagErrors.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
+            <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
           </Alert>)}
         </Box>
       </DialogContent>
