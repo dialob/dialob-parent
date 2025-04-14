@@ -27,7 +27,7 @@ export const ChoiceAC: React.FC<ChoiceACProps> = ({ choice, errors }) => {
       <Box sx={getLayoutStyleFromProps(choice.props)}>
         <Autocomplete
           options={entries}
-          noOptionsText={intl.formatMessage({id: 'autocomplete.nooptions'})}
+          noOptionsText={intl.formatMessage({ id: 'autocomplete.nooptions' })}
           getOptionLabel={c => c?.value || ''}
           value={choice.value ? entries.find(e => e.key === choice.value) : { key: '', value: '' } as ValueSetEntry}
           isOptionEqualToValue={(option, value) => option?.key === value?.key}

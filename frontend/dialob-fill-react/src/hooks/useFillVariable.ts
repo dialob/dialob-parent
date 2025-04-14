@@ -7,7 +7,7 @@ export function useFillVariable(id: string | undefined): any {
   const [variable, setVariable] = useState<any>(initialValue);
 
   useEffect(() => {
-    if(!id) return;
+    if (!id) return;
 
     const listener = () => {
       const updatedVariable = session.getVariable(id);

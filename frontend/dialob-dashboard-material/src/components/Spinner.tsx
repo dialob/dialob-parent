@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircularProgress, Box } from '@mui/material';
 
-interface SpinnerProps{
+interface SpinnerProps {
   customHeight?: string;
 }
 

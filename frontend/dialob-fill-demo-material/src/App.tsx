@@ -11,12 +11,12 @@ interface AppProps {
 
 export const App: React.FC<React.PropsWithChildren<AppProps>> = ({ setLocale, setThemeIndex, themeIndex, children }) => {
   return (
-      <ThemeProvider theme={THEMES[themeIndex].theme}>
-        <AppHeader setLocale={setLocale} themeIndex={themeIndex} setThemeIndex={setThemeIndex} />
-        <Container maxWidth='xl'>
-          {children}
-        </Container>
-      </ThemeProvider>
+    <ThemeProvider theme={THEMES[themeIndex].theme}>
+      <AppHeader setLocale={setLocale} themeIndex={themeIndex} setThemeIndex={setThemeIndex} />
+      <Container maxWidth='xl'>
+        {children}
+      </Container>
+    </ThemeProvider>
   );
 }
 

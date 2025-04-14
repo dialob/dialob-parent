@@ -3,7 +3,7 @@ import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions } from '@dialob/fill-react';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { TextField, Box } from '@mui/material';
-import {format, parse} from 'date-fns';
+import { format, parse } from 'date-fns';
 import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 

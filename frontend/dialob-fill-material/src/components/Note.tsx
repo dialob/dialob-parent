@@ -14,7 +14,7 @@ const validSeverities = ["error", "warning", "success", "info"];
 const getAlertSeverity = (style?: string, view?: string): any => (
   view === "validation" && (!style || !validSeverities.includes(style))
     ? "error"
-    : ( style && validSeverities.includes(style) ? style : undefined)
+    : (style && validSeverities.includes(style) ? style : undefined)
 );
 
 export const Note: React.FC<NoteProps> = ({ note }) => {

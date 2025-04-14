@@ -1,5 +1,5 @@
 import React from 'react';
-import {ItemconfigType} from '../defaults/itemConfig';
+import { ItemconfigType } from '../defaults/itemConfig';
 
 export class DialobContextType {
   private questionnaire: any;
@@ -24,25 +24,25 @@ export class DialobContextType {
   }
 
   private replaceVariable(varName: string) {
-    let questionnaireValue = this.questionnaire.context.find(context=>context.id === varName);
+    let questionnaireValue = this.questionnaire.context.find(context => context.id === varName);
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
-    questionnaireValue = this.questionnaire.variableValues.find(context=>context.id === varName);
+    questionnaireValue = this.questionnaire.variableValues.find(context => context.id === varName);
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
-    questionnaireValue = this.questionnaire.answers?.find(context=>context.id === varName);
+    questionnaireValue = this.questionnaire.answers?.find(context => context.id === varName);
     if (questionnaireValue) {
       return questionnaireValue.value;
     }
   }
 
-  public substituteVariables(string: string){
-    return string.replace(/\{(.+?)\}/g,(match, p1)=>{return this.trim(this.replaceVariable(p1))});
+  public substituteVariables(string: string) {
+    return string.replace(/\{(.+?)\}/g, (match, p1) => { return this.trim(this.replaceVariable(p1)) });
   }
 
-  public getAnswer(itemId: string, answerId : string | null = null): any {
+  public getAnswer(itemId: string, answerId: string | null = null): any {
     const aID = answerId ? answerId : itemId;
     const answer = this.questionnaire.answers?.find(e => e.id === aID);
     if (answer) {
@@ -56,7 +56,7 @@ export class DialobContextType {
   }
 
   public createItem(itemId: string, answerId: string | null = null, isMainGroupItem: boolean = false): JSX.Element | null {
-    const item =  this.form.data[itemId];
+    const item = this.form.data[itemId];
     const configItem = this.config.items.find(c => c.matcher(item, isMainGroupItem));
     if (!configItem) {
       return null;
@@ -83,7 +83,7 @@ export class DialobContextType {
         }
         // TODO: Give child items as props
       }
-      return (<ComponentType key={item.id} item={item}/>);
+      return (<ComponentType key={item.id} item={item} />);
     }
   }
 

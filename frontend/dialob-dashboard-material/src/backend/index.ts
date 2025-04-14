@@ -64,7 +64,7 @@ export const getAdminFormConfiguration = async (formId: string, config: DialobAd
 export const addAdminFormConfiguration = async (form: any, config: DialobAdminConfig) => {
   const baseUrl = `${config.dialobApiUrl}/api/forms`;
   const { tenantId } = config;
-  const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;  
+  const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
   const response = await fetchAuth(url, {
     method: 'POST',
     body: JSON.stringify(form)
@@ -100,7 +100,7 @@ export const editAdminFormConfiguration = async (form: any, config: DialobAdminC
 export const deleteAdminFormConfiguration = async (formId: string, config: DialobAdminConfig) => {
   const baseUrl = `${config.dialobApiUrl}/api/forms/${formId}`;
   const { tenantId } = config;
-  const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;  
+  const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
   const response = await fetchAuth(url, {
     method: 'DELETE'
   }, config);

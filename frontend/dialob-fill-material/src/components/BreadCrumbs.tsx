@@ -41,7 +41,7 @@ export const BreadCrumbs: React.FC<BreadCrumbsProps> = ({ items, activeItem, can
       {
         items.map((item, k) => {
           if (activeItem === item) {
-            return <Typography key={k} color="text.primary"><strong>{session.getItem(item)?.label}</strong></Typography> ;   
+            return <Typography key={k} color="text.primary"><strong>{session.getItem(item)?.label}</strong></Typography>;
           } else {
             return <Link key={k} component="button" disabled={!canNavigate} underline={canNavigate ? "hover" : "none"} color={canNavigate ? "primary" : "inherit"} onClick={() => actions.goToPage(item)}>{session.getItem(item)?.label}</Link>;
           }

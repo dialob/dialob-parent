@@ -4,7 +4,7 @@ import sv from './sv';
 import et from './et';
 import ms from './ms';
 
-const messages: {[key: string]: any}  = {
+const messages: { [key: string]: any } = {
   en,
   fi,
   sv,

@@ -6,16 +6,16 @@ export { appTheme } from './appTheme';
 export { altTheme } from './altTheme';
 
 export const THEMES = [
-	{
-		name: 'MUI Default',
-		theme: createTheme({})
-	},
-	{
-		name: 'Dialob',
-		theme: altTheme
-	},
-	{
-		name: 'Alternative',
-		theme: appTheme
-	},
+  {
+    name: 'MUI Default',
+    theme: createTheme({})
+  },
+  {
+    name: 'Dialob',
+    theme: altTheme
+  },
+  {
+    name: 'Alternative',
+    theme: appTheme
+  },
 ];

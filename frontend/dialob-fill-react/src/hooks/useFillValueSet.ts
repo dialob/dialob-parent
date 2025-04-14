@@ -8,7 +8,7 @@ export function useFillValueSet(id: string | undefined): SessionValueSet | undef
   const [valueSet, setValueSet] = useState<SessionValueSet | undefined>(initialValue);
 
   useEffect(() => {
-    if(!id) return;
+    if (!id) return;
 
     const listener = () => {
       const updatedValueSet = session.getValueSet(id);

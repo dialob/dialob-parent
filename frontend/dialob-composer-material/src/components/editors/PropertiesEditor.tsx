@@ -35,7 +35,7 @@ const PropertiesEditor: React.FC = () => {
   }
 
   const itemTypeConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
-  const propEditors  = findItemTypeConfig(itemTypeConfig, item.type, item.view)?.propEditors;
+  const propEditors = findItemTypeConfig(itemTypeConfig, item.type, item.view)?.propEditors;
 
   const handleAddProp = () => {
     if (item) {
@@ -61,7 +61,7 @@ const PropertiesEditor: React.FC = () => {
       setActiveItem({ ...item, props: newProps });
     }
   }
-  
+
   return (
     <Box>
       <Typography><FormattedMessage id='dialogs.options.properties.add' /></Typography>

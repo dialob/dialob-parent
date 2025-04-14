@@ -21,15 +21,15 @@ export class Session {
     update: onUpdateFn[],
     error: onErrorFn[],
   } = {
-    update: [],
-    error: [],
-  };
+      update: [],
+      error: [],
+    };
 
   constructor(id: string, transport: Transport, options: SessionOptions = {}) {
     this.state = initState();
     this.syncQueue = new SyncQueue(id, transport, options.syncWait || 250);
     this.syncQueue.on('sync', (type, response) => {
-      if(type === 'DONE' && response?.actions) {
+      if (type === 'DONE' && response?.actions) {
         this.state = updateState(this.state, response.actions);
         this.listeners.update.forEach(l => l());
       }
@@ -62,7 +62,7 @@ export class Session {
   public getLocale(): string | undefined {
     return this.state.locale;
   }
-  
+
   public getVariable(id: string): any {
     return this.state.variables[id];
   }
@@ -116,7 +116,7 @@ export class Session {
 
   public setLocale(locale: string) {
     if (locale !== this.state.locale) {
-      this.queueAction({type: 'SET_LOCALE', value: locale});
+      this.queueAction({ type: 'SET_LOCALE', value: locale });
     }
   }
 
@@ -129,10 +129,10 @@ export class Session {
   public on(type: 'sync', listener: onSyncFn): void;
   public on(type: 'error', listener: onErrorFn): void;
   public on(type: Event, listener: Function): void {
-    if(type === 'sync') {
+    if (type === 'sync') {
       this.syncQueue.on('sync', listener as any);
     } else {
-      if(type === 'error') {
+      if (type === 'error') {
         this.syncQueue.on(type, listener as any);
       }
 
@@ -144,10 +144,10 @@ export class Session {
   }
 
   public removeListener(type: Event, listener: Function): any {
-    if(type === 'sync') {
+    if (type === 'sync') {
       this.syncQueue.removeListener(type, listener);
     } else {
-      if(type === 'error') {
+      if (type === 'error') {
         this.syncQueue.removeListener(type, listener);
       }
 

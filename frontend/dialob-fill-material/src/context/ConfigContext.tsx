@@ -7,7 +7,7 @@ export interface ConfigContextType {
   breadCrumbs: (items: string[], canNavigate: boolean, activeItem?: string) => React.ReactElement;
 }
 
-const context = React.createContext<ConfigContextType>({ 
+const context = React.createContext<ConfigContextType>({
   errors: (items: FillError[]) => {
     console.log("errors has no impl.", items);
     return (<></>);

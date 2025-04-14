@@ -15,4 +15,4 @@ export const Time: React.FC<ItemProps> = ({ item, answerId }) => {
       <FormattedTime value={parse(answer, 'HH:mm', new Date())} />
     </Item>
   );
-} 
+}

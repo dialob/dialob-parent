@@ -1,6 +1,6 @@
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillValueSet, useFillSession } from '@dialob/fill-react';
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { ErrorHelperText, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
@@ -12,7 +12,7 @@ export interface ChoiceProps {
 
 export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
   const session = useFillSession();
-  const {setAnswer} = useFillActions();
+  const { setAnswer } = useFillActions();
   const valueSet = useFillValueSet(choice.valueSetId);
   const itemId = `item_${session.id}_${choice.id}`;
 
@@ -29,22 +29,22 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
 
   return (
     <DescriptionWrapper text={choice.description} title={choice.label}>
-    <FormControl 
-      fullWidth={true} 
-      required={choice.required} 
-      error={errors.length > 0} 
-      sx={{ minWidth: 120, ...getLayoutStyleFromProps(choice.props)}}
-    >
-      <InputLabel id={`${itemId}_label`}>{choice.label}</InputLabel>
-      <Select labelId={`${itemId}_label`}
-        label={choice.label}
-        value={choice.value || ''}
-        onChange={e => setAnswer(choice.id, e.target.value)}
-       >
-         {options}
-       </Select>
-      <ErrorHelperText errors={errors} />
-    </FormControl>
+      <FormControl
+        fullWidth={true}
+        required={choice.required}
+        error={errors.length > 0}
+        sx={{ minWidth: 120, ...getLayoutStyleFromProps(choice.props) }}
+      >
+        <InputLabel id={`${itemId}_label`}>{choice.label}</InputLabel>
+        <Select labelId={`${itemId}_label`}
+          label={choice.label}
+          value={choice.value || ''}
+          onChange={e => setAnswer(choice.id, e.target.value)}
+        >
+          {options}
+        </Select>
+        <ErrorHelperText errors={errors} />
+      </FormControl>
     </DescriptionWrapper>
   );
 };

@@ -16,5 +16,5 @@ export interface SurveyGroupContextType {
   surveyValueSet: ValueSet | null
 }
 
-const context = React.createContext<SurveyGroupContextType>({surveyValueSet:null});
+const context = React.createContext<SurveyGroupContextType>({ surveyValueSet: null });
 export const SurveyGroupContext = context;

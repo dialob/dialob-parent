@@ -34,7 +34,7 @@ export class RESTTransport implements Transport {
       headers: this.headers,
       credentials: this.config.credentials,
     });
-    if(!response.ok) {
+    if (!response.ok) {
       throw new DialobRequestError('Failure during fetch', response.status);
     }
 

@@ -13,7 +13,7 @@ export const ChoiceProp = (props: any) => {
         onChange={(e, newValue) => setValue(newValue)}
         options={inputProps.options}
         renderInput={(params) => (
-          <StyledTextField variant='standard' {...params} 
+          <StyledTextField variant='standard' {...params}
             InputProps={{ ...params.InputProps, disableUnderline: true, endAdornment: <ArrowDropDown /> }}
           />
         )}

@@ -11,14 +11,14 @@ export interface BooleanCheckboxProps {
 };
 
 export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, errors }) => {
-  const {setAnswer} = useFillActions();
-  
+  const { setAnswer } = useFillActions();
+
   return (
     <DescriptionWrapper text={boolean.description} title={boolean.label}>
-      <FormControl 
-        fullWidth={true} 
-        required={boolean.required} 
-        error={errors.length > 0} 
+      <FormControl
+        fullWidth={true}
+        required={boolean.required}
+        error={errors.length > 0}
         sx={getLayoutStyleFromProps(boolean.props)}
       >
         <FormControlLabel
@@ -27,7 +27,7 @@ export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, error
             <Checkbox
               checked={boolean.value || false}
               onChange={e => setAnswer(boolean.id, e.target.checked)}
-              />
+            />
           }
         />
         <ErrorHelperText errors={errors} />

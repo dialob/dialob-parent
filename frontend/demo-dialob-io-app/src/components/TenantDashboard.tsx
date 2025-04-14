@@ -18,7 +18,7 @@ const TenantDashboard: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
       key: appConfig?.csrf?.headerName,
       value: appConfig?.csrf?.token,
     },
-	// workaround to clean the "/api" from the end of the URL
+    // workaround to clean the "/api" from the end of the URL
     dialobApiUrl: appConfig.url.endsWith('/api') ? appConfig.url.substring(0, appConfig.url.length - 4) : appConfig.url,
     setLoginRequired: () => console.log('Login required'),
     setTechnicalError: () => console.log('Technical error occurred'),

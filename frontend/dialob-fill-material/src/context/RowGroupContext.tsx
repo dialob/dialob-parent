@@ -5,5 +5,5 @@ export interface RowGroupContextType {
   rowGroup?: ItemAction<'rowgroup'>['item'];
 }
 
-const context = React.createContext<RowGroupContextType>({rowGroup: undefined});
+const context = React.createContext<RowGroupContextType>({ rowGroup: undefined });
 export const RowGroupContext = context;

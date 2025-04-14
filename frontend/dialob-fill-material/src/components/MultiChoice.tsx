@@ -36,11 +36,11 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
   }
 
   const multiChoiceContent = (
-    <FormControl 
-      component='fieldset' 
-      fullWidth={true} 
-      required={multichoice.required} 
-      error={errors.length > 0} 
+    <FormControl
+      component='fieldset'
+      fullWidth={true}
+      required={multichoice.required}
+      error={errors.length > 0}
       sx={getLayoutStyleFromProps(multichoice.props)}
     >
       <FormLabel component='legend'>{multichoice.label}</FormLabel>
@@ -52,7 +52,7 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
 
   return (
     <DescriptionWrapper text={multichoice.description} title={multichoice.label}>
-      { border ? (<Paper elevation={3} sx={{p: 2}}> { multiChoiceContent } </Paper>) : multiChoiceContent }
+      {border ? (<Paper elevation={3} sx={{ p: 2 }}> {multiChoiceContent} </Paper>) : multiChoiceContent}
     </DescriptionWrapper>
   );
 

@@ -77,7 +77,7 @@ export const RowGroup: React.FC<ItemProps> = ({ item }) => {
   );
 
   return (
-    <GroupContext.Provider value={{ level: groupCtx.level < 4 ? groupCtx.level + 1 : groupCtx.level  }}>
+    <GroupContext.Provider value={{ level: groupCtx.level < 4 ? groupCtx.level + 1 : groupCtx.level }}>
       <RowGroupContext.Provider value={true}>
         {groupContent}
       </RowGroupContext.Provider>

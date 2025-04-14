@@ -1,7 +1,7 @@
 import { Action } from './actions';
 import { DialobError } from './error';
 import { DialobResponse, Transport } from './transport';
-import { produce } from 'immer';
+import { produce } from 'immer';
 
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE', response?: DialobResponse) => void;
 export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
@@ -25,12 +25,12 @@ export class SyncQueue {
     sync: onSyncFn[];
     error: onErrorFn[];
   } = {
-    sync: [],
-    error: [],
-  };
+      sync: [],
+      error: [],
+    };
 
   constructor(id: string, transport: Transport, syncWait: number) {
-    if(syncWait < -1) {
+    if (syncWait < -1) {
       throw new Error('syncWait must be -1 or higher!');
     }
 
@@ -47,13 +47,13 @@ export class SyncQueue {
   public async pull(): Promise<void> {
     try {
       await this.runSyncFn(() => this.transport.getFullState(this.id));
-    } catch(e) {
+    } catch (e) {
       this.handleError(e);
     }
   }
 
   public add(action: Action) {
-    if(this.syncWait === -1) {
+    if (this.syncWait === -1) {
       // We use queue here instead of calling this.sync() directly, because if sync fails we need
       // to re-try and to have an efficient re-try, we need to work with an action queue anyway.
       // Better to re-use the existing logic than to have multiple implementations.
@@ -62,7 +62,7 @@ export class SyncQueue {
     } else {
       this.clearDeferredSync();
       this.addToSyncQueue(action);
-      if(this.syncQueueImmediately || syncActionImmediately(action)) {
+      if (this.syncQueueImmediately || syncActionImmediately(action)) {
         this.syncQueueImmediately = true;
         this.syncQueuedActions();
       } else {
@@ -90,32 +90,32 @@ export class SyncQueue {
 
   private addToSyncQueue(action: Action): void {
     let add = false;
-    if(action.type === 'ANSWER') {
+    if (action.type === 'ANSWER') {
       // If answer change is already in sync queue, update that answer instead of appending new one
       const existingAnswerIdx = this.syncActionQueue.findIndex(queuedAction => {
         return queuedAction.type === action.type && queuedAction.id === action.id;
       });
 
-      if(existingAnswerIdx !== -1) {
+      if (existingAnswerIdx !== -1) {
         this.syncActionQueue[existingAnswerIdx] = action;
       } else {
         add = true;
       }
-    // In cases where server response is required, only add the action to queue once. Otherwise
-    // you can create a situation where user clicks something multiple times because nothing is
-    // happening on screen and then once sync succeeds, all the queued actions create a very
-    // unexpected state on user's screen
-    } else if(action.type === 'ADD_ROW') {
+      // In cases where server response is required, only add the action to queue once. Otherwise
+      // you can create a situation where user clicks something multiple times because nothing is
+      // happening on screen and then once sync succeeds, all the queued actions create a very
+      // unexpected state on user's screen
+    } else if (action.type === 'ADD_ROW') {
       add = !this.syncActionQueue.some(queuedAction =>
         queuedAction.type === action.type && queuedAction.id === action.id
       );
-    } else if(action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO') {
+    } else if (action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO') {
       add = !this.syncActionQueue.some(queuedAction => queuedAction.type === action.type);
     } else {
       add = true;
     }
 
-    if(add) {
+    if (add) {
       this.syncActionQueue.push(action);
     }
   }
@@ -123,10 +123,10 @@ export class SyncQueue {
 
   private syncQueuedActions = async (): Promise<void> => {
     this.clearDeferredSync();
-    if(this.inSync || this.syncActionQueue.length === 0) {
+    if (this.inSync || this.syncActionQueue.length === 0) {
       return;
     }
-    
+
     this.inSync = true;
     const syncedActions = this.syncActionQueue;
     const syncImmediately = this.syncQueueImmediately;
@@ -137,25 +137,25 @@ export class SyncQueue {
       this.inSync = false;
       this.retryCount = 0;
 
-      if(this.syncActionQueue.length > 0 && !this.syncTimer) {
+      if (this.syncActionQueue.length > 0 && !this.syncTimer) {
         this.syncQueuedActions();
       }
-    } catch(e) {
+    } catch (e) {
       this.handleError(e);
       const newActions = this.syncActionQueue;
       this.syncActionQueue = syncedActions;
-      for(const action of newActions) {
+      for (const action of newActions) {
         this.addToSyncQueue(action);
       }
       this.inSync = false;
       this.syncQueueImmediately = this.syncQueueImmediately || syncImmediately;
       this.retryCount++;
 
-      if(!this.syncTimer) {
+      if (!this.syncTimer) {
         this.deferSync(1000);
       }
 
-      if(this.retryCount >= 3) {
+      if (this.retryCount >= 3) {
         this.listeners.error.forEach(l => l('SYNC-REPEATED', e));
       }
     }
@@ -166,7 +166,7 @@ export class SyncQueue {
   }
 
   private clearDeferredSync() {
-    if(!this.syncTimer) return;
+    if (!this.syncTimer) return;
 
     clearTimeout(this.syncTimer);
     this.syncTimer = undefined;
@@ -181,7 +181,7 @@ export class SyncQueue {
   }
 
   private handleError(error: Error) {
-    if(error.name !== 'NetworkError' && error.name !== 'DialobRequestError') {
+    if (error.name !== 'NetworkError' && error.name !== 'DialobRequestError') {
       throw error;
     }
     this.listeners.error.forEach(l => l('SYNC', error));

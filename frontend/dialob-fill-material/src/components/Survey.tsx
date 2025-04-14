@@ -22,9 +22,9 @@ export const Survey: React.FC<SurveyProps> = ({ id, valueSet, even }) => {
 
   return (
     <>
-      <Box sx={{p: 1, fontWeight: 'bold'}}>{survey?.label} <Description title={survey?.label} text={survey.description} /></Box>
-      { valueSet && valueSet.entries.map((entry) => (
-        <Box key={entry.key} sx={{p: 1, textAlign: 'center', bgcolor: even  ? 'background.default' : undefined}} >
+      <Box sx={{ p: 1, fontWeight: 'bold' }}>{survey?.label} <Description title={survey?.label} text={survey.description} /></Box>
+      {valueSet && valueSet.entries.map((entry) => (
+        <Box key={entry.key} sx={{ p: 1, textAlign: 'center', bgcolor: even ? 'background.default' : undefined }} >
           <Radio checked={entry.key === survey?.value} onChange={() => setAnswer(survey?.id, entry.key)} />
         </Box>
       ))}

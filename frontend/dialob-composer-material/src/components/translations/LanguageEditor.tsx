@@ -26,7 +26,7 @@ const LanguageEditor: React.FC = () => {
   const [deleteLanguage, setDeleteLanguage] = React.useState<string | undefined>();
   const [search, setSearch] = React.useState<string>('');
   const currentLanguages = form.metadata.languages || [];
-  const allLanguages = [...Object.entries({...MOST_USED_LANGUAGES, ...ISO_LANGUAGES})];
+  const allLanguages = [...Object.entries({ ...MOST_USED_LANGUAGES, ...ISO_LANGUAGES })];
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const newLanguages = allLanguages.filter(([code, _language]) => !currentLanguages.includes(code));
 
@@ -55,13 +55,13 @@ const LanguageEditor: React.FC = () => {
             value={search} onChange={(e) => setSearch(e.target.value)} sx={{ m: 1, mt: 0 }} />
           <Divider />
           {newLanguages
-            .filter(([code, language]) => !currentLanguages.includes(code) && 
+            .filter(([code, language]) => !currentLanguages.includes(code) &&
               search === '' || language.name.toLowerCase().includes(search.toLowerCase()))
             .map(([code, language]) => (
-            <ListItemButton key={code} onClick={() => handleAddLanguage(code)}>
-              {language.name}
-            </ListItemButton>
-          ))}
+              <ListItemButton key={code} onClick={() => handleAddLanguage(code)}>
+                {language.name}
+              </ListItemButton>
+            ))}
         </List>
       </Popover>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

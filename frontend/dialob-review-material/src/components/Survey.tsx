@@ -36,9 +36,9 @@ export const Survey: React.FC<SurveyProps> = ({ id, valueSet, even }) => {
   return (
     <>
       <Box className={classes.questionLabel}>{dC.getTranslated(survey.label)} </Box>
-      { valueSet && valueSet.entries.map((entry) => (
+      {valueSet && valueSet.entries.map((entry) => (
         <Box key={entry.id} className={`${classes.questionItem} ${even ? classes.even : ''}`}>
-          { entry.id === answer ? <RadioButtonChecked /> : <RadioButtonUnchecked />}
+          {entry.id === answer ? <RadioButtonChecked /> : <RadioButtonUnchecked />}
         </Box>
       ))}
     </>

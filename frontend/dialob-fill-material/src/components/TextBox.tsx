@@ -10,7 +10,7 @@ export interface TextBoxProps {
   errors: SessionError[];
 };
 export const TextBox: React.FC<TextBoxProps> = ({ text, errors }) => {
-  const {setAnswer} = useFillActions();
+  const { setAnswer } = useFillActions();
 
   return (
     <DescriptionWrapper text={text.description} title={text.label}>

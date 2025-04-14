@@ -11,7 +11,7 @@ export const DefaultRenderErrors: React.FC<ErrorHelperTextProps> = ({ errors }) 
   return <ul>{errors.map((e, i) => <li key={i}>{e.description}</li>)}</ul>;
 };
 
-export const RenderErrors: React.FC<ErrorHelperTextProps> = ({ errors }) => {  
+export const RenderErrors: React.FC<ErrorHelperTextProps> = ({ errors }) => {
   const config = React.useContext(ConfigContext);
   if (errors.length === 0) {
     return null;

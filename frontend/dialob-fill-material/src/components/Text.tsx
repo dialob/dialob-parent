@@ -10,7 +10,7 @@ export interface TextProps {
   errors: SessionError[];
 };
 export const Text: React.FC<TextProps> = ({ text, errors }) => {
-  const {setAnswer} = useFillActions();
+  const { setAnswer } = useFillActions();
 
   return (
     <DescriptionWrapper text={text.description} title={text.label}>

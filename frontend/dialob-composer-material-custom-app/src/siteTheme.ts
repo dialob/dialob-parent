@@ -102,7 +102,7 @@ const palette = {
     contrastText: ''
   },
   explorerItem: {
-    main: 'rgb(209, 213, 219)', // inactive item 
+    main: 'rgb(209, 213, 219)', // inactive item
     dark: 'rgb(16, 185, 129)', // active item
     light: 'rgba(255, 255, 255, 0.08)', // active item hover
     contrastText: 'rgba(253, 205, 73)' // indicative item

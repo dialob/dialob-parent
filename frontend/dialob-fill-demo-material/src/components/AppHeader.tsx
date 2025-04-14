@@ -13,7 +13,7 @@ interface AppHeaderProps {
   themeIndex: number;
 }
 
-export const AppHeader: React.FC<AppHeaderProps> = ({setLocale, setThemeIndex, themeIndex}) => {
+export const AppHeader: React.FC<AppHeaderProps> = ({ setLocale, setThemeIndex, themeIndex }) => {
   const intl = useIntl();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [themeSelAnchorEl, setThemeSelAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,42 +46,42 @@ export const AppHeader: React.FC<AppHeaderProps> = ({setLocale, setThemeIndex, t
 
   const selectLang = (
     <Button aria-controls='language-menu' aria-haspopup='true' onClick={handleLanguageMenuOpen} color='secondary'>
-      <Box sx={{display: {xs: 'none', md: 'block'}}}><FormattedMessage id={`locale.${intl.locale}`} /></Box>
-      <ArrowDropDownIcon fontSize='small'/>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}><FormattedMessage id={`locale.${intl.locale}`} /></Box>
+      <ArrowDropDownIcon fontSize='small' />
     </Button>
   );
   const menuLang = (
     <Menu id='language-menu' anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleLanguageMenuClose}>
-      { UI_LANGUAGES.map(lang => 
-          <MenuItem key={lang} selected={lang === intl.locale} onClick={() => handleLanguageSelect(lang)}>
-            <FormattedMessage id={`locale.${lang}`} />
-          </MenuItem>) }
+      {UI_LANGUAGES.map(lang =>
+        <MenuItem key={lang} selected={lang === intl.locale} onClick={() => handleLanguageSelect(lang)}>
+          <FormattedMessage id={`locale.${lang}`} />
+        </MenuItem>)}
     </Menu>);
 
   const selectTheme = (
     <Button aria-controls='theme-menu' aria-haspopup='true' onClick={handleThemeMenuOpen} color='secondary'>
       <Box><FormattedMessage id='theme' />: {THEMES[themeIndex].name}</Box>
-      <ArrowDropDownIcon fontSize='small'/>
+      <ArrowDropDownIcon fontSize='small' />
     </Button>
   );
 
   const menuTheme = (
     <Menu id='theme-menu' anchorEl={themeSelAnchorEl} keepMounted open={Boolean(themeSelAnchorEl)} onClose={handleThemeMenuClose}>
-      { THEMES.map((theme, idx) => 
-          <MenuItem key={idx} selected={idx === themeIndex} onClick={() => handleThemeSelect(idx)}>
-            {THEMES[idx].name}
-          </MenuItem>) }
+      {THEMES.map((theme, idx) =>
+        <MenuItem key={idx} selected={idx === themeIndex} onClick={() => handleThemeSelect(idx)}>
+          {THEMES[idx].name}
+        </MenuItem>)}
     </Menu>
   );
-  
-  const logo = (<Box><Box component='img' src={logoSvg} sx={{width: 50, height: 50, m: '2px', verticalAlign: 'center'}} alt='Dialob'/></Box>);
-  const title = (<Box sx={{flexGrow: 1}}><Typography variant='h6'>Dialob</Typography></Box>);
+
+  const logo = (<Box><Box component='img' src={logoSvg} sx={{ width: 50, height: 50, m: '2px', verticalAlign: 'center' }} alt='Dialob' /></Box>);
+  const title = (<Box sx={{ flexGrow: 1 }}><Typography variant='h6'>Dialob</Typography></Box>);
   return (
     <Container maxWidth='xl'>
       <Grid container>
         <Grid item xs={12}>
           <AppBar position="sticky" color="inherit" elevation={1}>
-            <Toolbar sx={{pt: 2, pr: 1, pb: 2, pl: 1}} >{logo}{title}{selectTheme}{menuTheme}{selectLang}{menuLang}</Toolbar>
+            <Toolbar sx={{ pt: 2, pr: 1, pb: 2, pl: 1 }} >{logo}{title}{selectTheme}{menuTheme}{selectLang}{menuLang}</Toolbar>
           </AppBar>
         </Grid>
       </Grid>
