@@ -3,8 +3,11 @@ import { DialobError } from './error';
 import { DialobResponse, Transport } from './transport';
 import { produce } from 'immer';
 
+export type Event = 'update' | 'sync' | 'error';
+export type onUpdateFn = () => void;
 export type onSyncFn = (syncState: 'INPROGRESS' | 'DONE', response?: DialobResponse) => void;
 export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
+export type ListenerFunction = onUpdateFn | onSyncFn | onErrorFn;
 
 function syncActionImmediately(action: Action): boolean {
   return action.type === 'ADD_ROW' || action.type === 'NEXT' || action.type === 'PREVIOUS' || action.type === 'GOTO' || action.type === 'SET_LOCALE';
@@ -73,16 +76,16 @@ export class SyncQueue {
 
   public on(type: 'sync', listener: onSyncFn): void;
   public on(type: 'error', listener: onErrorFn): void;
-  public on(type: 'sync' | 'error', listener: Function) {
+  public on(type: 'sync' | 'error', listener: ListenerFunction) {
     this.listeners = produce(this.listeners, listeners => {
-      const target: Function[] = listeners[type];
+      const target: ListenerFunction[] = listeners[type];
       target.push(listener);
     });
   }
 
-  public removeListener(type: 'sync' | 'error', listener: Function): any {
+  public removeListener(type: 'sync' | 'error', listener: ListenerFunction): void {
     this.listeners = produce(this.listeners, listeners => {
-      const target: Function[] = listeners[type];
+      const target: ListenerFunction[] = listeners[type];
       const idx = target.findIndex(t => t === listener);
       target.splice(idx, 1);
     });
