@@ -4,7 +4,7 @@ import { Paper, Typography, Grid, Fade, Box, Theme } from '@mui/material';
 import { GroupContext } from '../context/GroupContext';
 import { Description } from './Description';
 
-type ColumnType = boolean | "auto" | 2 | 1 | 12 | 6 | 3 | 4 | 5 | 7 | 8 | 9 | 10 | 11 | number | undefined;
+type ColumnType = boolean | "auto" | number | undefined;
 
 export interface GroupProps {
   group: ItemAction<'group' | 'rowgroup'>['item'];
@@ -13,15 +13,21 @@ export interface GroupProps {
 export const Group: React.FC<PropsWithChildren<GroupProps>> = ({ group, children }) => {
   const { label, description, props } = group;
   const groupCtx = useContext(GroupContext);
-  let columns = props?.columns || 1;
-  columns = columns > 4 ? 4 : columns;
+  const columns = Math.min(parseInt(props?.columns ?? '1'), 4);
   const lg: ColumnType = columns > 1 ? Math.floor(12 / columns) : undefined;
   const border = props?.border;
   const backgroundColor = props?.color;
   const invisible = props?.invisible;
-  const indent = parseInt(props?.indent || 0) + 2;
-  const spacesTop = parseInt(props?.spacesTop ?? undefined);
-  const spacesBottom = parseInt(props?.spacesBottom ?? undefined);
+  const [
+    indent,
+    spacesTop,
+    spacesBottom
+  ] = props ? [
+    props.indent,
+    props.spacesTop,
+    props.spacesBottom
+  ].map(p => p ? parseInt(p) : undefined) : [];
+
   const contentSx = {
     p: 2,
     ...(backgroundColor && { backgroundColor: (theme: Theme) => theme.palette.background.default }),
@@ -31,7 +37,7 @@ export const Group: React.FC<PropsWithChildren<GroupProps>> = ({ group, children
 
   const childItems = React.Children.map(children, i => <Grid item xs={12} lg={lg}>{i}</Grid>);
 
-  const groupContent: any = invisible ? (
+  const groupContent = invisible ? (
     <Grid container spacing={2} sx={{ paddingLeft: indent }}>{childItems}</Grid>
   ) : (
     <Grid container spacing={2}>
