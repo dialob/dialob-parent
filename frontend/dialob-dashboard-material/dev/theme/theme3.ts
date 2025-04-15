@@ -1,4 +1,4 @@
-import { tableCellClasses, radioClasses, PaletteOptions, Palette } from '@mui/material';
+import { tableCellClasses, radioClasses, Palette } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 
 const palette: Palette = {
@@ -40,7 +40,7 @@ const theme = createTheme({
 	}
 });
 
-export const mifidTheme = createTheme(theme, {
+export const theme3 = createTheme(theme, {
 	palette: palette,
 	typography: {
 		fontFamily: "Campton-Light, Arial, sans-serif",

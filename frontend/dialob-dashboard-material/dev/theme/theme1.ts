@@ -34,7 +34,7 @@ const palette = {
 	},
 };
 
-export const popTheme = createTheme({
+export const theme1 = createTheme({
 	palette: palette as PaletteOptions,
 	spacing: 8,
 	typography: {

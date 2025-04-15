@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material';
-import { popTheme } from './popTheme';
-import { sipooTheme } from './sipooTheme';
-import { mifidTheme } from './mifidTheme';
+import { theme1 } from './theme1';
+import { theme2 } from './theme2';
+import { theme3 } from './theme3';
 
 export const THEMES = [
 	{
@@ -9,15 +9,15 @@ export const THEMES = [
 		theme: createTheme({})
 	},
 	{
-		name: 'POP',
-		theme: popTheme
+		name: 'Theme 1',
+		theme: theme1
 	},
 	{
-		name: 'SIPOO',
-		theme: sipooTheme
+		name: 'Theme 2',
+		theme: theme2
 	},
 	{
-		name: "MIFID",
-		theme: mifidTheme
+		name: "Theme 3",
+		theme: theme3
 	}
 ];

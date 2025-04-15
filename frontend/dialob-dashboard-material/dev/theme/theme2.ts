@@ -13,13 +13,13 @@ declare module '@mui/material/styles' {
   interface Palette {
     neutral: Palette['primary'];
     grayBackground: Palette['primary'];
-    sipooOrange: Palette['primary'];
+    orange: Palette['primary'];
     messages: Palette['primary'];
   }
   interface PaletteOptions {
     neutral: Palette['primary'];
     grayBackground: Palette['primary'];
-    sipooOrange: Palette['primary'];
+    orange: Palette['primary'];
     messages: Palette['primary'];
   }
 }
@@ -42,7 +42,7 @@ const palette = {
     dark: '#CED4DA', // dark gray
     contrastText: '#2f3131', // charcoal gray, same as footer background
   },
-  sipooOrange: {
+  orange: {
     main: '#f77f00', // generic orange
     contrastText: '#2f3131'
   },
@@ -57,7 +57,7 @@ const palette = {
   },
   divider: '#E6E8F0',
   primary: {
-    main: '#00687a', // sipoo blue
+    main: '#00687a',
     contrastText: '#fff'
   },
   secondary: {
@@ -96,7 +96,7 @@ const palette = {
 }
 
 
-const sipooTheme = createTheme({
+const theme2 = createTheme({
   palette: palette as PaletteOptions,
 
   typography: {
@@ -358,4 +358,4 @@ const sipooTheme = createTheme({
 })
 
 
-export { sipooTheme };
+export { theme2 };
