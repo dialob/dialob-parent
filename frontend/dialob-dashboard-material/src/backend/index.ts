@@ -76,9 +76,13 @@ export const addAdminFormConfigurationFromCsv = async (csvData: string, config: 
   const baseUrl = `${config.dialobApiUrl}/api/forms`;
   const { tenantId } = config;
   const url = tenantId ? `${baseUrl}?tenantId=${tenantId}` : baseUrl;
+
+  const defaultHeaders = getHeaders(config);
+
   const response = await fetchAuth(url, {
     method: 'POST',
     headers: {
+      ...defaultHeaders,
       'Content-Type': 'text/csv',
     },
     body: csvData,
