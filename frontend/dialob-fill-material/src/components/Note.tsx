@@ -11,10 +11,12 @@ export interface NoteProps {
 
 const validSeverities = ["error", "warning", "success", "info"];
 
-const getAlertSeverity = (style?: string, view?: string): any => (
+type AlertSeverity = "error" | "warning" | "success" | "info";
+
+const getAlertSeverity = (style?: string | null, view?: string): AlertSeverity | undefined => (
   view === "validation" && (!style || !validSeverities.includes(style))
     ? "error"
-    : (style && validSeverities.includes(style) ? style : undefined)
+    : (style && validSeverities.includes(style) ? style as AlertSeverity : undefined)
 );
 
 export const Note: React.FC<NoteProps> = ({ note }) => {
