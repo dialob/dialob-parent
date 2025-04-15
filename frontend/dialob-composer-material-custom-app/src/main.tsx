@@ -373,4 +373,10 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: BackendType
   )
 };
 
-(window as any).renderDialobComposer = renderDialobComposer;
+declare global {
+  interface Window {
+    renderDialobComposer: (targetElement: HTMLElement, appConfig: BackendTypes.AppConfig) => void;
+  }
+}
+
+window.renderDialobComposer = renderDialobComposer;
