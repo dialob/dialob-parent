@@ -20,7 +20,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.25.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.1",
     "eslint": "^9.25.1",
