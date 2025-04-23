@@ -36,7 +36,7 @@ export interface CategoryItem {
   title: string,
   optionEditors?: OptionEditor[],
   propEditors?: PropEditorsType,
-  convertible?: DialobItemType[],
+  convertible?: string[],
   config: DialobItemTemplate
 }
 
