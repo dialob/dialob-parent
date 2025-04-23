@@ -50,7 +50,7 @@
     "@types/node": "^20.17.30",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^4.4.1",
     "date-fns": "^2.30.0",
     "eslint": "^9.25.1",
     "eslint-plugin-formatjs": "^5.3.1",
