@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import PropItem from '../PropItem';
 import { useBackend } from '../../backend/useBackend';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
-import { findItemTypeConfig } from '../../utils/ConfigUtils';
+import { findItemPropEditor } from '../../utils/ConfigUtils';
 
 export type PropValue = string | string[] | boolean;
 
@@ -35,7 +35,7 @@ const PropertiesEditor: React.FC = () => {
   }
 
   const itemTypeConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
-  const propEditors = findItemTypeConfig(itemTypeConfig, item.type, item.view)?.propEditors;
+  const propEditors = findItemPropEditor(itemTypeConfig, item.view ?? item.type);
 
   const handleAddProp = () => {
     if (item) {

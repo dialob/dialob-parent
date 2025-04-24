@@ -2,7 +2,7 @@ import React from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem } from '../dialob';
-import { IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
+import { ConversionMenu, IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +37,9 @@ const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...p
               {hasIndicators && <TableCell width='15%'>
                 <Indicators item={item} />
               </TableCell>}
+              <TableCell width='15%' sx={centeredCellSx}>
+                <ConversionMenu item={item} />
+              </TableCell>
               <TableCell width='5%' sx={centeredCellSx}>
                 <OptionsMenu item={item} />
               </TableCell>

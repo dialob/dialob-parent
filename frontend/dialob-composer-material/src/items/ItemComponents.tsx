@@ -12,7 +12,7 @@ import { OptionsTabType, useEditor } from "../editor";
 import { isPage } from "../utils/ItemUtils";
 import { scrollToAddedItem } from "../utils/ScrollUtils";
 import { useBackend } from "../backend/useBackend";
-import { findItemTypeConfig } from "../utils/ConfigUtils";
+import { findItemTypeConfig, findItemTypeConvertible } from "../utils/ConfigUtils";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -47,12 +47,12 @@ export const StyledTable = styled(Table, {
 ));
 
 const getItemConversions = (item: DialobItem, itemTypeConfig: ItemTypeConfig): { text: string, value: DialobItemTemplate }[] => {
-  const thisItemType = findItemTypeConfig(itemTypeConfig, item.view ?? item.type);
+  const thisItemType = findItemTypeConfig(itemTypeConfig, item.type, item.view);
   const options: { text: string, value: DialobItemTemplate }[] = [];
 
   if (thisItemType && thisItemType.convertible) {
     thisItemType.convertible.forEach(t => {
-      const toItemType = findItemTypeConfig(itemTypeConfig, t);
+      const toItemType = findItemTypeConvertible(itemTypeConfig, t);
       if (toItemType) {
         options.push({
           text: toItemType.title,
