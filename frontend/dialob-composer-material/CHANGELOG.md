@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.3
+
+### Patch Changes
+
+- fixed item conversion
+
 ## 0.0.2
 
 ### Patch Changes
