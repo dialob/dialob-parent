@@ -1,5 +1,5 @@
 import { RESERVED_WORDS, VALID_ID_PATTERN } from "../components/code/language"
-import { ContextVariable, DialobItems, Variable } from "../dialob"
+import { ContextVariable, DialobItems, Variable } from "../types"
 
 export const validateId = (value: string, items?: DialobItems, variables?: (ContextVariable | Variable)[]) => {
   return (

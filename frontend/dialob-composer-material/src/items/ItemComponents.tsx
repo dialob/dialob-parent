@@ -1,11 +1,11 @@
 import React from "react";
-import { ComposerState, DialobItem, DialobItemTemplate, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
+import { DialobItem, DialobItemTemplate, ComposerState } from "../types";
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
   Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, EditNote
 } from "@mui/icons-material";
-import { DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
 import { ItemTypeConfig } from "../defaults/types";
 import { FormattedMessage, useIntl } from "react-intl";
 import { OptionsTabType, useEditor } from "../editor";
@@ -13,6 +13,8 @@ import { isPage } from "../utils/ItemUtils";
 import { scrollToAddedItem } from "../utils/ScrollUtils";
 import { useBackend } from "../backend/useBackend";
 import { findItemTypeConfig, findItemTypeConvertible } from "../utils/ConfigUtils";
+import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults/itemTypes";
+import { DEFAULT_ITEM_CONFIG } from "../defaults/itemConfig";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;

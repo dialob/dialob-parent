@@ -1,8 +1,8 @@
 import React from 'react';
-import { ItemProp, PropValue } from "./editors/PropertiesEditor";
+import { ItemProp, PropValue } from "./types";
 import { TableCell, TableRow, Typography, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { InputProp } from './propEditors/InputProp';
+import { InputProp } from '../propEditors/InputProp';
 
 const PropItem: React.FC<{
   prop: ItemProp,

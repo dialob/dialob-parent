@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
-import { ContextVariable, ContextVariableType, DialobItem, Variable, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
@@ -13,6 +13,7 @@ import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
 import { useBackend } from '../../backend/useBackend';
 import { ChangeIdResult } from '../../backend/types';
+import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',

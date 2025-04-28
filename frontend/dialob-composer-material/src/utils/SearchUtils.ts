@@ -1,4 +1,4 @@
-import { ContextVariable, DialobItem, Variable } from "../dialob";
+import { ContextVariable, DialobItem, Variable } from "../types";
 
 export const matchItemByKeyword = (item: DialobItem, languages?: string[], keyword?: string) => {
   if (!keyword || !languages) {

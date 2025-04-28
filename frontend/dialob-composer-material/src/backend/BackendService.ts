@@ -1,4 +1,4 @@
-import { ComposerState, ComposerTag } from "../dialob";
+import { ComposerState, ComposerTag } from "../types";
 import {
   SaveResult, DuplicateResult, ApiResponse, CreateTagRequest, CreateTagResult, ChangeIdResult, PreviewSessionData,
   PreviewSessionContext, CreateSessionResult, DialobComposerConfig,

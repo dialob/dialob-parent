@@ -6,7 +6,8 @@ import { Diagnostic, linter } from '@codemirror/lint';
 import { LanguageSupport, StreamLanguage, StringStream } from '@codemirror/language';
 import { IGNORED_ITEM_TYPES, RESERVED_WORDS } from './language';
 import { Completion, completeFromList } from '@codemirror/autocomplete';
-import { ComposerState, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
+import { ComposerState } from '../../types';
 
 
 type LintSeverity = "hint" | "info" | "warning" | "error";

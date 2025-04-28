@@ -6,7 +6,8 @@ import {
 } from "@mui/material";
 import { Close, ContentCopy, Download, EditNote, Help, LocalOffer } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
-import { ComposerTag, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
+import { ComposerTag } from "../types";
 import { BorderedTable } from "../components/TableEditorComponents";
 import { downloadForm } from "../utils/ParseUtils";
 import { useBackend } from "../backend/useBackend";

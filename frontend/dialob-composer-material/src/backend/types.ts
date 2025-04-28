@@ -1,5 +1,5 @@
 import { ItemConfig, ItemTypeConfig } from "../defaults/types";
-import { ComposerState, ComposerTag } from "../dialob";
+import { ComposerState, ComposerTag } from "../types";
 import { EditorError } from "../editor";
 
 

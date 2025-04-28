@@ -1,13 +1,14 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Button, Typography, Box, TextareaAutosize, IconButton } from '@mui/material';
-import { Delete, Visibility } from '@mui/icons-material';
+import { Button, Typography, Box, TextareaAutosize } from '@mui/material';
+import { Visibility } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
-import { LocalizedString, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import { markdownComponents } from '../../defaults/markdown';
-import { IndexedRule } from './ValidationRuleEditor';
+import { IndexedRule } from './types';
 import { getLanguageName } from '../../utils/TranslationUtils';
+import { LocalizedString } from '../../types';
 
 
 const LocalizedStringEditor: React.FC<{

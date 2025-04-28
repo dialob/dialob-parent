@@ -1,15 +1,15 @@
-import Editor from '../components/Editor';
+import { Box } from '@mui/material';
 
 interface ValueSetProp {
   title: string,
   name: string,
-  editor: React.FC
+  editor: any
 }
 
 export const DEFAULT_VALUESET_PROPS: ValueSetProp[] = [
   {
     title: 'Custom attribute',
     name: 'attr',
-    editor: Editor,
+    editor: Box,
   }
 ];

@@ -9,7 +9,7 @@ import Tree, {
   TreeDestinationPosition,
   RenderItemParams,
 } from '@atlaskit/tree';
-import { DialobItem, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { useEditor } from '../../editor';
 import NavigationTreeItem from './NavigationTreeItem';
 import { DEFAULT_ITEM_CONFIG, canContain } from '../../defaults';
@@ -18,6 +18,7 @@ import { INIT_TREE, buildTreeFromForm } from '../../utils/TreeUtils';
 import { FormattedMessage } from 'react-intl';
 import { useBackend } from '../../backend/useBackend';
 import { ItemConfig } from '../../defaults/types';
+import { DialobItem } from '../../types';
 
 
 const isParentNode = (tree: TreeData, destination?: TreeDestinationPosition, itemConfig?: ItemConfig): boolean => {

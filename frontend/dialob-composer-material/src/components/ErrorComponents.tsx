@@ -1,6 +1,7 @@
 import { useIntl } from "react-intl";
 import { EditorError } from "../editor";
-import { DialobItem, ValueSet, Variable, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
+import { Variable, ValueSet, DialobItem } from "../types";
 
 export const ErrorType: React.FC<{ error: EditorError }> = ({ error }) => {
   const intl = useIntl();

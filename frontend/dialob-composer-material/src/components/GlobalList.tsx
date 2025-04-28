@@ -1,8 +1,9 @@
 import React from 'react';
-import { ValueSetEntry, useComposer } from '../dialob';
+import { useComposer } from '../dialob';
 import { TableBody, TableRow, TableCell, TableHead, Typography } from '@mui/material';
 import { BorderedTable } from './TableEditorComponents';
 import { FormattedMessage } from 'react-intl';
+import { ValueSetEntry } from '../types';
 
 const GlobalList: React.FC<{ entries?: ValueSetEntry[] }> = ({ entries }) => {
   const { form } = useComposer();

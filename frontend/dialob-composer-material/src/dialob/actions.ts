@@ -2,7 +2,7 @@ import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
   Variable, ComposerState,
   ComposerCallbacks
-} from "./types";
+} from "../types";
 
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks }

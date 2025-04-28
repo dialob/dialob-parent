@@ -4,7 +4,7 @@ import { ComposerAction } from './actions';
 import {
   ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable,
   ValidationRule, LocalizedString
-} from './types';
+} from '../types';
 import { isContextVariable } from '../utils/ItemUtils';
 import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
 

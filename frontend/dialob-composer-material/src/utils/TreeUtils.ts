@@ -1,5 +1,6 @@
 import { ItemId, TreeData } from '@atlaskit/tree';
-import { ContextVariable, DialobItem, ValueSet, Variable } from '../dialob';
+import { ContextVariable, DialobItem, ValueSet, Variable } from '../types';
+import { IconButton, styled } from '@mui/material';
 
 export const INIT_TREE: TreeData = {
   rootId: 'root',
@@ -98,3 +99,9 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
   return tree;
 
 }
+
+export const PreTextIcon = styled(IconButton)(({ theme }) => ({
+  padding: theme.spacing(0.5),
+  color: 'inherit',
+  cursor: 'default',
+}));

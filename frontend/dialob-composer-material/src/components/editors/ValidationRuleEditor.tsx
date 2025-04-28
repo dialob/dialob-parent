@@ -3,17 +3,13 @@ import { FormattedMessage } from 'react-intl';
 import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
 import { useEditor } from '../../editor';
-import { ValidationRule, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { LocalizedStringEditor } from './LocalizedStringEditor';
 import { ErrorMessage } from '../ErrorComponents';
 import CodeMirror from '../code/CodeMirror';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
-
-
-export interface IndexedRule {
-  index: number;
-  validationRule: ValidationRule;
-}
+import { IndexedRule } from './types';
+import { ValidationRule } from '../../types';
 
 const ValidationRuleEditor: React.FC = () => {
   const { createValidation, deleteValidation, setValidationExpression } = useComposer();

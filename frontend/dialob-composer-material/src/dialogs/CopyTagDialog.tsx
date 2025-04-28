@@ -2,7 +2,7 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
-import { ComposerTag } from "../dialob";
+import { ComposerTag } from "../types";
 import { useBackend } from "../backend/useBackend";
 import { useEditor } from "../editor";
 import { SaveResult } from "../backend/types";

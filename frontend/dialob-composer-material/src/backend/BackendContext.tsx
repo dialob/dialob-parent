@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useEffect, useRef, useState } from "react";
-import { ComposerState, ComposerTag, INIT_STATE } from "../dialob";
+import { ComposerState, ComposerTag, INIT_STATE } from "../types";
 import { BackendService } from "./BackendService";
 import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
 

@@ -1,4 +1,4 @@
-import { DialobItem } from "../dialob";
+import { DialobItem } from "../types";
 
 export type ErrorSeverity = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL';
 export type ComposerStatus = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL' | 'OK';

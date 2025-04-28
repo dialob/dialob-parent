@@ -3,7 +3,7 @@ import { ComposerContext } from './ComposerContext';
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
   Variable, ComposerState, ComposerCallbacks
-} from "../types";
+} from "../../types";
 
 export const useComposer = () => {
   const { state, dispatch } = useContext(ComposerContext);

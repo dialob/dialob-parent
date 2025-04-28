@@ -6,7 +6,7 @@ import {
   Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography
 } from '@mui/material';
 import { useEditor } from '../../editor';
-import { ValueSet, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { generateValueSetId } from '../../dialob/reducer';
 import { BorderedTable } from '../TableEditorComponents';
 import ChoiceList from '../ChoiceList';
@@ -17,6 +17,7 @@ import { downloadValueSet } from '../../utils/ParseUtils';
 import { ErrorMessage } from '../ErrorComponents';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { scrollToChoiceItem } from '../../utils/ScrollUtils';
+import { ValueSet } from '../../types';
 
 
 const ChoiceEditor: React.FC = () => {

@@ -11,7 +11,7 @@ import ItemOptionsDialog from '../dialogs/ItemOptionsDialog';
 import { useBackend } from '../backend/useBackend';
 import { useComposer } from '../dialob';
 import { SaveResult } from '../backend/types';
-import { ProgressSplash } from '../App';
+import { ProgressSplash } from '../utils/LoadingUtils';
 
 const ComposerLayoutView: React.FC = () => {
   const { form } = useComposer();

@@ -1,5 +1,5 @@
-import { DialobItem } from "../dialob";
-import { DEFAULT_ITEM_CONFIG } from "../defaults";
+import { DialobItem } from "../types";
+import { DEFAULT_ITEM_CONFIG } from "../defaults/itemConfig";
 import { ItemConfig } from "../defaults/types";
 import { scrollToTreeItem } from "../utils/ScrollUtils";
 

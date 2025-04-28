@@ -2,7 +2,7 @@ import React from "react";
 import { AlertColor, useTheme } from "@mui/material";
 import { ComposerStatus, EditorError, ErrorSeverity } from "../editor";
 import { Check, Info, Warning } from "@mui/icons-material";
-import { PreTextIcon } from "../components/tree/NavigationTreeItem";
+import { PreTextIcon } from "./TreeUtils";
 
 const getDominantSeverity = (errors: EditorError[] | undefined): ErrorSeverity | undefined => {
   if (!errors || errors.length === 0) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
-import { DialobItem } from '../dialob';
+import { DialobItem } from '../types';
 import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, VisibilityField, StyledTable } from './ItemComponents';
 import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';

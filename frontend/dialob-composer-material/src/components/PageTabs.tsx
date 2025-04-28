@@ -4,12 +4,13 @@ import {
   Paper, TableCell, Grid
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { DialobItem, DialobItems, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
 import { useEditor } from "../editor";
 import { LabelField, OptionsMenu, VisibilityField } from "../items/ItemComponents";
 import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
 import { FormattedMessage } from "react-intl";
 import { useBackend } from "../backend/useBackend";
+import { DialobItem, DialobItems } from "../types";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;

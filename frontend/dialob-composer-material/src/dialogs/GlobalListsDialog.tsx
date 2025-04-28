@@ -5,7 +5,8 @@ import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from '@mui/material';
-import { DialobItem, ValueSet, ValueSetEntry, useComposer } from '../dialob';
+import { useComposer } from '../dialob';
+import { DialobItem, ValueSet, ValueSetEntry } from '../types';
 import { generateValueSetId } from '../dialob/reducer';
 import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';

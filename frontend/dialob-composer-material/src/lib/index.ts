@@ -26,7 +26,7 @@ import GlobalList from "../components/GlobalList";
 import { itemFactory } from "../items/ItemFactory";
 import Editor from "../components/Editor";
 import PageTabs from "../components/PageTabs";
-import PropItem from "../components/PropItem";
+import PropItem from "../components/editors/PropItem";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import ConfirmationDialog from "../dialogs/ConfirmationDialog";
 import ConvertConfirmationDialog from "../dialogs/ConvertConfirmationDialog";
@@ -42,7 +42,7 @@ import VersioningDialog from "../dialogs/VersioningDialog";
 import { DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS } from "../defaults";
 import DialobComposer from "../dialob/DialobComposer";
 import * as BackendTypes from "../backend/types";
-import * as DialobTypes from "../dialob/types";
+import * as DialobTypes from "../types";
 import * as DefaultTypes from "../defaults/types";
 import * as PropEditors from "../components/propEditors";
 
