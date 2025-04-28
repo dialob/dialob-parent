@@ -2,7 +2,7 @@ import { generateItemId, formReducer } from '../reducer';
 import testForm from './testForm.json';
 import cleanForm from './cleanForm.json';
 import { ComposerAction } from '../actions';
-import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString } from '../types';
+import { DialobItem, ComposerCallbacks, ComposerState, LocalizedString } from '../../types';
 
 test('find next item identifier existing', () => {
   const itemTemplate: DialobItem = {

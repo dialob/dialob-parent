@@ -4,11 +4,12 @@ import {
   Alert, DialogActions, Checkbox, Box, TextField, Tooltip, IconButton, Chip
 } from "@mui/material";
 import { Add, Close, ContentCopy, Help } from "@mui/icons-material";
-import { VisibilityType, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
 import { FormattedMessage } from "react-intl";
 import { version } from "../../package.json";
 import { useBackend } from "../backend/useBackend";
 import { useDocs } from "../utils/DocsUtils";
+import { VisibilityType } from "../types";
 
 const visibilityModeOptions = [
   { value: 'ONLY_ENABLED' as VisibilityType, label: 'dialogs.form.options.visibility.ONLY_ENABLED' },

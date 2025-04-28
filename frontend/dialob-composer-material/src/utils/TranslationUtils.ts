@@ -1,5 +1,5 @@
 import Papa from "papaparse";
-import { ComposerState, DialobItem, LocalizedString, ValueSet } from "../dialob";
+import { ComposerState, DialobItem, LocalizedString, ValueSet } from "../types";
 import FileSaver from "file-saver";
 import { ISO_LANGUAGES, MOST_USED_LANGUAGES } from "../defaults";
 

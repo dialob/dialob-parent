@@ -3,13 +3,14 @@ import { Box, Grid, IconButton, Table, TableBody, TableCell, TableRow, TextField
 import { Close, KeyboardArrowDown, KeyboardArrowUp, Visibility } from "@mui/icons-material";
 import { TreeItem } from "@atlaskit/tree";
 import { TreeDraggableProvided } from "@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types";
-import { LocalizedString, ValueSetEntry, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import { FormattedMessage } from "react-intl";
 import { useErrorColor } from "../utils/ErrorUtils";
 import { useEditor } from "../editor";
 import CodeMirror from "./code/CodeMirror";
 import { getLanguageName } from "../utils/TranslationUtils";
+import { LocalizedString, ValueSetEntry } from "../types";
 
 
 export interface ChoiceItemProps {

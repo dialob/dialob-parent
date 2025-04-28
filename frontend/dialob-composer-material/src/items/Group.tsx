@@ -2,7 +2,8 @@ import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow, alpha, styled, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
-import { DialobItem, DialobItems, useComposer } from '../dialob';
+import { useComposer } from '../dialob';
+import { DialobItem, DialobItems } from '../types';
 import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMenu, StyledTable, VisibilityField } from './ItemComponents';
 import { itemFactory } from './ItemFactory';
 import { useEditor } from '../editor';
@@ -11,7 +12,7 @@ import { ItemConfig } from '../defaults/types';
 import { useBackend } from '../backend/useBackend';
 
 
-const createChildren = (item: DialobItem, items: DialobItems, itemConfig?: ItemConfig) => {
+const createChildren = (item: DialobItem, items: DialobItems, itemConfig: ItemConfig) => {
   return item.items && item.items
     .map(itemId => items[itemId])
     .map(item => itemFactory(item, itemConfig));

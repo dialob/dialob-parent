@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { EditorContext } from "./EditorContext";
-import { DialobItem } from "../../dialob";
+import { DialobItem } from "../../types";
 import { ConfirmationDialogType, EditorError, OptionsTabType, VariableTabType } from "../types";
 
 export const useEditor = () => {

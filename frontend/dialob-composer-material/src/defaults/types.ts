@@ -1,5 +1,5 @@
 import { SvgIconProps } from "@mui/material"
-import { DialobCategoryType, DialobItem, DialobItemTemplate, DialobItemType } from "../dialob"
+import { DialobCategoryType, DialobItem, DialobItemTemplate } from "../types"
 
 export interface ItemConfig {
   defaultIcon: React.ComponentType<SvgIconProps>,

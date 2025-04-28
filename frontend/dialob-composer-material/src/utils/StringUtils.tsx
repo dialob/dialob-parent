@@ -1,4 +1,4 @@
-import { LocalizedString } from "../dialob";
+import { LocalizedString } from "../types";
 
 export const cleanString = (str: string): string => {
   const nonBreakingSpaceRegex = /[\u00A0]/g;

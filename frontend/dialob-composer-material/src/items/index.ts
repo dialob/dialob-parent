@@ -4,6 +4,9 @@ import { Note } from "./Note";
 import { itemFactory } from "./ItemFactory";
 import { LabelField, VisibilityField } from "./ItemComponents";
 
+export * from "./ItemComponents";
+export * from "./ItemFactory";
+
 export default {
   Group,
   SimpleField,

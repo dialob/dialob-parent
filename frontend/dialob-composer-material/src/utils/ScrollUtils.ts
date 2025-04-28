@@ -1,5 +1,5 @@
 import { scroller } from "react-scroll";
-import { DialobItem } from "../dialob";
+import { DialobItem } from "../types";
 import { MENU_HEIGHT } from "../theme/siteTheme";
 
 const isItemChild = (itemId: string, items: DialobItem[], childItemIds: string[]): boolean => {

@@ -1,5 +1,5 @@
 import { ConfirmationDialogType, EditorError, OptionsTabType, VariableTabType } from "./types";
-import { DialobItem } from "../dialob";
+import { DialobItem } from "../types";
 
 export type EditorAction =
   | { type: 'setActivePage', page: DialobItem }

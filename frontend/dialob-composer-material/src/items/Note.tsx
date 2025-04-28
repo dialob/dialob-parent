@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
-import { DialobItem } from '../dialob';
+import { DialobItem } from '../types';
 import { ConversionMenu, IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 

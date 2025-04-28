@@ -3,13 +3,15 @@ import { ListItem, ListItemText, Typography, IconButton, styled } from '@mui/mat
 import { ArrowDropDown, ArrowRight } from '@mui/icons-material';
 import { TreeItem, ItemId } from '@atlaskit/tree';
 import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
-import { DialobItem, useComposer } from '../../dialob';
+import { useComposer } from '../../dialob';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
 import { useEditor } from '../../editor';
 import { getErrorIcon, useErrorColorSx } from '../../utils/ErrorUtils';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { useBackend } from '../../backend/useBackend';
 import { ItemConfig } from '../../defaults/types';
+import { PreTextIcon } from '../../utils/TreeUtils';
+import { DialobItem } from '../../types';
 
 
 interface TreeItemProps {
@@ -20,12 +22,6 @@ interface TreeItemProps {
 }
 
 const MAX_TREE_ITEM_TITLE_LENGTH = 40;
-
-export const PreTextIcon = styled(IconButton)(({ theme }) => ({
-  padding: theme.spacing(0.5),
-  color: 'inherit',
-  cursor: 'default',
-}));
 
 const ArrowIcon = styled(IconButton)(({ theme }) => ({
   padding: 0,

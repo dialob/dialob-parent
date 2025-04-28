@@ -4,17 +4,11 @@ import { useEditor } from '../../editor'
 import { BorderedTable } from '../TableEditorComponents';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
-import PropItem from '../PropItem';
+import PropItem from './PropItem';
 import { useBackend } from '../../backend/useBackend';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 import { findItemPropEditor } from '../../utils/ConfigUtils';
-
-export type PropValue = string | string[] | boolean;
-
-export interface ItemProp {
-  key: string;
-  value: PropValue;
-}
+import { ItemProp } from './types';
 
 const PropertiesEditor: React.FC = () => {
   const { editor, setActiveItem } = useEditor();

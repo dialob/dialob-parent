@@ -1,4 +1,4 @@
-import { ContextVariable, DialobItem, DialobItems, Variable } from "../dialob";
+import { ContextVariable, DialobItem, DialobItems, Variable } from "../types";
 
 export const isPage = (items: DialobItems, item: DialobItem): boolean => {
   return Object.values(items).find(i => i.type === 'questionnaire' && i.items && i.items.includes(item.id)) !== undefined;

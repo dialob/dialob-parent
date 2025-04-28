@@ -4,6 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { siteTheme } from './theme/siteTheme'
 import { AppConfig, DialobComposerConfig } from './backend/types'
 import DialobComposer from './dialob/DialobComposer'
+import { DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG } from './defaults'
 
 
 const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) => {
@@ -23,6 +24,8 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) 
       tenantId: appConfig.tenantId || undefined,
       credentialMode: appConfig.credentialMode || undefined,
     },
+    itemEditors: DEFAULT_ITEM_CONFIG,
+    itemTypes: DEFAULT_ITEMTYPE_CONFIG,
     backendVersion: appConfig.version,
     documentationUrl: 'https://github.com/dialob/dialob-parent/wiki/',
     closeHandler: () => window.location.href = appConfig.adminAppUrl,

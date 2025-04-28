@@ -1,4 +1,4 @@
-import { ComposerState, ValueSet } from "../dialob";
+import { ComposerState, ValueSet } from "../types";
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 

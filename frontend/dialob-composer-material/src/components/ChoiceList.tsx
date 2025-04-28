@@ -1,9 +1,10 @@
 import React from "react";
 import Tree, { moveItemOnTree, TreeData, TreeSourcePosition, TreeDestinationPosition } from '@atlaskit/tree';
 import { TableBody, TableCell, TableRow } from "@mui/material";
-import { LocalizedString, ValueSet, ValueSetEntry, useComposer } from "../dialob";
+import { useComposer } from "../dialob";
 import ChoiceItem, { ChoiceItemProps } from "./ChoiceItem";
 import { INIT_TREE, buildTreeFromValueSet } from "../utils/TreeUtils";
+import { LocalizedString, ValueSet, ValueSetEntry } from "../types";
 
 
 const renderItem = (props: ChoiceItemProps) => {

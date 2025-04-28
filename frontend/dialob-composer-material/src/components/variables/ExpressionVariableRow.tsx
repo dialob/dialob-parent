@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, Box, IconButton, TableBody, TableCell, TableRow, Typography, alpha, useTheme } from '@mui/material';
-import { Variable } from '../../dialob';
+import { Variable } from '../../types';
 import { useEditor } from '../../editor';
 import { getErrorSeverity, useErrorColorSx } from '../../utils/ErrorUtils';
 import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';

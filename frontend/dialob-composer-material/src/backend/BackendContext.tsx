@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useEffect, useRef, useState } from "react";
-import { ComposerState, ComposerTag, INIT_STATE } from "../dialob";
+import { ComposerState, ComposerTag, INIT_STATE } from "../types";
 import { BackendService } from "./BackendService";
 import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
 
@@ -8,7 +8,7 @@ const INITIAL_BACKEND: BackendState = {
   formId: "",
   loaded: false,
   form: null,
-  config: { transport: { apiUrl: "", previewUrl: "" }, backendVersion: "0.0.0", closeHandler: () => { } },
+  config: { transport: { apiUrl: "", previewUrl: "" }, backendVersion: "0.0.0", closeHandler: () => { }, itemEditors: {} as any, itemTypes: {} as any },
   loadForm: (_formId: string, _tagName?: string): Promise<ComposerState> => {
     return Promise.resolve(INIT_STATE);
   },

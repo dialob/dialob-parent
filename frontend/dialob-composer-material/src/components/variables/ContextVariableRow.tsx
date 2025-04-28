@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableBody, TableCell, TableRow, alpha, useTheme } from '@mui/material';
-import { ContextVariable } from '../../dialob';
+import { ContextVariable } from '../../types';
 import { useEditor } from '../../editor';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
 import {

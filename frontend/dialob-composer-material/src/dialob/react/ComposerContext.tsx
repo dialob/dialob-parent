@@ -1,7 +1,7 @@
 import React, { useReducer, Dispatch, useEffect, PropsWithChildren } from 'react';
 import { formReducer } from '../reducer';
 import { ComposerAction } from '../actions';
-import { ComposerState, ComposerCallbacks, INIT_STATE } from '../types';
+import { ComposerState, ComposerCallbacks, INIT_STATE } from '../../types';
 
 export const ComposerContext = React.createContext<{ state: ComposerState, dispatch: Dispatch<ComposerAction>, callbacks?: ComposerCallbacks }>({
   state: INIT_STATE,
