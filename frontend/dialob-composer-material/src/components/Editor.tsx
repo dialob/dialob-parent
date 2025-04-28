@@ -10,7 +10,7 @@ import { useBackend } from '../backend/useBackend';
 import { DialobItem, DialobItems } from '../types';
 
 
-const createChildren = (items: DialobItems, activePage?: DialobItem, itemConfig?: ItemConfig) => {
+const createChildren = (items: DialobItems, itemConfig: ItemConfig, activePage?: DialobItem) => {
   if (!activePage || !activePage.items) {
     return null;
   }
@@ -29,7 +29,7 @@ const Editor: React.FC = () => {
   return (
     <Box id='scroll-container'>
       <PageTabs items={form.data} />
-      {createChildren(form.data, editor.activePage, config.itemEditors)}
+      {createChildren(form.data, config.itemEditors, editor.activePage)}
       {editor.activePage && <Box sx={{ mb: 2 }}><AddItemMenu item={editor.activePage} /></Box>}
     </Box>
   );
