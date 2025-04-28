@@ -136,7 +136,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
         onClose={handleCreateModalClose}
         maxWidth={'lg'}
       >
-        <DialogTitle sx={{ m: 0, py: 2, px: 4 }}>
+        <DialogTitle sx={{ p: 3 }}>
           {formConfiguration ? (
             <Typography variant="h4"><FormattedMessage id='heading.copyDialog' /></Typography>
           ) : (
@@ -144,8 +144,8 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
           )}
         </DialogTitle>
         <Divider />
-        <DialogContent>
-          <Box sx={{ px: 3, pt: 1, pb: 2, display: "flex", flexDirection: "column" }}>
+        <DialogContent sx={{ p: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formName" /></Typography>
               <TextField
