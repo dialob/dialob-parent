@@ -77,8 +77,8 @@ export interface TransportConfig {
 export interface DialobComposerConfig {
   transport: TransportConfig;
   documentationUrl?: string;
-  itemEditors?: ItemConfig;
-  itemTypes?: ItemTypeConfig;
+  itemEditors: ItemConfig;
+  itemTypes: ItemTypeConfig;
   backendVersion: string;
   closeHandler: () => void;
 }

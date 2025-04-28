@@ -12,7 +12,7 @@ import { ItemConfig } from '../defaults/types';
 import { useBackend } from '../backend/useBackend';
 
 
-const createChildren = (item: DialobItem, items: DialobItems, itemConfig?: ItemConfig) => {
+const createChildren = (item: DialobItem, items: DialobItems, itemConfig: ItemConfig) => {
   return item.items && item.items
     .map(itemId => items[itemId])
     .map(item => itemFactory(item, itemConfig));

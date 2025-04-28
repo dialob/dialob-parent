@@ -8,7 +8,7 @@ const INITIAL_BACKEND: BackendState = {
   formId: "",
   loaded: false,
   form: null,
-  config: { transport: { apiUrl: "", previewUrl: "" }, backendVersion: "0.0.0", closeHandler: () => { } },
+  config: { transport: { apiUrl: "", previewUrl: "" }, backendVersion: "0.0.0", closeHandler: () => { }, itemEditors: {} as any, itemTypes: {} as any },
   loadForm: (_formId: string, _tagName?: string): Promise<ComposerState> => {
     return Promise.resolve(INIT_STATE);
   },

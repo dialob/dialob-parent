@@ -1,15 +1,13 @@
 import { DialobItem } from "../types";
-import { DEFAULT_ITEM_CONFIG } from "../defaults/itemConfig";
 import { ItemConfig } from "../defaults/types";
 import { scrollToTreeItem } from "../utils/ScrollUtils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const itemFactory = (item: DialobItem, itemConfig?: ItemConfig, props?: any) => {
+const itemFactory = (item: DialobItem, itemConfig: ItemConfig, props?: any) => {
   if (!item) {
     return null;
   }
-  const resolvedConfig = itemConfig ?? DEFAULT_ITEM_CONFIG;
-  const matchedConfig = resolvedConfig.items.find(c => c.matcher(item));
+  const matchedConfig = itemConfig.items.find(c => c.matcher(item));
   if (!matchedConfig) {
     console.warn('Unknown type:', item.type);
     return null;
