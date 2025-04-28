@@ -1,8 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { DialogContent, DialogTitle, Box, TextField, Divider, Typography, FormHelperText, Button, Dialog } from '@mui/material';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import { addAdminFormConfiguration, getAdminFormConfiguration } from '../backend';
 import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
 import { DEFAULT_FORM, DefaultForm, FormConfiguration } from '../types';
@@ -16,11 +14,6 @@ interface CreateDialogProps {
   config: DialobAdminConfig;
 }
 
-interface RestFormConfigurationType {
-  name: string | undefined;
-  label: string | undefined;
-}
-
 export const CreateDialog: React.FC<CreateDialogProps> = ({
   setFetchAgain,
   createModalOpen,
@@ -29,12 +22,41 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
   config
 }) => {
   const intl = useIntl();
-
-  const tagFormSchema = () => Yup.object().shape({
-    name: Yup.string().required(intl.formatMessage({ id: "error.valueRequired" })).matches(/^[_\-a-zA-Z\d]*$/g, intl.formatMessage({ id: "error.invalidFormName" })),
+  const [values, setValues] = useState({
+    name: '',
+    label: formConfiguration ? "Copy of " + formConfiguration.metadata.label : "New form"
   });
+  const [errors, setErrors] = useState<{ name?: string; label?: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (values: RestFormConfigurationType) => {
+  const validateField = (field: string, value: string): string | undefined => {
+    if (field === 'name') {
+      if (!value) return intl.formatMessage({ id: 'error.valueRequired' });
+      if (!/^[_\-a-zA-Z\d]*$/.test(value)) {
+        return intl.formatMessage({ id: 'error.invalidFormName' });
+      }
+    }
+    if (field === 'label') {
+      if (!value) return intl.formatMessage({ id: 'error.valueRequired' });
+    }
+    return undefined;
+  };
+
+  const handleChange = (field: keyof typeof values, value: string) => {
+    setValues(prev => ({ ...prev, [field]: value }));
+    const error = validateField(field, value);
+    setErrors(prev => ({ ...prev, [field]: error }));
+  };
+
+  const handleSubmit = async () => {
+    const nameError = validateField('name', values.name);
+    const labelError = validateField('label', values.label);
+    if (nameError || labelError) {
+      setErrors({ name: nameError, label: labelError });
+      return;
+    }
+    setIsSubmitting(true);
+
     const handleResponse = async (response: any) => {
       try {
         const jsonResponse = await response.json();
@@ -84,9 +106,22 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
         await handleResponse(addResponse);
       } catch (ex) {
         handleRejection(ex, config.setTechnicalError);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (createModalOpen) {
+      setValues({
+        name: '',
+        label: formConfiguration ? "Copy of " + formConfiguration.metadata.label : "New form"
+      });
+      setErrors({});
+      setIsSubmitting(false);
+    }
+  }, [createModalOpen, formConfiguration]);
 
   return (
     <Box>
@@ -101,7 +136,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
         onClose={handleCreateModalClose}
         maxWidth={'lg'}
       >
-        <DialogTitle sx={{ m: 0, py: 2, px: 4 }}>
+        <DialogTitle sx={{ p: 3 }}>
           {formConfiguration ? (
             <Typography variant="h4"><FormattedMessage id='heading.copyDialog' /></Typography>
           ) : (
@@ -109,47 +144,35 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
           )}
         </DialogTitle>
         <Divider />
-        <DialogContent>
-          <Formik
-            initialValues={{
-              name: undefined,
-              label: formConfiguration ? "Copy of " + formConfiguration.metadata.label : "New form",
-            }}
-            onSubmit={(values) => {
-              handleSubmit(values)
-            }}
-            validationSchema={tagFormSchema}
-          >
-            {({ isSubmitting, dirty, isValid, errors, submitForm, values, setFieldValue }) => (
-              <Form>
-                <Box sx={{ px: 3, pt: 1, pb: 2, display: "flex", flexDirection: "column" }}>
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formName" /></Typography>
-                    <TextField
-                      name='name'
-                      error={errors.name ? true : false}
-                      required
-                      onChange={e => setFieldValue('name', e.target.value)}
-                      value={values.name}
-                      sx={{ minWidth: "500px" }}
-                    />
-                    {errors.name && <FormHelperText error={errors.name ? true : false}>{errors.name}</FormHelperText>}
-                    <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formLabel" /></Typography>
-                    <TextField
-                      name='label'
-                      onChange={e => setFieldValue('label', e.target.value)}
-                      value={values.label}
-                      sx={{ minWidth: "500px" }}
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex", mt: 2, justifyContent: "space-between" }}>
-                    <Button onClick={handleCreateModalClose}><FormattedMessage id={'button.cancel'} /></Button>
-                    <Button onClick={submitForm} disabled={!dirty || (isSubmitting || !isValid)}><FormattedMessage id={'button.accept'} /></Button>
-                  </Box>
-                </Box>
-              </Form>
-            )}
-          </Formik>
+        <DialogContent sx={{ p: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formName" /></Typography>
+              <TextField
+                name='name'
+                error={!!errors.name}
+                required
+                onChange={e => handleChange('name', e.target.value)}
+                value={values.name}
+                sx={{ minWidth: "500px" }}
+              />
+              {errors.name && <FormHelperText error>{errors.name}</FormHelperText>}
+              <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formLabel" /></Typography>
+              <TextField
+                name='label'
+                error={!!errors.label}
+                required
+                onChange={e => handleChange('label', e.target.value)}
+                value={values.label}
+                sx={{ minWidth: "500px" }}
+              />
+              {errors.label && <FormHelperText error>{errors.label}</FormHelperText>}
+            </Box>
+            <Box sx={{ display: "flex", mt: 2, justifyContent: "space-between" }}>
+              <Button onClick={handleCreateModalClose}><FormattedMessage id={'button.cancel'} /></Button>
+              <Button onClick={handleSubmit} disabled={isSubmitting || !values.name || !!errors.name || !!errors.label} ><FormattedMessage id={'button.accept'} /></Button>
+            </Box>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
