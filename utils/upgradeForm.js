@@ -40,7 +40,7 @@ var convertBranch = (branch) => {
     }
 
     // Old version surveyitem conversion
-    if (item.type === 'text' && item.className.indexOf('survey') > -1) {
+    if (item.type === 'text' && item.className  && item.className.indexOf('survey') > -1) {
       item.type = 'survey';
       item.className.splice(item.className.indexOf('survey'), 1);
     }
