@@ -1,33 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import AddIcon from '@mui/icons-material/Add';
 import {
   Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody,
   Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button
 } from '@mui/material';
-import { Spinner } from './components/Spinner';
-import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware/checkHttpResponse';
-import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from './types';
+import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware';
+import { FormattedMessage, useIntl } from 'react-intl';
+import type { FormConfiguration, FormConfigurationFilters, FormTag, Metadata, DialobAdminViewProps } from './types';
 import {
   addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
   getAdminFormConfigurationList
 } from './backend';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { CreateDialog } from './components/CreateDialog';
-import { DeleteDialog } from './components/DeleteDialog';
-import { TagTableRow } from './components/TagTableRow';
+import { DEFAULT_CONFIGURATION_FILTERS, downloadAsJSON } from './util';
+import { SortField, CustomDatePicker, Spinner, CreateDialog, DeleteDialog, TagTableRow } from './components';
+import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
-import { downloadAsJSON } from './util/helperFunctions';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { DialobAdminConfig } from './index';
-import CustomDatePicker from './components/CustomDatePicker';
-import SortField from './components/SortField';
 
 const CSV_PARSING_ERROR = "CSV_PARSING_ERROR";
-
-export interface DialobAdminViewProps {
-  config: DialobAdminConfig;
-  showNotification?: (message: string, severity: 'success' | 'error') => void;
-}
 
 export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNotification }) => {
   const [formConfigurations, setFormConfigurations] = useState<FormConfiguration[]>([]);
@@ -263,7 +252,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
         } catch (ex: any) {
           if (response) {
             const responseData = await response.json();
-            const errorMessage = responseData?.error === "CSV_PARSING_ERROR"
+            const errorMessage = responseData?.error === CSV_PARSING_ERROR
               ? responseData?.reason
               : responseData?.message;
 

@@ -1,10 +1,9 @@
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
-import { DialogContent, DialogTitle, Box, Divider, Typography, DialogActions, Theme, Button, Dialog } from '@mui/material';
+import { DialogContent, DialogTitle, Box, Divider, Typography, DialogActions, Button, Dialog } from '@mui/material';
 import { deleteAdminFormConfiguration } from '../backend';
-import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
-import { FormConfiguration } from '../types';
-import { DialobAdminConfig } from '..';
+import { checkHttpResponse, handleRejection } from '../middleware';
+import type { FormConfiguration, DialobAdminConfig } from '../types';
 
 interface DeleteDialogProps {
   deleteModalOpen: boolean;
@@ -24,16 +23,18 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
   const intl = useIntl();
 
   const deleteDialog = async () => {
-    deleteAdminFormConfiguration(formConfiguration?.id!, config)
-      .then((response: Response) => checkHttpResponse(response, config.setLoginRequired))
-      .then((response: { json: () => any; }) => response.json())
-      .then((response: any) => {
-        handleDeleteModalClose();
-        setFetchAgain(prevState => !prevState);
-      })
-      .catch((ex: any) => {
-        handleRejection(ex, config.setTechnicalError);
-      });
+    if (formConfiguration) {
+      deleteAdminFormConfiguration(formConfiguration.id, config)
+        .then((response: Response) => checkHttpResponse(response, config.setLoginRequired))
+        .then((response: { json: () => any; }) => response.json())
+        .then((response: any) => {
+          handleDeleteModalClose();
+          setFetchAgain(prevState => !prevState);
+        })
+        .catch((ex: any) => {
+          handleRejection(ex, config.setTechnicalError);
+        });
+    }
   };
 
   return (
@@ -50,7 +51,7 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
         maxWidth={'lg'}
       >
         <DialogTitle sx={{ m: 0, p: 2 }}>
-          <Typography variant="h4"><FormattedMessage id='heading.deleteDialog' /></Typography>
+          <Typography variant="h4" component="div"><FormattedMessage id='heading.deleteDialog' /></Typography>
         </DialogTitle>
         <Divider />
         <DialogContent>

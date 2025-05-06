@@ -16,7 +16,7 @@ const datePickerSx = {
   }
 }
 
-const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, handleDateClear }) => {
+export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, handleDateClear }) => {
   return (
     <DatePicker
       onChange={onChange}
@@ -45,5 +45,3 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, ha
     />
   );
 };
-
-export default CustomDatePicker;

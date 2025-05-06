@@ -1,8 +1,8 @@
-import { DialobAdminView, DialobAdminViewProps } from "./DialobAdminView";
+import { DialobAdminView } from "./DialobAdminView";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { IntlProvider } from "react-intl";
-import messages from './intl';
+import { messages } from './intl';
 
 import {
   sv as svLocale,
@@ -11,6 +11,7 @@ import {
   enGB as enLocale,
   ms as msLocale
 } from 'date-fns/locale';
+import { DialobAdminViewProps } from "./types";
 
 const localeMap: { [key: string]: any } = {
   en: enLocale,

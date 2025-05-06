@@ -1,17 +1,14 @@
 import React, { useMemo } from 'react'
-import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, Link, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
-import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
-import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, LabelAction } from '../types';
+import { checkHttpResponse, handleRejection } from '../middleware';
+import type { FormConfiguration, FormConfigurationFilters, DialobAdminConfig } from '../types';
 import { editAdminFormConfiguration } from '../backend';
 import { useIntl } from 'react-intl';
+import { downloadAsJSON, extractDate, dateOptions, DEFAULT_CONFIGURATION_FILTERS, LabelAction } from '../util';
+import { LabelChips } from '.';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { dateOptions } from '../util/constants';
-import { downloadAsJSON, extractDate } from '../util/helperFunctions';
+import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
-import { DialobAdminConfig } from '..';
-import { LabelChips } from './LabelChips';
 
 interface TagTableRowProps {
   filters: FormConfigurationFilters;

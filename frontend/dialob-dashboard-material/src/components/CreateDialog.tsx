@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { DialogContent, DialogTitle, Box, TextField, Divider, Typography, FormHelperText, Button, Dialog } from '@mui/material';
 import { addAdminFormConfiguration, getAdminFormConfiguration } from '../backend';
-import { checkHttpResponse, handleRejection } from '../middleware/checkHttpResponse';
-import { DEFAULT_FORM, DefaultForm, FormConfiguration } from '../types';
-import { DialobAdminConfig } from '..';
+import { checkHttpResponse, handleRejection } from '../middleware';
+import type { DefaultForm, FormConfiguration, DialobAdminConfig } from '../types';
+import { DEFAULT_FORM } from '../util';
 
 interface CreateDialogProps {
   createModalOpen: boolean;
@@ -137,11 +137,9 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
         maxWidth={'lg'}
       >
         <DialogTitle sx={{ p: 3 }}>
-          {formConfiguration ? (
-            <Typography variant="h4"><FormattedMessage id='heading.copyDialog' /></Typography>
-          ) : (
-            <Typography variant="h4"><FormattedMessage id='heading.addDialog' /></Typography>
-          )}
+          <Typography variant="h4" component="div">
+            <FormattedMessage id={formConfiguration ? 'heading.copyDialog' : 'heading.addDialog'} />
+          </Typography>
         </DialogTitle>
         <Divider />
         <DialogContent sx={{ p: 3 }}>

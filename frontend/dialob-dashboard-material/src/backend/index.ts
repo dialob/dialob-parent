@@ -1,25 +1,5 @@
-import { DialobAdminConfig } from "..";
-
-export const getHeaders = (config: DialobAdminConfig) => {
-  const headers: any = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json; charset=utf-8'
-  };
-  if (config.csrf) {
-    headers[config.csrf.key] = config.csrf.value;
-  }
-  return headers;
-}
-
-export const fetchAuth = (input: string, init: any, config: DialobAdminConfig) => {
-  if (!init.headers) {
-    init['headers'] = getHeaders(config);
-  }
-  return fetch(input, {
-    credentials: 'same-origin',
-    ...init
-  })
-}
+import type { DialobAdminConfig } from '../types';
+import { fetchAuth, getHeaders } from '../util';
 
 export const getAdminFormConfigurationList = async (config: DialobAdminConfig) => {
   const baseUrl = `${config.dialobApiUrl}/api/forms`;
