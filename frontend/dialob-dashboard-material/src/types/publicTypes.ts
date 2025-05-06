@@ -3,6 +3,12 @@ export interface CsrfShape {
   value: string;
 }
 
+export type FetchAuthFn = (
+  input: string,
+  init: RequestInit,
+  config: DialobAdminConfig
+) => Promise<Response>;
+
 export interface DialobAdminConfig {
   dialobApiUrl: string;
   setLoginRequired: () => void;
@@ -10,11 +16,7 @@ export interface DialobAdminConfig {
   language: string;
   csrf?: CsrfShape;
   tenantId?: string;
-  fetchAuth?: (
-    input: string,
-    init: RequestInit,
-    config: DialobAdminConfig
-  ) => Promise<Response>;
+  fetchAuth?: FetchAuthFn;
 }
 
 export interface DialobAdminViewProps {

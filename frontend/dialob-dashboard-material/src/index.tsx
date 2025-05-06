@@ -9,6 +9,7 @@ export { messages } from './intl';
 export type {
   DialobAdminViewProps,
   DialobAdminConfig,
+  FetchAuthFn,
   CsrfShape,
   FormConfiguration,
   FormConfigurationFilters,
