@@ -134,7 +134,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               href={`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`}
-              onClick={function (e: any) {
+              onClick={function (e) {
                 e.preventDefault();
                 window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`);
               }}
@@ -152,7 +152,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
             <Box display="flex">
               <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.copy" })} placement='top-end' arrow>
                 <IconButton
-                  onClick={function (e: any) {
+                  onClick={function (e) {
                     e.preventDefault();
                     copyFormConfiguration(formConfiguration)
                   }}
@@ -162,7 +162,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               </Tooltip>
               <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>
                 <IconButton
-                  onClick={function (e: any) {
+                  onClick={function (e) {
                     e.preventDefault();
                     deleteFormConfiguration(formConfiguration);
                   }}
@@ -173,7 +173,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               </Tooltip>
               <Tooltip title={intl.formatMessage({ id: "download" })} placement='top-end' arrow>
                 <IconButton
-                  onClick={function (e: any) {
+                  onClick={function (e) {
                     e.preventDefault();
                     downloadFormConfiguration();
                   }}
