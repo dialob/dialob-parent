@@ -2,10 +2,10 @@ import React, { useMemo } from 'react'
 import { Box, IconButton, Link, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
 import { checkHttpResponse, handleRejection } from '../middleware';
 import type { FormConfiguration, FormConfigurationFilters, DialobAdminConfig } from '../types';
-import { editAdminFormConfiguration } from '../backend';
 import { useIntl } from 'react-intl';
 import { downloadAsJSON, extractDate, dateOptions, DEFAULT_CONFIGURATION_FILTERS, LabelAction } from '../util';
 import { LabelChips } from '.';
+import { useAdminBackend } from '../backend';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -30,6 +30,9 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
   setFetchAgain
 }) => {
   const intl = useIntl();
+
+  const { editAdminFormConfiguration } = useAdminBackend(config);
+
   const tenantParam = config.tenantId ? `?tenantId=${config.tenantId}` : "";
 
   const filteredRow: FormConfigurationFilters | undefined = useMemo(() => {
@@ -114,7 +117,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
     delete json._rev;
 
     try {
-      const response = await editAdminFormConfiguration(json, config);
+      const response = await editAdminFormConfiguration(json);
       await checkHttpResponse(response, config.setLoginRequired);
       await response.json();
       setFetchAgain(prevState => !prevState);

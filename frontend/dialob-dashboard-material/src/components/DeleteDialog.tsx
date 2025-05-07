@@ -1,9 +1,9 @@
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { DialogContent, DialogTitle, Box, Divider, Typography, DialogActions, Button, Dialog } from '@mui/material';
-import { deleteAdminFormConfiguration } from '../backend';
 import { checkHttpResponse, handleRejection } from '../middleware';
 import type { FormConfiguration, DialobAdminConfig } from '../types';
+import { useAdminBackend } from '../backend';
 
 interface DeleteDialogProps {
   deleteModalOpen: boolean;
@@ -22,9 +22,11 @@ export const DeleteDialog: React.FC<DeleteDialogProps> = ({
 }) => {
   const intl = useIntl();
 
+  const { deleteAdminFormConfiguration } = useAdminBackend(config);
+
   const deleteDialog = async () => {
     if (formConfiguration) {
-      deleteAdminFormConfiguration(formConfiguration.id, config)
+      deleteAdminFormConfiguration(formConfiguration.id)
         .then((response: Response) => checkHttpResponse(response, config.setLoginRequired))
         .then((response: { json: () => any; }) => response.json())
         .then((response: any) => {

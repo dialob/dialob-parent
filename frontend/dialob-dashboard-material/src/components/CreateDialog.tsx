@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { DialogContent, DialogTitle, Box, TextField, Divider, Typography, FormHelperText, Button, Dialog } from '@mui/material';
-import { addAdminFormConfiguration, getAdminFormConfiguration } from '../backend';
+import { useAdminBackend } from '../backend';
 import { checkHttpResponse, handleRejection } from '../middleware';
 import type { DefaultForm, FormConfiguration, DialobAdminConfig } from '../types';
 import { DEFAULT_FORM } from '../util';
@@ -28,6 +28,8 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
   });
   const [errors, setErrors] = useState<{ name?: string; label?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { addAdminFormConfiguration, getAdminFormConfiguration } = useAdminBackend(config);
 
   const validateField = (field: string, value: string): string | undefined => {
     if (field === 'name') {
@@ -80,17 +82,14 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 
     if (formConfiguration) {    // Copy
       try {
-        const response = await getAdminFormConfiguration(
-          formConfiguration.id!,
-          config
-        );
+        const response = await getAdminFormConfiguration(formConfiguration.id!);
         const checkedResponse = await checkHttpResponseAsync(response, config.setLoginRequired);
         const json = await handleResponse(checkedResponse);
         delete json._id;
         delete json._rev;
         json.name = values.name!;
         json.metadata.label = values.label || "";
-        const addResponse = await addAdminFormConfiguration(json, config);
+        const addResponse = await addAdminFormConfiguration(json);
         await checkHttpResponseAsync(addResponse, config.setLoginRequired);
         await handleResponse({ json: () => json });
       } catch (ex) {
@@ -101,7 +100,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
       result.name = values.name!;
       result.metadata.label = values.label || "";
       try {
-        const addResponse = await addAdminFormConfiguration(result, config);
+        const addResponse = await addAdminFormConfiguration(result);
         await checkHttpResponseAsync(addResponse, config.setLoginRequired);
         await handleResponse(addResponse);
       } catch (ex) {

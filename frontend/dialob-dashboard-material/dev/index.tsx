@@ -11,7 +11,7 @@ const conf: DialobAdminConfig = {
     key: 'X-CSRF-TOKEN',
     value: '6cf7b545-6d09-4a95-b8ad-85afad13af7c'
   },
-  dialobApiUrl: 'http://localhost:8085/dialob',
+  dialobApiUrl: 'http://localhost:8081',
   setLoginRequired: () => console.log("..."),
   setTechnicalError: () => console.log("..."),
   language: "en"

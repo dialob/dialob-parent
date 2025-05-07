@@ -4,12 +4,13 @@ export { LabelChips, CreateDialog, DeleteDialog, TagTableRow, SortField, Spinner
 export { DialobAdmin } from './DialobAdmin';
 export { DialobAdminView } from './DialobAdminView';
 
+export { DialobDashboardFetchProvider } from './context';
+
 export { messages } from './intl';
 
 export type {
   DialobAdminViewProps,
   DialobAdminConfig,
-  FetchAuthFn,
   CsrfShape,
   FormConfiguration,
   FormConfigurationFilters,

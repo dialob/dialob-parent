@@ -6,11 +6,8 @@ import {
 import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware';
 import { FormattedMessage, useIntl } from 'react-intl';
 import type { FormConfiguration, FormConfigurationFilters, FormTag, Metadata, DialobAdminViewProps } from './types';
-import {
-  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
-  getAdminFormConfigurationList
-} from './backend';
 import { DEFAULT_CONFIGURATION_FILTERS, downloadAsJSON } from './util';
+import { useAdminBackend } from './backend';
 import { SortField, CustomDatePicker, Spinner, CreateDialog, DeleteDialog, TagTableRow } from './components';
 import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -32,6 +29,11 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
   const intl = useIntl();
   const fileInputRefJson = useRef<HTMLInputElement | null>(null);
   const fileInputRefCsv = useRef<HTMLInputElement | null>(null);
+
+  const {
+    addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration,
+    getAdminFormAllTags, getAdminFormConfiguration, getAdminFormConfigurationList
+  } = useAdminBackend(config);
 
   const handleJsonUploadClick = () => {
     if (fileInputRefJson.current) {
@@ -58,11 +60,11 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
   useEffect(() => {
     const fetchFormConfigurations = async () => {
       try {
-        const response = await getAdminFormConfigurationList(config)
+        const response = await getAdminFormConfigurationList()
           .then((response: Response) => checkHttpResponse(response, config.setLoginRequired));
 
         const data = await response.json();
-        const tagsResponse = await getAdminFormAllTags(config)
+        const tagsResponse = await getAdminFormAllTags()
           .then((response: Response) => checkSearchHttpResponse(response, config.setLoginRequired));
         const allTags: FormTag[] | undefined = await tagsResponse.json();
 
@@ -142,7 +144,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 
   const getDialobForm = async (formName: string) => {
     try {
-      const response = await getAdminFormConfiguration(formName, config);
+      const response = await getAdminFormConfiguration(formName);
       await checkHttpResponse(response, config.setLoginRequired);
       const form = await response.json();
       return form;
@@ -185,8 +187,8 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
             delete json._rev;
 
             const uploadPromise = formNamesList.includes(json.name)
-              ? editAdminFormConfiguration(json, config)
-              : addAdminFormConfiguration(json, config);
+              ? editAdminFormConfiguration(json)
+              : addAdminFormConfiguration(json);
 
             try {
               const response = await uploadPromise;
@@ -241,7 +243,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
       let response;
       if (typeof result === 'string') {
         try {
-          response = await addAdminFormConfigurationFromCsv(result, config);
+          response = await addAdminFormConfigurationFromCsv(result);
           await checkHttpResponse(response, config.setLoginRequired);
 
           const responseData = await response.json();

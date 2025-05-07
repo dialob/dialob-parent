@@ -1,3 +1,3 @@
 export * from './constants';
-export * from './fetchAuth';
+export * from './useFetchAuth';
 export * from './helperFunctions';
