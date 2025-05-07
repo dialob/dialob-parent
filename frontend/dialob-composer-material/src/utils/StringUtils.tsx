@@ -24,4 +24,3 @@ export const cleanLocalizedString = (str: LocalizedString): LocalizedString => {
   });
   return cleanedStr;
 }
-``
