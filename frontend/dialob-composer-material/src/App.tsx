@@ -1,4 +1,3 @@
-import React from 'react';
 import { ComposerProvider } from './dialob'
 import { useEditor } from './editor';
 import { IntlProvider } from 'react-intl';

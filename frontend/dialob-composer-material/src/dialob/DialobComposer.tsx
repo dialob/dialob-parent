@@ -1,5 +1,5 @@
 import App from "../App";
-import { BackendProvider } from "../backend/BackendContext";
+import { BackendProvider } from "../backend/BackendProvider";
 import { EditorProvider } from "../editor";
 import { DialobComposerConfig } from "../backend/types";
 
