@@ -73,6 +73,9 @@ const palette = {
   },
   error: {
     main: '#e53935',
+    dark: '#b71c1c',
+    light: '#ef5350',
+    contrastText: '#fff'
   },
   info: {
     main: '#554971',
@@ -88,6 +91,9 @@ const palette = {
   },
   success: {
     main: '#4caf50',
+    dark: '#388e3c',
+    light: '#66bb6a',
+    contrastText: '#fff',
   },
   text: {
     primary: 'rgba(0,0,0,0.86)',
@@ -97,6 +103,9 @@ const palette = {
   },
   explorer: {
     main: 'rgb(17, 24, 39)', // background colour, dark grey-black
+    dark: 'rgb(11, 15, 25)', // slightly darker for contrast
+    light: 'rgb(24, 34, 50)', // slightly lighter for hover
+    contrastText: '#fff' // white for contrast
   },
   explorerItem: {
     main: 'rgb(209, 213, 219)', // inactive item
@@ -114,10 +123,13 @@ const palette = {
     main: 'rgb(80, 72, 229)', // primary ui element, blue-purple (button fill, button text, text, checkboxes, etc.)
     dark: '#F3F4F6', // table header gray
     light: 'rgba(80, 72, 229, 0.04)', // transparent purple for hover backgrounds, secondary button fill on hover
+    contrastText: '#fff' // white for text on dark buttons
   },
   table: {
     main: '#F3F4F6', // table header gray
     dark: '#e8eaed', // table header darker gray
+    light: '#fafafa', // light gray for table rows
+    contrastText: '#000' // black for text
   },
   article: {
     main: '#5048E5', // blue
