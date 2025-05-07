@@ -21,4 +21,6 @@ export type {
   FormData,
   FormQuestionnaire,
   FormMetadata,
+  DialobDashboardFetchProviderProps,
+  FetchAuthFunction
 } from './types';

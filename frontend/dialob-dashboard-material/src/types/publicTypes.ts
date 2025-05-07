@@ -16,3 +16,10 @@ export interface DialobAdminViewProps {
   config: DialobAdminConfig;
   showNotification?: (message: string, severity: 'success' | 'error') => void;
 }
+
+export interface DialobDashboardFetchProviderProps {
+  children: React.ReactNode;
+  fetch?: FetchAuthFunction;
+}
+
+export type FetchAuthFunction = typeof window.fetch;
