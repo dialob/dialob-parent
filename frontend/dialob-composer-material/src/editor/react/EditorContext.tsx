@@ -1,10 +1,9 @@
-import React, { PropsWithChildren, useReducer, Dispatch } from 'react';
-import { editorReducer } from '../reducer';
+import React, { Dispatch } from 'react';
 import { EditorAction } from '../actions';
 import { EditorState } from '../types';
 
 
-const INITIAL_EDITOR: EditorState = {
+export const INITIAL_EDITOR: EditorState = {
   activeFormLanguage: 'en',
   errors: [],
 };
@@ -15,13 +14,3 @@ export const EditorContext = React.createContext<{ state: EditorState, dispatch:
 });
 
 export type ComposerProviderProps = object
-
-export const EditorProvider: React.FC<PropsWithChildren<ComposerProviderProps>> = ({ children }) => {
-  const [state, dispatch] = useReducer(editorReducer, INITIAL_EDITOR);
-
-  return (
-    <EditorContext.Provider value={{ state, dispatch }}>
-      {children}
-    </EditorContext.Provider>
-  );
-}
