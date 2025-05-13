@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Chip, IconButton, OutlinedInput, SvgIcon } from '@mui/material';
+import { LabelAction } from '../util';
 import { Cancel as CancelIcon, Add as AddIcon } from '@mui/icons-material';
-import { LabelAction } from '../types';
 
 interface LabelChipsProps {
   labels: string[];

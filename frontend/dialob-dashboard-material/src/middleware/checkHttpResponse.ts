@@ -3,7 +3,7 @@ export const checkHttpResponse = (response: Response, setLoginRequired: () => an
     return response;
   }
   else if (response.status === 403 || response.status === 401) {
-    setLoginRequired()
+    setLoginRequired();
   }
   const error = new Error(response.statusText);
   return Promise.reject(error);

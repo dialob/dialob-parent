@@ -1,6 +1,6 @@
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 
-const messages: { [key: string]: any } = {
+export const messages: { [key: string]: any } = {
   "en": {
     "error.valueRequired": "Enter value",
     "error.invalidFormName": "Invalid form name",
@@ -95,5 +95,3 @@ const messages: { [key: string]: any } = {
     'adminUI.table.tooltip.delete': "Radera"
   }
 };
-
-export default messages;

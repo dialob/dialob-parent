@@ -1,31 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import AddIcon from '@mui/icons-material/Add';
 import {
   Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody,
   Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button
 } from '@mui/material';
-import { Spinner } from './components/Spinner';
-import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware/checkHttpResponse';
-import { DEFAULT_CONFIGURATION_FILTERS, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from './types';
-import {
-  addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration, getAdminFormAllTags, getAdminFormConfiguration,
-  getAdminFormConfigurationList
-} from './backend';
+import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from './middleware';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { CreateDialog } from './components/CreateDialog';
-import { DeleteDialog } from './components/DeleteDialog';
-import { TagTableRow } from './components/TagTableRow';
+import type { FormConfiguration, FormConfigurationFilters, FormTag, Metadata, DialobAdminViewProps } from './types';
+import { DEFAULT_CONFIGURATION_FILTERS, downloadAsJSON } from './util';
+import { useAdminBackend } from './backend';
+import { SortField, CustomDatePicker, Spinner, CreateDialog, DeleteDialog, TagTableRow } from './components';
+import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
-import { downloadAsJSON } from './util/helperFunctions';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { DialobAdminConfig } from './index';
-import CustomDatePicker from './components/CustomDatePicker';
-import SortField from './components/SortField';
 
-export interface DialobAdminViewProps {
-  config: DialobAdminConfig;
-  showNotification?: (message: string, severity: 'success' | 'error') => void;
-}
+const CSV_PARSING_ERROR = "CSV_PARSING_ERROR";
 
 export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNotification }) => {
   const [formConfigurations, setFormConfigurations] = useState<FormConfiguration[]>([]);
@@ -41,6 +29,11 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
   const intl = useIntl();
   const fileInputRefJson = useRef<HTMLInputElement | null>(null);
   const fileInputRefCsv = useRef<HTMLInputElement | null>(null);
+
+  const {
+    addAdminFormConfiguration, addAdminFormConfigurationFromCsv, editAdminFormConfiguration,
+    getAdminFormAllTags, getAdminFormConfiguration, getAdminFormConfigurationList
+  } = useAdminBackend(config);
 
   const handleJsonUploadClick = () => {
     if (fileInputRefJson.current) {
@@ -67,11 +60,11 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
   useEffect(() => {
     const fetchFormConfigurations = async () => {
       try {
-        const response = await getAdminFormConfigurationList(config)
+        const response = await getAdminFormConfigurationList()
           .then((response: Response) => checkHttpResponse(response, config.setLoginRequired));
 
         const data = await response.json();
-        const tagsResponse = await getAdminFormAllTags(config)
+        const tagsResponse = await getAdminFormAllTags()
           .then((response: Response) => checkSearchHttpResponse(response, config.setLoginRequired));
         const allTags: FormTag[] | undefined = await tagsResponse.json();
 
@@ -151,7 +144,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
 
   const getDialobForm = async (formName: string) => {
     try {
-      const response = await getAdminFormConfiguration(formName, config);
+      const response = await getAdminFormConfiguration(formName);
       await checkHttpResponse(response, config.setLoginRequired);
       const form = await response.json();
       return form;
@@ -194,8 +187,8 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
             delete json._rev;
 
             const uploadPromise = formNamesList.includes(json.name)
-              ? editAdminFormConfiguration(json, config)
-              : addAdminFormConfiguration(json, config);
+              ? editAdminFormConfiguration(json)
+              : addAdminFormConfiguration(json);
 
             try {
               const response = await uploadPromise;
@@ -250,7 +243,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
       let response;
       if (typeof result === 'string') {
         try {
-          response = await addAdminFormConfigurationFromCsv(result, config);
+          response = await addAdminFormConfigurationFromCsv(result);
           await checkHttpResponse(response, config.setLoginRequired);
 
           const responseData = await response.json();
@@ -261,7 +254,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
         } catch (ex) {
           if (response) {
             const responseData = await response.json();
-            const errorMessage = responseData?.error === "CSV_PARSING_ERROR"
+            const errorMessage = responseData?.error === CSV_PARSING_ERROR
               ? responseData?.reason
               : responseData?.message;
 

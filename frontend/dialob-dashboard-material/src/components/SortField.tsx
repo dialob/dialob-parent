@@ -1,8 +1,8 @@
 import React from 'react';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Box } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 interface SortFieldProps {
   active: boolean;
@@ -15,7 +15,7 @@ const getArrowSx = (active: boolean) => {
   return { opacity: active ? 1 : 0.3, cursor: "pointer" }
 };
 
-const SortField: React.FC<SortFieldProps> = ({ active, direction, name, handleSort }) => {
+export const SortField: React.FC<SortFieldProps> = ({ active, direction, name, handleSort }) => {
   return (
     <Box display="flex" alignItems="center">
       <FormattedMessage id={`adminUI.formConfiguration.${name}`} />
@@ -26,5 +26,3 @@ const SortField: React.FC<SortFieldProps> = ({ active, direction, name, handleSo
     </Box>
   );
 };
-
-export default SortField;
