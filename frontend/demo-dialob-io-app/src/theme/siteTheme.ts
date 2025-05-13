@@ -61,7 +61,7 @@ const palette = {
 
   primary: {
     main: '#607196',
-    contrastText: '#fff',
+    contrastText: '#ffffff',
     dark: '#404c64',
     light: '#7686a7',
   },
@@ -69,25 +69,31 @@ const palette = {
     main: '#3E668E',
     light: '#5585B4',
     dark: '#325171',
-    contrastText: '#fff'
+    contrastText: '#ffffff'
   },
   error: {
     main: '#e53935',
+    dark: '#b71c1c',
+    light: '#ef5350',
+    contrastText: '#ffffff'
   },
   info: {
     main: '#554971',
     light: '#796AA0',
     dark: '#413857',
-    contrastText: '#fff',
+    contrastText: '#ffffff',
   },
   warning: {
     main: '#ff9800',
     light: '#ffac33',
     dark: '#b26a00',
-    contrastText: '#fff',
+    contrastText: '#ffffff',
   },
   success: {
     main: '#4caf50',
+    dark: '#388e3c',
+    light: '#66bb6a',
+    contrastText: '#ffffff',
   },
   text: {
     primary: 'rgba(0,0,0,0.86)',
@@ -97,9 +103,9 @@ const palette = {
   },
   explorer: {
     main: 'rgb(17, 24, 39)', // background colour, dark grey-black
-    dark: '',
-    light: '',
-    contrastText: ''
+    dark: 'rgb(11, 15, 25)', // slightly darker for contrast
+    light: 'rgb(24, 34, 50)', // slightly lighter for hover
+    contrastText: '#ffffff' // white for contrast
   },
   explorerItem: {
     main: 'rgb(209, 213, 219)', // inactive item
@@ -117,67 +123,67 @@ const palette = {
     main: 'rgb(80, 72, 229)', // primary ui element, blue-purple (button fill, button text, text, checkboxes, etc.)
     dark: '#F3F4F6', // table header gray
     light: 'rgba(80, 72, 229, 0.04)', // transparent purple for hover backgrounds, secondary button fill on hover
-    contrastText: ''
+    contrastText: '#ffffff' // white for text on dark buttons
   },
   table: {
     main: '#F3F4F6', // table header gray
     dark: '#e8eaed', // table header darker gray
-    light: '',
-    contrastText: ''
+    light: '#fafafa', // light gray for table rows
+    contrastText: '#000000' // black for text
   },
   article: {
     main: '#5048E5', // blue
     dark: '#3229e0',
     light: '#3229e0',
-    contrastText: ' #fff'
+    contrastText: '#ffffff'
   },
   page: {
     main: '#14B8A6', // turquoise
     dark: '#109384',
     light: '#18dcc5',
-    contrastText: '#fff',
+    contrastText: '#ffffff',
   },
   link: {
     main: '#a0548b', // purple
     dark: '#864674',
     light: '#b26c9e',
-    contrastText: '#fff'
+    contrastText: '#ffffff'
   },
   workflow: {
     main: '#D14343', // red
     dark: '#c53030',
     light: '#db6b6b',
-    contrastText: '#fff'
+    contrastText: '#ffffff'
   },
   release: {
     main: '#91bc24', // green
     dark: '#779a1d',
     light: '#a9d831',
-    contrastText: '#fff'
+    contrastText: '#ffffff'
   },
   locale: {
     main: '#FFB020', // orange-yellow
     dark: '#f59f00',
     light: '#ffbf47',
-    contrastText: '#fff'
+    contrastText: '#ffffff'
   },
   import: {
     main: 'rgba(77, 144, 142)',
     dark: 'rgba(64, 119, 118)',
     light: 'rgba(86, 159, 158)',
-    contrastText: '#fff'
+    contrastText: '#ffffff'
   },
   activeItem: {
     main: '#edf6f9',
     dark: '#edf6f9',
     light: '#edf6f9',
-    contrastText: '#000'
+    contrastText: '#000000'
   },
   save: {
     main: 'rgba(255, 99, 71, 0.8)',
     dark: 'rgba(255, 183, 3)',
     light: 'rgba(255, 183, 3)',
-    contrastText: '#000'
+    contrastText: '#000000'
   },
 
 }

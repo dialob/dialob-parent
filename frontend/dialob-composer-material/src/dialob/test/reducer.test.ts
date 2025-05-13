@@ -113,7 +113,8 @@ test('Add new item, callback', () => {
   };
 
   const callbacks: ComposerCallbacks = {
-    onAddItem: (_state: ComposerState, item: DialobItem) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onAddItem: (state: ComposerState, item: DialobItem) => {
       // console.log('Called!', item);
     }
   }

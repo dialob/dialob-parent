@@ -90,7 +90,7 @@ export const SurveyGroup: React.FC<ItemProps> = ({ item }) => {
             >
               <Box></Box>
               {
-                valueSet && valueSet.entries.map((entry, idx) => (
+                valueSet && valueSet.entries.map((entry) => (
                   <Box className={classes.surveyHeader} key={entry.id}>{dC.getTranslated(entry.label)}</Box>
                 ))
               }

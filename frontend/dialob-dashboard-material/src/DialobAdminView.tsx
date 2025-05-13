@@ -198,7 +198,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                 showNotification(`Uploaded ${formNamesList.includes(json.name) ? 'an existing' : 'a new'} form successfully.`, 'success');
               }
               setFetchAgain((prevState) => !prevState);
-            } catch (ex: any) {
+            } catch (ex) {
               if (showNotification) {
                 showNotification(`Error while uploading ${formNamesList.includes(json.name) ? 'an existing' : 'a new'} form: ${ex}`, 'error');
               }
@@ -251,7 +251,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
             showNotification(`Uploaded CSV form successfully. ID: ${responseData?.id}`, 'success');
           }
           setFetchAgain((prev) => !prev);
-        } catch (ex: any) {
+        } catch (ex) {
           if (response) {
             const responseData = await response.json();
             const errorMessage = responseData?.error === CSV_PARSING_ERROR
@@ -342,7 +342,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
             <Typography variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
             <Box display="flex" gap={1}>
               <Button
-                onClick={function (e: any) {
+                onClick={function (e) {
                   e.preventDefault();
                   addFormConfiguration();
                 }}
@@ -419,7 +419,7 @@ export const DialobAdminView: React.FC<DialobAdminViewProps> = ({ config, showNo
                   <TableCell width="4%" sx={{ textAlign: "right" }}>
                     <Tooltip title={intl.formatMessage({ id: "download.all" })} placement='top-end' arrow>
                       <IconButton
-                        onClick={function (e: any) {
+                        onClick={function (e) {
                           e.preventDefault();
                           downloadAllFormConfigurations();
                         }}

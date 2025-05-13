@@ -1,9 +1,10 @@
 import { Box } from '@mui/material';
+import type { Component, FunctionComponent } from 'react';
 
 interface ValueSetProp {
   title: string,
   name: string,
-  editor: any
+  editor: Component | FunctionComponent,
 }
 
 export const DEFAULT_VALUESET_PROPS: ValueSetProp[] = [
