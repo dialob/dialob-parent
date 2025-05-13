@@ -1,36 +1,22 @@
 import type { DialobAdminConfig } from '../types';
 
-export const buildFormListUrl = (config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/forms?tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/forms`;
+const buildUrlWithTenant = (baseUrl: string, config: DialobAdminConfig) => {
+  if (!config.tenantId) return baseUrl;
+  const separator = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${separator}tenantId=${config.tenantId}`;
+};
+
+export const buildFormListOrCreateUrl = (config: DialobAdminConfig) =>
+  buildUrlWithTenant(`${config.dialobApiUrl}/api/forms`, config);
 
 export const buildFormTagsUrl = (formId: string, config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/forms/${formId}/tags?tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/forms/${formId}/tags`;
+  buildUrlWithTenant(`${config.dialobApiUrl}/api/forms/${formId}/tags`, config);
 
 export const buildAllTagsUrl = (config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/tags?tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/tags`;
+  buildUrlWithTenant(`${config.dialobApiUrl}/api/tags`, config);
 
 export const buildSingleFormUrl = (formId: string, config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/forms/${formId}?tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/forms/${formId}`;
-
-export const buildAddFormUrl = (config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/forms?tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/forms`;
+  buildUrlWithTenant(`${config.dialobApiUrl}/api/forms/${formId}`, config);
 
 export const buildEditFormUrl = (formName: string, config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/forms/${formName}?force=true&tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/forms/${formName}?force=true`;
-
-export const buildDeleteFormUrl = (formId: string, config: DialobAdminConfig) =>
-  config.tenantId
-    ? `${config.dialobApiUrl}/api/forms/${formId}?tenantId=${config.tenantId}`
-    : `${config.dialobApiUrl}/api/forms/${formId}`;
+  buildUrlWithTenant(`${config.dialobApiUrl}/api/forms/${formName}?force=true`, config);

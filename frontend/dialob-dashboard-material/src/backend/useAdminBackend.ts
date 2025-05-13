@@ -6,7 +6,7 @@ export const useAdminBackend = (config: DialobAdminConfig) => {
   const fetchAuth = useFetchAuth();
 
   const getAdminFormConfigurationList = async () => {
-    const url = backend.buildFormListUrl(config);
+    const url = backend.buildFormListOrCreateUrl(config);
     return fetchAuth(url, { method: 'GET' }, config);
   };
 
@@ -26,7 +26,7 @@ export const useAdminBackend = (config: DialobAdminConfig) => {
   };
 
   const addAdminFormConfiguration = async (form: any) => {
-    const url = backend.buildAddFormUrl(config);
+    const url = backend.buildFormListOrCreateUrl(config);
     return fetchAuth(url, {
       method: 'POST',
       body: JSON.stringify(form)
@@ -34,7 +34,7 @@ export const useAdminBackend = (config: DialobAdminConfig) => {
   };
 
   const addAdminFormConfigurationFromCsv = async (csvData: string) => {
-    const url = backend.buildAddFormUrl(config);
+    const url = backend.buildFormListOrCreateUrl(config);
     const headers = getHeaders(config);
     return fetchAuth(url, {
       method: 'POST',
@@ -55,7 +55,7 @@ export const useAdminBackend = (config: DialobAdminConfig) => {
   };
 
   const deleteAdminFormConfiguration = async (formId: string) => {
-    const url = backend.buildDeleteFormUrl(formId, config);
+    const url = backend.buildSingleFormUrl(formId, config);
     return fetchAuth(url, {
       method: 'DELETE'
     }, config);
