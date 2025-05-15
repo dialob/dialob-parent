@@ -43,11 +43,9 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   React.useEffect(() => {
     if (editor?.highlightedItem?.id === item.id) {
       setHighlighted(true);
-    }
-    const id = setTimeout(() => {
+    } else {
       setHighlighted(false);
-    }, 3000);
-    return () => clearTimeout(id);
+    }
   }, [editor.highlightedItem, item.id])
 
   return (
