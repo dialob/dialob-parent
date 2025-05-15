@@ -73,7 +73,7 @@ const LocalizedStringEditor: React.FC<{
               <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}>
                 <Markdown skipHtml components={markdownComponents}>{localizedText}</Markdown>
               </Box > :
-              <TextareaAutosize style={{ width: '100%' }} minRows={5} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />}
+              <TextareaAutosize style={{ width: '100%', maxWidth: '100%' }} minRows={5} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />}
           </Box>
         );
       })}
