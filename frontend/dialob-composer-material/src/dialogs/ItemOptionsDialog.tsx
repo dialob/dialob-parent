@@ -99,7 +99,7 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth={activeTab === 'choices' ? 'xl' : 'md'} PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
           helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{

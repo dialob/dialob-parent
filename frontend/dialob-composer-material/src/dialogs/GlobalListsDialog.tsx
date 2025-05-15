@@ -144,7 +144,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     <>
       <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
         currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
+      <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl' PaperProps={{ sx: { maxHeight: '60vh' } }}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.lists.global.title' />
           <Box flexGrow={1} />

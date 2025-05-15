@@ -44,14 +44,14 @@ const getIcon = (
   return <ArrowIcon sx={{ mr: 0.5 }} />;
 };
 
-const getTypeIcon = (item: DialobItem, isPage: boolean, itemConfig?: ItemConfig) => {
+const getTypeIcon = (item: DialobItem, isPage: boolean, highlighted: boolean, itemConfig?: ItemConfig) => {
   if (isPage) {
     return <PreTextIcon disableRipple><PAGE_CONFIG.icon fontSize='small' /></PreTextIcon>;
   }
   const resolvedConfig = itemConfig ?? DEFAULT_ITEM_CONFIG;
   const matchedConfig = resolvedConfig.items.find(c => c.matcher(item));
   const Icon = matchedConfig?.props.icon || DEFAULT_ITEM_CONFIG.defaultIcon;
-  return <PreTextIcon disableRipple sx={{ mr: 0.5 }}><Icon fontSize='small' /></PreTextIcon>;
+  return <PreTextIcon disableRipple sx={{ mr: 0.5 }}><Icon fontSize='small' color={highlighted ? 'primary' : 'inherit'} /></PreTextIcon>;
 }
 
 const getTitle = (item: TreeItem) => {
@@ -71,6 +71,17 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
   const itemId = item.data.item.id;
   const errorColor = useErrorColorSx(editor.errors, itemId);
   const itemConfig = config.itemEditors;
+  const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const textColor = errorColor ?? highlighted ? 'primary.main' : 'text.primary';
+  const fontWeight = highlighted ? 'bold' : 'inherit';
+
+  React.useEffect(() => {
+    if (editor?.highlightedItem?.id === item.id) {
+      setHighlighted(true);
+    } else {
+      setHighlighted(false);
+    }
+  }, [editor.highlightedItem])
 
   const handleScrollTo = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -91,9 +102,9 @@ const NavigationTreeItem: React.FC<TreeItemProps> = ({ item, onExpand, onCollaps
       {...provided.dragHandleProps}
     >
       {getIcon(item, onExpand, onCollapse)}
-      {errorColor ? getErrorIcon(editor.errors, itemId) : getTypeIcon(item.data.item, item.data.isPage, itemConfig)}
+      {errorColor ? getErrorIcon(editor.errors, itemId) : getTypeIcon(item.data.item, item.data.isPage, highlighted, itemConfig)}
       <ListItemText sx={{ cursor: 'pointer', ':hover': { color: 'text.secondary' } }} onClick={handleScrollTo} onDoubleClick={handleOpenEditor}>
-        <Typography sx={{ color: errorColor, ':hover': { color: 'text.secondary' } }}>{getTitle(item)}</Typography>
+        <Typography sx={{ color: textColor, fontWeight, ':hover': { color: 'text.secondary' } }}>{getTitle(item)}</Typography>
       </ListItemText>
     </ListItem>
   );
