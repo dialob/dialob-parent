@@ -31,7 +31,7 @@ const OverflowTooltipTextField: React.FC<React.ComponentProps<typeof TextField>>
     const checkOverflow = () => {
       if (inputRef.current) {
         const el = inputRef.current;
-        const overflow = el.scrollWidth > el.clientWidth;
+        const overflow = el.scrollWidth > (el.clientWidth + 1);
         setIsOverflowing(overflow);
       }
     };
@@ -139,15 +139,9 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
             </TableCell>
             <TableCell width='20%' sx={{ p: 0.5 }}>
               <OverflowTooltipTextField value={idValue} onChange={(e) => setIdValue(e.target.value)} variant='standard' fullWidth
-                onFocus={() => setEditMode(true)} InputProps={{
-                disableUnderline: true,
-                endAdornment: (
-                  editMode && <>
-                    <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
-                    <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
-                  </>
-                )
-              }} />
+                InputProps={{
+                  disableUnderline: true
+                }} />
             </TableCell>
             {formLanguages?.map(lang => (
               <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
