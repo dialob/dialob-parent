@@ -12,7 +12,7 @@ interface SortConfig {
   direction: 'asc' | 'desc';
 }
 
-export interface DashboardStateContextProps {
+export interface DashboardStateContextType {
   config: DialobAdminConfig;
   formConfigurations: FormConfiguration[];
   setFormConfigurations: React.Dispatch<React.SetStateAction<FormConfiguration[]>>;
@@ -52,7 +52,7 @@ export interface DashboardStateContextProps {
 
 }
 
-const defaultContext: DashboardStateContextProps = {
+const defaultContext: DashboardStateContextType = {
   config: {
     dialobApiUrl: '',
     language: 'en',
@@ -96,7 +96,7 @@ const defaultContext: DashboardStateContextProps = {
   sortedFormConfigurations: []
 };
 
-export const DialobDashboardStateContext = createContext<DashboardStateContextProps>(defaultContext);
+export const DialobDashboardStateContext = createContext<DashboardStateContextType>(defaultContext);
 
 export const useDialobDashboardState = () => useContext(DialobDashboardStateContext);
 
