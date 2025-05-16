@@ -1,2 +1,2 @@
-export * from './FetchContext';
+export * from './DialobDashboardFetchContext';
 export * from './DialobDashboardStateContext';
