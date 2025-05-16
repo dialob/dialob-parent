@@ -6,7 +6,7 @@ import { checkHttpResponse, handleRejection } from '../middleware';
 import type { DefaultForm, FormConfiguration, DialobAdminConfig } from '../types';
 import { DEFAULT_FORM } from '../util';
 
-interface CreateDialogProps {
+export interface CreateDialogProps {
   createModalOpen: boolean;
   handleCreateModalClose: () => void;
   formConfiguration?: FormConfiguration;

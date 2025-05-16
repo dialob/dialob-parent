@@ -5,7 +5,7 @@ import { checkHttpResponse, handleRejection } from '../middleware';
 import type { FormConfiguration, DialobAdminConfig } from '../types';
 import { useAdminBackend } from '../backend';
 
-interface DeleteDialogProps {
+export interface DeleteDialogProps {
   deleteModalOpen: boolean;
   handleDeleteModalClose: () => void;
   formConfiguration: FormConfiguration | undefined;

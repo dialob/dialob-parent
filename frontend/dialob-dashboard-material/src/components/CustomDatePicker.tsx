@@ -3,7 +3,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { ClearIcon } from '@mui/x-date-pickers';
 
-interface CustomDatePickerProps {
+export interface CustomDatePickerProps {
   value: Date | undefined;
   onChange: (date: Date | null) => void;
   handleDateClear: () => void;
