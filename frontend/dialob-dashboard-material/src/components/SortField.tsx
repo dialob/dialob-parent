@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
-interface SortFieldProps {
+export interface SortFieldProps {
   active: boolean;
   direction: 'asc' | 'desc';
   name: string;

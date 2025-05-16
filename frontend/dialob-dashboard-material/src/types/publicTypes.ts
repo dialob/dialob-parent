@@ -12,7 +12,7 @@ export interface DialobAdminConfig {
   tenantId?: string;
 }
 
-export interface DialobAdminViewProps {
+export interface DialobAdminProps {
   config: DialobAdminConfig;
   showNotification?: (message: string, severity: 'success' | 'error') => void;
 }

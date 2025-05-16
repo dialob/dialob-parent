@@ -3,7 +3,7 @@ import { Box, Chip, IconButton, OutlinedInput, SvgIcon } from '@mui/material';
 import { LabelAction } from '../util';
 import { Cancel as CancelIcon, Add as AddIcon } from '@mui/icons-material';
 
-interface LabelChipsProps {
+export interface LabelChipsProps {
   labels: string[];
   onUpdate: (label: any, action: LabelAction) => Promise<void>
 }

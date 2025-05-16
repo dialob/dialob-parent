@@ -10,7 +10,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
 
-interface TagTableRowProps {
+export interface TagTableRowProps {
   filters: FormConfigurationFilters;
   formConfiguration: FormConfiguration;
   deleteFormConfiguration: (formConfiguration: FormConfiguration) => void;
