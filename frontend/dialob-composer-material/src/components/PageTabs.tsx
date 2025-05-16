@@ -56,24 +56,13 @@ const PageTab: React.FC<{ item: DialobItem, onClick: (e: React.MouseEvent<HTMLEl
   const isActive = item.id === editor.activePage?.id;
   const variant = isActive ? 'contained' : 'text';
   const fontWeight = isActive ? 'bold' : 'normal';
-  const [highlighted, setHighlighted] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    if (editor?.highlightedItem?.id === item.id) {
-      setHighlighted(true);
-    }
-    const id = setTimeout(() => {
-      setHighlighted(false);
-    }, 3000);
-    return () => clearTimeout(id);
-  }, [editor.highlightedItem, item.id])
 
   return (
     <Box sx={{ border: 1, borderColor: 'divider' }}>
       <Button
         onClick={onClick}
         variant={variant}
-        color={highlighted ? 'info' : 'primary'}
+        color={'primary'}
         endIcon={<OptionsMenu item={item} isPage light={isActive} />}
       >
         <Typography textTransform='none' fontWeight={fontWeight}>{getPageTabTitle(item, editor.activeFormLanguage)}</Typography>
