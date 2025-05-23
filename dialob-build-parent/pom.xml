@@ -91,6 +91,7 @@
     <spotbugs-annotations.version>4.9.3</spotbugs-annotations.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
     <commons-compress.version>1.27.1</commons-compress.version>
+    <checkerframework.version>3.48.3</checkerframework.version>
   </properties>
 
 
@@ -543,6 +544,11 @@
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-el</artifactId>
         <version>${tomcat-embed-el.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.checkerframework</groupId>
+        <artifactId>checker-qual</artifactId>
+        <version>${checkerframework.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
