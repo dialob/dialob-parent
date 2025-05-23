@@ -10,6 +10,11 @@
     "dist-lib"
   ],
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dialob/dialob-parent.git",
+    "directory": "frontend/dialob-composer-material"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "always-auth": true

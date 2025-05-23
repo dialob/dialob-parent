@@ -9,6 +9,11 @@
   "files": [
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dialob/dialob-parent.git",
+    "directory": "frontend/dialob-review-material"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "always-auth": true

@@ -10,6 +10,11 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dialob/dialob-parent.git",
+    "directory": "frontend/dialob-dashboard-material"
+  },
   "scripts": {
     "dev": "vite --config vite.config.ts --port 3000",
     "build": "vite build && tsc --emitDeclarationOnly",

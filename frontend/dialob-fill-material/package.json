@@ -13,6 +13,11 @@
     "registry": "https://registry.npmjs.org",
     "always-auth": true
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dialob/dialob-parent.git",
+    "directory": "frontend/dialob-fill-material"
+  },
   "license": "Apache-2.0",
   "scripts": {
     "build": "rm -rf ./lib && tsc",
