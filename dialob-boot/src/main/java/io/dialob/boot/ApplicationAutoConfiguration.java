@@ -49,7 +49,6 @@ public class ApplicationAutoConfiguration {
   @Import({
     AdminController.class,
     FillController.class,
-    LandingController.class,
     ReviewController.class,
     ComposerController.class,
     GlobalModelAttributesInjector.class,
@@ -57,7 +56,6 @@ public class ApplicationAutoConfiguration {
   @EnableConfigurationProperties({
     AdminApplicationSettings.class,
     ComposerApplicationSettings.class,
-    LandingApplicationSettings.class,
     QuestionnaireApplicationSettings.class,
     ReviewApplicationSettings.class
   })
