@@ -17,7 +17,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
-    "always-auth": true
+    "always-auth": true,
+    "provenance": true
   },
   "scripts": {
     "dev": "vite",
