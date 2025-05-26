@@ -49,7 +49,6 @@ public class ApplicationAutoConfiguration {
   @Import({
     AdminController.class,
     FillController.class,
-    LandingController.class,
     ReviewController.class,
     ComposerController.class,
     GlobalModelAttributesInjector.class,
