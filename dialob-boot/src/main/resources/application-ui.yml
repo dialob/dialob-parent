@@ -30,23 +30,6 @@ admin:
           - "${server.servlet.contextPath}/css/layout.css"
           - "//unpkg.com/semantic-ui@2.4.2/dist/semantic.min.css"
 
-landing:
-  context-path: "/landing"
-  apiUrl: '${server.servlet.contextPath}/api'
-  fillingAppUrl: "${server.servlet.contextPath}/fill"
-  composerAppUrl: "${server.servlet.contextPath}/composer"
-  adminAppUrl: "${server.servlet.contextPath}/"
-  tenants:
-    default:
-      template: "landing"
-      attributes:
-        javascriptFiles:
-          - "//cdn.polyfill.io/v2/polyfill.min.js"
-          - "//unpkg.com/react@16.0.0/umd/react.development.js"
-          - "//unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"
-        stylesheets:
-          - ""
-
 questionnaire:
   version: master
   context-path: "/fill"

@@ -56,7 +56,6 @@ public class ApplicationAutoConfiguration {
   @EnableConfigurationProperties({
     AdminApplicationSettings.class,
     ComposerApplicationSettings.class,
-    LandingApplicationSettings.class,
     QuestionnaireApplicationSettings.class,
     ReviewApplicationSettings.class
   })
