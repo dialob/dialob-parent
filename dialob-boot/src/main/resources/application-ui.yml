@@ -12,6 +12,7 @@ global:
       title: ""
 
 admin:
+  version: dev
   context-path: "/"
   versioning: false
   apiUrl: '${server.servlet.contextPath}/api'
@@ -21,14 +22,7 @@ admin:
   documentation: "${documentationUrl}"
   tenants:
     default:
-      template: "admin"
-      attributes:
-        frontendPath: "https://cdn.resys.io/dialob/dialob-admin-ui/master/"
-        javascriptFiles:
-          - "//cdn.polyfill.io/v2/polyfill.min.js"
-        stylesheets:
-          - "${server.servlet.contextPath}/css/layout.css"
-          - "//unpkg.com/semantic-ui@2.4.2/dist/semantic.min.css"
+      template: "https://cdn.resys.io/dialob/demo-dialob-io-app/${admin.version}/index.html"
 
 landing:
   context-path: "/landing"
@@ -48,48 +42,37 @@ landing:
           - ""
 
 questionnaire:
-  version: master
+  version: dev
   context-path: "/fill"
   socketUrl: "${server.servlet.contextPath}/session/socket"
-  restUrl: "${server.servlet.contextPath}/session/dialob"
+  restUrl: "http://localhost:8080/session/dialob"
   backendApiUrl: "${server.servlet.contextPath}/api"
   reviewUrl: "${server.servlet.contextPath}/review"
   connectionMode: "rest"
   tenants:
     default:
-      template: "fill"
-      attributes:
-        javascriptFiles:
-          - "//cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/runtime.js"
-          - "//cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/app.js"
-        stylesheets:
-          - "//cdn.resys.io/dialob-fill-ui-app/${questionnaire.version}/app.css"
-          - "//unpkg.com/semantic-ui@2.4.1/dist/semantic.min.css"
-
+      template: "https://cdn.resys.io/dialob/dialob-fill-demo-material/${questionnaire.version}/index.html"
 
 composer:
-  version: master
+  version: dev
+  subApplicationName: Composer
   context-path: "/composer"
   fillingAppUrl: "${server.servlet.contextPath}/fill"
   backendApiUrl: "${server.servlet.contextPath}/api"
   adminAppUrl: "${server.servlet.contextPath}/"
-  subApplicationName: Composer
   documentationUrl: "${documentationUrl}"
   tenants:
     default:
-      template: "//cdn.resys.io/dialob-composer-generic-app/dev/index.html"
+      template: "https://cdn.resys.io/dialob/composer-material/${composer.version}/index.html"
 
 review:
+  version: dev
+  subApplicationName: Review
   context-path: "/review"
   apiUrl: "${server.servlet.contextPath}/api"
-  subApplicationName: Review
   tenants:
     default:
-      template: "review"
-      attributes:
-        frontendPath: "https://cdn.resys.io/dialob/dialob-review-ui-app/master/"
-        stylesheets:
-          - "//unpkg.com/semantic-ui@2.4.2/dist/semantic.min.css"
+      template: "https://cdn.resys.io/dialob/review-material/${review.version}/index.html"
 
 springdoc:
 #  swagger-ui:

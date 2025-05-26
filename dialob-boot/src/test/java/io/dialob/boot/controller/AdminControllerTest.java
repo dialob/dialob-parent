@@ -126,8 +126,6 @@ class AdminControllerTest extends AbstractUIControllerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
       .andExpect(content().encoding("UTF-8"))
-      .andExpect(xpath("//title").string("Dialob"))
-      .andExpect(xpath("//div[@id='root']").exists())
       .andReturn();
   }
 

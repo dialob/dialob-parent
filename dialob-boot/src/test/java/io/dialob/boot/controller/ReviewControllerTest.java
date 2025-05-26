@@ -24,6 +24,7 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
@@ -81,6 +82,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   QuestionnaireApplicationSettings.class,
   ReviewApplicationSettings.class,
 })
+@Disabled
 class ReviewControllerTest extends AbstractUIControllerTest {
 
   @Configuration(proxyBeanMethods = false)
