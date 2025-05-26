@@ -45,7 +45,7 @@ questionnaire:
   version: dev
   context-path: "/fill"
   socketUrl: "${server.servlet.contextPath}/session/socket"
-  restUrl: "http://localhost:8080/session/dialob"
+  restUrl: "${server.servlet.contextPath}/session/dialob"
   backendApiUrl: "${server.servlet.contextPath}/api"
   reviewUrl: "${server.servlet.contextPath}/review"
   connectionMode: "rest"
