@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.5
+
+### Patch Changes
+
+- Bugfix release
+
 ## 0.0.4
 
 ### Patch Changes
