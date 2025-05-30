@@ -33,6 +33,7 @@ const en = {
   'buttons.preview': 'Preview',
   'buttons.activate': 'Activate',
   'buttons.help': 'Help',
+  'buttons.rule.save': 'Save rule',
 
   'menus.options': 'Options',
   'menus.description': 'Description',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Box, Alert } from '@mui/material';
+import { Typography, Box, Alert, Button } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Warning } from '@mui/icons-material';
 import { useComposer } from '../../dialob';
@@ -37,18 +37,15 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     }
   }, [item, type]);
 
-  React.useEffect(() => {
+  const handleSaveRule = () => {
     if (item && ruleCode !== item[resolveRulePropName(type)]) {
       if (ruleCode === '' && item[resolveRulePropName(type)] === undefined) {
         return;
       }
-      const id = setTimeout(() => {
-        updateItem(item.id, resolveRulePropName(type), ruleCode);
-        setActiveItem({ ...item, [resolveRulePropName(type)]: ruleCode });
-      }, 300);
-      return () => clearTimeout(id);
+      updateItem(item.id, resolveRulePropName(type), ruleCode);
+      setActiveItem({ ...item, [resolveRulePropName(type)]: ruleCode });
     }
-  }, [ruleCode]);
+  }
 
   if (!item) {
     return null;
@@ -67,6 +64,12 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
       <Typography color='text.hint'><FormattedMessage id={`dialogs.options.rules.${type}`} /></Typography>
       <Box>
         <CodeMirror value={ruleCode} onChange={(value) => setRuleCode(value)} errors={itemErrors} />
+        {
+          item && ruleCode !== (item[resolveRulePropName(type)] ?? '') && 
+          <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
+            <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
+          </Box>
+        }
       </Box>
       {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
