@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { useComposer } from '../../dialob';
 import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
@@ -184,16 +184,22 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   const { updateExpressionVariable } = useComposer();
   const [expression, setExpression] = React.useState<string>(variable.expression);
 
-  React.useEffect(() => {
-    const id = setTimeout(() => {
+  const handleSaveRule = () => {
+    if (expression !== variable.expression) {
       updateExpressionVariable(variable.name, expression);
-    }, 300);
-    return () => clearTimeout(id);
-
-  }, [expression]);
+    }
+  }
 
   return (
-    <CodeMirror value={expression} onChange={(e) => setExpression(e)} errors={errors} />
+    <Box sx={{ p: 1 }}>
+      <CodeMirror value={expression} onChange={(e) => setExpression(e)} errors={errors} />
+      {
+        expression !== (variable.expression ?? '') && 
+        <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
+          <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
+        </Box>
+      }
+    </Box>
   );
 }
 

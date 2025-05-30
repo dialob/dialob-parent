@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography, alpha, useTheme } from '@mui/material';
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography, alpha, useTheme } from '@mui/material';
 import { Check, Close, Visibility } from "@mui/icons-material";
 import { TreeItem } from "@atlaskit/tree";
 import { TreeDraggableProvided } from "@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types";
@@ -89,18 +89,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   }, [entry]);
 
   React.useEffect(() => {
-    if (rule !== entry.when) {
-      if (rule === '' && entry.when === undefined) {
-        return;
-      }
-      const id = setTimeout(() => {
-        onRuleEdit(entry, rule);
-      }, 300);
-      return () => clearTimeout(id);
-    }
-  }, [rule]);
-
-  React.useEffect(() => {
     if (localizedString && localizedString !== entry.label) {
       const id = setTimeout(() => {
         onTextEdit(entry, localizedString)
@@ -111,6 +99,12 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
 
   const handleUpdate = (value: string, language: string) => {
     setLocalizedString({ ...localizedString, [language]: value });
+  }
+
+  const handleSaveRule = () => {
+    if (rule !== entry.when) {
+      onRuleEdit(entry, rule);
+    }
   }
 
   const handleChangeName = () => {
@@ -138,9 +132,16 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               {!isGlobal && <IconButton onClick={() => setEntryExpanded(!entryExpanded)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
             </TableCell>
             <TableCell width='20%' sx={{ p: 0.5 }}>
-              <OverflowTooltipTextField value={idValue} onChange={(e) => setIdValue(e.target.value)} variant='standard' fullWidth
+              <OverflowTooltipTextField value={idValue} onChange={(e) => setIdValue(e.target.value)} 
+                onFocus={() => setEditMode(true)} onBlur={() => setEditMode(false)} variant='standard' fullWidth
                 InputProps={{
-                  disableUnderline: true
+                  disableUnderline: true,
+                  endAdornment: (
+                    editMode && <>
+                      <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
+                      <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+                    </>
+                  )
                 }} />
             </TableCell>
             {formLanguages?.map(lang => (
@@ -154,6 +155,12 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
                 <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
                 <CodeMirror value={rule} onChange={(value) => setRule(value)} />
+                {
+                  rule !== (entry.when ?? '') && 
+                  <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
+                    <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
+                  </Box>
+                }
               </Box>}
             </TableCell>
           </TableRow>}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
+import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip, Divider } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
 import { useEditor } from '../../editor';
 import { useComposer } from '../../dialob';
@@ -30,22 +30,19 @@ const ValidationRuleEditor: React.FC = () => {
     }
   }, [item]);
 
-  React.useEffect(() => {
+  if (!item) {
+    return null;
+  }
+
+  const handleSaveRule = () => {
     if (item && activeRule && activeRule.validationRule.rule && item.validations?.[activeRule.index] &&
       activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule) {
       const expression = activeRule.validationRule.rule;
-      const id = setTimeout(() => {
-        const validations = [...item.validations || []];
-        const newValidations = validations.map((rule, index) => index === activeRule.index ? { ...rule, rule: expression } : rule);
-        setActiveItem({ ...item, validations: newValidations });
-        setValidationExpression(item.id, activeRule.index, expression);
-      }, 300);
-      return () => clearTimeout(id);
+      const validations = [...item.validations || []];
+      const newValidations = validations.map((rule, index) => index === activeRule.index ? { ...rule, rule: expression } : rule);
+      setActiveItem({ ...item, validations: newValidations });
+      setValidationExpression(item.id, activeRule.index, expression);
     }
-  }, [activeRule?.validationRule.rule]);
-
-  if (!item) {
-    return null;
   }
 
   const handleDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, rule: IndexedRule) => {
@@ -105,7 +102,13 @@ const ValidationRuleEditor: React.FC = () => {
         </Button>
       </Box>
       {rules.length > 0 && activeRule !== undefined && <Box sx={{ mt: 2 }}>
-        <CodeMirror value={activeRule.validationRule.rule} onChange={handleUpdate} errors={itemErrors} />
+        <CodeMirror value={activeRule.validationRule.rule ?? ''} onChange={handleUpdate} errors={itemErrors} />
+        {
+          activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule && 
+          <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
+            <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
+          </Box>
+        }
       </Box>}
       <Box sx={{ mt: 2 }}>
         <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
