@@ -64,8 +64,6 @@ Dialob Backend Services
   * **dialob-fill-demo-material** - Demo Dialob filling application on MUI 5 (used in demo.dialob.io).
   * **dialob-fill-material** - Dialob filling component library implementation on top of MUI 5. **Published to npmjs.com as [@dialob/fill-material](https://www.npmjs.com/package/@dialob/fill-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Ffill-material).
   * **dialob-review-material** - Dialob filled form review renderer on MUI 5. **Published internally as @dialob/dialob-review-material**.
-  * **dialob-composer-semantic** - Dialob Composer component library on Semantic UI. **Published internally as @dialob/dialob-composer**.
-  * **dialob-composer-semantic-app** - Dialob Composer reference application on Semantic UI (used in demo.dialob.io).
   * **dialob-composer-material** - Dialob Composer component library on Material UI.
   * **dialob-composer-material-custom-app**.
   * **dialob-dashboard-material** - Dialob dashboard component library on Material UI. **Published to npmjs.com as [@dialob/dashboard-material](https://www.npmjs.com/package/@dialob/dashboard-material)** ![version](https://img.shields.io/npm/v/%40dialob%2Fdashboard-material).
