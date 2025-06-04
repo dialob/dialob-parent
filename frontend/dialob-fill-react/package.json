@@ -16,8 +16,6 @@
     "directory": "frontend/dialob-fill-react"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "always-auth": true,
     "provenance": true
   },
   "scripts": {
