@@ -43,9 +43,6 @@ info:
     timestamp: "@timestamp@"
     number: "@buildNumber@"
 
-logging:
-  path: "./"
-
 management:
   endpoints:
     enabled-by-default: true
