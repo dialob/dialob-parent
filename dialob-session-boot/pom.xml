@@ -22,7 +22,7 @@
   <parent>
     <artifactId>dialob-build-parent</artifactId>
     <groupId>io.dialob</groupId>
-    <version>999-SNAPSHOT</version>
+    <version>2.2.9</version>
     <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-session-boot</artifactId>
