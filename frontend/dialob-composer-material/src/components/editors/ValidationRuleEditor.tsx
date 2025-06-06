@@ -81,7 +81,7 @@ const ValidationRuleEditor: React.FC = () => {
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Tabs value={activeRule?.index} onChange={(e, value) => setActiveRule(rules[value])} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={activeRule?.index} onChange={(_e, value) => setActiveRule(rules[value])} sx={{ borderBottom: 1, borderColor: 'divider' }}>
           {rules.map((rule) => <Tab key={rule.index} label={
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <FormattedMessage id='dialogs.options.validations.rule.tab' values={{ index: rule.index + 1 }} />
