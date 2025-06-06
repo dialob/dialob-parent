@@ -1,8 +1,10 @@
 on:
   push:
     paths:
+      - 'dialob-*/**'
+      - 'pom.xml'
       - '!docs/**'
-      - '!frontends/**'
+      - '!frontend/**'
       - '!utils/**'
       - '!**/*.md'
       - '!compose/**'
