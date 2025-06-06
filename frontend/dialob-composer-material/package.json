@@ -16,8 +16,6 @@
     "directory": "frontend/dialob-composer-material"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "always-auth": true,
     "provenance": true
   },
   "scripts": {

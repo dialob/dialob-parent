@@ -10,8 +10,6 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "always-auth": true,
     "provenance": true
   },
   "repository": {
