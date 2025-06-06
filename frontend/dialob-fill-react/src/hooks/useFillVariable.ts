@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useFillSession } from './useFillSession';
 
-export function useFillVariable(id: string | undefined): any {
+export function useFillVariable(id: string | undefined) {
   const session = useFillSession();
   const initialValue = id ? session.getVariable(id) : undefined;
-  const [variable, setVariable] = useState<any>(initialValue);
+  const [variable, setVariable] = useState(initialValue);
 
   useEffect(() => {
     if (!id) return;

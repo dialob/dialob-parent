@@ -13,7 +13,7 @@ export interface RowGroupProps {
 
 export const RowGroup: React.FC<PropsWithChildren<RowGroupProps>> = ({ rowGroup, children }) => {
   const { addRowToGroup } = useFillActions();
-  const indent = parseInt(rowGroup.props?.indent ?? undefined);
+  const indent = rowGroup.props?.indent != undefined ? parseInt(rowGroup.props?.indent) : undefined;
 
   return (
     <>

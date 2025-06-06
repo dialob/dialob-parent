@@ -34,8 +34,8 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
           isOptionEqualToValue={(option, value) => option?.key === value?.key}
           fullWidth
           autoComplete
-          onChange={(event: any, newValue: (ValueSetEntry | undefined)[]) => {
-            setAnswer(multichoice.id, newValue?.map(c => c?.key));
+          onChange={(event, newValue: (ValueSetEntry | undefined)[]) => {
+            setAnswer(multichoice.id, newValue?.map(c => c?.key).filter(c => c !== undefined));
           }}
           renderInput={params => <TextField {...params} inputProps={{ ...params.inputProps, autoComplete: 'new-password' }} label={multichoice.label}
             error={errors.length > 0}

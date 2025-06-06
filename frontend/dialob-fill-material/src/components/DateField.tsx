@@ -55,7 +55,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
           label={datefield.label}
           value={value}
           onChange={handleChange}
-          inputFormat={DATE_FORMAT_MAPPING[locale]}
+          inputFormat={locale && DATE_FORMAT_MAPPING[locale]}
           renderInput={(props) => {
             /*
             if (props.inputProps && props.inputProps.placeholder) {

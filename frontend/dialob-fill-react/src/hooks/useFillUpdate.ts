@@ -1,6 +1,7 @@
 import { useFillSession } from "./useFillSession";
 import { Session } from "@dialob/fill-api";
 import { useEffect, useRef } from "react";
+
 export function useFillUpdate(updateFn: (session: Session) => void) {
   const session = useFillSession();
   const updateRef = useRef(updateFn);

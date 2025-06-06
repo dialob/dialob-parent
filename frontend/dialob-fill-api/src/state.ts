@@ -1,6 +1,6 @@
 import { produce, enableMapSet } from 'immer';
 import { DialobError } from './error';
-import { Action, ErrorAction, ItemAction, ItemType, ValueSetAction } from './actions';
+import { Action, ErrorAction, ItemAction, ItemType, ValueSetAction, ValueType } from './actions';
 
 enableMapSet();
 
@@ -19,7 +19,7 @@ export interface SessionState {
   locale?: string;
   complete: boolean;
   variables: {
-    [id: string]: any;
+    [id: string]: ValueType | undefined;
   }
 };
 
@@ -91,7 +91,7 @@ export function updateState(state: SessionState, actions: Action[]): SessionStat
 
           if (state.reverseItemMap[id]) {
             state.reverseItemMap[id].forEach(reference => {
-              const referencedItem: any = state.items[reference];
+              const referencedItem = state.items[reference];
               if (!referencedItem || !referencedItem['items']) return;
               const idx = referencedItem.items.indexOf(reference);
               if (idx === -1) return;

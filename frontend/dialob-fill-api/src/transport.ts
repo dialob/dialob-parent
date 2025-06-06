@@ -27,7 +27,7 @@ export class RESTTransport implements Transport {
     };
   }
 
-  async fetch(sessionId: string, data?: RequestInit['body']): Promise<any> {
+  async fetch(sessionId: string, data?: RequestInit['body']): Promise<DialobResponse> {
     const response = await window.fetch(`${this.endpoint}/${sessionId}`, {
       method: data ? 'POST' : 'GET',
       body: data,
@@ -37,9 +37,7 @@ export class RESTTransport implements Transport {
     if (!response.ok) {
       throw new DialobRequestError('Failure during fetch', response.status);
     }
-
-    const json = await response.json();
-    return json;
+    return response.json();
   }
 
   getFullState(sessionId: string): Promise<DialobResponse> {

@@ -12,6 +12,8 @@ export interface SetLocaleAction {
   value: string;
 }
 
+export type ValueType = string | string[] | number | number[] | boolean | null;
+
 export type ItemType = 'questionnaire' | 'group' | 'text' | 'number' | 'boolean' | 'multichoice' | 'survey' | 'surveygroup' | 'list' | 'note' | 'date' | 'time' | 'decimal' | 'row' | 'rowgroup' | 'context' | 'variable';
 
 interface GenericItemAction<Type extends ItemType, Value, Props> {
@@ -43,7 +45,7 @@ type IsType<Given extends ItemType, Value, Matching extends ItemType, Result, Pr
   : never
   : never;
 
-export type ItemAction<T extends ItemType, Props = { [name: string]: any }, K = unknown> =
+export type ItemAction<T extends ItemType, Props = { [name: string]: string | null }, K = unknown> =
   IsType<T, K, 'questionnaire', undefined, Props>
   | IsType<T, K, 'group', undefined, Props>
   | IsType<T, K, 'text', string, Props>
@@ -59,8 +61,8 @@ export type ItemAction<T extends ItemType, Props = { [name: string]: any }, K = 
   | IsType<T, K, 'decimal', number, Props>
   | IsType<T, K, 'row', undefined, Props>
   | IsType<T, K, 'rowgroup', undefined, Props>
-  | IsType<T, K, 'context', any, Props>
-  | IsType<T, K, 'variable', any, Props>
+  | IsType<T, K, 'context', ValueType, Props>
+  | IsType<T, K, 'variable', ValueType, Props>
   ;
 
 export interface ValueSetAction {
@@ -87,7 +89,7 @@ export interface RemoveValueSetsAction {
 export interface AnswerAction {
   type: 'ANSWER';
   id: string;
-  answer: any;
+  answer?: ValueType;
 }
 
 export interface AddRowAction {
