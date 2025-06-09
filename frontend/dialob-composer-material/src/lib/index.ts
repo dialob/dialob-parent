@@ -1,7 +1,7 @@
 import { Group } from "../items/Group";
 import { SimpleField } from "../items/SimpleField";
 import { Note } from "../items/Note";
-import { LabelField, VisibilityField } from "../items/ItemComponents";
+import { LabelField, VisibilityField, StyledTable, Indicators, IdField, ConversionMenu, OptionsMenu } from "../items/ItemComponents";
 import { ChoiceEditor } from "../components/editors/ChoiceEditor";
 import { DefaultValueEditor } from "../components/editors/DefaultValueEditor";
 import { DescriptionEditor } from "../components/editors/DescriptionEditor";
@@ -45,10 +45,13 @@ import * as BackendTypes from "../backend/types";
 import * as DialobTypes from "../types";
 import * as DefaultTypes from "../defaults/types";
 import * as PropEditors from "../components/propEditors";
+import * as ErrorUtils from "../utils/ErrorUtils";
+import { useComposer } from "../dialob";
+import { useEditor } from "../editor";
 
 // export for building the library
 export {
-  Group, SimpleField, Note, LabelField, VisibilityField, itemFactory,    // items
+  Group, SimpleField, Note, LabelField, VisibilityField, StyledTable, Indicators, IdField, ConversionMenu, OptionsMenu, itemFactory,    // items
   ChoiceEditor, DefaultValueEditor, DescriptionEditor, LabelEditor, LocalizedStringEditor, PropertiesEditor, RuleEditor, RulesEditor, ValidationRuleEditor, // editors
   LanguageEditor, TranslationFileEditor, MissingTranslations, // translations
   NavigationTreeItem, NavigationTreeView, // tree
@@ -59,6 +62,8 @@ export {
   ItemOptionsDialog, PreviewDialog, TranslationDialog, UploadValuesetDialog, VariablesDialog, VersioningDialog, // dialogs
   DEFAULT_ITEM_CONFIG, DEFAULT_ITEMTYPE_CONFIG, DEFAULT_VALUESET_PROPS, // defaults
   PropEditors, // propEditors (ChoiceProp, InputProp, etc.)
+  ErrorUtils,
+  useComposer, useEditor, // hooks
   DialobComposer, // composer
 };
 
