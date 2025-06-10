@@ -27,8 +27,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Configuration(proxyBeanMethods = false)
 @Profile("ui")
@@ -45,7 +44,7 @@ public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
     return http
       .securityMatcher(requestMatcher())
       .authorizeHttpRequests(customizer -> customizer
-        .requestMatchers(antMatcher(HttpMethod.GET,getContextPath() + "/**")).hasAuthority(Permissions.COMPOSER_VIEW)
+        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET,getContextPath() + "/**")).hasAuthority(Permissions.COMPOSER_VIEW)
         .anyRequest().denyAll());
     // @formatter:on
   }

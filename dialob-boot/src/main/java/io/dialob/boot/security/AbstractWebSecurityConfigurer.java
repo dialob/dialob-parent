@@ -29,7 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.Objects;
@@ -75,7 +75,7 @@ public abstract class AbstractWebSecurityConfigurer {
   protected abstract HttpSecurity configurePermissions(HttpSecurity http) throws Exception;
 
   protected RequestMatcher requestMatcher() {
-    return new AntPathRequestMatcher(StringUtils.appendIfMissing(getContextPath(), "/") + "**");
+    return PathPatternRequestMatcher.withDefaults().matcher(StringUtils.appendIfMissing(getContextPath(), "/") + "**");
   }
 
   protected HttpSecurity configureMDCPrincipalFilter(HttpSecurity http) throws Exception {
@@ -128,7 +128,7 @@ public abstract class AbstractWebSecurityConfigurer {
     // @formatter:off
     return http
       .logout(customizer -> customizer
-        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher("/logout"))
         .logoutSuccessUrl("/"));
     // @formatter:on
   }

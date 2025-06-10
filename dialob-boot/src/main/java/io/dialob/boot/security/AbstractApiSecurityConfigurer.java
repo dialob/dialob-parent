@@ -21,10 +21,9 @@ import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityConfigurer {
@@ -37,21 +36,22 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
 
   protected HttpSecurity configurePermissions(@NonNull HttpSecurity http) throws Exception {
     // @formatter:off
+    var path = PathPatternRequestMatcher.withDefaults();
     return http
       .securityMatcher(requestMatcher())
       .authorizeHttpRequests(registry ->
-        registry.requestMatchers(antMatcher(HttpMethod.GET, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_GET)
-          .requestMatchers(antMatcher(HttpMethod.HEAD,  getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_GET)
-          .requestMatchers(antMatcher(HttpMethod.POST, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_POST)
-          .requestMatchers(antMatcher(HttpMethod.PUT, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_PUT)
-          .requestMatchers(antMatcher(HttpMethod.DELETE, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_DELETE)
-          .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_GET)
-          .requestMatchers(antMatcher(HttpMethod.HEAD,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_GET)
-          .requestMatchers(antMatcher(HttpMethod.POST,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_POST)
-          .requestMatchers(antMatcher(HttpMethod.PUT,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_PUT)
-          .requestMatchers(antMatcher(HttpMethod.DELETE,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_DELETE)
-          .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/tags/**")).hasAuthority(Permissions.FORMS_GET)
-          .requestMatchers(antMatcher(HttpMethod.GET,  getContextPath() + "/tenants/**")).authenticated()
+        registry.requestMatchers(path.matcher(HttpMethod.GET, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_GET)
+          .requestMatchers(path.matcher(HttpMethod.HEAD,  getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_GET)
+          .requestMatchers(path.matcher(HttpMethod.POST, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_POST)
+          .requestMatchers(path.matcher(HttpMethod.PUT, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_PUT)
+          .requestMatchers(path.matcher(HttpMethod.DELETE, getContextPath() + "/questionnaires/**")).hasAuthority(Permissions.QUESTIONNAIRES_DELETE)
+          .requestMatchers(path.matcher(HttpMethod.GET,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_GET)
+          .requestMatchers(path.matcher(HttpMethod.HEAD,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_GET)
+          .requestMatchers(path.matcher(HttpMethod.POST,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_POST)
+          .requestMatchers(path.matcher(HttpMethod.PUT,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_PUT)
+          .requestMatchers(path.matcher(HttpMethod.DELETE,  getContextPath() + "/forms/**")).hasAuthority(Permissions.FORMS_DELETE)
+          .requestMatchers(path.matcher(HttpMethod.GET,  getContextPath() + "/tags/**")).hasAuthority(Permissions.FORMS_GET)
+          .requestMatchers(path.matcher(HttpMethod.GET,  getContextPath() + "/tenants/**")).authenticated()
           .anyRequest().denyAll());
     // @formatter:on
   }
@@ -60,6 +60,6 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
   @NonNull
   @Override
   protected RequestMatcher getTenantRequiredMatcher() {
-    return new NegatedRequestMatcher(antMatcher(getContextPath() + "/tenants/**"));
+    return new NegatedRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher(getContextPath() + "/tenants/**"));
   }
 }

@@ -28,8 +28,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Configuration(proxyBeanMethods = false)
 @Profile("ui")
@@ -43,17 +42,18 @@ public class AdminSecurityConfigurer extends WebUISecurityConfigurer {
 
   protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
     // @formatter:off
-    var contextPath = StringUtils.removeEnd(getContextPath(), "/");
+    var path = PathPatternRequestMatcher.withDefaults();
+    var contextPath = StringUtils.prependIfMissing(StringUtils.removeEnd(getContextPath(), "/"), "/");
     return http
       .securityMatcher(requestMatcher())
       .authorizeHttpRequests(customizer -> customizer
-        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger/**")).permitAll()
-        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources")).permitAll()
-        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-resources/**")).permitAll()
-        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/swagger-ui/**")).permitAll()
-        .requestMatchers(antMatcher(HttpMethod.GET, contextPath + "/webjars/**")).permitAll()
-        .requestMatchers(antMatcher(HttpMethod.GET,  "/_uuids")).hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
-        .requestMatchers(antMatcher(HttpMethod.GET,contextPath + "**")).hasAuthority(Permissions.MANAGER_VIEW)
+        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger/**")).permitAll()
+        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger-resources")).permitAll()
+        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger-resources/**")).permitAll()
+        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger-ui/**")).permitAll()
+        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/webjars/**")).permitAll()
+        .requestMatchers(path.matcher(HttpMethod.GET,  "/_uuids")).hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
+        .requestMatchers(path.matcher(HttpMethod.GET,contextPath + "**")).hasAuthority(Permissions.MANAGER_VIEW)
         .anyRequest().denyAll());
     // @formatter:on
   }

@@ -17,13 +17,14 @@ package io.dialob.boot.security;
 
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -58,12 +59,10 @@ class AbstractApiSecurityConfigurerTest {
         var chain = configurer.filterChain(http);
         Assertions.assertEquals(13, chain.getFilters().size());
 
-        HttpServletRequest request = mock();
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getServletPath()).thenReturn("/api");
-        assertTrue(chain.matches(request));
-        when(request.getServletPath()).thenReturn("/api2");
-        assertFalse(chain.matches(request));
+        MockServletContext servletContext = new MockServletContext();
+
+        assertTrue(chain.matches(MockMvcRequestBuilders.get("/api").buildRequest(servletContext)));
+        assertFalse(chain.matches(MockMvcRequestBuilders.get("/api2").buildRequest(servletContext)));
       });
   }
 
