@@ -1,5 +1,11 @@
 # @dialob/dashboard-material
 
+## 1.2.11
+
+### Patch Changes
+
+- Latest deps
+
 ## 1.2.10
 
 ### Major Changes

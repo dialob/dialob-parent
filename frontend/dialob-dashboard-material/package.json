@@ -1,6 +1,6 @@
 {
   "name": "@dialob/dashboard-material",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "description": "Material UI dashboard component for Dialob",
   "private": false,
   "publishConfig": {
@@ -43,7 +43,7 @@
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0"
   },
-"devDependencies": {
+  "devDependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@eslint/js": "^9.25.1",
