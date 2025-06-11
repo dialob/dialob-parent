@@ -34,7 +34,7 @@ const getIcon = (
   onExpand: (itemId: ItemId) => void,
   onCollapse: (itemId: ItemId) => void,
 ) => {
-  if (item.children && item.children.length > 0) {
+  if (item.data && item.data.treeCollapsible && item.children && item.children.length > 0) {
     return item.isExpanded ? (
       <ArrowIcon onClick={() => onCollapse(item.id)}><ArrowDropDown fontSize='small' /></ArrowIcon>
     ) : (

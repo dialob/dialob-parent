@@ -1,6 +1,7 @@
 import { ItemId, TreeData } from '@atlaskit/tree';
 import { ContextVariable, DialobItem, ValueSet, Variable } from '../types';
 import { IconButton, styled } from '@mui/material';
+import { ItemConfig } from '../defaults/types';
 
 export const INIT_TREE: TreeData = {
   rootId: 'root',
@@ -46,7 +47,7 @@ export const buildTreeFromValueSet = (valueSet?: ValueSet): TreeData => {
   };
 }
 
-export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string): TreeData => {
+export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig): TreeData => {
   const tree: TreeData = {
     rootId: 'root',
     items: {
@@ -73,6 +74,7 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
   }
 
   const addChild = (item: DialobItem, parentId: ItemId) => {
+    const treeCollapsible = config.items.find(c => c.matcher(item))?.props.treeCollapsible ?? false;
     const id = item.id;
     const title = item.label && item.label[language] ? item.label[language] : id;
     tree.items[id] = {
@@ -82,8 +84,9 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
         title,
         isPage: item.type === 'group' && parentId === 'root',
         item,
+        treeCollapsible,
       },
-      isExpanded: true,
+      isExpanded: treeCollapsible,
       hasChildren: item.items?.length ? true : false,
     };
     tree.items[parentId].children.push(id);
