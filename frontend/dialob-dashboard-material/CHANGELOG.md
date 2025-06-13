@@ -1,5 +1,11 @@
 # @dialob/dashboard-material
 
+## 1.2.12
+
+### Patch Changes
+
+- Fixed packaging
+
 ## 1.2.11
 
 ### Patch Changes
