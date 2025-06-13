@@ -36,8 +36,8 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -88,7 +88,7 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
     if (requestMatcher == null) {
       List<RequestMatcher> requestMatchers = new ArrayList<>();
       if (StringUtils.isNotBlank(getContextPath())) {
-        requestMatchers.add(new AntPathRequestMatcher(getContextPath() + "/**"));
+        requestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(getContextPath() + "/**"));
       }
       if (!allRequests) {
         requestMatchers.add(SESSION_NOT_EXISTS_MATCHER);
