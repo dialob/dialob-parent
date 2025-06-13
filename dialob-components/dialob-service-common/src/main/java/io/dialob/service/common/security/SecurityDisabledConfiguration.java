@@ -102,7 +102,7 @@ public class SecurityDisabledConfiguration {
 
   @Bean
   TenantAccessEvaluator tenantPermissionEvaluator() {
-    return tenant -> true;
+    return TenantAccessEvaluator.ALL_ACCESS_EVALUATOR;
   }
 }
 

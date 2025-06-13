@@ -110,7 +110,7 @@ public class DialobSecuritySpringAutoConfiguration {
   @Bean
   public TenantAccessEvaluator tenantAccessEvaluator(DialobSettings dialobSettings) {
     if (dialobSettings.getTenant().getMode() == DialobSettings.TenantSettings.Mode.FIXED) {
-      return tenant -> true;
+      return TenantAccessEvaluator.ALL_ACCESS_EVALUATOR;
     }
     return new GrantedTenantAccessEvaluator() {
       @Override

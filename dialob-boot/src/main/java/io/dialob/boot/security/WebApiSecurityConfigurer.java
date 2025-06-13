@@ -34,7 +34,7 @@ public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
 
   public WebApiSecurityConfigurer(@NonNull DialobSettings settings,
                                   @NonNull TenantAccessEvaluator tenantPermissionEvaluator, AuthenticationStrategy authenticationStrategy) {
-    super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
+    super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy, settings.getTenant().getMode());
     this.settings = settings;
   }
 
@@ -50,7 +50,7 @@ public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
   }
 
   @Bean
-  @Order(125)
+  @Order(Constants.WEBAPI_CHAIN_ORDER)
   SecurityFilterChain webApiFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }

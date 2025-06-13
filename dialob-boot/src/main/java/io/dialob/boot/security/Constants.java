@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.security.spring.tenant;
+package io.dialob.boot.security;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.security.tenant.Tenant;
+import org.springframework.core.Ordered;
 
-public interface TenantAccessEvaluator {
-  /**
-   * A TenantAccessEvaluator that grants access to all tenants to any user.
-   */
-  TenantAccessEvaluator ALL_ACCESS_EVALUATOR = tenant -> true;
-
-  boolean doesUserHaveAccessToTenant(@NonNull Tenant tenant);
-
+interface Constants {
+  int API_CHAIN_ORDER = Ordered.HIGHEST_PRECEDENCE;
+  int ACTUATOR_CHAIN_ORDER = 0;
+  int WEBAPI_CHAIN_ORDER = 125;
+  int COMPOSER_CHAIN_ORDER = 130;
+  int QUESTIONNAIRE_CHAIN_ORDER = 140;
+  int REVIEW_CHAIN_ORDER = 150;
+  int ADMIN_CHAIN_ORDER = Ordered.LOWEST_PRECEDENCE;
 }

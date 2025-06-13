@@ -88,7 +88,7 @@ class AdminControllerTest extends AbstractUIControllerTest {
 
     @Bean
     public TenantAccessEvaluator tenantAccessEvaluator() {
-      return tenant -> true;
+      return TenantAccessEvaluator.ALL_ACCESS_EVALUATOR;
     }
 
     @Bean

@@ -19,6 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Permissions;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.settings.DialobSettings;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
@@ -28,10 +29,14 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityConfigurer {
 
+  private final DialobSettings.TenantSettings.Mode tenantMode;
+
   public AbstractApiSecurityConfigurer(String contextPath,
                                        TenantAccessEvaluator tenantPermissionEvaluator,
-                                       @NonNull AuthenticationStrategy authenticationStrategy) {
+                                       @NonNull AuthenticationStrategy authenticationStrategy,
+                                       DialobSettings.TenantSettings.Mode tenantMode) {
     super(contextPath, tenantPermissionEvaluator, authenticationStrategy);
+    this.tenantMode = tenantMode;
   }
 
   protected HttpSecurity configurePermissions(@NonNull HttpSecurity http) throws Exception {
@@ -60,6 +65,9 @@ public abstract class AbstractApiSecurityConfigurer extends AbstractWebSecurityC
   @NonNull
   @Override
   protected RequestMatcher getTenantRequiredMatcher() {
-    return new NegatedRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher(getContextPath() + "/tenants/**"));
+    if (tenantMode == DialobSettings.TenantSettings.Mode.URL_PARAM) {
+      return new NegatedRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher(getContextPath() + "/tenants/**"));
+    }
+    return super.getTenantRequiredMatcher();
   }
 }
