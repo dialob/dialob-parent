@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 export default defineConfig(({ command }) => {
   if (command === 'serve') {
@@ -22,17 +23,7 @@ export default defineConfig(({ command }) => {
           fileName: (format) => `index.${format}.js`
         },
         rollupOptions: {
-          external: [
-            'react',
-            'react-dom',
-            "@emotion/react",
-            "@emotion/styled",
-            "@mui/icons-material",
-            "@mui/material",
-            "@mui/styles",
-            "@mui/system",
-            "@mui/x-date-pickers"
-          ],
+          plugins: [peerDepsExternal()],
           output: {
             globals: {
               react: 'React',
