@@ -59,7 +59,7 @@ public class AdminSecurityConfigurer extends WebUISecurityConfigurer {
   }
 
   @Bean
-  @Order
+  @Order(SecurityConfiguration.ADMIN_CHAIN_ORDER)
   SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }

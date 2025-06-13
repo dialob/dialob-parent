@@ -46,7 +46,7 @@ public class ReviewSecurityConfigurer extends WebUISecurityConfigurer {
   }
 
   @Bean
-  @Order(150)
+  @Order(SecurityConfiguration.REVIEW_CHAIN_ORDER)
   SecurityFilterChain reviewFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }

@@ -50,7 +50,7 @@ public class ComposerSecurityConfigurer extends WebUISecurityConfigurer {
   }
 
   @Bean
-  @Order(130)
+  @Order(SecurityConfiguration.COMPOSER_CHAIN_ORDER)
   SecurityFilterChain composerFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }
