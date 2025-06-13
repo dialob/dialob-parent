@@ -1,6 +1,8 @@
 on:
   pull_request:
     paths:
+      - 'dialob-*/**'
+      - 'pom.xml'
       - '!docs/**'
       - '!utils/**'
       - '!**/*.md'
