@@ -50,7 +50,7 @@ public class WebApiSecurityConfigurer extends AbstractApiSecurityConfigurer {
   }
 
   @Bean
-  @Order(SecurityConfiguration.WEBAPI_CHAIN_ORDER)
+  @Order(Constants.WEBAPI_CHAIN_ORDER)
   SecurityFilterChain webApiFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }

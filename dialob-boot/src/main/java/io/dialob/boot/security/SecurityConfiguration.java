@@ -34,7 +34,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -53,14 +52,6 @@ import java.util.List;
 @Import(ApiServiceSecurityConfigurer.class)
 @Slf4j
 public class SecurityConfiguration {
-
-  static final int API_CHAIN_ORDER = Ordered.HIGHEST_PRECEDENCE;
-  static final int ACTUATOR_CHAIN_ORDER = 0;
-  static final int WEBAPI_CHAIN_ORDER = 125;
-  static final int COMPOSER_CHAIN_ORDER = 130;
-  static final int QUESTIONNAIRE_CHAIN_ORDER = 140;
-  static final int REVIEW_CHAIN_ORDER = 150;
-  static final int ADMIN_CHAIN_ORDER = Ordered.LOWEST_PRECEDENCE;
 
   @Bean
   public ServletRequestApiKeyExtractor requestParameterServletApiKeyExtractor() {

@@ -131,7 +131,7 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
   }
 
   @Bean
-  @Order(SecurityConfiguration.API_CHAIN_ORDER)
+  @Order(Constants.API_CHAIN_ORDER)
   SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }

@@ -33,7 +33,7 @@ public class ActuatorEndpointSecurityConfiguration {
   private final RequestMatcher GET_REQUEST = request -> HttpMethod.GET.matches(request.getMethod());
 
   @Bean
-  @Order(SecurityConfiguration.ACTUATOR_CHAIN_ORDER)
+  @Order(Constants.ACTUATOR_CHAIN_ORDER)
   SecurityFilterChain actuatorEndpointFilterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(EndpointRequest.toAnyEndpoint())
       .authorizeHttpRequests(customizer -> customizer

@@ -54,7 +54,7 @@ public class QuestionnaireSecurityConfigurer extends WebUISecurityConfigurer {
   }
 
   @Bean
-  @Order(SecurityConfiguration.QUESTIONNAIRE_CHAIN_ORDER)
+  @Order(Constants.QUESTIONNAIRE_CHAIN_ORDER)
   SecurityFilterChain questionnaireFilterChain(HttpSecurity http) throws Exception {
     return super.filterChain(http);
   }
