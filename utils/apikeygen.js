@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * Copyright © 2015 - 2025 ReSys (info@dialob.io)
  *
@@ -30,9 +31,13 @@ Usage:
   and base64 encoded hash value for `dialob.api.apiKeys.*.hash`
 */
 const uuid = require('uuid');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 
 const apiKeySalt = process.argv[2];
+if (!apiKeySalt) {
+  console.error('Usage: node apikeygen.js apiKeySalt [clientId] [secret]');
+  process.exit(1);
+}
 
 var decodedSecret
 
@@ -65,7 +70,14 @@ const tokenBytes = Buffer.allocUnsafe(30);
 clientIdBytes.copy(tokenBytes, 0, 0, 16);
 decodedSecret.copy(tokenBytes, 16, 0, 14);
 
-console.log(`clientId:  ${uuid.stringify(clientId)}`)
-console.log(`hash:      ${hmac.digest().toString('base64')}`)
-console.log(`x-api-key: ${tokenBytes.toString('base64')}`);
+console.log(`
+dialob:
+  api:
+    apiKeySalt: "${apiKeySalt}"
+    apiKeys:
+      - clientId: ${uuid.stringify(clientId)}
+        tenantId: "00000000-0000-0000-0000-000000000000"
+        hash: '${hmac.digest().toString('base64')}'
+        # Token: '${tokenBytes.toString('base64')}'
+`);
 
