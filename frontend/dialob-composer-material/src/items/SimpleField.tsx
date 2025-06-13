@@ -6,6 +6,7 @@ import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, Visibilit
 import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
 
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SimpleField: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
