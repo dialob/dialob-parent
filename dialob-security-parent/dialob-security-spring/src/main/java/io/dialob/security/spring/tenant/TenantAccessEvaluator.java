@@ -19,6 +19,10 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.tenant.Tenant;
 
 public interface TenantAccessEvaluator {
+  /**
+   * A TenantAccessEvaluator that grants access to all tenants to any user.
+   */
+  TenantAccessEvaluator ALL_ACCESS_EVALUATOR = tenant -> true;
 
   boolean doesUserHaveAccessToTenant(@NonNull Tenant tenant);
 
