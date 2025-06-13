@@ -54,13 +54,13 @@ import java.util.List;
 @Slf4j
 public class SecurityConfiguration {
 
-  final static int API_CHAIN_ORDER = Ordered.HIGHEST_PRECEDENCE;
-  final static int ACTUATOR_CHAIN_ORDER = 0;
-  final static int WEBAPI_CHAIN_ORDER = 125;
-  final static int COMPOSER_CHAIN_ORDER = 130;
-  final static int QUESTIONNAIRE_CHAIN_ORDER = 140;
-  final static int REVIEW_CHAIN_ORDER = 150;
-  final static int ADMIN_CHAIN_ORDER = Ordered.LOWEST_PRECEDENCE;
+  static final int API_CHAIN_ORDER = Ordered.HIGHEST_PRECEDENCE;
+  static final int ACTUATOR_CHAIN_ORDER = 0;
+  static final int WEBAPI_CHAIN_ORDER = 125;
+  static final int COMPOSER_CHAIN_ORDER = 130;
+  static final int QUESTIONNAIRE_CHAIN_ORDER = 140;
+  static final int REVIEW_CHAIN_ORDER = 150;
+  static final int ADMIN_CHAIN_ORDER = Ordered.LOWEST_PRECEDENCE;
 
   @Bean
   public ServletRequestApiKeyExtractor requestParameterServletApiKeyExtractor() {
