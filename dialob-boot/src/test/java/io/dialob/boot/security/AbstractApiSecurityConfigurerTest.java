@@ -17,6 +17,7 @@ package io.dialob.boot.security;
 
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -54,7 +55,7 @@ class AbstractApiSecurityConfigurerTest {
       .withUserConfiguration(MockEnableWebSecurityConfiguration.class)
       .run(context -> {
         var http = context.getBean(HttpSecurity.class);
-        var configurer = new AbstractApiSecurityConfigurer("/api", context.getBean(TenantAccessEvaluator.class), context.getBean(AuthenticationStrategy.class)) {
+        var configurer = new AbstractApiSecurityConfigurer("/api", context.getBean(TenantAccessEvaluator.class), context.getBean(AuthenticationStrategy.class), DialobSettings.TenantSettings.Mode.URL_PARAM) {
         };
         var chain = configurer.filterChain(http);
         Assertions.assertEquals(13, chain.getFilters().size());
@@ -66,4 +67,29 @@ class AbstractApiSecurityConfigurerTest {
       });
   }
 
+  @Test
+  void shouldNotRequireTenantUrlParameterWhenTenantModeIsNotUrlParam() {
+    DialobSettings.TenantSettings.Mode tenantMode = DialobSettings.TenantSettings.Mode.FIXED;
+    AbstractApiSecurityConfigurer configurer = new AbstractApiSecurityConfigurer("/api", mock(TenantAccessEvaluator.class), mock(AuthenticationStrategy.class), tenantMode) {
+      @Override
+      protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
+        return http;
+      }
+    };
+    var matcher = configurer.getTenantRequiredMatcher();
+    assertFalse(matcher.matches(MockMvcRequestBuilders.get("/api/something").buildRequest(new MockServletContext())));
+  }
+
+  @Test
+  void shouldRequireTenantUrlParameterWhenTenantModeIsUrlParam() {
+    DialobSettings.TenantSettings.Mode tenantMode = DialobSettings.TenantSettings.Mode.URL_PARAM;
+    AbstractApiSecurityConfigurer configurer = new AbstractApiSecurityConfigurer("/api", mock(TenantAccessEvaluator.class), mock(AuthenticationStrategy.class), tenantMode) {
+      @Override
+      protected HttpSecurity configurePermissions(HttpSecurity http) throws Exception {
+        return http;
+      }
+    };
+    var matcher = configurer.getTenantRequiredMatcher();
+    assertTrue(matcher.matches(MockMvcRequestBuilders.get("/api/something").buildRequest(new MockServletContext())));
+  }
 }

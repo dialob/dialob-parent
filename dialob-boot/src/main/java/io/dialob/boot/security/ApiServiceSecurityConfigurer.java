@@ -25,7 +25,6 @@ import io.dialob.settings.DialobSettings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -66,7 +65,7 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
                                       @NonNull AuthenticationStrategy authenticationStrategy,
                                       @NonNull AuthenticationManager authenticationManager,
                                       @NonNull Environment env) {
-    super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy);
+    super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy, settings.getTenant().getMode());
     this.keyRequestExtractor = keyRequestExtractor;
     this.authenticationManager = authenticationManager;
     this.allRequests = env.acceptsProfiles(Profiles.of("!ui"));
