@@ -41,7 +41,6 @@ Dialob Backend Services
   * **dialob-service-common** - Common configuration and exception types for services.
   * **dialob-session-engine** - Dialob session engine.
   * **dialob-session-rest** - Dialob session REST service implementation.
-  * **dialob-springdoc** - Springdoc configuration.
   * **dialob-tenant** - Tenant service auto-configuration.
   * **dialob-tenant-service-rest** - Tenant REST service implementation.
 * **dialob-config-parent** - Internal configuration:

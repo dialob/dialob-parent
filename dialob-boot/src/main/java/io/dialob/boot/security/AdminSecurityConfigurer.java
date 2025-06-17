@@ -47,12 +47,9 @@ public class AdminSecurityConfigurer extends WebUISecurityConfigurer {
     return http
       .securityMatcher(requestMatcher())
       .authorizeHttpRequests(customizer -> customizer
-        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger/**")).permitAll()
-        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger-resources")).permitAll()
-        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger-resources/**")).permitAll()
+        .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/v3/api-docs/**")).permitAll()
         .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/swagger-ui/**")).permitAll()
         .requestMatchers(path.matcher(HttpMethod.GET, contextPath + "/webjars/**")).permitAll()
-        .requestMatchers(path.matcher(HttpMethod.GET,  "/_uuids")).hasAnyAuthority(Permissions.QUESTIONNAIRES_POST, Permissions.FORMS_POST)
         .requestMatchers(path.matcher(HttpMethod.GET,contextPath + "**")).hasAuthority(Permissions.MANAGER_VIEW)
         .anyRequest().denyAll());
     // @formatter:on

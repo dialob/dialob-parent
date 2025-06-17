@@ -183,10 +183,6 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>dialob-springdoc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>dialob-tenant-service-rest</artifactId>
     </dependency>
     <dependency>
