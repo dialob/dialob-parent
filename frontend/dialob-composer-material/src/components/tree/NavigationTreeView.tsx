@@ -62,7 +62,7 @@ const NavigationTreeView: React.FC = () => {
   const [expanded, setExpanded] = useState<boolean>(true);
 
   React.useEffect(() => {
-    setTree(buildTreeFromForm(form.data, editor.activeFormLanguage));
+    setTree(buildTreeFromForm(form.data, editor.activeFormLanguage, itemConfig));
   }, [form, editor.activeFormLanguage]);
 
   const onExpand = (itemId: ItemId) => {
