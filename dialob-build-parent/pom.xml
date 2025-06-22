@@ -604,6 +604,15 @@
               </tags>
             </to>
             <container>
+              <labels>
+                <org.opencontainers.image.source>ssh@github.com:${env.GITHUB_REPOSITORY}
+                </org.opencontainers.image.source>
+                <org.opencontainers.image.revision>${env.GITHUB_SHA}</org.opencontainers.image.revision>
+                <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+                <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
+                <com.github.actions.event.name>${env.GITHUB_EVENT_NAME}</com.github.actions.event.name>
+                <com.github.actions.run.url>https://github.com/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}</com.github.actions.run.url>
+              </labels>
               <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
             </container>
           </configuration>
