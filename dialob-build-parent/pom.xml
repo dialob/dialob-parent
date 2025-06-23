@@ -66,10 +66,10 @@
     <junit.platform.version>1.12.2</junit.platform.version>
 
     <mockito.version>5.17.0</mockito.version>
-    <spring-boot.version>3.5.0</spring-boot.version>
+    <spring-boot.version>3.5.3</spring-boot.version>
     <spring-integration.version>6.5.0</spring-integration.version>
-    <spring-security.version>6.5.0</spring-security.version>
-    <spring-session.version>3.5.0</spring-session.version>
+    <spring-security.version>6.5.1</spring-security.version>
+    <spring-session.version>3.5.1</spring-session.version>
     <swagger.version>2.2.31</swagger.version>
     <validation-api.version>3.0.2</validation-api.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
@@ -91,6 +91,7 @@
     <db2jcc.version>11.5.8.0</db2jcc.version>
     <commons-compress.version>1.27.1</commons-compress.version>
     <checkerframework.version>3.48.3</checkerframework.version>
+    <image.base.name>amazoncorretto:17</image.base.name>
   </properties>
 
 
@@ -583,7 +584,7 @@
           <configuration>
             <containerizingMode>packaged</containerizingMode>
             <from>
-              <image>amazoncorretto:17</image>
+              <image>${base.image}</image>
               <platforms>
                 <platform>
                   <architecture>amd64</architecture>
@@ -605,11 +606,11 @@
             </to>
             <container>
               <labels>
-                <org.opencontainers.image.source>ssh@github.com:${env.GITHUB_REPOSITORY}
-                </org.opencontainers.image.source>
+                <org.opencontainers.image.source>ssh@github.com:${env.GITHUB_REPOSITORY}</org.opencontainers.image.source>
                 <org.opencontainers.image.revision>${env.GITHUB_SHA}</org.opencontainers.image.revision>
-                <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+                <org.opencontainers.image.version>${env.GITHUB_REF_NAME}</org.opencontainers.image.version>
                 <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
+                <org.opencontainers.image.base.name>${image.base.name}</org.opencontainers.image.base.name>
                 <com.github.actions.event.name>${env.GITHUB_EVENT_NAME}</com.github.actions.event.name>
                 <com.github.actions.run.url>https://github.com/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}</com.github.actions.run.url>
               </labels>
