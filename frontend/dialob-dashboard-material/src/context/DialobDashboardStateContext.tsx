@@ -49,7 +49,7 @@ export interface DashboardStateContextType {
   fetchFormConfigurations: () => Promise<void>;
   findLatestTag: (allTags: FormTag[] | undefined, formId: string) => FormTag | undefined;
   sortedFormConfigurations: FormConfiguration[];
-
+  onOpenForm?: (formId: string) => void;
 }
 
 const defaultContext: DashboardStateContextType = {
@@ -93,7 +93,8 @@ const defaultContext: DashboardStateContextType = {
   showNotification: undefined,
   fetchFormConfigurations: async () => Promise.resolve(),
   findLatestTag: () => undefined,
-  sortedFormConfigurations: []
+  sortedFormConfigurations: [],
+  onOpenForm: undefined
 };
 
 export const DialobDashboardStateContext = createContext<DashboardStateContextType>(defaultContext);
@@ -104,9 +105,10 @@ export interface DialobDashboardStateProviderProps {
   children: React.ReactNode;
   config: DialobAdminConfig;
   showNotification?: (message: string, severity: "success" | "error") => void;
+  onOpenForm?: (formId: string) => void;
 }
 
-export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProviderProps> = ({ children, config, showNotification }) => {
+export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProviderProps> = ({ children, config, showNotification, onOpenForm }) => {
   const [formConfigurations, setFormConfigurations] = useState<FormConfiguration[]>([]);
   const [selectedFormConfiguration, setSelectedFormConfiguration] = useState<FormConfiguration | undefined>();
   const [filters, setFilters] = useState<FormConfigurationFilters>(DEFAULT_CONFIGURATION_FILTERS);
@@ -460,6 +462,7 @@ export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProvider
     fetchFormConfigurations,
     findLatestTag,
     sortedFormConfigurations,
+    onOpenForm
   }), [
     formConfigurations, selectedFormConfiguration, filters, sortConfig, sortedFormConfigurations,
     fetchAgain, createModalOpen, deleteModalOpen, config, fileInputRefJson, fileInputRefCsv

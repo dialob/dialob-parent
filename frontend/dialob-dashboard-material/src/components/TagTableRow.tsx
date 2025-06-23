@@ -16,6 +16,7 @@ export interface TagTableRowProps {
   config: DialobAdminConfig;
   getDialobForm: (formName: string) => Promise<any>;
   setFetchAgain: React.Dispatch<React.SetStateAction<boolean>>;
+  onOpenForm?: (formId: string) => void;
 }
 
 export const TagTableRow: React.FC<TagTableRowProps> = ({
@@ -25,7 +26,8 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
   deleteFormConfiguration,
   config,
   getDialobForm,
-  setFetchAgain
+  setFetchAgain,
+  onOpenForm
 }) => {
 
   const intl = useIntl();
@@ -50,7 +52,11 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               href={`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`}
               onClick={function (e) {
                 e.preventDefault();
-                window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`);
+                if (onOpenForm) {
+                  onOpenForm(formConfiguration.id);
+                } else {
+                  window.location.replace(`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`);
+                }
               }}
             >
               {formConfiguration.metadata.label || intl.formatMessage({ id: "adminUI.dialog.emptyTitle" })}

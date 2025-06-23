@@ -15,4 +15,5 @@ export interface DialobAdminConfig {
 export interface DialobAdminProps {
   config: DialobAdminConfig;
   showNotification?: (message: string, severity: 'success' | 'error') => void;
+  onOpenForm?: (formId: string) => void;
 }
