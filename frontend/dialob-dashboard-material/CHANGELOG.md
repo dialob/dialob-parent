@@ -1,5 +1,11 @@
 # @dialob/dashboard-material
 
+## 1.3.0
+
+### Minor Changes
+
+- Added a form opening handler
+
 ## 1.2.12
 
 ### Patch Changes
