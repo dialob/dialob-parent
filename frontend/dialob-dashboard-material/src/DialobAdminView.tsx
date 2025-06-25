@@ -42,7 +42,8 @@ export const DialobAdminView: React.FC = () => {
     fileInputRefJson,
     fileInputRefCsv,
     fetchFormConfigurations,
-    sortedFormConfigurations
+    sortedFormConfigurations,
+    onOpenForm 
   } = useDialobDashboardState();
 
   useEffect(() => {
@@ -197,6 +198,7 @@ export const DialobAdminView: React.FC = () => {
                     getDialobForm={getDialobForm}
                     config={config}
                     setFetchAgain={setFetchAgain}
+                    onOpenForm={onOpenForm}
                   />
                 )}
               </TableBody>

@@ -23,12 +23,12 @@ const localeMap: { [key: string]: any } = {
   ms: msLocale,
 };
 
-export const DialobAdmin: React.FC<DialobAdminProps> = ({ config, showNotification }) => {
+export const DialobAdmin: React.FC<DialobAdminProps> = ({ config, showNotification, onOpenForm }) => {
   return (
     <DialobDashboardFetchProvider>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={localeMap[config.language]}>
         <IntlProvider locale={config.language || 'en'} messages={messages[config.language]}>
-          <DialobDashboardStateProvider config={config} showNotification={showNotification}>
+          <DialobDashboardStateProvider config={config} showNotification={showNotification} onOpenForm={onOpenForm}>
             <DialobAdminView />
           </DialobDashboardStateProvider>
         </IntlProvider>
