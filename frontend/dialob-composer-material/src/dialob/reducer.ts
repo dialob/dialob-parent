@@ -7,6 +7,7 @@ import {
 } from '../types';
 import { isContextVariable } from '../utils/ItemUtils';
 import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
+import { SavingState } from '../dialogs/contexts/saving/SavingContext';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -576,6 +577,20 @@ const setForm = (state: ComposerState, form: ComposerState, tagName?: string): v
   }
 }
 
+const applyItemChanges = (state: ComposerState, newState: SavingState): void => {
+  // Apply changes from the ItemOptionsContext - used to apply changes made in the ItemOptionsDialog
+  const itemId = newState.item.id;
+  state.data[itemId] = newState.item;
+  state.valueSets = newState.valueSets;
+  state.metadata.composer = newState.composerMetadata;
+}
+
+const applyListChanges = (state: ComposerState, newState: SavingState): void => {
+  // Apply changes from the ItemOptionsContext - used to apply changes made in the GlobalListsDialog
+  state.valueSets = newState.valueSets;
+  state.metadata.composer = newState.composerMetadata;
+}
+
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
   if (state._tag && action.type !== 'setForm') {
     // if a version tag is loaded, then it's in read-only mode
@@ -654,6 +669,10 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       setRevision(state, action.revision);
     } else if (action.type === 'setForm') {
       setForm(state, action.form, action.tagName);
+    } else if (action.type === 'applyItemChanges') {
+      applyItemChanges(state, action.newState);
+    } else if (action.type === 'applyListChanges') {
+      applyListChanges(state, action.newState);
     }
   });
 

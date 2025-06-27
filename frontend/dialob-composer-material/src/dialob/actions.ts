@@ -1,3 +1,4 @@
+import { SavingState } from "../dialogs/contexts/saving/SavingContext";
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
   Variable, ComposerState,
@@ -49,3 +50,6 @@ export type ComposerAction =
   | { type: 'deleteLanguage', language: string }
   | { type: 'setRevision', revision: string }
   | { type: 'setForm', form: ComposerState, tagName?: string, save?: boolean }
+
+  | { type: 'applyItemChanges', newState: SavingState }
+  | { type: 'applyListChanges', newState: SavingState }

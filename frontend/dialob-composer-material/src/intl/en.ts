@@ -34,6 +34,7 @@ const en = {
   'buttons.activate': 'Activate',
   'buttons.help': 'Help',
   'buttons.rule.save': 'Save rule',
+  'buttons.save': 'Save',
 
   'menus.options': 'Options',
   'menus.description': 'Description',

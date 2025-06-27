@@ -11,16 +11,10 @@ const PropItem: React.FC<{
   onEdit: (key: string, value: PropValue) => void,
   onDelete: (key: string) => void
 }> = ({ prop, propEditor, onEdit, onDelete }) => {
-  const [value, setValue] = React.useState<PropValue>(prop.value);
-
-  React.useEffect(() => {
-    if (value !== '' && value !== prop.value) {
-      const id = setTimeout(() => {
-        onEdit(prop.key, value);
-      }, 300);
-      return () => clearTimeout(id);
-    }
-  }, [value]);
+  const value = prop.value;
+  const setValue = (newValue: PropValue) => {
+    onEdit(prop.key, newValue);
+  };
 
   return (
     <TableRow key={prop.key}>

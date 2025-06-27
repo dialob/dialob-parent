@@ -18,15 +18,15 @@ interface CodeMirrorProps {
   errors?: EditorError[];
 }
 
-const getLinter = (intl: IntlShape, errors?: EditorError[]): Extension => {
-  if (!errors) {
+const getLinter = (intl: IntlShape, errors?: EditorError[], value?: string): Extension => {
+  if (!errors || errors.length === 0 || !value) {
     return linter(() => []);
   }
 
   return linter(() => {
     const diagnostics: Diagnostic[] = []
     errors.forEach(error => {
-      if (error.startIndex !== undefined && error.endIndex !== undefined) {
+      if (error.startIndex !== undefined && error.endIndex !== undefined && error.endIndex < value.length) {
         const label = `errors.message.${error.message}`;
         const diagnostic = {
           from: error.startIndex,
@@ -35,6 +35,16 @@ const getLinter = (intl: IntlShape, errors?: EditorError[]): Extension => {
           message: intl.formatMessage({ id: label })
         };
         diagnostics.push(diagnostic);
+      }
+      if (error.endIndex !== undefined && error.endIndex >= value.length) {
+        // remove errors that exceed the value length
+        // this is needed because validations aren't updated immediately, only after save
+        // and if you delete characters so that the value is shorter than the error endIndex, it will cause issues
+        diagnostics.forEach((diag, index) => {
+          if (diag.to > value.length) {
+            diagnostics.splice(index, 1);
+          }
+        });
       }
     })
     return diagnostics
@@ -84,7 +94,7 @@ const CodeMirror: React.FC<CodeMirrorProps> = (props) => {
   const { value, onChange, errors } = props;
   const { form } = useComposer();
   const intl = useIntl();
-  const linter = getLinter(intl, errors)
+  const linter = getLinter(intl, errors, value)
   const autocomplete = getAutocompletions(form);
   const delLanguageSupport = new LanguageSupport(dialobExpressionLanguage, [autocomplete]);
   return <ReactCodeMirror value={value} onChange={onChange} extensions={[linter, delLanguageSupport]} />

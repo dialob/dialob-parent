@@ -13,6 +13,7 @@ import { isPage } from "../utils/ItemUtils";
 import { scrollToAddedItem } from "../utils/ScrollUtils";
 import { useBackend } from "../backend/useBackend";
 import { findItemTypeConfig, findItemTypeConvertible } from "../utils/ConfigUtils";
+import { useSave } from "../dialogs/contexts/saving/useSave";
 
 
 const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
@@ -175,11 +176,13 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   );
 }
 
-export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
+export const ConversionMenu: React.FC<{ item?: DialobItem, inDialog?: boolean }> = ({ item: dialobItem, inDialog }) => {
   const { changeItemType } = useComposer();
+  const { changeItemType: convertInDialog, savingState } = useSave();
   const { config } = useBackend();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const item = dialobItem ?? savingState.item;
   const conversions = getItemConversions(item, config.itemTypes);
   const [typeName, setTypeName] = React.useState<string>(resolveTypeName(item.view || item.type, config.itemTypes))
 
@@ -195,7 +198,7 @@ export const ConversionMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
   const handleConvert = (e: React.MouseEvent<HTMLElement>, config: DialobItemTemplate) => {
     handleClose(e);
-    changeItemType(item.id, config);
+    inDialog ? convertInDialog(item.id, config) : changeItemType(item.id, config);
     setTypeName(resolveTypeName(config.type, config.itemTypes));
   }
 

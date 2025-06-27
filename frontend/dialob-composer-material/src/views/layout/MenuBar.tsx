@@ -21,6 +21,8 @@ import { CreateSessionResult } from '../../backend/types';
 import { isContextVariable } from '../../utils/ItemUtils';
 import { useDocs } from '../../utils/DocsUtils';
 import { getLanguageName } from '../../utils/TranslationUtils';
+import { SavingProvider } from '../../dialogs/contexts/saving/SavingProvider';
+import { DialobItem } from '../../types';
 
 interface SearchMatch {
   type: 'item' | 'variable';
@@ -162,7 +164,13 @@ const MenuBar: React.FC = () => {
 
   return (
     <>
-      <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
+      {listsDialogOpen && <SavingProvider savingState={{
+        item: {} as DialobItem,
+        composerMetadata: form.metadata.composer,
+        valueSets: form.valueSets
+      }}>
+        <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
+      </SavingProvider>}
       <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
       <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <VariablesDialog open={variablesDialogOpen} onClose={() => setVariablesDialogOpen(false)} />

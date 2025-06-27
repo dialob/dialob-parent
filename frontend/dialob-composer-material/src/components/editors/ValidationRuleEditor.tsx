@@ -1,20 +1,19 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip, Divider } from '@mui/material';
+import { Box, Button, Typography, Alert, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Warning } from '@mui/icons-material';
 import { useEditor } from '../../editor';
-import { useComposer } from '../../dialob';
 import { LocalizedStringEditor } from './LocalizedStringEditor';
 import { ErrorMessage } from '../ErrorComponents';
 import CodeMirror from '../code/CodeMirror';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { IndexedRule } from './types';
-import { ValidationRule } from '../../types';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 const ValidationRuleEditor: React.FC = () => {
-  const { createValidation, deleteValidation, setValidationExpression } = useComposer();
-  const { editor, setActiveItem } = useEditor();
-  const item = editor.activeItem;
+  const { editor } = useEditor();
+  const { savingState, createValidation, deleteValidation, setValidationExpression } = useSave();
+  const item = savingState.item;
   const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === 'VALIDATION');
   const [rules, setRules] = React.useState<IndexedRule[]>([]);
   const [activeRule, setActiveRule] = React.useState<IndexedRule | undefined>(undefined);
@@ -34,26 +33,11 @@ const ValidationRuleEditor: React.FC = () => {
     return null;
   }
 
-  const handleSaveRule = () => {
-    if (item && activeRule && activeRule.validationRule.rule && item.validations?.[activeRule.index] &&
-      activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule) {
-      const expression = activeRule.validationRule.rule;
-      const validations = [...item.validations || []];
-      const newValidations = validations.map((rule, index) => index === activeRule.index ? { ...rule, rule: expression } : rule);
-      setActiveItem({ ...item, validations: newValidations });
-      setValidationExpression(item.id, activeRule.index, expression);
-    }
-  }
-
   const handleDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, rule: IndexedRule) => {
     e.stopPropagation();
     const newRules = [...rules];
     newRules.splice(rule.index, 1);
-    setRules(newRules);
     setActiveRule(newRules.length > 0 ? newRules[0] : undefined);
-    const validations: ValidationRule[] = [...item.validations || []];
-    validations.splice(rule.index, 1);
-    setActiveItem({ ...item, validations: validations });
     deleteValidation(item.id, rule.index);
   }
 
@@ -61,20 +45,17 @@ const ValidationRuleEditor: React.FC = () => {
     const newRules = [...rules];
     const newRule: IndexedRule = { index: newRules.length, validationRule: {} };
     newRules.push(newRule);
-    setRules(newRules);
-    const validations: ValidationRule[] = [...item.validations || [], newRule.validationRule];
-    setActiveItem({ ...item, validations: validations });
     setActiveRule(newRules[newRules.length - 1]);
     createValidation(item.id);
   }
 
   const handleUpdate = (value: string) => {
     if (activeRule) {
-      const newRules = [...rules];
-      const newRule = { ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } };
-      newRules[activeRule.index] = newRule;
-      setRules(newRules);
       setActiveRule({ ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } });
+      if (item && activeRule && item.validations?.[activeRule.index] &&
+        value !== item.validations?.[activeRule.index].rule && value !== '') {
+        setValidationExpression(item.id, activeRule.index, value);
+      }
     }
   }
 
@@ -103,19 +84,13 @@ const ValidationRuleEditor: React.FC = () => {
       </Box>
       {rules.length > 0 && activeRule !== undefined && <Box sx={{ mt: 2 }}>
         <CodeMirror value={activeRule.validationRule.rule ?? ''} onChange={handleUpdate} errors={itemErrors} />
-        {
-          activeRule.validationRule.rule !== item.validations?.[activeRule.index].rule && 
-          <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
-            <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
-          </Box>
-        }
       </Box>}
-      <Box sx={{ mt: 2 }}>
-        <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
-      </Box>
       {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}
+      <Box sx={{ mt: 2 }}>
+        <LocalizedStringEditor type='validations' rule={activeRule} setRule={setActiveRule} />
+      </Box>
     </>
   );
 }
