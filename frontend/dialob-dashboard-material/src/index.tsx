@@ -1,5 +1,4 @@
 /* eslint-disable react-refresh/only-export-components */
-export { DialobAdmin } from './DialobAdmin';
 export { DialobAdminView } from './DialobAdminView';
 
 export { messages } from './intl';
