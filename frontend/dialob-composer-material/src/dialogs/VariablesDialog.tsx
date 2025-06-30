@@ -37,7 +37,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
         </Button>
       </DialogTitle>
       <DialogContent sx={{ height: '70vh', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0 }}>
-        <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={activeTab} onChange={(_e, v) => setActiveTab(v)} sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tab value='context' label={<FormattedMessage id='dialogs.variables.context.title' />} />
           <Tab value='expression' label={<FormattedMessage id='dialogs.variables.expression.title' />} />
         </Tabs>

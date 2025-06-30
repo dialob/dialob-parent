@@ -5,6 +5,7 @@ import { DialobItem } from '../types';
 import { ConversionMenu, IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
 import { useEditor } from '../editor';
 
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();

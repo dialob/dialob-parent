@@ -298,7 +298,7 @@ const getItemKeys = (form: ComposerState): string[] => {
       itemKeys.push(resultingKey + "d");
     }
     if (formItems[key].validations) {
-      formItems[key].validations?.forEach((validation, index) => {
+      formItems[key].validations?.forEach((_validation, index) => {
         itemKeys.push(`${resultingKey}v:${index}`);
       })
     }

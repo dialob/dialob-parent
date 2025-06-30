@@ -21,7 +21,7 @@ const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         </Button>
       </DialogTitle>
       <DialogContent sx={{ height: '70vh', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, display: 'flex' }}>
-        <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
+        <Tabs value={activeTab} onChange={(_e, v) => setActiveTab(v)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.files.title' />}><UploadFile /></Tooltip>} value='files' />
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.languages.title' />}><Translate /></Tooltip>} value='languages' />
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.missing.title' />}><Warning /></Tooltip>} value='missing' />
