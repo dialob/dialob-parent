@@ -1,5 +1,5 @@
 import React from 'react';
-import { DialobAdminProps } from '@dialob/dashboard-material';
+import { DialobAdminConfig } from '@dialob/dashboard-material';
 import { AppConfig } from '../types';
 import { useTenantContext } from '../context/useTenantContext';
 import { Box } from '@mui/material';
@@ -14,7 +14,7 @@ const TenantDashboard: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
     return;
   }
 
-  const config: DialobAdminProps = {
+  const config: DialobAdminConfig = {
     csrf: {
       key: appConfig?.csrf?.headerName,
       value: appConfig?.csrf?.token,
