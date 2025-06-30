@@ -1,5 +1,11 @@
 # @dialob/dashboard-material
 
+## 1.3.1
+
+### Patch Changes
+
+- Dealing with daten-fns dependency
+
 ## 1.3.0
 
 ### Minor Changes
