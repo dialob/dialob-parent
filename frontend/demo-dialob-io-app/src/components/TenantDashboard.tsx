@@ -1,9 +1,10 @@
 import React from 'react';
-import { DialobAdmin, DialobAdminConfig } from '@dialob/dashboard-material';
+import { DialobAdminConfig } from '@dialob/dashboard-material';
 import { AppConfig } from '../types';
 import { useTenantContext } from '../context/useTenantContext';
 import { Box } from '@mui/material';
 import { useIntl } from 'react-intl';
+import { DialobAdmin } from './DialobAdmin';
 
 const TenantDashboard: React.FC<{ appConfig: AppConfig }> = ({ appConfig }) => {
   const { selectedTenant } = useTenantContext();
