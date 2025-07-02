@@ -47,7 +47,10 @@ export const StyledTable = styled(Table, {
   }
 ));
 
-const getItemConversions = (item: DialobItem, itemTypeConfig: ItemTypeConfig): { text: string, value: DialobItemTemplate }[] => {
+const getItemConversions = (item: DialobItem | undefined, itemTypeConfig: ItemTypeConfig): { text: string, value: DialobItemTemplate }[] => {
+  if (!item) {
+    return [];
+  }
   const thisItemType = findItemTypeConfig(itemTypeConfig, item.type, item.view);
   const options: { text: string, value: DialobItemTemplate }[] = [];
 
@@ -65,7 +68,10 @@ const getItemConversions = (item: DialobItem, itemTypeConfig: ItemTypeConfig): {
   return options;
 }
 
-const resolveTypeName = (type: string, itemTypeConfig: ItemTypeConfig): string => {
+const resolveTypeName = (type: string | undefined, itemTypeConfig: ItemTypeConfig): string => {
+  if (!type) {
+    return '';
+  }
   const items = itemTypeConfig.categories.flatMap(c => c.items);
   const item = items.find(i => i.config.view === type || i.config.type === type);
   if (item) {
@@ -184,7 +190,15 @@ export const ConversionMenu: React.FC<{ item?: DialobItem, inDialog?: boolean }>
   const open = Boolean(anchorEl);
   const item = dialobItem ?? savingState.item;
   const conversions = getItemConversions(item, config.itemTypes);
-  const [typeName, setTypeName] = React.useState<string>(resolveTypeName(item.view || item.type, config.itemTypes))
+  const [typeName, setTypeName] = React.useState<string>(resolveTypeName(item?.view || item?.type, config.itemTypes))
+
+  React.useEffect(() => {
+    setTypeName(resolveTypeName(item?.view || item?.type, config.itemTypes));
+  }, [item, config.itemTypes]);
+
+  if (!item) {
+    return null;
+  }
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -201,10 +215,6 @@ export const ConversionMenu: React.FC<{ item?: DialobItem, inDialog?: boolean }>
     inDialog ? convertInDialog(item.id, config) : changeItemType(item.id, config);
     setTypeName(resolveTypeName(config.type, config.itemTypes));
   }
-
-  React.useEffect(() => {
-    setTypeName(resolveTypeName(item.view || item.type, config.itemTypes));
-  }, [item, config.itemTypes]);
 
   return (
     <>
