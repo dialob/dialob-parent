@@ -34,7 +34,17 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
   }
 }
 
+const updateItemId = (state: SavingState, itemId: string): void => {
+  if (state.item) {
+    state.item.id = itemId;
+    console.log('id', state.item.id, itemId)
+  }
+}
+
 const updateLocalizedString = (state: SavingState, attribute: string, value: LocalizedString, index?: number): void => {
+  if (!state.item) {
+    return;
+  }
   const item = state.item;
   const cleanedValue = cleanLocalizedString(value);
   if (item && (attribute === 'label' || attribute === 'description')) {
@@ -54,6 +64,9 @@ const updateLocalizedString = (state: SavingState, attribute: string, value: Loc
 }
 
 const convertItem = (state: SavingState, itemTemplate: DialobItemTemplate): void => {
+  if (!state.item) {
+    return;
+  }
   const item = state.item;
   item.type = itemTemplate.type;
   item.view = itemTemplate.view;
@@ -119,6 +132,9 @@ const createValidation = (state: SavingState, rule?: ValidationRule): void => {
 }
 
 const setValidationMessage = (state: SavingState, index: number, language: string, message: string): void => {
+  if (!state.item) {
+    return;
+  }
   const validations = state.item.validations;
   if (validations) {
     const rule = validations[index];
@@ -135,6 +151,9 @@ const setValidationMessage = (state: SavingState, index: number, language: strin
 }
 
 const setValidationExpression = (state: SavingState, index: number, expression: string): void => {
+  if (!state.item) {
+    return;
+  }
   const validations = state.item.validations;
   if (validations) {
     const rule = validations[index];
@@ -146,6 +165,9 @@ const setValidationExpression = (state: SavingState, index: number, expression: 
 }
 
 const deleteValidation = (state: SavingState, index: number): void => {
+  if (!state.item) {
+    return;
+  }
   const validations = state.item.validations;
   if (validations) {
     const rule = validations[index];
@@ -175,7 +197,7 @@ const createValueSet = (state: SavingState, itemId: string | null, entries?: Val
     state.valueSets.push(valueSet);
   }
 
-  if (itemId) {
+  if (itemId && state.item) {
     // Local valueset
     state.item.valueSetId = valueSetId;
   } else {
@@ -280,6 +302,8 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
   const newState = produce(state, state => {
     if (action.type === 'updateItem') {
       updateItem(state, action.attribute, action.value, action.language);
+    } else if (action.type === 'updateItemId') {
+      updateItemId(state, action.itemId);
     } else if (action.type === 'updateLocalizedString') {
       updateLocalizedString(state, action.attribute, action.value, action.index);
     } else if (action.type === 'changeItemType') {

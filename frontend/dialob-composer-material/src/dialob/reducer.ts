@@ -578,7 +578,10 @@ const setForm = (state: ComposerState, form: ComposerState, tagName?: string): v
 }
 
 const applyItemChanges = (state: ComposerState, newState: SavingState): void => {
-  // Apply changes from the ItemOptionsContext - used to apply changes made in the ItemOptionsDialog
+  // Apply changes from the SavingContext - used to apply changes made in the ItemOptionsDialog
+  if (!newState.item) {
+    return;
+  }
   const itemId = newState.item.id;
   state.data[itemId] = newState.item;
   state.valueSets = newState.valueSets;
@@ -586,7 +589,7 @@ const applyItemChanges = (state: ComposerState, newState: SavingState): void => 
 }
 
 const applyListChanges = (state: ComposerState, newState: SavingState): void => {
-  // Apply changes from the ItemOptionsContext - used to apply changes made in the GlobalListsDialog
+  // Apply changes from the SavingContext - used to apply changes made in the GlobalListsDialog
   state.valueSets = newState.valueSets;
   state.metadata.composer = newState.composerMetadata;
 }

@@ -1,19 +1,17 @@
 import React from 'react';
 import { Box, Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
-import { useComposer } from '../../dialob';
 import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
-import { TreeItem } from '@atlaskit/tree';
-import { TreeDraggableProvided } from '@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
 import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
 import { useBackend } from '../../backend/useBackend';
 import { ChangeIdResult } from '../../backend/types';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
+import { useComposer } from '../../dialob';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -25,9 +23,9 @@ const VARIABLE_TYPES: ContextVariableType[] = [
 ]
 
 export interface VariableProps {
-  item: TreeItem,
-  provided: TreeDraggableProvided,
-  onClose: () => void
+  index: number;
+  item: Variable | ContextVariable;
+  onClose: () => void;
 }
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
@@ -40,7 +38,7 @@ export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = 
 export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
   const { updateVariablePublishing } = useComposer();
   return (
-    <Switch checked={variable.published} onChange={(e) => updateVariablePublishing(variable.name, e.target.checked)} />
+    <Switch checked={variable.published ?? false} onChange={(e) => updateVariablePublishing(variable.name, e.target.checked)} />
   );
 }
 
@@ -95,21 +93,19 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
 
 export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }> = ({ variable }) => {
   const { updateVariableDescription } = useComposer();
-  const [description, setDescription] = React.useState<string | undefined>(variable.description); // TODO: add description to context
+  const [description, setDescription] = React.useState<string | undefined>(variable.description);
 
-  React.useEffect(() => {
-    const id = setTimeout(() => {
-      if (description && description !== variable.description) {
-        updateVariableDescription(variable.name, description);
-      }
-    }, 300);
-    return () => clearTimeout(id);
-  }, [description]);
+  const handleBlur = () => {
+    if (description && description !== variable.description) {
+      updateVariableDescription(variable.name, description);
+    }
+  }
 
   return (
     <TextField
       value={description || ''}
       onChange={(e) => setDescription(e.target.value)}
+      onBlur={handleBlur}
       variant='standard'
       InputProps={{ disableUnderline: true }}
       inputProps={{ maxLength: MAX_VARIABLE_DESCRIPTION_LENGTH }}
@@ -135,7 +131,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 
   const handleConvertType = (e: React.MouseEvent<HTMLElement>, type: ContextVariableType) => {
     handleClose(e);
-    updateContextVariable(variable.name, type, variable.defaultValue);
+    updateContextVariable(variable.name, type, undefined);
   }
 
   return (
@@ -159,22 +155,26 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 
 export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ variable }) => {
   const { updateContextVariable } = useComposer();
-  const [defaultValue, setDefaultValue] = React.useState<string | undefined>(variable.defaultValue);
+  const [defaultValue, setDefaultValue] = React.useState<string>(variable.defaultValue);
 
-  React.useEffect(() => {
-    const id = setTimeout(() => {
-      updateContextVariable(variable.name, variable.contextType, defaultValue);
-    }, 300);
-    return () => clearTimeout(id);
+  const handleBlur = () => {
+    if (defaultValue !== variable.defaultValue) {
+      updateContextVariable(variable.name, undefined, defaultValue);
+    }
+  }
 
-  }, [defaultValue]);
+  const handleClear = () => {
+    setDefaultValue('');
+    updateContextVariable(variable.name, undefined, '');
+  }
 
   return (
     <TextField
       value={defaultValue || ''}
       onChange={(e) => setDefaultValue(e.target.value)}
+      onBlur={handleBlur}
       variant='standard'
-      InputProps={{ disableUnderline: true, endAdornment: <IconButton onClick={() => setDefaultValue('')}><Close /></IconButton> }}
+      InputProps={{ disableUnderline: true, endAdornment: <IconButton onClick={handleClear}><Close /></IconButton> }}
       fullWidth
     />
   );
@@ -184,7 +184,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   const { updateExpressionVariable } = useComposer();
   const [expression, setExpression] = React.useState<string>(variable.expression);
 
-  const handleSaveRule = () => {
+  const handleBlur = () => {
     if (expression !== variable.expression) {
       updateExpressionVariable(variable.name, expression);
     }
@@ -192,13 +192,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
 
   return (
     <Box sx={{ p: 1 }}>
-      <CodeMirror value={expression} onChange={(e) => setExpression(e)} errors={errors} />
-      {
-        expression !== (variable.expression ?? '') && 
-        <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
-          <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
-        </Box>
-      }
+      <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
     </Box>
   );
 }

@@ -31,6 +31,7 @@ const SaveItemButton: React.FC = () => {
 
   const handleSave = () => {
     if (savingState.item) {
+      console.log(savingState.item)
       applyItemChanges(savingState);
     }
   }
@@ -47,9 +48,22 @@ const SaveItemButton: React.FC = () => {
   );
 }
 
+const SaveIdButton: React.FC<{ id: string, onChange: () => void }> = ({ id, onChange }) => {
+  const { updateItemId } = useSave();
+
+  const handleChange = () => {
+    onChange();
+    updateItemId(id);
+  }
+
+  return (
+    <IconButton onClick={handleChange}><Check color='success' /></IconButton>
+  )
+}
+
 const ItemOptionsDialog: React.FC = () => {
   const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
-  const { form, setForm, setRevision, applyItemChanges } = useComposer();
+  const { form, setForm, setRevision } = useComposer();
   const { changeItemId, config } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
@@ -134,7 +148,7 @@ const ItemOptionsDialog: React.FC = () => {
             helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
               endAdornment: (
                 <>
-                  <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
+                  <SaveIdButton id={id} onChange={handleChangeId} />
                   <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
                 </>
               )

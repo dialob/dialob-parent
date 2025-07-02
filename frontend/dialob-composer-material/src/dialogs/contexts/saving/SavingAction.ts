@@ -1,9 +1,13 @@
 import {
-  DialobItemTemplate, ValueSetEntry, ValidationRule, LocalizedString
+  DialobItemTemplate, ValueSetEntry, ValidationRule, LocalizedString,
+  ContextVariableType,
+  ContextVariable,
+  Variable
 } from "../../../types";
 
 export type SavingAction =
   { type: 'updateItem', itemId: string, attribute: string, value: string, language?: string }
+  | { type: 'updateItemId', itemId: string }
   | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate }
   | { type: 'setItemProp', itemId: string, key: string, value: any }
@@ -24,4 +28,13 @@ export type SavingAction =
   | { type: 'setGlobalValueSetName', valueSetId: string, name: string }
   | { type: 'deleteLocalValueSet', valueSetId: string }
   | { type: 'deleteGlobalValueSet', valueSetId: string }
+
+  | { type: 'createVariable', context: boolean }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { type: 'updateContextVariable', variableId: string, contextType?: ContextVariableType | string, defaultValue?: any }
+  | { type: 'updateExpressionVariable', variableId: string, expression: string }
+  | { type: 'updateVariablePublishing', variableId: string, published: boolean }
+  | { type: 'updateVariableDescription', variableId: string, description: string }
+  | { type: 'deleteVariable', variableId: string }
+  | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
 

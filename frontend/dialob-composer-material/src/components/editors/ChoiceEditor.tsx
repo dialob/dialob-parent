@@ -172,14 +172,14 @@ const ChoiceEditor: React.FC = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
+            <ChoiceList valueSet={currentValueSet} />
           </BorderedTable>
         </TableContainer>
       </> : <Box>
         <Typography><FormattedMessage id='dialogs.options.choices.select.global' /></Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Select sx={{ width: 0.7 }} value={currentValueSet?.id || ''} onChange={e => selectGlobalValueSet(e.target.value as string)}>
-            {form.metadata.composer?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
+            {savingState.composerMetadata?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
           </Select>
           <Box flexGrow={1} />
           {currentValueSet && <Button onClick={() => setDialogType('local')} endIcon={<Refresh />}>

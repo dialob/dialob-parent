@@ -113,8 +113,8 @@ export const useComposer = () => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateContextVariable = (variableId: string, contextType: ContextVariableType | string, defaultValue?: any) => {
-    dispatch({ type: 'updateContextVariable', variableId, defaultValue, contextType });
+  const updateContextVariable = (variableId: string, contextType?: ContextVariableType | string, defaultValue?: any) => {
+    dispatch({ type: 'updateContextVariable', variableId, contextType, defaultValue });
   }
 
   const updateExpressionVariable = (variableId: string, expression: string) => {

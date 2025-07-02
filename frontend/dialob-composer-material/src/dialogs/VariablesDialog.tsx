@@ -28,7 +28,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   }
 
   return (
-    <Dialog open={dialogOpen} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
+    <Dialog open={dialogOpen} onClose={onClose} fullWidth maxWidth='lg' PaperProps={{ sx: { maxHeight: '60vh' } }}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.variables.title' />
         <Button variant='outlined' endIcon={<Help />}

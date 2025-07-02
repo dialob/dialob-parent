@@ -3,7 +3,7 @@ import { ComposerMetadata, DialobItem, ValueSet } from "../../../types";
 import { SavingAction } from "./SavingAction";
 
 export interface SavingState {
-  item: DialobItem;
+  item?: DialobItem;
   valueSets?: ValueSet[];
   composerMetadata?: ComposerMetadata;
 }

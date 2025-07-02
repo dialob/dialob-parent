@@ -15,6 +15,7 @@ type LintSeverity = "hint" | "info" | "warning" | "error";
 interface CodeMirrorProps {
   value: string | undefined;
   onChange: (value: string) => void;
+  onBlur?: () => void;
   errors?: EditorError[];
 }
 
@@ -91,13 +92,13 @@ const getAutocompletions = (form: ComposerState) => {
 }
 
 const CodeMirror: React.FC<CodeMirrorProps> = (props) => {
-  const { value, onChange, errors } = props;
+  const { value, onChange, onBlur, errors } = props;
   const { form } = useComposer();
   const intl = useIntl();
   const linter = getLinter(intl, errors, value)
   const autocomplete = getAutocompletions(form);
   const delLanguageSupport = new LanguageSupport(dialobExpressionLanguage, [autocomplete]);
-  return <ReactCodeMirror value={value} onChange={onChange} extensions={[linter, delLanguageSupport]} />
+  return <ReactCodeMirror value={value} onChange={onChange} onBlur={onBlur} extensions={[linter, delLanguageSupport]} />
 }
 
 export default CodeMirror;

@@ -165,7 +165,6 @@ const MenuBar: React.FC = () => {
   return (
     <>
       {listsDialogOpen && <SavingProvider savingState={{
-        item: {} as DialobItem,
         composerMetadata: form.metadata.composer,
         valueSets: form.valueSets
       }}>

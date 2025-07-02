@@ -21,7 +21,7 @@ const LocalizedStringEditor: React.FC<{
   const item = savingState.item;
   const formLanguages = form.metadata.languages;
   const [preview, setPreview] = React.useState(false);
-  const localizedString = type === 'validations' ? rule?.validationRule.message : item[type];
+  const localizedString = type === 'validations' ? rule?.validationRule.message : item?.[type];
 
   if (!item || (type === 'validations' && rule === undefined)) {
     return null;

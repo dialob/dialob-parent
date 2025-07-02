@@ -9,6 +9,10 @@ export const useSave = () => {
     dispatch({ type: 'updateItem', itemId, attribute, value, language });
   };
 
+  const updateItemId = (itemId: string) => {
+    dispatch({ type: 'updateItemId', itemId });
+  }
+
   const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
     dispatch({ type: 'updateLocalizedString', itemId, attribute, value, index });
   }
@@ -84,6 +88,7 @@ export const useSave = () => {
 
   return {
     updateItem,
+    updateItemId,
     updateLocalizedString,
     changeItemType,
     setItemProp,

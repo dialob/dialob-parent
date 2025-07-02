@@ -13,14 +13,14 @@ const DefaultValueEditor: React.FC = () => {
   const item = savingState.item;
   const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.message === 'INVALID_DEFAULT_VALUE');
 
+  if (!item) {
+    return null;
+  }
+
   const handleUpdate = (value: string) => {
     if (value != '' && value !== item.defaultValue) {
       updateItem(item.id, 'defaultValue', value);
     }
-  }
-
-  if (!item) {
-    return null;
   }
 
   return (
