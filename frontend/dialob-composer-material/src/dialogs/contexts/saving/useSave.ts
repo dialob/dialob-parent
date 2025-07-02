@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SavingContext } from './SavingContext';
-import { DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry } from '../../../types';
+import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
 
 export const useSave = () => {
   const { state, dispatch } = useContext(SavingContext);
@@ -86,6 +86,39 @@ export const useSave = () => {
     dispatch({ type: 'deleteGlobalValueSet', valueSetId });
   }
 
+  const createVariable = (context: boolean) => {
+    dispatch({ type: 'createVariable', context });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateContextVariable = (variableId: string, contextType?: ContextVariableType | string, defaultValue?: any) => {
+    dispatch({ type: 'updateContextVariable', variableId, contextType, defaultValue });
+  }
+
+  const updateExpressionVariable = (variableId: string, expression: string) => {
+    dispatch({ type: 'updateExpressionVariable', variableId, expression });
+  }
+
+  const updateVariablePublishing = (variableId: string, published: boolean) => {
+    dispatch({ type: 'updateVariablePublishing', variableId, published });
+  }
+
+  const updateVariableDescription = (variableId: string, description: string) => {
+    dispatch({ type: 'updateVariableDescription', variableId, description });
+  }
+
+  const deleteVariable = (variableId: string) => {
+    dispatch({ type: 'deleteVariable', variableId });
+  }
+
+  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
+    dispatch({ type: 'moveVariable', origin, destination });
+  }
+
+  const changeVariableId = (variables: (ContextVariable | Variable)[]) => {
+    dispatch({ type: 'changeVariableId', variables });
+  }
+
   return {
     updateItem,
     updateItemId,
@@ -107,6 +140,14 @@ export const useSave = () => {
     setGlobalValueSetName,
     deleteLocalValueSet,
     deleteGlobalValueSet,
+    createVariable,
+    updateContextVariable,
+    updateExpressionVariable,
+    updateVariablePublishing,
+    updateVariableDescription,
+    deleteVariable,
+    moveVariable,
+    changeVariableId,
     savingState: state
   }
 }

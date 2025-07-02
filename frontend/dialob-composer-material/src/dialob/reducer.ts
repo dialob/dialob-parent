@@ -594,6 +594,11 @@ const applyListChanges = (state: ComposerState, newState: SavingState): void => 
   state.metadata.composer = newState.composerMetadata;
 }
 
+const applyVariableChanges = (state: ComposerState, newState: SavingState): void => {
+  // Apply changes from the SavingContext - used to apply changes made in the VariablesDialog
+  state.variables = newState.variables;
+}
+
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
   if (state._tag && action.type !== 'setForm') {
     // if a version tag is loaded, then it's in read-only mode
@@ -676,6 +681,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       applyItemChanges(state, action.newState);
     } else if (action.type === 'applyListChanges') {
       applyListChanges(state, action.newState);
+    } else if (action.type === 'applyVariableChanges') {
+      applyVariableChanges(state, action.newState);
     }
   });
 

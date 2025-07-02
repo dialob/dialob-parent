@@ -211,6 +211,7 @@ const en = {
   'dialogs.create.tag.error': 'Tag name is invalid',
 
   'dialogs.change.id': 'Change ID',
+  'dialogs.change.id.tooltip': 'This will discard all unsaved changes. Save changes before changing ID.',
   'dialogs.change.id.tip': 'Valid ID can consist of letters, numbers & underscores. It must not contain reserved words used in expressions, must start with a letter and be unique',
 
   'errors.title': 'error',

@@ -16,6 +16,7 @@ import { validateId } from '../utils/ValidateUtils';
 import { useDocs } from '../utils/DocsUtils';
 import { SavingProvider } from './contexts/saving/SavingProvider';
 import { useSave } from './contexts/saving/useSave';
+import { DialobItem } from '../types';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -31,7 +32,6 @@ const SaveItemButton: React.FC = () => {
 
   const handleSave = () => {
     if (savingState.item) {
-      console.log(savingState.item)
       applyItemChanges(savingState);
     }
   }
@@ -48,23 +48,51 @@ const SaveItemButton: React.FC = () => {
   );
 }
 
-const SaveIdButton: React.FC<{ id: string, onChange: () => void }> = ({ id, onChange }) => {
+const SaveIdButton: React.FC<{ 
+  id: string, 
+  item: DialobItem, 
+  setIdError: React.Dispatch<React.SetStateAction<boolean>>, 
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>> 
+}> = ({ id, item, setIdError, setEditMode }) => {
+  const { form, setForm, setRevision } = useComposer();
+  const { changeItemId } = useBackend();
   const { updateItemId } = useSave();
+  const { setActiveItem, setErrors } = useEditor();
 
-  const handleChange = () => {
-    onChange();
-    updateItemId(id);
+    const handleChangeId = () => {
+    if (item && id !== item.id) {
+      if (validateId(id, form.data, form.variables)) {
+        changeItemId(form, item.id, id).then((response) => {
+          const result = response.result as ChangeIdResult;
+          if (response.success) {
+            setForm(result.form);
+            setErrors(result.errors);
+            setIdError(false);
+            setRevision(result.rev);
+            setEditMode(false);
+            setActiveItem({ ...item, id: id });
+            updateItemId(id);
+          } else if (response.apiError) {
+            setErrors([{ level: 'FATAL', message: response.apiError.message }]);
+            setEditMode(false);
+          }
+        });
+      } else {
+        setIdError(true);
+      }
+    }
   }
 
+
   return (
-    <IconButton onClick={handleChange}><Check color='success' /></IconButton>
+    <IconButton onClick={handleChangeId}><Check color='success' /></IconButton>
   )
 }
 
 const ItemOptionsDialog: React.FC = () => {
-  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setErrors } = useEditor();
-  const { form, setForm, setRevision } = useComposer();
-  const { changeItemId, config } = useBackend();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType } = useEditor();
+  const { form } = useComposer();
+  const { config } = useBackend();
   const item = editor.activeItem;
   const open = item && editor.itemOptionsActiveTab !== undefined || false;
   const canHaveChoices = item && (item.type === 'list' || item.type === 'multichoice' || item.type === 'surveygroup');
@@ -103,29 +131,6 @@ const ItemOptionsDialog: React.FC = () => {
     setConfirmationDialogType('delete');
   }
 
-  const handleChangeId = () => {
-    if (item && id !== item.id) {
-      if (validateId(id, form.data, form.variables)) {
-        changeItemId(form, item.id, id).then((response) => {
-          const result = response.result as ChangeIdResult;
-          if (response.success) {
-            setForm(result.form);
-            setErrors(result.errors);
-            setIdError(false);
-            setRevision(result.rev);
-            setEditMode(false);
-            setActiveItem({ ...item, id: id });
-          } else if (response.apiError) {
-            setErrors([{ level: 'FATAL', message: response.apiError.message }]);
-            setEditMode(false);
-          }
-        });
-      } else {
-        setIdError(true);
-      }
-    }
-  }
-
   const handleCloseChange = () => {
     setEditMode(false);
     setIdError(false);
@@ -148,7 +153,7 @@ const ItemOptionsDialog: React.FC = () => {
             helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
               endAdornment: (
                 <>
-                  <SaveIdButton id={id} onChange={handleChangeId} />
+                  <SaveIdButton id={id} item={item} setIdError={setIdError} setEditMode={setEditMode} />
                   <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
                 </>
               )

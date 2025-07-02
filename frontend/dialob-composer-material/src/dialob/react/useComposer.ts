@@ -2,8 +2,7 @@ import { useContext } from "react"
 import { ComposerContext } from './ComposerContext';
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, ComposerState, ComposerCallbacks,
-  DialobItem
+  Variable, ComposerState, ComposerCallbacks
 } from "../../types";
 import { SavingState } from "../../dialogs/contexts/saving/SavingContext";
 
@@ -161,6 +160,10 @@ export const useComposer = () => {
     dispatch({ type: 'applyListChanges', newState });
   }
 
+  const applyVariableChanges = (newState: SavingState) => {
+    dispatch({ type: 'applyVariableChanges', newState });
+  }
+
   return {
     addItem,
     updateItem,
@@ -199,6 +202,7 @@ export const useComposer = () => {
     setRevision,
     applyItemChanges,
     applyListChanges,
+    applyVariableChanges,
     form: state
   };
 

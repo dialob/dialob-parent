@@ -6,11 +6,11 @@ import { BorderedTable } from "../TableEditorComponents";
 import { isContextVariable } from "../../utils/ItemUtils";
 import { Variable } from "../../types";
 import ExpressionVariableRow from "./ExpressionVariableRow";
-import { useComposer } from "../../dialob";
+import { useSave } from "../../dialogs/contexts/saving/useSave";
 
 
 const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { form, createVariable } = useComposer();
+  const { savingState, createVariable } = useSave();
 
   const handleAdd = () => {
     createVariable(false);
@@ -41,7 +41,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         </TableRow>
       </TableHead>
       <TableBody>
-        {(form.variables?.filter(v => !isContextVariable(v)) as Variable[]).map((item, index) => (
+        {(savingState.variables?.filter(v => !isContextVariable(v)) as Variable[]).map((item, index) => (
           <ExpressionVariableRow key={index} index={index} item={item} onClose={onClose} />
         ))}
       </TableBody>

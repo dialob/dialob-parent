@@ -6,10 +6,10 @@ import { BorderedTable } from "../TableEditorComponents";
 import ContextVariableRow from "./ContextVariableRow";
 import { isContextVariable } from "../../utils/ItemUtils";
 import { ContextVariable } from "../../types";
-import { useComposer } from "../../dialob";
+import { useSave } from "../../dialogs/contexts/saving/useSave";
 
 const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { form, createVariable } = useComposer();
+  const { savingState, createVariable } = useSave();
 
   const handleAdd = () => {
     createVariable(true);
@@ -43,7 +43,7 @@ const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {(form.variables?.filter(v => isContextVariable(v)) as ContextVariable[]).map((item, index) => (
+        {(savingState.variables?.filter(v => isContextVariable(v)) as ContextVariable[]).map((item, index) => (
           <ContextVariableRow key={index} index={index} item={item} onClose={onClose} />
         ))}
       </TableBody>

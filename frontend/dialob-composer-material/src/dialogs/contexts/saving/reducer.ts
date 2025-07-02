@@ -1,8 +1,24 @@
 import { produce } from "immer";
-import { DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry } from "../../../types";
+import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
+import { isContextVariable } from "../../../utils/ItemUtils";
+
+
+export const generateItemIdWithPrefix = (state: SavingState, prefix: string): string => {
+  const idList = state.variables?.map(v => v.name) || [];
+  const matcher = `^(${prefix})(\\d*)$`;
+  const existing = idList.filter(id => {
+    const r = RegExp(matcher);
+    return r.test(id);
+  });
+  let idx = 1;
+  while (existing.findIndex(v => v === `${prefix}${idx}`) > -1) {
+    idx++;
+  }
+  return `${prefix}${idx}`;
+}
 
 export const generateValueSetId = (state: SavingState, prefix = 'vs'): string => {
   let idx = 1;
@@ -37,7 +53,6 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
 const updateItemId = (state: SavingState, itemId: string): void => {
   if (state.item) {
     state.item.id = itemId;
-    console.log('id', state.item.id, itemId)
   }
 }
 
@@ -296,6 +311,90 @@ const deleteGlobalValueSet = (state: SavingState, valueSetId: string): void => {
   }
 }
 
+const createVariable = (state: SavingState, context: boolean): void => {
+  const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
+
+  const variable: ContextVariable | Variable = context ? {
+    name: variableId,
+    context: true,
+    contextType: 'text'
+  } : {
+    name: variableId,
+    expression: ''
+  };
+
+  if (!Array.isArray(state.variables)) {
+    state.variables = [variable];
+  } else {
+    state.variables.push(variable);
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateContextVariable = (state: SavingState, variableId: string, contextType?: ContextVariableType | string, defaultValue?: any): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => isContextVariable(v) && v.name === variableId);
+    if (varIdx > -1) {
+      if (contextType !== undefined) {
+        (state.variables[varIdx] as ContextVariable).contextType = contextType;
+      }
+      if (defaultValue !== undefined) {
+        (state.variables[varIdx] as ContextVariable).defaultValue = defaultValue;
+      }
+    }
+  }
+}
+
+const updateExpressionVariable = (state: SavingState, variableId: string, expression: string): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => !isContextVariable(v) && v.name === variableId);
+    if (varIdx > -1) {
+      (state.variables[varIdx] as Variable).expression = expression;
+    }
+  }
+}
+
+const deleteVariable = (state: SavingState, variableId: string): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => v.name === variableId);
+    if (varIdx > -1) {
+      state.variables.splice(varIdx, 1);
+    }
+  }
+}
+
+const updateVariablePublishing = (state: SavingState, variableId: string, published: boolean): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => v.name === variableId);
+    if (varIdx > -1) {
+      (state.variables[varIdx]).published = published;
+    }
+  }
+}
+
+const updateVariableDescription = (state: SavingState, variableId: string, description: string): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => v.name === variableId);
+    if (varIdx > -1) {
+      (state.variables[varIdx]).description = description;
+    }
+  }
+}
+
+const moveVariable = (state: SavingState, origin: ContextVariable | Variable, destination: ContextVariable | Variable): void => {
+  const originIdx = state.variables?.findIndex(v => v.name === origin.name);
+  const destinationIdx = state.variables?.findIndex(v => v.name === destination.name);
+  if (originIdx !== undefined && destinationIdx !== undefined && originIdx > -1 && destinationIdx > -1 && state.variables) {
+    [state.variables[originIdx], state.variables[destinationIdx]] = [state.variables[destinationIdx], state.variables[originIdx]];
+  }
+}
+
+const changeVariableId = (state: SavingState, variables: (ContextVariable | Variable)[]): void => {
+  if (state.variables) {
+    state.variables = variables;
+  }
+}
+
 
 export const itemReducer = (state: SavingState, action: SavingAction): SavingState => {
 
@@ -340,6 +439,22 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       deleteLocalValueSet(state, action.valueSetId);
     } else if (action.type === 'deleteGlobalValueSet') {
       deleteGlobalValueSet(state, action.valueSetId);
+    } else if (action.type === 'createVariable') {
+      createVariable(state, action.context);
+    } else if (action.type === 'updateContextVariable') {
+      updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
+    } else if (action.type === 'updateExpressionVariable') {
+      updateExpressionVariable(state, action.variableId, action.expression);
+    } else if (action.type === 'updateVariablePublishing') {
+      updateVariablePublishing(state, action.variableId, action.published);
+    } else if (action.type === 'updateVariableDescription') { 
+      updateVariableDescription(state, action.variableId, action.description);
+    } else if (action.type === 'deleteVariable') {
+      deleteVariable(state, action.variableId);
+    } else if (action.type === 'moveVariable') {
+      moveVariable(state, action.origin, action.destination);
+    } else if (action.type === 'changeVariableId') {
+      changeVariableId(state, action.variables);
     }
   });
 

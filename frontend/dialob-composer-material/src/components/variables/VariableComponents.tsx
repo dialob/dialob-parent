@@ -12,6 +12,7 @@ import { useBackend } from '../../backend/useBackend';
 import { ChangeIdResult } from '../../backend/types';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
 import { useComposer } from '../../dialob';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -29,14 +30,14 @@ export interface VariableProps {
 }
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
-  const { deleteVariable } = useComposer();
+  const { deleteVariable } = useSave();
   return (
     <IconButton sx={{ p: 0.5 }} onClick={() => deleteVariable(variable.name)}><Delete color='error' /></IconButton>
   );
 }
 
 export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
-  const { updateVariablePublishing } = useComposer();
+  const { updateVariablePublishing } = useSave();
   return (
     <Switch checked={variable.published ?? false} onChange={(e) => updateVariablePublishing(variable.name, e.target.checked)} />
   );
@@ -46,6 +47,7 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
   const { changeItemId } = useBackend();
   const { form, setForm, setRevision } = useComposer();
   const { setErrors } = useEditor();
+  const { changeVariableId } = useSave();
   const [editMode, setEditMode] = React.useState(false);
   const [idError, setIdError] = React.useState(false);
 
@@ -59,6 +61,10 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
             setErrors(result.errors);
             setIdError(false);
             setRevision(result.rev);
+            if (result.form.variables) {
+              // this is necessary to keep the saving state in sync, but will discard unsaved changes
+              changeVariableId(result.form.variables);
+            }
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
           }
@@ -83,7 +89,9 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
         disableUnderline: true,
         endAdornment: (
           editMode && <>
-            <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
+            <Tooltip title={<FormattedMessage id='dialogs.change.id.tooltip' />}>
+              <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
+            </Tooltip>
             <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
           </>
         )
@@ -92,7 +100,7 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
 }
 
 export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }> = ({ variable }) => {
-  const { updateVariableDescription } = useComposer();
+  const { updateVariableDescription } = useSave();
   const [description, setDescription] = React.useState<string | undefined>(variable.description);
 
   const handleBlur = () => {
@@ -115,7 +123,7 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
 }
 
 export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ variable }) => {
-  const { updateContextVariable } = useComposer();
+  const { updateContextVariable } = useSave();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -154,7 +162,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 }
 
 export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ variable }) => {
-  const { updateContextVariable } = useComposer();
+  const { updateContextVariable } = useSave();
   const [defaultValue, setDefaultValue] = React.useState<string>(variable.defaultValue);
 
   const handleBlur = () => {
@@ -181,7 +189,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
 }
 
 export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorError[] }> = ({ variable, errors }) => {
-  const { updateExpressionVariable } = useComposer();
+  const { updateExpressionVariable } = useSave();
   const [expression, setExpression] = React.useState<string>(variable.expression);
 
   const handleBlur = () => {

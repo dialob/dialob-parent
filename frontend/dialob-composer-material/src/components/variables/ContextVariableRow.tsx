@@ -8,18 +8,18 @@ import {
   NameField, PublishedSwitch, UsersField, VariableProps
 } from './VariableComponents';
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { useComposer } from '../../dialob';
 import { isContextVariable } from '../../utils/ItemUtils';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 
 const ContextVariableRow: React.FC<VariableProps> = ({ index, item, onClose }) => {
   const { editor } = useEditor();
-  const { form, moveVariable } = useComposer();
+  const { savingState, moveVariable } = useSave();
   const theme = useTheme();
   const variable = item as ContextVariable;
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
-  const contextVariables = form.variables?.filter(v => isContextVariable(v));
+  const contextVariables = savingState.variables?.filter(v => isContextVariable(v));
  
   const handleMove = (direction: 'up' | 'down') => {
     const destination = direction === 'up' ? index - 1 : index + 1;

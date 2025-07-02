@@ -6,20 +6,19 @@ import { getErrorSeverity, useErrorColorSx } from '../../utils/ErrorUtils';
 import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';
 import { ArrowDownward, ArrowUpward, Edit, Warning } from '@mui/icons-material';
 import { ErrorMessage } from '../ErrorComponents';
-import { useComposer } from '../../dialob';
-import { isContext } from 'vm';
 import { isContextVariable } from '../../utils/ItemUtils';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }) => {
   const { editor } = useEditor();
-  const { form, moveVariable } = useComposer();
+  const { savingState, moveVariable } = useSave();
   const theme = useTheme();
   const variable = item as Variable;
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
   const itemErrors = editor.errors?.filter(e => e.itemId === variable.name);
   const [expanded, setExpanded] = React.useState<boolean>(false);
-  const expressionVariables = form.variables?.filter(v => !isContextVariable(v));
+  const expressionVariables = savingState.variables?.filter(v => !isContextVariable(v));
 
   const handleMove = (direction: 'up' | 'down') => {
     const destination = direction === 'up' ? index - 1 : index + 1;

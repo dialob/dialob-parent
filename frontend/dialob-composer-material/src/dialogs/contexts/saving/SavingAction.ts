@@ -37,4 +37,5 @@ export type SavingAction =
   | { type: 'updateVariableDescription', variableId: string, description: string }
   | { type: 'deleteVariable', variableId: string }
   | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
+  | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
 
