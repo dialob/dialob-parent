@@ -27,8 +27,16 @@ interface GlobalValueSet {
 }
 
 const SaveButton: React.FC = () => {
-  const { applyListChanges } = useComposer();
+  const { form, applyListChanges } = useComposer();
   const { savingState } = useSave();
+
+  const hasChanges = React.useMemo(() => {
+    if (!savingState.valueSets || !savingState.composerMetadata?.globalValueSets) {
+      return false;
+    }
+    return JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets) ||
+           JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets);
+  }, [savingState]);
   
   const handleSave = () => {
     if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
@@ -42,6 +50,7 @@ const SaveButton: React.FC = () => {
       color="primary"
       endIcon={<Check />}
       onClick={handleSave}
+      disabled={!hasChanges}
     >
       <FormattedMessage id='buttons.save' />
     </Button>

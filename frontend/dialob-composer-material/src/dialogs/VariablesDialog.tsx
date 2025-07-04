@@ -12,8 +12,15 @@ import { useSave } from './contexts/saving/useSave';
 
 
 const SaveButton: React.FC = () => {
-  const { applyVariableChanges } = useComposer();
+  const { form, applyVariableChanges } = useComposer();
   const { savingState } = useSave();
+
+  const hasChanges = React.useMemo(() => {
+      if (!savingState.variables) {
+        return false;
+      }
+      return JSON.stringify(savingState.variables) !== JSON.stringify(form.variables);
+    }, [savingState]);
 
   const handleSave = () => {
     if (savingState.variables) {
@@ -27,6 +34,7 @@ const SaveButton: React.FC = () => {
       color="primary"
       endIcon={<Check />}
       onClick={handleSave}
+      disabled={!hasChanges}
     >
       <FormattedMessage id='buttons.save' />
     </Button>

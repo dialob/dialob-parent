@@ -27,8 +27,17 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
 }));
 
 const SaveItemButton: React.FC = () => {
-  const { applyItemChanges } = useComposer();
+  const { form, applyItemChanges } = useComposer();
   const { savingState } = useSave();
+
+  const hasChanges = React.useMemo(() => {
+      if (!savingState.item || !savingState.valueSets || !savingState.composerMetadata) {
+        return false;
+      }
+      return JSON.stringify(savingState.item) !== JSON.stringify(form.data[savingState.item.id]) ||
+             JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets) ||
+             JSON.stringify(savingState.composerMetadata.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets);
+    }, [savingState]);
 
   const handleSave = () => {
     if (savingState.item) {
@@ -42,6 +51,7 @@ const SaveItemButton: React.FC = () => {
       color="primary"
       endIcon={<Check />}
       onClick={handleSave}
+      disabled={!hasChanges}
     >
       <FormattedMessage id='buttons.save' />
     </Button>
