@@ -1,8 +1,6 @@
 import React from "react";
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography, alpha, useTheme } from '@mui/material';
-import { Check, Close, Visibility } from "@mui/icons-material";
-import { TreeItem } from "@atlaskit/tree";
-import { TreeDraggableProvided } from "@atlaskit/tree/dist/types/components/TreeItem/TreeItem-types";
+import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography, alpha, useTheme } from '@mui/material';
+import { ArrowDownward, ArrowUpward, Close, Visibility } from "@mui/icons-material";
 import { useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import { FormattedMessage } from "react-intl";
@@ -10,17 +8,20 @@ import { useErrorColor } from "../utils/ErrorUtils";
 import { useEditor } from "../editor";
 import CodeMirror from "./code/CodeMirror";
 import { LocalizedString, ValueSetEntry } from "../types";
+import { useSave } from "../dialogs/contexts/saving/useSave";
+import { on } from "events";
 
 
 export interface ChoiceItemProps {
-  item: TreeItem,
+  entry: ValueSetEntry,
+  index: number,
   valueSetId?: string,
-  provided: TreeDraggableProvided,
   isGlobal?: boolean,
   onRuleEdit: (entry: ValueSetEntry, rule: string) => void,
   onTextEdit: (entry: ValueSetEntry, label: LocalizedString) => void,
   onDelete: (entry: ValueSetEntry) => void,
   onUpdateId: (entry: ValueSetEntry, id: string) => void,
+  onMove?: (entry: ValueSetEntry, direction: 'up' | 'down') => void
 }
 
 const OverflowTooltipTextField: React.FC<React.ComponentProps<typeof TextField>> = ({ value, ...props }) => {
@@ -67,81 +68,75 @@ const OverflowTooltipTextField: React.FC<React.ComponentProps<typeof TextField>>
 };
 
 const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
-  const { item, valueSetId, provided, isGlobal, onRuleEdit, onTextEdit, onDelete, onUpdateId } = props;
+  const { entry, index, valueSetId, isGlobal, onRuleEdit, onTextEdit, onDelete, onUpdateId, onMove } = props;
   const { form } = useComposer();
   const { editor } = useEditor();
+  const { savingState, moveValueSetEntry } = useSave();
   const theme = useTheme();
-  const entry: ValueSetEntry = item.data.entry;
   const formLanguages = form.metadata.languages;
   const languageNo = formLanguages?.length || 0;
-  const error = editor.errors?.find(e => e.itemId === valueSetId && e.index == item.data.index);
+  const error = editor.errors?.find(e => e.itemId === valueSetId && e.index == index);
   const errorColor = useErrorColor(error);
   const backgroundColor = errorColor || theme.palette.background.paper;
   const [entryExpanded, setEntryExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [idValue, setIdValue] = React.useState<string>(entry.id);
-  const [rule, setRule] = React.useState<string>(entry.when || '');
-  const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
-  const [editMode, setEditMode] = React.useState(false);
-
-  React.useEffect(() => {
-    setLocalizedString(entry.label);
-  }, [entry]);
-
-  React.useEffect(() => {
-    if (localizedString && localizedString !== entry.label) {
-      const id = setTimeout(() => {
-        onTextEdit(entry, localizedString)
-      }, 300);
-      return () => clearTimeout(id);
-    }
-  }, [localizedString]);
+  const localizedString = entry.label;
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const length = savingState.valueSets?.find(v => v.id === valueSetId)?.entries?.length || 0;
 
   const handleUpdate = (value: string, language: string) => {
-    setLocalizedString({ ...localizedString, [language]: value });
+    const updatedLocalizedString = { ...localizedString, [language]: value };
+    onTextEdit(entry, updatedLocalizedString);
   }
 
-  const handleSaveRule = () => {
-    if (rule !== entry.when) {
-      onRuleEdit(entry, rule);
+  const handleSaveRule = (value: string) => {
+    if (value !== entry.when) {
+      onRuleEdit(entry, value);
     }
   }
 
-  const handleChangeName = () => {
-    if (idValue !== entry.id) {
-      onUpdateId(entry, idValue);
+  const handleChangeId = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newId = e.target.value.trim();
+    if (newId !== entry.id) {
+      onUpdateId(entry, newId);
     }
-    setEditMode(false);
   }
 
-  const handleCloseChange = () => {
-    setIdValue(entry.id);
-    setEditMode(false);
+  const handleMove = (direction: 'up' | 'down') => {
+    if (valueSetId) {
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      moveValueSetEntry(valueSetId, index, newIndex);
+      onMove && onMove(entry, direction);
+    }
   }
+
+  React.useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [entry.id]);
 
   return (
     <>
       <ChoiceDeleteDialog open={open} itemId={entry.id} onClick={() => onDelete(entry)} onClose={() => setOpen(false)} />
-      <Table ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}>
+      <Table>
         <TableBody>
-          <TableRow key={entry.id} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
+          <TableRow sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
             <TableCell align='center' width='15%'>
               <IconButton sx={{ p: 0.5 }} onClick={() => setOpen(true)}><Close color='error' /></IconButton>
               {!isGlobal && <IconButton onClick={() => setEntryExpanded(!entryExpanded)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
+              <IconButton sx={{ p: 0.5 }} onClick={() => handleMove('up')} disabled={index === 0}>
+                <ArrowUpward />
+              </IconButton>
+              <IconButton sx={{ p: 0.5 }} onClick={() => handleMove('down')} disabled={index === length - 1}>
+                <ArrowDownward />
+              </IconButton>
             </TableCell>
             <TableCell width='20%' sx={{ p: 0.5 }}>
-              <OverflowTooltipTextField value={idValue} onChange={(e) => setIdValue(e.target.value)} 
-                onFocus={() => setEditMode(true)} onBlur={() => setEditMode(false)} variant='standard' fullWidth
+              <TextField value={entry.id} onChange={(e) => handleChangeId(e)} 
+                variant='standard' fullWidth inputRef={inputRef}
                 InputProps={{
-                  disableUnderline: true,
-                  endAdornment: (
-                    editMode && <>
-                      <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
-                      <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
-                    </>
-                  )
+                  disableUnderline: true
                 }} />
             </TableCell>
             {formLanguages?.map(lang => (
@@ -154,13 +149,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
             <TableCell colSpan={2 + languageNo}>
               {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
                 <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
-                <CodeMirror value={rule} onChange={(value) => setRule(value)} />
-                {
-                  rule !== (entry.when ?? '') && 
-                  <Box sx={{ display: 'flex', pt: 1, justifyContent: 'flex-end' }}>
-                    <Button onClick={handleSaveRule}><FormattedMessage id='buttons.rule.save' /></Button>
-                  </Box>
-                }
+                <CodeMirror value={entry.when ?? ''} onChange={(value) => handleSaveRule(value)} />
               </Box>}
             </TableCell>
           </TableRow>}

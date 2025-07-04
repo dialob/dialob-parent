@@ -18,13 +18,15 @@ import { ErrorMessage } from '../ErrorComponents';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 import { ValueSet } from '../../types';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 
 const ChoiceEditor: React.FC = () => {
-  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteLocalValueSet } = useComposer();
-  const { editor, setActiveItem, setItemOptionsActiveTab, setActiveList } = useEditor();
-  const item = editor.activeItem;
-  const globalValueSets = form.metadata.composer?.globalValueSets;
+  const { form } = useComposer();
+  const { savingState, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteLocalValueSet } = useSave();
+  const { editor } = useEditor();
+  const item = savingState.item;
+  const globalValueSets = savingState.composerMetadata?.globalValueSets;
   const formLanguages = form.metadata.languages;
   const itemErrors = editor.errors?.filter(e => e.itemId === item?.valueSetId);
   const [choiceType, setChoiceType] = React.useState<'global' | 'local' | undefined>(undefined);
@@ -39,11 +41,11 @@ const ChoiceEditor: React.FC = () => {
       setChoiceType('global');
       return;
     }
-    const itemValueSet = form.valueSets?.find(v => v.id === item.valueSetId);
+    const itemValueSet = savingState.valueSets?.find(v => v.id === item.valueSetId);
     const isGlobal = globalValueSets !== undefined && itemValueSet !== undefined && globalValueSets.some(gvs => gvs.valueSetId === itemValueSet.id);
     setCurrentValueSet(itemValueSet);
     setChoiceType(isGlobal ? 'global' : 'local');
-  }, [item?.valueSetId, globalValueSets, form.valueSets]);
+  }, [savingState]);
 
   const handleAddValueSetEntry = () => {
     if (currentValueSet) {
@@ -53,7 +55,7 @@ const ChoiceEditor: React.FC = () => {
           label: {}
         }
         addValueSetEntry(currentValueSet.id, newEntry);
-        setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+        //setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
         scrollToChoiceItem();
       } else {
         const newEntry = {
@@ -61,7 +63,7 @@ const ChoiceEditor: React.FC = () => {
           label: {},
         };
         addValueSetEntry(currentValueSet.id, newEntry);
-        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+        //setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
         scrollToChoiceItem();
       }
     }
@@ -72,13 +74,12 @@ const ChoiceEditor: React.FC = () => {
       const newId = generateValueSetId(form);
       createValueSet(item?.id, currentValueSet.entries);
       updateItem(item?.id, 'valueSetId', newId);
-      setActiveItem({ ...item, valueSetId: newId });
     }
   }
 
   const convertToGlobalList = () => {
     if (currentValueSet && item) {
-      const newGvsIndex = form.metadata.composer?.globalValueSets?.length ?? 0;
+      const newGvsIndex = globalValueSets?.length ?? 0;
       const newGvsName = 'untitled' + (newGvsIndex + 1);
       const newGvsId = generateValueSetId(form);
       // remove rules when converting to global list
@@ -88,7 +89,6 @@ const ChoiceEditor: React.FC = () => {
       if (newGvsId) {
         setGlobalValueSetName(newGvsId, newGvsName);
         updateItem(item?.id, 'valueSetId', newGvsId);
-        setActiveItem({ ...item, valueSetId: newGvsId });
       }
     }
   }
@@ -99,7 +99,6 @@ const ChoiceEditor: React.FC = () => {
       createValueSet(item.id);
       if (newValueSetId) {
         updateItem(item.id, 'valueSetId', newValueSetId);
-        setActiveItem({ ...item, valueSetId: newValueSetId });
       }
     }
   }
@@ -107,19 +106,6 @@ const ChoiceEditor: React.FC = () => {
   const selectGlobalValueSet = (id: string) => {
     if (item) {
       updateItem(item.id, 'valueSetId', id);
-      setActiveItem({ ...item, valueSetId: id });
-    }
-  }
-
-  const editGlobalList = (listId?: string) => {
-    setActiveItem(undefined);
-    setItemOptionsActiveTab(undefined);
-    if (listId) {
-      setActiveList(listId);
-    } else if (globalValueSets && globalValueSets.length > 0) {
-      setActiveList(globalValueSets[0].valueSetId);
-    } else {
-      setActiveList('list');
     }
   }
 
@@ -159,13 +145,6 @@ const ChoiceEditor: React.FC = () => {
                 ))}
                 <Divider />
               </>}
-              <ListItemButton onClick={() => {
-                editGlobalList();
-                setAnchorEl(null);
-              }}>
-                <Add fontSize='small' color='success' />
-                <Typography><FormattedMessage id='dialogs.options.choices.create.global' /></Typography>
-              </ListItemButton>
             </List>
           </Popover>
           <Button onClick={() => setDialogType('global')} sx={{ mt: 2 }} endIcon={<Refresh />}>
@@ -193,19 +172,16 @@ const ChoiceEditor: React.FC = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <ChoiceList valueSet={currentValueSet} updateValueSet={setCurrentValueSet} />
+            <ChoiceList valueSet={currentValueSet} />
           </BorderedTable>
         </TableContainer>
       </> : <Box>
         <Typography><FormattedMessage id='dialogs.options.choices.select.global' /></Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Select sx={{ width: 0.7 }} value={currentValueSet?.id || ''} onChange={e => selectGlobalValueSet(e.target.value as string)}>
-            {form.metadata.composer?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
+            {savingState.composerMetadata?.globalValueSets?.map(v => <MenuItem key={v.valueSetId} value={v.valueSetId}>{v.label}</MenuItem>)}
           </Select>
           <Box flexGrow={1} />
-          {currentValueSet && <Button onClick={() => editGlobalList(currentValueSet.id)} sx={{ mr: 2 }} endIcon={<Edit />}>
-            <FormattedMessage id='dialogs.options.choices.edit.global' />
-          </Button>}
           {currentValueSet && <Button onClick={() => setDialogType('local')} endIcon={<Refresh />}>
             <FormattedMessage id='dialogs.options.choices.convert.local' />
           </Button>}

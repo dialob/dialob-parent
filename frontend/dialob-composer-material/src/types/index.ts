@@ -86,6 +86,16 @@ export type ComposerTag = {
   creator?: string;
 }
 
+export type ComposerMetadata = {
+  globalValueSets?: {
+    label?: string;
+    valueSetId: string;
+  }[];
+  contextValues?: {
+    [name: string]: string;
+  }
+}
+
 export type ComposerState = {
   _id?: string;
   _rev?: string;
@@ -109,15 +119,7 @@ export type ComposerState = {
     valid?: boolean;
     created?: string;
     lastSaved?: string;
-    composer?: {
-      globalValueSets?: {
-        label?: string;
-        valueSetId: string;
-      }[];
-      contextValues?: {
-        [name: string]: string;
-      }
-    },
+    composer?: ComposerMetadata;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any;
   }

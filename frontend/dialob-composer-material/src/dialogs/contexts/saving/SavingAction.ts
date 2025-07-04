@@ -1,21 +1,17 @@
-import { SavingState } from "../dialogs/contexts/saving/SavingContext";
 import {
-  DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, ComposerState,
-  ComposerCallbacks
-} from "../types";
+  DialobItemTemplate, ValueSetEntry, ValidationRule, LocalizedString,
+  ContextVariableType,
+  ContextVariable,
+  Variable
+} from "../../../types";
 
-export type ComposerAction =
-  | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { type: 'updateItem', itemId: string, attribute: string, value: any, language?: string }
+export type SavingAction =
+  { type: 'updateItem', itemId: string, attribute: string, value: string, language?: string }
+  | { type: 'updateItemId', itemId: string }
   | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate }
-  | { type: 'deleteItem', itemId: string }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setItemProp', itemId: string, key: string, value: any }
   | { type: 'deleteItemProp', itemId: string, key: string }
-  | { type: 'moveItem', itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string }
 
   | { type: 'createValidation', itemId: string, rule?: ValidationRule }
   | { type: 'setValidationMessage', itemId: string, index: number, language: string, message: string }
@@ -30,12 +26,8 @@ export type ComposerAction =
   | { type: 'deleteValueSetentry', valueSetId: string, index: number }
   | { type: 'moveValueSetEntry', valueSetId: string, from: number, to: number }
   | { type: 'setGlobalValueSetName', valueSetId: string, name: string }
-  | { type: 'deleteGlobalValueSet', valueSetId: string }
   | { type: 'deleteLocalValueSet', valueSetId: string }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { type: 'setMetadataValue', attr: string, value: any }
-  | { type: 'setContextValue', name: string, value: string }
+  | { type: 'deleteGlobalValueSet', valueSetId: string }
 
   | { type: 'createVariable', context: boolean }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,12 +37,5 @@ export type ComposerAction =
   | { type: 'updateVariableDescription', variableId: string, description: string }
   | { type: 'deleteVariable', variableId: string }
   | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
+  | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
 
-  | { type: 'addLanguage', language: string, copyFrom?: string }
-  | { type: 'deleteLanguage', language: string }
-  | { type: 'setRevision', revision: string }
-  | { type: 'setForm', form: ComposerState, tagName?: string, save?: boolean }
-
-  | { type: 'applyItemChanges', newState: SavingState }
-  | { type: 'applyListChanges', newState: SavingState }
-  | { type: 'applyVariableChanges', newState: SavingState }

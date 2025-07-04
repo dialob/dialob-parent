@@ -4,11 +4,11 @@ import { Button, Typography, Box, TextareaAutosize } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { useComposer } from '../../dialob';
-import { useEditor } from '../../editor';
 import { markdownComponents } from '../../defaults/markdown';
 import { IndexedRule } from './types';
 import { getLanguageName } from '../../utils/TranslationUtils';
 import { LocalizedString } from '../../types';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 
 const LocalizedStringEditor: React.FC<{
@@ -16,42 +16,31 @@ const LocalizedStringEditor: React.FC<{
   rule?: IndexedRule,
   setRule?: React.Dispatch<React.SetStateAction<IndexedRule | undefined>>
 }> = ({ type, rule, setRule }) => {
-  const { form, updateLocalizedString } = useComposer();
-  const { editor, setActiveItem } = useEditor();
-  const item = editor.activeItem;
+  const { form } = useComposer();
+  const { savingState, updateLocalizedString } = useSave();
+  const item = savingState.item;
   const formLanguages = form.metadata.languages;
   const [preview, setPreview] = React.useState(false);
-  const [localizedString, setLocalizedString] = React.useState<LocalizedString | undefined>();
-
-  React.useEffect(() => {
-    if (item) {
-      setLocalizedString(type === 'validations' ? rule?.validationRule.message : item[type]);
-    }
-  }, [item, rule, type]);
-
-  React.useEffect(() => {
-    if (item && localizedString && localizedString !== (type === 'validations' ? rule?.validationRule.message : item[type])) {
-      const id = setTimeout(() => {
-        updateLocalizedString(item.id, type, localizedString, rule?.index);
-        if (type === 'validations' && rule && setRule && item) {
-          const newRule = { ...rule, validationRule: { ...rule.validationRule, message: localizedString } };
-          setRule(newRule);
-          const newValidations = item.validations?.map((r, index) => index === rule.index ? newRule.validationRule : r);
-          setActiveItem({ ...item, validations: newValidations });
-        } else {
-          setActiveItem({ ...item, [type]: localizedString });
-        }
-      }, 300);
-      return () => clearTimeout(id);
-    }
-  }, [localizedString]);
+  const localizedString = type === 'validations' ? rule?.validationRule.message : item?.[type];
 
   if (!item || (type === 'validations' && rule === undefined)) {
     return null;
   }
 
   const handleUpdate = (value: string, language: string) => {
-    setLocalizedString({ ...localizedString, [language]: value });
+    if (value !== '') {
+      const updatedLocalizedString: LocalizedString = {
+        ...localizedString,
+        [language]: value
+      };
+      if (type === 'validations' && rule && setRule) {
+        const newRule = { ...rule, validationRule: { ...rule.validationRule, message: updatedLocalizedString } };
+        setRule(newRule);
+        updateLocalizedString(item.id, type, updatedLocalizedString, rule.index);
+      } else {
+        updateLocalizedString(item.id, type, updatedLocalizedString);
+      }
+    }
   }
 
   return (

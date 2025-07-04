@@ -1,13 +1,12 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Add, Close, Delete, Download, Help, Upload, Visibility, Warning } from '@mui/icons-material';
+import { Add, Check, Close, Delete, Download, Help, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
 } from '@mui/material';
 import { useComposer } from '../dialob';
 import { DialobItem, ValueSet, ValueSetEntry } from '../types';
-import { generateValueSetId } from '../dialob/reducer';
 import { BorderedTable } from '../components/TableEditorComponents';
 import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
@@ -18,6 +17,8 @@ import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
 import { BoldedMessage } from '../intl/BoldedMessage';
 import { useDocs } from '../utils/DocsUtils';
+import { useSave } from './contexts/saving/useSave';
+import { generateValueSetId } from './contexts/saving/reducer';
 
 interface GlobalValueSet {
   id: string;
@@ -25,8 +26,40 @@ interface GlobalValueSet {
   entries?: ValueSetEntry[];
 }
 
+const SaveButton: React.FC = () => {
+  const { form, applyListChanges } = useComposer();
+  const { savingState } = useSave();
+
+  const hasChanges = React.useMemo(() => {
+    if (!savingState.valueSets || !savingState.composerMetadata?.globalValueSets) {
+      return false;
+    }
+    return JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets) ||
+           JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets);
+  }, [savingState]);
+  
+  const handleSave = () => {
+    if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
+      applyListChanges(savingState);
+    }
+  }
+
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      endIcon={<Check />}
+      onClick={handleSave}
+      disabled={!hasChanges}
+    >
+      <FormattedMessage id='buttons.save' />
+    </Button>
+  );
+}
+
 const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
-  const { form, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet } = useComposer();
+  const { savingState, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet } = useSave();
+  const { form } = useComposer();
   const { editor, setActiveList, setActivePage, setHighlightedItem } = useEditor();
   const docsUrl = useDocs('lists');
   const dialogOpen = open || editor.activeList !== undefined;
@@ -40,8 +73,8 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const itemErrors = editor.errors?.filter(e => e.itemId === currentValueSet?.id);
 
   const getMappedGvs = () => {
-    const gvs = form.metadata.composer?.globalValueSets;
-    const valueSets = form.valueSets;
+    const gvs = savingState.composerMetadata?.globalValueSets;
+    const valueSets = savingState.valueSets;
     return gvs?.map(gvs => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       const found = valueSets?.find(vs => vs.id === gvs.valueSetId)!;
@@ -50,11 +83,11 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }
 
   React.useEffect(() => {
-    const activeList = form.valueSets?.find(vs => vs.id === editor.activeList);
+    const activeList = savingState.valueSets?.find(vs => vs.id === editor.activeList);
     if (activeList) {
       setCurrentValueSet(activeList);
     }
-  }, [editor.activeList, form.valueSets]);
+  }, [editor.activeList, savingState.valueSets]);
 
   React.useEffect(() => {
     if (dialogOpen) {
@@ -63,19 +96,16 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
       if (!currentValueSet) {
         setCurrentValueSet(mappedGvs?.[0]);
       }
-      setName(mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label || '');
+      setName(mappedGvs?.find(gvs => gvs.id === (currentValueSet ?? mappedGvs?.[0]).id)?.label || '');
     }
-  }, [form.metadata.composer?.globalValueSets, currentValueSet, form.valueSets, dialogOpen]);
+  }, [savingState, dialogOpen, currentValueSet]);
 
   React.useEffect(() => {
     if (currentValueSet && name && name !== '') {
       const mappedGvs = getMappedGvs();
       const gvsName = mappedGvs?.find(gvs => gvs.id === currentValueSet?.id)?.label;
       if (gvsName !== name) {
-        const id = setTimeout(() => {
-          setGlobalValueSetName(currentValueSet.id, name);
-        }, 300);
-        return () => clearTimeout(id);
+        setGlobalValueSetName(currentValueSet.id, name);
       }
     }
   }, [name])
@@ -107,9 +137,9 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }
 
   const addNewList = () => {
-    const newGvsIndex = form.metadata.composer?.globalValueSets?.length ?? 0;
+    const newGvsIndex = savingState.composerMetadata?.globalValueSets?.length ?? 0;
     const newGvsName = 'untitled' + (newGvsIndex + 1);
-    const newGvsId = generateValueSetId(form);
+    const newGvsId = generateValueSetId(savingState);
     createValueSet(null);
     if (newGvsId) {
       setGlobalValueSetName(newGvsId, newGvsName);
@@ -118,7 +148,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   }
 
   const convertToLocalList = (valueSet: ValueSet, item: DialobItem) => {
-    const newId = generateValueSetId(form);
+    const newId = generateValueSetId(savingState);
     createValueSet(item?.id, valueSet?.entries);
     updateItem(item?.id, 'valueSetId', newId);
   }
@@ -227,6 +257,7 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
+          <SaveButton />
         </DialogActions>
       </Dialog>
     </>

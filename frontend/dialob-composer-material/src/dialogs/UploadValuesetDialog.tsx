@@ -7,6 +7,7 @@ import { ValueSet, ValueSetEntry, LocalizedString } from "../types";
 import { FormattedMessage } from "react-intl";
 import { parseCsvFile } from "../utils/ParseUtils";
 import { useDocs } from "../utils/DocsUtils";
+import { useSave } from "./contexts/saving/useSave";
 
 type UploadMode = 'replace' | 'append' | 'update';
 const UPLOAD_MODES: UploadMode[] = ['replace', 'append', 'update'];
@@ -17,7 +18,7 @@ const UploadValuesetDialog: React.FC<{
   currentValueSet: ValueSet | undefined,
   setCurrentValueSet: React.Dispatch<React.SetStateAction<ValueSet | undefined>>
 }> = ({ open, onClose, currentValueSet, setCurrentValueSet }) => {
-  const { addValueSetEntry, setValueSetEntries } = useComposer();
+  const { addValueSetEntry, setValueSetEntries } = useSave();
   const docsUrl = useDocs('valuesets');
   const [error, setError] = React.useState<string | null>(null);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);

@@ -9,12 +9,12 @@ import { useBackend } from '../../backend/useBackend';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 import { findItemPropEditor } from '../../utils/ConfigUtils';
 import { ItemProp } from './types';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 const PropertiesEditor: React.FC = () => {
-  const { editor, setActiveItem } = useEditor();
-  const { setItemProp, deleteItemProp } = useComposer();
+  const { savingState, setItemProp, deleteItemProp } = useSave();
   const { config } = useBackend();
-  const item = editor.activeItem;
+  const item = savingState.item;
   const [props, setProps] = React.useState<ItemProp[]>([]);
   const [newProp, setNewProp] = React.useState<string>('');
 
@@ -35,7 +35,6 @@ const PropertiesEditor: React.FC = () => {
     if (item) {
       const isArray = propEditors && propEditors[newProp]?.props?.options?.length > 0;
       setItemProp(item.id, newProp, isArray ? [] : '');
-      setActiveItem({ ...item, props: { ...item.props, [newProp]: isArray ? [] : '' } });
     }
   }
 
@@ -43,16 +42,12 @@ const PropertiesEditor: React.FC = () => {
   const handleEditProp = (key: string, value: any) => {
     if (item) {
       setItemProp(item.id, key, value);
-      setActiveItem({ ...item, props: { ...item.props, [key]: value } });
     }
   }
 
   const handleDeleteProp = (key: string) => {
     if (item) {
       deleteItemProp(item.id, key);
-      const newProps = { ...item.props };
-      delete newProps[key];
-      setActiveItem({ ...item, props: newProps });
     }
   }
 

@@ -1,21 +1,17 @@
-import { useContext } from "react"
-import { ComposerContext } from './ComposerContext';
-import {
-  DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
-  Variable, ComposerState, ComposerCallbacks
-} from "../../types";
-import { SavingState } from "../../dialogs/contexts/saving/SavingContext";
+import { useContext } from 'react';
+import { SavingContext } from './SavingContext';
+import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
 
-export const useComposer = () => {
-  const { state, dispatch } = useContext(ComposerContext);
-
-  const addItem = (itemTemplate: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks): void => {
-    dispatch({ type: 'addItem', config: itemTemplate, parentItemId, afterItemId, callbacks });
-  };
+export const useSave = () => {
+  const { state, dispatch } = useContext(SavingContext);
 
   const updateItem = (itemId: string, attribute: string, value: string, language?: string) => {
     dispatch({ type: 'updateItem', itemId, attribute, value, language });
   };
+
+  const updateItemId = (itemId: string) => {
+    dispatch({ type: 'updateItemId', itemId });
+  }
 
   const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
     dispatch({ type: 'updateLocalizedString', itemId, attribute, value, index });
@@ -25,10 +21,6 @@ export const useComposer = () => {
     dispatch({ type: 'changeItemType', itemId, config });
   };
 
-  const deleteItem = (itemId: string) => {
-    dispatch({ type: 'deleteItem', itemId });
-  };
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setItemProp = (itemId: string, key: string, value: any) => {
     dispatch({ type: 'setItemProp', itemId, key, value });
@@ -36,10 +28,6 @@ export const useComposer = () => {
 
   const deleteItemProp = (itemId: string, key: string) => {
     dispatch({ type: 'deleteItemProp', itemId, key });
-  }
-
-  const moveItem = (itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string) => {
-    dispatch({ type: 'moveItem', itemId, fromIndex, toIndex, fromParent, toParent });
   }
 
   const createValidation = (itemId: string, rule?: ValidationRule) => {
@@ -90,21 +78,12 @@ export const useComposer = () => {
     dispatch({ type: 'setGlobalValueSetName', valueSetId, name });
   }
 
-  const deleteGlobalValueSet = (valueSetId: string) => {
-    dispatch({ type: 'deleteGlobalValueSet', valueSetId });
-  }
-
   const deleteLocalValueSet = (valueSetId: string) => {
     dispatch({ type: 'deleteLocalValueSet', valueSetId });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setMetadataValue = (attr: string, value: any) => {
-    dispatch({ type: 'setMetadataValue', attr, value });
-  }
-
-  const setContextValue = (name: string, value: string) => {
-    dispatch({ type: 'setContextValue', name, value });
+  const deleteGlobalValueSet = (valueSetId: string) => {
+    dispatch({ type: 'deleteGlobalValueSet', valueSetId });
   }
 
   const createVariable = (context: boolean) => {
@@ -136,43 +115,17 @@ export const useComposer = () => {
     dispatch({ type: 'moveVariable', origin, destination });
   }
 
-  const addLanguage = (language: string, copyFrom?: string) => {
-    dispatch({ type: 'addLanguage', language, copyFrom });
-  }
-
-  const deleteLanguage = (language: string) => {
-    dispatch({ type: 'deleteLanguage', language });
-  }
-
-  const setForm = (form: ComposerState, tagName?: string, save?: boolean) => {
-    dispatch({ type: 'setForm', form, tagName, save });
-  }
-
-  const setRevision = (revision: string) => {
-    dispatch({ type: 'setRevision', revision });
-  }
-
-  const applyItemChanges = (newState: SavingState) => {
-    dispatch({ type: 'applyItemChanges', newState });
-  }
-
-  const applyListChanges = (newState: SavingState) => {
-    dispatch({ type: 'applyListChanges', newState });
-  }
-
-  const applyVariableChanges = (newState: SavingState) => {
-    dispatch({ type: 'applyVariableChanges', newState });
+  const changeVariableId = (variables: (ContextVariable | Variable)[]) => {
+    dispatch({ type: 'changeVariableId', variables });
   }
 
   return {
-    addItem,
     updateItem,
+    updateItemId,
     updateLocalizedString,
     changeItemType,
-    deleteItem,
     setItemProp,
     deleteItemProp,
-    moveItem,
     createValidation,
     setValidationMessage,
     setValidationExpression,
@@ -185,10 +138,8 @@ export const useComposer = () => {
     deleteValueSetEntry,
     moveValueSetEntry,
     setGlobalValueSetName,
-    deleteGlobalValueSet,
     deleteLocalValueSet,
-    setMetadataValue,
-    setContextValue,
+    deleteGlobalValueSet,
     createVariable,
     updateContextVariable,
     updateExpressionVariable,
@@ -196,14 +147,7 @@ export const useComposer = () => {
     updateVariableDescription,
     deleteVariable,
     moveVariable,
-    addLanguage,
-    deleteLanguage,
-    setForm,
-    setRevision,
-    applyItemChanges,
-    applyListChanges,
-    applyVariableChanges,
-    form: state
-  };
-
+    changeVariableId,
+    savingState: state
+  }
 }
