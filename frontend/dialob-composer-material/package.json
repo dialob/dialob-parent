@@ -1,6 +1,6 @@
 {
   "name": "@dialob/composer-material",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Dialob Form Authoring Tool",
   "private": false,
   "type": "module",
