@@ -20,7 +20,7 @@ const SaveButton: React.FC = () => {
         return false;
       }
       return JSON.stringify(savingState.variables) !== JSON.stringify(form.variables);
-    }, [savingState]);
+    }, [savingState, form.variables]);
 
   const handleSave = () => {
     if (savingState.variables) {

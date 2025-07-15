@@ -37,7 +37,7 @@ const SaveItemButton: React.FC = () => {
       return JSON.stringify(savingState.item) !== JSON.stringify(form.data[savingState.item.id]) ||
              JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets) ||
              JSON.stringify(savingState.composerMetadata.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets);
-    }, [savingState]);
+    }, [savingState, form.data, form.valueSets, form.metadata.composer?.globalValueSets]);
 
   const handleSave = () => {
     if (savingState.item) {

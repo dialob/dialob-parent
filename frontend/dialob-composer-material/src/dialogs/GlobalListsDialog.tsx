@@ -36,7 +36,7 @@ const SaveButton: React.FC = () => {
     }
     return JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets) ||
            JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets);
-  }, [savingState]);
+  }, [savingState, form.valueSets, form.metadata.composer?.globalValueSets]);
   
   const handleSave = () => {
     if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
