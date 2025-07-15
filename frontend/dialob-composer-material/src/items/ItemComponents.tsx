@@ -144,8 +144,7 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
   const globalValueSets = form.metadata.composer?.globalValueSets;
   const isGlobalValueSet = globalValueSets && globalValueSets.find(v => v.valueSetId === item.valueSetId);
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, dialogType?: OptionsTabType): void => {
-    e.stopPropagation();
+  const handleClick = (dialogType?: OptionsTabType): void => {
     setActiveItem(item);
     setItemOptionsActiveTab(dialogType as OptionsTabType);
   }
@@ -154,29 +153,29 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
       {item.description &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.description' />}>
-          <IconButton onClick={(e) => handleClick(e, 'description')}><Description fontSize='small' sx={{ color: 'info.main' }} /></IconButton>
+          <IconButton onClick={() => handleClick('description')}><Description fontSize='small' sx={{ color: 'info.main' }} /></IconButton>
         </Tooltip>}
       {item.valueSetId &&
         <Tooltip placement='top' title={<FormattedMessage id={`tooltips.${isGlobalValueSet ? 'global' : 'local'}`} />}>
-          <IconButton onClick={(e) => handleClick(e, 'choices')}>
+          <IconButton onClick={() => handleClick('choices')}>
             {isGlobalValueSet ? <Public fontSize='small' sx={{ color: 'success.dark' }} /> : <Place fontSize='small' sx={{ color: 'success.light' }} />}
           </IconButton>
         </Tooltip>}
       {item.validations && item.validations.length > 0 &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.validations' />}>
-          <IconButton onClick={(e) => handleClick(e, 'validations')}><Rule fontSize='small' sx={{ color: 'warning.light' }} /></IconButton>
+          <IconButton onClick={() => handleClick('validations')}><Rule fontSize='small' sx={{ color: 'warning.light' }} /></IconButton>
         </Tooltip>}
       {item.required &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.requirement' />}>
-          <IconButton onClick={(e) => handleClick(e, 'rules')}><Gavel fontSize='small' sx={{ color: 'error.light' }} /></IconButton>
+          <IconButton onClick={() => handleClick('rules')}><Gavel fontSize='small' sx={{ color: 'error.light' }} /></IconButton>
         </Tooltip>}
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
-          < IconButton onClick={(e) => handleClick(e, 'rules')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
+          < IconButton onClick={() => handleClick('rules')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
         </Tooltip>}
       {item.type === 'note' && item.activeWhen &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.visibility' />}>
-          < IconButton onClick={(e) => handleClick(e, 'rules')}><Visibility fontSize='small' sx={{ color: 'primary.light' }} /></IconButton>
+          < IconButton onClick={() => handleClick('rules')}><Visibility fontSize='small' sx={{ color: 'primary.light' }} /></IconButton>
         </Tooltip>}
     </Box >
   );
@@ -202,7 +201,6 @@ export const ConversionMenu: React.FC<{ item?: DialobItem, inDialog?: boolean }>
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
-    e.stopPropagation();
   };
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
@@ -254,7 +252,6 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
   const itemCategories = config.itemTypes.categories;
 
   const handleClick = (e: React.MouseEvent<HTMLElement>, level: number, category?: string) => {
-    e.stopPropagation();
     if (level === 2) {
       setCategoriesAnchorEl(e.currentTarget);
     } else if (level === 3 && category) {

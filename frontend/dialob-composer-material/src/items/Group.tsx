@@ -12,10 +12,10 @@ import { ItemConfig } from '../defaults/types';
 import { useBackend } from '../backend/useBackend';
 
 
-const createChildren = (item: DialobItem, items: DialobItems, itemConfig: ItemConfig) => {
+const createChildren = (item: DialobItem, items: DialobItems, itemConfig: ItemConfig, setHighlightedItem?: (item: DialobItem) => void) => {
   return item.items && item.items
     .map(itemId => items[itemId])
-    .map(item => itemFactory(item, itemConfig));
+    .map(item => itemFactory(item, itemConfig, setHighlightedItem));
 }
 
 const GroupPaper = styled(Paper)(({ theme }) => ({
@@ -29,10 +29,10 @@ const GroupPaper = styled(Paper)(({ theme }) => ({
 const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { form } = useComposer();
-  const { editor } = useEditor();
+  const { editor, setHighlightedItem } = useEditor();
   const { config } = useBackend();
   const [expanded, setExpanded] = React.useState<boolean>(true);
-  const children = createChildren(item, form.data, config.itemEditors);
+  const children = createChildren(item, form.data, config.itemEditors, setHighlightedItem);
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;

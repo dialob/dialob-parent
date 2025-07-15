@@ -3,7 +3,7 @@ import { ItemConfig } from "../defaults/types";
 import { scrollToTreeItem } from "../utils/ScrollUtils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const itemFactory = (item: DialobItem, itemConfig: ItemConfig, props?: any) => {
+const itemFactory = (item: DialobItem, itemConfig: ItemConfig, setHighlightedItem?: (item: DialobItem) => void, props?: any) => {
   if (!item) {
     return null;
   }
@@ -16,6 +16,7 @@ const itemFactory = (item: DialobItem, itemConfig: ItemConfig, props?: any) => {
   const onClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     scrollToTreeItem(item.id);
+    setHighlightedItem && setHighlightedItem(item);
   }
 
   const Component = matchedConfig.component;
