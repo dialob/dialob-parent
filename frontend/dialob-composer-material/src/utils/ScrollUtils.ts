@@ -6,9 +6,9 @@ const isItemChild = (itemId: string, items: DialobItem[], childItemIds: string[]
   if (childItemIds.includes(itemId)) {
     return true;
   }
-  const childItems = childItemIds.map(id => items.find(i => i.id === id)!);
+  const childItems = childItemIds.map(id => items.find(i => i.id === id));
   return childItems.some(i => {
-    return isItemChild(itemId, items, i.items || []);
+    return isItemChild(itemId, items, i?.items || []);
   });
 }
 

@@ -1,8 +1,13 @@
 import React from "react";
-import { AlertColor, useTheme } from "@mui/material";
+import { AlertColor, IconButton, styled, useTheme } from "@mui/material";
 import { ComposerStatus, EditorError, ErrorSeverity } from "../editor";
 import { Check, Info, Warning } from "@mui/icons-material";
-import { PreTextIcon } from "./TreeUtils";
+
+const PreTextIcon = styled(IconButton)(({ theme }) => ({
+  padding: theme.spacing(0.5),
+  color: 'inherit',
+  cursor: 'default',
+}));
 
 const getDominantSeverity = (errors: EditorError[] | undefined): ErrorSeverity | undefined => {
   if (!errors || errors.length === 0) {

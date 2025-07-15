@@ -8,6 +8,7 @@ import {
 import { isContextVariable } from '../utils/ItemUtils';
 import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
 import { SavingState } from '../dialogs/contexts/saving/SavingContext';
+import { FlattenedItem } from '../components/tree/types';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -266,6 +267,29 @@ const moveItem = (state: ComposerState, itemId: string, fromIndex: number, toInd
     state.data[toParent]?.items?.splice(toIndex, 0, itemId);
   }
 }
+
+
+const syncTree = (
+  state: ComposerState,
+  flattened: FlattenedItem[]
+): void => {
+  const parentMap: Record<string, string[]> = {};
+
+  for (const item of flattened) {
+    const parentId = item.parentId ?? 'root';
+    if (!parentMap[parentId]) {
+      parentMap[parentId] = [];
+    }
+    parentMap[parentId].push(item.id as string);
+  }
+
+  for (const parentId in parentMap) {
+    if (!state.data[parentId]) {
+      continue;
+    }
+    state.data[parentId].items = parentMap[parentId];
+  }
+};
 
 const createValueSet = (state: ComposerState, itemId: string | null, entries?: ValueSetEntry[]): void => {
   if (itemId && state.data[itemId] === undefined) {
@@ -630,6 +654,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       deleteValidation(state, action.itemId, action.index);
     } else if (action.type === 'moveItem') {
       moveItem(state, action.itemId, action.fromIndex, action.toIndex, action.fromParent, action.toParent);
+    } else if (action.type === 'syncTree') {
+      syncTree(state, action.flattened);
     } else if (action.type === 'createValueSet') {
       createValueSet(state, action.itemId, action.entries);
     } else if (action.type === 'setValueSetEntries') {

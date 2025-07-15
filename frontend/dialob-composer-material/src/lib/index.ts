@@ -14,7 +14,6 @@ import { ValidationRuleEditor } from "../components/editors/ValidationRuleEditor
 import { LanguageEditor } from "../components/translations/LanguageEditor";
 import { TranslationFileEditor } from "../components/translations/TranslationFileEditor";
 import { MissingTranslations } from "../components/translations/MissingTranslations";
-import NavigationTreeItem from "../components/tree/NavigationTreeItem";
 import NavigationTreeView from "../components/tree/NavigationTreeView";
 import ContextVariableRow from "../components/variables/ContextVariableRow";
 import ContextVariables from "../components/variables/ContextVariables";
@@ -54,7 +53,7 @@ export {
   Group, SimpleField, Note, LabelField, VisibilityField, StyledTable, Indicators, IdField, ConversionMenu, OptionsMenu, itemFactory,    // items
   ChoiceEditor, DefaultValueEditor, DescriptionEditor, LabelEditor, LocalizedStringEditor, PropertiesEditor, RuleEditor, RulesEditor, ValidationRuleEditor, // editors
   LanguageEditor, TranslationFileEditor, MissingTranslations, // translations
-  NavigationTreeItem, NavigationTreeView, // tree
+  NavigationTreeView, // tree
   ContextVariableRow, ContextVariables, ExpressionVariableRow, ExpressionVariables, // variables
   ChoiceItem, ChoiceList, GlobalList, // choice
   Editor, PageTabs, PropItem, // components
