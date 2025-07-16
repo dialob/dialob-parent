@@ -19,7 +19,6 @@ export interface TreeItemProps {
   disableSelection?: boolean;
   ghost?: boolean;
   handleProps?: any;
-  indicator?: boolean;
   indentationWidth: number;
   id: string;
   title: string;
@@ -30,9 +29,9 @@ export interface TreeItemProps {
 }
 
 export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, ref) => {
-  const { 
+  const {
     childCount, clone, depth, disableSelection, disableInteraction, ghost, 
-    handleProps, indentationWidth, indicator, collapsed, onCollapse, style, id, title, collapsible, wrapperRef 
+    handleProps, indentationWidth, collapsed, onCollapse, style, id, title, collapsible, wrapperRef 
   } = props;
   const { form } = useComposer();
   const { editor, setHighlightedItem, setActivePage, setActiveItem, setItemOptionsActiveTab } = useEditor();
@@ -67,7 +66,6 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
       ref={wrapperRef}
       clone={clone}
       ghost={ghost}
-      indicator={indicator}
       disableInteraction={disableInteraction}
       sx={{
         pl: `${indentationWidth * depth}px`
@@ -77,7 +75,6 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
         ref={ref}
         clone={clone}
         ghost={ghost}
-        indicator={indicator}
         sx={style}
       >
         <Handle item={item} highlighted={highlighted} itemConfig={config.itemEditors} {...handleProps} />
@@ -88,7 +85,6 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
             sx={{
               transform: collapsed ? 'rotate(-90deg)' : 'none',
               transition: 'transform 250ms ease',
-              ml: 1,
             }}
           >
             <KeyboardArrowDown />
@@ -96,12 +92,13 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
         )}
         <Typography
           variant="body2"
-          noWrap
+          noWrap={clone ? false : true}
           fontWeight={highlighted ? 'bold' : 'normal'}
           color={textColor}
           onClick={handleScrollTo}
           onDoubleClick={handleOpenEditor}
           sx={{
+            width: 1,
             flexGrow: 1,
             pl: 1,
             userSelect: disableSelection ? 'none' : 'auto',

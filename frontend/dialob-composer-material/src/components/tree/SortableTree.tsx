@@ -182,7 +182,7 @@ export const SortableTree: React.FC = () => {
           />
         ))}
         {createPortal(
-          <DragOverlay dropAnimation={dropAnimationConfig}>
+          <DragOverlay dropAnimation={dropAnimationConfig} style={{ width: 'auto' }}>
             {activeId && activeItem ? (
               <SortableTreeItem
                 id={activeId as string}
@@ -194,7 +194,7 @@ export const SortableTree: React.FC = () => {
               />
             ) : null}
           </DragOverlay>,
-          document.body
+          document.getElementById('dnd-overlay') || document.body
         )}
       </SortableContext>
     </DndContext>

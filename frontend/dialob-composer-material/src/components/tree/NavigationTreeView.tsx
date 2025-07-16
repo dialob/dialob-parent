@@ -5,7 +5,7 @@ import { SortableTree } from './SortableTree';
 const NavigationTreeView: React.FC = () => {
 
   return (
-    <Box sx={{ p: 1 }}>
+    <Box sx={{ p: 1 }} id='dnd-overlay'>
       <SortableTree />
     </Box>
   )
