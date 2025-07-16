@@ -53,7 +53,7 @@ const ValidationRuleEditor: React.FC = () => {
     if (activeRule) {
       setActiveRule({ ...activeRule, validationRule: { ...activeRule.validationRule, rule: value } });
       if (item && activeRule && item.validations?.[activeRule.index] &&
-        value !== item.validations?.[activeRule.index].rule && value !== '') {
+        value !== item.validations?.[activeRule.index].rule) {
         setValidationExpression(item.id, activeRule.index, value);
       }
     }

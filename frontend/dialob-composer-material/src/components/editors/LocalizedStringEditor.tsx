@@ -28,18 +28,16 @@ const LocalizedStringEditor: React.FC<{
   }
 
   const handleUpdate = (value: string, language: string) => {
-    if (value !== '') {
-      const updatedLocalizedString: LocalizedString = {
-        ...localizedString,
-        [language]: value
-      };
-      if (type === 'validations' && rule && setRule) {
-        const newRule = { ...rule, validationRule: { ...rule.validationRule, message: updatedLocalizedString } };
-        setRule(newRule);
-        updateLocalizedString(item.id, type, updatedLocalizedString, rule.index);
-      } else {
-        updateLocalizedString(item.id, type, updatedLocalizedString);
-      }
+    const updatedLocalizedString: LocalizedString = {
+      ...localizedString,
+      [language]: value
+    };
+    if (type === 'validations' && rule && setRule) {
+      const newRule = { ...rule, validationRule: { ...rule.validationRule, message: updatedLocalizedString } };
+      setRule(newRule);
+      updateLocalizedString(item.id, type, updatedLocalizedString, rule.index);
+    } else {
+      updateLocalizedString(item.id, type, updatedLocalizedString);
     }
   }
 
