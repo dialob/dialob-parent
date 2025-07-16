@@ -5,7 +5,6 @@ interface StyledProps {
   ghost?: boolean;
   indicator?: boolean;
   disableInteraction?: boolean;
-  disableSelection?: boolean;
 }
 
 export const StyledListItem = styled(ListItem, {
@@ -14,7 +13,7 @@ export const StyledListItem = styled(ListItem, {
 })<StyledProps>(({ theme, clone, ghost, indicator, disableInteraction }) => ({
   listStyle: 'none',
   boxSizing: 'border-box',
-  marginBottom: '-1px',
+  marginBottom: theme.spacing(-0.125),
   pointerEvents: disableInteraction ? 'none' : 'auto',
   opacity: ghost && !indicator ? 0.5 : 1,
   paddingRight: 0,
@@ -32,10 +31,10 @@ export const StyledTreeItem = styled(Box, {
   display: 'flex',
   alignItems: 'center',
   position: 'relative',
-  padding: ghost && indicator ? 0 : '10px',
-  height: ghost && indicator ? '8px' : 'auto',
-  border: ghost && indicator ? '1px solid #2389ff' : '1px solid #dedede',
-  backgroundColor: ghost && indicator ? '#56a1f8' : '#fff',
+  padding: ghost && indicator ? 0 : theme.spacing(1.25),
+  height: ghost && indicator ? theme.spacing(1) : 'auto',
+  border: ghost && indicator ? `1px solid ${theme.palette.primary.main}` : `1px solid ${theme.palette.divider}`,
+  backgroundColor: ghost && indicator ? theme.palette.primary.light : theme.palette.background.paper,
   boxSizing: 'border-box',
   ...(ghost && indicator && {
     position: 'relative',
@@ -43,19 +42,19 @@ export const StyledTreeItem = styled(Box, {
     '&:before': {
       content: "''",
       position: 'absolute',
-      left: -8,
-      top: -4,
+      left: theme.spacing(-1),
+      top: theme.spacing(-0.5),
       display: 'block',
-      width: 12,
-      height: 12,
+      width: theme.spacing(1.5),
+      height: theme.spacing(1.5),
       borderRadius: '50%',
-      border: '1px solid #2389ff',
-      backgroundColor: '#fff',
+      border: `1px solid ${theme.palette.primary.main}`,
+      backgroundColor: theme.palette.background.paper,
     },
   }),
   ...(clone && {
-    boxShadow: '0px 15px 15px 0 rgba(34, 33, 81, 0.1)',
-    borderRadius: 4,
-    paddingRight: 24,
+    boxShadow: theme.shadows[3],
+    borderRadius: theme.shape.borderRadius,
+    paddingRight: theme.spacing(3),
   }),
 }));

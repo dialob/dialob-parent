@@ -15,7 +15,7 @@ import { useEditor } from '../../editor';
 import { canContain } from '../../defaults';
 import { useBackend } from '../../backend/useBackend';
 
-const indentationWidth = 10;
+const indentationWidth = 15;
 
 const measuring = {
   droppable: {
