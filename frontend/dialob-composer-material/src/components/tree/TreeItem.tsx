@@ -7,6 +7,7 @@ import { useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { useComposer } from '../../dialob';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
+import { useBackend } from '../../backend/useBackend';
 
 
 export interface TreeItemProps {
@@ -35,9 +36,11 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
   } = props;
   const { form } = useComposer();
   const { editor, setHighlightedItem, setActivePage, setActiveItem, setItemOptionsActiveTab } = useEditor();
+  const { config } = useBackend();
   const [highlighted, setHighlighted] = React.useState(false);
   const errorColor = useErrorColorSx(editor.errors, id);
   const textColor = errorColor ?? (highlighted ? 'primary.main' : 'text.primary');
+  const item = form.data[id];
 
   React.useEffect(() => {
     if (editor?.highlightedItem?.id === id) {
@@ -49,13 +52,11 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
 
   const handleScrollTo = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const item = form.data[id];
     setHighlightedItem(item);
     scrollToItem(id, Object.values(form.data), editor.activePage, setActivePage);
   }
 
   const handleOpenEditor = () => {
-    const item = form.data[id];
     setActiveItem(item);
     setItemOptionsActiveTab('label');
   }
@@ -79,7 +80,7 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
         indicator={indicator}
         sx={style}
       >
-        <Handle {...handleProps} />
+        <Handle item={item} highlighted={highlighted} itemConfig={config.itemEditors} {...handleProps} />
         {onCollapse && collapsible && (
           <IconButton
             size="small"
