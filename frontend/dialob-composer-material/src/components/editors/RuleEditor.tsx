@@ -31,7 +31,7 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   const itemErrors = editor.errors?.filter(e => e.itemId === item?.id && e.type === type.toUpperCase());
 
   const handleUpdate = (value: string) => {
-    if (item && value !== item[resolveRulePropName(type)] && value !== '') {
+    if (item && value !== item[resolveRulePropName(type)]) {
       updateItem(item.id, resolveRulePropName(type), value);
     }
   }

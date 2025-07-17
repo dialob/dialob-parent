@@ -18,7 +18,7 @@ const ContextValueRow: React.FC<{ name: string, value: string }> = ({ name, valu
 
   React.useEffect(() => {
     const id = setTimeout(() => {
-      if (editableValue !== '' && editableValue !== value) {
+      if (editableValue !== value) {
         setContextValue(name, editableValue)
       }
     }, 300);
