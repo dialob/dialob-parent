@@ -31,12 +31,10 @@ const SaveButton: React.FC = () => {
   const { savingState } = useSave();
 
   const hasChanges = React.useMemo(() => {
-    if (!savingState.valueSets || !savingState.composerMetadata?.globalValueSets) {
-      return false;
-    }
-    return JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets) ||
-           JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets);
-  }, [savingState]);
+    return (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
+      (savingState.composerMetadata?.globalValueSets && 
+        (JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets)));
+  }, [savingState, form.valueSets, form.metadata.composer?.globalValueSets]);
   
   const handleSave = () => {
     if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
