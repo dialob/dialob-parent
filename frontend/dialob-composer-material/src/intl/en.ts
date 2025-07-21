@@ -170,6 +170,13 @@ const en = {
   'dialogs.form.options.saved': 'Saved',
   'dialogs.form.options.version.composer': 'Composer version',
   'dialogs.form.options.version.backend': 'Backend version',
+  'dialogs.form.options.statistics': 'Form statistics',
+  "dialogs.form.options.statistics.notes": "Notes: {count}",
+  "dialogs.form.options.statistics.uniqueLists": "Unique lists: {count}",
+  "dialogs.form.options.statistics.expressionVariables": "Expression variables: {count}",
+  "dialogs.form.options.statistics.contextVariables": "Context variables: {count}",
+  "dialogs.form.options.statistics.questions": 'Total questions: {count}',
+  "dialogs.form.options.statistics.typeCount": "{type} questions: {count}",
 
   'dialogs.variables.title': 'Variables',
   'dialogs.variables.context.title': 'Context variables',
