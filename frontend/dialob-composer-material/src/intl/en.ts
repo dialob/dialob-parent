@@ -216,6 +216,10 @@ const en = {
   'dialogs.create.tag.name': 'Tag name',
   'dialogs.create.tag.desc': 'Tag description',
   'dialogs.create.tag.error': 'Tag name is invalid',
+  'dialogs.create.tag.existing': 'Existing tags',
+  'dialogs.create.tag.list.header.name': 'Name',
+  'dialogs.create.tag.list.header.description': 'Description',
+  'dialogs.create.tag.list.header.created': 'Created',
 
   'dialogs.change.id': 'Change ID',
   'dialogs.change.id.tooltip': 'This will discard all unsaved changes. Save changes before changing ID.',
