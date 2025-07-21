@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.8
+
+### Patch Changes
+
+- Form saving fixes
+
 ## 0.0.7
 
 ### Patch Changes

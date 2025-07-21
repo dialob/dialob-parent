@@ -41,7 +41,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         </TableRow>
       </TableHead>
       <TableBody>
-        {(savingState.variables?.filter(v => !isContextVariable(v)) as Variable[]).map((item, index) => (
+        {(savingState.variables?.filter(v => !isContextVariable(v)) as Variable[])?.map((item, index) => (
           <ExpressionVariableRow key={index} index={index} item={item} onClose={onClose} />
         ))}
       </TableBody>
