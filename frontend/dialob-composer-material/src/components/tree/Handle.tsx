@@ -9,7 +9,7 @@ import { DragIndicator } from '@mui/icons-material';
 interface HandleProps extends ButtonBaseProps {
   item: DialobItem | undefined;
   highlighted: boolean;
-  itemConfig?: ItemConfig;
+  itemconfig?: ItemConfig;
 }
 
 const StyledAction = styled(ButtonBase, {
@@ -38,7 +38,7 @@ const StyledAction = styled(ButtonBase, {
 }));
 
 
-const getTypeIcon = (item: DialobItem | undefined, highlighted: boolean, itemConfig?: ItemConfig) => {
+const getTypeIcon = (item: DialobItem | undefined, itemConfig?: ItemConfig) => {
   if (!item) {
     return <DragIndicator />;
   }
@@ -53,13 +53,13 @@ const getTypeIcon = (item: DialobItem | undefined, highlighted: boolean, itemCon
 
 export const Handle = React.forwardRef<HTMLButtonElement, HandleProps>(
   (props, ref) => {
-    const { item, highlighted, itemConfig } = props;
+    const { item, itemconfig } = props;
     return (
       <StyledAction
         ref={ref}
         {...props}
       >
-        {getTypeIcon(item, highlighted, itemConfig)}
+        {getTypeIcon(item, itemconfig)}
       </StyledAction>
     );
   }

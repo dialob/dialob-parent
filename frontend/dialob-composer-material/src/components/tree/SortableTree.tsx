@@ -105,15 +105,13 @@ export const SortableTree: React.FC = () => {
     resetState();
 
     if (projected && over) {
-      const { depth, parentId } = projected;
+      const { depth, parentId: pId } = projected;
+      const parentId = pId ?? 'questionnaire';
 
-      if (!parentId) {
-        return;
-      }
-
-      const parentItemType = form.data[parentId as string].type;
-      const activeItemType = form.data[active.id as string].type;
-      if (!canContain(parentItemType, activeItemType)) {
+      const parentItemType = form.data[parentId as string].view === 'page' ? 'page' : form.data[parentId as string].type;
+      const activeItemType = form.data[active.id as string].view === 'page' ? 'page' : form.data[active.id as string].type;
+      const canContainChild = canContain(parentItemType, activeItemType);
+      if (!canContainChild) {
         return;
       }
 
@@ -130,7 +128,6 @@ export const SortableTree: React.FC = () => {
       };
 
       const sortedFlattened = arrayMove(updatedFlattened, activeIndex, overIndex);
-
       const newTree = buildTree(sortedFlattened);
       setItems(newTree);
 

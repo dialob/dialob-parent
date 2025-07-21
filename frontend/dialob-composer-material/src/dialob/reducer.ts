@@ -275,11 +275,12 @@ const syncTree = (
 ): void => {
   const parentMap: Record<string, string[]> = {};
 
+  parentMap['questionnaire'] = [];
+
   for (const item of flattened) {
-    const parentId = item.parentId ?? 'root';
-    if (!parentMap[parentId]) {
-      parentMap[parentId] = [];
-    }
+    const id = item.id as string;
+    parentMap[id] = [];
+    const parentId = item.parentId ?? 'questionnaire';
     parentMap[parentId].push(item.id as string);
   }
 

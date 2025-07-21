@@ -96,7 +96,7 @@ export const flattenTree = (items: TreeItems): FlattenedItem[] => {
 }
 
 export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
-  const root: TreeItem = {id: 'root', children: [], title: 'root'};
+  const root: TreeItem = {id: 'questionnaire', children: [], title: 'questionnaire'};
   const nodes: Record<string, TreeItem> = {[root.id]: root};
   const items = flattenedItems.map((item) => ({...item, children: []}));
 

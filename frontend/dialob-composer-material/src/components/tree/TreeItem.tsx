@@ -77,7 +77,7 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
         ghost={ghost}
         sx={style}
       >
-        <Handle item={item} highlighted={highlighted} itemConfig={config.itemEditors} {...handleProps} />
+        <Handle item={item} highlighted={highlighted} itemconfig={config.itemEditors} {...handleProps} />
         {onCollapse && collapsible && (
           <IconButton
             size="small"

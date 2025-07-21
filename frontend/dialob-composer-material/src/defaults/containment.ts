@@ -3,7 +3,7 @@ const ITEM_TYPES = ['text', 'number', 'decimal', 'boolean', 'note', 'time', 'dat
 const ALL_TYPES = CONTAINER_TYPES.concat(ITEM_TYPES, ['survey']);
 
 const CONTAINMENT: { [key: string]: string[] } = {
-  page: CONTAINER_TYPES,
+  page: CONTAINER_TYPES.concat(ITEM_TYPES),
   group: CONTAINER_TYPES.concat(ITEM_TYPES),
   rowgroup: ALL_TYPES,
   surveygroup: ITEM_TYPES.concat(['survey']),
