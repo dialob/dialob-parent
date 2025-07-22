@@ -1,3 +1,4 @@
+import { FlattenedItem } from "../components/tree/types";
 import { SavingState } from "../dialogs/contexts/saving/SavingContext";
 import {
   DialobItemTemplate, ValueSetEntry, ContextVariableType, ValidationRule, LocalizedString, ContextVariable,
@@ -16,6 +17,7 @@ export type ComposerAction =
   | { type: 'setItemProp', itemId: string, key: string, value: any }
   | { type: 'deleteItemProp', itemId: string, key: string }
   | { type: 'moveItem', itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string }
+  | { type: 'syncTree', flattened: FlattenedItem[] }
 
   | { type: 'createValidation', itemId: string, rule?: ValidationRule }
   | { type: 'setValidationMessage', itemId: string, index: number, language: string, message: string }

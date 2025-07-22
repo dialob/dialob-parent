@@ -16,11 +16,8 @@ const SaveButton: React.FC = () => {
   const { savingState } = useSave();
 
   const hasChanges = React.useMemo(() => {
-      if (!savingState.variables) {
-        return false;
-      }
       return savingState.variables && (JSON.stringify(savingState.variables) !== JSON.stringify(form.variables));
-    }, [savingState, form.variables]);
+  }, [savingState, form.variables]);
 
   const handleSave = () => {
     if (savingState.variables) {

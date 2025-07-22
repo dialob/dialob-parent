@@ -5,6 +5,7 @@ import {
   Variable, ComposerState, ComposerCallbacks
 } from "../../types";
 import { SavingState } from "../../dialogs/contexts/saving/SavingContext";
+import { FlattenedItem } from "../../components/tree/types";
 
 export const useComposer = () => {
   const { state, dispatch } = useContext(ComposerContext);
@@ -40,6 +41,10 @@ export const useComposer = () => {
 
   const moveItem = (itemId: string, fromIndex: number, toIndex: number, fromParent: string, toParent: string) => {
     dispatch({ type: 'moveItem', itemId, fromIndex, toIndex, fromParent, toParent });
+  }
+
+  const syncTree = (flattened: FlattenedItem[]) => {
+    dispatch({ type: 'syncTree', flattened });
   }
 
   const createValidation = (itemId: string, rule?: ValidationRule) => {
@@ -173,6 +178,7 @@ export const useComposer = () => {
     setItemProp,
     deleteItemProp,
     moveItem,
+    syncTree,
     createValidation,
     setValidationMessage,
     setValidationExpression,

@@ -10,14 +10,14 @@ import { useBackend } from '../backend/useBackend';
 import { DialobItem, DialobItems } from '../types';
 
 
-const createChildren = (items: DialobItems, itemConfig: ItemConfig, activePage?: DialobItem) => {
+const createChildren = (items: DialobItems, itemConfig: ItemConfig, activePage?: DialobItem, setHighlightedItem?: (item: DialobItem) => void) => {
   if (!activePage || !activePage.items) {
     return null;
   }
   return (
     activePage.items
       .map((itemId: string) => items[itemId])
-      .map((item: DialobItem) => Items.itemFactory(item, itemConfig))
+      .map((item: DialobItem) => Items.itemFactory(item, itemConfig, setHighlightedItem))
   );
 };
 
