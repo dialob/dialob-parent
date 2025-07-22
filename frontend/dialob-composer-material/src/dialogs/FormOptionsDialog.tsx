@@ -1,7 +1,8 @@
 import React from "react";
 import {
   Dialog, DialogTitle, DialogContent, Button, Typography, Select, MenuItem,
-  Alert, DialogActions, Checkbox, Box, TextField, Tooltip, IconButton, Chip
+  Alert, DialogActions, Checkbox, Box, TextField, Tooltip, IconButton, Chip,
+  List, ListItem, styled
 } from "@mui/material";
 import { Add, Close, ContentCopy, Help } from "@mui/icons-material";
 import { useComposer } from "../dialob";
@@ -10,12 +11,17 @@ import { version } from "../../package.json";
 import { useBackend } from "../backend/useBackend";
 import { useDocs } from "../utils/DocsUtils";
 import { VisibilityType } from "../types";
+import { isContextVariable } from "../utils/ItemUtils";
 
 const visibilityModeOptions = [
   { value: 'ONLY_ENABLED' as VisibilityType, label: 'dialogs.form.options.visibility.ONLY_ENABLED' },
   { value: 'SHOW_DISABLED' as VisibilityType, label: 'dialogs.form.options.visibility.SHOW_DISABLED' },
   { value: 'ALL' as VisibilityType, label: 'dialogs.form.options.visibility.ALL' }
 ];
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  padding: 0,
+}));
 
 const CopyToClipboardButton: React.FC<{ text: string }> = ({ text }) => {
   return (
@@ -62,6 +68,73 @@ const FormLabels: React.FC = () => {
     </>
   )
 }
+
+const FormStatistics: React.FC = () => {
+  const { form } = useComposer();
+  const items = form?.data || {};
+  const valueSets = form?.valueSets || [];
+  const variables = form?.variables || [];
+  const questionTypesCount: Record<string, number> = {};
+  let numNotes = 0;
+
+  Object.values(items).forEach(item => {
+    const type = item.type;
+    const inputTypes = ['text', 'number', 'decimal', 'boolean', 'time', 'date', 'list', 'multichoice'];
+    if (type === 'note') {
+      numNotes++;
+    } else if (inputTypes.includes(type)) {
+      questionTypesCount[type] = (questionTypesCount[type] || 0) + 1;
+    }
+  });
+
+  const numLists = valueSets.length;
+  const numContextVars = variables.filter((v) => isContextVariable(v)).length;
+  const numExprVars = variables.length - numContextVars;
+  const numQuestions = Object.values(questionTypesCount).reduce((sum, count) => sum + count, 0);
+
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Typography fontWeight='bold'>
+        <FormattedMessage id='dialogs.form.options.statistics' />
+      </Typography>
+
+      <List>
+        <StyledListItem>
+          <Typography>
+            <FormattedMessage id="dialogs.form.options.statistics.notes" values={{ count: numNotes }} />
+          </Typography>
+        </StyledListItem>
+        <StyledListItem>
+          <Typography>
+            <FormattedMessage id="dialogs.form.options.statistics.uniqueLists" values={{ count: numLists }} />
+          </Typography>
+        </StyledListItem>
+        <StyledListItem>
+          <Typography>
+            <FormattedMessage id="dialogs.form.options.statistics.expressionVariables" values={{ count: numExprVars }} />
+          </Typography>
+        </StyledListItem>
+        <StyledListItem>
+          <Typography>
+            <FormattedMessage id="dialogs.form.options.statistics.contextVariables" values={{ count: numContextVars }} />
+          </Typography>
+        </StyledListItem>
+        <StyledListItem>
+          <Typography>
+            <FormattedMessage id="dialogs.form.options.statistics.questions" values={{ count: numQuestions }} />
+          </Typography>
+        </StyledListItem>
+        {Object.entries(questionTypesCount).map(([type, count]) => (
+          <ListItem key={type} sx={{ pl: 2 }}>
+            <Typography>
+              <FormattedMessage id="dialogs.form.options.statistics.typeCount" values={{ type: type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(), count }} />
+            </Typography>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+};
 
 const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form, setMetadataValue } = useComposer();
@@ -158,6 +231,7 @@ const FormOptionsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Typography>{version}</Typography>
           <Typography sx={{ mt: 2 }} fontWeight='bold'><FormattedMessage id='dialogs.form.options.version.backend' /></Typography>
           <Typography>{config.backendVersion}</Typography>
+          <FormStatistics />
         </Box>
       </DialogContent>
       <DialogActions>

@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Dialog, DialogTitle, DialogContent, Button, DialogActions, Typography, TextField, Box, TextareaAutosize,
-  Alert
+  Alert, Table, TableHead, TableRow, TableCell, TableBody
 } from "@mui/material";
 import { Check, Close, Help, Warning } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
@@ -12,13 +12,15 @@ import { ErrorMessage } from "../components/ErrorComponents";
 import { getErrorSeverity } from "../utils/ErrorUtils";
 import { SaveResult } from "../backend/types";
 import { useDocs } from "../utils/DocsUtils";
+import { ComposerTag } from "../types";
 
 const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const { form } = useComposer();
-  const { createTag, saveForm } = useBackend();
+  const { getTags, createTag, saveForm } = useBackend();
   const { editor, setErrors } = useEditor();
   const docsUrl = useDocs('tagging');
   const tagErrors = editor.errors?.filter(e => e.type === 'TAG_ERROR');
+  const [tags, setTags] = React.useState<ComposerTag[]>([]);
   const [name, setName] = React.useState<string>('');
   const [desc, setDesc] = React.useState<string>('');
   const [error, setError] = React.useState<string | undefined>();
@@ -27,6 +29,8 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
     if (!open) {
       setName('');
       setDesc('');
+    } else {
+      getTags(form.name).then(setTags);
     }
   }, [open]);
 
@@ -81,7 +85,7 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
           <FormattedMessage id='buttons.help' />
         </Button>
       </DialogTitle>
-      <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '50vh' }}>
+      <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, flexDirection: 'column' }}>
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', width: 1 }}>
           {error && <Alert severity="error" sx={{ mb: 2 }}><FormattedMessage id={error} /></Alert>}
           <Typography fontWeight='bold'><FormattedMessage id='dialogs.create.tag.name' /></Typography>
@@ -91,6 +95,33 @@ const CreateTagDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
           {tagErrors && tagErrors.length > 0 && tagErrors.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
             <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
           </Alert>)}
+        </Box>
+        <Box sx={{ p: 3, pt: 0 }}>
+          <Typography fontWeight='bold'><FormattedMessage id='dialogs.create.tag.existing' /></Typography>
+          <Table sx={{ mt: 1 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ p: 1 }}>
+                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.create.tag.list.header.name' /></Typography>
+                </TableCell>
+                <TableCell sx={{ p: 1 }}>
+                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.create.tag.list.header.description' /></Typography>
+                </TableCell>
+                <TableCell sx={{ p: 1 }}>
+                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.create.tag.list.header.created' /></Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tags.map(tag => (
+                <TableRow key={tag.formId}>
+                  <TableCell sx={{ p: 1 }}><Typography>{tag.name}</Typography></TableCell>
+                  <TableCell sx={{ p: 1 }}><Typography>{tag.description}</Typography></TableCell>
+                  <TableCell sx={{ p: 1 }}><Typography>{new Date(tag.created + '').toLocaleString('en-GB')}</Typography></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Box>
       </DialogContent>
       <DialogActions>
