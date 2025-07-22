@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.9
+
+### Patch Changes
+
+- replaced tree library, minor fixes and improvements
+
 ## 0.0.8
 
 ### Patch Changes
