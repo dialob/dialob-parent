@@ -68,7 +68,7 @@
     <mockito.version>5.17.0</mockito.version>
     <spring-boot.version>3.5.4</spring-boot.version>
     <spring-integration.version>6.5.1</spring-integration.version>
-    <spring-security.version>6.5.1</spring-security.version>
+    <spring-security.version>6.5.2</spring-security.version>
     <spring-session.version>3.5.1</spring-session.version>
     <swagger.version>2.2.31</swagger.version>
     <validation-api.version>3.0.2</validation-api.version>
