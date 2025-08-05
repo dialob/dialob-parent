@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
@@ -16,9 +16,10 @@ const getArrowSx = (active: boolean) => {
 };
 
 export const SortField: React.FC<SortFieldProps> = ({ active, direction, name, handleSort }) => {
+  const intl = useIntl();
   return (
     <Box display="flex" alignItems="center">
-      <FormattedMessage id={`adminUI.formConfiguration.${name}`} />
+      {intl.formatMessage({ id: `adminUI.formConfiguration.${name}` })}
       {direction === 'asc' ?
         <ArrowUpwardIcon fontSize="small" sx={getArrowSx(active)} onClick={() => handleSort(name)} /> :
         <ArrowDownwardIcon fontSize="small" sx={getArrowSx(active)} onClick={() => handleSort(name)} />

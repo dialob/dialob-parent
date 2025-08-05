@@ -1,6 +1,6 @@
-/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
+import { MessageFormatElement } from "react-intl";
 
-export const messages: { [key: string]: any } = {
+export const messages: Record<string, Record<string, string | MessageFormatElement[]>> = {
   "en": {
     "error.valueRequired": "Enter value",
     "error.invalidFormName": "Invalid form name",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { DialogContent, DialogTitle, Box, TextField, Divider, Typography, FormHelperText, Button, Dialog } from '@mui/material';
 import { useAdminBackend } from '../backend';
 import { checkHttpResponse, handleRejection } from '../middleware';
@@ -59,7 +59,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
     }
     setIsSubmitting(true);
 
-    const handleResponse = async (response: any) => {
+    const handleResponse = async (response: Response) => {
       try {
         const jsonResponse = await response.json();
         setFetchAgain((prevState) => !prevState);
@@ -71,7 +71,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
       }
     };
 
-    const checkHttpResponseAsync = async (response: any, setLoginRequired: any) => {
+    const checkHttpResponseAsync = async (response: Response, setLoginRequired: () => void) => {
       try {
         return await checkHttpResponse(response, setLoginRequired);
       } catch (ex) {
@@ -91,7 +91,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
         json.metadata.label = values.label || "";
         const addResponse = await addAdminFormConfiguration(json);
         await checkHttpResponseAsync(addResponse, config.setLoginRequired);
-        await handleResponse({ json: () => json });
+        await handleResponse(new Response(JSON.stringify(json), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        }));
       } catch (ex) {
         handleRejection(ex, config.setTechnicalError);
       }
@@ -137,37 +140,45 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
       >
         <DialogTitle sx={{ p: 3 }}>
           <Typography variant="h4" component="div">
-            <FormattedMessage id={formConfiguration ? 'heading.copyDialog' : 'heading.addDialog'} />
+            {intl.formatMessage({ id: formConfiguration ? 'heading.copyDialog' : 'heading.addDialog' })}
           </Typography>
         </DialogTitle>
         <Divider />
         <DialogContent sx={{ p: 3 }}>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formName" /></Typography>
+              <Typography sx={{ my: 1, mx: 0 }}>
+                {intl.formatMessage({ id: 'adminUI.dialog.formName' })}
+              </Typography>
               <TextField
                 name='name'
                 error={!!errors.name}
                 required
-                onChange={e => handleChange('name', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('name', e.target.value)}
                 value={values.name}
                 sx={{ minWidth: "500px" }}
               />
               {errors.name && <FormHelperText error>{errors.name}</FormHelperText>}
-              <Typography sx={{ my: 1, mx: 0 }}><FormattedMessage id="adminUI.dialog.formLabel" /></Typography>
+              <Typography sx={{ my: 1, mx: 0 }}>
+                {intl.formatMessage({ id: 'adminUI.dialog.formLabel' })}
+              </Typography>
               <TextField
                 name='label'
                 error={!!errors.label}
                 required
-                onChange={e => handleChange('label', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('label', e.target.value)}
                 value={values.label}
                 sx={{ minWidth: "500px" }}
               />
               {errors.label && <FormHelperText error>{errors.label}</FormHelperText>}
             </Box>
             <Box sx={{ display: "flex", mt: 2, justifyContent: "space-between" }}>
-              <Button onClick={handleCreateModalClose}><FormattedMessage id={'button.cancel'} /></Button>
-              <Button onClick={handleSubmit} disabled={isSubmitting || !values.name || !!errors.name || !!errors.label} ><FormattedMessage id={'button.accept'} /></Button>
+              <Button onClick={handleCreateModalClose}>
+                {intl.formatMessage({ id: 'button.cancel' })}
+              </Button>
+              <Button onClick={handleSubmit} disabled={isSubmitting || !values.name || !!errors.name || !!errors.label}>
+                {intl.formatMessage({ id: 'button.accept' })}
+              </Button>
             </Box>
           </Box>
         </DialogContent>

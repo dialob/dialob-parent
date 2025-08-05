@@ -1,8 +1,8 @@
-import { tableCellClasses, radioClasses, Palette } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
+import { tableCellClasses, radioClasses } from '@mui/material';
+import { createTheme, PaletteOptions } from "@mui/material/styles";
 
-const palette: Palette = {
-  type: 'light',
+const palette = {
+  mode: 'light',
   primary: {
     main: '#2e1441',
     light: '#dedede'
@@ -41,7 +41,7 @@ const theme = createTheme({
 });
 
 export const theme3 = createTheme(theme, {
-  palette: palette,
+  palette: palette as PaletteOptions,
   typography: {
     fontFamily: "Campton-Light, Arial, sans-serif",
     color: palette.text.primary,
@@ -100,7 +100,7 @@ export const theme3 = createTheme(theme, {
         root: {
           height: 46,
           fontFamily: "Campton-Light, Arial, sans-serif",
-          color: palette.text.main,
+          color: palette.text.primary,
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: palette.success.light,
             '::selection': {
@@ -254,7 +254,7 @@ export const theme3 = createTheme(theme, {
           height: "30px",
           borderRight: `1px solid ${palette.success.light}`,
           borderLeft: `1px solid ${palette.success.light}`,
-          '&:first-child': {
+          '&:first-of-type': {
             borderTop: `1px solid ${palette.success.light}`,
           },
           '&:last-child': {

@@ -35,9 +35,10 @@ const App: React.FC = () => {
   );
 }
 
-const container: any = document.getElementById('root');
-const root = createRoot(container);
-
-root.render(
-  <App />
-);
+const container: HTMLElement | null = document.getElementById('root');
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <App />
+  );
+}

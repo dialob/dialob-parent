@@ -41,7 +41,7 @@ export interface FormData {
 export interface FormQuestionnaire {
   id: string;
   type: string;
-  items: any
+  items: unknown
 }
 
 export interface FormMetadata {

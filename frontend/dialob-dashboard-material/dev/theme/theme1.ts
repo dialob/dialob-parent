@@ -1,9 +1,9 @@
 import { createTheme } from '@mui/material/styles';
-import { PaletteOptions } from '@mui/material/styles/createPalette';
+import type { PaletteOptions } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material';
 
 const palette = {
-	type: 'light',
+  mode: 'light',
 	primary: {
 		main: '#2e1441',
 		light: '#dedede'

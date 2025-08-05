@@ -21,7 +21,8 @@
     "strict": true,
     "rootDir": "./src",
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "preserveSymlinks": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"],

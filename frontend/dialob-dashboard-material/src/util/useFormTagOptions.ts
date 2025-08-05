@@ -2,19 +2,19 @@ import { useMemo } from 'react';
 import { checkHttpResponse, handleRejection } from '../middleware';
 import { useAdminBackend } from '../backend';
 import { extractDate, downloadAsJSON, DEFAULT_CONFIGURATION_FILTERS, LabelAction } from '../util';
-import type { FormConfiguration, FormConfigurationFilters, DialobAdminConfig } from '../types';
+import type { FormConfiguration, FormConfigurationFilters, DialobAdminConfig, DialobForm } from '../types';
 
 export interface FormTagOptions {
   filteredRow: FormConfigurationFilters | undefined;
   downloadFormConfiguration: () => Promise<void>;
-  updateLabels: (label: any, action: LabelAction) => Promise<void>;
+  updateLabels: (label: string, action: LabelAction) => Promise<void>;
 }
 
 export interface UseFormTagOptionsParams {
   formConfiguration: FormConfiguration;
   filters: FormConfigurationFilters;
   config: DialobAdminConfig;
-  getDialobForm: (formName: string) => Promise<any>;
+  getDialobForm: (formName: string) => Promise<DialobForm | null>;
   setFetchAgain: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -69,7 +69,7 @@ export function useFormTagOptions({
     if (filters.labels) {
       let exists = false;
       if (formConfiguration.metadata.labels) {
-        formConfiguration.metadata.labels.forEach((label: any) => {
+        formConfiguration.metadata.labels.forEach((label: string) => {
           if (label.toLowerCase().includes(filters.labels!.toLowerCase())) {
             exists = true;
           }
@@ -92,13 +92,20 @@ export function useFormTagOptions({
     }
   }
 
-  const updateLabels = async (label: any, action: LabelAction) => {
+  const updateLabels = async (label: string, action: LabelAction) => {
     const updatedLabels =
       action === LabelAction.DELETE
-        ? formConfiguration.metadata.labels.filter((l: any) => l !== label)
+        ? formConfiguration.metadata.labels.filter((l: string) => l !== label)
         : [...(formConfiguration.metadata.labels || []), label];
 
     const form = await getDialobForm(formConfiguration.id);
+    if (!form) {
+      handleRejection(new Error('Form not found'), config.setTechnicalError);
+      return;
+    }
+    delete form._id;
+    delete form._rev;
+
     const json = {
       ...form,
       metadata: {
@@ -106,15 +113,13 @@ export function useFormTagOptions({
         labels: updatedLabels,
       },
     };
-    delete json._id;
-    delete json._rev;
 
     try {
       const response = await editAdminFormConfiguration(json);
       await checkHttpResponse(response, config.setLoginRequired);
       await response.json();
       setFetchAgain(prevState => !prevState);
-    } catch (ex: any) {
+    } catch (ex: unknown) {
       handleRejection(ex, config.setTechnicalError);
     }
   };

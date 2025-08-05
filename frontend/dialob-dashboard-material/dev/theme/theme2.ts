@@ -1,5 +1,4 @@
 import { createTheme, PaletteOptions } from "@mui/material/styles";
-import { } from "@mui/styles";
 
 declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {

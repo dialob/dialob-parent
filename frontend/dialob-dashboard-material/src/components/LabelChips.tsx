@@ -5,7 +5,7 @@ import { Cancel as CancelIcon, Add as AddIcon } from '@mui/icons-material';
 
 export interface LabelChipsProps {
   labels: string[];
-  onUpdate: (label: any, action: LabelAction) => Promise<void>
+  onUpdate: (label: string, action: LabelAction) => Promise<void>
 }
 
 export const LabelChips: React.FC<LabelChipsProps> = ({ labels, onUpdate }) => {
@@ -44,7 +44,7 @@ export const LabelChips: React.FC<LabelChipsProps> = ({ labels, onUpdate }) => {
         <OutlinedInput
           inputRef={inputRef}
           value={newLabel}
-          onChange={(e) => setNewLabel(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewLabel(e.target.value)}
           onBlur={() => {
             if (newLabel.length > 0) {
               handleAdd();

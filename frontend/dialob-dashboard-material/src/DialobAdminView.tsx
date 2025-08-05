@@ -3,7 +3,7 @@ import {
   Box, TableContainer, Typography, Table, TableRow, TableHead, TableBody,
   Tooltip, IconButton, SvgIcon, OutlinedInput, TableCell, Button
 } from '@mui/material';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import type { FormConfiguration } from './types';
 import { SortField, CustomDatePicker, Spinner, CreateDialog, DeleteDialog, TagTableRow } from './components';
 import AddIcon from '@mui/icons-material/Add';
@@ -55,10 +55,12 @@ export const DialobAdminView: React.FC = () => {
       {formConfigurations ? (
         <Box>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 3 }}>
-            <Typography variant='h2'><FormattedMessage id={'adminUI.dialog.heading'} /></Typography>
+            <Typography variant='h2'>
+              {intl.formatMessage({ id: 'adminUI.dialog.heading' })}
+            </Typography>
             <Box display="flex" gap={1}>
               <Button
-                onClick={function (e) {
+                onClick={function (e: React.MouseEvent<HTMLButtonElement>) {
                   e.preventDefault();
                   addFormConfiguration();
                 }}
@@ -97,7 +99,7 @@ export const DialobAdminView: React.FC = () => {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell width="22%">
+                  <TableCell sx={{ width: '22%' }}>
                     <SortField
                       active={sortConfig.field === 'label'}
                       direction={sortConfig.field === 'label' ? sortConfig.direction : 'asc'}
@@ -105,7 +107,7 @@ export const DialobAdminView: React.FC = () => {
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="22%">
+                  <TableCell sx={{ width: '22%' }}>
                     <SortField
                       active={sortConfig.field === 'latestTagName'}
                       direction={sortConfig.field === 'latestTagName' ? sortConfig.direction : 'asc'}
@@ -113,7 +115,7 @@ export const DialobAdminView: React.FC = () => {
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="17%" sx={{ minWidth: "220px" }}>
+                  <TableCell sx={{ minWidth: "220px", width: '17%' }}>
                     <SortField
                       active={sortConfig.field === 'latestTagDate'}
                       direction={sortConfig.field === 'latestTagDate' ? sortConfig.direction : 'asc'}
@@ -121,7 +123,7 @@ export const DialobAdminView: React.FC = () => {
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="17%" sx={{ minWidth: "220px" }}>
+                  <TableCell sx={{ minWidth: "220px", width: '17%' }}>
                     <SortField
                       active={sortConfig.field === 'lastSaved'}
                       direction={sortConfig.field === 'lastSaved' ? sortConfig.direction : 'asc'}
@@ -129,13 +131,13 @@ export const DialobAdminView: React.FC = () => {
                       handleSort={handleSort}
                     />
                   </TableCell>
-                  <TableCell width="18%">
-                    <FormattedMessage id={"adminUI.formConfiguration.labels"} />
+                  <TableCell sx={{ width: '18%' }}>
+                    {intl.formatMessage({ id: 'adminUI.formConfiguration.labels' })}
                   </TableCell>
-                  <TableCell width="4%" sx={{ textAlign: "right" }}>
+                  <TableCell sx={{ textAlign: "right", width: '4%' }}>
                     <Tooltip title={intl.formatMessage({ id: "download.all" })} placement='top-end' arrow>
                       <IconButton
-                        onClick={function (e) {
+                        onClick={function (e: React.MouseEvent<HTMLButtonElement>) {
                           e.preventDefault();
                           downloadAllFormConfigurations();
                         }}
