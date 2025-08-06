@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CircularProgress, Grid, Typography, Link, Box } from '@mui/material';
 import TenantDashboard from './components/TenantDashboard';
@@ -15,7 +15,7 @@ export const ProgressSplash: React.FC = () => (
     justifyContent="center"
     sx={{ minHeight: '100vh' }}
   >
-    <Grid item xs={3}>
+    <Grid size={3}>
       <CircularProgress size={100} thickness={5} />
     </Grid>
   </Grid>
