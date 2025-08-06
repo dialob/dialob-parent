@@ -1,7 +1,7 @@
 import { DialobAdminView } from "./DialobAdminView";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { IntlProvider } from 'react-intl';
+import { IntlProvider } from "react-intl";
 import { messages } from './intl';
 
 import {
@@ -27,7 +27,7 @@ export const DialobAdmin: React.FC<DialobAdminProps> = ({ config, showNotificati
   return (
     <DialobDashboardFetchProvider>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={localeMap[config.language]}>
-        <IntlProvider  defaultLocale="en" messages={messages[config.language] ?? messages.en}>
+        <IntlProvider locale={config.language} defaultLocale="en" messages={messages[config.language] ?? messages.en}>
           <DialobDashboardStateProvider config={config} showNotification={showNotification} onOpenForm={onOpenForm}>
             <DialobAdminView />
           </DialobDashboardStateProvider>

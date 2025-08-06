@@ -1,6 +1,4 @@
-import { MessageFormatElement } from "react-intl";
-
-export const messages: Record<string, Record<string, string | MessageFormatElement[]>> = {
+export const messages: Record<string, Record<string, string>> = {
   "en": {
     "error.valueRequired": "Enter value",
     "error.invalidFormName": "Invalid form name",
