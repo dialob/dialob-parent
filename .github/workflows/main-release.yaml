@@ -17,7 +17,7 @@ permissions:
   contents: write
   id-token: write
 
-name: main - release - java 17
+name: main - release
 jobs:
   build:
     name: Releasing branch - main

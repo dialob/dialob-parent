@@ -10,7 +10,7 @@ on:
     branches:
       - main-2.2
 
-name: main-2.2 - release - java 17
+name: main-2.2 - release
 jobs:
   build:
     name: Releasing branch - main
