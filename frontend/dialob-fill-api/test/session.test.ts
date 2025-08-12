@@ -3,7 +3,7 @@ import { DialobRequestError } from '../src/error';
 import { Session, SessionOptions } from '../src/session';
 import { MockTransport } from './mocks/mock-transport';
 
-jest.useFakeTimers({legacyFakeTimers: true});
+jest.useFakeTimers({ legacyFakeTimers: true });
 
 // https://stackoverflow.com/a/51045733
 const flushPromises = () => new Promise(setImmediate);
@@ -11,7 +11,7 @@ const flushPromises = () => new Promise(setImmediate);
 async function verifyUpdates(transport: MockTransport, n: number) {
   jest.runAllTimers();
   await flushPromises();
-  expect(transport.update).toBeCalledTimes(n);
+  expect(transport.update).toHaveBeenCalledTimes(n);
 }
 
 function makeSession(options?: SessionOptions) {
