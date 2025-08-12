@@ -8,9 +8,9 @@ on:
       - 'compose/**'
       - 'dev-env/**'
     branches:
-      - dev-2.1
+      - dev-2.2
 
-name: dev-2.1 - build - deploy
+name: dev-2.2 - build - deploy
 
 jobs:
   build:
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
 
       - name: Docker Registry login
