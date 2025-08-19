@@ -1,5 +1,16 @@
 # @dialob/demo-dialob-io-app
 
+## 1.0.0
+
+### Major Changes
+
+- Upgraded to React 19 and mui v7
+
+### Patch Changes
+
+- Updated dependencies
+  - @dialob/dashboard-material@2.0.0
+
 ## 0.1.3
 
 ### Patch Changes
