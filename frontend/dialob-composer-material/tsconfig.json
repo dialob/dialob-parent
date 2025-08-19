@@ -18,7 +18,10 @@
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {    
+      "react": ["./node_modules/@types/react"]  // this can be removed when everything gets upgraded to react 19
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
