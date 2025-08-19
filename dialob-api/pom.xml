@@ -26,7 +26,10 @@
   </parent>
   <artifactId>dialob-api</artifactId>
   <packaging>jar</packaging>
-
+  <properties>
+    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
   <build>
     <plugins>
       <plugin>
