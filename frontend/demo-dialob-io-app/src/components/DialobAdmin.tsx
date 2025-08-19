@@ -1,8 +1,7 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { IntlProvider } from "react-intl";
-import { DialobAdminView, messages, DialobAdminProps, DialobDashboardFetchProvider, DialobDashboardStateProvider, DialobAdminConfig } from '@dialob/dashboard-material';
-
+import { DialobAdminView, messages, DialobAdminProps, DialobDashboardFetchProvider, DialobDashboardStateProvider } from '@dialob/dashboard-material';
 
 import {
   sv as svLocale,
@@ -12,7 +11,7 @@ import {
   ms as msLocale
 } from 'date-fns/locale';
 
-const localeMap: { [key: string]: any } = {
+const localeMap: { [key: string]: Locale } = {
   en: enLocale,
   et: etLocale,
   fi: fiLocale,

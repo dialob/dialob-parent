@@ -15,7 +15,7 @@ import { DialobAdminProps } from "./types";
 import { DialobDashboardFetchProvider } from "./context";
 import { DialobDashboardStateProvider } from "./context/DialobDashboardStateContext";
 
-const localeMap: { [key: string]: any } = {
+const localeMap: { [key: string]: Locale } = {
   en: enLocale,
   et: etLocale,
   fi: fiLocale,
@@ -27,7 +27,7 @@ export const DialobAdmin: React.FC<DialobAdminProps> = ({ config, showNotificati
   return (
     <DialobDashboardFetchProvider>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={localeMap[config.language]}>
-        <IntlProvider locale={config.language || 'en'} messages={messages[config.language]}>
+        <IntlProvider locale={config.language} defaultLocale="en" messages={messages[config.language] ?? messages.en}>
           <DialobDashboardStateProvider config={config} showNotification={showNotification} onOpenForm={onOpenForm}>
             <DialobAdminView />
           </DialobDashboardStateProvider>

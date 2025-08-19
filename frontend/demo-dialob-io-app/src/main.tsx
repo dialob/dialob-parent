@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import App from './App';
 import { TenantProvider } from './context/TenantContext';
@@ -10,7 +10,7 @@ import messages from './intl';
 
 const renderDialobApp = (targetElement: HTMLElement, appConfig: AppConfig) => {
 
-  ReactDOM.createRoot(targetElement).render(
+  createRoot(targetElement).render(
     <React.StrictMode>
       <ThemeProvider theme={siteTheme}>
         <CssBaseline />

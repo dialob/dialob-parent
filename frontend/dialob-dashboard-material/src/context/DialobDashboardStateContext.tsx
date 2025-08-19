@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useMemo, useRef } from 'react';
-import type { DialobAdminConfig, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from '../types';
+import type { DialobAdminConfig, DialobForm, FormConfiguration, FormConfigurationFilters, FormTag, Metadata } from '../types';
 import { DEFAULT_CONFIGURATION_FILTERS, downloadAsJSON } from '../util';
 import { checkHttpResponse, checkSearchHttpResponse, handleRejection } from '../middleware';
 import { useAdminBackend } from '../backend';
@@ -38,13 +38,13 @@ export interface DashboardStateContextType {
   copyFormConfiguration: (formConfiguration: FormConfiguration) => void;
   addFormConfiguration: () => void;
   deleteFormConfiguration: (formConfiguration: FormConfiguration) => void;
-  handleChangeInput: (e: any) => void;
+  handleChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDateChange: (name: string, date: Date | null) => void;
   handleDateClear: (name: string) => void;
-  getDialobForm: (formName: string) => Promise<any | null>;
+  getDialobForm: (formName: string) => Promise<DialobForm | null>;
   downloadAllFormConfigurations: () => void;
-  fileInputRefJson: React.RefObject<HTMLInputElement>;
-  fileInputRefCsv: React.RefObject<HTMLInputElement>;
+  fileInputRefJson: React.RefObject<HTMLInputElement | null>;
+  fileInputRefCsv: React.RefObject<HTMLInputElement | null>;
   showNotification?: (message: string, severity: "success" | "error") => void;
   fetchFormConfigurations: () => Promise<void>;
   findLatestTag: (allTags: FormTag[] | undefined, formId: string) => FormTag | undefined;
@@ -87,7 +87,7 @@ const defaultContext: DashboardStateContextType = {
   handleChangeInput: () => { },
   handleDateChange: () => { },
   handleDateClear: () => { },
-  getDialobForm: async () => Promise.resolve(),
+  getDialobForm: async () => Promise.resolve(null),
   fileInputRefJson: { current: null },
   fileInputRefCsv: { current: null },
   showNotification: undefined,
@@ -176,16 +176,16 @@ export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProvider
 
   const sortedFormConfigurations = useMemo(() => {
     if (!sortConfig.field) return formConfigurations;
-    let aValue: any = undefined;
-    let bValue: any = undefined;
+    let aValue: string | Date | undefined;
+    let bValue: string | Date | undefined;
 
     return [...formConfigurations].sort((a, b) => {
       if (sortConfig.field === 'latestTagDate' || sortConfig.field === 'latestTagName') {
-        aValue = a[sortConfig.field as keyof FormConfiguration];
-        bValue = b[sortConfig.field as keyof FormConfiguration];
+        aValue = a[sortConfig.field];
+        bValue = b[sortConfig.field];
       } else {
-        aValue = a.metadata[sortConfig.field as keyof Metadata];
-        bValue = b.metadata[sortConfig.field as keyof Metadata];
+        aValue = a.metadata[sortConfig.field as keyof Metadata] as string | Date | undefined;
+        bValue = b.metadata[sortConfig.field as keyof Metadata] as string | Date | undefined;
       }
 
       if (sortConfig.field === 'latestTagDate' || sortConfig.field === 'lastSaved') {
@@ -239,7 +239,7 @@ export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProvider
     setDeleteModalOpen(true);
   }
 
-  const handleChangeInput = (e: any) => {
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(prevFilters => ({
       ...prevFilters,
       [e.target.name]: e.target.value
@@ -292,8 +292,11 @@ export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProvider
     fetchForms();
   };
 
-  const uploadJsonDialogForm = (e: any) => {
-    const file = e.target.files[0];
+  const uploadJsonDialogForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) 
+      return;
+    const file = files[0];
 
     const handleFileRead = async (event: ProgressEvent<FileReader>) => {
       const result = event.target?.result;
@@ -328,9 +331,15 @@ export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProvider
               showNotification(`JSON needs to contain an object, not an array.`, 'error');
             }
           }
-        } catch (error: any) {
-          if (showNotification) {
-            showNotification(`Error parsing JSON: ${error.message}`, 'error');
+        } catch (error) {
+          if (error instanceof Error) {
+            if (showNotification) {
+              showNotification(`Error parsing JSON: ${error.message}`, 'error');
+            }
+          } else {
+            if (showNotification) {
+              showNotification(`Error parsing JSON`, 'error');
+            }
           }
         }
       }
@@ -354,9 +363,11 @@ export const DialobDashboardStateProvider: React.FC<DialobDashboardStateProvider
     }
   };
 
-  const uploadCsvDialogForm = (e: any) => {
-    const file = e.target.files[0];
-
+  const uploadCsvDialogForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) 
+      return;
+    const file = files[0];
     const handleFileRead = async (event: ProgressEvent<FileReader>) => {
       const result = event.target?.result;
       let response;

@@ -1,5 +1,5 @@
 import * as backend from '.';
-import { DialobAdminConfig } from '../types';
+import { DialobAdminConfig, DialobForm } from '../types';
 import { getHeaders, useFetchAuth } from '../util';
 
 export const useAdminBackend = (config: DialobAdminConfig) => {
@@ -25,7 +25,7 @@ export const useAdminBackend = (config: DialobAdminConfig) => {
     return fetchAuth(url, { method: 'GET' }, config);
   };
 
-  const addAdminFormConfiguration = async (form: any) => {
+  const addAdminFormConfiguration = async (form: unknown) => {
     const url = backend.buildFormListOrCreateUrl(config);
     return fetchAuth(url, {
       method: 'POST',
@@ -46,8 +46,8 @@ export const useAdminBackend = (config: DialobAdminConfig) => {
     }, config);
   };
 
-  const editAdminFormConfiguration = async (form: any) => {
-    const url = backend.buildEditFormUrl(form.name, config);
+  const editAdminFormConfiguration = async (form: DialobForm) => {
+    const url = backend.buildEditFormUrl(form?.name || "", config);
     return fetchAuth(url, {
       method: 'PUT',
       body: JSON.stringify(form)

@@ -15,16 +15,16 @@ export default defineConfig([
   pluginReact.configs.flat.recommended,
   pluginReact.configs.flat['jsx-runtime'],
   {
-    rules: {
-      "react/prop-types": "off", // React 19+ uses TypeScript for prop types and this rule is not needed
-      "react/react-in-jsx-scope": "off", // React 19+ uses JSX Transform and this rule is not needed
-    },
-  },
-  {
     settings: {
       react: {
         version: 'detect'
       }
+    }
+  },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "react/prop-types": "off"
     }
   }
 ]);

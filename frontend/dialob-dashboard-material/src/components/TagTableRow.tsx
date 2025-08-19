@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, IconButton, Link, SvgIcon, TableCell, TableRow, Tooltip } from '@mui/material';
-import type { FormConfiguration, FormConfigurationFilters, DialobAdminConfig } from '../types';
+import type { FormConfiguration, FormConfigurationFilters, DialobAdminConfig, DialobForm } from '../types';
 import { useIntl } from 'react-intl';
 import { dateOptions, useFormTagOptions } from '../util';
 import { LabelChips } from '.';
@@ -14,7 +14,7 @@ export interface TagTableRowProps {
   deleteFormConfiguration: (formConfiguration: FormConfiguration) => void;
   copyFormConfiguration: (formConfiguration: FormConfiguration) => void;
   config: DialobAdminConfig;
-  getDialobForm: (formName: string) => Promise<any>;
+  getDialobForm: (formName: string) => Promise<DialobForm | null>;
   setFetchAgain: React.Dispatch<React.SetStateAction<boolean>>;
   onOpenForm?: (formId: string) => void;
 }
@@ -50,7 +50,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               href={`${config.dialobApiUrl}/composer/${formConfiguration.id}${tenantParam}`}
-              onClick={function (e) {
+              onClick={function (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
                 e.preventDefault();
                 if (onOpenForm) {
                   onOpenForm(formConfiguration.id);
@@ -72,7 +72,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
             <Box display="flex">
               <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.copy" })} placement='top-end' arrow>
                 <IconButton
-                  onClick={function (e) {
+                  onClick={function (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
                     e.preventDefault();
                     copyFormConfiguration(formConfiguration)
                   }}
@@ -82,7 +82,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               </Tooltip>
               <Tooltip title={intl.formatMessage({ id: "adminUI.table.tooltip.delete" })} placement='top-end' arrow>
                 <IconButton
-                  onClick={function (e) {
+                  onClick={function (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
                     e.preventDefault();
                     deleteFormConfiguration(formConfiguration);
                   }}
@@ -93,7 +93,7 @@ export const TagTableRow: React.FC<TagTableRowProps> = ({
               </Tooltip>
               <Tooltip title={intl.formatMessage({ id: "download" })} placement='top-end' arrow>
                 <IconButton
-                  onClick={function (e) {
+                  onClick={function (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
                     e.preventDefault();
                     downloadFormConfiguration();
                   }}

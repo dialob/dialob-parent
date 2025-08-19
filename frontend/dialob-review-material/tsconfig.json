@@ -30,7 +30,10 @@
     "typeRoots": [
       "index.d.ts",
       "node_modules/@types"
-    ]
+    ],
+    "paths": {    
+      "react": ["./node_modules/@types/react"]  // this can be removed when everything gets upgraded to react 19
+    }
   },
   "include": [
     "src"
