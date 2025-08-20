@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Value.Immutable
-public interface DateMinusDateOperator extends InfixOperator<Period> {
+public interface DateMinusDateOperator extends InfixOperator {
 
   @Override
   default Object eval(@NonNull EvalContext evalContext) {

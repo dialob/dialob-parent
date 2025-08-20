@@ -24,31 +24,31 @@ public class BooleanOperators implements Operators {
 
   public static final Constant<Boolean> TRUE = ImmutableConstant.<Boolean>builder().valueType(ValueType.BOOLEAN).value(Boolean.TRUE).build();
 
-  public InfixOperator<Boolean> eq(Expression lhs, Expression rhs) {
+  public InfixOperator eq(Expression lhs, Expression rhs) {
     return ImmutableEqOperator.<Boolean>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> ne(Expression lhs, Expression rhs) {
+  public InfixOperator ne(Expression lhs, Expression rhs) {
     return ImmutableNeOperator.<Boolean>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> le(Expression lhs, Expression rhs) {
+  public InfixOperator le(Expression lhs, Expression rhs) {
     return noRelationError();
   }
 
-  public InfixOperator<Boolean> lt(Expression lhs, Expression rhs) {
+  public InfixOperator lt(Expression lhs, Expression rhs) {
     return noRelationError();
   }
 
-  public InfixOperator<Boolean> ge(Expression lhs, Expression rhs) {
+  public InfixOperator ge(Expression lhs, Expression rhs) {
     return noRelationError();
   }
 
-  public InfixOperator<Boolean> gt(Expression lhs, Expression rhs) {
+  public InfixOperator gt(Expression lhs, Expression rhs) {
     return noRelationError();
   }
 
-  private static InfixOperator<Boolean> noRelationError() {
+  private static InfixOperator noRelationError() {
     throw new RuntimeException("No relation operator between boolean types");
   }
 

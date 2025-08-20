@@ -23,7 +23,7 @@ import org.immutables.value.Value;
 import java.util.Collection;
 
 @Value.Immutable
-public interface InOperator extends InfixOperator<Boolean> {
+public interface InOperator extends InfixOperator {
 
   @Override
   default Boolean eval(@NonNull EvalContext evalContext) {

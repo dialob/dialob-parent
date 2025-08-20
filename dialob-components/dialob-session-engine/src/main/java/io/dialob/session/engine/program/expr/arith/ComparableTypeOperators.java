@@ -19,27 +19,27 @@ import io.dialob.session.engine.program.model.Expression;
 
 public class ComparableTypeOperators<T extends Comparable<T>> implements Operators {
 
-  public InfixOperator<Boolean> eq(Expression lhs, Expression rhs) {
+  public InfixOperator eq(Expression lhs, Expression rhs) {
     return ImmutableEqOperator.<T>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> le(Expression lhs, Expression rhs) {
+  public InfixOperator le(Expression lhs, Expression rhs) {
     return ImmutableLeOperator.<T>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> ne(Expression lhs, Expression rhs) {
+  public InfixOperator ne(Expression lhs, Expression rhs) {
     return ImmutableNeOperator.<T>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> lt(Expression lhs, Expression rhs) {
+  public InfixOperator lt(Expression lhs, Expression rhs) {
     return ImmutableLtOperator.<T>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> ge(Expression lhs, Expression rhs) {
+  public InfixOperator ge(Expression lhs, Expression rhs) {
     return ImmutableGeOperator.<T>builder().lhs(lhs).rhs(rhs).build();
   }
 
-  public InfixOperator<Boolean> gt(Expression lhs, Expression rhs) {
+  public InfixOperator gt(Expression lhs, Expression rhs) {
     return ImmutableGtOperator.<T>builder().lhs(lhs).rhs(rhs).build();
   }
 
