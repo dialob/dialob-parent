@@ -29,11 +29,11 @@ public interface IsEmptyOperator extends UnaryOperator {
     if (value.getClass().isArray()) {
       return ((Object[]) value).length == 0;
     }
-    if (value instanceof Collection) {
-      return ((Collection<?>) value).isEmpty();
+    if (value instanceof Collection<?> collection) {
+      return collection.isEmpty();
     }
-    if (value instanceof String) {
-      return ((String) value).isEmpty();
+    if (value instanceof String string) {
+      return string.isEmpty();
     }
     return null;
   }

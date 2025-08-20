@@ -26,13 +26,12 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class IntersectionOperatorTest {
 
   @Test
-  public void testIntersection() {
+  void testIntersection() {
     EvalContext context = Mockito.mock();
     Expression lhs = Mockito.mock();
     Expression rhs = Mockito.mock();
@@ -44,7 +43,7 @@ class IntersectionOperatorTest {
       ValueSetState.Entry.of("c", "Label C")
     )).get();
 
-    when(context.getValueSetState(eq(ImmutableValueSetId.of("vs1"))))
+    when(context.getValueSetState(ImmutableValueSetId.of("vs1")))
       .thenReturn(Optional.of(vss));
 
     IntersectionOperator valueSetToListOperator = ImmutableIntersectionOperator.builder()
@@ -52,49 +51,49 @@ class IntersectionOperatorTest {
       .rhs(rhs)
       .build();
 
-    when(lhs.eval(eq(context))).thenReturn(null);
-    when(rhs.eval(eq(context))).thenReturn(null);
+    when(lhs.eval(context)).thenReturn(null);
+    when(rhs.eval(context)).thenReturn(null);
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(List.of());
-    when(rhs.eval(eq(context))).thenReturn(null);
+    when(lhs.eval(context)).thenReturn(List.of());
+    when(rhs.eval(context)).thenReturn(null);
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(null);
-    when(rhs.eval(eq(context))).thenReturn(List.of());
+    when(lhs.eval(context)).thenReturn(null);
+    when(rhs.eval(context)).thenReturn(List.of());
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(List.of());
-    when(rhs.eval(eq(context))).thenReturn(List.of());
+    when(lhs.eval(context)).thenReturn(List.of());
+    when(rhs.eval(context)).thenReturn(List.of());
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(List.of("a"));
-    when(rhs.eval(eq(context))).thenReturn(List.of());
+    when(lhs.eval(context)).thenReturn(List.of("a"));
+    when(rhs.eval(context)).thenReturn(List.of());
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(List.of());
-    when(rhs.eval(eq(context))).thenReturn(List.of("a"));
+    when(lhs.eval(context)).thenReturn(List.of());
+    when(rhs.eval(context)).thenReturn(List.of("a"));
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(List.of("b"));
-    when(rhs.eval(eq(context))).thenReturn(List.of("a"));
+    when(lhs.eval(context)).thenReturn(List.of("b"));
+    when(rhs.eval(context)).thenReturn(List.of("a"));
     result = valueSetToListOperator.eval(context);
     Assertions.assertTrue(((List<?>) result).isEmpty());
 
-    when(lhs.eval(eq(context))).thenReturn(List.of("a"));
-    when(rhs.eval(eq(context))).thenReturn(List.of("a"));
+    when(lhs.eval(context)).thenReturn(List.of("a"));
+    when(rhs.eval(context)).thenReturn(List.of("a"));
     result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(
       List.of("a"), (Iterable<?>) result);
 
-    when(lhs.eval(eq(context))).thenReturn(List.of("a", "b"));
-    when(rhs.eval(eq(context))).thenReturn(List.of("b", "c"));
+    when(lhs.eval(context)).thenReturn(List.of("a", "b"));
+    when(rhs.eval(context)).thenReturn(List.of("b", "c"));
     result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(
       List.of("b"), (Iterable<?>) result);

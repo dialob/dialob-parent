@@ -1624,7 +1624,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  void testMultiChoiceInvalidAnswer() throws Exception {
+  void testMultiChoiceInvalidAnswer() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()

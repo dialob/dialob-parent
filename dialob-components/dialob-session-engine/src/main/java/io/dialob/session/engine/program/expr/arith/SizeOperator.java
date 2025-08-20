@@ -29,11 +29,11 @@ public interface SizeOperator extends UnaryOperator {
     if (value.getClass().isArray()) {
       return ((Object[]) value).length;
     }
-    if (value instanceof Collection) {
-      return ((Collection<?>) value).size();
+    if (value instanceof Collection<?> collection) {
+      return collection.size();
     }
-    if (value instanceof String) {
-      return ((String) value).length();
+    if (value instanceof String string) {
+      return string.length();
     }
     return null;
   }

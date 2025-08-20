@@ -25,7 +25,6 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class ValueSetToListOperatorTest {
@@ -48,7 +47,7 @@ class ValueSetToListOperatorTest {
       ValueSetState.Entry.of("b", "Label B"),
       ValueSetState.Entry.of("c", "Label C")
     )).get();
-    when(context.getValueSetState(eq(ImmutableValueSetId.of("vs1"))))
+    when(context.getValueSetState(ImmutableValueSetId.of("vs1")))
       .thenReturn(Optional.of(vss));
 
     ValueSetToListOperator valueSetToListOperator = ImmutableValueSetToListOperator.builder()
