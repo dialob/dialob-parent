@@ -39,6 +39,9 @@ class SizeOperatorTest {
     when(expression.eval(eq(context))).thenReturn(null);
     Assertions.assertNull(valueSetToListOperator.eval(context));
 
+    when(expression.eval(eq(context))).thenReturn(1);
+    Assertions.assertNull(valueSetToListOperator.eval(context));
+
     when(expression.eval(eq(context))).thenReturn("");
     Assertions.assertEquals(0, (Integer) valueSetToListOperator.eval(context));
 
