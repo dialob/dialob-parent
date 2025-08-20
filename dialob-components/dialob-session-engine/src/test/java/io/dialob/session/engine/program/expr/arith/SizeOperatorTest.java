@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 class SizeOperatorTest {
 
   @Test
-  public void testSizeOperator() {
+  void testSizeOperator() {
     EvalContext context = Mockito.mock();
     Expression expression = Mockito.mock();
     SizeOperator valueSetToListOperator = ImmutableSizeOperator.builder()
