@@ -23,7 +23,6 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class IsEmptyOperatorTest {
@@ -36,28 +35,28 @@ class IsEmptyOperatorTest {
       .expression(expression)
       .build();
 
-    when(expression.eval(eq(context))).thenReturn(null);
+    when(expression.eval(context)).thenReturn(null);
     Assertions.assertNull(valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(1);
+    when(expression.eval(context)).thenReturn(1);
     Assertions.assertNull(valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn("");
+    when(expression.eval(context)).thenReturn("");
     Assertions.assertTrue((Boolean) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn("123");
+    when(expression.eval(context)).thenReturn("123");
     Assertions.assertFalse((Boolean) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(List.of("a", "b"));
+    when(expression.eval(context)).thenReturn(List.of("a", "b"));
     Assertions.assertFalse((Boolean) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(List.of());
+    when(expression.eval(context)).thenReturn(List.of());
     Assertions.assertTrue((Boolean) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(new Object[0]);
+    when(expression.eval(context)).thenReturn(new Object[0]);
     Assertions.assertTrue((Boolean) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(new Object[2]);
+    when(expression.eval(context)).thenReturn(new Object[2]);
     Assertions.assertFalse((Boolean) valueSetToListOperator.eval(context));
 
   }

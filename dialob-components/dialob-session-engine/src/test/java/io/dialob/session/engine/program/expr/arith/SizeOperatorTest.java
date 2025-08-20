@@ -36,28 +36,28 @@ class SizeOperatorTest {
       .expression(expression)
       .build();
 
-    when(expression.eval(eq(context))).thenReturn(null);
+    when(expression.eval(context)).thenReturn(null);
     Assertions.assertNull(valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(1);
+    when(expression.eval(context)).thenReturn(1);
     Assertions.assertNull(valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn("");
+    when(expression.eval(context)).thenReturn("");
     Assertions.assertEquals(0, (Integer) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn("123");
+    when(expression.eval(context)).thenReturn("123");
     Assertions.assertEquals(3, (Integer) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(List.of("a", "b"));
+    when(expression.eval(context)).thenReturn(List.of("a", "b"));
     Assertions.assertEquals(2, (Integer) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(List.of());
+    when(expression.eval(context)).thenReturn(List.of());
     Assertions.assertEquals(0, (Integer) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(new Object[0]);
+    when(expression.eval(context)).thenReturn(new Object[0]);
     Assertions.assertEquals(0, (Integer) valueSetToListOperator.eval(context));
 
-    when(expression.eval(eq(context))).thenReturn(new Object[2]);
+    when(expression.eval(context)).thenReturn(new Object[2]);
     Assertions.assertEquals(2, (Integer) valueSetToListOperator.eval(context));
 
   }
