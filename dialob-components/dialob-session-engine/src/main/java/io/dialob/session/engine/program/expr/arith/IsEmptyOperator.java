@@ -17,32 +17,31 @@ package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
 import java.util.Collection;
-import java.util.Collections;
 
 @Value.Immutable
-public interface IntersectionOperator extends InfixOperator {
+public interface IsEmptyOperator extends UnaryOperator {
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
-    var lhs = getLhs().eval(evalContext);
-    var rhs = getRhs().eval(evalContext);
-    if (lhs instanceof Collection<?> lhc
-      && rhs instanceof Collection<?> rhc
-      && !lhc.isEmpty()
-      && !rhc.isEmpty()) {
-      return rhc.stream().filter(lhc::contains).toList();
+  default Object apply(@NonNull Object value) {
+    if (value.getClass().isArray()) {
+      return ((Object[]) value).length == 0;
     }
-    return Collections.emptyList();
+    if (value instanceof Collection) {
+      return ((Collection<?>) value).isEmpty();
+    }
+    if (value instanceof String) {
+      return ((String) value).isEmpty();
+    }
+    return null;
   }
 
   @NonNull
   @Override
   default ValueType getValueType() {
-    return ValueType.arrayOf(ValueType.STRING);
+    return ValueType.BOOLEAN;
   }
 
 }

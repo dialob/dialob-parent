@@ -60,6 +60,7 @@ public final class Constants {
   public static final String MULTICHOICE = "multichoice";
 
   public static final String ERROR_CODE_REQUIRED = "REQUIRED";
+  public static final String ERROR_INVALID_SELECTION = "ERROR_INVALID_SELECTION";
 
   public static final String VALID_ID_PATTERN = "^\\p{Alpha}[_\\p{Alnum}]*$";
   public static final Pattern VALID_ID_PATTERN_COMPILED = Pattern.compile(VALID_ID_PATTERN);

@@ -45,7 +45,7 @@ public interface CountArrayLengthOperator extends Expression {
         return BigInteger.valueOf(((Object[]) value).length);
       }
       if (value instanceof Collection) {
-        return BigInteger.valueOf(((Collection) value).size());
+        return BigInteger.valueOf(((Collection<?>) value).size());
       }
       return BigInteger.ZERO;
     }).orElse(BigInteger.ZERO);
