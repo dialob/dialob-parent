@@ -16,51 +16,45 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
-import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.command.EventMatchers;
+import io.dialob.session.engine.session.model.ValueSetId;
+import io.dialob.session.engine.session.model.ValueSetState;
 import org.immutables.value.Value;
 
-import java.math.BigInteger;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
-import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
-
 @Value.Immutable
-public interface CountArrayLengthOperator extends Expression {
+public interface ValueSetToListOperator extends Expression {
 
-  ItemId getItemId();
+  @Value.Parameter
+  ValueSetId getValueSetId();
 
   @Override
-  default BigInteger eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(itemState -> {
-      Object value = itemState.getValue();
-      if (value == null) {
-        return BigInteger.ZERO;
-      }
-      if (value.getClass().isArray()) {
-        return BigInteger.valueOf(((Object[]) value).length);
-      }
-      if (value instanceof Collection) {
-        return BigInteger.valueOf(((Collection<?>) value).size());
-      }
-      return BigInteger.ZERO;
-    }).orElse(BigInteger.ZERO);
+  @Nullable
+  default Object eval(@NonNull EvalContext context) {
+    return context.getValueSetState(getValueSetId()).map(valueSetState -> valueSetState
+      .getEntries()
+      .stream()
+      .map(ValueSetState.Entry::getId)
+      .toList()
+    ).orElseGet(Collections::emptyList);
   }
 
-  @NonNull
   @Override
+  @NonNull
   default ValueType getValueType() {
-    return ValueType.INTEGER;
+    return ValueType.arrayOf(ValueType.STRING);
   }
 
-  @NonNull
   @Override
+  @NonNull
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenValueUpdated(getItemId()));
+    return Set.of(EventMatchers.whenValueSetUpdated(getValueSetId()));
   }
-
 }

@@ -1623,6 +1623,111 @@ class DialobQuestionnaireSessionServiceTest {
       .apply();
   }
 
+  @Test
+  void testMultiChoiceInvalidAnswer() {
+    fillForm(ImmutableForm.builder()
+        .id("test")
+        .metadata(ImmutableFormMetadata.builder()
+          .label("test")
+          .build())
+        .putData("questionnaire", ImmutableFormItem.builder()
+          .id("questionnaire")
+          .type("questionnaire")
+          .addItems("g")
+          .build())
+        .putData("g", ImmutableFormItem.builder()
+          .id("g")
+          .type("group")
+          .addItems("mc")
+          .addItems("text1")
+          .build())
+        .putData("text1", ImmutableFormItem.builder()
+          .id("text1")
+          .type("text")
+          .putLabel("en", "?")
+          .build())
+        .putData("mc", ImmutableFormItem.builder()
+          .id("mc")
+          .type("multichoice")
+          .valueSetId("vs")
+          .build())
+        .addValueSets(ImmutableFormValueSet.builder()
+          .id("vs")
+          .addEntries(
+            ImmutableFormValueSetEntry.builder()
+              .id("1")
+              .putLabel("en", "one")
+              .build(),
+            ImmutableFormValueSetEntry.builder()
+              .id("2")
+              .putLabel("en", "two")
+              .build(),
+            ImmutableFormValueSetEntry.builder()
+              .id("3")
+              .putLabel("en", "three")
+              .build(),
+            ImmutableFormValueSetEntry.builder()
+              .id("4")
+              .putLabel("en", "four")
+              .build(),
+            ImmutableFormValueSetEntry.builder()
+              .id("5")
+              .putLabel("en", "three")
+              .when("text1 = 'ok'")
+              .build()
+          )
+          .build())
+        .build(),
+      ImmutableQuestionnaire.builder()
+        .metadata(ImmutableQuestionnaireMetadata.builder()
+          .formId("test")
+          .build())
+        .build())
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "error.id", "error.code").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", null, null),
+            tuple(ITEM, null, "mc", null, null, null),
+            tuple(ITEM, null, "text1", "?", null, null),
+            tuple(ITEM, null, "g", null, null, null),
+            tuple(VALUE_SET, null, null, null, null, null)
+          );
+      })
+      .answer("mc", List.of("1"))
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+        ))
+      .answer("mc", Arrays.asList("1", "2", "4", "5"))
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "error.code").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "questionnaire", "test", null, null),
+          tuple(ERROR, null, null, null, "mc", "ERROR_INVALID_SELECTION")
+        ))
+      .answer("text1", "ok")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "error.code").containsExactlyInAnyOrder(
+          tuple(REMOVE_ERROR, null, null, null, "mc", "ERROR_INVALID_SELECTION"),
+          tuple(VALUE_SET, null, null, null, null, null),
+          tuple(ITEM, null, "questionnaire", "test", null, null)
+        ))
+      .answer("text1", "")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id", "error.code").containsExactlyInAnyOrder(
+          tuple(ERROR, null, null, null, "mc", "ERROR_INVALID_SELECTION"),
+          tuple(VALUE_SET, null, null, null, null, null),
+          tuple(ITEM, null, "questionnaire", "test", null, null)
+        ))
+      .answer("mc", List.of())
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+          tuple(REMOVE_ERROR, null, null, null),
+          tuple(ITEM, null, "questionnaire", "test")
+        ))
+      .apply();
+  }
+
 
   @Test
   void issue284() throws Exception {

@@ -23,17 +23,17 @@ import io.dialob.session.engine.session.model.ItemId;
 
 public interface Operators {
 
-  InfixOperator<Boolean> eq(Expression lhs, Expression rhs);
+  InfixOperator eq(Expression lhs, Expression rhs);
 
-  InfixOperator<Boolean> ne(Expression lhs, Expression rhs);
+  InfixOperator ne(Expression lhs, Expression rhs);
 
-  InfixOperator<Boolean> le(Expression lhs, Expression rhs);
+  InfixOperator le(Expression lhs, Expression rhs);
 
-  InfixOperator<Boolean> lt(Expression lhs, Expression rhs);
+  InfixOperator lt(Expression lhs, Expression rhs);
 
-  InfixOperator<Boolean> ge(Expression lhs, Expression rhs);
+  InfixOperator ge(Expression lhs, Expression rhs);
 
-  InfixOperator<Boolean> gt(Expression lhs, Expression rhs);
+  InfixOperator gt(Expression lhs, Expression rhs);
 
   static Expression and(@NonNull Expression ...expressions) {
     return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.AND).build();
