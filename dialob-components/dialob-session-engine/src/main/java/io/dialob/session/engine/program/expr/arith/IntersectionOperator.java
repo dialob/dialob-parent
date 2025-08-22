@@ -21,27 +21,28 @@ import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Value.Immutable
-public interface InOperator extends InfixOperator {
+public interface IntersectionOperator extends InfixOperator {
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    Object item = getLhs().eval(evalContext);
-    if (item == null) {
-      return false;
+  default Object eval(@NonNull EvalContext evalContext) {
+    var lhs = getLhs().eval(evalContext);
+    var rhs = getRhs().eval(evalContext);
+    if (lhs instanceof Collection<?> lhc
+      && rhs instanceof Collection<?> rhc
+      && !lhc.isEmpty()
+      && !rhc.isEmpty()) {
+      return rhc.stream().filter(lhc::contains).toList();
     }
-    Object targetGroup = getRhs().eval(evalContext);
-    if (targetGroup instanceof Collection) {
-      return ((Collection)targetGroup).contains(item);
-    }
-    return item.equals(targetGroup);
+    return Collections.emptyList();
   }
 
   @NonNull
   @Override
   default ValueType getValueType() {
-    return ValueType.BOOLEAN;
+    return ValueType.arrayOf(ValueType.STRING);
   }
 
 }

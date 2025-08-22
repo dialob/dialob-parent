@@ -17,31 +17,31 @@ package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
 import java.util.Collection;
 
 @Value.Immutable
-public interface InOperator extends InfixOperator {
+public interface SizeOperator extends UnaryOperator {
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    Object item = getLhs().eval(evalContext);
-    if (item == null) {
-      return false;
+  default Object apply(@NonNull Object value) {
+    if (value.getClass().isArray()) {
+      return ((Object[]) value).length;
     }
-    Object targetGroup = getRhs().eval(evalContext);
-    if (targetGroup instanceof Collection) {
-      return ((Collection)targetGroup).contains(item);
+    if (value instanceof Collection<?> collection) {
+      return collection.size();
     }
-    return item.equals(targetGroup);
+    if (value instanceof String string) {
+      return string.length();
+    }
+    return null;
   }
 
   @NonNull
   @Override
   default ValueType getValueType() {
-    return ValueType.BOOLEAN;
+    return ValueType.INTEGER;
   }
 
 }

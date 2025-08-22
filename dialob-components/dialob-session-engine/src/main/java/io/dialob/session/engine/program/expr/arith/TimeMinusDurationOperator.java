@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 @Value.Immutable
-public interface TimeMinusDurationOperator extends InfixOperator<LocalTime> {
+public interface TimeMinusDurationOperator extends InfixOperator {
 
   @Override
   default Object eval(@NonNull EvalContext evalContext) {

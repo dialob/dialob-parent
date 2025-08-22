@@ -21,7 +21,7 @@ import io.dialob.session.engine.program.EvalContext;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface MatchesOperator extends InfixOperator<Boolean> {
+public interface MatchesOperator extends InfixOperator {
 
   @Override
   default Boolean eval(@NonNull EvalContext evalContext) {

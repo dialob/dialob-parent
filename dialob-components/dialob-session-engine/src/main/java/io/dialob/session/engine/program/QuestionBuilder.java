@@ -26,6 +26,7 @@ import io.dialob.session.engine.program.model.ImmutableError;
 import io.dialob.session.engine.program.model.ImmutableFormItem;
 import io.dialob.session.engine.program.model.ImmutableLabel;
 import io.dialob.session.engine.session.command.EventMatchers;
+import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemRef;
 import io.dialob.session.engine.spi.AliasesProvider;
@@ -45,6 +46,12 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     .putLabels("fi", "T\u00E4yt\u00E4 puuttuva tieto.")
     .putLabels("en", "Fill in the missing information.")
     .putLabels("sv", "Fyll i uppgift som saknas.")
+    .build();
+
+  public static final ImmutableLabel INVALID_SELECTION_LABEL = ImmutableLabel.builder()
+    .putLabels("fi", "Tarkista valinta.")
+    .putLabels("en", "Check the selection.")
+    .putLabels("sv", "Kontrollera valet.")
     .build();
 
   private Object defaultValue;
@@ -123,14 +130,15 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     final MutableObject<Expression> disabledExpression = new MutableObject<>(BooleanOperators.TRUE);
     hoistingGroup.ifPresent(hoistingGroupBuilder -> disabledExpression.setValue(ImmutableIsDisabledOperator.builder().itemId(hoistingGroupBuilder.getId()).build()));
 
-
-
     if (isRequiredDefined()) {
       createRequiredError(this::addError);
     }
+
+    createNotValidSelectionError(this::addError);
+
     LocalizedLabelOperator labelOperator = createLabelOperator(label);
     LocalizedLabelOperator descriptionOperator = createLabelOperator(description);
-    disabledExpression.setValue(legacyNoteVisibility(disabledExpression.getValue(), labelOperator));
+    disabledExpression.setValue(legacyNoteVisibility(disabledExpression.get(), labelOperator));
 
 
     hoistingGroup.ifPresent(hoistingGroupBuilder -> {
@@ -186,8 +194,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
   }
 
   private void createRequiredError(Consumer<io.dialob.session.engine.program.model.Error> errorConsumer) {
-    Expression expression;
-    expression = not(isAnswered(getId()));
+    var expression = not(isAnswered(getId()));
     if (requiredWhen != null) {
       // Should not return null when requiredWhen is not blank
       expression = and(expression, isRequired(getId()));
@@ -199,6 +206,41 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       .validationExpression(Operators.and(ImmutableIsActiveOperator.builder().itemId(getId()).build(), expression))
       .disabledExpression(ImmutableIsDisabledOperator.builder().itemId(getId()).build())
       .label(createLabelOperator(REQUIRED_LABEL)).build());
+  }
+
+  private void createNotValidSelectionError(Consumer<io.dialob.session.engine.program.model.Error> errorConsumer) {
+    if (valueSetId == null) {
+      return;
+    }
+    Expression check;
+    if (Constants.MULTICHOICE.equals(type)) {
+      check = ImmutableEqOperator.builder()
+        .lhs(ImmutableSizeOperator.builder()
+          .expression(ImmutableIntersectionOperator.builder()
+            .lhs(Operators.var(getId(), ValueType.STRING))
+            .rhs(ImmutableValueSetToListOperator.of(ImmutableValueSetId.of(valueSetId)))
+            .build()).build())
+        .rhs(ImmutableSizeOperator.builder()
+          .expression(Operators.var(getId(), ValueType.STRING)).build())
+        .build();
+    } else {
+      check = ImmutableInOperator.builder()
+        .lhs(var(getId(), ValueType.STRING))
+        .rhs(ImmutableValueSetToListOperator.of(ImmutableValueSetId.of(valueSetId)))
+        .build();
+    }
+    var expression = and(
+      ImmutableIsActiveOperator.builder().itemId(getId()).build(),
+      isAnswered(getId()),
+      not(check)
+    );
+    errorConsumer.accept(ImmutableError.builder()
+      .itemId(getId())
+      .code(Constants.ERROR_INVALID_SELECTION)
+      .isPrototype(getId().isPartial())
+      .validationExpression(expression)
+      .disabledExpression(ImmutableIsDisabledOperator.builder().itemId(getId()).build())
+      .label(createLabelOperator(INVALID_SELECTION_LABEL)).build());
   }
 
   @Override
