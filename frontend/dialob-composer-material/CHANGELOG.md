@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.10
+
+### Patch Changes
+
+- fix for removing default value
+
 ## 0.0.9
 
 ### Patch Changes
