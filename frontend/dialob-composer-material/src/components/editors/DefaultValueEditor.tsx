@@ -18,7 +18,7 @@ const DefaultValueEditor: React.FC = () => {
   }
 
   const handleUpdate = (value: string) => {
-    if (value != '' && value !== item.defaultValue) {
+    if (value !== item.defaultValue) {
       updateItem(item.id, 'defaultValue', value);
     }
   }
