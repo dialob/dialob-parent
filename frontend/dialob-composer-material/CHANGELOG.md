@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.11
+
+### Patch Changes
+
+- fixed issues with duplicating items
+
 ## 0.0.10
 
 ### Patch Changes
