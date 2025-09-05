@@ -29,6 +29,7 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
 const SaveItemButton: React.FC = () => {
   const { form, applyItemChanges } = useComposer();
   const { savingState } = useSave();
+  const { editor } = useEditor();
 
   const hasChanges = React.useMemo(() => {
     return (savingState.item && (JSON.stringify(savingState.item) !== JSON.stringify(form.data[savingState.item.id]))) ||
@@ -38,7 +39,9 @@ const SaveItemButton: React.FC = () => {
   }, [savingState, form.data, form.valueSets, form.metadata.composer?.globalValueSets]);
 
   const handleSave = () => {
-    if (savingState.item) {
+    if (editor.activeItem && savingState.item && editor.activeItem.id !== savingState.item.id) {
+      console.warn('Active item ID has changed, not applying item changes to avoid inconsistencies.');
+    } else if (savingState.item) {
       applyItemChanges(savingState);
     }
   }
