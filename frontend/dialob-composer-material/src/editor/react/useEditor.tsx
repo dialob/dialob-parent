@@ -46,6 +46,10 @@ export const useEditor = () => {
     dispatch({ type: 'setActiveVariableTab', tab });
   }
 
+  const setConfirmationActiveItem = (item?: DialobItem): void => {
+    dispatch({ type: 'setConfirmationActiveItem', item });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -58,5 +62,6 @@ export const useEditor = () => {
     setHighlightedItem,
     setActiveList,
     setActiveVariableTab,
+    setConfirmationActiveItem,
   };
 }
