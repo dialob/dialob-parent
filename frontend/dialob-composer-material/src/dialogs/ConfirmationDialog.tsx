@@ -12,7 +12,7 @@ const ConfirmationDialog: React.FC = () => {
   const { duplicateItem } = useBackend();
   const { editor, setConfirmationDialogType, setErrors } = useEditor();
   const type = editor.confirmationDialogType;
-  const activeItem = editor.activeItem;
+  const activeItem = editor.confirmationActiveItem;
   const [loading, setLoading] = React.useState(false);
 
   if (type === undefined || activeItem === undefined) {

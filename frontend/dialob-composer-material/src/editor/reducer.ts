@@ -43,6 +43,10 @@ const setActiveVariableTab = (state: EditorState, tab?: VariableTabType): void =
   state.activeVariableTab = tab;
 }
 
+const setConfirmationActiveItem = (state: EditorState, item?: DialobItem): void => {
+  state.confirmationActiveItem = item;
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -65,6 +69,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setActiveList(state, action.listId);
     } else if (action.type === 'setActiveVariableTab') {
       setActiveVariableTab(state, action.tab);
+    } else if (action.type === 'setConfirmationActiveItem') {
+      setConfirmationActiveItem(state, action.item);
     }
   });
   return newState;

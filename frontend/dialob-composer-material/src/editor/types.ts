@@ -22,6 +22,7 @@ export type EditorState = {
   activeFormLanguage: string;
   errors: EditorError[];
   activeItem?: DialobItem;
+  confirmationActiveItem?: DialobItem;
   confirmationDialogType?: ConfirmationDialogType;
   itemOptionsActiveTab?: OptionsTabType;
   highlightedItem?: DialobItem;

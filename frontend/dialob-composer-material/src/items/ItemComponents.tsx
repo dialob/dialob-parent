@@ -242,7 +242,7 @@ export const ConversionMenu: React.FC<{ item?: DialobItem, inDialog?: boolean }>
 export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?: boolean }> = ({ item, isPage, light }) => {
   const { form, addItem } = useComposer();
   const { config } = useBackend();
-  const { setConfirmationDialogType, setActiveItem, setItemOptionsActiveTab, setHighlightedItem } = useEditor();
+  const { setConfirmationDialogType, setActiveItem, setConfirmationActiveItem, setItemOptionsActiveTab, setHighlightedItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -292,14 +292,14 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     handleClose(e, 1);
-    setActiveItem(item);
+    setConfirmationActiveItem(item);
     setConfirmationDialogType('delete');
   }
 
   const handleDuplicate = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     handleClose(e, 1);
-    setActiveItem(item);
+    setConfirmationActiveItem(item);
     setConfirmationDialogType('duplicate');
   }
 
