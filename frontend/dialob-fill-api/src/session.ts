@@ -1,17 +1,17 @@
 import { produce } from 'immer';
-import { Action } from './actions';
-import { DialobError } from './error';
+import { Action, AnswerAction } from './actions';
+
 import { updateState, initState, SessionError, SessionItem, SessionState, SessionValueSet } from './state';
-import { onSyncFn, SyncQueue } from './sync-queue';
+import { SyncQueue } from './sync-queue';
+import type { onSyncFn, onErrorFn, onUpdateFn, ListenerFunction, Event } from './sync-queue';
 import { Transport } from './transport';
 
-type Event = 'update' | 'sync' | 'error';
-export type onUpdateFn = () => void;
-export type onErrorFn = (type: 'SYNC' | 'SYNC-REPEATED', error: DialobError) => void;
+import type { ValueType } from './actions';
 
 export interface SessionOptions {
   syncWait?: number;
 }
+
 
 export class Session {
   private state: SessionState;
@@ -63,7 +63,7 @@ export class Session {
     return this.state.locale;
   }
 
-  public getVariable(id: string): any {
+  public getVariable(id: string): ValueType | undefined {
     return this.state.variables[id];
   }
 
@@ -82,7 +82,7 @@ export class Session {
   }
 
   /** CONVENIENCE METHODS */
-  public setAnswer(itemId: string, answer: any) {
+  public setAnswer(itemId: string, answer: AnswerAction['answer']) {
     this.queueAction({
       type: 'ANSWER',
       answer,
@@ -128,22 +128,22 @@ export class Session {
   public on(type: 'update', listener: onUpdateFn): void;
   public on(type: 'sync', listener: onSyncFn): void;
   public on(type: 'error', listener: onErrorFn): void;
-  public on(type: Event, listener: Function): void {
+  public on(type: Event, listener: ListenerFunction): void {
     if (type === 'sync') {
-      this.syncQueue.on('sync', listener as any);
+      this.syncQueue.on('sync', listener as onSyncFn);
     } else {
       if (type === 'error') {
-        this.syncQueue.on(type, listener as any);
+        this.syncQueue.on(type, listener as onErrorFn);
       }
 
       this.listeners = produce(this.listeners, listeners => {
-        const target: Function[] = listeners[type];
+        const target: ListenerFunction[] = listeners[type];
         target.push(listener);
       });
     }
   }
 
-  public removeListener(type: Event, listener: Function): any {
+  public removeListener(type: Event, listener: ListenerFunction): void {
     if (type === 'sync') {
       this.syncQueue.removeListener(type, listener);
     } else {
@@ -152,7 +152,7 @@ export class Session {
       }
 
       this.listeners = produce(this.listeners, listeners => {
-        const target: Function[] = listeners[type];
+        const target: ListenerFunction[] = listeners[type];
         const idx = target.findIndex(t => t === listener);
         target.splice(idx, 1);
       });

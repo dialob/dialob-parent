@@ -30,6 +30,7 @@ export interface RowProps {
   children?: (itemId: string) => React.ReactNode;
 };
 export const Row: React.FC<RowProps> = ({ row, children }) => {
+  const { props } = row;
   const session = useFillSession();
   const { deleteRow } = useFillActions();
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
@@ -40,8 +41,14 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
   };
   let responsiveProps = {};
   const backgroundColor = row.props?.color;
-  const spacesTop = parseInt(row.props?.spacesTop ?? undefined);
-  const spacesBottom = parseInt(row.props?.spacesBottom ?? undefined);
+  const [
+    spacesTop,
+    spacesBottom
+  ] = props ? [
+    props.spacesTop,
+    props.spacesBottom
+  ].map(p => p ? parseInt(p) : undefined) : [];
+
   const paperSx = {
     p: 1,
     ...(backgroundColor && { backgroundColor: (theme: Theme) => theme.palette.background.default }),
@@ -51,9 +58,8 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
 
   const itemIds = row?.items ? row.items.filter(itemId => session.getItem(itemId)) : [];
 
-  let columns = rowGroupContext.rowGroup?.props?.columns || 1;
-  columns = columns > 4 ? 4 : columns;
-  const lg = columns > 1 ? Math.floor(12 / columns) : undefined;
+  const columns = Math.min(parseInt(rowGroupContext.rowGroup?.props?.columns ?? '1'), 4);
+  const lg = Math.floor(12 / columns);
 
   responsiveProps = {
     xs: 12,
