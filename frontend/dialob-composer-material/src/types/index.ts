@@ -106,24 +106,26 @@ export type ComposerState = {
   };
   variables?: (Variable | ContextVariable)[];
   valueSets?: ValueSet[];
-  metadata: {
-    label?: string;
-    labels?: string[];
-    showDisabled?: boolean;
-    questionClientVisibility?: VisibilityType;
-    answersRequiredByDefault?: boolean;
-    creator?: string;
-    tenantId?: string;
-    savedBy?: string;
-    languages?: string[];
-    valid?: boolean;
-    created?: string;
-    lastSaved?: string;
-    composer?: ComposerMetadata;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [prop: string]: any;
-  }
+  metadata: FormMetadata;
 };
+
+export type FormMetadata = {
+  label?: string;
+  labels?: string[];
+  showDisabled?: boolean;
+  questionClientVisibility?: VisibilityType;
+  answersRequiredByDefault?: boolean;
+  creator?: string;
+  tenantId?: string;
+  savedBy?: string;
+  languages?: string[];
+  valid?: boolean;
+  created?: string;
+  lastSaved?: string;
+  composer?: ComposerMetadata;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [prop: string]: any;
+}
 
 export const INIT_STATE: ComposerState = {
   _id: '',

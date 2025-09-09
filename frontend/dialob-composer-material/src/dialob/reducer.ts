@@ -624,6 +624,15 @@ const applyVariableChanges = (state: ComposerState, newState: SavingState): void
   state.variables = newState.variables;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const applyFormChanges = (state: ComposerState, newState: SavingState): void => {
+  // Apply changes from the SavingContext - used to apply changes made in the FormOptionsDialog
+  if (!newState.formMetadata) {
+    return;
+  }
+  state.metadata = newState.formMetadata;
+}
+
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
   if (state._tag && action.type !== 'setForm') {
     // if a version tag is loaded, then it's in read-only mode
@@ -710,6 +719,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       applyListChanges(state, action.newState);
     } else if (action.type === 'applyVariableChanges') {
       applyVariableChanges(state, action.newState);
+    } else if (action.type === 'applyFormChanges') {
+      applyFormChanges(state, action.newState);
     }
   });
 

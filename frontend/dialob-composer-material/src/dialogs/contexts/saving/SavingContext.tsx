@@ -1,5 +1,5 @@
 import { createContext, Dispatch } from "react";
-import { ComposerMetadata, ContextVariable, DialobItem, ValueSet, Variable } from "../../../types";
+import { ComposerMetadata, ContextVariable, DialobItem, FormMetadata, ValueSet, Variable } from "../../../types";
 import { SavingAction } from "./SavingAction";
 
 export interface SavingState {
@@ -7,6 +7,7 @@ export interface SavingState {
   valueSets?: ValueSet[];
   composerMetadata?: ComposerMetadata;
   variables?: (ContextVariable | Variable)[];
+  formMetadata?: FormMetadata;
 }
 
 export const SavingContext = createContext<{ state: SavingState, dispatch: Dispatch<SavingAction> }>({

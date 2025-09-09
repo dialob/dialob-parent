@@ -119,6 +119,11 @@ export const useSave = () => {
     dispatch({ type: 'changeVariableId', variables });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setMetadataValue = (attr: string, value: any) => {
+    dispatch({ type: 'setMetadataValue', attr, value });
+  }
+
   return {
     updateItem,
     updateItemId,
@@ -148,6 +153,7 @@ export const useSave = () => {
     deleteVariable,
     moveVariable,
     changeVariableId,
+    setMetadataValue,
     savingState: state
   }
 }

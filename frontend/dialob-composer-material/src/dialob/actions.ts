@@ -56,3 +56,4 @@ export type ComposerAction =
   | { type: 'applyItemChanges', newState: SavingState }
   | { type: 'applyListChanges', newState: SavingState }
   | { type: 'applyVariableChanges', newState: SavingState }
+  | { type: 'applyFormChanges', newState: SavingState }
