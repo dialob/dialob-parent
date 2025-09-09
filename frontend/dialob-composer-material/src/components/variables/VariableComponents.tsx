@@ -47,9 +47,14 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
   const { changeItemId } = useBackend();
   const { form, setForm, setRevision } = useComposer();
   const { setErrors } = useEditor();
-  const { changeVariableId } = useSave();
+  const { changeVariableId, savingState } = useSave();
   const [editMode, setEditMode] = React.useState(false);
   const [idError, setIdError] = React.useState(false);
+
+  // disable changing name if there are unsaved changes
+  const hasChanges = React.useMemo(() => {
+      return savingState.variables && (JSON.stringify(savingState.variables) !== JSON.stringify(form.variables));
+  }, [savingState, form.variables]);
 
   const handleChangeName = () => {
     if (name !== variable.name) {
@@ -76,23 +81,31 @@ export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ 
     }
   }
 
-  const handleCloseChange = () => {
+  const handleDiscardChange = () => {
     setEditMode(false);
     setIdError(false);
     setName(variable.name);
   }
 
+  const handleCloseChange = () => {
+    if (name === variable.name) {
+      setEditMode(false);
+    }
+  }
+
   const [name, setName] = React.useState<string>(variable.name);
   return (
     <TextField value={name} onChange={(e) => setName(e.target.value)} variant='standard' fullWidth error={idError}
-      onFocus={() => setEditMode(true)} helperText={editMode && <FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
+      onFocus={() => setEditMode(true)} onBlur={handleCloseChange} helperText={editMode && <FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
         disableUnderline: true,
         endAdornment: (
           editMode && <>
             <Tooltip title={<FormattedMessage id='dialogs.change.id.tooltip' />}>
-              <IconButton onClick={handleChangeName}><Check color='success' /></IconButton>
+              <span>
+                <IconButton onClick={handleChangeName} disabled={hasChanges}><Check color={hasChanges ? 'disabled' : 'success'} /></IconButton>
+              </span>
             </Tooltip>
-            <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+            <IconButton onClick={handleDiscardChange}><Close color='error' /></IconButton>
           </>
         )
       }} />
