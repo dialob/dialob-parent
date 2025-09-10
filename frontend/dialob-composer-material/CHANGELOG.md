@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.12
+
+### Patch Changes
+
+- form options saving feature, variable id editing improvements, bug fix for moving groups in tree
+
 ## 0.0.11
 
 ### Patch Changes
