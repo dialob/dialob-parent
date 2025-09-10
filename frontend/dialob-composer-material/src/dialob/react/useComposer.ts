@@ -169,6 +169,10 @@ export const useComposer = () => {
     dispatch({ type: 'applyVariableChanges', newState });
   }
 
+  const applyFormChanges = (newState: SavingState) => {
+    dispatch({ type: 'applyFormChanges', newState });
+  }
+
   return {
     addItem,
     updateItem,
@@ -209,6 +213,7 @@ export const useComposer = () => {
     applyItemChanges,
     applyListChanges,
     applyVariableChanges,
+    applyFormChanges,
     form: state
   };
 

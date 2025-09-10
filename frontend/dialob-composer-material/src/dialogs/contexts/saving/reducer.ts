@@ -395,6 +395,14 @@ const changeVariableId = (state: SavingState, variables: (ContextVariable | Vari
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const setMetadataValue = (state: SavingState, attr: string, value: any): void => {
+  if (attr === 'tenantId' || attr === 'created' || attr === 'creator' || state.formMetadata === undefined) {
+    return;
+  }
+  state.formMetadata[attr] = value;
+}
+
 
 export const itemReducer = (state: SavingState, action: SavingAction): SavingState => {
 
@@ -455,6 +463,8 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       moveVariable(state, action.origin, action.destination);
     } else if (action.type === 'changeVariableId') {
       changeVariableId(state, action.variables);
+    } else if (action.type === 'setMetadataValue') {
+      setMetadataValue(state, action.attr, action.value);
     }
   });
 

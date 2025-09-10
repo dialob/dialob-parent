@@ -38,4 +38,6 @@ export type SavingAction =
   | { type: 'deleteVariable', variableId: string }
   | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
   | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { type: 'setMetadataValue', attr: string, value: any }
 
