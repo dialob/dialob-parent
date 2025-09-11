@@ -126,7 +126,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         errorLogger.logError(CompilerErrorCode.ONLY_ONE_ARGUMENT_FOR_NOT, Span.of(ctx));
         return;
       }
-      ValueType valueType = valueTypes.get(0);
+      ValueType valueType = valueTypes.getFirst();
       if (valueType == null) {
         reportTypeAnalysisProblem(ctx);
         return;
@@ -175,14 +175,14 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         errorLogger.logError(CompilerErrorCode.OPERATOR_REQUIRES_2_OPERANDS, new Object[]{operator}, Span.of(ctx));
         return;
       }
-      ValueType lhs = valueTypes.get(0);
+      ValueType lhs = valueTypes.getFirst();
       ValueType rhs = valueTypes.get(1);
       if (lhs == null || rhs == null) {
         reportTypeAnalysisProblem(ctx);
         return;
       }
       if (lhs != ValueType.BOOLEAN) {
-        NodeBase node = builder.getTopNode().getSubnodes().get(0);
+        NodeBase node = builder.getTopNode().getSubnodes().getFirst();
         errorLogger.logError(CompilerErrorCode.BOOLEAN_VALUE_EXPECTED, new Object[]{lhs, rhs}, node.getSpan());
       }
       if (rhs != ValueType.BOOLEAN) {
@@ -210,14 +210,14 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         errorLogger.logError(CompilerErrorCode.OPERATOR_REQUIRES_2_OPERANDS, new Object[]{operator}, Span.of(ctx));
         return;
       }
-      ValueType lhs = valueTypes.get(0);
+      ValueType lhs = valueTypes.getFirst();
       ValueType rhs = valueTypes.get(1);
       if (lhs == null || rhs == null) {
         reportTypeAnalysisProblem(ctx);
         return;
       }
       if (lhs != ValueType.STRING) {
-        NodeBase node = builder.getTopNode().getSubnodes().get(0);
+        NodeBase node = builder.getTopNode().getSubnodes().getFirst();
         errorLogger.logError(CompilerErrorCode.ONLY_STRINGS_CAN_BE_MATCHED, new Object[]{lhs}, node.getSpan());
       }
       if (rhs != ValueType.STRING) {
@@ -314,7 +314,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         return;
       }
 
-      final ValueType valueType = valueTypes.get(0);
+      final ValueType valueType = valueTypes.getFirst();
 
       if (valueType == null) {
         reportTypeAnalysisProblem(ctx);
@@ -344,7 +344,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
         errorLogger.logError(CompilerErrorCode.OPERATOR_REQUIRES_2_OPERANDS, new Object[]{operator}, Span.of(ctx));
         return;
       }
-      ValueType lhs = valueTypes.get(0);
+      ValueType lhs = valueTypes.getFirst();
       ValueType rhs = valueTypes.get(1);
 
       String code = null;

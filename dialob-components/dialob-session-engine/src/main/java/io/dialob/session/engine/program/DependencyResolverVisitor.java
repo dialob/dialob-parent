@@ -209,8 +209,8 @@ class DependencyResolverVisitor implements ProgramVisitor {
       path.add(command);
       if (contains) {
         ItemId itemId = IdUtils.QUESTIONNAIRE_ID;
-        if (command instanceof UpdateCommand) {
-          itemId = ((UpdateCommand) command).getTargetId();
+        if (command instanceof UpdateCommand updateCommand) {
+          itemId = updateCommand.getTargetId();
         }
         throw new DependencyLoopException("dependency loop", List.of(ImmutableFormValidationError.builder()
           .type(FormValidationError.Type.GENERAL)

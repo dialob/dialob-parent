@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -95,7 +96,7 @@ class ElbJWKSourceTest {
     String jwkSetUriTemplate = "http://localhost:8080/{kid}";
     ResourceRetriever resourceRetriever = Mockito.mock(ResourceRetriever.class);
     Mockito
-      .when(resourceRetriever.retrieveResource(new URL("http://localhost:8080/my-kid")))
+      .when(resourceRetriever.retrieveResource(URI.create("http://localhost:8080/my-kid").toURL()))
       .thenReturn(new Resource(publicKeyPEM, "application/x-pem-file"));
 
     JWKMatcher matcher = new JWKMatcher.Builder()
@@ -109,7 +110,7 @@ class ElbJWKSourceTest {
     List<JWK> jwks = source.get(jwkSelector, null);
 
     Assertions.assertEquals(1, jwks.size());
-    Assertions.assertEquals("my-kid", jwks.get(0).getKeyID());
+    Assertions.assertEquals("my-kid", jwks.getFirst().getKeyID());
 
     Mockito.verify(resourceRetriever).retrieveResource(any(URL.class));
     Mockito.verifyNoMoreInteractions(resourceRetriever);
@@ -119,7 +120,7 @@ class ElbJWKSourceTest {
     String jwkSetUriTemplate = "http://localhost:8080/{kid}";
     ResourceRetriever resourceRetriever = Mockito.mock(ResourceRetriever.class);
     Mockito
-      .when(resourceRetriever.retrieveResource(new URL("http://localhost:8080/my-kid")))
+      .when(resourceRetriever.retrieveResource(URI.create("http://localhost:8080/my-kid").toURL()))
       .thenReturn(new Resource(publicKeyECPEM, "application/x-pem-file"));
 
     JWKMatcher matcher = new JWKMatcher.Builder()
@@ -133,7 +134,7 @@ class ElbJWKSourceTest {
     List<JWK> jwks = source.get(jwkSelector, null);
 
     Assertions.assertEquals(1, jwks.size());
-    Assertions.assertEquals("my-kid", jwks.get(0).getKeyID());
+    Assertions.assertEquals("my-kid", jwks.getFirst().getKeyID());
 
     Mockito.verify(resourceRetriever).retrieveResource(any(URL.class));
     Mockito.verifyNoMoreInteractions(resourceRetriever);

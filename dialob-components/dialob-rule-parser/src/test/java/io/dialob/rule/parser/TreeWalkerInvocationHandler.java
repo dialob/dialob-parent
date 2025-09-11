@@ -114,11 +114,11 @@ public  class TreeWalkerInvocationHandler implements InvocationHandler {
         try {
             Field opField = node.getClass().getField(fieldName);
             op = opField.get(node);
-            if (op instanceof Token) {
-                return ((Token)op).getText();
+            if (op instanceof Token token) {
+                return token.getText();
             }
-            if (op instanceof ParseTree) {
-                return ((ParseTree)op).getText();
+            if (op instanceof ParseTree tree) {
+                return tree.getText();
             }
             if (op == null) {
                 return null;

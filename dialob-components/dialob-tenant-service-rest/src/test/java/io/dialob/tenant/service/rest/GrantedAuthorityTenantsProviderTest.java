@@ -50,7 +50,7 @@ class GrantedAuthorityTenantsProviderTest {
     List<Tenant> tenants = tenantsProvider.getTenants();
 
     assertFalse(tenants.isEmpty());
-    assertEquals("12312", tenants.get(0).id());
+    assertEquals("12312", tenants.getFirst().id());
   }
 
 }

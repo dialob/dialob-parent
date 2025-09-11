@@ -75,9 +75,7 @@ public class ReflectionEntityInformation<T, ID extends Serializable> extends Abs
       }
     });
 
-    if (this.field == null && this.method == null) {
-      Assert.notNull(this.field, String.format("No field or method annotated with %s found!", annotation));
-    }
+    Assert.isTrue(this.field != null || this.method != null, "No field or method annotated with %s found!".formatted(annotation));
     if (this.field != null) {
       ReflectionUtils.makeAccessible(field);
     }

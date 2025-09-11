@@ -32,8 +32,8 @@ public class ConversionUtil {
     if (answer instanceof List) {
       return answer;
     }
-    if (answer instanceof Date) {
-      return ((Date) answer).toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
+    if (answer instanceof Date date) {
+      return date.toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
     return answer.toString();
   }

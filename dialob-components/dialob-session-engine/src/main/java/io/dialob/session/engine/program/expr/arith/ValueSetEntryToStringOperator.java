@@ -50,15 +50,15 @@ public interface ValueSetEntryToStringOperator extends Expression {
     }
     Optional<ValueSetState> valueSetState = context.getValueSetState(getValueSetId());
     return valueSetState.map(valueSetState1 -> {
-      if (eval instanceof String) { // For choice (answer is a scalar)
+      if (eval instanceof String string) { // For choice (answer is a scalar)
         for (ValueSetState.Entry entry : valueSetState1.getEntries()) {
           if (entry.getId().equals(eval)) {
             return entry.getLabel();
           }
         }
-        return (String) eval;
-      } else if (eval instanceof List<?>) { // For multichoice (answer is a list)
-        return valueSetState1.getEntries().stream().filter(entry -> ((List<?>) eval).contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
+        return string;
+      } else if (eval instanceof List<?> list) { // For multichoice (answer is a list)
+        return valueSetState1.getEntries().stream().filter(entry -> list.contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
       }
       return null;
     }).orElse(null);

@@ -231,8 +231,8 @@ class UtilsTest {
     state = state.update().setEntries(List.of(new ValueSetState.Entry("v1", "l1", false))).get();
     var s = Utils.toValueSet(state);
     assertEquals(1, s.getEntries().size());
-    assertEquals("v1", s.getEntries().get(0).getKey());
-    assertEquals("l1", s.getEntries().get(0).getValue());
+    assertEquals("v1", s.getEntries().getFirst().getKey());
+    assertEquals("l1", s.getEntries().getFirst().getValue());
   }
 
   @Test

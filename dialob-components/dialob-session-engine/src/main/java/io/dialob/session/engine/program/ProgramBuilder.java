@@ -130,8 +130,8 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   public Optional<String> findValueSetIdForItem(@NonNull ItemId itemId) {
     return findItemById(itemId).flatMap(abstractItemBuilder -> {
-      if (abstractItemBuilder instanceof QuestionBuilder) {
-        return ((QuestionBuilder) abstractItemBuilder).getValueSetId();
+      if (abstractItemBuilder instanceof QuestionBuilder builder) {
+        return builder.getValueSetId();
       }
       return Optional.empty();
     });
@@ -139,8 +139,8 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   public Optional<Object> findDefaultValueForItem(@NonNull ItemId itemId) {
     return findItemById(itemId).flatMap(abstractItemBuilder -> {
-      if (abstractItemBuilder instanceof HasDefaultValue) {
-        return ((HasDefaultValue) abstractItemBuilder).getDefaultValue();
+      if (abstractItemBuilder instanceof HasDefaultValue value) {
+        return value.getDefaultValue();
       }
       return Optional.empty();
     });
@@ -278,7 +278,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     this.types.putAll(builders.stream()
       .filter(builder -> builder instanceof QuestionBuilder
         || builder instanceof VariableBuilder
-        || (builder instanceof GroupBuilder && ((GroupBuilder) builder).getType() == GroupBuilder.Type.ROWGROUP))
+        || (builder instanceof GroupBuilder gb && gb.getType() == GroupBuilder.Type.ROWGROUP))
       .collect(Collectors.toMap(AbstractItemBuilder::getId, builder -> builder)));
     beforeExpressionCompilation(errors::add);
     if (!compileExpressions()) {

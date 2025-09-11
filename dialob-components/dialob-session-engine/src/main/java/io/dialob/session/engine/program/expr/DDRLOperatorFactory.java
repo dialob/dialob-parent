@@ -216,7 +216,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
 
   private Expression first(List<Expression> expressions) {
     assert !expressions.isEmpty();
-    return expressions.get(0);
+    return expressions.getFirst();
   }
 
   private List<Expression> rest(List<Expression> expressions) {
@@ -260,12 +260,12 @@ public class DDRLOperatorFactory implements OperatorFactory {
 
   private Expression unaryArg(List<Expression> arguments) {
     assert arguments.size() == 1;
-    return arguments.get(0);
+    return arguments.getFirst();
   }
 
   private ItemId varRef(List<Expression> arguments) {
     assert arguments.size() == 1;
-    Expression expression = arguments.get(0);
+    Expression expression = arguments.getFirst();
     assert expression instanceof VariableReference;
     VariableReference variableReference = (VariableReference) expression;
     return variableReference.getItemId();
@@ -278,7 +278,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
 
   private Expression lhs(List<Expression> arguments) {
     assert arguments.size() == 2;
-    return arguments.get(0);
+    return arguments.getFirst();
   }
 
 }

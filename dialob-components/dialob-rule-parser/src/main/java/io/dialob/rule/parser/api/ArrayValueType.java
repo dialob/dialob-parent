@@ -64,7 +64,7 @@ public class ArrayValueType implements ValueType {
   @Override
   public Object parseFromString(String string) {
     if (!string.startsWith("[") && string.endsWith("]")) {
-      throw new RuntimeException(String.format("Cannot parse \"%s\". Not an array.", string));
+      throw new RuntimeException("Cannot parse \"%s\". Not an array.".formatted(string));
     }
     string = string.substring(1);
     string = string.substring(0,string.length() - 1);

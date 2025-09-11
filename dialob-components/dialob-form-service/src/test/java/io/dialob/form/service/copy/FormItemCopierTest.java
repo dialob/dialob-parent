@@ -128,7 +128,7 @@ class FormItemCopierTest {
     assertThat(form.getData().get("group11").getItems(), contains("question11", "question21", "question31", "question41"));
     assertEquals("question11 = 'test'", form.getData().get("question21").getRequired());
     assertEquals("question11 is answered", form.getData().get("question21").getActiveWhen());
-    assertEquals("question21 is answered and question11 = 'test2'", form.getData().get("question21").getValidations().get(0).getRule());
+    assertEquals("question21 is answered and question11 = 'test2'", form.getData().get("question21").getValidations().getFirst().getRule());
     assertEquals("Test Question3 {question11} and {question21} and {var}", form.getData().get("question31").getLabel().get("en"));
 
     // Verify original still intact
@@ -136,7 +136,7 @@ class FormItemCopierTest {
     assertThat(form.getData().get("group1").getItems(), contains("question1", "question2", "question3", "question4"));
     assertEquals("question1 = 'test'", form.getData().get("question2").getRequired());
     assertEquals("question1 is answered", form.getData().get("question2").getActiveWhen());
-    assertEquals("question2 is answered and question1 = 'test2'", form.getData().get("question2").getValidations().get(0).getRule());
+    assertEquals("question2 is answered and question1 = 'test2'", form.getData().get("question2").getValidations().getFirst().getRule());
     assertEquals("Test Question3 {question1} and {question2} and {var}", form.getData().get("question3").getLabel().get("en"));
   }
 

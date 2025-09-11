@@ -78,7 +78,7 @@ public class DDRLExpressionCompiler {
     ast.accept(visitorBuilder);
     final List<Expression> expressions = visitorBuilder.getExpressions();
     assert expressions.size() == 1;
-    return expressions.get(0);
+    return expressions.getFirst();
   }
 
   public Map<String, Expression> getAsyncFunctionVariableExpressions() {

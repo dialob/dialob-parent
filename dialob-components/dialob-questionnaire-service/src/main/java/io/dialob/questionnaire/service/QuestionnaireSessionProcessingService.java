@@ -126,7 +126,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
   private Actions runUpdate(String questionnaireId, String revision, List<Action> actions) {
     final QuestionnaireSession session = questionnaireSessionService.findOne(questionnaireId);
     if (session == null) {
-      throw new DocumentNotFoundException(String.format("Could not find questionnaire %s", questionnaireId));
+      throw new DocumentNotFoundException("Could not find questionnaire %s".formatted(questionnaireId));
     }
     if (session.isCompleted()) {
       return ImmutableActions.builder().rev(session.getRev()).build();

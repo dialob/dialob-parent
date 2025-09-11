@@ -92,7 +92,7 @@ public abstract class JdbcBackendDatabaseTest {
 
       @Override
       public String extractMetadataJsonArray(String columnName) {
-        return String.format (" data->'metadata'->'%s'#>>'{}' ", columnName);
+        return " data->'metadata'->'%s'#>>'{}' ".formatted(columnName);
       }
     };
   }
@@ -149,7 +149,7 @@ public abstract class JdbcBackendDatabaseTest {
 
     Object document = jdbcBackendDatabase.save("", questionnaire);
 
-    Assertions.assertThat(document).extracting("id","rev").matches(objects -> ((String)objects.get(0)).length() == 32 && "1".equals(objects.get(1)));
+    Assertions.assertThat(document).extracting("id","rev").matches(objects -> ((String)objects.getFirst()).length() == 32 && "1".equals(objects.get(1)));
 
     //
     verify(jdbcTemplate).update(eq("insert into dialob.questionnaire (id,rev,tenant_id,form_document_id,status,created,updated,owner,data) values (?,?,?,?,?,?,?,?,?)"), any(byte[].class), eq(1), eq(""), any(byte[].class), any(String.class), any(Timestamp.class), any(Timestamp.class), isNull(), any(InputStream.class));

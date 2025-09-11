@@ -135,22 +135,22 @@ public class ASTBuilder {
   }
 
   public ASTBuilder cloneNode(NodeBase node) {
-    if (node instanceof CallExprNode) {
-      ASTBuilder builder = callExprNode((CallExprNode) node);
+    if (node instanceof CallExprNode exprNode) {
+      ASTBuilder builder = callExprNode(exprNode);
       node.getSubnodes().forEach(subnode -> builder.cloneNode(subnode).closeExpr());
     }
     return exprNode(node);
   }
 
   public ASTBuilder exprNode(NodeBase node) {
-    if (node instanceof IdExprNode) {
-      return idExprNode((IdExprNode) node);
+    if (node instanceof IdExprNode exprNode) {
+      return idExprNode(exprNode);
     }
-    if (node instanceof ConstExprNode) {
-      return constExprNode((ConstExprNode) node);
+    if (node instanceof ConstExprNode exprNode) {
+      return constExprNode(exprNode);
     }
-    if (node instanceof CallExprNode) {
-      return callExprNode((CallExprNode) node);
+    if (node instanceof CallExprNode exprNode) {
+      return callExprNode(exprNode);
     }
     throw new IllegalStateException("Unknown node type " + this);
   }

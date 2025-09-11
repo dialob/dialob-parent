@@ -72,6 +72,6 @@ public class DB2DatabaseHelper extends AbstractDatabaseHelper {
 
   @Override
   public String extractMetadataJsonArray(String columnName) {
-    return  String.format(" JSON_QUERY(data, '$.metadata.%s') ", columnName);
+    return  " JSON_QUERY(data, '$.metadata.%s') ".formatted(columnName);
   }
 }

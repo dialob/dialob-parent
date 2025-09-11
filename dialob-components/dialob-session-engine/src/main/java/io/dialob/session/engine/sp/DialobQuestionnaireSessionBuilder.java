@@ -165,9 +165,9 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
   }
 
   private static <T extends Enum<T>> Optional<T> parseEnum(Class<T> enumClass, Object o) {
-    if (o instanceof String) {
+    if (o instanceof String string) {
       try {
-        return Optional.of(Enum.valueOf(enumClass, (String) o));
+        return Optional.of(Enum.valueOf(enumClass, string));
       } catch (IllegalArgumentException e) {
         LOGGER.error("Unknown question client visibility {}", o);
       }
@@ -177,10 +177,10 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
 
   private static boolean parseBoolean(Object o) {
     boolean showDisabled = false;
-    if (o instanceof String) {
-      showDisabled = Boolean.parseBoolean((String) o);
-    } else if (o instanceof Boolean) {
-      showDisabled = (Boolean) o;
+    if (o instanceof String string) {
+      showDisabled = Boolean.parseBoolean(string);
+    } else if (o instanceof Boolean boolean1) {
+      showDisabled = boolean1;
     }
     return showDisabled;
   }

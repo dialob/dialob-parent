@@ -37,17 +37,17 @@ public interface CoerceToDecimalOperator extends Expression {
     if (eval == null) {
       return null;
     }
-    if (eval instanceof BigDecimal) {
-      return (BigDecimal) eval;
+    if (eval instanceof BigDecimal decimal) {
+      return decimal;
     }
-    if (eval instanceof Double) {
-      return BigDecimal.valueOf((Double) eval);
+    if (eval instanceof Double double1) {
+      return BigDecimal.valueOf(double1);
     }
-    if (eval instanceof java.lang.Number) {
-      return BigDecimal.valueOf(((java.lang.Number) eval).longValue());
+    if (eval instanceof java.lang.Number number) {
+      return BigDecimal.valueOf(number.longValue());
     }
-    if (eval instanceof String) {
-      return new BigDecimal((String) eval);
+    if (eval instanceof String string) {
+      return new BigDecimal(string);
     }
     throw new IllegalStateException("Cannot coerce " + eval + " to decimal");
 

@@ -95,10 +95,10 @@ public class ExpressionMerger implements ASTVisitor {
         pop();
         if (nodeStack == 0) {
             for (NodeBase arg : newArguments) {
-                if (arg instanceof ConstExprNode) {
-                    astBuilder = astBuilder.constExprNode((ConstExprNode) arg).closeExpr();
-                } else if (arg instanceof IdExprNode) {
-                    astBuilder = astBuilder.idExprNode((IdExprNode) arg).closeExpr();
+                if (arg instanceof ConstExprNode node1) {
+                    astBuilder = astBuilder.constExprNode(node1).closeExpr();
+                } else if (arg instanceof IdExprNode node) {
+                    astBuilder = astBuilder.idExprNode(node).closeExpr();
                 }
             }
             newArguments.clear();

@@ -168,7 +168,7 @@ public class FillAssertionBuilder {
 
 
   public FillAssertionBuilder assertThat(Consumer<AbstractListAssert<?, ? extends List<? extends Action>, Action, ? extends AbstractAssert<?, Action>>> consumer) {
-    validationEntries.get(validationEntries.size() - 1).assertter = consumer;
+    validationEntries.getLast().assertter = consumer;
     return this;
   }
 

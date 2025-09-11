@@ -226,7 +226,7 @@ class FormsRestServiceControllerApiKeyTest {
     List<FormListItem> r = response.getBody();
     assertNotNull(r);
     assertEquals(2, r.size());
-    assertEquals("l1",r.get(0).getMetadata().getLabel());
+    assertEquals("l1",r.getFirst().getMetadata().getLabel());
     assertEquals("l2",r.get(1).getMetadata().getLabel());
 
     verify(formDatabase, only()).findAllMetadata(anyString(), isNull(), any());

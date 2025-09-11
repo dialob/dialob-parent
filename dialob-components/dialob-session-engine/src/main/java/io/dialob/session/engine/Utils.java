@@ -233,25 +233,25 @@ public final class Utils {
       } else if (value instanceof BigInteger bigInteger) {
         output.write((byte) 2);
         writeBigInteger(output, bigInteger);
-      } else if (value instanceof Boolean) {
+      } else if (value instanceof Boolean boolean1) {
         output.write((byte) 3);
-        output.writeBoolNoTag((Boolean) value);
-      } else if (value instanceof Double) {
+        output.writeBoolNoTag(boolean1);
+      } else if (value instanceof Double double1) {
         output.write((byte) 4);
-        output.writeDoubleNoTag((Double) value);
+        output.writeDoubleNoTag(double1);
       } else if (value instanceof List listValue) {
         final int size = listValue.size();
         if (size == 0) {
           output.write((byte) 0x80); // empty list
           return;
         }
-        if (listValue.get(0) instanceof String) {
+        if (listValue.getFirst() instanceof String) {
           output.write((byte) 0x81);
           output.writeInt32NoTag(size);
           for (String s : (List<String>)listValue) {
             output.writeStringNoTag(s);
           }
-        } else if (listValue.get(0) instanceof BigInteger) {
+        } else if (listValue.getFirst() instanceof BigInteger) {
           output.write((byte) 0x82);
           output.writeInt32NoTag(size);
           for (BigInteger i : (List<BigInteger>)listValue) {

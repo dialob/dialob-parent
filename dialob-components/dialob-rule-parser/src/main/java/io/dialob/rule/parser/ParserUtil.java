@@ -41,7 +41,7 @@ public final class ParserUtil {
       case "multichoice" -> ValueType.arrayOf(ValueType.STRING);
       case "rowgroup" -> ValueType.arrayOf(ValueType.INTEGER);
       case "questionnaire", "context", "variable", "group", "surveygroup", "row" -> null;
-      default -> throw new RuntimeException(String.format("Unsupported item type %s", itemType));
+      default -> throw new RuntimeException("Unsupported item type %s".formatted(itemType));
     };
   }
 

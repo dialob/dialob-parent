@@ -33,7 +33,7 @@ env:
 
 jobs:
   build:
-    name: Build Frontend from branch - main
+    name: Build Frontend
     runs-on: ubuntu-latest
     outputs:
       artifacts: ${{ steps.distribution-packages.outputs.artifacts }}
@@ -69,11 +69,11 @@ jobs:
     - name: Build
       run: |
         pnpm -r build
-    
+
     - name: Test
       run: |
         pnpm -r test
-  
+
     - name: Create Release Pull Request
       if: github.event_name != 'pull_request'
       uses: changesets/action@v1

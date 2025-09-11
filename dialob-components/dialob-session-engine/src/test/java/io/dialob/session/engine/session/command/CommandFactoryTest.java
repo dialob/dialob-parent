@@ -120,10 +120,10 @@ class CommandFactoryTest {
     List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();
     EventMatcher eventMatcher = i.next();
-    assertFalse(eventMatcher.matches(eventList.get(0)));
+    assertFalse(eventMatcher.matches(eventList.getFirst()));
     assertFalse(eventMatcher.matches(eventList.get(1)));
     eventMatcher = i.next();
-    assertFalse(eventMatcher.matches(eventList.get(0)));
+    assertFalse(eventMatcher.matches(eventList.getFirst()));
     assertFalse(eventMatcher.matches(eventList.get(1)));
   }
 
@@ -146,7 +146,7 @@ class CommandFactoryTest {
     List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
 
     assertFalse(events.isEmpty());
-    assertEquals(ImmutableItemAddedEvent.of(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.get(0));
+    assertEquals(ImmutableItemAddedEvent.of(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.getFirst());
   }
 
   @Test

@@ -181,7 +181,7 @@ public class CSVSerializer {
               // Rowgroup items
               rows.forEach(row -> {
                 formItem.getItems().stream().map(itemId -> form.getData().get(itemId))
-                  .forEach(item -> serializeItem(form, questionnaire, item, String.format("%s.%d.%s", formItem.getId(), row, item.getId()), records, language, null));
+                  .forEach(item -> serializeItem(form, questionnaire, item, "%s.%d.%s".formatted(formItem.getId(), row, item.getId()), records, language, null));
               });
             }
           }

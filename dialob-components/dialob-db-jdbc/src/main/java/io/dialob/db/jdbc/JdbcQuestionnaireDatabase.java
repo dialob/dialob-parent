@@ -171,7 +171,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
       }
       if (updated == 0) {
         LOGGER.debug("{} - persisting document {} to rev {} failed (CONFLICT)", tenantId, dId, revision);
-        throw new DocumentConflictException(String.format("Conflict during questionnaire document %s rev %d update.", dId, revision));
+        throw new DocumentConflictException("Conflict during questionnaire document %s rev %d update.".formatted(dId, revision));
       }
       return documentNew;
     });

@@ -200,7 +200,7 @@ public final class EventMatchers {
 
     @Override
     default boolean matches(Event event) {
-      return event instanceof ItemAddedEvent && ((ItemAddedEvent)event).getPrototypeId().equals(getPrototypeId());
+      return event instanceof ItemAddedEvent iae && iae.getPrototypeId().equals(getPrototypeId());
     }
   }
 
@@ -212,7 +212,7 @@ public final class EventMatchers {
 
     @Override
     default boolean matches(Event event) {
-      return event instanceof ItemRemovedEvent && IdUtils.matches(getPrototypeId(), ((ItemRemovedEvent)event).getRemoveItemId());
+      return event instanceof ItemRemovedEvent ire && IdUtils.matches(getPrototypeId(), ire.getRemoveItemId());
     }
   }
 
@@ -224,7 +224,7 @@ public final class EventMatchers {
 
     @Override
     default boolean matches(Event event) {
-      return event instanceof RowGroupItemsInitEvent && ((RowGroupItemsInitEvent)event).getPrototypeId().equals(getPrototypeId());
+      return event instanceof RowGroupItemsInitEvent rgiie && rgiie.getPrototypeId().equals(getPrototypeId());
     }
   }
 

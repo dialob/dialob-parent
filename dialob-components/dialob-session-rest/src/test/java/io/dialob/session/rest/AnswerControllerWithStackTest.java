@@ -68,8 +68,8 @@ class AnswerControllerWithStackTest {
     when(questionnaireSessionService.findOne("123")).thenThrow(RuntimeException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(500, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
-    assertNotNull(responseEntity.getBody().getActions().get(0).getTrace());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
+    assertNotNull(responseEntity.getBody().getActions().getFirst().getTrace());
   }
 
   @Test
@@ -80,8 +80,8 @@ class AnswerControllerWithStackTest {
       .actions(List.of())
       .build());
     assertEquals(500, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
-    assertNotNull(responseEntity.getBody().getActions().get(0).getTrace());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
+    assertNotNull(responseEntity.getBody().getActions().getFirst().getTrace());
   }
 
 

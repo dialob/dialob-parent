@@ -81,8 +81,8 @@ public class PostSubmitHandler implements AnswerSubmitHandler {
             document.getId(), submitUrl, response.getStatusCode(), entity);
       }
     } catch (RestClientException|MalformedURLException e) {
-      LOGGER.error(String.format("Failed to POST questionnaire %s results to %s",
-          document.getId(), submitUrl), e);
+      LOGGER.error("Failed to POST questionnaire %s results to %s".formatted(
+        document.getId(), submitUrl), e);
     }
   }
 

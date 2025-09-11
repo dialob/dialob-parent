@@ -40,7 +40,7 @@
     <excludedGroups>db2</excludedGroups>
 
     <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
-    <spotbugs-maven-plugin.version>4.9.3.0</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.9.4.2</spotbugs-maven-plugin.version>
     <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
@@ -75,7 +75,7 @@
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <caffeine.version>3.2.0</caffeine.version>
     <protobuf-java.version>4.31.0</protobuf-java.version>
-    <lombok.version>1.18.36</lombok.version>
+    <lombok.version>1.18.40</lombok.version>
     <commons-text.version>1.13.0</commons-text.version>
     <commons-csv.version>1.14.0</commons-csv.version>
     <commons-validator.version>1.10.0</commons-validator.version>
@@ -626,7 +626,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
+          <version>3.14.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

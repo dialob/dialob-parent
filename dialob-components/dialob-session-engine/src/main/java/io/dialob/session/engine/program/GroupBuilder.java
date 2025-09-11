@@ -168,8 +168,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
   protected void beforeExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     super.beforeExpressionCompilation(errorConsumer);
     itemIds = this.items.stream().map(item -> getProgramBuilder().findItemBuilder(item))
-      .filter(Optional::isPresent)
-      .map(Optional::get)
+      .flatMap(Optional::stream)
       .map(AbstractItemBuilder::getId)
       .map(
         getType() == Type.ROWGROUP ?

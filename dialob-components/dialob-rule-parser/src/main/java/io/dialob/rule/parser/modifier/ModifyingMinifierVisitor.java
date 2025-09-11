@@ -41,7 +41,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       }
       if ("neg".equals(callNode.getNodeOperator().getOperator())) {
         assert arguments.size() == 1;
-        ConstExprNode constExprNode = (ConstExprNode) arguments.get(0);
+        ConstExprNode constExprNode = (ConstExprNode) arguments.getFirst();
         return new ConstExprNode(node.getParent(), ((BigInteger) constExprNode.getAsValueType()).negate().toString(), null, ValueType.INTEGER, node.getSpan());
       }
 
@@ -74,7 +74,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       }
       if ("neg".equals(callNode.getNodeOperator().getOperator())) {
         assert arguments.size() == 1;
-        ConstExprNode constExprNode = (ConstExprNode) arguments.get(0);
+        ConstExprNode constExprNode = (ConstExprNode) arguments.getFirst();
         return new ConstExprNode(node.getParent(), ((Period) constExprNode.getAsValueType()).negated().toString(), null, ValueType.PERIOD, node.getSpan());
       }
 
@@ -105,7 +105,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       }
       if ("neg".equals(callNode.getNodeOperator().getOperator())) {
         assert arguments.size() == 1;
-        ConstExprNode constExprNode = (ConstExprNode) arguments.get(0);
+        ConstExprNode constExprNode = (ConstExprNode) arguments.getFirst();
         return new ConstExprNode(node.getParent(), ((Duration) constExprNode.getAsValueType()).negated().toString(), null, ValueType.DURATION, node.getSpan());
       }
 
@@ -135,7 +135,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       BigDecimal sum = null;
       if ("neg".equals(callNode.getNodeOperator().getOperator())) {
         assert arguments.size() == 1;
-        ConstExprNode constExprNode = (ConstExprNode) arguments.get(0);
+        ConstExprNode constExprNode = (ConstExprNode) arguments.getFirst();
         return new ConstExprNode(node.getParent(), ((BigDecimal) constExprNode.getAsValueType()).negate().toString(), null, ValueType.DECIMAL, node.getSpan());
       }
 
@@ -152,16 +152,16 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       for (NodeBase arg : arguments) {
         Object value = ((ConstExprNode) arg).getAsValueType();
         if (sum != null) {
-          if (value instanceof BigInteger) {
-            sum = op.apply(sum, new BigDecimal((BigInteger) value));
-          } else if (value instanceof BigDecimal) {
-            sum = op.apply(sum, (BigDecimal) value);
+          if (value instanceof BigInteger integer) {
+            sum = op.apply(sum, new BigDecimal(integer));
+          } else if (value instanceof BigDecimal decimal) {
+            sum = op.apply(sum, decimal);
           }
         } else {
-          if (value instanceof BigInteger) {
-            sum = new BigDecimal((BigInteger) value);
-          } else if (value instanceof BigDecimal) {
-            sum = (BigDecimal) value;
+          if (value instanceof BigInteger integer) {
+            sum = new BigDecimal(integer);
+          } else if (value instanceof BigDecimal decimal) {
+            sum = decimal;
           }
         }
       }
@@ -173,7 +173,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
       assert arguments.size() == 2;
-      ConstExprNode leftHand = (ConstExprNode) arguments.get(0);
+      ConstExprNode leftHand = (ConstExprNode) arguments.getFirst();
       ConstExprNode rightHand = (ConstExprNode) arguments.get(1);
       BigDecimal left = toBigDecimal(leftHand);
       BigDecimal right = toBigDecimal(rightHand);
@@ -189,7 +189,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
       final CallExprNode callNode = (CallExprNode) node;
       final List<NodeBase> arguments = callNode.getSubnodes();
       assert arguments.size() == 2;
-      ConstExprNode leftHand = (ConstExprNode) arguments.get(0);
+      ConstExprNode leftHand = (ConstExprNode) arguments.getFirst();
       ConstExprNode rightHand = (ConstExprNode) arguments.get(1);
       String left = leftHand.getValue();
       String right = rightHand.getValue();
@@ -212,9 +212,9 @@ public class ModifyingMinifierVisitor extends AstMatcher {
 
       if (notOperator) {
         assert arguments.size() == 1;
-        final NodeBase arg0 = arguments.get(0);
-        if (arg0 instanceof ConstExprNode) {
-          result = !((Boolean) ((ConstExprNode) arg0).getAsValueType());
+        final NodeBase arg0 = arguments.getFirst();
+        if (arg0 instanceof ConstExprNode exprNode) {
+          result = !((Boolean) exprNode.getAsValueType());
           return new ConstExprNode(callNode.getParent(), result.toString(), null, ValueType.BOOLEAN, callNode.getSpan());
         }
       } else {
@@ -224,8 +224,8 @@ public class ModifyingMinifierVisitor extends AstMatcher {
           op = (identity, value) -> identity == null ? value : value || identity;
         }
         for (NodeBase arg : arguments) {
-          if (arg instanceof ConstExprNode) {
-            result = op.apply(result, (Boolean) ((ConstExprNode) arg).getAsValueType());
+          if (arg instanceof ConstExprNode exprNode) {
+            result = op.apply(result, (Boolean) exprNode.getAsValueType());
           } else {
             newArguments.add(arg);
           }
@@ -244,7 +244,7 @@ public class ModifyingMinifierVisitor extends AstMatcher {
 
       // We do not need current node anymore
       if (newArguments.size() == 1) {
-        NodeBase argument = newArguments.get(0);
+        NodeBase argument = newArguments.getFirst();
         CloneVisitor cloneVisitor = new CloneVisitor();
         argument.accept(cloneVisitor);
         return cloneVisitor.getASTBuilder().build();

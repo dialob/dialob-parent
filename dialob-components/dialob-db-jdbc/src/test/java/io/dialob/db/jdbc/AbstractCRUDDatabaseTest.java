@@ -93,8 +93,8 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
     assertEquals(1, list.size());
-    assertEquals(32, list.get(0).getId().length());
-    assertEquals(2, list.get(0).getValue().getLabels().size());
+    assertEquals(32, list.getFirst().getId().length());
+    assertEquals(2, list.getFirst().getValue().getLabels().size());
   }
 
 

@@ -44,12 +44,12 @@ public class IdUtils {
     Optional<ItemId> id = Optional.of(itemId);
     while (id.isPresent()) {
       itemId = id.get();
-      if (itemId instanceof ErrorId) {
-        return toString(((ErrorId) itemId).getItemId()) + ":" + ((ErrorId) itemId).getCode();
-      } else if (itemId instanceof ItemRef) {
-        idChain.add(((ItemRef) itemId).getId());
-      } else if (itemId instanceof ItemIndex) {
-        idChain.add(((ItemIndex) itemId).getIndex().toString());
+      if (itemId instanceof ErrorId errorId) {
+        return toString(errorId.getItemId()) + ":" + errorId.getCode();
+      } else if (itemId instanceof ItemRef ref) {
+        idChain.add(ref.getId());
+      } else if (itemId instanceof ItemIndex index) {
+        idChain.add(index.getIndex().toString());
       } else if (itemId instanceof ItemIdPartial) {
         idChain.add("*");
       }

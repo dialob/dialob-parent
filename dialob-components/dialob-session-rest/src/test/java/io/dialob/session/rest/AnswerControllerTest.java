@@ -69,7 +69,7 @@ class AnswerControllerTest {
     when(questionnaireSessionService.findOne("123")).thenThrow(DocumentNotFoundException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(404, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
   }
 
   @Test
@@ -77,7 +77,7 @@ class AnswerControllerTest {
     when(questionnaireSessionService.findOne("123")).thenReturn(null);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(404, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
   }
 
   @Test
@@ -95,7 +95,7 @@ class AnswerControllerTest {
     assertEquals(200, responseEntity.getStatusCode().value());
     assertEquals("444333", responseEntity.getBody().getRev());
     assertEquals(1, responseEntity.getBody().getActions().size());
-    assertEquals(RESET, responseEntity.getBody().getActions().get(0).getType());
+    assertEquals(RESET, responseEntity.getBody().getActions().getFirst().getType());
 
     verify(session).getRevision();
     verify(session).buildFullForm(any(QuestionnaireSession.UpdatesCallback.class));
@@ -108,7 +108,7 @@ class AnswerControllerTest {
     Actions actions = mock(Actions.class);
     ResponseEntity<Actions> responseEntity = answerController.answers("123", actions);
     assertEquals(404, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
     verify(actions).getRev();
     verify(actions).getActions();
     verifyNoMoreInteractions(actions);
@@ -120,7 +120,7 @@ class AnswerControllerTest {
     Actions actions = mock(Actions.class);
     ResponseEntity<Actions> responseEntity = answerController.answers("123", actions);
     assertEquals(404, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
     verify(actions).getRev();
     verify(actions).getActions();
     verifyNoMoreInteractions(actions);
@@ -149,7 +149,7 @@ class AnswerControllerTest {
     assertEquals(200, responseEntity.getStatusCode().value());
     assertEquals("444334", responseEntity.getBody().getRev());
     assertEquals(1, responseEntity.getBody().getActions().size());
-    assertEquals(Action.Type.ITEM, responseEntity.getBody().getActions().get(0).getType());
+    assertEquals(Action.Type.ITEM, responseEntity.getBody().getActions().getFirst().getType());
 
     verifyNoMoreInteractions(session);
   }
@@ -160,14 +160,14 @@ class AnswerControllerTest {
     when(questionnaireSessionService.findOne("123")).thenThrow(RuntimeException.class);
     ResponseEntity<Actions> responseEntity = answerController.getState("123");
     assertEquals(500, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
-    assertNull(responseEntity.getBody().getActions().get(0).getTrace());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
+    assertNull(responseEntity.getBody().getActions().getFirst().getTrace());
 
     when(actionProcessingService.answerQuestion("123", null, null)).thenThrow(RuntimeException.class);
     responseEntity = answerController.answers("123", ImmutableActions.builder().build());
     assertEquals(500, responseEntity.getStatusCode().value());
-    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().get(0).getType());
-    assertNull(responseEntity.getBody().getActions().get(0).getTrace());
+    assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
+    assertNull(responseEntity.getBody().getActions().getFirst().getTrace());
   }
 
 

@@ -56,7 +56,7 @@ class FormAzureBlobStorageDatabaseTest {
   public static void init() {
     AZURITE_CONTAINER.start();
     var blobPort = AZURITE_CONTAINER.getMappedPort(10000);
-    blobServiceClient = new BlobServiceClientBuilder().connectionString(String.format(DEFAULT_AZURITE_CONNECTION_STRING, blobPort)).buildClient();
+    blobServiceClient = new BlobServiceClientBuilder().connectionString(DEFAULT_AZURITE_CONNECTION_STRING.formatted(blobPort)).buildClient();
     blobContainerClient = blobServiceClient.createBlobContainer(CONTAINER_NAME);
   }
 
