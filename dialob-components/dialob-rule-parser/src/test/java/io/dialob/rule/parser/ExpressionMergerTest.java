@@ -24,6 +24,7 @@ class ExpressionMergerTest {
   @Test
   void test() throws Exception {
     assertExpressionMerge("a(b) - 1", "(- (a b) 1)");
+    assertExpressionMerge("a(b(c)) - 1", "(- (a (b c)) 1)");
     assertExpressionMerge("1 + 2 + 3 + 4", "(+ 1 2 3 4)");
     assertExpressionMerge("1 + 2", "(+ 1 2)");
     assertExpressionMerge("1 - 1", "(- 1 1)");
