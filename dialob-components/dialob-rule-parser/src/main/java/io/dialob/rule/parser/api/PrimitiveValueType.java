@@ -444,16 +444,12 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object coerceFrom(Object value) {
-      if (value instanceof BigInteger) {
-        return value;
-      }
-      if (value instanceof BigDecimal decimal) {
-        return decimal.toBigInteger();
-      }
-      if (value instanceof Number number) {
-        return BigInteger.valueOf(number.longValue());
-      }
-      return null;
+      return switch (value) {
+        case BigInteger bigInteger -> value;
+        case BigDecimal decimal -> decimal.toBigInteger();
+        case Number number -> BigInteger.valueOf(number.longValue());
+        case null, default -> null;
+      };
     }
 
     @Override

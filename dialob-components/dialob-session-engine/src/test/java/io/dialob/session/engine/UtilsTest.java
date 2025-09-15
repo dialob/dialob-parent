@@ -73,6 +73,15 @@ class UtilsTest {
   }
 
   @Test
+  void shouldConvertIntegerArraysToBigInteger2() {
+    assertEquals(BigInteger.ONE, Utils.parse(ValueType.INTEGER, 1));
+    assertEquals(BigInteger.ONE, Utils.parse(ValueType.INTEGER, BigInteger.ONE));
+    assertEquals(BigInteger.ONE, Utils.parse(ValueType.INTEGER, BigDecimal.ONE));
+    assertNull(Utils.parse(ValueType.INTEGER, null));
+  }
+
+
+  @Test
   void shouldWriteAndReadBigIntegers() throws IOException {
     var buffer = new ByteArrayOutputStream();
     CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
