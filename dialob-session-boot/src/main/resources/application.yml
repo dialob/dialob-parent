@@ -33,7 +33,36 @@ spring:
     gcp:
       core:
         enabled: false
+      bigquery:
+        enabled: false
+      config:
+        enabled: false
+      datastore:
+        enabled: false
+      firestore:
+        enabled: false
+      logging:
+        enabled: false
+      metrics:
+        enabled: false
+      parametermanager:
+        enabled: false
       pubsub:
+        enabled: false
+      secretmanager:
+        enabled: false
+      security:
+        iap:
+          enabled: false
+      spanner:
+        enabled: false
+      sql:
+        enabled: false
+      storage:
+        enabled: false
+      trace:
+        enabled: false
+      vision:
         enabled: false
 
 info:
