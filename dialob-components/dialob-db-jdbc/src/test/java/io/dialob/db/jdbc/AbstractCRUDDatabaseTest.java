@@ -22,10 +22,12 @@ import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.ResysSecurityConstants;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -78,6 +80,16 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
   @Test
+  void saveAndConflict() {
+    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
+    Form form3 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form2);
+    Form form4 = ImmutableForm.builder().from(form3).rev(form2.getRev()).build();
+    Assertions.assertThrows(DocumentConflictException.class, () -> getJdbcFormDatabase().save(getCurrentTenant().getId(), form4));
+  }
+
+
+  @Test
   void saveAndFetchList() {
     Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
@@ -93,8 +105,8 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
 
     assertEquals(1, list.size());
-    assertEquals(32, list.get(0).getId().length());
-    assertEquals(2, list.get(0).getValue().getLabels().size());
+    assertEquals(32, list.getFirst().getId().length());
+    assertEquals(2, list.getFirst().getValue().getLabels().size());
   }
 
 
@@ -154,7 +166,6 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
     q = getQuestionnaireDatabase().save(getCurrentTenant().getId(), q);
     assertEquals("2", q.getRev());
-
   }
 
 

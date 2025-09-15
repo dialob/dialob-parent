@@ -15,27 +15,30 @@
  */
 package io.dialob.questionnaire.service.api.utils;
 
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import org.junit.jupiter.api.Test;
+
 import java.util.Date;
 import java.util.List;
 
-public class ConversionUtil {
+import static org.junit.jupiter.api.Assertions.*;
 
-  public static Object toJSON(Object answer) {
-    if (answer == null) {
-      return null;
+class ConversionUtilTest {
+
+  static class TestType {
+    @Override
+    public String toString() {
+      return "TestType";
     }
-    if (answer instanceof String[]) {
-      return answer;
-    }
-    if (answer instanceof List) {
-      return answer;
-    }
-    if (answer instanceof Date date) {
-      return date.toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-    return answer.toString();
+  }
+
+  @Test
+  void test() {
+    assertNull(ConversionUtil.toJSON(null));
+    Object json = ConversionUtil.toJSON(new String[0]);
+    assertTrue(json.getClass().isArray());
+    assertEquals(List.of("a"), ConversionUtil.toJSON(List.of("a")));
+    assertEquals("1970-01-01", ConversionUtil.toJSON(new Date(321L)));
+    assertEquals("TestType", ConversionUtil.toJSON(new TestType()));
   }
 
 }

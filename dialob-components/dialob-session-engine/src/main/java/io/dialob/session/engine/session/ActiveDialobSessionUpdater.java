@@ -62,7 +62,7 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
 
     // Execute commands in the evaluation queue
     while (!evalQueue.isEmpty()) {
-      var command = evalQueue.remove(0); // FIFO queue processing
+      var command = evalQueue.removeFirst(); // FIFO queue processing
       updatedCommands.add(command);
       evalContext.applyCommand(command);
     }

@@ -36,8 +36,8 @@ class FixedTenantsProviderTest {
     List<Tenant> tenants = fixedTenantsProvider.getTenants();
 
     assertEquals(1, tenants.size());
-    assertEquals("123", tenants.get(0).id());
-    assertNull(tenants.get(0).name());
+    assertEquals("123", tenants.getFirst().id());
+    assertNull(tenants.getFirst().name());
   }
 
 }

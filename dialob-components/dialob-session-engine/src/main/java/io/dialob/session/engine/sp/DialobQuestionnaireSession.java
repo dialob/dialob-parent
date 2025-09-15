@@ -695,7 +695,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   public Optional<Locale> getLocale() {
     final String language = dialobSession.getLanguage();
     if (StringUtils.isNotBlank(language)) {
-      return Optional.of(new Locale(language));
+      return Optional.of(Locale.of(language));
     }
     return Optional.empty();
   }

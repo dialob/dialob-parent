@@ -170,11 +170,11 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     }
     if (!realIp.isEmpty()) {
 
-      return InetAddresses.forString(realIp.get(0));
+      return InetAddresses.forString(realIp.getFirst());
     } else {
       List<String> forwardFor = this.session.getHandshakeHeaders().getValuesAsList(HttpHeaders.X_FORWARDED_FOR);
       if (!forwardFor.isEmpty()) {
-        return InetAddresses.forString(forwardFor.get(0));
+        return InetAddresses.forString(forwardFor.getFirst());
       }
     }
     InetSocketAddress remoteAddress = this.session.getRemoteAddress();

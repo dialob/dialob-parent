@@ -56,7 +56,7 @@ class GroupBuilderTest {
 
     verify(programBuilder, times(2)).addItem(captor.capture());
     List<Item> addedItems = captor.getAllValues();
-    Assertions.assertEquals(IdUtils.toId("group1"), addedItems.get(0).getId());
+    Assertions.assertEquals(IdUtils.toId("group1"), addedItems.getFirst().getId());
 //    Assertions.assertEquals(IdUtils.toId("group1"), ((Group)addedItems.get(0)).getItemsExpression());
     Assertions.assertEquals(IdUtils.toId("group1.*"), addedItems.get(1).getId());
     Assertions.assertEquals(

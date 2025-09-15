@@ -70,10 +70,10 @@ class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
     openSession("q-1")
       .expectActions(actions -> {
         assertEquals(1, actions.getActions().size());
-        assertNull(actions.getActions().get(0).getTrace());
-        assertEquals(Action.Type.SERVER_ERROR, actions.getActions().get(0).getType());
-        assertEquals("not found", actions.getActions().get(0).getMessage());
-        assertEquals("q-1", actions.getActions().get(0).getId());
+        assertNull(actions.getActions().getFirst().getTrace());
+        assertEquals(Action.Type.SERVER_ERROR, actions.getActions().getFirst().getType());
+        assertEquals("not found", actions.getActions().getFirst().getMessage());
+        assertEquals("q-1", actions.getActions().getFirst().getId());
       })
       .finallyAssert(webSocketHandler -> {
         verify(webSocketHandler).afterConnectionEstablished(any(WebSocketSession.class));
@@ -88,9 +88,9 @@ class QuestionnaireWebSocketTest extends AbstractWebSocketTests {
     openSession("1234")
       .expectActions(actions -> {
         assertEquals(1, actions.getActions().size());
-        assertNull(actions.getActions().get(0).getTrace());
-        assertEquals(Action.Type.SERVER_ERROR, actions.getActions().get(0).getType());
-        assertEquals("1234", actions.getActions().get(0).getId());
+        assertNull(actions.getActions().getFirst().getTrace());
+        assertEquals(Action.Type.SERVER_ERROR, actions.getActions().getFirst().getType());
+        assertEquals("1234", actions.getActions().getFirst().getId());
       })
       .finallyAssert(webSocketHandler -> {
         verify(webSocketHandler).afterConnectionEstablished(any(WebSocketSession.class));

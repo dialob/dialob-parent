@@ -26,18 +26,19 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveServi
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobProgramFromFormCompiler;
-import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoSettings;
 
-import java.time.Instant;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,50 +46,55 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@MockitoSettings
 class DialobQuestionnaireSessionBuilderTest {
+
+  @Mock
+  QuestionnaireEventPublisher questionnaireEventPublisher;
+
+  @Mock
+  FormFinder formFinder;
+
+  @Mock
+  FunctionRegistry functionRegistry;
+
+  @Mock
+  QuestionnaireSessionService questionnaireSessionService;
+
+  @Mock
+  QuestionnaireSessionSaveService questionnaireSessionSaveService;
+
+  @Mock
+  DialobProgram dialobProgram;
+
+  @Mock
+  DialobSession dialobSession;
+
+  @Mock
+  DialobSessionUpdater dialobSessionUpdater;
+
+  @Mock
+  Consumer<EvalContext.UpdatedItemsVisitor> consumer;
+
+  @Mock
+  AsyncFunctionInvoker asyncFunctionInvoker;
+
 
   @Test
   void shouldInitializeSessionWithCorrectActiveItem() {
-    final QuestionnaireEventPublisher questionnaireEventPublisher = mock();
-    final FormFinder formFinder = mock();
-    final FunctionRegistry functionRegistry = mock();
-    final QuestionnaireSessionService questionnaireSessionService = mock();
-    final QuestionnaireSessionSaveService questionnaireSessionSaveService = mock();
-    final DialobProgram dialobProgram = mock();
-    final DialobSession dialobSession = mock();
-    final DialobSessionUpdater dialobSessionUpdater = mock();
-    final Consumer<EvalContext.UpdatedItemsVisitor> consumer = mock();
-    final AsyncFunctionInvoker asyncFunctionInvoker = mock();
-
-    final DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
-    final DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
-    final DialobProgramService dialobProgramService = QuestionnaireDialobProgramService.newBuilder()
-      .setFormDatabase(formFinder)
-      .setProgramFromFormCompiler(programFromFormCompiler)
-      .build();
     final Form form = ImmutableForm.builder()
       .id("123")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
       .metadata(ImmutableFormMetadata.builder().label("test form").build())
       .build();
 
-    when(formFinder.findForm("123", null)).thenReturn(form);
-    when(dialobProgram.createSession(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(dialobSession);
-    when(questionnaireSessionSaveService.save(any())).then(AdditionalAnswers.returnsFirstArg());
-    when(dialobSessionUpdater.applyCommands(any())).thenReturn(consumer);
-    when(dialobSession.getLastUpdate()).thenReturn(Instant.now());
-
-    DialobQuestionnaireSessionBuilder builder = new DialobQuestionnaireSessionBuilder(questionnaireEventPublisher,
-      dialobProgramService,
-      formFinder,
-      questionnaireSessionSaveService,
-      sessionContextFactory,
-      asyncFunctionInvoker);
+    DialobQuestionnaireSessionBuilder builder = createSessionBuilder(form);
 
     QuestionnaireSession session = builder.formId("123").activeItem("page3").createOnly(true).build();
 
     assertNotNull(session);
     assertEquals("page3", session.getQuestionnaire().getActiveItem());
+    Assertions.assertEquals(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED, session.getQuestionClientVisibility());
 
     verify(formFinder, times(2)).findForm("123", null); // TODO twice??
     verify(questionnaireSessionSaveService).save(any(QuestionnaireSession.class));
@@ -101,6 +107,60 @@ class DialobQuestionnaireSessionBuilderTest {
       dialobProgram,
       dialobSession,
       asyncFunctionInvoker);
+  }
+
+  @Test
+  void shouldParseShowDisabled() {
+    final Form form = ImmutableForm.builder()
+      .id("123")
+      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
+      .metadata(ImmutableFormMetadata.builder().label("test form")
+        .putAdditionalProperties("showDisabled", "True")
+        .build())
+      .build();
+
+    DialobQuestionnaireSessionBuilder builder = createSessionBuilder(form);
+    QuestionnaireSession session = builder.formId("123").activeItem("page3").createOnly(true).build();
+
+    Assertions.assertEquals(QuestionnaireSession.QuestionClientVisibility.SHOW_DISABLED, session.getQuestionClientVisibility());
+
+    assertNotNull(session);
+    assertEquals("page3", session.getQuestionnaire().getActiveItem());
+  }
+
+  @Test
+  void shouldParseShowDisabled2() {
+    final Form form = ImmutableForm.builder()
+      .id("123")
+      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
+      .metadata(ImmutableFormMetadata.builder().label("test form")
+        .putAdditionalProperties("showDisabled", true)
+        .build())
+      .build();
+
+    DialobQuestionnaireSessionBuilder builder = createSessionBuilder(form);
+    QuestionnaireSession session = builder.formId("123").activeItem("page3").createOnly(true).build();
+
+    Assertions.assertEquals(QuestionnaireSession.QuestionClientVisibility.SHOW_DISABLED, session.getQuestionClientVisibility());
+
+    assertNotNull(session);
+    assertEquals("page3", session.getQuestionnaire().getActiveItem());
+  }
+
+
+    private DialobQuestionnaireSessionBuilder createSessionBuilder(Form form) {
+    DialobQuestionnaireSessionBuilder builder = new DialobQuestionnaireSessionBuilder(questionnaireEventPublisher,
+      QuestionnaireDialobProgramService.newBuilder()
+        .setFormDatabase(formFinder)
+        .setProgramFromFormCompiler(new DialobProgramFromFormCompiler(functionRegistry))
+        .build(),
+      formFinder,
+      questionnaireSessionSaveService,
+      new DialobSessionEvalContextFactory(functionRegistry, null),
+      asyncFunctionInvoker);
+      when(formFinder.findForm(form.getId(), null)).thenReturn(form);
+      when(questionnaireSessionSaveService.save(any())).then(AdditionalAnswers.returnsFirstArg());
+      return builder;
   }
 
 }

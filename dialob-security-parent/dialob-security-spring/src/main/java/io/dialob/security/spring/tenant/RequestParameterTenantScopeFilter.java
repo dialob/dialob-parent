@@ -85,7 +85,7 @@ public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {
       final Tenant tenant = resolveTenantFromRequest(request);
       if (tenant != null) {
         if (!tenantAccessEvaluator.doesUserHaveAccessToTenant(tenant)) {
-          tenantAccessDenied(String.format("Access to tenant %s denied.", tenant.id()));
+          tenantAccessDenied("Access to tenant %s denied.".formatted(tenant.id()));
           return;
         }
         request.setAttribute(CURRENT_TENANT_ATTR, tenant);

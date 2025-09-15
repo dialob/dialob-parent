@@ -55,7 +55,7 @@ public class DialobCsvToFormParser implements CsvToFormParser {
         throw new CsvParsingException("CSV does not contain enough rows for headers and data.");
       }
 
-      String formName = preRecords.get(0).get(0);
+      String formName = preRecords.getFirst().get(0);
       if (formName == null || formName.isBlank()) {
         throw new CsvParsingException("Technical name of the dialog is missing in the first row.");
       }
@@ -66,7 +66,7 @@ public class DialobCsvToFormParser implements CsvToFormParser {
       CSVRecord headerRow = preRecords.get(1);
 
       if (headerRow.size() < EXPECTED_HEADERS.size() ||
-        !headerRow.get(0).equalsIgnoreCase(EXPECTED_HEADERS.get(0)) ||
+        !headerRow.get(0).equalsIgnoreCase(EXPECTED_HEADERS.getFirst()) ||
         !headerRow.get(1).equalsIgnoreCase(EXPECTED_HEADERS.get(1))) {
         throw new CsvParsingException("Incorrect header row. Expected the first two columns to be 'id' and 'type'.");
       }

@@ -363,7 +363,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     return doTransaction(template -> findTag(tenantId, updateTag.getFormName(), updateTag.getRefName()).map(tag -> {
       // Can make ref only to normal tag
       if (tag.getType() != FormTag.Type.NORMAL) {
-        throw new DocumentCorruptedException(String.format("Form %s referred tag %s must be immutable", updateTag.getFormName(), updateTag.getName()));
+        throw new DocumentCorruptedException("Form %s referred tag %s must be immutable".formatted(updateTag.getFormName(), updateTag.getName()));
       }
       int count = template.update("update " + formRevTableName + " set updated = current_timestamp, form_document_id = ?, ref_name = ?, description = ? where type = 'MUTABLE' and form_name = ? and name = ? and tenant_id = ?",
         toJdbcId(Utils.toOID(tag.getFormId())),
@@ -374,10 +374,10 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
         tenantId);
       if (count == 0) {
         // Insert??
-        throw new DocumentNotFoundException(String.format("Form %s mutable tag %s not found", updateTag.getFormName(), updateTag.getName()));
+        throw new DocumentNotFoundException("Form %s mutable tag %s not found".formatted(updateTag.getFormName(), updateTag.getName()));
       }
       if (count > 1) {
-        throw new DocumentConflictException(String.format("Form %s tag %s is not unique", updateTag.getFormName(), updateTag.getName()));
+        throw new DocumentConflictException("Form %s tag %s is not unique".formatted(updateTag.getFormName(), updateTag.getName()));
       }
       return ImmutableFormTag.builder().from(updateTag).formId(tag.getFormId()).refName(tag.getName()).build();
     }));
@@ -506,7 +506,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
               String[] labelArray = objectMapper.readValue(labels, String[].class);
               metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
             } catch (Exception e) {
-              throw new RuntimeException(String.format("Unable to parse label array formName = %s, TenantId = %s", name, tId), e);
+              throw new RuntimeException("Unable to parse label array formName = %s, TenantId = %s".formatted(name, tId), e);
             }
           }
           consumer.accept(ImmutableFormMetadataRow.of(name, metadataBuilder.build()));

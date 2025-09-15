@@ -32,8 +32,8 @@ public interface InOperator extends InfixOperator {
       return false;
     }
     Object targetGroup = getRhs().eval(evalContext);
-    if (targetGroup instanceof Collection) {
-      return ((Collection)targetGroup).contains(item);
+    if (targetGroup instanceof Collection collection) {
+      return collection.contains(item);
     }
     return item.equals(targetGroup);
   }

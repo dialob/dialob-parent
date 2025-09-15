@@ -174,10 +174,10 @@ public class ElbJWKSource<C extends SecurityContext> implements JWKSource<C> {
     JWKSet jwkSet;
     try {
       JWK jwk = JWK.parseFromPEMEncodedObjects(publicKey);
-      if (jwk instanceof RSAKey) {
-        jwk = new RSAKey.Builder((RSAKey) jwk).keyID(kid).build();
-      } else if (jwk instanceof com.nimbusds.jose.jwk.ECKey) {
-        jwk = new com.nimbusds.jose.jwk.ECKey.Builder((com.nimbusds.jose.jwk.ECKey) jwk).keyID(kid).build();
+      if (jwk instanceof RSAKey key1) {
+        jwk = new RSAKey.Builder(key1).keyID(kid).build();
+      } else if (jwk instanceof com.nimbusds.jose.jwk.ECKey key) {
+        jwk = new com.nimbusds.jose.jwk.ECKey.Builder(key).keyID(kid).build();
       } else {
         throw new KeySourceException("Unknown key type: " + jwk.getKeyType());
       }

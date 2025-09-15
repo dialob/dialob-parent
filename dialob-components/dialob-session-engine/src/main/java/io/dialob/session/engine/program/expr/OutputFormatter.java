@@ -32,7 +32,7 @@ public class OutputFormatter {
   private DateTimeFormatter timeFormatter;
 
   public OutputFormatter(String language) {
-    locale = language != null ? new Locale(language) : Locale.getDefault();
+    locale = language != null ? Locale.of(language) : Locale.getDefault();
     dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(locale);
     timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale);
   }
@@ -42,13 +42,13 @@ public class OutputFormatter {
   }
 
   public String format(Object value, String format) {
-    if (value instanceof LocalDate) {
+    if (value instanceof LocalDate date) {
       DateTimeFormatter df = format == null ? dateFormatter : DateTimeFormatter.ofPattern(format, locale);
-      return ((LocalDate) value).format(df);
+      return date.format(df);
     }
-    if (value instanceof LocalTime) {
+    if (value instanceof LocalTime time) {
       DateTimeFormatter df = format == null ? timeFormatter : DateTimeFormatter.ofPattern(format, locale);
-      return ((LocalTime) value).format(df);
+      return time.format(df);
     }
     if (value instanceof Number) {
       NumberFormat numberFormat = NumberFormat.getInstance(locale);

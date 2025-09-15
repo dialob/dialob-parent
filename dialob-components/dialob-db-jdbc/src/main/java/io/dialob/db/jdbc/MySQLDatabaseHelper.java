@@ -43,7 +43,7 @@ public class MySQLDatabaseHelper extends AbstractDatabaseHelper {
 
   @Override
   public String extractMetadataJsonArray(String columnName) {
-    return String.format(" JSON_EXTRACT(CONVERT(data using utf8),  '$.metadata.%s') ", columnName);
+    return " JSON_EXTRACT(CONVERT(data using utf8),  '$.metadata.%s') ".formatted(columnName);
   }
 
 }

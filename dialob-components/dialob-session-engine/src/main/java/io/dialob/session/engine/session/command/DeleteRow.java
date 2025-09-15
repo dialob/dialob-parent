@@ -49,8 +49,8 @@ public interface DeleteRow extends AbstractUpdateCommand<ItemId, ItemState>, Ite
     }
 
     BigInteger rowToRemove = null;
-    if (toBeRemoved instanceof ItemIndex) {
-      rowToRemove = BigInteger.valueOf(((ItemIndex) toBeRemoved).getIndex());
+    if (toBeRemoved instanceof ItemIndex index) {
+      rowToRemove = BigInteger.valueOf(index.getIndex());
     }
     rowNumbers.remove(rowToRemove);
     return itemState.update()

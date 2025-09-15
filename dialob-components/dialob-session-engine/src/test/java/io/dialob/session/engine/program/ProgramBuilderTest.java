@@ -684,7 +684,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VISIBILITY, error.getType());
 
   }
@@ -706,7 +706,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.REQUIREMENT, error.getType());
 
   }
@@ -730,7 +730,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VALIDATION, error.getType());
   }
 
@@ -752,7 +752,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.CLASSNAME, error.getType());
   }
 
@@ -844,7 +844,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VARIABLE, error.getType());
   }
 
@@ -869,7 +869,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VISIBILITY, error.getType());
   }
 
@@ -894,7 +894,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.REQUIREMENT, error.getType());
   }
 
@@ -917,7 +917,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VALIDATION, error.getType());
   }
 
@@ -940,7 +940,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VALIDATION, error.getType());
     assertEquals("NO_ARITMETHIC_FOR_TYPE", error.getMessage());
   }
@@ -964,7 +964,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError error = errors.iterator().next();
+    FormValidationError error = errors.getFirst();
     assertEquals(FormValidationError.Type.VALIDATION, error.getType());
     assertEquals("CANNOT_COERCE_TYPE", error.getMessage());
   }
@@ -981,6 +981,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
           .addItem("notesum")
           .addItem("notemin")
           .addItem("notemax")
+          .addItem("question4")
           .build()
         .addVariable("var2")
           .setValueExpression("true")
@@ -998,9 +999,14 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
           .setType("number")
           .setRequiredWhen("question2 is answered")
           .build()
+      .addQuestion("question4")
+        .setLabel("fi", "Kysymys 4")
+        .setType("number")
+        .build()
       .addQuestion("notesum")
         .setType("note")
         .setActiveWhen("sum of question2 > 0")
+        .setLabel("fi", "Kysymys 2 on {question4} or {rg1}")
         .build()
       .addQuestion("notemin")
         .setType("note")
@@ -1022,6 +1028,9 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     ArrayReducerOperator arrayReducerOperator = (ArrayReducerOperator)gtOperator.getLhs();
     CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.getArrayExpression();
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());
+
+    assertTrue(notesum.getLabelExpression().isPresent());
+    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef{id=question4}}}, Constant{value= or , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef{id=rg1}}}]}}}", notesum.getLabelExpression().get().toString());
   }
 
   @Test
@@ -1050,7 +1059,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     // @formatter:on
     final List<FormValidationError> errors = programBuilder.getErrors();
     Assertions.assertEquals(1, errors.size());
-    FormValidationError ve = errors.get(0);
+    FormValidationError ve = errors.getFirst();
     Assertions.assertEquals("UNKNOWN_VARIABLE", ve.getMessage());
   }
 

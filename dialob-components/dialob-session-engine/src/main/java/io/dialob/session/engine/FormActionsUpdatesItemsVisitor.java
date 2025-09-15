@@ -75,7 +75,7 @@ public class FormActionsUpdatesItemsVisitor extends AbstractFormActionsUpdatesIt
   }
 
   protected void languageChanged(@NonNull String language) {
-    formActions.locale(new Locale(language));
+    formActions.locale(Locale.of(language));
   }
 
   @Override

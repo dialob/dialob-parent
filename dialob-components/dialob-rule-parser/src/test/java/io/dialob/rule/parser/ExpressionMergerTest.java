@@ -21,29 +21,31 @@ import org.junit.jupiter.api.Test;
 
 class ExpressionMergerTest {
 
-    @Test
-    void test() throws Exception {
-        assertExpressionMerge("1 + 2 + 3 + 4", "(+ 1 2 3 4)");
-        assertExpressionMerge("1 + 2", "(+ 1 2)");
-        assertExpressionMerge("1 - 1", "(- 1 1)");
-        assertExpressionMerge("1 - 1 - 2", "(- 1 1 2)");
-        assertExpressionMerge("1 - 1 - 2 + 1", "(+ (- 1 1 2) 1)");
-        assertExpressionMerge("1 + 2 + 3 - 3 + 2 + 1", "(+ (- (+ 1 2 3) 3) 2 1)");
-        assertExpressionMerge("-1 + 2 + 3 - 3 + 2 + 1 = -8 * 9 + -2 + 6", "(= (+ (- (+ (neg 1) 2 3) 3) 2 1) (+ (* (neg 8) 9) (neg 2) 6))");
+  @Test
+  void test() throws Exception {
+    assertExpressionMerge("a(b) - 1", "(- (a b) 1)");
+    assertExpressionMerge("a(b(c)) - 1", "(- (a (b c)) 1)");
+    assertExpressionMerge("1 + 2 + 3 + 4", "(+ 1 2 3 4)");
+    assertExpressionMerge("1 + 2", "(+ 1 2)");
+    assertExpressionMerge("1 - 1", "(- 1 1)");
+    assertExpressionMerge("1 - 1 - 2", "(- 1 1 2)");
+    assertExpressionMerge("1 - 1 - 2 + 1", "(+ (- 1 1 2) 1)");
+    assertExpressionMerge("1 + 2 + 3 - 3 + 2 + 1", "(+ (- (+ 1 2 3) 3) 2 1)");
+    assertExpressionMerge("-1 + 2 + 3 - 3 + 2 + 1 = -8 * 9 + -2 + 6", "(= (+ (- (+ (neg 1) 2 3) 3) 2 1) (+ (* (neg 8) 9) (neg 2) 6))");
 
-         // "(+ (- (+ 1 2 3) 3) 2 1)"
+    // "(+ (- (+ 1 2 3) 3) 2 1)"
 
-        // (- 1 2) == (+ 1 -2)
-        // 1 - 2 == 1 + -2
-        // - 0 1 == 0 + -1
-    }
+    // (- 1 2) == (+ 1 -2)
+    // 1 - 2 == 1 + -2
+    // - 0 1 == 0 + -1
+  }
 
-    private void assertExpressionMerge(String expression, String expected) {
-        NodeBase ast = Expression.createExpression(expression).getAst();
-        final ExpressionMerger expressionMerger = new ExpressionMerger();
-        ast.accept(expressionMerger);
-        Assertions.assertEquals(expected, expressionMerger.getAstBuilder().getTopNode().toString());
+  private void assertExpressionMerge(String expression, String expected) {
+    NodeBase ast = Expression.createExpression(expression).getAst();
+    final ExpressionMerger expressionMerger = new ExpressionMerger();
+    ast.accept(expressionMerger);
+    Assertions.assertEquals(expected, expressionMerger.getAstBuilder().getTopNode().toString());
 
-    }
+  }
 
 }

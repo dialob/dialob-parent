@@ -302,8 +302,8 @@ public class DialobSession implements ItemStates, Serializable {
     } else if (command instanceof UpdateValueSetCommand valueSetCommand) {
       applyUpdateValueSetCommand(evalContext, valueSetCommand);
       updated();
-    } else if (command instanceof SessionUpdateCommand) {
-      applySessionUpdateCommand(evalContext, (SessionUpdateCommand) command);
+    } else if (command instanceof SessionUpdateCommand updateCommand) {
+      applySessionUpdateCommand(evalContext, updateCommand);
       updated();
     } else {
       LOGGER.warn("Do not know how to apply command: {}", command);
@@ -530,8 +530,8 @@ public class DialobSession implements ItemStates, Serializable {
       } :
       UnaryOperator.identity();
 
-    if (partialItemId instanceof ErrorId) {
-      return findMatchingErrorEntries((ErrorId) partialItemId)
+    if (partialItemId instanceof ErrorId errorId) {
+      return findMatchingErrorEntries(errorId)
         .map(logger)
         .map(Map.Entry::getKey);
     }

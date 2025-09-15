@@ -227,8 +227,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
       .map(Map.Entry::getValue)
       .flatMap(List::stream)
       .map(command -> {
-        if (command instanceof UpdateCommand && ((UpdateCommand) command).getTargetId().isPartial()) {
-          command = ((UpdateCommand) command).withTargetId(targetId);
+        if (command instanceof UpdateCommand updateCommand && updateCommand.getTargetId().isPartial()) {
+          command = updateCommand.withTargetId(targetId);
         }
         return command;
       }).forEach(updates::add);
@@ -267,8 +267,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         ItemState newItem = prototype.withId(itemIdToCreate);
         newItem = program.findItemsBy(id -> IdUtils.matches(id, itemIdToCreate)).findFirst().map(item -> {
           List<ItemId> rowItems = List.of();
-          if (item instanceof Group) {
-            Expression expression = ((Group)item).getItemsExpression();
+          if (item instanceof Group group) {
+            Expression expression = group.getItemsExpression();
             if (expression instanceof RowItemsExpression rowItemsExpression) {
               final Scope scope = ImmutableScope.of(itemIdToCreate, Set.of());
               rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();

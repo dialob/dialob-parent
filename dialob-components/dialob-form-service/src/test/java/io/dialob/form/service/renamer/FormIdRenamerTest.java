@@ -83,7 +83,7 @@ class FormIdRenamerTest {
     assertEquals("test = 'xx'", q2.getCanAddRowWhen());
     assertEquals("test = 'yy'", q2.getCanRemoveRowWhen());
 
-    Validation validationBean = q2.getValidations().get(0);
+    Validation validationBean = q2.getValidations().getFirst();
     assertEquals("question2 is answered and test = 'test2'", validationBean.getRule());
 
     FormItem q3 = form.getData().get("question3");
@@ -128,7 +128,7 @@ class FormIdRenamerTest {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "123 abc");
     assertEquals(1, resultPair.getRight().size());
-    assertEquals("FORM_NEW_VAR_FORMAT", resultPair.getRight().get(0).getMessage());
+    assertEquals("FORM_NEW_VAR_FORMAT", resultPair.getRight().getFirst().getMessage());
     assertTrue(form.getData().containsKey("question1"));
   }
 
@@ -147,7 +147,7 @@ class FormIdRenamerTest {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "question2");
     assertEquals(1, resultPair.getRight().size());
-    assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().get(0).getMessage());
+    assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().getFirst().getMessage());
     assertTrue(form.getData().containsKey("question1"));
   }
 
@@ -156,7 +156,7 @@ class FormIdRenamerTest {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "var");
     assertEquals(1, resultPair.getRight().size());
-    assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().get(0).getMessage());
+    assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().getFirst().getMessage());
     assertTrue(form.getData().containsKey("question1"));
   }
 
@@ -164,7 +164,7 @@ class FormIdRenamerTest {
   void reservedWordClash() {
     Form form = loadForm();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "matches");
-    assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().get(0).getMessage());
+    assertEquals("FORM_NEW_VAR_CLASH", resultPair.getRight().getFirst().getMessage());
     assertTrue(form.getData().containsKey("question1"));
   }
 

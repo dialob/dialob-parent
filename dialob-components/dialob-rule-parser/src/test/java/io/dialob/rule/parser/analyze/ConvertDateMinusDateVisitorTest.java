@@ -40,4 +40,37 @@ class ConvertDateMinusDateVisitorTest {
     assertEquals("(java.time.Period.between b a)",expression.getAst().toString());
   }
 
+  @Test
+  void shouldConvertDateMinusDateToPeriodBetweenCallConst() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - \"2025-09-15\"");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(java.time.Period.between 2025-09-15 a)",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldConvertDateMinusDateToPeriodBetweenCallConstAndFunction() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.returnTypeOf("a")).thenReturn(ValueType.DATE);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a() - \"2025-09-15\"");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(java.time.Period.between 2025-09-15 (a))",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldConvertDateMinusDateToPeriodBetweenCallConst2() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a + 1 years");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.datePlusPeriod a \"1 years\")",expression.getAst().toString());
+  }
+
 }

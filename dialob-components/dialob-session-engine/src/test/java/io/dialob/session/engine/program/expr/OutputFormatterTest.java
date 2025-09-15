@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.questionnaire.service.api.utils;
+package io.dialob.session.engine.program.expr;
 
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
+import org.junit.jupiter.api.Test;
 
-public class ConversionUtil {
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-  public static Object toJSON(Object answer) {
-    if (answer == null) {
-      return null;
-    }
-    if (answer instanceof String[]) {
-      return answer;
-    }
-    if (answer instanceof List) {
-      return answer;
-    }
-    if (answer instanceof Date date) {
-      return date.toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-    return answer.toString();
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class OutputFormatterTest {
+
+  @Test
+  void test() {
+    var formatter = new OutputFormatter("fi");
+    assertEquals("1.1.2018", formatter.format(LocalDate.of(2018, 1, 1), null));
+    assertEquals("12.15", formatter.format(LocalTime.of(12, 15, 10), null));
+    assertEquals("2018", formatter.format(LocalDate.of(2018, 1, 1), "YYYY"));
+    assertEquals("15", formatter.format(LocalTime.of(12, 15, 10), "mm"));
   }
 
 }

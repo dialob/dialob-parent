@@ -117,7 +117,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         updated = template.update("insert into " + tableName + " (id,rev,tenant_id,created,updated,data) values (?,?,?,?,?," + jsonToBson("?") + ")", toJdbcId(oid), revision, tenantId, timestamp, timestamp, data);
       }
       if (updated == 0) {
-        throw new DocumentConflictException(String.format("Conflict during form document %s rev %d update.", dId, revision));
+        throw new DocumentConflictException("Conflict during form document %s rev %d update.".formatted(dId, revision));
       }
       return updatedDocument(document, oid, revision, timestamp, tenantId);
     });

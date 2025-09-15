@@ -144,7 +144,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     List<FormDatabase.FormMetadataRow> list = new ArrayList<>();
     controlDatabase.getFormDatabase().findAllMetadata(getCurrentTenant().getId(), null, list::add);
     assertEquals(1, list.size());
-    FormDatabase.FormMetadataRow row = list.get(0);
+    FormDatabase.FormMetadataRow row = list.getFirst();
     assertEquals("shouldFindAllTags", row.getValue().getLabel());
     assertEquals("shouldFindAllTags", row.getId());
     controlDatabase.updateLabel(getCurrentTenant().getId(), "shouldFindAllTags", "renamed one");
@@ -152,7 +152,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     list.clear();
     controlDatabase.getFormDatabase().findAllMetadata(getCurrentTenant().getId(), null, list::add);
     assertEquals(1, list.size());
-    row = list.get(0);
+    row = list.getFirst();
     assertEquals("renamed one", row.getValue().getLabel());
     assertEquals("shouldFindAllTags", row.getId());
 
@@ -506,7 +506,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     List<FormDatabase.FormMetadataRow> rows = new ArrayList<>();
     database.findAllMetadata(getCurrentTenant().getId(), null, rows::add);
     assertEquals(1, rows.size());
-    assertEquals("form1", rows.get(0).getId());
+    assertEquals("form1", rows.getFirst().getId());
 
     deleted = controlDatabase.delete(getCurrentTenant().getId(), "form1");
 

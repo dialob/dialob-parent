@@ -26,6 +26,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.cache.CacheManager;
 
 import java.util.Collection;
@@ -36,23 +38,26 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+@MockitoSettings
 class QuestionnaireSessionProcessingServiceTest {
+  @Mock
+  QuestionnaireSessionService questionnaireSessionService;
+
+  @Mock
+  CacheManager sessionCacheManager;
+
+  @Mock
+  QuestionnaireSessionSaveService questionnaireSessionSaveService;
+
+  @Mock
+  QuestionnaireSession session;
+
+  @Mock
+  QuestionnaireEventPublisher eventPublisher;
 
   @Test
   void shouldNotPublicCompleteEventIfNotCompleted() throws Exception {
-    QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
-    MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    CacheManager sessionCacheManager = mock(CacheManager.class);
-    QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
-
-    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
-      questionnaireSessionService,
-      meterRegistry,
-      Optional.of(sessionCacheManager),
-      questionnaireSessionSaveService,
-      eventPublisher);
+    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
     when(session.isCompleted()).thenReturn(false);
@@ -71,22 +76,21 @@ class QuestionnaireSessionProcessingServiceTest {
 
   }
 
-
-  @Test
-  void shouldPublishCompleteEventIfCompleted() throws Exception {
-    QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
+  private QuestionnaireSessionProcessingService createQuestionnaireSessionProcessingService() {
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    CacheManager sessionCacheManager = mock(CacheManager.class);
-    QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
-
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
       questionnaireSessionService,
       meterRegistry,
       Optional.of(sessionCacheManager),
       questionnaireSessionSaveService,
       eventPublisher);
+    return questionnaireSessionProcessingService;
+  }
+
+
+  @Test
+  void shouldPublishCompleteEventIfCompleted() throws Exception {
+    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
     when(session.getSessionId()).thenReturn(Optional.of("q1"));
@@ -113,23 +117,9 @@ class QuestionnaireSessionProcessingServiceTest {
 
   @Test
   void shouldRejectUpdatesToCompletedQuestionnaires() throws Exception {
-    QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
-    MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    CacheManager sessionCacheManager = mock(CacheManager.class);
-    QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
-
-    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
-      questionnaireSessionService,
-      meterRegistry,
-      Optional.of(sessionCacheManager),
-      questionnaireSessionSaveService,
-      eventPublisher);
+    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
-    when(session.getSessionId()).thenReturn(Optional.of("q1"));
-    when(session.getTenantId()).thenReturn("t1");
     when(session.isCompleted()).thenReturn(true);
 
     questionnaireSessionProcessingService.answerQuestion("q1", "123", Collections.emptyList());
@@ -145,19 +135,7 @@ class QuestionnaireSessionProcessingServiceTest {
 
   @Test
   void shouldRetryUpdateIfConflicted() throws Exception {
-    QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
-    MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    CacheManager sessionCacheManager = mock(CacheManager.class);
-    QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
-
-    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
-      questionnaireSessionService,
-      meterRegistry,
-      Optional.of(sessionCacheManager),
-      questionnaireSessionSaveService,
-      eventPublisher);
+    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
     when(session.getSessionId()).thenReturn(Optional.of("q1"));
@@ -187,24 +165,9 @@ class QuestionnaireSessionProcessingServiceTest {
 
   @Test
   void shouldThrowConflictExceptionAfterTooManyFailures() throws Exception {
-    QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
-    MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    CacheManager sessionCacheManager = mock(CacheManager.class);
-    QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
-
-    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
-      questionnaireSessionService,
-      meterRegistry,
-      Optional.of(sessionCacheManager),
-      questionnaireSessionSaveService,
-      eventPublisher);
+    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
-    when(session.getSessionId()).thenReturn(Optional.of("q1"));
-    when(session.getTenantId()).thenReturn("t1");
-    when(session.isCompleted()).thenReturn(false);
     when(session.dispatchActions(eq("123"),any(Collection.class)))
       .thenThrow(DocumentConflictException.class);
 
@@ -221,23 +184,9 @@ class QuestionnaireSessionProcessingServiceTest {
 
   @Test
   void shouldNotRetryWhenThereIsATechnicalException() throws Exception {
-    QuestionnaireSessionService questionnaireSessionService = mock(QuestionnaireSessionService.class);
-    MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    CacheManager sessionCacheManager = mock(CacheManager.class);
-    QuestionnaireSessionSaveService questionnaireSessionSaveService = mock(QuestionnaireSessionSaveService.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
-
-    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
-      questionnaireSessionService,
-      meterRegistry,
-      Optional.of(sessionCacheManager),
-      questionnaireSessionSaveService,
-      eventPublisher);
+    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
-    when(session.getSessionId()).thenReturn(Optional.of("q1"));
-    when(session.getTenantId()).thenReturn("t1");
     when(session.isCompleted()).thenReturn(false);
     when(session.dispatchActions(eq("123"),any(Collection.class)))
       .thenThrow(RuntimeException.class);
@@ -252,6 +201,7 @@ class QuestionnaireSessionProcessingServiceTest {
     verifyNoMoreInteractions(questionnaireSessionService, sessionCacheManager, questionnaireSessionSaveService, session, eventPublisher);
 
   }
+
 
 }
 

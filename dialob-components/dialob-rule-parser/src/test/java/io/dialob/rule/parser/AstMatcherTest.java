@@ -224,6 +224,13 @@ class AstMatcherTest {
   }
 
   @Test
+  void twoConstEvalTest() {
+    // given
+    assertMinify("true", "\"a\" = \"a\"");
+    assertMinify("false", "\"a\" = \"b\"");
+  }
+
+  @Test
   void constEvalTest2() {
     // given
     assertMinify("-2", "1 + 2 + 3 - 3 - 6 - 8 + 9");
@@ -311,6 +318,7 @@ class AstMatcherTest {
     assertMinify("(= a (+ b 6))", "a = (b + 6) or false");
     assertMinify("true", "true or a = (b + 6)");
     assertMinify("true", "not false or not false");
+    assertMinify("(not a)", "not a");
     assertMinify("false", "not true and not true");
     assertMinify("false", "not (true and true)");
     assertMinify("true", "not (true and false)");

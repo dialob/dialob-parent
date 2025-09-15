@@ -73,7 +73,7 @@ public class DialobProgramFromFormCompiler {
         languages = formDocument.getMetadata().getLanguages();
         Object allRequiredByDefault = formDocument.getMetadata().getAdditionalProperties().get("answersRequiredByDefault");
         if (Boolean.TRUE.equals(allRequiredByDefault) ||
-          allRequiredByDefault instanceof String && BooleanUtils.toBoolean((String) allRequiredByDefault) ) {
+          allRequiredByDefault instanceof String string && BooleanUtils.toBoolean(string) ) {
           this.answersRequiredByDefault = true;
         }
         if (languages.isEmpty()) {

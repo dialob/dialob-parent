@@ -390,8 +390,8 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object negate(Object value) {
-      if (value instanceof BigInteger) {
-        return ((BigInteger) value).negate();
+      if (value instanceof BigInteger integer) {
+        return integer.negate();
       }
       return value;
     }
@@ -444,16 +444,12 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object coerceFrom(Object value) {
-      if (value instanceof BigInteger) {
-        return value;
-      }
-      if (value instanceof BigDecimal) {
-        return ((BigDecimal) value).toBigInteger();
-      }
-      if (value instanceof Number) {
-        return BigInteger.valueOf(((Number) value).longValue());
-      }
-      return null;
+      return switch (value) {
+        case BigInteger bigInteger -> value;
+        case BigDecimal decimal -> decimal.toBigInteger();
+        case Number number -> BigInteger.valueOf(number.longValue());
+        case null, default -> null;
+      };
     }
 
     @Override
@@ -573,8 +569,8 @@ public enum PrimitiveValueType implements ValueType {
 
     @Override
     public Object coerceFrom(Object value) {
-      if (value instanceof Number) {
-        return BigDecimal.valueOf(((Number) value).doubleValue());
+      if (value instanceof Number number) {
+        return BigDecimal.valueOf(number.doubleValue());
       }
       return null;
     }

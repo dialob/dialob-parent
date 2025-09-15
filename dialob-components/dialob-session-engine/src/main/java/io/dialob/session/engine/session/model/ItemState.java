@@ -362,7 +362,7 @@ public class ItemState implements SessionObject {
   }
 
   public boolean isBlank() {
-    return isNull() || value instanceof CharSequence && StringUtils.isBlank((CharSequence)value);
+    return isNull() || value instanceof CharSequence cs && StringUtils.isBlank(cs);
   }
 
   public boolean isNull() {
