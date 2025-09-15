@@ -1001,6 +1001,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
       .addQuestion("notesum")
         .setType("note")
         .setActiveWhen("sum of question2 > 0")
+        .setLabel("fi", "Kysymys 2 on {question2}")
         .build()
       .addQuestion("notemin")
         .setType("note")
@@ -1022,6 +1023,9 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     ArrayReducerOperator arrayReducerOperator = (ArrayReducerOperator)gtOperator.getLhs();
     CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.getArrayExpression();
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());
+
+    assertTrue(notesum.getLabelExpression().isPresent());
+    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef{id=question2}}}]}}}", notesum.getLabelExpression().get().toString());
   }
 
   @Test

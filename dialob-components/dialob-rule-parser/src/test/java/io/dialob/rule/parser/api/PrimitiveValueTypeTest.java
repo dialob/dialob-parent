@@ -48,6 +48,7 @@ class PrimitiveValueTypeTest {
   @Test
   void testCoersion() {
     assertEquals(BigInteger.valueOf(1), ValueType.INTEGER.coerceFrom(BigInteger.ONE));
+    assertEquals(BigInteger.valueOf(1), ValueType.INTEGER.coerceFrom(BigDecimal.ONE));
     assertEquals(BigInteger.valueOf(1), ValueType.INTEGER.coerceFrom(1));
     assertEquals(BigInteger.valueOf(1), ValueType.INTEGER.coerceFrom(1.0));
     assertNull(ValueType.INTEGER.coerceFrom(null));
