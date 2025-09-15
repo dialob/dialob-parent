@@ -34,22 +34,14 @@ public interface CoerceToDecimalOperator extends Expression {
   @Override
   default BigDecimal eval(@NonNull EvalContext context) {
     Object eval = getExpression().eval(context);
-    if (eval == null) {
-      return null;
-    }
-    if (eval instanceof BigDecimal decimal) {
-      return decimal;
-    }
-    if (eval instanceof Double double1) {
-      return BigDecimal.valueOf(double1);
-    }
-    if (eval instanceof java.lang.Number number) {
-      return BigDecimal.valueOf(number.longValue());
-    }
-    if (eval instanceof String string) {
-      return new BigDecimal(string);
-    }
-    throw new IllegalStateException("Cannot coerce " + eval + " to decimal");
+    return switch (eval) {
+      case null -> null;
+      case BigDecimal decimal -> decimal;
+      case Double double1 -> BigDecimal.valueOf(double1);
+      case Number number -> BigDecimal.valueOf(number.longValue());
+      case String string -> new BigDecimal(string);
+      default -> throw new IllegalStateException("Cannot coerce " + eval + " to decimal");
+    };
 
   }
 
