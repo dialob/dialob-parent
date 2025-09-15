@@ -981,6 +981,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
           .addItem("notesum")
           .addItem("notemin")
           .addItem("notemax")
+          .addItem("question4")
           .build()
         .addVariable("var2")
           .setValueExpression("true")
@@ -998,10 +999,14 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
           .setType("number")
           .setRequiredWhen("question2 is answered")
           .build()
+      .addQuestion("question4")
+        .setLabel("fi", "Kysymys 4")
+        .setType("number")
+        .build()
       .addQuestion("notesum")
         .setType("note")
         .setActiveWhen("sum of question2 > 0")
-        .setLabel("fi", "Kysymys 2 on {question2}")
+        .setLabel("fi", "Kysymys 2 on {question4} or {rg1}")
         .build()
       .addQuestion("notemin")
         .setType("note")
@@ -1025,7 +1030,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());
 
     assertTrue(notesum.getLabelExpression().isPresent());
-    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef{id=question2}}}]}}}", notesum.getLabelExpression().get().toString());
+    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef{id=question4}}}, Constant{value= or , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef{id=rg1}}}]}}}", notesum.getLabelExpression().get().toString());
   }
 
   @Test
