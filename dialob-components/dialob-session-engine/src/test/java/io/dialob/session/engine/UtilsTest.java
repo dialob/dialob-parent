@@ -93,13 +93,55 @@ class UtilsTest {
     Utils.writeObjectValue(outputStream, BigInteger.ZERO);
     Utils.writeObjectValue(outputStream, BigInteger.ONE);
     Utils.writeObjectValue(outputStream, new BigInteger("98765432109876543210"));
-    assertEquals(20, outputStream.getTotalBytesWritten());
+    Utils.writeObjectValue(outputStream, List.of(BigInteger.ZERO, BigInteger.ONE));
+    assertEquals(27, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
     var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
     assertEquals(BigInteger.ZERO, Utils.readObjectValue(inputStream));
     assertEquals(BigInteger.ONE, Utils.readObjectValue(inputStream));
     assertEquals(new BigInteger("98765432109876543210"), Utils.readObjectValue(inputStream));
+    assertEquals(List.of(BigInteger.ZERO, BigInteger.ONE), Utils.readObjectValue(inputStream));
+  }
+
+  @Test
+  void shouldWriteAndReadBigDoubles() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, null);
+    assertEquals(1, outputStream.getTotalBytesWritten());
+
+    buffer = new ByteArrayOutputStream();
+    outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, 1.0);
+    Utils.writeObjectValue(outputStream, -1.0);
+    assertEquals(20, outputStream.getTotalBytesWritten());
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    assertEquals(1.0, Utils.readObjectValue(inputStream));
+    assertEquals(-1.0, Utils.readObjectValue(inputStream));
+  }
+
+  @Test
+  void shouldWriteAndReadBooleans() throws IOException {
+    var buffer = new ByteArrayOutputStream();
+    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, null);
+    assertEquals(1, outputStream.getTotalBytesWritten());
+
+    buffer = new ByteArrayOutputStream();
+    outputStream = CodedOutputStream.newInstance(buffer);
+    Utils.writeObjectValue(outputStream, Boolean.TRUE);
+    Utils.writeObjectValue(outputStream, Boolean.FALSE);
+    Utils.writeObjectValue(outputStream, null);
+    assertEquals(7, outputStream.getTotalBytesWritten());
+    outputStream.flush();
+
+    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    assertEquals(Boolean.TRUE, Utils.readObjectValue(inputStream));
+    assertEquals(Boolean.FALSE, Utils.readObjectValue(inputStream));
+    assertNull(Utils.readObjectValue(inputStream));
   }
 
   @Test
