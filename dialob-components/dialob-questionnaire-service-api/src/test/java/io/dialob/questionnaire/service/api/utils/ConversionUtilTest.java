@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.session.engine.program.expr;
+package io.dialob.questionnaire.service.api.utils;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-class OutputFormatterTest {
+class ConversionUtilTest {
+
+  static class TestType {
+    @Override
+    public String toString() {
+      return "TestType";
+    }
+  }
 
   @Test
   void test() {
-    var formatter = new OutputFormatter("fi");
-    assertEquals("1.1.2018", formatter.format(LocalDate.of(2018, 1, 1), null));
-    assertEquals("12.15", formatter.format(LocalTime.of(12, 15, 10), null));
-    assertEquals("2018", formatter.format(LocalDate.of(2018, 1, 1), "YYYY"));
-    assertEquals("15", formatter.format(LocalTime.of(12, 15, 10), "mm"));
+    assertNull(ConversionUtil.toJSON(null));
+    Object json = ConversionUtil.toJSON(new String[0]);
+    assertTrue(json.getClass().isArray());
+    assertEquals(List.of("a"), ConversionUtil.toJSON(List.of("a")));
+    assertEquals("1970-01-01", ConversionUtil.toJSON(new Date(321L)));
+    assertEquals("TestType", ConversionUtil.toJSON(new TestType()));
   }
 
 }
