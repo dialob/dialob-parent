@@ -72,6 +72,17 @@ class CoerceToDecimalOperatorTest {
   }
 
   @Test
+  void shouldEvalBigDecimalToBigDecimal() {
+    Expression expression = mock();
+    EvalContext context = mock();
+    var op = ImmutableCoerceToDecimalOperator.builder()
+      .expression(expression).build();
+
+    when(expression.eval(context)).thenReturn(BigDecimal.valueOf(100, 2));
+    assertEquals(BigDecimal.valueOf(100, 2), op.eval(context));
+  }
+
+  @Test
   void shouldNotEvalObject() {
     Expression expression = mock();
     EvalContext context = mock();
