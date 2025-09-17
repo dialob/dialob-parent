@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Typography, Badge } from '@mui/material';
+import { IconButton, Typography, Badge, alpha, Theme } from '@mui/material';
 import { Handle } from './Handle';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { StyledListItem, StyledTreeItem } from './TreeItemComponents';
@@ -39,6 +39,7 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
   const [highlighted, setHighlighted] = React.useState(false);
   const errorColor = useErrorColorSx(editor.errors, id);
   const textColor = errorColor ?? (highlighted ? 'primary.main' : 'text.primary');
+  const backgroundColor = (theme: Theme) => errorColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const item = form.data[id];
 
   React.useEffect(() => {
@@ -75,9 +76,9 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
         ref={ref}
         clone={clone}
         ghost={ghost}
-        sx={style}
+        sx={{ ...style, backgroundColor }}
       >
-        <Handle item={item} highlighted={highlighted} itemconfig={config.itemEditors} {...handleProps} />
+        <Handle item={item} highlighted={highlighted} error={errorColor !== undefined} itemconfig={config.itemEditors} {...handleProps} />
         {onCollapse && collapsible && (
           <IconButton
             size="small"

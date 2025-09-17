@@ -2,16 +2,19 @@ import React from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem } from '../types';
-import { ConversionMenu, IdField, Indicators, NoteField, OptionsMenu } from './ItemComponents';
+import { ConversionMenu, IdField, Indicators, NoteField, OptionsMenu, StyledTable } from './ItemComponents';
 import { useEditor } from '../editor';
+import { useErrorColorSx } from '../utils/ErrorUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
   const centeredCellSx = { textAlign: 'center' };
+  const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue || item.activeWhen;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const backgroundColor = errorBorderColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
 
@@ -26,7 +29,7 @@ const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...p
   return (
     <Element name={item.id}>
       <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
-        <Table>
+        <StyledTable errorBorderColor={errorBorderColor} backgroundColor={backgroundColor}>
           <TableBody>
             <TableRow>
               <TableCell>
@@ -48,7 +51,7 @@ const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...p
               </TableCell>
             </TableRow>
           </TableBody>
-        </Table>
+        </StyledTable>
       </TableContainer>
     </Element>
   );

@@ -37,6 +37,7 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const backgroundColor = errorBorderColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
 
@@ -51,7 +52,7 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   return (
     <Element name={item.id}>
       <TableContainer component={GroupPaper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
-        <StyledTable errorBorderColor={errorBorderColor}>
+        <StyledTable errorBorderColor={errorBorderColor} backgroundColor={backgroundColor}>
           <TableBody>
             <TableRow>
               <TableCell width='5%' sx={centeredCellSx}>
