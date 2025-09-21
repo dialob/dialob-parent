@@ -148,6 +148,8 @@ const en = {
   'dialogs.translations.languages.delete.confirm.desc': `Are you sure you want to delete "{lang}" and all of its translations?`,
   'dialogs.translations.languages.copy': 'Copy as new',
   'dialogs.translations.languages.active': 'Active',
+  'dialogs.translations.languages.default': 'Default active',
+  'dialogs.translations.languages.default.desc': 'This language will be active by default when the form is loaded in Composer. If none is selected then English would be the default language, or the first language in the form.',
   'dialogs.translations.missing.title': 'Missing translations',
   'dialogs.translations.missing.none': 'No missing translations',
 
