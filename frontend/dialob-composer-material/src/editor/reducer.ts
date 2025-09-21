@@ -47,6 +47,10 @@ const setConfirmationActiveItem = (state: EditorState, item?: DialobItem): void 
   state.confirmationActiveItem = item;
 }
 
+const toggleItemCollapsed = (state: EditorState, itemId: string): void => {
+  state.collapsedItems[itemId] = !state.collapsedItems[itemId];
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -71,6 +75,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setActiveVariableTab(state, action.tab);
     } else if (action.type === 'setConfirmationActiveItem') {
       setConfirmationActiveItem(state, action.item);
+    } else if (action.type === 'toggleItemCollapsed') {
+      toggleItemCollapsed(state, action.itemId);
     }
   });
   return newState;

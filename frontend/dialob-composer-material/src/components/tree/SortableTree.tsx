@@ -6,7 +6,7 @@ import {
   DropAnimation, defaultDropAnimation, UniqueIdentifier,
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { buildTree, flattenTree, getProjection, getChildCount, removeChildrenOf, setProperty, buildTreeFromForm } from './utilities';
+import { buildTree, flattenTree, getProjection, getChildCount, removeChildrenOf, buildTreeFromForm } from './utilities';
 import { SensorContext, TreeItems } from './types';
 import { SortableTreeItem } from './SortableTreeItem';
 import { CSS } from '@dnd-kit/utilities';
@@ -49,7 +49,7 @@ const dropAnimationConfig: DropAnimation = {
 
 export const SortableTree: React.FC = () => {
   const { form, syncTree } = useComposer();
-  const { editor } = useEditor();
+  const { editor, toggleItemCollapsed } = useEditor();
   const { config } = useBackend();
   const [items, setItems] = React.useState<TreeItems>([{ id: 'root', children: [], title: 'Root' }]);
   const [activeId, setActiveId] = React.useState<UniqueIdentifier | null>(null);
@@ -57,8 +57,8 @@ export const SortableTree: React.FC = () => {
   const [offsetLeft, setOffsetLeft] = React.useState(0);
 
   React.useEffect(() => {
-    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors));
-  }, [form.data, editor.activeFormLanguage]);
+    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems));
+  }, [form.data, editor.activeFormLanguage, editor.collapsedItems]);
   
   const flattenedItems = React.useMemo(() => {
     const flattenedTree = flattenTree(items);
@@ -147,11 +147,7 @@ export const SortableTree: React.FC = () => {
   }
 
   const handleCollapse = (id: UniqueIdentifier) => {
-    setItems((items) =>
-      setProperty(items, id, 'collapsed', (value) => {
-        return !value;
-      })
-    );
+    toggleItemCollapsed(id as string);
   }
 
   return (

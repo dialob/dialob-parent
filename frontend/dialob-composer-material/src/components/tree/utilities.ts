@@ -2,7 +2,7 @@ import { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { FlattenedItem, TreeItem, TreeItems } from './types';
 import { DialobItem } from '../../types';
-import { ItemConfig, ItemTypeConfig } from '../../defaults/types';
+import { ItemConfig } from '../../defaults/types';
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
@@ -112,7 +112,7 @@ export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
   return root.children;
 }
 
-export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig): TreeItems => {
+export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig, collapsedItems?: Record<string, boolean>): TreeItems => {
   const createdNodes = new Map<string, TreeItem>();
 
 
@@ -122,13 +122,14 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
     }
 
     const treeCollapsible = config.items.find(c => c.matcher(item))?.props.treeCollapsible ?? false; 
+    const isCollapsed = collapsedItems?.[item.id] ?? !treeCollapsible;
 
     const newNode: TreeItem = { 
       id: item.id, 
       children: [], 
       title: item.id.startsWith('page') ? (item.label?.[language] ?? item.id) : item.id,
       collapsible: treeCollapsible,
-      collapsed: !treeCollapsible
+      collapsed: isCollapsed
     };
 
     createdNodes.set(item.id, newNode);
