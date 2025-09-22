@@ -23,13 +23,13 @@ const createChildren = (items: DialobItems, itemConfig: ItemConfig, activePage?:
 
 const Editor: React.FC = () => {
   const { form } = useComposer();
-  const { editor } = useEditor();
+  const { editor, setHighlightedItem } = useEditor();
   const { config } = useBackend();
 
   return (
     <Box id='scroll-container'>
       <PageTabs items={form.data} />
-      {createChildren(form.data, config.itemEditors, editor.activePage)}
+      {createChildren(form.data, config.itemEditors, editor.activePage, setHighlightedItem)}
       {editor.activePage && <Box sx={{ mb: 2 }}><AddItemMenu item={editor.activePage} /></Box>}
     </Box>
   );

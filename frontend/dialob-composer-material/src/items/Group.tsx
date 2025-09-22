@@ -29,14 +29,15 @@ const GroupPaper = styled(Paper)(({ theme }) => ({
 const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { form } = useComposer();
-  const { editor, setHighlightedItem } = useEditor();
+  const { editor, setHighlightedItem, toggleItemCollapsed } = useEditor();
   const { config } = useBackend();
-  const [expanded, setExpanded] = React.useState<boolean>(true);
+  const expanded = !editor.collapsedItems[item.id];
   const children = createChildren(item, form.data, config.itemEditors, setHighlightedItem);
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const backgroundColor = errorBorderColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
 
@@ -51,11 +52,11 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   return (
     <Element name={item.id}>
       <TableContainer component={GroupPaper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
-        <StyledTable errorBorderColor={errorBorderColor}>
+        <StyledTable errorBorderColor={errorBorderColor} backgroundColor={backgroundColor}>
           <TableBody>
             <TableRow>
               <TableCell width='5%' sx={centeredCellSx}>
-                <IconButton onClick={() => setExpanded(!expanded)}>
+                <IconButton onClick={() => toggleItemCollapsed(item.id)}>
                   {expanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
                 </IconButton>
               </TableCell>

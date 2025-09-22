@@ -19,7 +19,7 @@ export const LanguagesTable = styled(Table)(({ theme }) => ({
 }));
 
 const LanguageEditor: React.FC = () => {
-  const { form, addLanguage } = useComposer();
+  const { form, addLanguage, setMetadataValue } = useComposer();
   const { editor, setActiveFormLanguage } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [copyFrom, setCopyFrom] = React.useState<string | undefined>();
@@ -79,6 +79,9 @@ const LanguageEditor: React.FC = () => {
               <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.copy' /></TableCell>
               <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.delete' /></TableCell>
               <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.active' /></TableCell>
+              <Tooltip title={<FormattedMessage id='dialogs.translations.languages.default.desc' />}>
+                <TableCell align='center' sx={{ fontWeight: 'bold' }}><FormattedMessage id='dialogs.translations.languages.default' /></TableCell>
+              </Tooltip>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -95,6 +98,9 @@ const LanguageEditor: React.FC = () => {
                 </TableCell>
                 <TableCell align='center'>
                   <Switch checked={editor.activeFormLanguage === lang} onChange={() => setActiveFormLanguage(lang)} />
+                </TableCell>
+                <TableCell align='center'>
+                  <Switch checked={form.metadata.defaultActiveLanguage === lang} onChange={() => setMetadataValue('defaultActiveLanguage', lang)} />
                 </TableCell>
               </TableRow>
             ))}

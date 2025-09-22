@@ -50,6 +50,10 @@ export const useEditor = () => {
     dispatch({ type: 'setConfirmationActiveItem', item });
   }
 
+  const toggleItemCollapsed = (itemId: string): void => {
+    dispatch({ type: 'toggleItemCollapsed', itemId });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -63,5 +67,6 @@ export const useEditor = () => {
     setActiveList,
     setActiveVariableTab,
     setConfirmationActiveItem,
+    toggleItemCollapsed,
   };
 }

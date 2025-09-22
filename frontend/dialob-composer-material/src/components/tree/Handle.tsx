@@ -9,12 +9,13 @@ import { DragIndicator } from '@mui/icons-material';
 interface HandleProps extends ButtonBaseProps {
   item: DialobItem | undefined;
   highlighted: boolean;
+  error?: boolean;
   itemconfig?: ItemConfig;
 }
 
 const StyledAction = styled(ButtonBase, {
-  shouldForwardProp: (prop) => prop !== 'highlighted',
-})<HandleProps>(({ theme, highlighted }) => ({
+  shouldForwardProp: (prop) => prop !== 'highlighted' && prop !== 'error',
+})<HandleProps>(({ theme, highlighted, error }) => ({
   display: 'flex',
   width: theme.spacing(2),
   padding: theme.spacing(1),
@@ -25,7 +26,7 @@ const StyledAction = styled(ButtonBase, {
 
   '& svg': {
     transition: 'fill 0.2s ease',
-    fill: highlighted ? theme.palette.primary.main : theme.palette.text.secondary,
+    fill: error ? theme.palette.error.main : (highlighted ? theme.palette.primary.main : theme.palette.text.secondary),
   },
 
   '&:hover': {

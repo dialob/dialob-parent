@@ -14,7 +14,7 @@ import PreviewDialog from '../../dialogs/PreviewDialog';
 import VersioningDialog from '../../dialogs/VersioningDialog';
 import CreateTagDialog from '../../dialogs/CreateTagDialog';
 import { downloadForm } from '../../utils/ParseUtils';
-import { matchItemByKeyword, matchVariableByKeyword } from '../../utils/SearchUtils';
+import { matchItemByKeyword, matchVariableByKeyword, SearchMatch } from '../../utils/SearchUtils';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { useBackend } from '../../backend/useBackend';
 import { CreateSessionResult } from '../../backend/types';
@@ -22,12 +22,7 @@ import { isContextVariable } from '../../utils/ItemUtils';
 import { useDocs } from '../../utils/DocsUtils';
 import { getLanguageName } from '../../utils/TranslationUtils';
 import { SavingProvider } from '../../dialogs/contexts/saving/SavingProvider';
-import { DialobItem } from '../../types';
 
-interface SearchMatch {
-  type: 'item' | 'variable';
-  id: string;
-}
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
@@ -146,14 +141,16 @@ const MenuBar: React.FC = () => {
     const id = setTimeout(() => {
       const matches: SearchMatch[] = [];
       for (const item of Object.values(form.data)) {
-        if (matchItemByKeyword(item, form.metadata.languages, searchKeyword)) {
-          matches.push({ type: 'item', id: item.id });
+        const match = matchItemByKeyword(item, form.metadata.languages, searchKeyword);
+        if (match !== undefined) {
+          matches.push(match);
         }
       }
       if (form.variables) {
         for (const variable of form.variables) {
-          if (matchVariableByKeyword(variable, searchKeyword)) {
-            matches.push({ type: 'variable', id: variable.name });
+          const match = matchVariableByKeyword(variable, searchKeyword);
+          if (match !== undefined) {
+            matches.push(match);
           }
         }
       }
@@ -229,7 +226,8 @@ const MenuBar: React.FC = () => {
                 .map((match) => (
                   <MenuItem key={match.id} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }} onClick={() => handleMatchClick(match)}>
                     <Typography fontWeight='bold' color={match.type === 'variable' ? 'primary' : 'inherit'}>{match.id}</Typography>
-                    <Typography color='text.hint'>{match.type}</Typography>
+                    <Typography color='text.hint'><FormattedMessage id={`header.search.matches.type.${match.type}`} /></Typography>
+                    <Typography color='text.hint'><FormattedMessage id={`header.search.matches.matchType.${match.matchType}`} />{match.content ? `: ${match.content}` : ''}</Typography>
                   </MenuItem>
                 ))}
             </List>

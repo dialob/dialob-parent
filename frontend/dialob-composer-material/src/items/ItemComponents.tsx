@@ -38,12 +38,13 @@ const FullWidthButton = styled(Button)(({ theme }) => ({
 
 
 export const StyledTable = styled(Table, {
-  shouldForwardProp: (prop) => prop !== 'errorBorderColor',
-})<{ errorBorderColor?: string }>(({ errorBorderColor }) => (
+  shouldForwardProp: (prop) => prop !== 'errorBorderColor' && prop !== 'backgroundColor',
+})<{ errorBorderColor?: string, backgroundColor?: string }>(({ errorBorderColor, backgroundColor }) => (
   errorBorderColor && {
     border: 1.5,
     borderStyle: 'solid',
     borderColor: errorBorderColor,
+    backgroundColor: backgroundColor,
   }
 ));
 

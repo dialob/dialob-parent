@@ -28,4 +28,5 @@ export type EditorState = {
   highlightedItem?: DialobItem;
   activeList?: string;
   activeVariableTab?: VariableTabType;
+  collapsedItems: Record<string, boolean>;
 };

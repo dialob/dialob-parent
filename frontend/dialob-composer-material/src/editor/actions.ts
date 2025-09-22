@@ -13,3 +13,4 @@ export type EditorAction =
   | { type: 'setActiveList', listId?: string }
   | { type: 'setActiveVariableTab', tab?: VariableTabType }
   | { type: 'setConfirmationActiveItem', item?: DialobItem }
+  | { type: 'toggleItemCollapsed', itemId: string }

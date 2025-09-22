@@ -9,7 +9,6 @@ import { useEditor } from "../editor";
 import CodeMirror from "./code/CodeMirror";
 import { LocalizedString, ValueSetEntry } from "../types";
 import { useSave } from "../dialogs/contexts/saving/useSave";
-import { on } from "events";
 
 
 export interface ChoiceItemProps {
@@ -80,27 +79,55 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const backgroundColor = errorColor || theme.palette.background.paper;
   const [entryExpanded, setEntryExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const localizedString = entry.label;
+  const [localId, setLocalId] = React.useState(entry.id);
+  const [localizedString, setLocalizedString] = React.useState(entry.label || {});
+  const [localRule, setLocalRule] = React.useState(entry.when ?? '');
   const inputRef = React.useRef<HTMLInputElement>(null);
   const length = savingState.valueSets?.find(v => v.id === valueSetId)?.entries?.length || 0;
 
   const handleUpdate = (value: string, language: string) => {
-    const updatedLocalizedString = { ...localizedString, [language]: value };
-    onTextEdit(entry, updatedLocalizedString);
+    setLocalizedString(prev => ({ ...prev, [language]: value }));
   }
 
-  const handleSaveRule = (value: string) => {
+  const handleBlurText = (language: string) => {
+    const currentValue = localizedString[language] || '';
+    const originalValue = entry.label?.[language] || '';
+    if (currentValue !== originalValue) {
+      onTextEdit(entry, localizedString);
+    }
+  }
+
+  const handleUpdateRule = (value: string) => {
+    setLocalRule(value);
+  }
+
+  const handleBlurRule = (value: string) => {
     if (value !== entry.when) {
       onRuleEdit(entry, value);
     }
   }
 
   const handleChangeId = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const newId = e.target.value.trim();
-    if (newId !== entry.id) {
-      onUpdateId(entry, newId);
+    setLocalId(e.target.value);
+  }
+
+  const handleBlurId = () => {
+    if (localId !== entry.id) {
+      onUpdateId(entry, localId);
     }
   }
+
+  React.useEffect(() => {
+    setLocalId(entry.id);
+  }, [entry.id]);
+
+  React.useEffect(() => {
+    setLocalizedString(entry.label || {});
+  }, [entry.label]);
+
+  React.useEffect(() => {
+    setLocalRule(entry.when ?? '');
+  }, [entry.when]);
 
   const handleMove = (direction: 'up' | 'down') => {
     if (valueSetId) {
@@ -110,11 +137,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     }
   }
 
-  React.useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [entry.id]);
 
   return (
     <>
@@ -133,7 +155,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               </IconButton>
             </TableCell>
             <TableCell width='20%' sx={{ p: 0.5 }}>
-              <TextField value={entry.id} onChange={(e) => handleChangeId(e)} 
+              <TextField value={localId} onChange={handleChangeId} onBlur={handleBlurId}
                 variant='standard' fullWidth inputRef={inputRef}
                 InputProps={{
                   disableUnderline: true
@@ -141,7 +163,14 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
             </TableCell>
             {formLanguages?.map(lang => (
               <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
-                <OverflowTooltipTextField value={localizedString ? localizedString[lang] : ''} variant="standard" fullWidth InputProps={{ disableUnderline: true }} onChange={(e) => handleUpdate(e.target.value, lang)} />
+                <OverflowTooltipTextField 
+                  value={localizedString ? localizedString[lang] : ''} 
+                  variant="standard" 
+                  fullWidth 
+                  InputProps={{ disableUnderline: true }} 
+                  onChange={(e) => handleUpdate(e.target.value, lang)}
+                  onBlur={() => handleBlurText(lang)}
+                />
               </TableCell>
             ))}
           </TableRow>
@@ -149,7 +178,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
             <TableCell colSpan={2 + languageNo}>
               {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
                 <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
-                <CodeMirror value={entry.when ?? ''} onChange={(value) => handleSaveRule(value)} />
+                <CodeMirror value={localRule} onChange={handleUpdateRule} onBlur={() => handleBlurRule(localRule)} />
               </Box>}
             </TableCell>
           </TableRow>}

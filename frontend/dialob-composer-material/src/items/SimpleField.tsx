@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
+import { Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme, Theme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem } from '../types';
 import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, VisibilityField, StyledTable } from './ItemComponents';
@@ -14,6 +14,7 @@ const SimpleField: React.FC<{ item: DialobItem } & Record<string, any>> = ({ ite
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
   const [highlighted, setHighlighted] = React.useState<boolean>(false);
+  const backgroundColor = errorBorderColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
 
@@ -28,7 +29,7 @@ const SimpleField: React.FC<{ item: DialobItem } & Record<string, any>> = ({ ite
   return (
     <Element name={item.id}>
       <TableContainer component={Paper} sx={{ my: 2, ...highlightedSx }} onClick={props?.onClick ? props.onClick : undefined}>
-        <StyledTable errorBorderColor={errorBorderColor}>
+        <StyledTable errorBorderColor={errorBorderColor} backgroundColor={backgroundColor}>
           <TableBody>
             <TableRow>
               <TableCell width='20%'>
