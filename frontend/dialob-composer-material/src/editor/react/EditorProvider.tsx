@@ -10,7 +10,7 @@ export const EditorProvider: React.FC<PropsWithChildren<ComposerProviderProps>> 
   useEffect(() => {
     const formLanguages = form?.metadata?.languages;
     const defaultActiveLanguage = form?.metadata?.defaultActiveLanguage;
-    if (formLanguages && formLanguages.length > 0 && (INITIAL_EDITOR.activeFormLanguage !== defaultActiveLanguage || !formLanguages.includes(INITIAL_EDITOR.activeFormLanguage))) {
+    if (formLanguages && formLanguages.length > 0 && ((defaultActiveLanguage && INITIAL_EDITOR.activeFormLanguage !== defaultActiveLanguage) || !formLanguages.includes(INITIAL_EDITOR.activeFormLanguage))) {
       if (defaultActiveLanguage && formLanguages.includes(defaultActiveLanguage)) {
         dispatch({ type: 'setActiveFormLanguage', language: defaultActiveLanguage });
         return;
