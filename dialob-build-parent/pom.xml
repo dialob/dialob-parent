@@ -58,9 +58,9 @@
     <spring-boot.version>3.5.6</spring-boot.version>
 
     <antlr4.version>4.13.2</antlr4.version>
-    <aws-java-sdk.version>2.33.9</aws-java-sdk.version>
+    <aws-java-sdk.version>2.34.2</aws-java-sdk.version>
     <azure-sdk.version>1.2.38</azure-sdk.version>
-    <bcpkix-jdk18on.version>1.81</bcpkix-jdk18on.version>
+    <bcpkix-jdk18on.version>1.82</bcpkix-jdk18on.version>
     <checkerframework.version>3.51.0</checkerframework.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-csv.version>1.14.1</commons-csv.version>
@@ -69,26 +69,25 @@
     <commons-validator.version>1.10.0</commons-validator.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
     <db2jcc4.version>4.23.42</db2jcc4.version>
-    <feign.version>13.6</feign.version>
-    <guava.version>33.4.8-jre</guava.version>
-    <hamcrest.version>2.1</hamcrest.version>
+    <guava.version>33.5.0-jre</guava.version>
+    <hamcrest.version>2.2</hamcrest.version>
     <immutables.version>2.11.3</immutables.version>
     <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
-    <jsoup.version>1.20.1</jsoup.version>
-    <lombok.version>1.18.40</lombok.version>
+    <jsoup.version>1.21.2</jsoup.version>
+    <lombok.version>1.18.42</lombok.version>
     <protobuf-java.version>4.32.1</protobuf-java.version>
-    <s3mock-junit5.version>4.8.0</s3mock-junit5.version>
-    <spotbugs-annotations.version>4.9.4</spotbugs-annotations.version>
-    <spring-cloud-gcp.version>7.3.0</spring-cloud-gcp.version>
+    <s3mock-junit5.version>4.9.1</s3mock-junit5.version>
+    <spotbugs-annotations.version>4.9.6</spotbugs-annotations.version>
+    <spring-cloud-gcp.version>7.3.1</spring-cloud-gcp.version>
     <springdoc.version>2.8.13</springdoc.version>
-    <swagger.version>2.2.36</swagger.version>
+    <swagger.version>2.2.37</swagger.version>
     <tomcat-embed-el.version>11.0.11</tomcat-embed-el.version>
 
     <!-- test dependencies -->
-    <assertj-core.version>3.27.3</assertj-core.version>
+    <assertj-core.version>3.27.6</assertj-core.version>
     <junit.jupiter.version>5.13.4</junit.jupiter.version>
     <junit.platform.version>1.13.4</junit.platform.version>
-    <mockito.version>5.17.0</mockito.version>
+    <mockito.version>5.20.0</mockito.version>
     <testcontainers.version>1.21.3</testcontainers.version>
 
     <!-- docker image -->
@@ -359,26 +358,6 @@
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
         <version>${protobuf-java.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-core</artifactId>
-        <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-ribbon</artifactId>
-        <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-slf4j</artifactId>
-        <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-jackson</artifactId>
-        <version>${feign.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jetbrains</groupId>
