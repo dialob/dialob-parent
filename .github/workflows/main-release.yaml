@@ -29,17 +29,17 @@ jobs:
 #          - linux/arm64
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ github.event.ref }}
         fetch-depth: 0
 
-    - uses: actions/setup-java@v4
+    - uses: actions/setup-java@v5
       with:
         distribution: 'corretto'
         java-version: '21'
         gpg-private-key: ${{ secrets.DIALOB_GPG_KEY }}
-        gpg-passphrase: DIALOB_GPG_SEC
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
         server-id: central
         server-username: OSSRH_USER
         server-password: OSSRH_PASS
@@ -63,7 +63,7 @@ jobs:
         BOT_NAME: "info"
         BOT_EMAIL: "info@dialob.io"
         DOCKER_REGISTRY: docker.io/resys
-        DIALOB_GPG_SEC: ${{ secrets.DIALOB_GPG_SEC }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.DIALOB_GPG_SEC }}
         OSSRH_USER: ${{ secrets.OSSRH_USER }}
         OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
