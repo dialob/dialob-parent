@@ -25,6 +25,7 @@
     <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-api</artifactId>
+  <name>dialob-api</name>
   <packaging>jar</packaging>
   <properties>
     <maven.compiler.release>11</maven.compiler.release>

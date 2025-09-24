@@ -26,6 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-form-service-rest</artifactId>
+  <name>dialob-form-service-rest</name>
 
   <dependencies>
     <dependency>

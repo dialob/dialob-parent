@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-integration-queue</artifactId>
+  <name>dialob-integration-queue</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

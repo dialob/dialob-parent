@@ -25,6 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-questionnaire-service-sockjs</artifactId>
+  <name>dialob-questionnaire-service-sockjs</name>
   <build>
     <plugins>
       <plugin>

@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-rule-parser</artifactId>
+  <name>dialob-rule-parser</name>
   <build>
     <plugins>
       <plugin>

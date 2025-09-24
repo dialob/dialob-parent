@@ -26,6 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-spring-boot</artifactId>
+  <name>dialob-spring-boot</name>
 
   <dependencies>
     <dependency>

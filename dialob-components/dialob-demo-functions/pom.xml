@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-demo-functions</artifactId>
+  <name>dialob-demo-functions</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>

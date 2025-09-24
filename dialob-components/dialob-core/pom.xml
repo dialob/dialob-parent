@@ -24,6 +24,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>dialob-core</artifactId>
+  <name>dialob-core</name>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>

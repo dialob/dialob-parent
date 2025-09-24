@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-tenant-service-rest</artifactId>
+  <name>dialob-tenant-service-rest</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>

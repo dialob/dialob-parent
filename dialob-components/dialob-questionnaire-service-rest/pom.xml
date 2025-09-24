@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-questionnaire-service-rest</artifactId>
+  <name>dialob-questionnaire-service-rest</name>
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>

@@ -25,6 +25,7 @@
     <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-boot</artifactId>
+  <name>dialob-boot</name>
   <packaging>jar</packaging>
   <properties>
     <sonar.sources>pom.xml,src/main/java,src/main/resources/templates</sonar.sources>

@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-cloud-azure</artifactId>
+  <name>dialob-cloud-azure</name>
   <dependencies>
     <dependency>
       <groupId>com.azure</groupId>

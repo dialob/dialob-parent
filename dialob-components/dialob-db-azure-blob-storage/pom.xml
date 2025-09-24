@@ -26,6 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-db-azure-blob-storage</artifactId>
+  <name>dialob-db-azure-blob-storage</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

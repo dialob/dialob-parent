@@ -25,6 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-questionnaire-service</artifactId>
+  <name>dialob-questionnaire-service</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

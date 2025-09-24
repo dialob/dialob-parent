@@ -27,6 +27,7 @@
   </parent>
 
   <artifactId>dialob-build-parent</artifactId>
+  <name>dialob-build-parent</name>
   <packaging>pom</packaging>
 
   <properties>

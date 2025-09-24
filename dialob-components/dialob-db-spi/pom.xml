@@ -24,4 +24,5 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-db-spi</artifactId>
+  <name>dialob-db-spi</name>
 </project>

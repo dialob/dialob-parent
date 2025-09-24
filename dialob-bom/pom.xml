@@ -27,6 +27,7 @@
   </parent>
 
   <artifactId>dialob-bom</artifactId>
+  <name>dialob-bom</name>
   <packaging>pom</packaging>
 
   <properties>

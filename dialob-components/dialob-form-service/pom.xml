@@ -25,6 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-form-service</artifactId>
+  <name>dialob-form-service</name>
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>

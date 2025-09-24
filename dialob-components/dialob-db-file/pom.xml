@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-db-file</artifactId>
+  <name>dialob-db-file</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

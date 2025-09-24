@@ -25,6 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-security-aws</artifactId>
+  <name>dialob-security-aws</name>
 
   <dependencies>
     <dependency>

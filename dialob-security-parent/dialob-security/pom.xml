@@ -25,6 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dialob-security</artifactId>
+  <name>dialob-security</name>
   <build>
     <plugins>
       <plugin>

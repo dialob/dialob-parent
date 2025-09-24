@@ -25,6 +25,7 @@
   </parent>
   <packaging>jar</packaging>
   <artifactId>dialob-settings</artifactId>
+  <name>dialob-settings</name>
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>

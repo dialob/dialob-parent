@@ -24,6 +24,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>dialob-session-engine</artifactId>
+  <name>dialob-session-engine</name>
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>

@@ -27,6 +27,7 @@
     <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-coverage-report</artifactId>
+  <name>dialob-coverage-report</name>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>

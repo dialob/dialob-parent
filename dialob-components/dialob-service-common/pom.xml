@@ -24,6 +24,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-service-common</artifactId>
+  <name>dialob-service-common</name>
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>

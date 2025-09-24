@@ -24,6 +24,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>dialob-session-rest</artifactId>
+  <name>dialob-session-rest</name>
   <dependencies>
     <dependency>
       <groupId>io.dialob</groupId>

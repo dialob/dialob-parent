@@ -26,6 +26,7 @@
     <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-session-boot</artifactId>
+  <name>dialob-session-boot</name>
   <packaging>jar</packaging>
   <build>
     <resources>
