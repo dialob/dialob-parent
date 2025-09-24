@@ -32,7 +32,7 @@ jobs:
         distribution: 'corretto'
         java-version: '17'
         gpg-private-key: ${{ secrets.DIALOB_GPG_KEY }}
-        server-id: oss.sonatype.org
+        server-id: central
         server-username: OSSRH_USER
         server-password: OSSRH_PASS
 

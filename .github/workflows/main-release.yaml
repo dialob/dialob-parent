@@ -40,7 +40,7 @@ jobs:
         java-version: '21'
         gpg-private-key: ${{ secrets.DIALOB_GPG_KEY }}
         gpg-passphrase: DIALOB_GPG_SEC
-        server-id: oss.sonatype.org
+        server-id: central
         server-username: OSSRH_USER
         server-password: OSSRH_PASS
 
