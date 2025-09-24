@@ -27,6 +27,7 @@
     <relativePath>../dialob-build-parent</relativePath>
   </parent>
   <artifactId>dialob-components</artifactId>
+  <name>dialob-components</name>
   <packaging>pom</packaging>
 
   <modules>
