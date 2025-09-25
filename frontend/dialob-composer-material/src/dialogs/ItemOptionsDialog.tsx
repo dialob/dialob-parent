@@ -101,7 +101,7 @@ const SaveIdButton: React.FC<{
 }
 
 const ItemOptionsDialog: React.FC = () => {
-  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType } = useEditor();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setMarkdownHelpDialogOpen } = useEditor();
   const { form } = useComposer();
   const { config } = useBackend();
   const item = editor.activeItem;
@@ -148,6 +148,14 @@ const ItemOptionsDialog: React.FC = () => {
     setId(item?.id || '');
   }
 
+  const handleOpenHelp = () => {
+    if (activeTab === 'label' || activeTab === 'description') {
+      setMarkdownHelpDialogOpen(true);
+      return;
+    }
+    window.open(docsUrl, "_blank");
+  }
+
   if (!item) {
     return null;
   }
@@ -175,8 +183,7 @@ const ItemOptionsDialog: React.FC = () => {
             </Button>}
           <Box flexGrow={1} />
           <StyledButtonContainer>
-            <Button variant='outlined' endIcon={<Help />}
-              onClick={() => window.open(docsUrl, "_blank")}>
+            <Button variant='outlined' endIcon={<Help />} onClick={handleOpenHelp}>
               <FormattedMessage id='buttons.help' />
             </Button>
             <ConversionMenu inDialog />

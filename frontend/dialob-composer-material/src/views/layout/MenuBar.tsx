@@ -22,6 +22,7 @@ import { isContextVariable } from '../../utils/ItemUtils';
 import { useDocs } from '../../utils/DocsUtils';
 import { getLanguageName } from '../../utils/TranslationUtils';
 import { SavingProvider } from '../../dialogs/contexts/saving/SavingProvider';
+import MarkdownHelpDialog from '../../dialogs/MarkdownHelpDialog';
 
 
 const ResponsiveButton = styled(Button)(({ theme }) => ({
@@ -167,6 +168,7 @@ const MenuBar: React.FC = () => {
       }}>
         <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
       </SavingProvider>}
+      <MarkdownHelpDialog />
       <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
       <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
       <VariablesDialog open={variablesDialogOpen} onClose={() => setVariablesDialogOpen(false)} />
