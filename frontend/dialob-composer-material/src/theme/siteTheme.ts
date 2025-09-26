@@ -221,6 +221,7 @@ const siteTheme = createTheme({
       fontWeight: 300
     },
     h6: {
+      fontSize: "1rem",
       fontFamily: "'IBM Plex Sans Arabic', sans-serif",
       fontWeight: 300
     },
