@@ -24,11 +24,11 @@ const MarkdownHelpDialog: React.FC = () => {
 
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl' PaperProps={{ sx: { maxHeight: '70vh' } }}>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xl'>
       <DialogTitle sx={{ fontWeight: 'bold' }}>
         <FormattedMessage id='dialogs.markdown.help.title' />
       </DialogTitle>
-      <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '80vh' }}>
+      <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '90vh' }}>
         <Box sx={{ p: 3, width: 1 }}>
           <Markdown children={markdownContent} remarkPlugins={[remarkGfm]} components={markdownComponents} />
         </Box>

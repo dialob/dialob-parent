@@ -316,6 +316,8 @@ const en = {
   'markdownEditor.warning': 'Warning',
   'markdownEditor.error': 'Error',
 
+  'dialogs.markdown.help.title': 'Markdown Help',
+
 };
 
 export default en;
