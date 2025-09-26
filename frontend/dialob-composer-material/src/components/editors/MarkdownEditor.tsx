@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Menu, MenuItem, ListItemText, ListItemIcon, Box, useTheme } from "@mui/material";
+import { FormattedMessage } from 'react-intl';
 import { ArrowRight, FormatColorText, FormatListBulleted, MenuOpen, Title } from "@mui/icons-material";
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
@@ -9,14 +10,87 @@ import { markdownComponents } from "../../defaults/markdown";
 
 type MarkdownAction = { type: "wrap"; before: string; after: string } | { type: "insert"; text: string };
 
+type MenuAnchor = { mouseX: number; mouseY: number } | null;
+
+type MenuState = {
+  anchor: MenuAnchor;
+  submenu: string | null;
+  thirdLevelMenu: string | null;
+  submenuAnchor: MenuAnchor;
+  thirdLevelAnchor: MenuAnchor;
+};
+
+const INITIAL_MENU_STATE: MenuState = {
+  anchor: null,
+  submenu: null,
+  thirdLevelMenu: null,
+  submenuAnchor: null,
+  thirdLevelAnchor: null,
+};
+
+const MAIN_MENU_ITEMS = [
+  { id: 'format', icon: FormatColorText, labelKey: 'markdownEditor.format' },
+  { id: 'list', icon: FormatListBulleted, labelKey: 'markdownEditor.list' },
+  { id: 'paragraph', icon: Title, labelKey: 'markdownEditor.paragraph' },
+  { id: 'insert', icon: MenuOpen, labelKey: 'markdownEditor.insert' },
+];
+
+const FORMAT_ACTIONS = [
+  { labelKey: 'markdownEditor.bold', action: { type: 'wrap' as const, before: '**', after: '**' } },
+  { labelKey: 'markdownEditor.italic', action: { type: 'wrap' as const, before: '*', after: '*' } },
+  { labelKey: 'markdownEditor.code', action: { type: 'wrap' as const, before: '`', after: '`' } },
+];
+
+const LIST_ACTIONS = [
+  { labelKey: 'markdownEditor.bulletList', text: '- ' },
+  { labelKey: 'markdownEditor.numberedList', text: '1. ' },
+];
+
+const INSERT_ACTIONS = [
+  { labelKey: 'markdownEditor.link', action: { type: 'wrap' as const, before: '[', after: '](url)' } },
+  { labelKey: 'markdownEditor.codeBlock', text: '```\ncode block\n```' },
+  { labelKey: 'markdownEditor.horizontalDivider', text: '---' },
+  { labelKey: 'markdownEditor.table', text: '| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Row 1    | Data     | Data     |\n| Row 2    | Data     | Data     |' },
+];
+
+const CALLOUT_ACTIONS = [
+  { labelKey: 'markdownEditor.note', text: '> [!NOTE]\n> This is a note callout.' },
+  { labelKey: 'markdownEditor.tip', text: '> [!TIP]\n> This is a tip callout.' },
+  { labelKey: 'markdownEditor.warning', text: '> [!WARNING]\n> This is a warning callout.' },
+  { labelKey: 'markdownEditor.error', text: '> [!ERROR]\n> This is an error callout.' },
+];
+
+type KeyboardShortcut = {
+  key: string;
+  ctrl: boolean;
+  shift?: boolean;
+  alt?: boolean;
+  action?: MarkdownAction;
+  text?: string;
+};
+
+const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
+  { key: 'b', ctrl: true, action: { type: 'wrap', before: '**', after: '**' } },
+  { key: 'i', ctrl: true, action: { type: 'wrap', before: '*', after: '*' } },
+  { key: 'e', ctrl: true, action: { type: 'wrap', before: '`', after: '`' } },
+  { key: 'k', ctrl: true, action: { type: 'wrap', before: '[', after: '](url)' } },
+  { key: 'C', ctrl: true, shift: true, text: '```\ncode block\n```' },
+  { key: 'L', ctrl: true, shift: true, text: '- ' },
+  { key: 'l', ctrl: true, alt: true, text: '1. ' },
+  { key: '-', ctrl: true, text: '---' },
+  { key: 't', ctrl: true, text: '| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Row 1    | Data     | Data     |\n| Row 2    | Data     | Data     |' },
+  { key: '1', ctrl: true, text: '# ' },
+  { key: '2', ctrl: true, text: '## ' },
+  { key: '3', ctrl: true, text: '### ' },
+  { key: '4', ctrl: true, text: '#### ' },
+  { key: '5', ctrl: true, text: '##### ' },
+  { key: '6', ctrl: true, text: '###### ' },
+];
+
 export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string, language: string) => void, language: string }> = ({ value, setValue, language }) => {
   const theme = useTheme();
   const editorRef = useRef<any>(null);
-  const [anchor, setAnchor] = useState<{ mouseX: number; mouseY: number } | null>(null);
-  const [submenu, setSubmenu] = useState<null | string>(null);
-  const [thirdLevelMenu, setThirdLevelMenu] = useState<null | string>(null);
-  const [submenuAnchor, setSubmenuAnchor] = useState<{ mouseX: number; mouseY: number } | null>(null);
-  const [thirdLevelAnchor, setThirdLevelAnchor] = useState<{ mouseX: number; mouseY: number } | null>(null);
+  const [menuState, setMenuState] = useState<MenuState>(INITIAL_MENU_STATE);
 
   const applyMarkdown = useCallback((action: MarkdownAction) => {
     const view = editorRef.current?.view;
@@ -112,7 +186,7 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
       view.focus();
     });
 
-    handleClose();
+    setMenuState(INITIAL_MENU_STATE);
   }, [value, setValue, language]);
 
   const insertOnNewLine = useCallback((text: string) => {
@@ -144,79 +218,26 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
   }, [value, applyMarkdown]);
 
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    const isCtrl = event.ctrlKey;
+    const { ctrlKey, altKey, shiftKey, key } = event;
 
-    // Bold shortcut
-    if (isCtrl && event.key === 'b') {
-      event.preventDefault();
-      applyMarkdown({ type: "wrap", before: "**", after: "**" });
-      return;
+    // Check predefined shortcuts
+    for (const shortcut of KEYBOARD_SHORTCUTS) {
+      const matchesModifiers = 
+        (shortcut.ctrl === ctrlKey) &&
+        (shortcut.shift === !!shiftKey) &&
+        (shortcut.alt === !!altKey);
+      
+      if (matchesModifiers && shortcut.key === key) {
+        event.preventDefault();
+        if (shortcut.action) {
+          applyMarkdown(shortcut.action);
+        } else if (shortcut.text) {
+          insertOnNewLine(shortcut.text);
+        }
+        return;
+      }
     }
-    
-    // Italic shortcut
-    if (isCtrl && event.key === 'i') {
-      event.preventDefault();
-      applyMarkdown({ type: "wrap", before: "*", after: "*" });
-      return;
-    }
-    
-    // Code formatting shortcut
-    if (isCtrl && event.key === 'e') {
-      event.preventDefault();
-      applyMarkdown({ type: "wrap", before: "`", after: "`" });
-      return;
-    }
-    
-    // Link shortcut
-    if (isCtrl && event.key === 'k') {
-      event.preventDefault();
-      applyMarkdown({ type: "wrap", before: "[", after: "](url)" });
-      return;
-    }
-    
-    // Code block shortcut
-    if (isCtrl && event.shiftKey && event.key === 'C') {
-      event.preventDefault();
-      insertOnNewLine("```\ncode block\n```");
-      return;
-    }
-    
-    // Bullet list shortcut
-    if (isCtrl && event.shiftKey && event.key === 'L') {
-      event.preventDefault();
-      insertOnNewLine("- ");
-      return;
-    }
-    
-    // Numbered list shortcut
-    if (isCtrl && event.altKey && event.key === 'l') {
-      event.preventDefault();
-      insertOnNewLine("1. ");
-      return;
-    }
-    
-    // Heading shortcuts (Ctrl+1 through Ctrl+6)
-    if (isCtrl && /^[1-6]$/.test(event.key)) {
-      event.preventDefault();
-      const level = parseInt(event.key);
-      insertOnNewLine("#".repeat(level) + " ");
-      return;
-    }
-    
-    // Horizontal rule shortcut
-    if (isCtrl && event.key === '-') {
-      event.preventDefault();
-      insertOnNewLine("---");
-      return;
-    }
-    
-    // Table shortcut
-    if (isCtrl && event.key === 't') {
-      event.preventDefault();
-      insertOnNewLine("| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Row 1    | Data     | Data     |\n| Row 2    | Data     | Data     |");
-      return;
-    }
-  }, [applyMarkdown, insertOnNewLine, value, setValue, language]);
+  }, [applyMarkdown, insertOnNewLine]);
 
   const handleContextMenu = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -232,16 +253,25 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
         view.focus();
       });
     }
-    setAnchor({ mouseX: event.clientX + 2, mouseY: event.clientY - 6 });
-    setSubmenu(null);
+    setMenuState({
+      ...INITIAL_MENU_STATE,
+      anchor: { mouseX: event.clientX + 2, mouseY: event.clientY - 6 }
+    });
   };
 
   const handleClose = () => {
-    setAnchor(null);
-    setSubmenu(null);
-    setThirdLevelMenu(null);
-    setSubmenuAnchor(null);
-    setThirdLevelAnchor(null);
+    setMenuState(INITIAL_MENU_STATE);
+  };
+
+  const handleMouseEnter = (event: React.MouseEvent, type: 'submenu' | 'thirdLevel') => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const anchor = { mouseX: rect.right, mouseY: rect.top };
+    
+    if (type === 'submenu') {
+      setMenuState(prev => ({ ...prev, submenuAnchor: anchor }));
+    } else {
+      setMenuState(prev => ({ ...prev, thirdLevelAnchor: anchor }));
+    }
   };
 
   return (
@@ -284,104 +314,75 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
       />
 
       <Menu
-        open={anchor !== null}
+        open={menuState.anchor !== null}
         onClose={handleClose}
         anchorReference="anchorPosition"
         anchorPosition={
-          anchor ? { top: anchor.mouseY, left: anchor.mouseX } : undefined
+          menuState.anchor ? { top: menuState.anchor.mouseY, left: menuState.anchor.mouseX } : undefined
         }
         disableAutoFocus
       >
-        <MenuItem 
-          onClick={() => setSubmenu("format")}
-          onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setSubmenuAnchor({ mouseX: rect.right, mouseY: rect.top });
-          }}
-        >
-          <ListItemIcon>
-            <FormatColorText />
-          </ListItemIcon>
-          <ListItemText disableTypography>Format</ListItemText>
-          <ListItemIcon>
-            <ArrowRight />
-          </ListItemIcon>
-        </MenuItem>
-        <MenuItem 
-          onClick={() => setSubmenu("list")}
-          onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setSubmenuAnchor({ mouseX: rect.right, mouseY: rect.top });
-          }}
-        >
-          <ListItemIcon>
-            <FormatListBulleted />
-          </ListItemIcon>
-          <ListItemText disableTypography>List</ListItemText>
-          <ListItemIcon>
-            <ArrowRight />
-          </ListItemIcon>
-        </MenuItem>
-        <MenuItem 
-          onClick={() => setSubmenu("paragraph")}
-          onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setSubmenuAnchor({ mouseX: rect.right, mouseY: rect.top });
-          }}
-        >
-          <ListItemIcon>
-            <Title />
-          </ListItemIcon>
-          <ListItemText disableTypography>Paragraph</ListItemText>
-          <ListItemIcon>
-            <ArrowRight />
-          </ListItemIcon>
-        </MenuItem>
-        <MenuItem 
-          onClick={() => setSubmenu("insert")}
-          onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setSubmenuAnchor({ mouseX: rect.right, mouseY: rect.top });
-          }}
-        >
-          <ListItemIcon>
-            <MenuOpen />
-          </ListItemIcon>
-          <ListItemText disableTypography>Insert</ListItemText>
-          <ListItemIcon>
-            <ArrowRight />
-          </ListItemIcon>
-        </MenuItem>
+        {MAIN_MENU_ITEMS.map((item) => (
+          <MenuItem 
+            key={item.id}
+            onClick={() => setMenuState(prev => ({ ...prev, submenu: item.id, thirdLevelMenu: null }))}
+            onMouseEnter={(e) => handleMouseEnter(e, 'submenu')}
+          >
+            <ListItemIcon>
+              <item.icon />
+            </ListItemIcon>
+            <ListItemText disableTypography>
+              <FormattedMessage id={item.labelKey} />
+            </ListItemText>
+            <ListItemIcon>
+              <ArrowRight />
+            </ListItemIcon>
+          </MenuItem>
+        ))}
       </Menu>
 
       <Menu
-        open={submenu === "format"}
-        onClose={() => setSubmenu(null)}
+        open={menuState.submenu === "format"}
+        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
         anchorReference="anchorPosition"
-        anchorPosition={submenuAnchor ? { top: submenuAnchor.mouseY, left: submenuAnchor.mouseX } : undefined}
+        anchorPosition={menuState.submenuAnchor ? { 
+          top: menuState.submenuAnchor.mouseY, 
+          left: menuState.submenuAnchor.mouseX 
+        } : undefined}
         disableAutoFocus
       >
-        <MenuItem onClick={() => applyMarkdown({ type: "wrap", before: "**", after: "**" })}>Bold</MenuItem>
-        <MenuItem onClick={() => applyMarkdown({ type: "wrap", before: "*", after: "*" })}>Italic</MenuItem>
-        <MenuItem onClick={() => applyMarkdown({ type: "wrap", before: "`", after: "`" })}>Code</MenuItem>
+        {FORMAT_ACTIONS.map((item) => (
+          <MenuItem key={item.labelKey} onClick={() => applyMarkdown(item.action)}>
+            <FormattedMessage id={item.labelKey} />
+          </MenuItem>
+        ))}
       </Menu>
 
       <Menu
-        open={submenu === "list"}
-        onClose={() => setSubmenu(null)}
+        open={menuState.submenu === "list"}
+        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
         anchorReference="anchorPosition"
-        anchorPosition={submenuAnchor ? { top: submenuAnchor.mouseY, left: submenuAnchor.mouseX } : undefined}
+        anchorPosition={menuState.submenuAnchor ? { 
+          top: menuState.submenuAnchor.mouseY, 
+          left: menuState.submenuAnchor.mouseX 
+        } : undefined}
         disableAutoFocus
       >
-        <MenuItem onClick={() => insertOnNewLine("- ")}>Bullet List</MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("1. ")}>Numbered List</MenuItem>
+        {LIST_ACTIONS.map((item) => (
+          <MenuItem key={item.labelKey} onClick={() => insertOnNewLine(item.text)}>
+            <FormattedMessage id={item.labelKey} />
+          </MenuItem>
+        ))}
       </Menu>
 
       <Menu
-        open={submenu === "paragraph"}
-        onClose={() => setSubmenu(null)}
+        open={menuState.submenu === "paragraph"}
+        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
         anchorReference="anchorPosition"
-        anchorPosition={submenuAnchor ? { top: submenuAnchor.mouseY, left: submenuAnchor.mouseX } : undefined}
+        anchorPosition={menuState.submenuAnchor ? { 
+          top: menuState.submenuAnchor.mouseY, 
+          left: menuState.submenuAnchor.mouseX 
+        } : undefined}
         disableAutoFocus
       >
         {[1, 2, 3, 4, 5, 6].map((lvl) => (
@@ -395,38 +396,36 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
             </Markdown>
           </MenuItem>
         ))}
-        <MenuItem onClick={() => applyMarkdown({ type: "insert", text: "text" })}>Body</MenuItem>
+        <MenuItem onClick={() => applyMarkdown({ type: "insert", text: "text" })}>
+          <FormattedMessage id="markdownEditor.body" />
+        </MenuItem>
       </Menu>
 
       <Menu
-        open={submenu === "insert"}
-        onClose={() => setSubmenu(null)}
+        open={menuState.submenu === "insert"}
+        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
         anchorReference="anchorPosition"
-        anchorPosition={submenuAnchor ? { top: submenuAnchor.mouseY, left: submenuAnchor.mouseX } : undefined}
+        anchorPosition={menuState.submenuAnchor ? { 
+          top: menuState.submenuAnchor.mouseY, 
+          left: menuState.submenuAnchor.mouseX 
+        } : undefined}
         disableAutoFocus
       >
-        <MenuItem
-          onClick={() => applyMarkdown({ type: "wrap", before: "[", after: "](url)" })}
-        >
-          Link
-        </MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("```\ncode block\n```")}>
-          Code Block
-        </MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("---")}>
-          Horizontal Divider
-        </MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Row 1    | Data     | Data     |\n| Row 2    | Data     | Data     |")}>          
-          Table
-        </MenuItem>
+        {INSERT_ACTIONS.map((item) => (
+          <MenuItem 
+            key={item.labelKey}
+            onClick={() => item.action ? applyMarkdown(item.action) : insertOnNewLine(item.text!)}
+          >
+            <FormattedMessage id={item.labelKey} />
+          </MenuItem>
+        ))}
         <MenuItem 
-          onClick={() => setThirdLevelMenu("callouts")}
-          onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setThirdLevelAnchor({ mouseX: rect.right, mouseY: rect.top });
-          }}
+          onClick={() => setMenuState(prev => ({ ...prev, thirdLevelMenu: "callouts" }))}
+          onMouseEnter={(e) => handleMouseEnter(e, 'thirdLevel')}
         >
-          <ListItemText disableTypography>Callouts</ListItemText>
+          <ListItemText disableTypography>
+            <FormattedMessage id="markdownEditor.callouts" />
+          </ListItemText>
           <ListItemIcon>
             <ArrowRight />
           </ListItemIcon>
@@ -434,16 +433,20 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
       </Menu>
 
       <Menu
-        open={thirdLevelMenu === "callouts"}
-        onClose={() => setThirdLevelMenu(null)}
+        open={menuState.thirdLevelMenu === "callouts"}
+        onClose={() => setMenuState(prev => ({ ...prev, thirdLevelMenu: null }))}
         anchorReference="anchorPosition"
-        anchorPosition={thirdLevelAnchor ? { top: thirdLevelAnchor.mouseY, left: thirdLevelAnchor.mouseX } : undefined}
+        anchorPosition={menuState.thirdLevelAnchor ? { 
+          top: menuState.thirdLevelAnchor.mouseY, 
+          left: menuState.thirdLevelAnchor.mouseX 
+        } : undefined}
         disableAutoFocus
       >
-        <MenuItem onClick={() => insertOnNewLine("> [!NOTE]\n> This is a note callout.")}>Note</MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("> [!TIP]\n> This is a tip callout.")}>Tip</MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("> [!WARNING]\n> This is a warning callout.")}>Warning</MenuItem>
-        <MenuItem onClick={() => insertOnNewLine("> [!ERROR]\n> This is an error callout.")}>Error</MenuItem>
+        {CALLOUT_ACTIONS.map((item) => (
+          <MenuItem key={item.labelKey} onClick={() => insertOnNewLine(item.text)}>
+            <FormattedMessage id={item.labelKey} />
+          </MenuItem>
+        ))}
       </Menu>
     </Box>
   );
