@@ -1,5 +1,15 @@
 # @dialob/dialob-composer-material
 
+## 0.0.13
+
+### Patch Changes
+
+- UX improvements for item highlighting, expanding and collapsing groups
+- Added new Markdown editor, support for new markdown features like tables and callouts
+- Added markdown help dialog
+- Setting default active language
+- New search match display, showing where the match was found
+
 ## 0.0.12
 
 ### Patch Changes
