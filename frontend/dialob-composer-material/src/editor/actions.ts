@@ -14,3 +14,4 @@ export type EditorAction =
   | { type: 'setActiveVariableTab', tab?: VariableTabType }
   | { type: 'setConfirmationActiveItem', item?: DialobItem }
   | { type: 'toggleItemCollapsed', itemId: string }
+  | { type: 'setMarkdownHelpDialogOpen', open: boolean }

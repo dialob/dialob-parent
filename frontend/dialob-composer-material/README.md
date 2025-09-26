@@ -102,3 +102,11 @@ pnpm run preview
 Starts preview server for built application from `/dist` (No hot-reload!). Run `pnpm build` first to build the package
 
 ---
+
+### Customixing Markdown components
+
+You can customize how markdown is rendered by passing custom components to the `Markdown` component from `react-markdown`. 
+  
+List of available components can be found in [`src/defaults/markdown.tsx`](https://github.com/dialob/dialob-parent/blob/dev/frontend/dialob-composer-material/src/defaults/markdown.tsx). See also [`src/components/editors/LocalizedStringEditor.tsx`](https://github.com/dialob/dialob-parent/blob/dev/frontend/dialob-composer-material/src/components/editors/LocalizedStringEditor.tsx) for an example of how to use custom components. To support table rendering, you also need to include the `remark-gfm` plugin.
+  
+The same components can be used on the filling side as well, so that the markdown looks the same when editing and when filling the form.

@@ -296,6 +296,28 @@ const en = {
   'errors.message.ARRAY_TYPE_UNEXPECTED': 'Array type unexpected',
   'errors.message.FORM_SOURCE_ITEM_NOT_FOUND': 'Form source item not found',
 
+  'markdownEditor.format': 'Format',
+  'markdownEditor.list': 'List',
+  'markdownEditor.paragraph': 'Paragraph',
+  'markdownEditor.insert': 'Insert',
+  'markdownEditor.bold': 'Bold',
+  'markdownEditor.italic': 'Italic',
+  'markdownEditor.code': 'Code',
+  'markdownEditor.bulletList': 'Bullet List',
+  'markdownEditor.numberedList': 'Numbered List',
+  'markdownEditor.body': 'Body',
+  'markdownEditor.link': 'Link',
+  'markdownEditor.codeBlock': 'Code Block',
+  'markdownEditor.horizontalDivider': 'Horizontal Divider',
+  'markdownEditor.table': 'Table',
+  'markdownEditor.callouts': 'Callouts',
+  'markdownEditor.note': 'Note',
+  'markdownEditor.tip': 'Tip',
+  'markdownEditor.warning': 'Warning',
+  'markdownEditor.error': 'Error',
+
+  'dialogs.markdown.help.title': 'Markdown Help',
+
 };
 
 export default en;

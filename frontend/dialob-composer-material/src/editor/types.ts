@@ -29,4 +29,5 @@ export type EditorState = {
   activeList?: string;
   activeVariableTab?: VariableTabType;
   collapsedItems: Record<string, boolean>;
+  markdownHelpDialogOpen?: boolean;
 };

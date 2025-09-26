@@ -51,6 +51,10 @@ const toggleItemCollapsed = (state: EditorState, itemId: string): void => {
   state.collapsedItems[itemId] = !state.collapsedItems[itemId];
 }
 
+const setMarkdownHelpDialogOpen = (state: EditorState, open: boolean): void => {
+  state.markdownHelpDialogOpen = open;
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -77,6 +81,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setConfirmationActiveItem(state, action.item);
     } else if (action.type === 'toggleItemCollapsed') {
       toggleItemCollapsed(state, action.itemId);
+    } else if (action.type === 'setMarkdownHelpDialogOpen') {
+      setMarkdownHelpDialogOpen(state, action.open);
     }
   });
   return newState;

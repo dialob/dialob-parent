@@ -54,6 +54,10 @@ export const useEditor = () => {
     dispatch({ type: 'toggleItemCollapsed', itemId });
   }
 
+  const setMarkdownHelpDialogOpen = (open: boolean): void => {
+    dispatch({ type: 'setMarkdownHelpDialogOpen', open });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -68,5 +72,6 @@ export const useEditor = () => {
     setActiveVariableTab,
     setConfirmationActiveItem,
     toggleItemCollapsed,
+    setMarkdownHelpDialogOpen,
   };
 }

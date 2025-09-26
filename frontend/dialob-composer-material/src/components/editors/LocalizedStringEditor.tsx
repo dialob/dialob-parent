@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Button, Typography, Box, TextareaAutosize } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { useComposer } from '../../dialob';
@@ -9,6 +9,8 @@ import { IndexedRule } from './types';
 import { getLanguageName } from '../../utils/TranslationUtils';
 import { LocalizedString } from '../../types';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { MarkdownEditor } from './MarkdownEditor';
+import remarkGfm from 'remark-gfm';
 
 
 const LocalizedStringEditor: React.FC<{
@@ -56,11 +58,10 @@ const LocalizedStringEditor: React.FC<{
             <Box display='flex' alignItems='center'>
               <Typography color='text.hint'>{getLanguageName(language)}</Typography>
             </Box>
-            {preview ?
-              <Box sx={{ border: 1, borderRadius: 0.5, borderColor: 'text.secondary' }}>
-                <Markdown skipHtml components={markdownComponents}>{localizedText}</Markdown>
-              </Box > :
-              <TextareaAutosize style={{ width: '100%', maxWidth: '100%' }} minRows={5} value={localizedText} onChange={(e) => handleUpdate(e.target.value, language)} />}
+            <Box sx={{ border: 1, borderRadius: 1, borderColor: 'divider', my: 1 }}>
+              {preview ? <Markdown components={markdownComponents} remarkPlugins={[remarkGfm]}>{localizedText}</Markdown> :
+              <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} />}
+            </Box>
           </Box>
         );
       })}
