@@ -327,6 +327,9 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
             key={item.id}
             onClick={() => setMenuState(prev => ({ ...prev, submenu: item.id, thirdLevelMenu: null }))}
             onMouseEnter={(e) => handleMouseEnter(e, 'submenu')}
+            sx={{
+              backgroundColor: menuState.submenu === item.id ? theme.palette.action.hover : 'inherit'
+            }}
           >
             <ListItemIcon>
               <item.icon />
@@ -422,6 +425,7 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
         <MenuItem 
           onClick={() => setMenuState(prev => ({ ...prev, thirdLevelMenu: "callouts" }))}
           onMouseEnter={(e) => handleMouseEnter(e, 'thirdLevel')}
+          sx={{ backgroundColor: menuState.thirdLevelMenu === "callouts" ? theme.palette.action.hover : 'inherit' }}
         >
           <ListItemText disableTypography>
             <FormattedMessage id="markdownEditor.callouts" />
