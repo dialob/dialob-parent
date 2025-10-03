@@ -65,6 +65,24 @@ class DialobFormValidatorTest {
   }
 
   @Test
+  void shouldAcceptNegativeNumberVariable() {
+    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
+    DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
+    DialobFormValidator validator = new DialobFormValidator(compiler);
+
+    List<FormValidationError> errors = validator.validate(ImmutableForm.builder()
+      .id("123")
+      .metadata(ImmutableFormMetadata.builder().label("").build())
+      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
+      .addVariables(ImmutableVariable.builder().name("var1").expression("-1").build())
+      .build());
+
+    Assertions.assertThat(errors).isEmpty();
+
+    Mockito.verifyNoMoreInteractions(functionRegistry);
+  }
+
+  @Test
   void shouldReportIncompatibleComparison() throws IOException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);

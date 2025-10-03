@@ -32,6 +32,7 @@ class ExpressionMergerTest {
     assertExpressionMerge("1 - 1 - 2 + 1", "(+ (- 1 1 2) 1)");
     assertExpressionMerge("1 + 2 + 3 - 3 + 2 + 1", "(+ (- (+ 1 2 3) 3) 2 1)");
     assertExpressionMerge("-1 + 2 + 3 - 3 + 2 + 1 = -8 * 9 + -2 + 6", "(= (+ (- (+ (neg 1) 2 3) 3) 2 1) (+ (* (neg 8) 9) (neg 2) 6))");
+    assertExpressionMerge("-1", "(neg 1)");
 
     // "(+ (- (+ 1 2 3) 3) 2 1)"
 
