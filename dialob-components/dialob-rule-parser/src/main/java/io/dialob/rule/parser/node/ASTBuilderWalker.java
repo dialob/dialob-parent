@@ -323,6 +323,8 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
       if (!valueType.isNegateable()) {
         errorLogger.logError(CompilerErrorCode.CANNOT_NEGATE_TYPE, new Object[]{valueType}, Span.of(ctx));
+      } else {
+        builder.setValueType(valueType);
       }
     } finally {
       pop();
