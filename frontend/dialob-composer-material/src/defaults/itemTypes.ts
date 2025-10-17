@@ -79,7 +79,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         },
         {
           title: 'Text',
-          convertible: ['textBox', 'address'],
+          convertible: ['textBox', 'address', 'ytunnus', 'iban', 'hetu'],
           config: {
             type: 'text',
             view: 'text'
@@ -87,7 +87,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         },
         {
           title: 'Text box',
-          convertible: ['text', 'address'],
+          convertible: ['text', 'address', 'ytunnus', 'iban', 'hetu'],
           config: {
             type: 'text',
             view: 'textBox'
@@ -162,6 +162,60 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
           config: {
             type: 'multichoice'
           }
+        },
+        {
+          title: 'SSN / HETU',
+          convertible: ['text', 'textBox', 'ytunnus', 'iban'],
+          config: {
+            type: 'text',
+            view: 'hetu',
+            validations: [
+              {
+                rule: 'isNotHetu(answer)',
+                message: {
+                  en: 'Invalid Finnish personal ID!',
+                  fi: 'Invalid Finnish personal ID!',
+                  sv: 'Invalid Finnish personal ID!'
+                }
+              }
+            ]
+          }
+        },
+        {
+          title: 'Company ID / Y-Tunnus',
+          convertible: ['text', 'textBox', 'hetu', 'iban'],
+          config: {
+            type: 'text',
+            view: 'ytunnus',
+            validations: [
+              {
+                rule: 'isNotLyt(answer)',
+                message: {
+                  en: 'Invalid Finnish Company ID!',
+                  fi: 'Invalid Finnish Company ID!',
+                  sv: 'Invalid Finnish Company ID!'
+                }
+              }
+            ]
+          }
+        },
+        {
+          title: 'IBAN',
+          convertible: ['text', 'textBox', 'ytunnus', 'hetu'],
+          config: {
+            type: 'text',
+            view: 'iban',
+            validations: [
+              {
+                rule: 'isNotIban(answer)',
+                message: {
+                  en: 'Invalid IBAN!',
+                  fi: 'Invalid IBAN!',
+                  sv: 'Invalid IBAN!'
+                }
+              }
+            ]
+          }          
         }
       ]
     },
