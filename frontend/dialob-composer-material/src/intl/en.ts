@@ -73,6 +73,9 @@ const en = {
   'placeholders.multichoice': 'Multi-choice field label',
   'placeholders.validation': 'Validation message text',
   'placeholders.note': 'Note text',
+  'placeholders.hetu': 'Personal ID field label',
+  'placeholders.ytunnus': 'Business ID field label',
+  'placeholders.iban': 'IBAN field label',
 
   'tooltips.label': 'Label',
   'tooltips.description': 'Description',

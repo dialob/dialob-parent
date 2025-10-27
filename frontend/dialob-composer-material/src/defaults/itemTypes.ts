@@ -79,7 +79,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         },
         {
           title: 'Text',
-          convertible: ['textBox', 'address'],
+          convertible: ['textBox', 'address', 'ytunnus', 'iban', 'hetu'],
           config: {
             type: 'text',
             view: 'text'
@@ -87,7 +87,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         },
         {
           title: 'Text box',
-          convertible: ['text', 'address'],
+          convertible: ['text', 'address', 'ytunnus', 'iban', 'hetu'],
           config: {
             type: 'text',
             view: 'textBox'
@@ -162,6 +162,60 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
           config: {
             type: 'multichoice'
           }
+        },
+        {
+          title: 'Personal identity code (HETU)',
+          convertible: ['text', 'textBox', 'ytunnus', 'iban'],
+          config: {
+            type: 'text',
+            view: 'hetu',
+            validations: [
+              {
+                rule: 'isNotHetu(answer)',
+                message: {
+                  en: 'Check your personal FI identity code.',
+                  fi: 'Kontrollera ditt FI personnummer.',
+                  sv: 'Invalid Finnish personal ID!'
+                }
+              }
+            ]
+          }
+        },
+        {
+          title: 'Company business ID (y-tunnus)',
+          convertible: ['text', 'textBox', 'hetu', 'iban'],
+          config: {
+            type: 'text',
+            view: 'ytunnus',
+            validations: [
+              {
+                rule: 'isNotLyt(answer)',
+                message: {
+                  en: 'Check the business ID you provided.',
+                  fi: 'Tarkista antamasi yritystunnus.',
+                  sv: 'Kontrollera ditt företagsnummer.'
+                }
+              }
+            ]
+          }
+        },
+        {
+          title: 'Account number in IBAN format',
+          convertible: ['text', 'textBox', 'ytunnus', 'hetu'],
+          config: {
+            type: 'text',
+            view: 'iban',
+            validations: [
+              {
+                rule: 'isNotIban(answer)',
+                message: {
+                  en: 'Check that the account number you provided is correct and in IBAN format.',
+                  fi: 'Tarkista, että antamasi tilinumero on oikein ja IBAN -muodossa.',
+                  sv: 'Kontrollera att det kontonummer du angivit är korrekt och i IBAN-format.'
+                }
+              }
+            ]
+          }          
         }
       ]
     },

@@ -3,7 +3,8 @@ import { SimpleField } from "../items/SimpleField";
 import { Note } from "../items/Note";
 import {
   BlurLinear, CalendarMonth, CheckBox, Circle, CropSquare, ErrorOutline, Euro, KeyboardArrowDown,
-  List, MoreHoriz, Note as NoteIcon, Place, Schedule, TableRows, Tag, TextFormat
+  List, MoreHoriz, Note as NoteIcon, Place, Schedule, TableRows, Tag, TextFormat, Person, Business,
+  AccountBalance
 } from "@mui/icons-material";
 import { ItemConfig } from "../defaults/types";
 
@@ -53,6 +54,30 @@ export const DEFAULT_ITEM_CONFIG: ItemConfig = {
         placeholder: 'placeholders.address'
       }
     },
+    {
+      matcher: item => item.view === 'hetu',
+      component: SimpleField,
+      props: {
+        icon: Person,
+        placeholder: 'placeholders.hetu'
+      }
+    },
+    {
+      matcher: item => item.view === 'ytunnus',
+      component: SimpleField,
+      props: {
+        icon: Business,
+        placeholder: 'placeholders.ytunnus'
+      }
+    },    
+    {
+      matcher: item => item.view === 'iban',
+      component: SimpleField,
+      props: {
+        icon: AccountBalance,
+        placeholder: 'placeholders.iban'
+      }
+    },    
     {
       matcher: item => item.type === 'text',
       component: SimpleField,
