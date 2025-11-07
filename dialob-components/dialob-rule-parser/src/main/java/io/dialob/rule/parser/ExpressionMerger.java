@@ -63,8 +63,8 @@ public class ExpressionMerger implements ASTVisitor {
         }
         NodeOperator parentOperator = parent.getNodeOperator();
         NodeOperator subOperator = sub.getNodeOperator();
-        return parentOperator.getCategory() == subOperator.getCategory()
-                && parentOperator.getOperator().equals(subOperator.getOperator());
+        return parentOperator.category() == subOperator.category()
+                && parentOperator.operator().equals(subOperator.operator());
     }
 
     @Override

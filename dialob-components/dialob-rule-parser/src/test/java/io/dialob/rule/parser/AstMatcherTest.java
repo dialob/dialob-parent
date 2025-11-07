@@ -328,6 +328,16 @@ class AstMatcherTest {
     assertMinify("(or (and (< question1 (/ question2 -4)) (> (+ question2 18) 0)) (!= (- question3 10) 10))", "question1 < question2 / (2 - 6) and question2 + 2 * 9 > 0 or question3 - 10 != 10");
   }
 
+  @Test
+  void testFunctionCallsWithObject() {
+    assertMinify("(func)", "func()");
+    assertMinify("(func 1)", "func(1)");
+    assertMinify("(func q1)", "func(q1)");
+    assertMinify("(func \"test\")", "func(\"test\")");
+    assertMinify("(func \"test\" 21)", "func(\"test\", 21)");
+//    assertMinify("(func)", "func({})");
+  }
+
 
   private void assertMinify(String expected, String expressionString) {
     // given

@@ -23,11 +23,28 @@ listExpr
     | idExprRule
     ;
 
+fieldNameRule
+    : QUOTED_STRING
+    ;
+
+objectFieldRule
+    : fieldName=fieldNameRule COLON value=expr
+    ;
+
+objectExpr
+    : LCB objectFieldRule (COMMA objectFieldRule)* RCB
+    ;
+
+funcArgExpr
+    : expr
+    | objectExpr
+    ;
+
 arithExprRule
     : MINUS arithExprRule                                            # negateExpr
     | left=arithExprRule op=(MUL|DIV) right=arithExprRule            # infixExpr
     | left=arithExprRule op=(PLUS|MINUS) right=arithExprRule         # infixExpr
-    | func=ID LP (expr (',' expr)*)? RP                              # callExpr
+    | func=ID LP (funcArgExpr (',' funcArgExpr)*)? RP                # callExpr
     | left=ID OF right=reducerExprRule                               # ofExpr
     | LP arithExprRule RP                                            # parensExpr
     | constExprRule                                                  # constExpr
@@ -35,7 +52,7 @@ arithExprRule
     ;
 
 isExprRule
-    : questionId=ID IS not=NOT? status=('answered'|'valid'|'null'|'blank') # isExpr  
+    : questionId=ID IS not=NOT? status=('answered'|'valid'|'null'|'blank') # isExpr
     ;
 
 reducerExprRule
@@ -149,6 +166,12 @@ LP:
 RP:
     ')';
 
+LCB:
+    '{';
+
+RCB:
+    '}';
+
 COMMA:
     ',';
 
@@ -184,6 +207,9 @@ DIV:
 
 POINT:
     '.';
+
+COLON:
+    ':';
 
 
 INTEGER

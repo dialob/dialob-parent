@@ -154,4 +154,14 @@ public class ASTBuilder {
     }
     return builder;
   }
+
+  public ASTBuilder objectExprNode(Span span) {
+    push(new ObjectExprNode(peek(), span));
+    return this;
+  }
+
+  public ASTBuilder keyValueExprNode(Span span) {
+    push(new KeyValueExprNode(peek(), span));
+    return this;
+  }
 }

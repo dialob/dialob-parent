@@ -32,8 +32,8 @@ public class NotExpressionVisitor implements ASTVisitor {
     @NonNull
     @Override
     public NodeBase endCallExpr(@NonNull final CallExprNode node) {
-        if (node.getNodeOperator().isRelation() || node.getNodeOperator().isLogical() || node.getNodeOperator().getCategory() == NodeOperator.Category.FUNCTION) {
-            if (node.getNodeOperator().getOperator().equals("not")) {
+        if (node.getNodeOperator().isRelation() || node.getNodeOperator().isLogical() || node.getNodeOperator().category() == NodeOperator.Category.FUNCTION) {
+            if (node.getNodeOperator().operator().equals("not")) {
                 return node.getLhs();
             }
             final NodeOperator newOperator = node.getNodeOperator().not();

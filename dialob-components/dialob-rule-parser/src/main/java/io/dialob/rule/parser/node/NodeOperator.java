@@ -6,23 +6,18 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
-public class NodeOperator implements Serializable {
+public record NodeOperator(@NonNull String operator, @NonNull Category category) implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 3766609755158172243L;
 
   public static final NodeOperator CONST = new NodeOperator("$const", Category.LEAF);
 
+  public static final NodeOperator OBJECT = new NodeOperator("$object", Category.LEAF);
+
+  public static final NodeOperator KEY_VALUE = new NodeOperator("$kv", Category.LEAF);
+
   public static final NodeOperator ID = new NodeOperator("$id", Category.LEAF);
-
-  private final String operator;
-
-  private final Category category;
-
-  private NodeOperator(@NonNull String operator, @NonNull Category category) {
-    this.operator = operator;
-    this.category = category;
-  }
 
   private static final Map<String, NodeOperator> OPERATORS;
 
@@ -73,7 +68,7 @@ public class NodeOperator implements Serializable {
   }
 
   public NodeOperator not() {
-    if (getCategory() == Category.RELATION || getCategory() == Category.LOGICAL) {
+    if (category() == Category.RELATION || category() == Category.LOGICAL) {
       switch (operator) {
         case "not":
           return null;
@@ -120,13 +115,15 @@ public class NodeOperator implements Serializable {
     LEAF      // nop
   }
 
+  @Override
   @NonNull
-  public String getOperator() {
+  public String operator() {
     return operator;
   }
 
+  @Override
   @NonNull
-  public Category getCategory() {
+  public Category category() {
     return category;
   }
 
@@ -219,14 +216,9 @@ public class NodeOperator implements Serializable {
       return true;
     }
     if (obj instanceof NodeOperator other) {
-      return other.getCategory() == getCategory() && operator.equals(other.getOperator());
+      return other.category() == category() && operator.equals(other.operator());
     }
     return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return operator.hashCode() * 31 + category.hashCode();
   }
 
   @Override

@@ -109,7 +109,7 @@ public class DDRLExpressionCompiler {
       try {
         final Expression operator = operatorFactory.createOperator(
           requireNonNull(node.getValueType()),
-          node.getNodeOperator().getOperator(),
+          node.getNodeOperator().operator(),
           builder.getExpressions());
         this.expressions.add(operator);
       } catch (ProgramBuilderException e) {

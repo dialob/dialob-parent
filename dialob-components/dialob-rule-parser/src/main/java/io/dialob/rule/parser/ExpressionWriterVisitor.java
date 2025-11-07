@@ -51,8 +51,8 @@ public class ExpressionWriterVisitor implements ASTVisitor {
 
   private String getOperatorSeparator(final NodeOperator nodeOperator) {
     String separator = "";
-    final String operator = convertOperator(nodeOperator.getOperator());
-    switch (nodeOperator.getCategory()) {
+    final String operator = convertOperator(nodeOperator.operator());
+    switch (nodeOperator.category()) {
       case FUNCTION:
         stringBuilder.append(operator).append("(");
         separator = ",";
@@ -90,7 +90,7 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   @Override
   @NonNull
   public NodeBase endCallExpr(@NonNull CallExprNode node) {
-    switch (node.getNodeOperator().getCategory()) {
+    switch (node.getNodeOperator().category()) {
       case FUNCTION:
         stringBuilder.append(subVisitor.toString()).append(")");
         break;
@@ -109,16 +109,16 @@ public class ExpressionWriterVisitor implements ASTVisitor {
   }
 
   private String convertUnaryOper(CallExprNode node) {
-    return switch (node.getNodeOperator().getOperator()) {
+    return switch (node.getNodeOperator().operator()) {
       case "neg" -> "-";
       case "inv" -> "1/";
-      default -> throw new IllegalStateException("Unknown unary operator " + node.getNodeOperator().getOperator());
+      default -> throw new IllegalStateException("Unknown unary operator " + node.getNodeOperator().operator());
     };
   }
 
   private String addBrackets(ExpressionWriterVisitor subVisitor) {
     if (subVisitor.nodeOperator != null && nodeOperator != null) {
-      if (subVisitor.nodeOperator.getCategory() == nodeOperator.getCategory() &&
+      if (subVisitor.nodeOperator.category() == nodeOperator.category() &&
         subVisitor.nodeOperator.getPrecedenceWeight() < nodeOperator.getPrecedenceWeight()) {
         return "(" + subVisitor.stringBuilder.toString() + ")";
       }

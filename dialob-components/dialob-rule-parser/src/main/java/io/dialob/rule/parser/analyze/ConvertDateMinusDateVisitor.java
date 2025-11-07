@@ -46,7 +46,7 @@ public class ConvertDateMinusDateVisitor extends AstMatcher {
     whenMatches(callNode(operator(is("-").or(is("+"))).and(lhs(valueType(is(ValueType.DURATION)))).and(rhs(valueType(is(ValueType.DURATION))))), nodeBase -> {
       final List<NodeBase> subnodes = nodeBase.getSubnodes();
       String function ;
-      if ("+".equals(nodeBase.getNodeOperator().getOperator())){
+      if ("+".equals(nodeBase.getNodeOperator().operator())){
         function = "io.dialob.rule.parser.PeriodUtil.sumDurations";
       } else {
         function = "io.dialob.rule.parser.PeriodUtil.minusDurations";
@@ -60,7 +60,7 @@ public class ConvertDateMinusDateVisitor extends AstMatcher {
     whenMatches(callNode(operator(is("-").or(is("+"))).and(lhs(valueType(is(ValueType.PERIOD)))).and(rhs(valueType(is(ValueType.PERIOD))))), nodeBase -> {
       final List<NodeBase> subnodes = nodeBase.getSubnodes();
       String function ;
-      if ("+".equals(nodeBase.getNodeOperator().getOperator())){
+      if ("+".equals(nodeBase.getNodeOperator().operator())){
         function = "io.dialob.rule.parser.PeriodUtil.sumPeriods";
       } else {
         function = "io.dialob.rule.parser.PeriodUtil.minusPeriods";
@@ -75,7 +75,7 @@ public class ConvertDateMinusDateVisitor extends AstMatcher {
     whenMatches(callNode(operator(is("-").or(is("+"))).and(lhs(valueType(is(ValueType.DATE)))).and(rhs(valueType(is(ValueType.PERIOD))))), nodeBase -> {
       final List<NodeBase> subnodes = nodeBase.getSubnodes();
       String function ;
-      if ("+".equals(nodeBase.getNodeOperator().getOperator())){
+      if ("+".equals(nodeBase.getNodeOperator().operator())){
         function = "io.dialob.rule.parser.PeriodUtil.datePlusPeriod";
       } else {
         function = "io.dialob.rule.parser.PeriodUtil.dateMinusPeriod";
@@ -89,7 +89,7 @@ public class ConvertDateMinusDateVisitor extends AstMatcher {
     whenMatches(callNode(operator(is("-").or(is("+"))).and(lhs(valueType(is(ValueType.TIME)))).and(rhs(valueType(is(ValueType.DURATION))))), nodeBase -> {
       final List<NodeBase> subnodes = nodeBase.getSubnodes();
       String function ;
-      if ("+".equals(nodeBase.getNodeOperator().getOperator())){
+      if ("+".equals(nodeBase.getNodeOperator().operator())){
         function = "io.dialob.rule.parser.PeriodUtil.timePlusDuration";
       } else {
         function = "io.dialob.rule.parser.PeriodUtil.timeMinusDuration";
