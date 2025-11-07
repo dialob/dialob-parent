@@ -33,6 +33,15 @@ interface BaseValueType {
   }
 
   /**
+   * Determines whether the current value type is an object.
+   *
+   * @return true if the value type is an object; false otherwise
+   */
+  default boolean isObject() {
+    return false;
+  }
+
+  /**
    * Attempts to coerce the given value to the type represented by the current value type.
    * If the provided value's class is assignable to the type class of this value type,
    * it is returned as-is. Otherwise, null is returned.
