@@ -34,10 +34,9 @@ public record ObjectValueType(
     fieldTypes = Collections.unmodifiableMap(Objects.requireNonNull(fieldTypes, "fieldTypes may not be null"));
   }
 
-  static ValueType objectOf(@NonNull Map<String, ValueType> fieldTypes) {
+  public static ValueType objectOf(@NonNull Map<String, ValueType> fieldTypes) {
     return new ObjectValueType(fieldTypes);
   }
-
 
   @Override
   public boolean isObject() {

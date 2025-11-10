@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BinaryOperator;
 
-public class ArrayValueType implements ValueType {
+public final class ArrayValueType implements ValueType {
 
   private final ValueType valueType;
 

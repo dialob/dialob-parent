@@ -17,6 +17,7 @@ package io.dialob.rule.parser.api;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -301,4 +302,12 @@ class ObjectValueTypeTest {
       objectValueType.readFrom(input)
     );
   }
+
+  @Test
+  void verifyEqualsContract() {
+    EqualsVerifier.forClass(ObjectValueType.class)
+      .withNonnullFields("fieldTypes")
+      .verify();
+  }
+
 }

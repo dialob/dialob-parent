@@ -247,15 +247,6 @@ class ObjectExprNodeTest {
   }
 
   @Test
-  void shouldBeEqualToDifferentNodeTypeWhenBothHaveNullValueType() {
-    // NodeBase.equals() only compares ValueType, not the node class type
-    ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
-    CallExprNode node2 = new CallExprNode(null, NodeOperator.createNodeOperator("+"), Span.undefined());
-
-    assertEquals(node1, node2);
-  }
-
-  @Test
   void shouldNotBeEqualToDifferentNodeTypeWithDifferentValueTypes() {
     ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
     node1.setValueType(ValueType.STRING);
@@ -275,13 +266,6 @@ class ObjectExprNodeTest {
     node2.setValueType(ValueType.STRING);
 
     assertEquals(node1.hashCode(), node2.hashCode());
-  }
-
-  @Test
-  void shouldHaveZeroHashCodeWhenValueTypeIsNull() {
-    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
-
-    assertEquals(0, node.hashCode());
   }
 
   @Test

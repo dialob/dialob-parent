@@ -1,11 +1,20 @@
 package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.Getter;
 
 public class KeyValueExprNode extends NodeBase {
+
+  @Getter
+  private String key;
+
+  @Getter
+  private NodeBase value;
+
   protected KeyValueExprNode(NodeBase parent, Span span) {
     super(parent, span);
   }
+
 
   @NonNull
   @Override

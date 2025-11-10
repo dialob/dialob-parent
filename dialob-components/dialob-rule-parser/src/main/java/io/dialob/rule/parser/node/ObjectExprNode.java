@@ -1,6 +1,8 @@
 package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.api.ObjectValueType;
+import io.dialob.rule.parser.api.ValueType;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
@@ -23,6 +25,15 @@ public final class ObjectExprNode extends NodeBase {
       return this;
     }
     throw new IllegalArgumentException("Only KeyValueExprNode nodes are allowed as subnodes of ObjectExprNode");
+  }
+
+  @Override
+  public ValueType getValueType() {
+    return ObjectValueType.objectOf(fields.stream().
+      collect(java.util.stream.Collectors.toMap(
+        KeyValueExprNode::getKey,
+        pair -> pair.getValue().getValueType()
+      )));
   }
 
   @NonNull
