@@ -98,9 +98,9 @@ class ObjectExprNodeTest {
 
   @Test
   void shouldNotAcceptNonKeyValueSubnodes() {
-    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
-
-    Assertions.assertThrows(IllegalArgumentException.class, () -> node.addSubnode(new ObjectExprNode(null, Span.undefined())));
+    var node = new ObjectExprNode(null, Span.undefined());
+    var node1 = new ObjectExprNode(null, Span.undefined());
+    Assertions.assertThrows(IllegalArgumentException.class, () -> node.addSubnode(node1));
   }
 
   @Test

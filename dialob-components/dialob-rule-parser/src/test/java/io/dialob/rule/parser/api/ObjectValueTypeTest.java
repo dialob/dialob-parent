@@ -54,8 +54,9 @@ class ObjectValueTypeTest {
 
     ObjectValueType objectValueType = new ObjectValueType(fieldTypes);
 
+    Map<String, ValueType> stringValueTypeMap = objectValueType.fieldTypes();
     assertThrows(UnsupportedOperationException.class, () ->
-      objectValueType.fieldTypes().put("age", PrimitiveValueType.INTEGER)
+      stringValueTypeMap.put("age", PrimitiveValueType.INTEGER)
     );
   }
 
@@ -106,8 +107,9 @@ class ObjectValueTypeTest {
   void shouldThrowUnsupportedOperationExceptionForNegate() {
     ObjectValueType objectValueType = new ObjectValueType(Map.of());
 
+    Object value = new Object();
     assertThrows(UnsupportedOperationException.class, () ->
-      objectValueType.negate(new Object())
+      objectValueType.negate(value)
     );
   }
 
@@ -115,8 +117,9 @@ class ObjectValueTypeTest {
   void shouldThrowUnsupportedOperationExceptionForNot() {
     ObjectValueType objectValueType = new ObjectValueType(Map.of());
 
+    Object value = new Object();
     assertThrows(UnsupportedOperationException.class, () ->
-      objectValueType.not(new Object())
+      objectValueType.not(value)
     );
   }
 
@@ -287,8 +290,9 @@ class ObjectValueTypeTest {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     CodedOutputStream output = CodedOutputStream.newInstance(byteArrayOutputStream);
 
+    Object value = new Object();
     assertThrows(UnsupportedOperationException.class, () ->
-      objectValueType.writeTo(output, new Object())
+      objectValueType.writeTo(output, value)
     );
   }
 

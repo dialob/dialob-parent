@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public record ObjectValueType(

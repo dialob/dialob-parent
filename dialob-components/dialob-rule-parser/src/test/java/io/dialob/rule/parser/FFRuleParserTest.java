@@ -70,7 +70,7 @@ class FFRuleParserTest extends ParseTestBase {
   }
 
   @Test
-  void testFunctionWithMapLiteral() throws Exception {
+  void testFunctionWithMapLiteral() {
     assertExpressionEquals("func({})", "(func {})");
     assertExpressionEquals("func({'a':1, 'b':2})", "(func {a:1,b:2})");
     assertExpressionEquals("func({'a':1, 'b':{'c':3}})", "(func {a:1,b:{c:3}})");

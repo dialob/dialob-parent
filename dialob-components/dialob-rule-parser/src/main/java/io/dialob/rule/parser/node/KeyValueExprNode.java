@@ -1,9 +1,11 @@
 package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+@EqualsAndHashCode(callSuper = true)
 public class KeyValueExprNode extends NodeBase {
 
   @Getter
@@ -24,6 +26,7 @@ public class KeyValueExprNode extends NodeBase {
     return NodeOperator.KEY_VALUE;
   }
 
+  @Override
   public NodeBase addSubnode(@NonNull NodeBase topNode) {
     if (this.value != null) {
       throw new IllegalStateException("KeyValueExprNode can have only one value node");

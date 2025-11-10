@@ -115,18 +115,6 @@ public record NodeOperator(@NonNull String operator, @NonNull Category category)
     LEAF      // nop
   }
 
-  @Override
-  @NonNull
-  public String operator() {
-    return operator;
-  }
-
-  @Override
-  @NonNull
-  public Category category() {
-    return category;
-  }
-
   public boolean isNegOp() {
     return "neg".equals(operator);
   }
