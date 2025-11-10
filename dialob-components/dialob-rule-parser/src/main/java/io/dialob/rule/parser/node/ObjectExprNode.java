@@ -49,6 +49,11 @@ public final class ObjectExprNode extends NodeBase {
   }
 
   @Override
+  public void setValueType(@NonNull ValueType type) {
+    throw new UnsupportedOperationException("Object expression node value type is derived from its fields");
+  }
+
+  @Override
   public NodeBase accept(@NonNull ASTVisitor visitor) {
     ASTVisitor subvisitor = visitor.visitObjectExpr(this);
     if (subvisitor != null) {

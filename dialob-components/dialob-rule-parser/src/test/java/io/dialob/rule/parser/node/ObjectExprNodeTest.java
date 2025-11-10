@@ -148,14 +148,12 @@ class ObjectExprNodeTest {
   }
 
   @Test
-  void shouldSetAndGetValueType() {
+  void shouldRejectSetValueType() {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
-    assertNull(node.getValueType());
+    Assertions.assertThrows(UnsupportedOperationException.class, () -> node.setValueType(ValueType.STRING));
 
-    node.setValueType(ValueType.STRING);
-
-    assertEquals(ValueType.STRING, node.getValueType());
+//    assertEquals(ObjectValueType.objectOf(Collections.emptyMap()), node.getValueType());
   }
 
   @Test
@@ -215,60 +213,6 @@ class ObjectExprNodeTest {
   }
 
   @Test
-  void shouldBeEqualWhenBothHaveSameValueType() {
-    ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
-    node1.setValueType(ValueType.STRING);
-
-    ObjectExprNode node2 = new ObjectExprNode(null, Span.undefined());
-    node2.setValueType(ValueType.STRING);
-
-    assertEquals(node1, node2);
-  }
-
-  @Test
-  void shouldNotBeEqualWhenValueTypesAreDifferent() {
-    ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
-    node1.setValueType(ValueType.STRING);
-
-    ObjectExprNode node2 = new ObjectExprNode(null, Span.undefined());
-    node2.setValueType(ValueType.INTEGER);
-
-    assertNotEquals(node1, node2);
-  }
-
-  @Test
-  void shouldNotBeEqualWhenOnlyOneHasValueType() {
-    ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
-    node1.setValueType(ValueType.STRING);
-
-    ObjectExprNode node2 = new ObjectExprNode(null, Span.undefined());
-
-    assertNotEquals(node1, node2);
-  }
-
-  @Test
-  void shouldNotBeEqualToDifferentNodeTypeWithDifferentValueTypes() {
-    ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
-    node1.setValueType(ValueType.STRING);
-
-    CallExprNode node2 = new CallExprNode(null, NodeOperator.createNodeOperator("+"), Span.undefined());
-    node2.setValueType(ValueType.INTEGER);
-
-    assertNotEquals(node1, node2);
-  }
-
-  @Test
-  void shouldHaveSameHashCodeForEqualNodes() {
-    ObjectExprNode node1 = new ObjectExprNode(null, Span.undefined());
-    node1.setValueType(ValueType.STRING);
-
-    ObjectExprNode node2 = new ObjectExprNode(null, Span.undefined());
-    node2.setValueType(ValueType.STRING);
-
-    assertEquals(node1.hashCode(), node2.hashCode());
-  }
-
-  @Test
   void shouldReturnTypedStringWithoutValueType() {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
@@ -276,17 +220,6 @@ class ObjectExprNodeTest {
 
     assertNotNull(result);
     assertTrue(result.contains("null"));
-  }
-
-  @Test
-  void shouldReturnTypedStringWithValueType() {
-    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
-    node.setValueType(ValueType.STRING);
-
-    String result = node.toTypedString();
-
-    assertNotNull(result);
-    assertTrue(result.contains("STRING"));
   }
 
   @Test
