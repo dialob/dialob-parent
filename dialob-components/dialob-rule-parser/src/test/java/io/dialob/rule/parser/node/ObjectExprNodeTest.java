@@ -17,6 +17,7 @@ package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,6 +92,28 @@ class ObjectExprNodeTest {
   }
 
   @Test
+  void shouldNotAcceptNonKeyValueSubnodes() {
+    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
+
+    Assertions.assertThrows(IllegalArgumentException.class, () -> node.addSubnode(new ObjectExprNode(null, Span.undefined())));
+  }
+
+  @Test
+  void shouldAcceptNonKeyValueSubnodes() {
+    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
+
+    node.addSubnode(new KeyValueExprNode(null, Span.undefined()));
+
+
+    Assertions.assertEquals(1, node.getSubnodes().size());
+    ASTVisitor visitor = new ASTVisitor() {};
+
+
+    NodeBase result = node.accept(visitor);
+
+  }
+
+  @Test
   void shouldSetAndGetValueType() {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
@@ -130,14 +153,6 @@ class ObjectExprNodeTest {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
     assertTrue(node.getSubnodes().isEmpty());
-  }
-
-  @Test
-  void shouldThrowExceptionWhenAddingSubnode() {
-    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
-    KeyValueExprNode keyValue = new KeyValueExprNode(null, Span.undefined());
-
-    assertThrows(IllegalStateException.class, () -> node.addSubnode(keyValue));
   }
 
   @Test

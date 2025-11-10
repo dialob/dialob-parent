@@ -11,6 +11,22 @@ public class ObjectExprNode extends NodeBase {
 
   private List<KeyValueExprNode> fields = new ArrayList<>();
 
+  @Override
+  public ObjectExprNode addSubnode(@NonNull NodeBase node) {
+    node.setParent(this);
+    if (node instanceof KeyValueExprNode keyValueExprNode) {
+      fields.add(keyValueExprNode);
+      return this;
+    }
+    throw new IllegalArgumentException("Only KeyValueExprNode nodes are allowed as subnodes of ObjectExprNode");
+  }
+
+  @NonNull
+  @Override
+  public List<NodeBase> getSubnodes() {
+    return (List<NodeBase>) (Object) fields;
+  }
+
   @NonNull
   @Override
   public NodeOperator getNodeOperator() {
