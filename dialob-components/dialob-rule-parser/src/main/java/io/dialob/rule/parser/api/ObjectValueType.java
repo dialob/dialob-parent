@@ -135,7 +135,7 @@ public record ObjectValueType(
 
   @Override
   public String toString() {
-    return "OBJECT";
+    return "OBJECT("+ fieldTypes.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + ")";
   }
 
   @Override

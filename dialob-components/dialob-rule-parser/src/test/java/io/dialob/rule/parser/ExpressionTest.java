@@ -46,6 +46,7 @@ class ExpressionTest {
     assertEquals("1 + a - \"ab\" >=    abc ", Expression.createExpression("1 + a - \"ab\" >=    abc ").renameId("ab", "f").toString());
     assertEquals("abc + ab + abc + ab +abc", Expression.createExpression("a + ab + abc + ab +a").renameId("a", "abc").toString());
     assertEquals("a + ab + a + ab +a", Expression.createExpression("a + ab + abc + ab +a").renameId("abc", "a").toString());
+    assertEquals("func({'a':a, 'c':a})", Expression.createExpression("func({'a':a, 'c':abc})").renameId("abc", "a").toString());
   }
 
   @Test
@@ -54,6 +55,7 @@ class ExpressionTest {
     assertThat(Expression.createExpression("1 + r").getAllIds()).containsExactly("r");
     assertThat(Expression.createExpression("a + b").getAllIds()).containsExactly("a", "b");
     assertThat(Expression.createExpression("a + ab + a + ab +a").getAllIds()).containsExactly("a", "ab");
+    assertThat(Expression.createExpression("func({'a':a, 'c':ab})").getAllIds()).containsExactly("a", "ab");
   }
 
   @Test

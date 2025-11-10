@@ -264,7 +264,7 @@ class ObjectValueTypeTest {
   void shouldReturnObjectForToString() {
     ObjectValueType objectValueType = new ObjectValueType(Map.of());
 
-    assertEquals("OBJECT", objectValueType.toString());
+    assertEquals("OBJECT()", objectValueType.toString());
   }
 
   @Test

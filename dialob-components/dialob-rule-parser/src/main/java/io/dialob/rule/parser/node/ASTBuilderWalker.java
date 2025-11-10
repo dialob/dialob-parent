@@ -586,27 +586,22 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
   @Override
   public void enterObjectFieldRule(DialobRuleParser.ObjectFieldRuleContext ctx) {
     builder = builder.keyValueExprNode(Span.of(ctx));
-
-  }
-
-  @Override
-  public void enterFieldNameRule(DialobRuleParser.FieldNameRuleContext ctx) {
-    super.enterFieldNameRule(ctx);
-  }
-
-  @Override
-  public void exitFieldNameRule(DialobRuleParser.FieldNameRuleContext ctx) {
-    super.exitFieldNameRule(ctx);
   }
 
   @Override
   public void exitObjectFieldRule(DialobRuleParser.ObjectFieldRuleContext ctx) {
-    super.exitObjectFieldRule(ctx);
+    var top = (KeyValueExprNode) builder.getTopNode();
+    var text = ctx.fieldName.getText();
+    if (isQuoted(text)) {
+      text = text.substring(1, text.length() - 1);
+    }
+    top.setKey(text);
+    pop();
   }
 
   @Override
   public void exitObjectExpr(DialobRuleParser.ObjectExprContext ctx) {
-    super.enterObjectExpr(ctx);
+    pop();
   }
 
   @Override

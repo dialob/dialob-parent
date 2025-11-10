@@ -85,6 +85,7 @@ class ObjectExprNodeTest {
 
     ASTVisitor visitor = new ASTVisitor() {
       @Override
+      @NonNull
       public NodeBase endObjectExpr(@NonNull ObjectExprNode node) {
         return replacement;
       }
@@ -112,7 +113,8 @@ class ObjectExprNodeTest {
     Assertions.assertEquals(1, node.getSubnodes().size());
     ASTVisitor visitor = mock();
     when(visitor.visitObjectExpr(any())).thenReturn(visitor);
-    when(visitor.visitKeyValueExpr(any())).thenAnswer(returnsFirstArg());
+    when(visitor.visitKeyValueExpr(any())).thenReturn(visitor);
+    when(visitor.endKeyValueExpr(any())).thenAnswer(returnsFirstArg());
     when(visitor.endObjectExpr(any())).thenAnswer(returnsFirstArg());
     var result = node.accept(visitor);
     assertEquals(1, result.getSubnodes().size());
@@ -120,6 +122,7 @@ class ObjectExprNodeTest {
 
     verify(visitor).visitObjectExpr(node);
     verify(visitor).visitKeyValueExpr(subnode);
+    verify(visitor).endKeyValueExpr(subnode);
     verify(visitor).endObjectExpr(node);
     verifyNoMoreInteractions(visitor);
   }
@@ -135,7 +138,8 @@ class ObjectExprNodeTest {
     Assertions.assertEquals(1, node.getSubnodes().size());
     ASTVisitor visitor = mock();
     when(visitor.visitObjectExpr(any())).thenReturn(visitor);
-    when(visitor.visitKeyValueExpr(any())).thenReturn(subnode2);
+    when(visitor.visitKeyValueExpr(any())).thenReturn(visitor);
+    when(visitor.endKeyValueExpr(any())).thenReturn(subnode2);
     when(visitor.endObjectExpr(any())).thenAnswer(returnsFirstArg());
     var result = node.accept(visitor);
     assertEquals(1, result.getSubnodes().size());
@@ -143,6 +147,7 @@ class ObjectExprNodeTest {
 
     verify(visitor).visitObjectExpr(node);
     verify(visitor).visitKeyValueExpr(subnode);
+    verify(visitor).endKeyValueExpr(subnode);
     verify(visitor).endObjectExpr(node);
     verifyNoMoreInteractions(visitor);
   }

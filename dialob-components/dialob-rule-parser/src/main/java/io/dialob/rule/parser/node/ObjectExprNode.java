@@ -7,7 +7,9 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 public final class ObjectExprNode extends NodeBase {
@@ -29,11 +31,12 @@ public final class ObjectExprNode extends NodeBase {
 
   @Override
   public ValueType getValueType() {
-    return ObjectValueType.objectOf(fields.stream().
-      collect(java.util.stream.Collectors.toMap(
-        KeyValueExprNode::getKey,
-        pair -> pair.getValue().getValueType()
-      )));
+    return ObjectValueType.objectOf(Collections.emptyMap());
+    //fields.stream().
+    //      collect(java.util.stream.Collectors.toUnmodifiableMap(
+    //        KeyValueExprNode::getKey,
+    //        pair -> pair.getValue().getValueType() != null ? pair.getValue().getValueType() : ValueType.STRING
+    //      ))
   }
 
   @NonNull
@@ -73,5 +76,10 @@ public final class ObjectExprNode extends NodeBase {
       fields = Arrays.asList(nodes);
     }
     return visitor.endObjectExpr(this);
+  }
+
+  @Override
+  public String toString() {
+    return "{" + fields.stream().map(Object::toString).collect(Collectors.joining(",")) + "}";
   }
 }

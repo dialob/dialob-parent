@@ -23,16 +23,12 @@ listExpr
     | idExprRule
     ;
 
-fieldNameRule
-    : QUOTED_STRING
-    ;
-
 objectFieldRule
-    : fieldName=fieldNameRule COLON value=expr
+    : fieldName=QUOTED_STRING COLON value=funcArgExpr
     ;
 
 objectExpr
-    : LCB objectFieldRule (COMMA objectFieldRule)* RCB
+    : LCB (objectFieldRule (COMMA objectFieldRule)*)? RCB
     ;
 
 funcArgExpr

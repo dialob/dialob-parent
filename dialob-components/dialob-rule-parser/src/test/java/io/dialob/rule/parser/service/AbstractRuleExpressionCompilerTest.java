@@ -20,7 +20,6 @@ import io.dialob.rule.parser.api.RuleExpressionCompilerCallback;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -44,12 +43,10 @@ public abstract class AbstractRuleExpressionCompilerTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     compiler = createRuleExpressionCompiler();
 
-    when(variableFinder.mapAlias(anyString())).thenAnswer(answer -> {
-      return answer.getArguments()[0];
-    });
+    when(variableFinder.mapAlias(anyString())).thenAnswer(answer -> answer.getArguments()[0]);
   }
 
   @Test
@@ -95,12 +92,13 @@ public abstract class AbstractRuleExpressionCompilerTest {
 
 
   @Test
-  @Disabled
-  // functions are not fully implemented yet
   void functionsEvaluatingToNonBooleanAreNotAccepted() throws Exception {
     when(variableFinder.typeOf("a")).thenReturn(ValueType.INTEGER);
     when(variableFinder.returnTypeOf("value")).thenReturn(ValueType.INTEGER);
     compiler.compile("value(a)", variableFinder, callback);
+    verify(variableFinder, times(2)).isAsync("value");
+    verify(variableFinder, times(2)).isAsync("value");
+    verify(variableFinder).returnTypeOf("value", ValueType.INTEGER);
     verify(variableFinder).typeOf("a");
     verify(variableFinder, atLeast(0)).mapAlias("a");
     verify(variableFinder).findVariableScope("a");

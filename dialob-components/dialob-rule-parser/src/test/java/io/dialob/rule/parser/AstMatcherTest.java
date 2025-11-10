@@ -335,13 +335,15 @@ class AstMatcherTest {
     assertMinify("(func q1)", "func(q1)");
     assertMinify("(func \"test\")", "func(\"test\")");
     assertMinify("(func \"test\" 21)", "func(\"test\", 21)");
-//    assertMinify("(func)", "func({})");
+    assertMinify("(func {})", "func({})");
+    assertMinify("(func {a:\"b\"})", "func({\"a\":\"b\"})");
   }
 
 
   private void assertMinify(String expected, String expressionString) {
     // given
     final Expression expression = Expression.createExpression(expressionString);
+
     // when
     final AstMatcher matcher = new ModifyingMinifierVisitor();
     expression.accept(matcher);
