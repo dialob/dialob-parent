@@ -1,11 +1,15 @@
 package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.EqualsAndHashCode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class ObjectExprNode extends NodeBase {
-  protected ObjectExprNode(NodeBase parent, Span span) {
+@EqualsAndHashCode(callSuper = true)
+public final class ObjectExprNode extends NodeBase {
+  ObjectExprNode(NodeBase parent, Span span) {
     super(parent, span);
   }
 

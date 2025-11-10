@@ -17,10 +17,14 @@ package io.dialob.rule.parser.node;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Mockito.*;
 
 class ObjectExprNodeTest {
 
@@ -99,18 +103,48 @@ class ObjectExprNodeTest {
   }
 
   @Test
-  void shouldAcceptNonKeyValueSubnodes() {
+  void shouldAcceptNonKeyValueSubnodesAndNotModify() {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
-    node.addSubnode(new KeyValueExprNode(null, Span.undefined()));
-
+    KeyValueExprNode subnode = new KeyValueExprNode(null, Span.undefined());
+    node.addSubnode(subnode);
 
     Assertions.assertEquals(1, node.getSubnodes().size());
-    ASTVisitor visitor = new ASTVisitor() {};
+    ASTVisitor visitor = mock();
+    when(visitor.visitObjectExpr(any())).thenReturn(visitor);
+    when(visitor.visitKeyValueExpr(any())).thenAnswer(returnsFirstArg());
+    when(visitor.endObjectExpr(any())).thenAnswer(returnsFirstArg());
+    var result = node.accept(visitor);
+    assertEquals(1, result.getSubnodes().size());
+    Assertions.assertSame(subnode, result.getSubnodes().getFirst());
 
+    verify(visitor).visitObjectExpr(node);
+    verify(visitor).visitKeyValueExpr(subnode);
+    verify(visitor).endObjectExpr(node);
+    verifyNoMoreInteractions(visitor);
+  }
 
-    NodeBase result = node.accept(visitor);
+  @Test
+  void shouldAcceptNonKeyValueSubnodesAndModify() {
+    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
+    KeyValueExprNode subnode = new KeyValueExprNode(null, Span.undefined());
+    KeyValueExprNode subnode2 = new KeyValueExprNode(null, Span.undefined());
+    node.addSubnode(subnode);
+
+    Assertions.assertEquals(1, node.getSubnodes().size());
+    ASTVisitor visitor = mock();
+    when(visitor.visitObjectExpr(any())).thenReturn(visitor);
+    when(visitor.visitKeyValueExpr(any())).thenReturn(subnode2);
+    when(visitor.endObjectExpr(any())).thenAnswer(returnsFirstArg());
+    var result = node.accept(visitor);
+    assertEquals(1, result.getSubnodes().size());
+    assertNotSame(result.getSubnodes().getFirst(), subnode);
+
+    verify(visitor).visitObjectExpr(node);
+    verify(visitor).visitKeyValueExpr(subnode);
+    verify(visitor).endObjectExpr(node);
+    verifyNoMoreInteractions(visitor);
   }
 
   @Test
@@ -156,17 +190,20 @@ class ObjectExprNodeTest {
   }
 
   @Test
-  void shouldBeEqualToSelf() {
-    ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
-
-    assertEquals(node, node);
+  void verifyEqualsContract() {
+    EqualsVerifier.forClass(NodeBase.class)
+      .withRedefinedSubclass(ObjectExprNode.class)
+      .usingGetClass()
+      .withIgnoredFields("parent", "span")
+      .suppress(Warning.NONFINAL_FIELDS)
+      .verify();
   }
 
   @Test
   void shouldNotBeEqualToNull() {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
-    assertNotEquals(node, null);
+    assertNotEquals(null, node);
   }
 
   @Test
@@ -295,6 +332,6 @@ class ObjectExprNodeTest {
     assertInstanceOf(CallExprNode.class, result);
     CallExprNode callNode = (CallExprNode) result;
     assertEquals(1, callNode.getSubnodes().size());
-    assertInstanceOf(ObjectExprNode.class, callNode.getSubnodes().get(0));
+    assertInstanceOf(ObjectExprNode.class, callNode.getSubnodes().getFirst());
   }
 }

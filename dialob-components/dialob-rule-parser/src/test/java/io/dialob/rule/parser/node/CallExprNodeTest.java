@@ -1,6 +1,8 @@
 package io.dialob.rule.parser.node;
 
 import io.dialob.rule.parser.api.ValueType;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,17 @@ class CallExprNodeTest {
     node.addSubnode(new IdExprNode(null, null, null, "var", ValueType.INTEGER, Span.undefined()));
     node2 = new CallExprNode(null, NodeOperator.createNodeOperator("+"), ValueType.INTEGER, Span.undefined());
     assertNotEquals(node, node2);
+  }
+
+
+  @Test
+  void verifyEqualsContract() {
+    EqualsVerifier.forClass(NodeBase.class)
+      .withRedefinedSubclass(CallExprNode.class)
+      .usingGetClass()
+      .withIgnoredFields("parent", "span")
+      .suppress(Warning.NONFINAL_FIELDS)
+      .verify();
   }
 
 }

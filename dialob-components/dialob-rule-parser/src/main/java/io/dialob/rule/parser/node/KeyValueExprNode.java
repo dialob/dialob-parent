@@ -15,6 +15,6 @@ public class KeyValueExprNode extends NodeBase {
 
   @Override
   public KeyValueExprNode accept(@NonNull ASTVisitor visitor) {
-    return this;
+    return visitor.visitKeyValueExpr(this);
   }
 }

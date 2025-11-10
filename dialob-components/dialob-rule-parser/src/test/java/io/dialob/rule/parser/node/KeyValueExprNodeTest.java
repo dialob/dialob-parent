@@ -15,8 +15,19 @@
  */
 package io.dialob.rule.parser.node;
 
-import static org.junit.jupiter.api.Assertions.*;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Test;
 
 class KeyValueExprNodeTest {
+  @Test
+  void verifyEqualsContract() {
+    EqualsVerifier.forClass(NodeBase.class)
+      .withRedefinedSubclass(KeyValueExprNode.class)
+      .usingGetClass()
+      .withIgnoredFields("parent", "span")
+      .suppress(Warning.NONFINAL_FIELDS)
+      .verify();
+  }
 
 }
