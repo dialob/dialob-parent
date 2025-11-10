@@ -5,8 +5,6 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import lombok.Getter;
 
-import java.util.List;
-
 public class ASTBuilder {
 
   @Getter
@@ -146,7 +144,7 @@ public class ASTBuilder {
   public ASTBuilder exprNodes(NodeBase... nodes) {
     ASTBuilder builder = this;
     for (NodeBase node : nodes) {
-      List<NodeBase> subnodes = node.getSubnodes();
+      var subnodes = node.getSubnodes();
       builder = builder
         .exprNode(node)
         .exprNodes(subnodes.toArray(new NodeBase[0]))
