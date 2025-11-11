@@ -71,6 +71,7 @@ public record ObjectValueType(
     return fieldTypes.hashCode() * 7;
   }
 
+  @NonNull
   @Override
   public String toString() {
     return "OBJECT("+ fieldTypes.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(Collectors.joining(",")) + ")";

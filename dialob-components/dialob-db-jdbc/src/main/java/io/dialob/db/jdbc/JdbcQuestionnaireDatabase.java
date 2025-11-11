@@ -82,6 +82,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         .build());
       return builder.build();
     } catch (IOException e) {
+      LOGGER.error("Error reading document {}: {}", Utils.toString(oid), e.getMessage(), e);
       throw new DocumentCorruptedException("Could not read document " + Utils.toString(oid) + ":" + e.getMessage());
     }
   }

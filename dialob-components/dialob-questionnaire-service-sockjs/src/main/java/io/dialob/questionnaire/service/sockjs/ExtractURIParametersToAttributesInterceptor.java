@@ -38,7 +38,7 @@ public class ExtractURIParametersToAttributesInterceptor implements HandshakeInt
   }
 
   @Override
-  public boolean beforeHandshake(@NonNull final ServerHttpRequest request, @NonNull final ServerHttpResponse response, @NonNull final WebSocketHandler wsHandler, @NonNull final Map<String, Object> attributes) throws Exception {
+  public boolean beforeHandshake(@NonNull final ServerHttpRequest request, @NonNull final ServerHttpResponse response, @NonNull final WebSocketHandler wsHandler, @NonNull final Map<String, Object> attributes) {
     if (request instanceof ServletServerHttpRequest serverRequest) {
       var servletRequest = serverRequest.getServletRequest();
       for (var name : attributesToExtract) {

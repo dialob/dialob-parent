@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormDatabase {
@@ -167,7 +166,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         conditions.add(getDatabaseHelper().jsonContains("metadata"));
         params.add(getDatabaseHelper().jsonObject(objectMapper, metadata));
       }
-      String where = conditions.stream().collect(Collectors.joining(" and "));
+      String where = String.join(" and ", conditions);
       if (StringUtils.isNotBlank(where)) {
         where = " where " + where;
       }

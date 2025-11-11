@@ -37,7 +37,7 @@ public class Expression implements ErrorLogger {
   @Getter
   private NodeBase ast;
 
-  private List<RuleExpressionCompilerError> errors = new ArrayList<>();
+  private final List<RuleExpressionCompilerError> errors = new ArrayList<>();
 
   private Expression(@NonNull String expression) {
     this(ASTBuilderWalker.DUMMY_VARIABLE_FINDER, new HashMap<>(), expression);

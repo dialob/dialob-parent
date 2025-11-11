@@ -46,11 +46,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public boolean isNegateable() {
-      return false;
-    }
-
-    @Override
     public ValueType plusType(ValueType rhs) {
       if (rhs == PERIOD || rhs == DATE) {
         return null;
@@ -196,11 +191,6 @@ public enum PrimitiveValueType implements ValueType {
         return null;
       }
       return LocalDate.parse(string);
-    }
-
-    @Override
-    public boolean isNegateable() {
-      return false;
     }
 
     @Override
@@ -631,11 +621,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public boolean isNegateable() {
-      return false;
-    }
-
-    @Override
     public Object not(Object value) {
       return !(Boolean) value;
     }
@@ -683,11 +668,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public boolean isNegateable() {
-      return false;
-    }
-
-    @Override
     public ValueType plusType(ValueType rhs) {
       return STRING;
     }
@@ -725,11 +705,6 @@ public enum PrimitiveValueType implements ValueType {
     }
 
     @Override
-    public boolean isNegateable() {
-      return false;
-    }
-
-    @Override
     public void writeTo(CodedOutputStream output, Object value) throws IOException {
       boolean present = value != null;
       output.writeBoolNoTag(present);
@@ -749,38 +724,10 @@ public enum PrimitiveValueType implements ValueType {
 
   };
 
-  public Object negate(Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  public Object not(Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  public <T> BinaryOperator<T> sumOp() {
-    throw new UnsupportedOperationException();
-  }
-
-  public <T> BinaryOperator<T> multOp() {
-    throw new UnsupportedOperationException();
-  }
-
   public ValueType plusType(ValueType rhs) {
     if (rhs == STRING) {
       return STRING;
     }
-    return null;
-  }
-
-  public ValueType minusType(ValueType rhs) {
-    return null;
-  }
-
-  public ValueType multiplyType(ValueType rhs) {
-    return null;
-  }
-
-  public ValueType divideByType(ValueType rhs) {
     return null;
   }
 

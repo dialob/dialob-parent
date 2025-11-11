@@ -65,11 +65,11 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
   private final InitialValueResolver initialValueResolver;
 
-  private Map<ItemId, List<Command<?>>> itemCommands;
+  private final Map<ItemId, List<Command<?>>> itemCommands;
 
-  private List<ItemState> rowGroups = new ArrayList<>();
+  private final List<ItemState> rowGroups = new ArrayList<>();
 
-  private ItemId activePage;
+  private final ItemId activePage;
 
   private final ProvidedValueSetEntriesResolver findProvidedValueSetEntries;
 

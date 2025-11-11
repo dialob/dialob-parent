@@ -40,7 +40,7 @@ class QuestionnaireDatabaseTest {
 
   static QuestionnaireDatabase questionnaireDatabaseMock = mock(QuestionnaireDatabase.class);
 
-  private String tenantId = "t-123";
+  private final String tenantId = "t-123";
 
   @Inject
   public CacheManager cacheManager;

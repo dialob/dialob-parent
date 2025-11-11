@@ -39,8 +39,6 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -68,7 +66,7 @@ public class FillAssertionBuilder {
 
   private final List<ValidationEntry> validationEntries =  new ArrayList<>();
 
-  private String formId;
+  private final String formId;
 
   private final QuestionnaireDialobProgramService dialobProgramService;
 

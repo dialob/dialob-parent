@@ -62,7 +62,7 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private boolean didComplete;
 
-  private DialobSessionUpdateHook dialobSessionUpdateHook;
+  private final DialobSessionUpdateHook dialobSessionUpdateHook;
 
   private String originalLanguage;
 

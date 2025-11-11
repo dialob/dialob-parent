@@ -14,7 +14,7 @@ class ASTBuilderTest {
   void shouldThrowIllegalStateExceptionIfBuildCalledTooEarl() {
     ASTBuilder astBuilder = new ASTBuilder();
     astBuilder.idExprNode(null, "x", ValueType.BOOLEAN, ImmutableSpan.of(0,1));
-    Assertions.assertThrows(IllegalStateException.class, () -> astBuilder.build());
+    Assertions.assertThrows(IllegalStateException.class, astBuilder::build);
   }
 
 

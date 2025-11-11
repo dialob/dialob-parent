@@ -24,9 +24,9 @@ public interface VariableExpressionCompilerCallback {
 
   void start(String variableRuleName);
 
-  void whenConstraints(String constraints) throws VariableNotDefinedException;
+  void whenConstraints(String constraints);
 
-  void thenExpression(String expression) throws VariableNotDefinedException;
+  void thenExpression(String expression);
 
   void expressionResultType(ValueType valueType);
 

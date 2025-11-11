@@ -17,14 +17,13 @@ package io.dialob.function;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
 
 public class IncompleteFunctionRegistry implements FunctionRegistry {
 
   @NonNull
   @Override
-  public ValueType returnTypeOf(@NonNull String functionName, ValueType... argTypes) throws VariableNotDefinedException {
+  public ValueType returnTypeOf(@NonNull String functionName, ValueType... argTypes) {
     throw new UnsupportedOperationException("returnTypeOf()");
   }
 

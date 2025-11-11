@@ -15,6 +15,7 @@
  */
 package io.dialob.form.service;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.common.Constants;
 import io.dialob.form.service.api.validation.CsvToFormParser;
@@ -41,7 +42,7 @@ public class DialobCsvToFormParser implements CsvToFormParser {
   );
 
   @Override
-  public Form parseCsv(String formCsv) {
+  public Form parseCsv(@NonNull String formCsv) {
     if (formCsv == null || formCsv.isBlank()) {
       throw new CsvParsingException("CSV data is empty or null.");
     }

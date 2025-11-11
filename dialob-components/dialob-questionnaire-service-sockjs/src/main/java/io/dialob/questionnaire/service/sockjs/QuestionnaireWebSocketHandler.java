@@ -85,7 +85,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
   private WebSocketSession session;
 
-  private boolean reportStackTrace = true;
+  private static final boolean reportStackTrace = true;
 
   public QuestionnaireWebSocketHandler(
     final DialobSettings settings,
@@ -105,7 +105,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
   // Note! If execution of method takes too long, client will fallback to slower connection methods.
   @Override
-  public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+  public void afterConnectionEstablished(@NonNull WebSocketSession session) {
     this.session = new ConcurrentWebSocketSessionDecorator(session, settings.getSendTimeLimit(), settings.getMaxBinaryMessageBufferSize());
     final Map<String, Object> sessionAttributes = session.getAttributes();
     this.questionnaireId = (String) sessionAttributes.get(settings.getUrlAttributes().getSessionId());
@@ -185,7 +185,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   }
 
   @Override
-  public void handleTextMessage(WebSocketSession session, TextMessage message) {
+  public void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () -> {
       final List<Action> actionList = new ArrayList<>();
       String prevRev = null;
@@ -229,13 +229,13 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   }
 
   @Override
-  public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+  public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) {
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () ->
       LOGGER.error("WebSocket transport error. {}", this.session.getId(), exception));
   }
 
   @Override
-  public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+  public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus closeStatus) {
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () -> {
       LOGGER.debug("WebSocket connection closed {} status {}", this.session.getId(), closeStatus);
       publishDisconnectionEvent(closeStatus);

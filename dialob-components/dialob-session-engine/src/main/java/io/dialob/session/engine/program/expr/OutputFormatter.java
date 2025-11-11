@@ -27,9 +27,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 public class OutputFormatter {
-  private Locale locale;
-  private DateTimeFormatter dateFormatter;
-  private DateTimeFormatter timeFormatter;
+  private final Locale locale;
+  private final DateTimeFormatter dateFormatter;
+  private final DateTimeFormatter timeFormatter;
 
   public OutputFormatter(String language) {
     locale = language != null ? Locale.of(language) : Locale.getDefault();

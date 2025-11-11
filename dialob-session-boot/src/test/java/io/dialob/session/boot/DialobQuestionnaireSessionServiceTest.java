@@ -79,7 +79,6 @@ import static io.dialob.api.proto.Action.Type.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -234,7 +233,7 @@ class DialobQuestionnaireSessionServiceTest {
   @Inject
   private CurrentTenant currentTenant;
 
-  private String tenantId = "123";
+  private final String tenantId = "123";
 
   @BeforeEach
   public void before() {
@@ -977,7 +976,7 @@ class DialobQuestionnaireSessionServiceTest {
         );
       })
       .answer("list1", "c")
-      .assertThat(assertion -> assertion.isEmpty())
+      .assertThat(AbstractIterableAssert::isEmpty)
       .answer("list1", "a")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
@@ -985,14 +984,14 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, null, "group3", "Whatever group", null)
         ))
       .answer("list1", "b")
-      .assertThat(assertion -> assertion.isEmpty())
+      .assertThat(AbstractIterableAssert::isEmpty)
       .answer("list1", "c")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("text1", "group3"), null, null, null)
         ))
       .answer("list1", null)
-      .assertThat(assertion -> assertion.isEmpty())
+      .assertThat(AbstractIterableAssert::isEmpty)
       .apply();
   }
 
@@ -1260,7 +1259,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  void testPublishedVariables() throws Exception {
+  void testPublishedVariables() {
     fillForm(ImmutableForm.builder()
       .id("test")
       .metadata(ImmutableFormMetadata.builder()
@@ -1336,7 +1335,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  void testReducer() throws Exception {
+  void testReducer() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1423,7 +1422,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  void testRowCount() throws Exception {
+  void testRowCount() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1515,7 +1514,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  void testMultiChoiceCount() throws Exception {
+  void testMultiChoiceCount() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1769,7 +1768,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  void cannotCompleteWhenQuestionnaireHasMissingAnswers() throws Exception {
+  void cannotCompleteWhenQuestionnaireHasMissingAnswers() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1932,7 +1931,7 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   @Tag("github-29")
-  void ghIssue29ConditionalsOnRowGroupActions() throws Exception {
+  void ghIssue29ConditionalsOnRowGroupActions() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -2140,7 +2139,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   private <T> Set<T> asSet(T... items) {
-    return new HashSet<T>(asList(items));
+    return new HashSet<>(asList(items));
   }
 
 }

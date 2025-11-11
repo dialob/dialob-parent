@@ -84,7 +84,7 @@ public class CSVSerializer {
 
   @SuppressWarnings("unchecked")
   private void serializeAnswer(Form form, Questionnaire questionnaire, FormItem formItem,
-                               String answerId, List<String> records, String language, String effectiveValueSetId) throws IOException {
+                               String answerId, List<String> records, String language, String effectiveValueSetId) {
     Optional<Answer> a = getAnswer(questionnaire, answerId != null ? answerId : formItem.getId());
 
     String realValue = "";
@@ -147,58 +147,54 @@ public class CSVSerializer {
 
   private void serializeItem(Form form, Questionnaire questionnaire,
                              FormItem formItem, String answerId, List<String> records, String language, String effectiveValueSetId) {
-    try {
-      // Skip items with export=false prop set
-      Object exportFlag = formItem.getProps() != null ? formItem.getProps().get("export") : null;
-      if (exportFlag != null && "false".equals(exportFlag.toString())) {
-        return;
-      }
+    // Skip items with export=false prop set
+    Object exportFlag = formItem.getProps() != null ? formItem.getProps().get("export") : null;
+    if (exportFlag != null && "false".equals(exportFlag.toString())) {
+      return;
+    }
 
-      // Special handling for surveyGroup
-      if ("surveygroup".equals(formItem.getType())) {
-        String surveyGroupValueSet =  formItem.getValueSetId();
-        formItem.getItems().stream().map(itemId -> form.getData().get(itemId)).forEach(
-          item -> serializeItem(form, questionnaire, item, null, records, language, surveyGroupValueSet));
-        return;
-      }
+    // Special handling for surveyGroup
+    if ("surveygroup".equals(formItem.getType())) {
+      String surveyGroupValueSet =  formItem.getValueSetId();
+      formItem.getItems().stream().map(itemId -> form.getData().get(itemId)).forEach(
+        item -> serializeItem(form, questionnaire, item, null, records, language, surveyGroupValueSet));
+      return;
+    }
 
-      if (IGNORED_TYPES.contains(formItem.getType())) {
-        return;
-      }
-      // Container items
-      if (null != formItem.getItems() && !formItem.getItems().isEmpty()) {
-        // Rowgroup handling
-        if ("rowgroup".equals(formItem.getType())) {
-          Optional<Answer> a = getAnswer(questionnaire, formItem.getId());
-          if (a.isPresent()) {
-            List<Integer> rows = (List<Integer>) a.get().getValue();
-            if (rows != null) {
-              if (!rows.isEmpty()) {
-                // Rowgroup label row
-                records.add(formItem.getLabel().get(LABEL_LANGUAGE));
-                records.add(formItem.getId());
-              }
-              // Rowgroup items
-              rows.forEach(row -> {
-                formItem.getItems().stream().map(itemId -> form.getData().get(itemId))
-                  .forEach(item -> serializeItem(form, questionnaire, item, "%s.%d.%s".formatted(formItem.getId(), row, item.getId()), records, language, null));
-              });
+    if (IGNORED_TYPES.contains(formItem.getType())) {
+      return;
+    }
+    // Container items
+    if (null != formItem.getItems() && !formItem.getItems().isEmpty()) {
+      // Rowgroup handling
+      if ("rowgroup".equals(formItem.getType())) {
+        Optional<Answer> a = getAnswer(questionnaire, formItem.getId());
+        if (a.isPresent()) {
+          List<Integer> rows = (List<Integer>) a.get().getValue();
+          if (rows != null) {
+            if (!rows.isEmpty()) {
+              // Rowgroup label row
+              records.add(formItem.getLabel().get(LABEL_LANGUAGE));
+              records.add(formItem.getId());
             }
+            // Rowgroup items
+            rows.forEach(row -> {
+              formItem.getItems().stream().map(itemId -> form.getData().get(itemId))
+                .forEach(item -> serializeItem(form, questionnaire, item, "%s.%d.%s".formatted(formItem.getId(), row, item.getId()), records, language, null));
+            });
           }
-        } else {
-          // Container items
-          formItem.getItems().stream().map(itemId -> form.getData().get(itemId)).forEach(
-            item -> serializeItem(form, questionnaire, item, null, records, language, null));
         }
       } else {
-        // "Normal" items
-        if ("survey".equals(formItem.getType()) && effectiveValueSetId == null) {
-          return;
-        }
-        serializeAnswer(form, questionnaire, formItem, answerId, records, language, effectiveValueSetId);
+        // Container items
+        formItem.getItems().stream().map(itemId -> form.getData().get(itemId)).forEach(
+          item -> serializeItem(form, questionnaire, item, null, records, language, null));
       }
-    } catch (IOException e) {
-      LOGGER.error("CSV Serialization error", e);
+    } else {
+      // "Normal" items
+      if ("survey".equals(formItem.getType()) && effectiveValueSetId == null) {
+        return;
+      }
+      serializeAnswer(form, questionnaire, formItem, answerId, records, language, effectiveValueSetId);
     }
   }
 

@@ -69,7 +69,6 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -180,7 +179,7 @@ class QuestionnairesRestControllerApiKeyTest {
   }
 
   @Test
-  void shouldLookupQuestionnairesFromRepository() throws Exception {
+  void shouldLookupQuestionnairesFromRepository() {
     doReturn("testTenant").when(currentTenant).getId();
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = (Consumer<QuestionnaireDatabase.MetadataRow>) invocation.getArguments()[6];
@@ -231,7 +230,7 @@ class QuestionnairesRestControllerApiKeyTest {
   }
 
   @Test
-  void shouldRejectInvalidKey() throws Exception {
+  void shouldRejectInvalidKey() {
     var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongsecret");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {

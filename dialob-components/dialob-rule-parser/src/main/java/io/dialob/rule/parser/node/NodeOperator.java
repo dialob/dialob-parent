@@ -203,12 +203,13 @@ public record NodeOperator(@NonNull String operator, @NonNull Category category)
     if (obj == this) {
       return true;
     }
-    if (obj instanceof NodeOperator other) {
-      return other.category() == category() && operator.equals(other.operator());
+    if (obj instanceof NodeOperator(String operator1, Category category1)) {
+      return category1 == category() && operator.equals(operator1);
     }
     return false;
   }
 
+  @NonNull
   @Override
   public String toString() {
     return operator;

@@ -32,9 +32,9 @@ import java.util.function.Consumer;
 
 public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, ProgramBuilder> implements ExpressionCompiler, BuilderParent {
 
-  private List<ValueSetEntryBuilder> valueSetEntryBuilders = new ArrayList<>();
+  private final List<ValueSetEntryBuilder> valueSetEntryBuilders = new ArrayList<>();
 
-  private List<Value<ValueSet.Entry>> values = new ArrayList<>();
+  private final List<Value<ValueSet.Entry>> values = new ArrayList<>();
 
   public ValueSetBuilder(ProgramBuilder programBuilder, String id) {
     super(programBuilder, programBuilder, null, id);

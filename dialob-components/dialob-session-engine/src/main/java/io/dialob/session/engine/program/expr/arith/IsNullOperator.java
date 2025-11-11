@@ -21,6 +21,7 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
 import java.util.Set;
@@ -34,7 +35,7 @@ public interface IsNullOperator extends Expression {
 
   @Override
   default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(itemState -> itemState.isNull()).orElse(true);
+    return evalContext.getItemState(this.getItemId()).map(ItemState::isNull).orElse(true);
   }
 
   @NonNull

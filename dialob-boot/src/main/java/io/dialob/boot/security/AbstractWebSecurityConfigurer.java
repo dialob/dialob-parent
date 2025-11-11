@@ -107,7 +107,7 @@ public abstract class AbstractWebSecurityConfigurer {
     // @formatter:on
   }
 
-  protected HttpSecurity configureCors(HttpSecurity http) throws Exception {
+  protected HttpSecurity configureCors(HttpSecurity http) {
     // @formatter:off
     return http;
     // @formatter:on

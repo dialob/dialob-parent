@@ -28,6 +28,7 @@ import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.assertj.ApplicationContextAssert;
@@ -63,12 +64,12 @@ class DialobDbJdbcAutoConfigurationTest {
     }
 
     @Bean
-    public S3Client s3Client() throws Exception {
+    public S3Client s3Client() {
       return mock(S3Client.class);
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) throws Exception {
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
       final JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
       when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
       return jdbcTemplate;
@@ -259,24 +260,24 @@ class DialobDbJdbcAutoConfigurationTest {
           .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
       });
 
-
-    // TODO BUG If JDBC is enabled questionnaires will always use it.
-//    new ApplicationContextRunner()
-//      .withPropertyValues(
-//        "dialob.db.file.directory=.",
-//        "dialob.db.database-type=NONE",
-//        "dialob.formDatabase.database-type=JDBC",
-//        "dialob.questionnaireDatabase.database-type=FILEDB"
-//      )
-//      .withUserConfiguration(MockConfigurations.class)
-//      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
-//      .run(context -> {
-//        Assertions.assertThat(context)
-//          .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
-//      });
-
   }
 
-
+  @Test
+  @Disabled // TODO BUG If JDBC is enabled questionnaires will always use it.
+  void testTestCombination2() {
+    new ApplicationContextRunner()
+      .withPropertyValues(
+        "dialob.db.file.directory=.",
+        "dialob.db.database-type=NONE",
+        "dialob.formDatabase.database-type=JDBC",
+        "dialob.questionnaireDatabase.database-type=FILEDB"
+      )
+      .withUserConfiguration(MockConfigurations.class)
+      .withConfiguration(AutoConfigurations.of(DialobDbSpAutoConfiguration.class, DialobDbJdbcAutoConfiguration.class))
+      .run(context -> {
+        Assertions.assertThat(context)
+          .doesNotHaveBean(DropQuestionnaireToFormDocumentConstraint.class);
+      });
+  }
 
 }

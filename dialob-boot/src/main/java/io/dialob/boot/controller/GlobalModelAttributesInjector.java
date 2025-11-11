@@ -15,6 +15,7 @@
  */
 package io.dialob.boot.controller;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.boot.settings.Image;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,7 +37,7 @@ public class GlobalModelAttributesInjector implements HandlerInterceptor {
   private String trackerId;
 
   @Override
-  public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+  public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, ModelAndView modelAndView) {
     if (modelAndView != null) {
       modelAndView.addObject("logo",logo);
       modelAndView.addObject("reactHook", reactHook);
@@ -45,7 +46,7 @@ public class GlobalModelAttributesInjector implements HandlerInterceptor {
   }
 
   @Override
-  public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
+  public void afterCompletion(@NonNull HttpServletRequest httpServletRequest, @NonNull HttpServletResponse httpServletResponse, @NonNull Object o, Exception e) {
     // nothing here
   }
 }

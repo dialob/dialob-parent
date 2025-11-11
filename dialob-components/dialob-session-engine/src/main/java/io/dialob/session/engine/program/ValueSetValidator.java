@@ -76,7 +76,7 @@ public class ValueSetValidator implements FormValidator {
 
   @NonNull
   @Override
-  public List<FormValidationError> validate(Form form) {
+  public List<FormValidationError> validate(@NonNull Form form) {
     return form.getValueSets().stream().map(this::checkValueSet).flatMap(List::stream).toList();
   }
 }

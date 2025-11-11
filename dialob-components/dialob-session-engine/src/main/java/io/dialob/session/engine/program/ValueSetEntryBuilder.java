@@ -27,11 +27,11 @@ import java.util.function.Consumer;
 
 public class ValueSetEntryBuilder extends AbstractItemBuilder<ValueSetEntryBuilder, ValueSetBuilder> {
 
-  private String key;
+  private final String key;
 
   private String when;
 
-  private int index;
+  private final int index;
 
   public ValueSetEntryBuilder(ValueSetBuilder valueSetBuilder, String key, int index) {
     super(valueSetBuilder.getProgramBuilder(), valueSetBuilder, valueSetBuilder.getHoistingGroup().orElse(null), IdUtils.toString(valueSetBuilder.getId()) + ":" + index);

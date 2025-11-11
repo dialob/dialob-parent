@@ -100,7 +100,7 @@ class ApiKeyAuthenticationFilterTest {
 
 
   @Test
-  void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated() throws Exception {
+  void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated() {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
       ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
       ApiKeyAuthenticationToken apiAuthenticationToken = Mockito.mock(ApiKeyAuthenticationToken.class);
@@ -120,7 +120,7 @@ class ApiKeyAuthenticationFilterTest {
   }
 
   @Test
-  void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated2() throws Exception {
+  void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated2() {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
       ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
       try {
@@ -137,7 +137,7 @@ class ApiKeyAuthenticationFilterTest {
   }
 
   @Test
-  void shouldAcceptValidatedKey() throws Exception {
+  void shouldAcceptValidatedKey() {
     ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
     ApiKeyAuthenticationToken apiAuthenticationToken = Mockito.mock(ApiKeyAuthenticationToken.class);
     when(keyRequestExtractor.extract(request)).thenReturn(apiKey);

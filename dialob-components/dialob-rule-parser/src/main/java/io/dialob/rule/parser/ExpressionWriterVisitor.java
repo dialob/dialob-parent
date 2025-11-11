@@ -24,7 +24,7 @@ public class ExpressionWriterVisitor implements ASTVisitor {
 
   private final NodeOperator nodeOperator;
 
-  private StringBuilder stringBuilder = new StringBuilder();
+  private final StringBuilder stringBuilder = new StringBuilder();
 
   private ExpressionWriterVisitor subVisitor;
 

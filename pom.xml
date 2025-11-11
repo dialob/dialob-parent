@@ -17,7 +17,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https:///maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dialob-parent</artifactId>
   <groupId>io.dialob</groupId>
@@ -32,11 +32,11 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
 
-  <url>http://github.com/dialob/dialob-parent</url>
+  <url>https://github.com/dialob/dialob-parent</url>
   <description>Form Engine</description>
   <name>dialob-parent</name>
   <developers>
@@ -44,32 +44,32 @@
       <name>Villu Vaimets</name>
       <email>villu.vaimets@resys.io</email>
       <organization>ReSys OÜ</organization>
-      <organizationUrl>http://www.resys.io</organizationUrl>
+      <organizationUrl>https://www.resys.io</organizationUrl>
     </developer>
     <developer>
       <name>Tomi Pakarinen</name>
       <email>tomi.pakarinen@resys.io</email>
       <organization>ReSys OÜ</organization>
-      <organizationUrl>http://www.resys.io</organizationUrl>
+      <organizationUrl>https://www.resys.io</organizationUrl>
     </developer>
     <developer>
       <name>Olev Mutso</name>
       <email>olev.mutso@resys.io</email>
       <organization>ReSys OÜ</organization>
-      <organizationUrl>http://www.resys.io</organizationUrl>
+      <organizationUrl>https://www.resys.io</organizationUrl>
     </developer>
     <developer>
       <name>Jocelyn Mutso</name>
       <email>jocelyn.mutso@resys.io</email>
       <organization>ReSys OÜ</organization>
-      <organizationUrl>http://www.resys.io</organizationUrl>
+      <organizationUrl>https://www.resys.io</organizationUrl>
     </developer>
   </developers>
 
   <scm>
     <connection>scm:git:https://github.com/dialob/dialob-parent.git</connection>
     <developerConnection>scm:git:https://github.com/dialob/dialob-parent.git</developerConnection>
-    <url>http://github.com/dialob/dialob-parent/tree/main</url>
+    <url>https://github.com/dialob/dialob-parent/tree/main</url>
     <tag>HEAD</tag>
   </scm>
 

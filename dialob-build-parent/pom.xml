@@ -17,7 +17,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -71,7 +71,7 @@
     <db2jcc4.version>4.23.42</db2jcc4.version>
     <guava.version>33.5.0-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
-    <immutables.version>2.11.3</immutables.version>
+    <immutables.version>2.11.6</immutables.version>
     <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
     <jsoup.version>1.21.2</jsoup.version>
     <lombok.version>1.18.42</lombok.version>
