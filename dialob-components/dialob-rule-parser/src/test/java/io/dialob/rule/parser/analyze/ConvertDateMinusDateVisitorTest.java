@@ -29,6 +29,18 @@ import static org.mockito.ArgumentMatchers.any;
 class ConvertDateMinusDateVisitorTest {
 
   @Test
+  void shouldConvertTimeMinusTimeToDurationBetweenCall() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.TIME);
+    Mockito.when(variableFinder.typeOf("b")).thenReturn(ValueType.TIME);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - b");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(java.time.Duration.between b a)",expression.getAst().toString());
+  }
+
+  @Test
   void shouldConvertDateMinusDateToPeriodBetweenCall() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
@@ -63,7 +75,7 @@ class ConvertDateMinusDateVisitorTest {
   }
 
   @Test
-  void shouldConvertDateMinusDateToPeriodBetweenCallConst2() throws Exception {
+  void shouldConvertDatePlusDateToPeriodBetweenCallConst2() throws Exception {
     VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
     Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
     Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
@@ -72,5 +84,83 @@ class ConvertDateMinusDateVisitorTest {
     expression.accept(new ConvertDateMinusDateVisitor());
     assertEquals("(io.dialob.rule.parser.PeriodUtil.datePlusPeriod a \"1 years\")",expression.getAst().toString());
   }
+
+  @Test
+  void shouldConvertDateMinusDateToPeriodBetweenCallConst2() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DATE);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - 1 years");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.dateMinusPeriod a \"1 years\")",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldConvertTimePlusDateToDurationBetweenCallConst2() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.TIME);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a + 1 hours");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.timePlusDuration a \"1 hours\")",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldConvertTimeMinusDateToDurationBetweenCallConst2() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.TIME);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - 1 hours");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.timeMinusDuration a \"1 hours\")",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldSumPeriods() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.PERIOD);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a + 1 years");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.sumPeriods a \"1 years\")",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldMinusPeriods() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.PERIOD);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - 1 years");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.minusPeriods a \"1 years\")",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldSumDurations() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DURATION);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a + 1 hours");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.sumDurations a \"1 hours\")",expression.getAst().toString());
+  }
+
+  @Test
+  void shouldMinusDurations() throws Exception {
+    VariableFinder variableFinder = Mockito.mock(VariableFinder.class);
+    Mockito.when(variableFinder.typeOf("a")).thenReturn(ValueType.DURATION);
+    Mockito.when(variableFinder.mapAlias(any(String.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+    Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a - 1 hours");
+    expression.accept(new ConvertDateMinusDateVisitor());
+    assertEquals("(io.dialob.rule.parser.PeriodUtil.minusDurations a \"1 hours\")",expression.getAst().toString());
+  }
+
 
 }
