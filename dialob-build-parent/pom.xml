@@ -89,6 +89,7 @@
     <junit.platform.version>1.13.4</junit.platform.version>
     <mockito.version>5.20.0</mockito.version>
     <testcontainers.version>1.21.3</testcontainers.version>
+    <equalsverifier.version>4.2.2</equalsverifier.version>
 
     <!-- docker image -->
     <image.base.name>amazoncorretto:${java.version}</image.base.name>
@@ -409,6 +410,11 @@
         <groupId>org.checkerframework</groupId>
         <artifactId>checker-qual</artifactId>
         <version>${checkerframework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>nl.jqno.equalsverifier</groupId>
+        <artifactId>equalsverifier</artifactId>
+        <version>${equalsverifier.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

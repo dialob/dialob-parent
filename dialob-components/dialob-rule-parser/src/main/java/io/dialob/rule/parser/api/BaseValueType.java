@@ -21,7 +21,9 @@ interface BaseValueType {
    *
    * @return the {@link Class} object that represents the type corresponding to this value type
    */
-  Class<?> getTypeClass();
+  default Class<?> getTypeClass() {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Determines whether the current value type is an array.
@@ -29,6 +31,15 @@ interface BaseValueType {
    * @return true if the value type is an array; false otherwise
    */
   default boolean isArray() {
+    return false;
+  }
+
+  /**
+   * Determines whether the current value type is an object.
+   *
+   * @return true if the value type is an object; false otherwise
+   */
+  default boolean isObject() {
     return false;
   }
 

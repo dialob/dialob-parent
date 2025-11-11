@@ -68,5 +68,14 @@ class FFRuleParserTest extends ParseTestBase {
     assertExpressionEquals("all of question is answered or q2 is not answered", "(or (allOf (isAnswered question)) (isNotAnswered q2))");
     assertExpressionEquals("(sum of wage) + 1", "(+ (sumOf wage) 1)");
   }
+
+  @Test
+  void testFunctionWithMapLiteral() {
+    assertExpressionEquals("func({})", "(func {})");
+    assertExpressionEquals("func({'a':1, 'b':2})", "(func {a:1,b:2})");
+    assertExpressionEquals("func({'a':1, 'b':{'c':3}})", "(func {a:1,b:{c:3}})");
+    assertExpressionEquals("func({'a':1, 'b': variable})", "(func {a:1,b:variable})");
+  }
+
 }
 

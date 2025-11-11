@@ -1,6 +1,8 @@
 package io.dialob.rule.parser.node;
 
 import io.dialob.rule.parser.api.ValueType;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +31,15 @@ class ConstExprNodeTest {
       new ConstExprNode(null, "100", "%", ValueType.INTEGER, Span.undefined()),
       new ConstExprNode(null, "100", null, ValueType.INTEGER, Span.undefined()));
 
+  }
+  @Test
+  void verifyEqualsContract() {
+    EqualsVerifier.forClass(NodeBase.class)
+      .withRedefinedSubclass(ConstExprNode.class)
+      .usingGetClass()
+      .withIgnoredFields("parent", "span")
+      .suppress(Warning.NONFINAL_FIELDS)
+      .verify();
   }
 
 }

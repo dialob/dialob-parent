@@ -448,7 +448,7 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   @Override
   public void exitOfExpr(final DialobRuleParser.OfExprContext ctx) {
-    final String oper = getBuilder().getTopNode().getNodeOperator().getOperator();
+    final String oper = getBuilder().getTopNode().getNodeOperator().operator();
     final NodeBase lhs = getLhs();
     if (lhs == null || !lhs.isIdentifier()) {
       errorLogger.logError(CompilerErrorCode.REDUCER_TARGET_MUST_BE_REFERENCE, new Object[]{oper}, Span.of(ctx));
@@ -575,6 +575,32 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
 
   @Override
   public void exitIsExpr(DialobRuleParser.IsExprContext ctx) {
+    pop();
+  }
+
+  @Override
+  public void enterObjectExpr(DialobRuleParser.ObjectExprContext ctx) {
+    builder = builder.objectExprNode(Span.of(ctx));
+  }
+
+  @Override
+  public void enterObjectFieldRule(DialobRuleParser.ObjectFieldRuleContext ctx) {
+    builder = builder.keyValueExprNode(Span.of(ctx));
+  }
+
+  @Override
+  public void exitObjectFieldRule(DialobRuleParser.ObjectFieldRuleContext ctx) {
+    var top = (KeyValueExprNode) builder.getTopNode();
+    var text = ctx.fieldName.getText();
+    if (isQuoted(text)) {
+      text = text.substring(1, text.length() - 1);
+    }
+    top.setKey(text);
+    pop();
+  }
+
+  @Override
+  public void exitObjectExpr(DialobRuleParser.ObjectExprContext ctx) {
     pop();
   }
 

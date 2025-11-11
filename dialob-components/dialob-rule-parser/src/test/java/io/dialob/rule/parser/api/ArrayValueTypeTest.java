@@ -17,6 +17,7 @@ package io.dialob.rule.parser.api;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +35,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class ArrayValueTypeTest {
+
+  @Test
+  void verifyEqualsContract() {
+    EqualsVerifier.forClass(ArrayValueType.class)
+      .withNonnullFields("valueType")
+      .verify();
+  }
+
 
   @Test
   void shouldGetArrayClassOfValueType() {

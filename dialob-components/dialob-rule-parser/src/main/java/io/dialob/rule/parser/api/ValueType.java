@@ -151,7 +151,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @return the object corresponding to the parsed string
    * @throws IllegalArgumentException if the input string cannot be parsed
    */
-  Object parseFromString(String string);
+  default Object parseFromString(String string) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Determines whether the value type supports negation operations.
@@ -159,7 +161,9 @@ public interface ValueType extends Serializable, BaseValueType {
    *
    * @return true if the value type supports negation operations; false otherwise.
    */
-  boolean isNegateable();
+  default boolean isNegateable() {
+    return false;
+  }
 
   /**
    * Negates the given value by applying the unary negation operation.
@@ -170,7 +174,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param value the input value to be negated
    * @return the negated result, or throws an UnsupportedOperationException if the negation is not supported for the provided value
    */
-  Object negate(Object value);
+  default Object negate(Object value) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Applies a logical NOT operation to the given value.
@@ -181,7 +187,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @return the result of the logical NOT operation or an UnsupportedOperationException
    *         if the operation is not applicable to the provided value
    */
-  Object not(Object value);
+  default Object not(Object value) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Provides a binary operator that represents the summation operation
@@ -190,7 +198,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param <T> the type of the operands and the result of the operation
    * @return a {@link BinaryOperator} that performs the summation operation
    */
-  <T> BinaryOperator<T> sumOp();
+  default <T> BinaryOperator<T> sumOp() {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Provides a binary operator that represents the multiplication operation
@@ -199,7 +209,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param <T> the type of the operands and the result of the operation
    * @return a {@link BinaryOperator} that performs the multiplication operation
    */
-  <T> BinaryOperator<T> multOp();
+  default <T> BinaryOperator<T> multOp() {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Determines and returns the resulting {@link ValueType} that corresponds to
@@ -208,7 +220,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param rhs the {@link ValueType} to be added to the current type
    * @return the resulting {@link ValueType} after the addition operation
    */
-  ValueType plusType(ValueType rhs);
+  default ValueType plusType(ValueType rhs) {
+    return null;
+  }
 
   /**
    * Determines and returns the resulting {@link ValueType} that corresponds to
@@ -217,7 +231,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param rhs the {@link ValueType} to be subtracted from the current type
    * @return the resulting {@link ValueType} after the subtraction operation
    */
-  ValueType minusType(ValueType rhs);
+  default ValueType minusType(ValueType rhs) {
+    return null;
+  }
 
   /**
    * Determines and returns the resulting {@link ValueType} that corresponds to
@@ -226,7 +242,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param rhs the {@link ValueType} to be multiplied with the current type
    * @return the resulting {@link ValueType} after the multiplication operation
    */
-  ValueType multiplyType(ValueType rhs);
+  default ValueType multiplyType(ValueType rhs) {
+    return null;
+  }
 
   /**
    * Determines and returns the resulting {@link ValueType} that corresponds to
@@ -235,7 +253,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param rhs the {@link ValueType} to be divided from the current type
    * @return the resulting {@link ValueType} after the division operation
    */
-  ValueType divideByType(ValueType rhs);
+  default ValueType divideByType(ValueType rhs) {
+    return null;
+  }
 
   /**
    * Determines if the current {@link ValueType} can be compared for equality
@@ -245,7 +265,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @return true if the current {@link ValueType} can be compared for equality
    *         with the specified {@link ValueType}, false otherwise
    */
-  boolean canEqualWith(ValueType rhs);
+  default boolean canEqualWith(ValueType rhs) {
+    return equals(rhs);
+  }
 
   /**
    * Determines if the current {@link ValueType} can be ordered in relation to the specified {@link ValueType}.
@@ -254,7 +276,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param rhs the {@link ValueType} to check for order compatibility with the current {@link ValueType}
    * @return true if the current {@link ValueType} can be ordered with the specified {@link ValueType}, false otherwise
    */
-  boolean canOrderWith(ValueType rhs);
+  default boolean canOrderWith(ValueType rhs) {
+    return false;
+  }
 
   /**
    * Parses the provided string value along with its associated unit and returns the corresponding interpreted object.
@@ -264,7 +288,9 @@ public interface ValueType extends Serializable, BaseValueType {
    * @param unit the unit associated with the value; must not be null
    * @return the object corresponding to the parsed value and unit combination
    */
-  Object parseFromStringWithUnit(String value, String unit);
+  default Object parseFromStringWithUnit(String value, String unit) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Retrieves the name associated with the current value type.

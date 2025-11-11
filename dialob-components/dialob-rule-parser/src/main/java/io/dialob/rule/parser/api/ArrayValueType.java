@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.BinaryOperator;
 
-public class ArrayValueType implements ValueType {
+public final class ArrayValueType implements ValueType {
 
   private final ValueType valueType;
 
@@ -77,62 +76,6 @@ public class ArrayValueType implements ValueType {
     }
     return objects;
 
-  }
-
-  @Override
-  public boolean isNegateable() {
-    return false;
-  }
-
-  public Object negate(Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  public Object not(Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  public <T> BinaryOperator<T> sumOp() {
-    throw new UnsupportedOperationException();
-  }
-
-  public <T> BinaryOperator<T> multOp() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public ValueType plusType(ValueType rhs) {
-    return null;
-  }
-
-  @Override
-  public ValueType minusType(ValueType rhs) {
-    return null;
-  }
-
-  @Override
-  public ValueType multiplyType(ValueType rhs) {
-    return null;
-  }
-
-  @Override
-  public ValueType divideByType(ValueType rhs) {
-    return null;
-  }
-
-  @Override
-  public boolean canEqualWith(ValueType rhs) {
-    return equals(rhs);
-  }
-
-  @Override
-  public boolean canOrderWith(ValueType rhs) {
-    return false;
-  }
-
-  @Override
-  public Object parseFromStringWithUnit(String value, String unit) {
-    throw new UnsupportedOperationException();
   }
 
   @Override

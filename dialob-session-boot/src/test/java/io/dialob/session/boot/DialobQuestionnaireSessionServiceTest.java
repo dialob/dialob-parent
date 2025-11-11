@@ -35,6 +35,7 @@ import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.rule.parser.api.ObjectValueType;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.DefaultFunctions;
@@ -2078,6 +2079,59 @@ class DialobQuestionnaireSessionServiceTest {
       .apply();
   }
 
+  @Test
+  void objectAsAFunctionArgument() throws VariableNotDefinedException {
+    when(functionRegistry.returnTypeOf("useObjectFunction", ObjectValueType.EMPTY_OBJECT)).thenReturn(ValueType.STRING);
+    Mockito.doAnswer(invocation -> {
+      FunctionRegistry.FunctionCallback callback = invocation.getArgument(0);
+      Object args = invocation.getArgument(2);
+      assertTrue(args instanceof Map);
+      callback.succeeded(args);
+      return null;
+    }).when(functionRegistry).invokeFunction(any(), any(), any());
+
+    fillForm(ImmutableForm.builder()
+      .id("test")
+      .metadata(ImmutableFormMetadata.builder()
+        .label("test")
+        .build())
+      .putData("questionnaire", ImmutableFormItem.builder().type("questionnaire").id("questionnaire").addItems("group1").build())
+      .putData("group1", ImmutableFormItem.builder().type("group").id("group1").addItems("question1", "note1").build())
+      .putData("question1", ImmutableFormItem.builder().type("text").id("question1").putLabel("en","Content").build())
+      .putData("note1", ImmutableFormItem.builder().type("note").id("note1").putLabel("en","var1 = {var1}").build())
+      .addVariables(ImmutableVariable.builder()
+        .name("var1")
+        .expression("useObjectFunction({'key1': 'value1', 'key2': 2, 'question1': question1})")
+        .build())
+      .build())
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null),
+            tuple(LOCALE, null, null, null, null),
+            tuple(ITEM, null, "group1", null, null),
+            tuple(ITEM, null, "questionnaire", "test", null),
+            tuple(ITEM, null, "question1", "Content", null),
+            tuple(ITEM, null, "note1", "var1 = {key1=value1, key2=2}", null)
+          );
+      })
+      .answer("question1", "Hello")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "var1 = {key1=value1, key2=2, question1=Hello}", null)
+        ))
+      .answer("question1", "Update answer")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "var1 = {key1=value1, key2=2, question1=Update answer}", null)
+        ))
+      .answer("question1", null)
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "note1", "var1 = {key1=value1, key2=2}", null)
+        ))
+      .apply();
+  }
 
 
 

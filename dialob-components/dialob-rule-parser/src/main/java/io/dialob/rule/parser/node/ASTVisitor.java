@@ -26,4 +26,24 @@ public interface ASTVisitor {
     return node;
   }
 
+  @NonNull
+  default ASTVisitor visitKeyValueExpr(@NonNull KeyValueExprNode node) {
+    return this;
+  }
+
+  @NonNull
+  default KeyValueExprNode endKeyValueExpr(@NonNull KeyValueExprNode node) {
+    return node;
+  }
+
+  @Nullable
+  default ASTVisitor visitObjectExpr(@NonNull ObjectExprNode node) {
+    return this;
+  }
+
+  @NonNull
+  default NodeBase endObjectExpr(@NonNull ObjectExprNode node) {
+    return node;
+  }
+
 }

@@ -176,11 +176,11 @@ public class AstMatcher implements ASTVisitor {
 
 
   public static Predicate<NodeBase> operCategory(Predicate<NodeOperator.Category> predicate) {
-    return node -> node instanceof CallExprNode && predicate.test(node.getNodeOperator().getCategory());
+    return node -> node instanceof CallExprNode && predicate.test(node.getNodeOperator().category());
   }
 
   public static Predicate<NodeBase> operator(Predicate<String> predicate) {
-    return node -> node instanceof CallExprNode && predicate.test(node.getNodeOperator().getOperator());
+    return node -> node instanceof CallExprNode && predicate.test(node.getNodeOperator().operator());
   }
 
   public static Predicate<NodeBase> callNode() {

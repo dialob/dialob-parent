@@ -25,12 +25,9 @@ public class ConstExprNode extends NodeBase {
   private final String unit;
 
   public ConstExprNode(NodeBase parent, @NonNull String value, String unit, @Nullable ValueType valueType, Span span) {
-    super(parent, span);
+    super(parent, span, valueType);
     this.value = Objects.requireNonNull(value, "null constant is not supported");
     this.unit = unit;
-    if (valueType != null) {
-      setValueType(valueType);
-    }
   }
 
   @Override
@@ -49,7 +46,9 @@ public class ConstExprNode extends NodeBase {
   }
 
   public Object getAsValueType() {
-    return getAsValueType(this.getValueType());
+    var valueType = this.getValueType();
+    assert valueType != null;
+    return getAsValueType(valueType);
   }
 
   public Object getAsValueType(@NonNull ValueType valueType) {

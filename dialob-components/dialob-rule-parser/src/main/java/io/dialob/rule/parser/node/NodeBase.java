@@ -79,9 +79,10 @@ public abstract class NodeBase implements TypedNode, Serializable {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof NodeBase other)) {
+    if (obj == null || !this.getClass().equals(obj.getClass())) {
       return false;
     }
+    var other = (NodeBase) obj;
     return other.type == type;
   }
 
