@@ -32,7 +32,7 @@ public class AsyncFunctionDependency implements Serializable {
   @Getter
   private final String canonicalFunctionName;
   @Getter
-  private ValueType valueType;
+  private final ValueType valueType;
 
   public AsyncFunctionDependency(String functionRefId, String canonicalFunctionName, ValueType valueType, String functionName, List<String> argumentExpressions) {
     if (StringUtils.isBlank(functionRefId)) {

@@ -233,7 +233,7 @@ class DialobQuestionnaireSessionServiceTest {
   @Inject
   private CurrentTenant currentTenant;
 
-  private String tenantId = "123";
+  private final String tenantId = "123";
 
   @BeforeEach
   public void before() {
@@ -976,7 +976,7 @@ class DialobQuestionnaireSessionServiceTest {
         );
       })
       .answer("list1", "c")
-      .assertThat(assertion -> assertion.isEmpty())
+      .assertThat(AbstractIterableAssert::isEmpty)
       .answer("list1", "a")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
@@ -984,14 +984,14 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(ITEM, null, "group3", "Whatever group", null)
         ))
       .answer("list1", "b")
-      .assertThat(assertion -> assertion.isEmpty())
+      .assertThat(AbstractIterableAssert::isEmpty)
       .answer("list1", "c")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("text1", "group3"), null, null, null)
         ))
       .answer("list1", null)
-      .assertThat(assertion -> assertion.isEmpty())
+      .assertThat(AbstractIterableAssert::isEmpty)
       .apply();
   }
 

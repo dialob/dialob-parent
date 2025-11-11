@@ -29,7 +29,7 @@ import java.util.List;
 @Getter
 public class ValidateExpressionVisitor extends AstMatcher {
 
-  private List<RuleExpressionCompilerError> errors = new ArrayList<>();
+  private final List<RuleExpressionCompilerError> errors = new ArrayList<>();
 
   public ValidateExpressionVisitor() {
     whenMatches(parent(isNull()).and(idNode().or(constNode().and(valueType(not(is(ValueType.BOOLEAN)))))), node -> {

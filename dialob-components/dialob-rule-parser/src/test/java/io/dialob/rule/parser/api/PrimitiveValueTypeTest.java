@@ -161,7 +161,7 @@ class PrimitiveValueTypeTest {
   void testUnsupportedOps() {
     Assertions.assertThrows(UnsupportedOperationException.class, () -> ValueType.DATE.negate(null));
     Assertions.assertThrows(UnsupportedOperationException.class, () -> ValueType.DATE.not(null));
-    Assertions.assertThrows(UnsupportedOperationException.class, () -> ValueType.DATE.sumOp());
+    Assertions.assertThrows(UnsupportedOperationException.class, ValueType.DATE::sumOp);
     Assertions.assertNull(ValueType.DATE.multiplyType(null));
     Assertions.assertNull(ValueType.DATE.divideByType(null));
     Assertions.assertNull(ValueType.STRING.minusType(null));

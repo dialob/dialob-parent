@@ -66,7 +66,7 @@ public class FillAssertionBuilder {
 
   private final List<ValidationEntry> validationEntries =  new ArrayList<>();
 
-  private String formId;
+  private final String formId;
 
   private final QuestionnaireDialobProgramService dialobProgramService;
 

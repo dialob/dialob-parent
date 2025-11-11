@@ -62,9 +62,9 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
   private String valueSetId;
 
-  private List<io.dialob.session.engine.program.model.Error> errors = new ArrayList<>();
+  private final List<io.dialob.session.engine.program.model.Error> errors = new ArrayList<>();
 
-  private List<ValidationBuilder> validationBuilders = new ArrayList<>();
+  private final List<ValidationBuilder> validationBuilders = new ArrayList<>();
 
   private Boolean required;
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 public class SurveyGroupBuilder extends AbstractItemBuilder<SurveyGroupBuilder,ProgramBuilder> {
 
-  private List<ItemId> items = new ArrayList<>();
+  private final List<ItemId> items = new ArrayList<>();
 
   public SurveyGroupBuilder(ProgramBuilder programBuilder, GroupBuilder hoistingGroupBuilder, String id) {
     super(programBuilder, programBuilder, hoistingGroupBuilder, id);

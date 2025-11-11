@@ -63,7 +63,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
   private final Map<ItemId,AbstractItemBuilder<?,?>> types = new HashMap<>();
 
   @Getter
-  private List<FormValidationError> errors = new ArrayList<>();
+  private final List<FormValidationError> errors = new ArrayList<>();
 
   private final List<ValueSet> valueSets = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   private final List<CompilableExpression> uncompiledExpressions = new ArrayList<>();
 
-  private List<AbstractItemBuilder<?,ProgramBuilder>> builders = new ArrayList<>();
+  private final List<AbstractItemBuilder<?,ProgramBuilder>> builders = new ArrayList<>();
 
   public ProgramBuilder(@NonNull FunctionRegistry functionRegistry) {
     this.functionRegistry = functionRegistry;
@@ -330,7 +330,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
     private final Map<String,ItemId> aliases;
 
-    private String scope;
+    private final String scope;
 
     private ProgramVariableFinder(Map<String, ItemId> aliases, String scope) {
       this.aliases = aliases;

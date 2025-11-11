@@ -40,7 +40,7 @@ public class DialobCloudAwsAutoConfiguration {
         .credentialsProvider(awsCredentialsProvider)
         .region(Region.EU_CENTRAL_1)
       .build())
-      .orElseGet(() -> SnsAsyncClient.create());
+      .orElseGet(SnsAsyncClient::create);
   }
 
   @Bean
@@ -49,7 +49,7 @@ public class DialobCloudAwsAutoConfiguration {
       S3Client.builder()
         .credentialsProvider(awsCredentialsProvider)
         .region(Region.of(settings.getAws().getRegion()))
-      .build()).orElseGet(() -> S3Client.create());
+      .build()).orElseGet(S3Client::create);
   }
 
   @Bean

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FormDeletedEventTest {
-  private ObjectMapper mapper = new ObjectMapper().registerModules(new Jdk8Module());
+  private final ObjectMapper mapper = new ObjectMapper().registerModules(new Jdk8Module());
 
   @Test
   void testConstructorJsonMapping() throws Exception {

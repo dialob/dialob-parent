@@ -29,7 +29,7 @@ class DialobApiValidatorLocator {
 
   private static DialobApiValidator validator;
 
-  private static DialobApiValidatorFactory validationApiDialobApiValidatorFactory = () -> instance -> {
+  private static final DialobApiValidatorFactory validationApiDialobApiValidatorFactory = () -> instance -> {
     Validator v = Validation.buildDefaultValidatorFactory().getValidator();
     Set<ConstraintViolation<Object>> constraintViolations = v.validate(instance);
     if (!constraintViolations.isEmpty()) {

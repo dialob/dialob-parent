@@ -85,7 +85,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
   private WebSocketSession session;
 
-  private boolean reportStackTrace = true;
+  private final boolean reportStackTrace = true;
 
   public QuestionnaireWebSocketHandler(
     final DialobSettings settings,

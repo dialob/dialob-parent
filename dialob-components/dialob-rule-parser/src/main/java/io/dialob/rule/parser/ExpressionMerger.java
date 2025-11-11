@@ -27,14 +27,14 @@ public class ExpressionMerger implements ASTVisitor {
 
     private CallExprNode parentNode;
 
-    private List<NodeBase> newArguments = new ArrayList<>();
+    private final List<NodeBase> newArguments = new ArrayList<>();
 
     private int nodeStack = 0;
 
     @Getter
     private ASTBuilder astBuilder;
 
-    private Predicate<NodeBase> shouldMergePredicate;
+    private final Predicate<NodeBase> shouldMergePredicate;
 
     private static <T> Predicate<T> truePredicate() {
         return t -> true;

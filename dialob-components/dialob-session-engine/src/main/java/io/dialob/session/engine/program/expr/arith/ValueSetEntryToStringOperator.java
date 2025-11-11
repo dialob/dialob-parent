@@ -58,7 +58,7 @@ public interface ValueSetEntryToStringOperator extends Expression {
         }
         return string;
       } else if (eval instanceof List<?> list) { // For multichoice (answer is a list)
-        return valueSetState1.getEntries().stream().filter(entry -> list.contains(entry.getId())).map(entry -> entry.getLabel()).collect(Collectors.joining(", "));
+        return valueSetState1.getEntries().stream().filter(entry -> list.contains(entry.getId())).map(ValueSetState.Entry::getLabel).collect(Collectors.joining(", "));
       }
       return null;
     }).orElse(null);

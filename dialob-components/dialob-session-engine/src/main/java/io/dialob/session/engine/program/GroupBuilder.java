@@ -64,7 +64,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     }
   }
 
-  private List<String> items = new ArrayList<>();
+  private final List<String> items = new ArrayList<>();
 
   @Getter
   private Type type;

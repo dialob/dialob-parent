@@ -57,9 +57,9 @@ public class FillAssertionBuilder {
 
   boolean expectCreated = true;
 
-  private List<ValidationEntry> validationEntries =  new ArrayList<>();
+  private final List<ValidationEntry> validationEntries =  new ArrayList<>();
 
-  private QuestionnaireSessionService questionnaireSessionService;
+  private final QuestionnaireSessionService questionnaireSessionService;
 
   private Provider<QuestionnaireSessionBuilder> questionnaireSessionBuilderFactory;
 
@@ -67,7 +67,7 @@ public class FillAssertionBuilder {
 
   private Questionnaire questionnaire;
 
-  private EventPublisher questionnaireSessionEventPublisher;
+  private final EventPublisher questionnaireSessionEventPublisher;
 
   public FillAssertionBuilder(QuestionnaireSessionService questionnaireSessionService, EventPublisher questionnaireSessionEventPublisher, String formId) {
     this.questionnaireSessionService = questionnaireSessionService;

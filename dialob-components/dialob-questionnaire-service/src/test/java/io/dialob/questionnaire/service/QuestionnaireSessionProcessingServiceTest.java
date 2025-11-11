@@ -76,13 +76,12 @@ class QuestionnaireSessionProcessingServiceTest {
 
   private QuestionnaireSessionProcessingService createQuestionnaireSessionProcessingService() {
     MeterRegistry meterRegistry = new SimpleMeterRegistry();
-    QuestionnaireSessionProcessingService questionnaireSessionProcessingService = new QuestionnaireSessionProcessingService(
+    return new QuestionnaireSessionProcessingService(
       questionnaireSessionService,
       meterRegistry,
       Optional.of(sessionCacheManager),
       questionnaireSessionSaveService,
       eventPublisher);
-    return questionnaireSessionProcessingService;
   }
 
 
