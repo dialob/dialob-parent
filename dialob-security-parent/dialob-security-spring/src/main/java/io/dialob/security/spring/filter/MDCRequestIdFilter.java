@@ -35,7 +35,7 @@ public class MDCRequestIdFilter implements Filter {
   }
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
+  public void init(FilterConfig filterConfig) {
     final String newRequestIdHeaderName = filterConfig.getInitParameter("requestIdHeaderName");
     if (newRequestIdHeaderName != null) {
       this.requestIdHeaderName = newRequestIdHeaderName;

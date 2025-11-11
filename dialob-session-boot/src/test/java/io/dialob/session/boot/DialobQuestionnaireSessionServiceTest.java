@@ -79,7 +79,6 @@ import static io.dialob.api.proto.Action.Type.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -1260,7 +1259,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  void testPublishedVariables() throws Exception {
+  void testPublishedVariables() {
     fillForm(ImmutableForm.builder()
       .id("test")
       .metadata(ImmutableFormMetadata.builder()
@@ -1336,7 +1335,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  void testReducer() throws Exception {
+  void testReducer() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1423,7 +1422,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   @Test
-  void testRowCount() throws Exception {
+  void testRowCount() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1515,7 +1514,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  void testMultiChoiceCount() throws Exception {
+  void testMultiChoiceCount() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1769,7 +1768,7 @@ class DialobQuestionnaireSessionServiceTest {
 
 
   @Test
-  void cannotCompleteWhenQuestionnaireHasMissingAnswers() throws Exception {
+  void cannotCompleteWhenQuestionnaireHasMissingAnswers() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -1932,7 +1931,7 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   @Tag("github-29")
-  void ghIssue29ConditionalsOnRowGroupActions() throws Exception {
+  void ghIssue29ConditionalsOnRowGroupActions() {
     fillForm(ImmutableForm.builder()
         .id("test")
         .metadata(ImmutableFormMetadata.builder()
@@ -2140,7 +2139,7 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
   private <T> Set<T> asSet(T... items) {
-    return new HashSet<T>(asList(items));
+    return new HashSet<>(asList(items));
   }
 
 }

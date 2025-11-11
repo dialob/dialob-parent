@@ -314,7 +314,7 @@ public class WebSocketRequestTestTemplate {
     final Iterator<WhenMessage> whenMessageIterator = steps.iterator();
     webSocketHandler = Mockito.spy(new WebSocketHandler() {
       @Override
-      public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+      public void afterConnectionEstablished(WebSocketSession session) {
       }
 
       // Here we receive messages
@@ -342,11 +342,11 @@ public class WebSocketRequestTestTemplate {
       }
 
       @Override
-      public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) throws Exception {
+      public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) {
       }
 
       @Override
-      public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus closeStatus) throws Exception {
+      public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus closeStatus) {
       }
 
       @Override
@@ -411,7 +411,7 @@ public class WebSocketRequestTestTemplate {
     private final List<String> unexpected = new ArrayList<>();
 
     @Override
-    public void accept(WebSocketMessage message) throws Exception {
+    public void accept(WebSocketMessage message) {
       Iterator<Expectation> i = expectations.iterator();
       List<AssertionError> assertionErrors = new ArrayList<>();
       while(i.hasNext()) {
@@ -485,7 +485,7 @@ public class WebSocketRequestTestTemplate {
     private final List<Expectation> accepted = new ArrayList<>();
 
     @Override
-    public void accept(WebSocketMessage message) throws Exception {
+    public void accept(WebSocketMessage message) {
       Expectation expectation = expectations.pop();
       try {
         expectation.accept(message);

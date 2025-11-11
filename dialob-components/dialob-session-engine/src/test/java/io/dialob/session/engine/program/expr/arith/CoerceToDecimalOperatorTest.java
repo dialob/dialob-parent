@@ -67,7 +67,7 @@ class CoerceToDecimalOperatorTest {
     var op = ImmutableCoerceToDecimalOperator.builder()
       .expression(expression).build();
 
-    when(expression.eval(context)).thenReturn(Integer.valueOf(1));
+    when(expression.eval(context)).thenReturn(1);
     assertEquals(BigDecimal.valueOf(1,0), op.eval(context));
   }
 

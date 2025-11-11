@@ -237,16 +237,14 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
       LOGGER.debug("Could not compile all expressions: {}", uncompiledExpressions);
       return false;
     }
-    ddrlExpressionCompiler.getAsyncFunctionVariableExpressions().entrySet().forEach(stringExpressionEntry -> {
-      addItem(
-        ImmutableVariableItem.builder()
-          .id(IdUtils.toId(stringExpressionEntry.getKey()))
-          .type("variable")
-          .isPrototype(false)
-          .isAsync(true)
-          .valueExpression(stringExpressionEntry.getValue())
-          .build());
-    });
+    ddrlExpressionCompiler.getAsyncFunctionVariableExpressions().forEach((key, value) -> addItem(
+      ImmutableVariableItem.builder()
+        .id(IdUtils.toId(key))
+        .type("variable")
+        .isPrototype(false)
+        .isAsync(true)
+        .valueExpression(value)
+        .build()));
     return true;
   }
 

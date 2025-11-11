@@ -107,7 +107,7 @@ public abstract class AbstractRuleExpressionCompilerTest {
   }
 
   @Test
-  void constantNonBooleanExpressionsAreNotAccepted() throws Exception {
+  void constantNonBooleanExpressionsAreNotAccepted() {
     compiler.compile("1", variableFinder, callback);
     compiler.compile("1.0", variableFinder, callback);
     compiler.compile("\"a\"", variableFinder, callback);

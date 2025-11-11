@@ -34,8 +34,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @MockitoSettings
@@ -56,7 +54,7 @@ class QuestionnaireSessionProcessingServiceTest {
   QuestionnaireEventPublisher eventPublisher;
 
   @Test
-  void shouldNotPublicCompleteEventIfNotCompleted() throws Exception {
+  void shouldNotPublicCompleteEventIfNotCompleted() {
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
@@ -89,7 +87,7 @@ class QuestionnaireSessionProcessingServiceTest {
 
 
   @Test
-  void shouldPublishCompleteEventIfCompleted() throws Exception {
+  void shouldPublishCompleteEventIfCompleted() {
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
@@ -116,7 +114,7 @@ class QuestionnaireSessionProcessingServiceTest {
   }
 
   @Test
-  void shouldRejectUpdatesToCompletedQuestionnaires() throws Exception {
+  void shouldRejectUpdatesToCompletedQuestionnaires() {
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
@@ -134,7 +132,7 @@ class QuestionnaireSessionProcessingServiceTest {
 
 
   @Test
-  void shouldRetryUpdateIfConflicted() throws Exception {
+  void shouldRetryUpdateIfConflicted() {
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
@@ -164,7 +162,7 @@ class QuestionnaireSessionProcessingServiceTest {
   }
 
   @Test
-  void shouldThrowConflictExceptionAfterTooManyFailures() throws Exception {
+  void shouldThrowConflictExceptionAfterTooManyFailures() {
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
@@ -183,7 +181,7 @@ class QuestionnaireSessionProcessingServiceTest {
   }
 
   @Test
-  void shouldNotRetryWhenThereIsATechnicalException() throws Exception {
+  void shouldNotRetryWhenThereIsATechnicalException() {
     QuestionnaireSessionProcessingService questionnaireSessionProcessingService = createQuestionnaireSessionProcessingService();
 
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);

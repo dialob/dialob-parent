@@ -32,7 +32,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public interface AbstractMySQLTest extends JdbcBackendTest {
 
   Attrs ATTRS = new Attrs();
 
-  static BasicDataSource createEmbeddedDatabase() throws IOException {
+  static BasicDataSource createEmbeddedDatabase() {
     ATTRS.container.start();
     String jdbcUrl = "jdbc:mysql://" + ATTRS.container.getHost() + ":" + ATTRS.container.getFirstMappedPort() + "/dialob";
 

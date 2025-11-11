@@ -37,7 +37,6 @@ import java.util.function.Consumer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class DDRLExpressionCompilerTest {
@@ -50,7 +49,7 @@ class DDRLExpressionCompilerTest {
 
 
   @Test
-  void constantIntegerShouldReturnAsInteger() throws Exception {
+  void constantIntegerShouldReturnAsInteger() {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = mock(VariableFinder.class);
     final EvalContext evalContext = mock(EvalContext.class);
@@ -286,7 +285,7 @@ class DDRLExpressionCompilerTest {
   }
 
   @Test
-  void periodPlusAndMinusPeriodShouldReturnPeriod() throws Exception {
+  void periodPlusAndMinusPeriodShouldReturnPeriod() {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -313,7 +312,7 @@ class DDRLExpressionCompilerTest {
   }
 
   @Test
-  void durationPlusAndMinusDurationShouldReturnDuration() throws Exception {
+  void durationPlusAndMinusDurationShouldReturnDuration() {
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
     final EvalContext evalContext = mock(EvalContext.class);
@@ -340,7 +339,7 @@ class DDRLExpressionCompilerTest {
 
 
   @Test
-  void compareDurations() throws Exception {
+  void compareDurations() {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();
@@ -355,7 +354,7 @@ class DDRLExpressionCompilerTest {
 
 
   @Test
-  void comparePeriods() throws Exception {
+  void comparePeriods() {
     final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
     DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
     final VariableFinder variableFinder = variableFinderNoAliases();

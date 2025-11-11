@@ -42,7 +42,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 import static io.dialob.api.questionnaire.QuestionnaireFactory.questionnaire;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 public abstract class JdbcBackendDatabaseTest {

@@ -21,7 +21,6 @@ import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.Optional;
 import java.util.function.Function;

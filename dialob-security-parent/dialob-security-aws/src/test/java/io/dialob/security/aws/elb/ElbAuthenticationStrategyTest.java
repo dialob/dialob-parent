@@ -37,8 +37,6 @@ import java.security.KeyPair;
 import java.time.Instant;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 class ElbAuthenticationStrategyTest  extends TestBase {

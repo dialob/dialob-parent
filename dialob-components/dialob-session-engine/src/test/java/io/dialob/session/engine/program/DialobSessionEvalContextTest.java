@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class DialobSessionEvalContextTest {

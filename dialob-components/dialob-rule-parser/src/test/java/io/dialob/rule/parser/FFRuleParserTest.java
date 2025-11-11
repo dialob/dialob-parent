@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 class FFRuleParserTest extends ParseTestBase {
   @Test
-  void test() throws Exception {
+  void test() {
     assertExpressionEquals("", "");
     assertExpressionEquals("// comment", "");
     assertExpressionEquals("1", "1");

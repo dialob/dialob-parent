@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DeleteRowTest {
 
   @Test
-  void deleteRowShouldChangeRowStatusToBeRemoved() throws Exception {
+  void deleteRowShouldChangeRowStatusToBeRemoved() {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
@@ -47,7 +47,7 @@ class DeleteRowTest {
   }
 
   @Test
-  void deleteRowShouldNotRemoveNonExistingRow() throws Exception {
+  void deleteRowShouldNotRemoveNonExistingRow() {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
@@ -63,7 +63,7 @@ class DeleteRowTest {
   }
 
   @Test
-  void deleteRowCannotRemoveRowWhenRowsMayNotBeRemoved() throws Exception {
+  void deleteRowCannotRemoveRowWhenRowsMayNotBeRemoved() {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
     final ItemState toBeRemoved = Mockito.mock(ItemState.class);

@@ -31,7 +31,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.junit.jupiter.Container;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public interface AbstractDB2Test extends JdbcBackendTest {
 
   Attrs ATTRS = new Attrs();
 
-  static BasicDataSource createEmbeddedDatabase() throws IOException {
+  static BasicDataSource createEmbeddedDatabase() {
 
     String jdbcUrl = container.getJdbcUrl();
 

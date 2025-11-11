@@ -24,7 +24,6 @@ import org.mockito.AdditionalAnswers;
 import java.math.BigInteger;
 import java.util.function.UnaryOperator;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class AstMatcherTest {

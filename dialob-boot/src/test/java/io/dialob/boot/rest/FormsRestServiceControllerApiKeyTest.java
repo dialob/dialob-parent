@@ -77,7 +77,6 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -186,7 +185,7 @@ class FormsRestServiceControllerApiKeyTest {
   }
 
   @Test
-  void shouldLookupFormsFromRepository() throws Exception {
+  void shouldLookupFormsFromRepository() {
     doAnswer(invocation -> {
       Consumer consumer = (Consumer) invocation.getArguments()[2];
       consumer.accept(new FormDatabase.FormMetadataRow() {
@@ -233,7 +232,7 @@ class FormsRestServiceControllerApiKeyTest {
   }
 
   @Test
-  void shouldRejectInvalidKey() throws Exception {
+  void shouldRejectInvalidKey() {
     var httpEntity = createHttpEntity(UUID.fromString("00000000-0000-0000-0000-000000000000"),"wrongtoken");
     Assertions.assertThrows(HttpClientErrorException.class, () -> {
       try {

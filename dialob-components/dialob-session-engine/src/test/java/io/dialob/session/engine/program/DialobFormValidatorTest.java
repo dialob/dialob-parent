@@ -26,7 +26,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.groups.Tuple.tuple;
@@ -83,7 +82,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  void shouldReportIncompatibleComparison() throws IOException {
+  void shouldReportIncompatibleComparison() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -104,7 +103,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  void issue233() throws IOException {
+  void issue233() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -125,7 +124,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  void issue233b() throws IOException {
+  void issue233b() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
@@ -147,7 +146,7 @@ class DialobFormValidatorTest {
 
 
   @Test
-  void issue275() throws IOException, VariableNotDefinedException {
+  void issue275() throws VariableNotDefinedException {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     when(functionRegistry.isAsyncFunction("count")).thenReturn(false);
 
@@ -169,7 +168,7 @@ class DialobFormValidatorTest {
   }
 
   @Test
-  void validateOfExpressions() throws IOException {
+  void validateOfExpressions() {
     FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
