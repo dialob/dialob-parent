@@ -157,8 +157,6 @@ class ObjectExprNodeTest {
     ObjectExprNode node = new ObjectExprNode(null, Span.undefined());
 
     Assertions.assertThrows(UnsupportedOperationException.class, () -> node.setValueType(ValueType.STRING));
-
-//    assertEquals(ObjectValueType.objectOf(Collections.emptyMap()), node.getValueType());
   }
 
   @Test
