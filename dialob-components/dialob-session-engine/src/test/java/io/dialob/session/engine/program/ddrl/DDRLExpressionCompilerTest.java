@@ -16,19 +16,20 @@
 package io.dialob.session.engine.program.ddrl;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.rule.parser.api.RuleExpressionCompilerError;
-import io.dialob.rule.parser.api.ValueType;
-import io.dialob.rule.parser.api.VariableFinder;
-import io.dialob.rule.parser.api.VariableNotDefinedException;
+import io.dialob.rule.parser.api.*;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.expr.DDRLOperatorFactory;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.IdUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigInteger;
 import java.time.*;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -473,7 +474,7 @@ class DDRLExpressionCompilerTest {
 
   @Test
   void shouldExtractNestedAsyncFunctionCalls() throws Exception {
-    final Consumer<RuleExpressionCompilerError> errorConsumer = mock(Consumer.class);
+    final Consumer<RuleExpressionCompilerError> errorConsumer = mock();
     DDRLExpressionCompiler ddrlExpressionCompiler = new DDRLExpressionCompiler(new DDRLOperatorFactory());
     final VariableFinder variableFinder = variableFinderNoAliases();
 
@@ -492,10 +493,42 @@ class DDRLExpressionCompilerTest {
     assertNotNull(replacements.get("$$f1_1"));
     assertNotNull(replacements.get("$$f1_2"));
 
-
     verifyNoMoreInteractions(errorConsumer);
   }
 
+  @Test
+  @DisplayName("Should invoke function with object as an argument")
+  void shouldInvokeFunctionWithObject() throws VariableNotDefinedException {
+    final Consumer<RuleExpressionCompilerError> errorConsumer = mock();
+
+    DDRLExpressionCompiler ddrlExpressionCompiler = createDdrlExpressionCompiler();
+    final VariableFinder variableFinder = variableFinderNoAliases();
+    when(variableFinder.isAsync("func")).thenReturn(false);
+    when(variableFinder.returnTypeOf("func", ObjectValueType.objectOf(Collections.emptyMap()))).thenReturn(ValueType.INTEGER);
+    final EvalContext evalContext = mock(EvalContext.class);
+    final FunctionRegistry functionRegistry = mock();
+
+    when(evalContext.getFunctionRegistry()).thenReturn(functionRegistry);
+    when(functionRegistry.isAsyncFunction("func")).thenReturn(false);
+    Mockito.doAnswer(invocation -> {
+      FunctionRegistry.FunctionCallback callback = invocation.getArgument(0);
+      Object args = invocation.getArgument(2);
+      assertTrue(args instanceof Map);
+      callback.succeeded(args);
+      return null;
+    }).when(functionRegistry).invokeFunction(any(), any(), any());
+
+
+
+
+    Optional<Expression> expression = ddrlExpressionCompiler.compile(variableFinder, "func({'a':'ba'})", errorConsumer);
+    assertTrue(expression.isPresent());
+    var object = expression.get().eval(evalContext);
+    Assertions.assertEquals(Map.of("a", "ba"), object);
+
+
+    verifyNoMoreInteractions(errorConsumer);
+  }
 
 
   public ZoneId tzHere() {

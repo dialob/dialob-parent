@@ -32,11 +32,6 @@ public final class ObjectExprNode extends NodeBase {
   @Override
   public ValueType getValueType() {
     return ObjectValueType.objectOf(Collections.emptyMap());
-    //fields.stream().
-    //      collect(java.util.stream.Collectors.toUnmodifiableMap(
-    //        KeyValueExprNode::getKey,
-    //        pair -> pair.getValue().getValueType() != null ? pair.getValue().getValueType() : ValueType.STRING
-    //      ))
   }
 
   @NonNull

@@ -29,11 +29,16 @@ public record ObjectValueType(
   Map<String, ValueType> fieldTypes
 ) implements ValueType {
 
+  public static ValueType EMPTY_OBJECT = new ObjectValueType(Collections.emptyMap());
+
   public ObjectValueType {
     fieldTypes = Collections.unmodifiableMap(Objects.requireNonNull(fieldTypes, "fieldTypes may not be null"));
   }
 
   public static ValueType objectOf(@NonNull Map<String, ValueType> fieldTypes) {
+    if (fieldTypes.isEmpty()) {
+      return EMPTY_OBJECT;
+    }
     return new ObjectValueType(fieldTypes);
   }
 

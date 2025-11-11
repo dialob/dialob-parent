@@ -16,16 +16,14 @@
 package io.dialob.session.engine.program.ddrl;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.*;
 import io.dialob.session.engine.program.ProgramBuilderException;
 import io.dialob.session.engine.program.expr.OperatorFactory;
-import io.dialob.session.engine.program.expr.arith.ImmutableConstant;
-import io.dialob.session.engine.program.expr.arith.Operators;
-import io.dialob.session.engine.program.expr.arith.StringOperators;
-import io.dialob.session.engine.program.expr.arith.TimeOperators;
+import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.IdUtils;
 
@@ -90,17 +88,21 @@ public class DDRLExpressionCompiler {
 
     private final List<Expression> expressions = new ArrayList<>();
 
-    private ASTVisitorBuilder builder;
+    private ASTVisitorBuilder subScopeBuilder;
 
     @NonNull
     public List<Expression> getExpressions() {
       return expressions;
     }
 
+    private ASTVisitorBuilder enterSubScope() {
+      this.subScopeBuilder = new ASTVisitorBuilder();
+      return this.subScopeBuilder;
+    }
+
     @Override
     public ASTVisitor visitCallExpr(@NonNull CallExprNode node) {
-      this.builder = new ASTVisitorBuilder();
-      return builder;
+      return enterSubScope();
     }
 
     @Override
@@ -110,13 +112,13 @@ public class DDRLExpressionCompiler {
         final Expression operator = operatorFactory.createOperator(
           requireNonNull(node.getValueType()),
           node.getNodeOperator().operator(),
-          builder.getExpressions());
+          this.subScopeBuilder.getExpressions());
         this.expressions.add(operator);
       } catch (ProgramBuilderException e) {
         e.setNode(node);
         throw e;
       }
-      builder = null;
+      this.subScopeBuilder = null;
       return node;
     }
 
@@ -149,6 +151,30 @@ public class DDRLExpressionCompiler {
       return node;
     }
 
+    @Nullable
+    @Override
+    public ASTVisitor visitObjectExpr(@NonNull ObjectExprNode node) {
+      return enterSubScope();
+    }
 
+    @NonNull
+    @Override
+    public ASTVisitor visitKeyValueExpr(@NonNull KeyValueExprNode node) {
+      return enterSubScope();
+    }
+
+    @NonNull
+    @Override
+    public KeyValueExprNode endKeyValueExpr(@NonNull KeyValueExprNode node) {
+      expressions.add(new KeyValueOperator(node.getKey(), this.subScopeBuilder.getExpressions().getFirst()));
+      return node;
+    }
+
+    @NonNull
+    @Override
+    public NodeBase endObjectExpr(@NonNull ObjectExprNode node) {
+      expressions.add(new ObjectOperator(subScopeBuilder.getExpressions()));
+      return node;
+    }
   }
 }
