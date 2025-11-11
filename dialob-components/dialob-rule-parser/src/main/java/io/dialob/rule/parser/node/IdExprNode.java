@@ -24,15 +24,10 @@ public class IdExprNode extends NodeBase {
 
   private final String namespace;
 
-  private final Map<String, ValueType> idSet;
-
   public IdExprNode(NodeBase parent, @Nullable String namespace, @Nullable String scopeId, @NonNull String id, @Nullable ValueType valueType, @NonNull Span span) {
     super(parent, span, valueType);
     this.id = Objects.requireNonNull(id);
     this.namespace = StringUtils.defaultString(namespace);
-    Map<String, ValueType> idSet = new HashMap<>();
-    idSet.put(this.id, valueType);
-    this.idSet = Collections.unmodifiableMap(idSet);
     this.scopeId = scopeId;
   }
 

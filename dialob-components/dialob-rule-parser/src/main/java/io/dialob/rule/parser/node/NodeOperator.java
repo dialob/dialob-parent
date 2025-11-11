@@ -209,6 +209,7 @@ public record NodeOperator(@NonNull String operator, @NonNull Category category)
     return false;
   }
 
+  @NonNull
   @Override
   public String toString() {
     return operator;

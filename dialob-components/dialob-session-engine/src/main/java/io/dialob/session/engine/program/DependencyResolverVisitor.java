@@ -139,7 +139,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
       .forEach(updateCommand ->
         itemCommands.computeIfAbsent(updateCommand.getTargetId(),
         targetId -> new ArrayList<>()).add(updateCommand));
-    updateCommandFactory.getAllCommands().stream().forEach(updateCommand -> updateCommand.getEventMatchers().forEach(
+    updateCommandFactory.getAllCommands().forEach(updateCommand -> updateCommand.getEventMatchers().forEach(
       eventMatcher -> inputUpdates.computeIfAbsent(requireNonNull(eventMatcher),
         key -> new ArrayList<>()).add(updateCommand)));
 
@@ -160,7 +160,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
 
     // Scan deeper command dependencies
 
-    commandsToCommands.entrySet().stream().forEach((Map.Entry<Command<?>, Set<Command<?>>> entry) -> {
+    commandsToCommands.entrySet().forEach((Map.Entry<Command<?>, Set<Command<?>>> entry) -> {
       Set<Command<?>> prevSet;
       Set<Command<?>> set;
       boolean same;

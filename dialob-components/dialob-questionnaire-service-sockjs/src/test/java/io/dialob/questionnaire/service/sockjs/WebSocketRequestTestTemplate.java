@@ -314,12 +314,12 @@ public class WebSocketRequestTestTemplate {
     final Iterator<WhenMessage> whenMessageIterator = steps.iterator();
     webSocketHandler = Mockito.spy(new WebSocketHandler() {
       @Override
-      public void afterConnectionEstablished(WebSocketSession session) {
+      public void afterConnectionEstablished(@NonNull WebSocketSession session) {
       }
 
       // Here we receive messages
       @Override
-      public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+      public void handleMessage(@NonNull WebSocketSession session, @NonNull WebSocketMessage<?> message) throws Exception {
         websocketMessages.add("<-- " + message.getPayload());
         synchronized (activeStep) {
           WhenMessage step = activeStep.get();

@@ -16,6 +16,7 @@
 package io.dialob.session.boot.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.ImmutableForm;
@@ -84,7 +85,7 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
     private final List<Runnable> delayedTasks = new ArrayList<>();
 
     @Override
-    public void execute(Runnable task) {
+    public void execute(@NonNull Runnable task) {
       delayedTasks.add(task);
     }
 
