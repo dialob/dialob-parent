@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormDatabase {

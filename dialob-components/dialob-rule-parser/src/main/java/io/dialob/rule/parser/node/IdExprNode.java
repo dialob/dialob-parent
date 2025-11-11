@@ -7,9 +7,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @EqualsAndHashCode(callSuper = true, of = {"id", "namespace"})
