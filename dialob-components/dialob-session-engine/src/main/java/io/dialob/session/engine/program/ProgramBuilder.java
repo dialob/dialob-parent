@@ -337,10 +337,6 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
       this.scope = scope;
     }
 
-    private ProgramVariableFinder withScope(String scope) {
-      return new ProgramVariableFinder(this.aliases, scope);
-    }
-
     @Override
     @Nullable
     public String getScope() {

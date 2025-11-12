@@ -90,11 +90,11 @@ public class CSVSerializer {
     String realValue = "";
     String valueKey = "";
 
-    String valueSetId = formItem.getType().equals("survey") ? effectiveValueSetId : formItem.getValueSetId();
+    String valueSetId = formItem.getType().equals(Constants.SURVEY) ? effectiveValueSetId : formItem.getValueSetId();
 
     if (null != valueSetId) {
       Optional<FormValueSet> valueSet = form.getValueSets().stream().filter(vs -> vs.getId().equals(valueSetId)).findFirst();
-      if (valueSet.isPresent() && formItem.getType().equals("multichoice")) {
+      if (valueSet.isPresent() && Constants.MULTICHOICE.equals(formItem.getType())) {
         // for multichoices export each possible selection in separate column as 0 or 1 for text value and then key value.
         // this allows easy creation of charts by using count aggregation.
         // comma-separated multichoice values in one column are exported as next step in this method.
@@ -154,7 +154,7 @@ public class CSVSerializer {
     }
 
     // Special handling for surveyGroup
-    if ("surveygroup".equals(formItem.getType())) {
+    if (Constants.SURVEYGROUP.equals(formItem.getType())) {
       String surveyGroupValueSet =  formItem.getValueSetId();
       formItem.getItems().stream().map(itemId -> form.getData().get(itemId)).forEach(
         item -> serializeItem(form, questionnaire, item, null, records, language, surveyGroupValueSet));
@@ -167,7 +167,7 @@ public class CSVSerializer {
     // Container items
     if (null != formItem.getItems() && !formItem.getItems().isEmpty()) {
       // Rowgroup handling
-      if ("rowgroup".equals(formItem.getType())) {
+      if (Constants.ROWGROUP.equals(formItem.getType())) {
         Optional<Answer> a = getAnswer(questionnaire, formItem.getId());
         if (a.isPresent()) {
           List<Integer> rows = (List<Integer>) a.get().getValue();
@@ -178,10 +178,9 @@ public class CSVSerializer {
               records.add(formItem.getId());
             }
             // Rowgroup items
-            rows.forEach(row -> {
+            rows.forEach(row ->
               formItem.getItems().stream().map(itemId -> form.getData().get(itemId))
-                .forEach(item -> serializeItem(form, questionnaire, item, "%s.%d.%s".formatted(formItem.getId(), row, item.getId()), records, language, null));
-            });
+              .forEach(item -> serializeItem(form, questionnaire, item, "%s.%d.%s".formatted(formItem.getId(), row, item.getId()), records, language, null)));
           }
         }
       } else {
@@ -191,22 +190,10 @@ public class CSVSerializer {
       }
     } else {
       // "Normal" items
-      if ("survey".equals(formItem.getType()) && effectiveValueSetId == null) {
+      if (Constants.SURVEY.equals(formItem.getType()) && effectiveValueSetId == null) {
         return;
       }
       serializeAnswer(form, questionnaire, formItem, answerId, records, language, effectiveValueSetId);
-    }
-  }
-
-  private void serializeContextValue(ContextValue cv, CSVPrinter printer) {
-    try {
-      printer.printRecord(
-        cv.getId(),
-        "",
-        cv.getValue()
-      );
-    } catch (IOException e) {
-      LOGGER.error("CSV Serialization Error", e);
     }
   }
 
@@ -227,7 +214,7 @@ public class CSVSerializer {
     Object exportFlag = formItem.getProps() != null ? formItem.getProps().get("export") : null;
     if (!(exportFlag != null && "false".equals(exportFlag.toString())) && !IGNORED_TYPES.contains(formItem.getType())) {
       String label = formItem.getLabel().get(language);
-      if (formItem.getType().equals("multichoice")) {
+      if (Constants.MULTICHOICE.equals(formItem.getType())) {
         // for multichoice add column for each possible value
         String selectionId = formItem.getValueSetId();
         Optional<FormValueSet> values = form.getValueSets().stream().filter(valueSet -> valueSet.getId().equals(selectionId)).findFirst();
@@ -244,9 +231,7 @@ public class CSVSerializer {
   public String[] serializeHeader(Form form, String language) {
     List<String> result = new ArrayList<>();
     Map<String, Integer> labelDedups = new HashMap<>();
-    form.getData().values().forEach(formItem -> {
-      addHeaderFormItem(form, formItem, labelDedups, result, language);
-    });
+    form.getData().values().forEach(formItem -> addHeaderFormItem(form, formItem, labelDedups, result, language));
     form.getVariables().forEach(variable -> {
       if (Boolean.TRUE.equals(variable.getContext())) {
         result.add(variable.getName());
@@ -283,7 +268,7 @@ public class CSVSerializer {
     CSVPrinter printer = null;
     StringWriter out = new StringWriter();
     try {
-      printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(serializeHeader(form, language)));
+      printer = new CSVPrinter(out, CSVFormat.DEFAULT.builder().setHeader(serializeHeader(form, language)).get());
       for (String sessionId : sessionIds) {
         Questionnaire questionnaire = questionnaireDatabase.findOne(currentTenant.getId(), sessionId);
         serialize(questionnaire, form, printer, language);

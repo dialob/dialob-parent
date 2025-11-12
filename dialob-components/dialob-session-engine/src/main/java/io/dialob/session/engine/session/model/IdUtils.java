@@ -23,7 +23,10 @@ import io.dialob.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 
 public class IdUtils {
 
@@ -97,14 +100,6 @@ public class IdUtils {
       throw new IllegalArgumentException(itemId + " is not valid id");
     }
     return id;
-  }
-
-  public static Collection<ItemId> toIds(Iterable<String> itemIds) {
-    List<ItemId> itemIdList = new ArrayList<>();
-    for (String id : itemIds) {
-      itemIdList.add(toId(id));
-    }
-    return itemIdList;
   }
 
   public static ItemId withIndex(ItemId itemId, int index) {
