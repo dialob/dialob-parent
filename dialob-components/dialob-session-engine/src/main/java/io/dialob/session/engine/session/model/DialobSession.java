@@ -53,6 +53,8 @@ public class DialobSession implements ItemStates, Serializable {
 
   public static final ImmutableItemRef QUESTIONNAIRE_REF = (ImmutableItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);
 
+  @Getter
+  @NonNull
   private final String tenantId;
 
   @Getter
@@ -74,20 +76,25 @@ public class DialobSession implements ItemStates, Serializable {
   @Setter
   private String language;
 
+  @NonNull
   private Map<ItemId,ItemState> itemStates = new HashMap<>();
 
   // TODO move this to DialobProgram
+  @NonNull
   private Map<ItemId,ItemState> itemPrototypes = new HashMap<>();
 
+  @NonNull
   private Map<ValueSetId,ValueSetState> valueSetStates = new HashMap<>();
 
+  @NonNull
   private Map<ErrorId,ErrorState> errorStates = new HashMap<>();
 
   // TODO move this to DialobProgram
+  @NonNull
   private Map<ErrorId,ErrorState> errorPrototypes = new HashMap<>();
 
   public void writeTo(CodedOutputStream output) throws IOException {
-    writeNullableString(output, tenantId);
+    output.writeStringNoTag(tenantId);
     writeNullableString(output, id);
     output.writeStringNoTag(revision);
     output.writeStringNoTag(language);
@@ -124,7 +131,7 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   public static DialobSession readFrom(CodedInputStream input) throws IOException {
-    String tenantId = readNullableString(input);
+    String tenantId = input.readString();
     String id = readNullableString(input);
     DialobSession session = new DialobSession(tenantId, id);
     session.revision = input.readString();
@@ -165,7 +172,7 @@ public class DialobSession implements ItemStates, Serializable {
 
 
   private DialobSession(String tenantId, @Nullable final String id) {
-    this.tenantId = tenantId;
+    this.tenantId = Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id);
     this.id = id;
   }
 
@@ -236,13 +243,6 @@ public class DialobSession implements ItemStates, Serializable {
     return new DialobSession(id, this);
   }
 
-  public String getTenantId() {
-    if (tenantId == null) {
-      return ResysSecurityConstants.DEFAULT_TENANT.id();
-    }
-    return tenantId;
-  }
-
   @NonNull
   public ItemState getRootItem() {
     return getItemState(QUESTIONNAIRE_REF)
@@ -288,25 +288,29 @@ public class DialobSession implements ItemStates, Serializable {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
 
-    if (command instanceof ItemUpdateCommand itemUpdateCommand) {
-      ItemId itemId = itemUpdateCommand.getTargetId();
-      // TODO scope?
-      EvalContext context = createScopedEvalContext(evalContext, itemId);
+    switch (command) {
+      case ItemUpdateCommand itemUpdateCommand -> {
+        ItemId itemId = itemUpdateCommand.getTargetId();
+        // TODO scope?
+        EvalContext context = createScopedEvalContext(evalContext, itemId);
 
-      applyItemUpdateCommand(context, itemUpdateCommand);
-      updated();
-    } else if (command instanceof ErrorUpdateCommand errorUpdateCommand) {
-      EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().getItemId());
-      applyErrorUpdateCommand(context, errorUpdateCommand);
-      updated();
-    } else if (command instanceof UpdateValueSetCommand valueSetCommand) {
-      applyUpdateValueSetCommand(evalContext, valueSetCommand);
-      updated();
-    } else if (command instanceof SessionUpdateCommand updateCommand) {
-      applySessionUpdateCommand(evalContext, updateCommand);
-      updated();
-    } else {
-      LOGGER.warn("Do not know how to apply command: {}", command);
+        applyItemUpdateCommand(context, itemUpdateCommand);
+        updated();
+      }
+      case ErrorUpdateCommand errorUpdateCommand -> {
+        EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().getItemId());
+        applyErrorUpdateCommand(context, errorUpdateCommand);
+        updated();
+      }
+      case UpdateValueSetCommand valueSetCommand -> {
+        applyUpdateValueSetCommand(evalContext, valueSetCommand);
+        updated();
+      }
+      case SessionUpdateCommand updateCommand -> {
+        applySessionUpdateCommand(evalContext, updateCommand);
+        updated();
+      }
+      default -> LOGGER.warn("Do not know how to apply command: {}", command);
     }
   }
 
@@ -341,7 +345,7 @@ public class DialobSession implements ItemStates, Serializable {
     // Removed
     itemStatesDiffs.entriesOnlyOnRight().forEach((itemId, itemState) -> {
       evalContext.registerUpdate(null, itemState);
-      itemStates.remove(itemState.getId());
+      itemStates.remove(itemId);
     });
     errorDiffs.entriesOnlyOnRight().forEach(((errorId, errorState) -> {
       evalContext.registerUpdate(null, errorState);
@@ -350,20 +354,20 @@ public class DialobSession implements ItemStates, Serializable {
     // New ones
     itemStatesDiffs.entriesOnlyOnLeft().forEach((itemId, itemState) -> {
       evalContext.registerUpdate(itemState, null);
-      itemStates.put(itemState.getId(), itemState);
+      itemStates.put(itemId, itemState);
     });
     errorDiffs.entriesOnlyOnLeft().forEach(((errorId, errorState) -> {
       evalContext.registerUpdate(errorState, null);
-      errorStates.put(errorState.getId(), errorState);
+      errorStates.put(errorId, errorState);
     }));
     // Updated
     itemStatesDiffs.entriesDiffering().forEach((itemId, itemStateDiff) -> {
       evalContext.registerUpdate(itemStateDiff.leftValue(), itemStateDiff.rightValue());
-      itemStates.put(itemStateDiff.leftValue().getId(), itemStateDiff.leftValue());
+      itemStates.put(itemId, itemStateDiff.leftValue());
     });
     errorDiffs.entriesDiffering().forEach(((errorId, errorState) -> {
       evalContext.registerUpdate(errorState.leftValue(), errorState.rightValue());
-      errorStates.put(errorState.leftValue().getId(), errorState.leftValue());
+      errorStates.put(errorId, errorState.leftValue());
     }));
   }
 
@@ -420,10 +424,6 @@ public class DialobSession implements ItemStates, Serializable {
     LOGGER.trace("{} updated to rev {}", getId(), revision);
   }
 
-  public ErrorState findErrorState(ErrorId id) {
-    return errorStates.get(id);
-  }
-
   public Optional<ErrorState> getErrorState(ItemId itemId, String code) {
     return Optional.ofNullable(errorStates.get(ImmutableErrorId.of(itemId, code)));
   }
@@ -452,9 +452,6 @@ public class DialobSession implements ItemStates, Serializable {
 
   @Nullable
   public Instant getLastAnswer() {
-    if (lastUpdate == null) {
-      return null;
-    }
     return lastUpdate.toInstant();
   }
 
@@ -490,10 +487,6 @@ public class DialobSession implements ItemStates, Serializable {
   @NonNull
   public Optional<ValueSetState> getValueSetState(ValueSetId id) {
     return Optional.of(valueSetStates.get(id));
-  }
-
-  public Optional<ItemState> findHoistingGroup(ItemId id) {
-    return itemStates.values().stream().filter(itemState -> itemState.getItems().contains(id)).findFirst();
   }
 
   public Optional<ItemState> findPrototype(ItemId itemId) {
