@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
@@ -315,40 +316,43 @@ public interface ValueType extends Serializable, BaseValueType {
    * If the provided type is an array, it recursively determines the {@link ValueType} of its component type.
    * If the type is not recognized, the method returns null.
    *
-   * @param returnType the {@link Class} object representing the type for which the {@link ValueType} is to be determined; must not be null
+   * @param javaType the {@link Class} object representing the type for which the {@link ValueType} is to be determined; must not be null
    * @return the corresponding {@link ValueType}, or null if the type is not recognized
    * @throws RuntimeException if the provided type is an array and the {@link ValueType} for its component type cannot be determined
    */
   @Nullable
-  static ValueType valueTypeOf(final @NonNull Class<?> returnType) {
-    if (returnType == String.class) {
+  static ValueType valueTypeOf(final @NonNull Class<?> javaType) {
+    if (javaType == String.class) {
       return STRING;
     }
-    if (returnType == LocalDate.class) {
+    if (javaType == LocalDate.class) {
       return DATE;
     }
-    if (returnType == LocalTime.class) {
+    if (javaType == LocalTime.class) {
       return TIME;
     }
-    if (returnType == Period.class) {
+    if (javaType == Period.class) {
       return PERIOD;
     }
-    if (returnType == Integer.class || returnType == int.class || returnType == BigInteger.class ) {
+    if (javaType == Integer.class || javaType == int.class || javaType == BigInteger.class ) {
       return INTEGER;
     }
-    if (returnType == BigDecimal.class) {
+    if (javaType == BigDecimal.class) {
       return DECIMAL;
     }
-    if (returnType == Boolean.class || returnType == boolean.class) {
+    if (javaType == Boolean.class || javaType == boolean.class) {
       return BOOLEAN;
     }
-    if (returnType == Duration.class) {
+    if (javaType == Duration.class) {
       return DURATION;
     }
-    if (returnType.isArray()) {
-      ValueType valueType = valueTypeOf(returnType.getComponentType());
+    if (javaType == Map.class) {
+      return ObjectValueType.EMPTY_OBJECT;
+    }
+    if (javaType.isArray()) {
+      ValueType valueType = valueTypeOf(javaType.getComponentType());
       if (valueType == null) {
-        throw new RuntimeException("Cannot find ValueType of type " + returnType.getComponentType());
+        throw new RuntimeException("Cannot find ValueType of type " + javaType.getComponentType());
       }
       return arrayOf(valueType);
     }
