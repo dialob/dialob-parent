@@ -347,7 +347,7 @@ public interface ValueType extends Serializable, BaseValueType {
       return DURATION;
     }
     if (javaType == Map.class) {
-      return new ObjectValueType(Map.of());
+      return ObjectValueType.EMPTY_OBJECT;
     }
     if (javaType.isArray()) {
       ValueType valueType = valueTypeOf(javaType.getComponentType());
