@@ -23,6 +23,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
       items: [
         {
           title: 'Group',
+          convertible: ['rowgroup'],
           optionEditors: [
             { name: 'Additional option', editor: PropEditors.InputProp }
           ],
@@ -60,6 +61,7 @@ export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
         },
         {
           title: 'Multi-Row',
+          convertible: ['group'],
           config: {
             type: 'rowgroup'
           }
