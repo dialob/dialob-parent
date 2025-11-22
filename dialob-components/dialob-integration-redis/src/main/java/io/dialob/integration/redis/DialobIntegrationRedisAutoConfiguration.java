@@ -15,20 +15,20 @@
  */
 package io.dialob.integration.redis;
 
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.integration.redis.channel.SubscribableRedisChannel;
+import org.springframework.messaging.MessageChannel;
 import tools.jackson.databind.ObjectMapper;
 import io.dialob.integration.api.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.integration.redis.channel.SubscribableRedisChannel;
-import org.springframework.messaging.MessageChannel;
 
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(RedisAutoConfiguration.class)
+@AutoConfigureAfter(DataRedisAutoConfiguration.class)
 @Slf4j
 public class DialobIntegrationRedisAutoConfiguration {
 

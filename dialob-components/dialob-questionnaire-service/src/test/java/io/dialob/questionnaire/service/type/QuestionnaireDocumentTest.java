@@ -32,13 +32,11 @@ class QuestionnaireDocumentTest {
     @BeforeEach
     public void setup() {
       objectMapper = new ObjectMapper();
-      objectMapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-      objectMapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
     }
 
 
     @Test
-    void test() throws Exception {
+    void test() {
         String data = "{\"_id\":\"609a38a672cf509eeca2b110c1022d35\",\"_rev\":\"1-a2ef6c9c6ab5d9c19603be0698b836b1\",\"answers\":[], \"metadata\": {\"formId\":\"609a38a672cf509eeca2b110c1021f3b\",\"formRev\":\"11-9ea0feacfd5911b129348e4d584679c9\",\"created\":1444838304680}}\n";
         Questionnaire questionnaire = objectMapper.readValue(data, Questionnaire.class);
         Assertions.assertNotNull(questionnaire);

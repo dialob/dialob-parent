@@ -95,7 +95,7 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
   public F loadFile(String objectName, InputStream inputStream) {
     try {
       return objectMapper.readValue(inputStream, getDocumentClass());
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Object {} is corrupted.", objectName, e);
     }
     return null;

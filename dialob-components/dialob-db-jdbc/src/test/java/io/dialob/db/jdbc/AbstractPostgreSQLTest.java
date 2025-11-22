@@ -45,7 +45,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   String SCHEMA = null;
 
   class Attrs {
-    PostgreSQLContainer container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:13"))
+    PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:17"))
       .withExposedPorts(PORT)
       .withStartupTimeout(Duration.ofMinutes(15))
       .withUsername("postgres")

@@ -15,6 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormTag;
@@ -77,7 +78,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         .status(Questionnaire.Metadata.Status.valueOf(status.trim()))
         .build());
       return builder.build();
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Error reading document {}: {}", Utils.toString(oid), e.getMessage(), e);
       throw new DocumentCorruptedException("Could not read document " + Utils.toString(oid) + ":" + e.getMessage());
     }

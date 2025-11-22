@@ -15,16 +15,14 @@
  */
 package io.dialob.boot.controller;
 
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.SerializationFeature;
 import io.dialob.boot.ApplicationAutoConfiguration;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
+import org.springframework.boot.thymeleaf.autoconfigure.ThymeleafAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.endpoint.RestClientAuthorizationCodeTokenResponseClient;
 import org.springframework.test.context.ContextConfiguration;
+import tools.jackson.databind.ObjectMapper;
 
 @ContextConfiguration(classes = {
   ThymeleafAutoConfiguration.class,
@@ -43,9 +41,7 @@ public abstract class AbstractUIControllerTest extends AbstractControllerTest {
 
     @Bean
     public ObjectMapper objectMapper() {
-      return new ObjectMapper()
-        .configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
-        .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+      return new ObjectMapper();
     }
 
   }

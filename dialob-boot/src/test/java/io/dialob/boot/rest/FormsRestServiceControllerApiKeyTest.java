@@ -46,11 +46,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.validation.autoconfigure.ValidationAutoConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -90,7 +89,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   AbstractSecuredRestTests.TestConfiguration.class,
   Application.class,
   FormsRestServiceControllerApiKeyTest.TestConfiguration.class,
-  ServletWebServerFactoryAutoConfiguration.class,
   SecurityConfiguration.class,
   DialobFormServiceRestAutoConfiguration.class,
   DialobSessionEngineAutoConfiguration.class,

@@ -18,7 +18,6 @@ package io.dialob.form.service.api.repository;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.api.form.FormItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,13 +26,12 @@ import java.io.IOException;
 
 class FormItemBeanTest {
   public FormItem parseFormItem(String data) throws IOException {
-    final ObjectMapper objectMapper = new ObjectMapper();
-    SimpleModule module = new SimpleModule();
-    JavaTimeModule javaTimeModule = new JavaTimeModule();
-    objectMapper.registerModule(javaTimeModule);
-    objectMapper.registerModule(module);
-    JsonParser parser = objectMapper.getFactory().createParser(data);
-    return parser.readValueAs(FormItem.class);
+    try (JsonParser parser = new ObjectMapper().rebuild()
+      .addModule(new SimpleModule())
+      .build().createParser(data);) {
+      return parser.readValueAs(FormItem.class);
+    }
+
   }
 
   @Test

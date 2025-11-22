@@ -377,7 +377,7 @@ public class FormsRestServiceController implements FormsRestService {
     }
     try(var inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("forms/" + TEMPLATE_FORM_ID + ".json")) {
       templateForm = objectMapper.readValue(inputStream, Form.class);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Couldn't read template form.", e);
     }
     return templateForm;

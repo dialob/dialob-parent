@@ -244,13 +244,9 @@ public class WebSocketRequestTestTemplate {
       return expect(name, webSocketMessage -> {
         TextMessage textMessage = (TextMessage) webSocketMessage;
         Actions actions;
-        try {
-          String message = textMessage.getPayload();
-          actions = objectMapper.readValue(message, Actions.class);
-          revision = actions.getRev();
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+        String message = textMessage.getPayload();
+        actions = objectMapper.readValue(message, Actions.class);
+        revision = actions.getRev();
         expectConsumer.accept(actions);
       });
     }

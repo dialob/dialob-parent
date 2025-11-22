@@ -257,7 +257,7 @@ abstract class AbstractFormRepositoryTests {
 
   private static class NoExceptionResponseErrorHandler extends DefaultResponseErrorHandler {
     @Override
-    public void handleError(@NonNull ClientHttpResponse response) {
+    public void handleError(URI url, HttpMethod method, ClientHttpResponse response) {
       LOGGER.trace("Response error: {}", response);
     }
   }

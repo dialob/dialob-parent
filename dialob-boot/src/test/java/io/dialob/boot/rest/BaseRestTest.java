@@ -15,13 +15,12 @@
  */
 package io.dialob.boot.rest;
 
-import tools.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
+import org.springframework.boot.webmvc.autoconfigure.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -30,10 +29,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-
-import static tools.jackson.databind.DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS;
-import static tools.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static tools.jackson.databind.SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public abstract class BaseRestTest {
 
@@ -41,7 +38,7 @@ public abstract class BaseRestTest {
   public static class TestConfiguration  {
 
     @Bean
-    public RequestMappingHandlerAdapter requestMappingHandlerAdapter(MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter, Validator[] validators) {
+    public RequestMappingHandlerAdapter requestMappingHandlerAdapter(JacksonJsonHttpMessageConverter mappingJackson2HttpMessageConverter, Validator[] validators) {
       RequestMappingHandlerAdapter requestMappingHandlerAdapter = new RequestMappingHandlerAdapter();
       requestMappingHandlerAdapter.getMessageConverters().add(mappingJackson2HttpMessageConverter);
       requestMappingHandlerAdapter.setWebBindingInitializer(binder -> binder.addValidators(validators));
@@ -50,13 +47,13 @@ public abstract class BaseRestTest {
 
     @Bean
     public ObjectMapper objectMapper() {
-      return new ObjectMapper()
-        .disable(READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
+      return new ObjectMapper();
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
-      return new MappingJackson2HttpMessageConverter(objectMapper);
+    public JacksonJsonHttpMessageConverter mappingJackson2HttpMessageConverter() {
+
+      return new JacksonJsonHttpMessageConverter(new JsonMapper());
     }
   }
 

@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.sockjs;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.InetAddresses;
@@ -207,7 +208,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
           }
         }
-      } catch (IOException e) {
+      } catch (JacksonException e) {
         LOGGER.info("unparseable message from client {} due error {}", id, e.getMessage());
         LOGGER.debug("message payload: {}", message.getPayload());
         return this;

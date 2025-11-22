@@ -15,6 +15,7 @@
  */
 package io.dialob.form.service.renamer;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.*;
 import io.dialob.form.service.DialobFormIdRenamer;
@@ -59,7 +60,7 @@ class FormIdRenamerTest {
 
     try {
       return objectMapper.readValue(formInput, Form.class);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }

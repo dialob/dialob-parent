@@ -52,7 +52,7 @@ public class JsonMessageConverter<T> implements MessageConverter {
   public Message<?> toMessage(@NonNull Object payload, MessageHeaders headers) {
     try {
       return new GenericMessage<>(mapper.readValue((String) payload, type));
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.debug("Could not create message. Skipping message.", e);
     }
     return null;

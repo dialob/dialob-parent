@@ -15,6 +15,8 @@
  */
 package io.dialob.form.service.copy;
 
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.json.JsonFactoryBuilder;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import io.dialob.api.form.Form;
@@ -62,8 +64,7 @@ class FormItemCopierTest {
 
     @Bean
     public ObjectMapper objectMapper() {
-      return new ObjectMapper()
-        .enable(SerializationFeature.INDENT_OUTPUT);
+      return new ObjectMapper().rebuild().configure(SerializationFeature.INDENT_OUTPUT, true).build();
     }
   }
 
@@ -75,12 +76,7 @@ class FormItemCopierTest {
 
   private Form loadForm() {
     InputStream formInput = this.getClass().getResourceAsStream("/renamerTestForm.json");
-
-    try {
-      return objectMapper.readValue(formInput, Form.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return objectMapper.readValue(formInput, Form.class);
   }
 
   @Test

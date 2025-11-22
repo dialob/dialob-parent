@@ -15,6 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
@@ -126,7 +127,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         .rev(Integer.toString(objectRev))
         .metadata(new Form.Metadata.Builder().from(form.getMetadata()).created(created.toInstant()).tenantId(tenantId).build())
         .build();
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new DocumentCorruptedException("Could not read document " + toId(oid) + ":" + e.getMessage());
     }
   }

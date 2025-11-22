@@ -63,7 +63,9 @@ public class S3NormalizingPostSubmitHandler extends AbstractNormalizingPostSubmi
 
   public S3NormalizingPostSubmitHandler(S3Client s3Client, ObjectMapper objectMapper) {
     this.s3Client = s3Client;
-    this.objectMapper = objectMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    this.objectMapper = objectMapper.rebuild()
+      .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true).build();
+    ;
   }
 
   /**

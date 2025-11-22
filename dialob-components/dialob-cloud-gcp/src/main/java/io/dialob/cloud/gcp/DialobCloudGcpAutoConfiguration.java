@@ -36,7 +36,7 @@ public class DialobCloudGcpAutoConfiguration {
 
   @Bean
   public JacksonPubSubMessageConverter jacksonPubSubMessageConverter(ObjectMapper objectMapper) {
-    return new JacksonPubSubMessageConverter(objectMapper);
+    return null; // new JacksonPubSubMessageConverter(objectMapper);
   }
 
   @Bean

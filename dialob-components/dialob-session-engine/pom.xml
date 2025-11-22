@@ -80,7 +80,6 @@
       <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
-      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.jqno.equalsverifier</groupId>

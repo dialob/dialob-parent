@@ -68,7 +68,7 @@ class CSVSerializerTest {
     @Bean
     public ObjectMapper objectMapper() {
       return new ObjectMapper()
-        .enable(SerializationFeature.INDENT_OUTPUT);
+        .rebuild().configure(SerializationFeature.INDENT_OUTPUT, true).build();
     }
 
     @Bean
@@ -159,20 +159,12 @@ class CSVSerializerTest {
 
   private Form loadForm(String formName) {
     InputStream formInput = this.getClass().getResourceAsStream(formName);
-    try {
-      return objectMapper.readValue(formInput, Form.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return objectMapper.readValue(formInput, Form.class);
   }
 
   private Questionnaire loadQuestionnaire(String questionnaireName) {
     InputStream formInput = this.getClass().getResourceAsStream(questionnaireName);
-    try {
-      return objectMapper.readValue(formInput, Questionnaire.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return objectMapper.readValue(formInput, Questionnaire.class);
   }
 
   private QuestionnaireDatabase.MetadataRow getQuestionnaireMetadataRow(Questionnaire questionnaire) {
