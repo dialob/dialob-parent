@@ -38,7 +38,6 @@ import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
@@ -55,7 +54,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -68,7 +66,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK, properties = {
   "dialob.security.enabled=true",
   "tenantId=itest",
@@ -144,7 +141,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     reset(formDatabase, listenerMock, formVersionControlDatabase);
   }
 
-  @Value("${server.context-path:/}")
+  @Value("${server.servlet.context-path:/}")
   protected String contextPath;
 
   @BeforeEach

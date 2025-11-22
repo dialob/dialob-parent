@@ -15,8 +15,7 @@
  */
 package io.dialob.form.service.api.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import org.junit.jupiter.api.Test;
 
@@ -97,7 +96,7 @@ class FormDocumentTest {
                   "label": "test"
               }
           }""";
-        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectMapper mapper = new ObjectMapper();
         Form formDocument = mapper.readValue(s, Form.class);
         assertEquals(6, formDocument.getData().size());
         assertEquals(Instant.parse("2015-10-09T13:34:01.622Z"), formDocument.getMetadata().getCreated());

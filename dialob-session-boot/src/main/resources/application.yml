@@ -4,7 +4,7 @@ host: "http://localhost:${server.port}"
 server:
   max-http-request-header-size: 64KB
   port: 8080
-  use-forward-headers: true
+  forward-headers-strategy: true
   servlet:
     contextPath: "/session"
 
@@ -74,10 +74,10 @@ info:
     number: "@buildNumber@"
 
 logging:
-  path: "./"
+  file.path: "./"
 
 
-endpoints.jmx.staticNames: 'application=session'
+management.endpoints.jmx.static-names: 'application=session'
 
 dialob:
   security:

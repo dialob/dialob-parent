@@ -15,19 +15,17 @@
  */
 package io.dialob.questionnaire.service.sockjs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.proto.Action;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.ActionItem;
-import io.dialob.api.proto.Actions;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
-import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -50,9 +48,11 @@ import static org.mockito.Mockito.verify;
 
 class QuestionnaireWebSocketHandlerTest {
 
+  private AutoCloseable mocks;
+
   @BeforeEach
   public void reset() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
   }
 
   @Mock
@@ -86,15 +86,15 @@ class QuestionnaireWebSocketHandlerTest {
 
   @Test
   void shouldDelegateSessionInitToAsyncTask() throws Exception {
-    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
     final QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
-    final Map<String,Object> attributes = new HashMap<>();
-    attributes.put("sessionId","123-321");
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "123-321");
     when(webSocketSession.getAttributes()).thenReturn(attributes);
     final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
     when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
     doAnswer(invocation -> {
-      ((Runnable)invocation.getArgument(0)).run();
+      ((Runnable) invocation.getArgument(0)).run();
       return null;
     }).when(taskExecutor).execute(any());
     when(questionnaireSessionService.findOne("123-321")).thenReturn(questionnaireSession);
@@ -136,14 +136,14 @@ class QuestionnaireWebSocketHandlerTest {
 
   @Test
   void shouldSendQuestionnaireNotFoundMessageIfQuestionnaireIsNotFound() throws Exception {
-    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost",9999);
-    final Map<String,Object> attributes = new HashMap<>();
-    attributes.put("sessionId","123-321");
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "123-321");
     when(webSocketSession.getAttributes()).thenReturn(attributes);
     final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
     when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
     doAnswer(invocation -> {
-      ((Runnable)invocation.getArgument(0)).run();
+      ((Runnable) invocation.getArgument(0)).run();
       return null;
     }).when(taskExecutor).execute(any());
     when(questionnaireSessionService.findOne("123-321")).thenThrow(DocumentNotFoundException.class);
@@ -568,6 +568,11 @@ class QuestionnaireWebSocketHandlerTest {
 
     // Verify that actionProcessingService was called
     verifyNoMoreInteractions(actionProcessingService);
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    mocks.close();
   }
 
 }

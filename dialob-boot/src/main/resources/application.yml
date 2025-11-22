@@ -1,7 +1,7 @@
 server:
   max-http-request-header-size: 64KB
   port: 8081
-  use-forward-headers: true
+  forward-headers-strategy: true
   servlet:
     contextPath: ""
     error:
@@ -74,7 +74,7 @@ info:
 
 management:
   endpoints:
-    enabled-by-default: true
+    access.default: read-only
     web:
       exposure:
         include: '*'

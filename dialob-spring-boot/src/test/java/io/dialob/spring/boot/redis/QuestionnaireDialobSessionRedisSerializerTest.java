@@ -35,6 +35,7 @@ import io.dialob.session.engine.sp.DialobQuestionnaireSessionBuilder;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionService;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class QuestionnaireDialobSessionRedisSerializerTest {
+
+  private AutoCloseable mocks;
 
   @Mock
   DialobProgramService dialobProgramService;
@@ -89,7 +92,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
 
   @BeforeEach
   public void beforeEach() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
 
@@ -97,7 +100,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
       dialobProgramService,
       (id, rev) -> formDatabase.findOne(tenantId, id, rev),
       questionnaireSessionSaveService,
-            sessionContextFactory,
+      sessionContextFactory,
       asyncFunctionInvoker
     );
 
@@ -132,7 +135,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
       programBuilder
         .setId("test-form")
         .addRoot()
-          .addItem("p1")
+        .addItem("p1")
         .build()
         .build());
 
@@ -190,5 +193,10 @@ class QuestionnaireDialobSessionRedisSerializerTest {
       eventPublisher, dialobProgramService, sessionContextFactory, asyncFunctionInvoker, Optional.of(meterRegistry),
       bufferSize
     );
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    mocks.close();
   }
 }

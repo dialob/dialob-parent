@@ -15,7 +15,7 @@
  */
 package io.dialob.db.file;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;

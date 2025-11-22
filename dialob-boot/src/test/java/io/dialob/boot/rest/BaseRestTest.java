@@ -15,8 +15,7 @@
  */
 package io.dialob.boot.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -32,9 +31,9 @@ import org.springframework.validation.Validator;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS;
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS;
+import static tools.jackson.databind.DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS;
+import static tools.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
+import static tools.jackson.databind.SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS;
 
 public abstract class BaseRestTest {
 
@@ -52,10 +51,7 @@ public abstract class BaseRestTest {
     @Bean
     public ObjectMapper objectMapper() {
       return new ObjectMapper()
-        .disable(READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
-        .disable(WRITE_DATES_AS_TIMESTAMPS,
-          WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
-        .registerModule(new JavaTimeModule());
+        .disable(READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
     }
 
     @Bean

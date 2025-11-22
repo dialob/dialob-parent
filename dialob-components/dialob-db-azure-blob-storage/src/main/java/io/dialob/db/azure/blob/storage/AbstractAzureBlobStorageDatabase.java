@@ -18,8 +18,7 @@ package io.dialob.db.azure.blob.storage;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.models.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
@@ -27,6 +26,7 @@ import io.dialob.db.spi.spring.AbstractDocumentDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,7 +106,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
   public F loadFile(String objectName, InputStream inputStream) {
     try {
       return objectMapper.readValue(inputStream, getDocumentClass());
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Object {} is corrupted.", objectName, e);
     }
     return null;
@@ -165,7 +165,7 @@ public abstract class AbstractAzureBlobStorageDatabase<F> extends AbstractDocume
       var blob = this.blobContainerClient.getBlobClient(objectName(tenantId, id));
       blob.upload(BinaryData.fromBytes(objectMapper.writeValueAsBytes(document)), true);
       blob.setHttpHeaders(new BlobHttpHeaders().setContentType(MediaType.APPLICATION_JSON_VALUE));
-    } catch (JsonProcessingException | BlobStorageException e) {
+    } catch (JacksonException | BlobStorageException e) {
       LOGGER.error("Failed to write document {}", id, e);
       throw new DocumentCorruptedException("Cannot update document " + id);
     }

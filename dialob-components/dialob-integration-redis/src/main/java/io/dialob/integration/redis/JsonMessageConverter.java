@@ -15,14 +15,14 @@
  */
 package io.dialob.integration.redis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.support.GenericMessage;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 
@@ -42,7 +42,7 @@ public class JsonMessageConverter<T> implements MessageConverter {
   public Object fromMessage(@NonNull Message<?> message, @NonNull Class<?> targetClass) {
     try {
       return mapper.writeValueAsString(message.getPayload());
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       LOGGER.debug("Could not parse message payload. Ignoring message ", e);
     }
     return null;

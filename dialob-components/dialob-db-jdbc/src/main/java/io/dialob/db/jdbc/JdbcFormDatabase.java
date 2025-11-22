@@ -15,7 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
@@ -79,7 +79,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         sql.append(" and tenant_id = ?");
       }
       try {
-        return template.queryForObject(sql.toString(), sqlParameters.toArray(), rowMapper);
+        return template.queryForObject(sql.toString(), rowMapper, sqlParameters.toArray());
       } catch (EmptyResultDataAccessException e) {
         throw new DocumentNotFoundException(id + " not found");
       }

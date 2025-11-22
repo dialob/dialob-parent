@@ -15,7 +15,7 @@
  */
 package io.dialob.db.spi.spring;
 
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
+import tools.jackson.databind.exc.InvalidDefinitionException;
 import io.dialob.api.rest.Errors;
 import io.dialob.db.spi.exceptions.*;
 import jakarta.validation.ConstraintViolationException;

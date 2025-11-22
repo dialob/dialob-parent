@@ -16,7 +16,7 @@
 package io.dialob.db.s3;
 
 import com.adobe.testing.s3mock.junit5.S3MockExtension;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import org.junit.jupiter.api.Assertions;

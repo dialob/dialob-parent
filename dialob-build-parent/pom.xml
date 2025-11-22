@@ -119,7 +119,6 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -176,7 +175,6 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
-      <version>${hamcrest.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -306,12 +304,12 @@
 
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
-        <artifactId>swagger-models</artifactId>
+        <artifactId>swagger-models-jakarta</artifactId>
         <version>${swagger.version}</version>
       </dependency>
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
-        <artifactId>swagger-annotations</artifactId>
+        <artifactId>swagger-annotations-jakarta</artifactId>
         <version>${swagger.version}</version>
       </dependency>
 
@@ -523,7 +521,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.14.0</version>
+          <version>3.14.1</version>
           <configuration>
             <annotationProcessorPaths>
               <path>

@@ -15,9 +15,8 @@
  */
 package io.dialob.questionnaire.service.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
@@ -34,13 +33,11 @@ import io.dialob.security.user.CurrentUserProvider;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
@@ -56,8 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {DatabaseExceptionMapper.class,
+@SpringJUnitConfig(classes = {DatabaseExceptionMapper.class,
   CSVSerializerTest.TestConfiguration.class,
   QuestionnairesRestServiceController.class,
   DialobRestAutoConfiguration.class})
@@ -72,7 +68,6 @@ class CSVSerializerTest {
     @Bean
     public ObjectMapper objectMapper() {
       return new ObjectMapper()
-        .registerModules(new JavaTimeModule())
         .enable(SerializationFeature.INDENT_OUTPUT);
     }
 

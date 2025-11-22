@@ -15,7 +15,7 @@
  */
 package io.dialob.integration.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.integration.api.Constants;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -15,7 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.spring.AbstractDocumentDatabase;
 import lombok.extern.slf4j.Slf4j;

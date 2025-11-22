@@ -15,7 +15,7 @@
  */
 package io.dialob.boot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.boot.controller.AdminController;
 import io.dialob.boot.controller.ComposerController;
 import io.dialob.boot.controller.FillController;

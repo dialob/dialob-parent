@@ -15,10 +15,9 @@
  */
 package io.dialob.security.spring.apikey.filter;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 import io.dialob.security.ErrorsResponse;
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
 import io.dialob.security.spring.filter.ApiKeyAuthenticationEntryPoint;
@@ -42,7 +41,6 @@ class ApiKeyAuthenticationEntryPointTest {
   @Test
   void shouldMakeJsonErrorResponse() throws IOException, ServletException {
     final ObjectMapper objectMapper = new ObjectMapper()
-      .registerModule(new JavaTimeModule())
       .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
       .configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);

@@ -15,8 +15,7 @@
  */
 package io.dialob.form.service.renamer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.*;
 import io.dialob.form.service.DialobFormIdRenamer;
 import io.dialob.form.service.api.validation.FormIdRenamer;
@@ -25,10 +24,8 @@ import io.dialob.session.engine.program.DialobRuleExpressionCompiler;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,11 +34,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {FormIdRenamerTest.TestConfiguration.class})
+@SpringJUnitConfig(classes = {FormIdRenamerTest.TestConfiguration.class})
 class FormIdRenamerTest {
 
-  ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
+  ObjectMapper objectMapper = new ObjectMapper();
 
   public static class TestConfiguration {
     @Bean

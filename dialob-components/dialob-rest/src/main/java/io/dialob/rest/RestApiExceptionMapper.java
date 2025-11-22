@@ -70,7 +70,7 @@ public class RestApiExceptionMapper {
   }
 
   @ExceptionHandler
-  public ResponseEntity<?> valueInstantiationExceptionHandler(@NonNull com.fasterxml.jackson.databind.exc.ValueInstantiationException exception) {
+  public ResponseEntity<?> valueInstantiationExceptionHandler(@NonNull tools.jackson.databind.exc.ValueInstantiationException exception) {
     Errors.Builder builder = new Errors.Builder();
     Throwable cause = exception.getCause();
     String message = exception.getMessage();

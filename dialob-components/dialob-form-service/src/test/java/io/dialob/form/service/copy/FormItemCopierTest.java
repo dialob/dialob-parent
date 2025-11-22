@@ -15,9 +15,8 @@
  */
 package io.dialob.form.service.copy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.form.service.DialobFormIdRenamer;
@@ -29,10 +28,8 @@ import io.dialob.session.engine.program.DialobRuleExpressionCompiler;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,8 +40,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {FormItemCopierTest.TestConfiguration.class})
+@SpringJUnitConfig(classes = {FormItemCopierTest.TestConfiguration.class})
 class FormItemCopierTest {
 
 
@@ -67,7 +63,6 @@ class FormItemCopierTest {
     @Bean
     public ObjectMapper objectMapper() {
       return new ObjectMapper()
-        .registerModules(new JavaTimeModule())
         .enable(SerializationFeature.INDENT_OUTPUT);
     }
   }
