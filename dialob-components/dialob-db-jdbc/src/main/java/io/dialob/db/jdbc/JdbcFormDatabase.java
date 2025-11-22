@@ -15,8 +15,6 @@
  */
 package io.dialob.db.jdbc;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
@@ -29,8 +27,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -181,12 +180,8 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
           .label("");
 
         if (labels != null) {
-          try {
-            String[] labelArray = objectMapper.readValue(labels, String[].class);
-            metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
-          } catch (Exception e) {
-            throw new RuntimeException("Unable to parse label array", e);
-          }
+          String[] labelArray = objectMapper.readValue(labels, String[].class);
+          metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
         }
         consumer.accept(FormMetadataRow.of(toId(id), metadataBuilder.build()));
       }, params.toArray());

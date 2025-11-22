@@ -15,8 +15,6 @@
  */
 package io.dialob.form.service.renamer;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.*;
 import io.dialob.form.service.DialobFormIdRenamer;
 import io.dialob.form.service.api.validation.FormIdRenamer;
@@ -27,9 +25,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,13 +54,8 @@ class FormIdRenamerTest {
   private FormIdRenamer formIdRenamer;
 
   private Form loadForm() {
-    InputStream formInput = this.getClass().getResourceAsStream("/renamerTestForm.json");
-
-    try {
-      return objectMapper.readValue(formInput, Form.class);
-    } catch (JacksonException e) {
-      throw new RuntimeException(e);
-    }
+    var formInput = this.getClass().getResourceAsStream("/renamerTestForm.json");
+    return objectMapper.readValue(formInput, Form.class);
   }
 
   @Test
