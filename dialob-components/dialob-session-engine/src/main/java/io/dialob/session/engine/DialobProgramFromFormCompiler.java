@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class DialobProgramFromFormCompiler {
@@ -227,7 +228,10 @@ public class DialobProgramFromFormCompiler {
     }
     final List<FormValidationError> builderErrors = builder.getErrors();
     if (!builderErrors.isEmpty() || program == null) {
-      throw new DialobProgramErrorsException("Could not compile program due errors.", builderErrors);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Form {} compilation errors:\n - {}", formDocument.getId(), builderErrors.stream().map(Object::toString).collect(Collectors.joining("\n - ")));
+      }
+      throw new DialobProgramErrorsException(String.format("Could not compile program %s due %d compilation errors.", formDocument.getId(), builderErrors.size()), builderErrors);
     }
     return DialobProgram.createDialobProgram(program);
   }

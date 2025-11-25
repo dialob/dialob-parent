@@ -328,7 +328,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
       .andExpect(status().isUnprocessableEntity())
       .andExpect(jsonPath("$.status").value(422))
       .andExpect(jsonPath("$.error").value("Unprocessable Entity"))
-      .andExpect(jsonPath("$.message").value("Could not compile program due errors."));
+      .andExpect(jsonPath("$.message").value("Could not compile program invalid2 due 1 compilation errors."));
 
     verify(formDatabase).exists(tenantId, "invalid2");
     verify(formDatabase, times(2)).findOne(tenantId, "invalid2", "1-invalid2");
