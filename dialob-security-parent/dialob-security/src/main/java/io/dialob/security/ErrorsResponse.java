@@ -17,7 +17,7 @@ package io.dialob.security;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import org.immutables.value.Value;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.time.Instant;
