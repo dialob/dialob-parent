@@ -1,5 +1,12 @@
 # @dialob/dialob-composer-material
 
+## 0.0.14
+
+### Patch Changes
+
+- added new default item types (hetu, ytunnus, iban)
+- enabled conversion between group and rowgroup (multi-row)
+
 ## 0.0.13
 
 ### Patch Changes
