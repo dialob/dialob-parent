@@ -18,8 +18,7 @@ package io.dialob.db.azure.blob.storage;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.Form;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -35,8 +34,8 @@ class FormAzureBlobStorageDatabase2Test {
     when(blobContainerClient.getBlobClient(anyString())).thenReturn(blobClient);
 
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, new ObjectMapper(), "\\alternative/sub///", null);
-    database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -54,8 +53,8 @@ class FormAzureBlobStorageDatabase2Test {
     when(blobContainerClient.getBlobClient(anyString())).thenReturn(blobClient);
 
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, new ObjectMapper(), null, ".json");
-    database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())

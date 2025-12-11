@@ -16,9 +16,7 @@
 package io.dialob.form.service.api.repository;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -31,7 +29,7 @@ class VisitableFormTest {
 
   @Test
   void shouldCallVisitorInOrder() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test").build()).build();
     FormVisitor formVisitor = Mockito.mock(FormVisitor.class);
 
     VisitableForm.makeVisitableForm(form).accept(formVisitor);
@@ -53,8 +51,8 @@ class VisitableFormTest {
 
   @Test
   void shouldCallVisitorInOrder2() {
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("test").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("test").build())
       .putData("question1", ImmutableFormItem.builder().id("question1").type("text").build())
       .putData("group1", ImmutableFormItem.builder().id("group1").type("group").addItems("question1","nonexisting").build())
       .putData("page1", ImmutableFormItem.builder().id("page1").type("group").addItems("group1").build())

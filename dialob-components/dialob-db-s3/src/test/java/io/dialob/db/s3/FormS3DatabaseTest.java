@@ -18,8 +18,6 @@ package io.dialob.db.s3;
 import com.adobe.testing.s3mock.junit5.S3MockExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,8 +45,8 @@ class FormS3DatabaseTest {
   @Test
   void shouldGetSameObjectBackFromStorage(final S3Client s3Client) {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -60,8 +58,8 @@ class FormS3DatabaseTest {
   @Test
   void shouldRevisionObject(final S3Client s3Client) {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -90,8 +88,8 @@ class FormS3DatabaseTest {
   @Test
   void shouldGetTrueFromExistsWhenDocumentDoExists(final S3Client s3Client) {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -110,8 +108,8 @@ class FormS3DatabaseTest {
   @Test
   void shouldBeAbleDeleteExistingDocument(final S3Client s3Client) {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "testii", "forms");
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -131,8 +129,8 @@ class FormS3DatabaseTest {
     database.forAllObjects("00000000-0000-0000-0000-000000000000", scanner);
     Mockito.verifyNoMoreInteractions(scanner);
 
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())

@@ -119,10 +119,10 @@ class FormsRestServiceControllerTest {
   private MockMvc mockMvc;
 
 
-  private final Form testForm = ImmutableForm.builder()
+  private final Form testForm = new Form.Builder()
     .id("1234")
     .rev("1")
-    .metadata(ImmutableFormMetadata.builder()
+    .metadata(new Form.Metadata.Builder()
       .label("formi")
       .build())
     .build();
@@ -171,18 +171,18 @@ class FormsRestServiceControllerTest {
 
   @Test
   void postShouldAlwaysCreateNewForm() throws Exception {
-    ImmutableForm immutableForm = ImmutableForm.builder()
+    Form immutableForm = new Form.Builder()
       .id("123")
       .rev("321")
       .name("newform")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("tes")
         .build()
       )
       .build();
 
     when(currentTenant.getId()).thenReturn("t-123");
-    when(formDatabase.save(eq("t-123"), any())).thenReturn(ImmutableForm.builder().from(immutableForm).id("234").rev("543").build());
+    when(formDatabase.save(eq("t-123"), any())).thenReturn(new Form.Builder().from(immutableForm).id("234").rev("543").build());
     when(currentUserProvider.getUserId()).thenReturn("u1");
     mockMvc.perform(
       post("/forms", "1234")
@@ -227,7 +227,7 @@ class FormsRestServiceControllerTest {
       gfhf6,Boolean,Onko näin? 2,Är det så? 2, test, test, test, test, test
       ,Time,,""";
 
-    ImmutableForm immutableForm = ImmutableForm.builder().from(csvToFormParser.parseCsv(csvContent)).id("234").rev("543").build();
+    Form immutableForm = new Form.Builder().from(csvToFormParser.parseCsv(csvContent)).id("234").rev("543").build();
 
     when(currentTenant.getId()).thenReturn("t-123");
     when(formDatabase.save(eq("t-123"), any())).thenReturn(immutableForm);
@@ -377,7 +377,7 @@ class FormsRestServiceControllerTest {
       .formName("myform")
       .build();
 
-    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
+    String tagJson = objectMapper.writerFor(ImmutableFormTag.class).writeValueAsString(newTag);
 
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
@@ -424,7 +424,7 @@ class FormsRestServiceControllerTest {
       .accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk());
     verify(currentTenant).getId();
-    verify(formDatabase).findAllMetadata(eq("t-123"), eq(ImmutableFormMetadata.builder().label("Otsake").build()), any());
+    verify(formDatabase).findAllMetadata(eq("t-123"), eq(new Form.Metadata.Builder().label("Otsake").build()), any());
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
   }
 
@@ -438,7 +438,7 @@ class FormsRestServiceControllerTest {
         {
           "status":400,
           "error":"Bad Request",
-          "message":"com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.ImmutableFormMetadata$Builder` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]"
+          "message":"com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.Form$Metadata$Builder` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]"
         }
         """))
       .andExpect(status().isBadRequest());

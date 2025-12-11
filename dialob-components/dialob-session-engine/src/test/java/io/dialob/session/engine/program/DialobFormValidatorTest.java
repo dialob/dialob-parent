@@ -51,9 +51,9 @@ class DialobFormValidatorTest {
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
 
-    List<FormValidationError> errors = validator.validate(ImmutableForm.builder()
+    List<FormValidationError> errors = validator.validate(new Form.Builder()
       .id("123")
-      .metadata(ImmutableFormMetadata.builder().label("").build())
+      .metadata(new Form.Metadata.Builder().label("").build())
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
       .addVariables(ImmutableVariable.builder().name("var1").build())
       .build());
@@ -69,9 +69,9 @@ class DialobFormValidatorTest {
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
 
-    List<FormValidationError> errors = validator.validate(ImmutableForm.builder()
+    List<FormValidationError> errors = validator.validate(new Form.Builder()
       .id("123")
-      .metadata(ImmutableFormMetadata.builder().label("").build())
+      .metadata(new Form.Metadata.Builder().label("").build())
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
       .addVariables(ImmutableVariable.builder().name("var1").expression("-1").build())
       .build());
@@ -173,10 +173,10 @@ class DialobFormValidatorTest {
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
 
-    Form form = ImmutableForm.builder()
+    Form form = new Form.Builder()
       .id("yyy")
       .name("zzz")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .build())
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").addItems("page").build())

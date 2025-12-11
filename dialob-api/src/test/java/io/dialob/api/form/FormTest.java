@@ -31,7 +31,7 @@ class FormTest {
 
   @Test
   void metadataIsRequired() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableForm.builder().build());
+    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Form.Builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
 
@@ -43,7 +43,7 @@ class FormTest {
   @Test
   void metadataLabelIsRequired() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () ->
-      ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().build()).build());
+      new Form.Builder().metadata(new Form.Metadata.Builder().build()).build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
 
@@ -53,7 +53,7 @@ class FormTest {
 
   @Test
   void testFormItemAdditionalProperties() throws Exception {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("laabeli").putAdditionalProperties("extra","value").build())
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("laabeli").putAdditionalProperties("extra","value").build())
       .addValueSets(ImmutableFormValueSet.builder()
         .id("vs1")
         .addEntries(ImmutableFormValueSetEntry.builder().id("id1").putLabel("fi","ota1").putAdditionalProperties("selite","extravalue").build())

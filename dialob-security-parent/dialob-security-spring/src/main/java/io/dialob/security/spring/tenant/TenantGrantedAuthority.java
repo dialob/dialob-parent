@@ -23,7 +23,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableTenantGrantedAuthority.class)
-@JsonDeserialize(as = ImmutableTenantGrantedAuthority.class)
+@JsonDeserialize(builder = ImmutableTenantGrantedAuthority.Builder.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface TenantGrantedAuthority extends GrantedAuthority {
 

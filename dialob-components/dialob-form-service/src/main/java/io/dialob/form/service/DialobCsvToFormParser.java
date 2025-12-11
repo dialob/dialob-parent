@@ -105,10 +105,10 @@ public class DialobCsvToFormParser implements CsvToFormParser {
 
   private Form processRecords(List<CSVRecord> records, Set<String> languages, String formName) {
       // Create metadata and form
-      ImmutableForm.Builder formBuilder = ImmutableForm.builder();
+      Form.Builder formBuilder = new Form.Builder();
       formBuilder.name(formName);
 
-      ImmutableFormMetadata metadata = ImmutableFormMetadata.builder()
+      Form.Metadata metadata = new Form.Metadata.Builder()
         .label(formName)
         .languages(languages)
         .build();

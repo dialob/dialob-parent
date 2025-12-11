@@ -74,7 +74,7 @@ public class DialobFormItemCopier implements FormItemCopier {
     return globalValueSets != null && globalValueSets.stream().anyMatch(gvs -> gvs.get("valueSetId").equals(valueSetId));
   }
 
-  private String copySingleItem(ImmutableForm.Builder formBuilder, Form form, Map<String, String> idRenameMap, FormItem sourceItem) {
+  private String copySingleItem(Form.Builder formBuilder, Form form, Map<String, String> idRenameMap, FormItem sourceItem) {
     Map<String, FormItem> formData = form.getData();
     String nextID = findNextID(formData, sourceItem.getId());
     ImmutableFormItem.Builder builder = ImmutableFormItem.builder()
@@ -113,7 +113,7 @@ public class DialobFormItemCopier implements FormItemCopier {
 
   @Override
   public Pair<Form, List<FormValidationError>> copyFormItem(Form form, String idToCopy) {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().from(form);
+    Form.Builder formBuilder = new Form.Builder().from(form);
     List<FormValidationError> errors = new ArrayList<>();
     Map<String, FormItem> formData = form.getData();
     FormItem sourceItem = formData.get(idToCopy);
@@ -140,7 +140,7 @@ public class DialobFormItemCopier implements FormItemCopier {
     });
 
     // Update variable references within new branch
-    ImmutableForm build = formBuilder.build();
+    Form build = formBuilder.build();
     Map<String, FormItem> renamedItems = new HashMap<>(build.getData());
     idRenamerSingleItem(renamedItems, build, newId, idRenameMap);
     formBuilder.data(renamedItems);

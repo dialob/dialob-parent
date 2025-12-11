@@ -16,9 +16,7 @@
 package io.dialob.db.jdbc;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -48,7 +46,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   void saveAndLoadAndDeleteForm() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form öä").build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form öä").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
     assertNotNull(form2.getId());
     assertNotNull(form2.getRev());
@@ -64,10 +62,10 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   void saveAndUpdate() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
-    form2 = ImmutableForm.builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
+    form2 = new Form.Builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
       .id("questionnaire")
       .type("questionnaire")
       .build()).build();
@@ -81,20 +79,20 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   void saveAndConflict() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
     Form form3 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form2);
-    Form form4 = ImmutableForm.builder().from(form3).rev(form2.getRev()).build();
+    Form form4 = new Form.Builder().from(form3).rev(form2.getRev()).build();
     Assertions.assertThrows(DocumentConflictException.class, () -> getJdbcFormDatabase().save(getCurrentTenant().getId(), form4));
   }
 
 
   @Test
   void saveAndFetchList() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
-    form2 = ImmutableForm.builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
+    form2 = new Form.Builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
       .id("questionnaire")
       .type("questionnaire")
       .build()).build();
@@ -112,7 +110,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
   @Test
   void saveAndFetchListTenantScoped() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
         .id("questionnaire")
         .type("questionnaire")
@@ -120,17 +118,17 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
       .build();
 
     setActiveTenant("t1");
-    getJdbcFormDatabase().save(getCurrentTenant().getId(), ImmutableForm.builder().from(form)
+    getJdbcFormDatabase().save(getCurrentTenant().getId(), new Form.Builder().from(form)
       .id(null).build());
-    getJdbcFormDatabase().save(getCurrentTenant().getId(), ImmutableForm.builder().from(form)
+    getJdbcFormDatabase().save(getCurrentTenant().getId(), new Form.Builder().from(form)
       .id(null).build());
 
     setActiveTenant("t2");
-    getJdbcFormDatabase().save(getCurrentTenant().getId(), ImmutableForm.builder().from(form)
+    getJdbcFormDatabase().save(getCurrentTenant().getId(), new Form.Builder().from(form)
       .id(null).build());
-    getJdbcFormDatabase().save(getCurrentTenant().getId(), ImmutableForm.builder().from(form)
+    getJdbcFormDatabase().save(getCurrentTenant().getId(), new Form.Builder().from(form)
       .id(null).build());
-    getJdbcFormDatabase().save(getCurrentTenant().getId(), ImmutableForm.builder().from(form)
+    getJdbcFormDatabase().save(getCurrentTenant().getId(), new Form.Builder().from(form)
       .id(null).build());
 
 
@@ -150,7 +148,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
   @Test
   void saveAndUpdateQuestionnaireWithoutTenant() {
     setActiveTenant(ResysSecurityConstants.DEFAULT_TENANT.id());
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
         .id("questionnaire")
         .type("questionnaire")
@@ -172,7 +170,7 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
   @Test
   void saveAndUpdateQuestionnaireWithTenant() {
     setActiveTenant("12341234-1234-1234-1234-123412341234");
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build())
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").build())
       .putData("questionnaire", ImmutableFormItem.builder()
         .id("questionnaire")
         .type("questionnaire")
@@ -202,10 +200,10 @@ public abstract class AbstractCRUDDatabaseTest implements JdbcBackendTest {
 
     setActiveTenant("12341234-1234-1234-1234-123412341236");
 
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").build()).build();
     Form form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
-    form2 = ImmutableForm.builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
+    form2 = new Form.Builder().from(form2).putData("questionnaire", ImmutableFormItem.builder()
       .id("questionnaire")
       .type("questionnaire")
       .build()).build();

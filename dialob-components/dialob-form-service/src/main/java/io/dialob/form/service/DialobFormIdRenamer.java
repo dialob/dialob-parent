@@ -128,7 +128,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
       return Pair.of(form, errors);
     }
     UnaryOperator<String> idRenamer = compiler.createIdRenamer(oldId, newId);
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().from(form);
+    Form.Builder formBuilder = new Form.Builder().from(form);
     formBuilder.data(form.getData().values().stream()
       .map(formItem -> renameItemAndAttributes(formItem, idRenamer, oldId, newId))
       .collect(toMap(FormItem::getId, item -> item)));

@@ -173,7 +173,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
         @NonNull
         @Override
         public Form.Metadata getValue() {
-          return ImmutableFormMetadata.builder().label("l1").build();
+          return new Form.Metadata.Builder().label("l1").build();
         }
       });
       consumer.accept(new FormDatabase.FormMetadataRow() {
@@ -186,7 +186,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
         @NonNull
         @Override
         public Form.Metadata getValue() {
-          return ImmutableFormMetadata.builder().label("l2").build();
+          return new Form.Metadata.Builder().label("l2").build();
         }
       });
       return null;
@@ -204,10 +204,10 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   void shouldLookupFormFromRepository() throws Exception {
 
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .id("form-id")
       .rev("2")
-      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
+      .metadata(new Form.Metadata.Builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "form-id", null)).thenReturn(formDocument);
@@ -248,14 +248,14 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   void shouldTriggerEventOnFormUpdate() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
-      ImmutableForm arg = (ImmutableForm) invocation.getArguments()[1];
+      Form arg = (Form) invocation.getArguments()[1];
       return arg.withRev("1");
     });
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .id("new-form")
       .rev("old")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
+      .metadata(new Form.Metadata.Builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     // We need to return cfrs token on update action
@@ -285,7 +285,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Disabled// TODO
   void shouldReturnErrorWhenRootITemIsMissing() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
-      ImmutableForm arg = (ImmutableForm) invocation.getArguments()[0];
+      Form arg = (Form) invocation.getArguments()[0];
       return arg.withRev("1");
     });
     // We need to return cfrs token on update action
@@ -314,10 +314,10 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   void shouldRejectUpdateByNameWhenNotForced() throws Exception {
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
       .thenReturn(Optional.of(ImmutableFormTag.builder().formName("form-name").formId("123-123").created(new Date()).build()));
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
+      .metadata(new Form.Metadata.Builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
       .build();
 
     // We need to return cfrs token on update action
@@ -336,18 +336,18 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   void shouldAcceptUpdateByNameWhenForced() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
 
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .name("form-name")
       .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
+      .metadata(new Form.Metadata.Builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
       .build();
 
-    when(formDatabase.findOne(tenantId, "123-123")).thenReturn(ImmutableForm.builder().from(formDocument).id("123-123").rev("321").build());
+    when(formDatabase.findOne(tenantId, "123-123")).thenReturn(new Form.Builder().from(formDocument).id("123-123").rev("321").build());
 
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
       .thenReturn(Optional.of(ImmutableFormTag.builder().formName("form-name").formId("123-123").created(new Date()).build()));
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
-      ImmutableForm arg = (ImmutableForm) invocation.getArguments()[1];
+      Form arg = (Form) invocation.getArguments()[1];
       return arg.withRev("124");
     });
 

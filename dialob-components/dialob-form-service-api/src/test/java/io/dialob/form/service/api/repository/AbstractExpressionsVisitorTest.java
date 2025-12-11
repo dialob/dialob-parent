@@ -16,8 +16,6 @@
 package io.dialob.form.service.api.repository;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +23,7 @@ class AbstractExpressionsVisitorTest {
 
   @Test
   void emptyDocumentShouldNotHaveExpressions() {
-    Form document = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
+    Form document = new Form.Builder().metadata(new Form.Metadata.Builder().label("test").build()).build();
     VisitableForm.makeVisitableForm(document).accept(new AbstractExpressionsVisitor() {
       @Override
       protected void expression(String id, String classifier, String expression) {

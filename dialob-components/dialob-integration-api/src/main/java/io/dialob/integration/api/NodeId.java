@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableNodeId.class)
-@JsonDeserialize(as = ImmutableNodeId.class)
+@JsonDeserialize(builder = ImmutableNodeId.Builder.class)
 public interface NodeId extends Serializable {
 
   String getId();

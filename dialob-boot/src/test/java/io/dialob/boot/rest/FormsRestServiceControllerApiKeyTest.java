@@ -17,7 +17,6 @@ package io.dialob.boot.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.boot.Application;
 import io.dialob.boot.security.SecurityConfiguration;
 import io.dialob.boot.settings.AdminApplicationSettings;
@@ -198,7 +197,7 @@ class FormsRestServiceControllerApiKeyTest {
         @NonNull
         @Override
         public Form.Metadata getValue() {
-          return ImmutableFormMetadata.builder().label("l1").build();
+          return new Form.Metadata.Builder().label("l1").build();
         }
       });
       consumer.accept(new FormDatabase.FormMetadataRow() {
@@ -211,7 +210,7 @@ class FormsRestServiceControllerApiKeyTest {
         @NonNull
         @Override
         public Form.Metadata getValue() {
-          return ImmutableFormMetadata.builder().label("l2").build();
+          return new Form.Metadata.Builder().label("l2").build();
         }
       });
       return null;

@@ -15,10 +15,9 @@
  */
 package io.dialob.session.boot.websocket;
 
+import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -76,12 +75,12 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
 
   @Test
   void updateFormOnline() throws Exception {
-    ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
-    Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
+    Form.Builder updateFormOnlineBuilder = new Form.Builder();
+    Consumer<Form.Builder> initializer = formBuilder -> {
       addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
       addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en", "Ryhma").addItems("q1"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en", "Kysymys"));
-      formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+      formBuilder.metadata(new Form.Metadata.Builder().label("Kysely").build());
     };
     initializer.accept(updateFormOnlineBuilder);
     updateFormOnlineBuilder
@@ -89,7 +88,7 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
       .rev("1")
       .build();
 
-    final ImmutableForm form1 = updateFormOnlineBuilder.build();
+    final Form form1 = updateFormOnlineBuilder.build();
     shouldFindForm(form1);
 
     createAndOpenSession("updateFormOnline")
@@ -110,7 +109,7 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
         assertThat(actions.getActions()).isNullOrEmpty();
 
         // Update Form and notify about it
-        ImmutableForm.Builder updateFormOnlineBuilder2 = ImmutableForm.builder()
+        Form.Builder updateFormOnlineBuilder2 = new Form.Builder()
           .id("updateFormOnline")
           .rev("2");
         initializer.accept(updateFormOnlineBuilder2);

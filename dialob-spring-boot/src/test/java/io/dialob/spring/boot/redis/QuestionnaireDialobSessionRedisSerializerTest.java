@@ -15,8 +15,7 @@
  */
 package io.dialob.spring.boot.redis;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.Form;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -139,9 +138,9 @@ class QuestionnaireDialobSessionRedisSerializerTest {
         .build()
         .build());
 
-    final ImmutableForm form = ImmutableForm.builder()
+    final Form form = new Form.Builder()
       .id("test-form")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("test form")
         .build())
       .build();

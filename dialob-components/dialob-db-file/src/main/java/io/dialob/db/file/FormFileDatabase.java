@@ -18,7 +18,6 @@ package io.dialob.db.file;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.ImmutableFormMetadataRow;
 
@@ -42,12 +41,12 @@ public class FormFileDatabase extends AbstractFileDatabase<Form> implements Form
   @NonNull
   @Override
   protected Form updateDocumentId(@NonNull Form form, String id) {
-    return ImmutableForm.builder().from(form).id(id).build();
+    return new Form.Builder().from(form).id(id).build();
   }
 
   @NonNull
   @Override
   protected Form updateDocumentRev(@NonNull Form form, String rev) {
-    return ImmutableForm.builder().from(form).rev(rev).build();
+    return new Form.Builder().from(form).rev(rev).build();
   }
 }

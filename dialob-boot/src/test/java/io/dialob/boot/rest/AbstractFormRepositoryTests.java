@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionsFactory;
@@ -194,14 +193,14 @@ abstract class AbstractFormRepositoryTests {
     return questionnaire;
   }
 
-  FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  FormItem addQuestionnaire(Form.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
     return addItem(formBuilder, Constants.QUESTIONNAIRE, builder -> {
       builder.type(Constants.QUESTIONNAIRE);
       builderConsumer.accept(builder);
     });
   }
 
-  FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  FormItem addItem(Form.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
     ImmutableFormItem.Builder builder = ImmutableFormItem.builder().id(itemId);
     builderConsumer.accept(builder);
     FormItem formItemBean = builder.build();
@@ -209,7 +208,7 @@ abstract class AbstractFormRepositoryTests {
     return formItemBean;
   }
 
-  FormItem addGroup(ImmutableForm.Builder formBuilder, String groupId, Consumer<ImmutableFormItem.Builder> builderConsumer, String... items) {
+  FormItem addGroup(Form.Builder formBuilder, String groupId, Consumer<ImmutableFormItem.Builder> builderConsumer, String... items) {
     return addItem(formBuilder, groupId, builder -> {
       builderConsumer.accept(builder.type("group")
         .items(asList(items)));

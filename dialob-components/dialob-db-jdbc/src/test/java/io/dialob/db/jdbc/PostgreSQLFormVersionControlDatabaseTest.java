@@ -16,9 +16,7 @@
 package io.dialob.db.jdbc;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.form.service.api.FormDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Tag;
@@ -41,14 +39,14 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
 
     setActiveTenant("12341234-1234-1234-1234-123412341236");
 
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     form = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
-    Form form2 = ImmutableForm.builder().from(form).putData("questionnaire", ImmutableFormItem.builder()
+    Form form2 = new Form.Builder().from(form).putData("questionnaire", ImmutableFormItem.builder()
       .id("questionnaire")
       .type("questionnaire")
       .build())
-      .metadata(ImmutableFormMetadata.builder().label("test form 2").putAdditionalProperties("extra",1).build())
+      .metadata(new Form.Metadata.Builder().label("test form 2").putAdditionalProperties("extra",1).build())
       .id(null)
       .rev(null)
       .build();
@@ -56,19 +54,19 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
     form2 = getJdbcFormDatabase().save(getCurrentTenant().getId(), form2);
 
     List<FormDatabase.FormMetadataRow> rows = new ArrayList<>();
-    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form 2").build(), rows::add);
+    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", new Form.Metadata.Builder().label("test form 2").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form2.getId(), rows.getFirst().getId());
     rows.clear();
 
-    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().label("test form").build(), rows::add);
+    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", new Form.Metadata.Builder().label("test form").build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form.getId(), rows.getFirst().getId());
     assertEquals(Set.of("label1", "label2"), rows.getFirst().getValue().getLabels());
     rows.clear();
 
 
-    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", ImmutableFormMetadata.builder().putAdditionalProperties("extra",1).build(), rows::add);
+    getJdbcFormDatabase().findAllMetadata("12341234-1234-1234-1234-123412341236", new Form.Metadata.Builder().putAdditionalProperties("extra",1).build(), rows::add);
     assertEquals(1, rows.size());
     assertEquals(form2.getId(), rows.getFirst().getId());
     rows.clear();

@@ -17,8 +17,6 @@ package io.dialob.form.service.api.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -53,7 +51,7 @@ class FormMetadataTest {
     assertEquals(2, formDocument.getMetadata().getLabels().size());
     assertTrue(formDocument.getMetadata().getLabels().contains("abc"));
     assertTrue(formDocument.getMetadata().getLabels().contains("123"));
-    formDocument = ImmutableForm.builder().from(formDocument).metadata(ImmutableFormMetadata.builder().from(formDocument.getMetadata()).addLabels("ggg").build()).build();
+    formDocument = new Form.Builder().from(formDocument).metadata(new Form.Metadata.Builder().from(formDocument.getMetadata()).addLabels("ggg").build()).build();
     assertEquals("{\"metadata\":{\"label\":\"test\",\"labels\":[\"abc\",\"123\",\"ggg\"]}}", objectMapper.writeValueAsString(formDocument));
   }
 

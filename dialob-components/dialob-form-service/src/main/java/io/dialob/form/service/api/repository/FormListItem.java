@@ -18,7 +18,6 @@ package io.dialob.form.service.api.repository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableFormMetadata;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,7 +45,7 @@ public class FormListItem implements Serializable {
 
   private void ensureMetadata() {
     if (this.metadata == null) {
-      this.metadata = ImmutableFormMetadata.builder().label("New Form").build();
+      this.metadata = new Form.Metadata.Builder().label("New Form").build();
     }
   }
 

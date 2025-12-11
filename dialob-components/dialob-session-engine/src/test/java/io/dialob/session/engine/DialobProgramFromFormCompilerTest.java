@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine;
 
-import io.dialob.api.form.ImmutableForm;
+import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.api.form.ImmutableValidation;
 import io.dialob.api.proto.Action;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -47,7 +46,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -73,7 +72,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
         .id("n1")
         .type("note")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .putAdditionalProperties("answersRequiredByDefault", true)
         .build())
@@ -112,7 +111,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -139,7 +138,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
         .required("false")
         .type("text")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .putAdditionalProperties("answersRequiredByDefault", true)
         .build())
@@ -175,7 +174,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -198,7 +197,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
         .addValidations(ImmutableValidation.builder().rule("answer is null").message(Map.of("fi","null")).build())
         .type("text")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .build())
       .build());
@@ -248,7 +247,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -271,7 +270,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
         .addValidations(ImmutableValidation.builder().rule("answer is null").message(Map.of("fi","fi", "en","en")).build())
         .type("text")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .build())
       .build());
@@ -299,7 +298,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -326,7 +325,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
         .id("q1")
         .type("text")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .putAdditionalProperties("answersRequiredByDefault", true)
         .build())
@@ -361,7 +360,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(ImmutableForm.builder()
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", ImmutableFormItem.builder()
@@ -411,7 +410,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
         .id("q311")
         .type("text")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .putAdditionalProperties("answersRequiredByDefault", true)
         .build())

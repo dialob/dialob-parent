@@ -15,8 +15,7 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.Form;
 import io.dialob.api.form.ImmutableValidation;
 import io.dialob.api.proto.Action;
 import io.dialob.api.questionnaire.ImmutableAnswer;
@@ -79,13 +78,13 @@ class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
 
   @Test
   void shouldAddAndRemoveRows() throws Exception {
-    ImmutableForm.Builder formBuilder1 = ImmutableForm.builder()
+    Form.Builder formBuilder1 = new Form.Builder()
       .id("testGetQuestionnaires-123")
       .rev("1")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
 
-    Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
+    Consumer<Form.Builder> initializer = formBuilder -> {
       addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("p1"));
       addItem(formBuilder, "p1", builder -> builder.type("group").putLabel("en","Sivu").addItems("g1"));
       addItem(formBuilder, "g1", builder -> builder.type("rowgroup").putLabel("en","Ryhma").addItems("q1", "q2", "q3"));
@@ -94,10 +93,10 @@ class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
         ImmutableValidation.builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
       ));
       addItem(formBuilder, "q3", builder -> builder.type("text").putLabel("en","Kysymys 3").activeWhen("q2 = \"correct answer\""));
-      formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+      formBuilder.metadata(new Form.Metadata.Builder().label("Kysely").build());
     };
     initializer.accept(formBuilder1);
-    final ImmutableForm form = formBuilder1.build();
+    final Form form = formBuilder1.build();
     shouldFindForm(form);
 
     Questionnaire questionnaire = ImmutableQuestionnaire.builder()

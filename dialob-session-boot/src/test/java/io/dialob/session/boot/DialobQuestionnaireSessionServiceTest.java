@@ -1260,9 +1260,9 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testPublishedVariables() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
       .id("test")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("test")
         .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -1336,9 +1336,9 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testReducer() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -1423,9 +1423,9 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testRowCount() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -1515,9 +1515,9 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testMultiChoiceCount() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -1625,9 +1625,9 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testMultiChoiceInvalidAnswer() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -1769,9 +1769,9 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void cannotCompleteWhenQuestionnaireHasMissingAnswers() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -1932,9 +1932,9 @@ class DialobQuestionnaireSessionServiceTest {
   @Test
   @Tag("github-29")
   void ghIssue29ConditionalsOnRowGroupActions() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
         .putData("questionnaire", ImmutableFormItem.builder()
@@ -2089,9 +2089,9 @@ class DialobQuestionnaireSessionServiceTest {
       return null;
     }).when(functionRegistry).invokeFunction(any(), any(), any());
 
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
       .id("test")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("test")
         .build())
       .putData("questionnaire", ImmutableFormItem.builder().type("questionnaire").id("questionnaire").addItems("group1").build())

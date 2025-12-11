@@ -25,7 +25,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableFormTaggedEvent.class)
-@JsonDeserialize(as = ImmutableFormTaggedEvent.class)
+@JsonDeserialize(builder = ImmutableFormTaggedEvent.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface FormTaggedEvent extends FormEvent, DistributedEvent {
 

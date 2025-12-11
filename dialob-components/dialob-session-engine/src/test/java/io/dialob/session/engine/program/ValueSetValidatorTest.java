@@ -27,9 +27,9 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class ValueSetValidatorTest {
   private final ValueSetValidator valueSetValidator = new ValueSetValidator();
-  private final Form baseForm = ImmutableForm.builder()
+  private final Form baseForm = new Form.Builder()
       .name("test")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .addLanguages("en")
         .label("TestForm")
         .build()
@@ -37,7 +37,7 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldWarnOnEmptySet() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
         ImmutableFormValueSet.builder()
@@ -55,7 +55,7 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldErrorOnDuplicateKeys() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
         ImmutableFormValueSet.builder()
@@ -87,7 +87,7 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldPassValidSet() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
         ImmutableFormValueSet.builder()
@@ -115,7 +115,7 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldErrorOnEmptyKey() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
         ImmutableFormValueSet.builder()

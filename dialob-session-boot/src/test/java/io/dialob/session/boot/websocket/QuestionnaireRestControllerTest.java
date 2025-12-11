@@ -73,8 +73,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
   @Test
   void testGetQuestionnaires() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("123").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("123").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
 
 
@@ -105,8 +105,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   void testNextPage() throws Exception {
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("testNextPage").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("testNextPage").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1", "g2"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1"));
@@ -179,8 +179,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
   @Test
   void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldInterpolateValueSetEntryyx").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("selection1","note1"));
@@ -245,8 +245,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   @Tag("github-107")
   void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
 
@@ -332,8 +332,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   void shouldInterpolateValueSetEntryy() throws Exception {
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryy").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldInterpolateValueSetEntryy").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("selection1","note1"));
@@ -398,8 +398,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   void shouldHandleBigDecimalVariables() throws Exception {
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldHandleBigDecimalVariables").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("bigD").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldHandleBigDecimalVariables").rev("321")
+      .metadata(new Form.Metadata.Builder().label("bigD").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("value1","note1"));

@@ -247,7 +247,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     assertTenantContextDefined(tenantId);
     Form form = getFormDatabase().findOne(tenantId, formId);
     // bypass save validation
-    form = formDatabase.save(tenantId, ImmutableForm.builder().from(form).id(null).rev(null).build());
+    form = formDatabase.save(tenantId, new Form.Builder().from(form).id(null).rev(null).build());
     return form.getId();
   }
 
@@ -495,7 +495,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
           String label = rs.getString(5);
           String labels = rs.getString(6);
 
-          ImmutableFormMetadata.Builder metadataBuilder = ImmutableFormMetadata.builder()
+          Form.Metadata.Builder metadataBuilder = new Form.Metadata.Builder()
             .tenantId(tId)
             .created(new Date(created.getTime()))
             .lastSaved(new Date(updated.getTime()))

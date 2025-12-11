@@ -26,7 +26,7 @@ import java.util.Date;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableErrorsResponse.class)
-@JsonDeserialize(as = ImmutableErrorsResponse.class)
+@JsonDeserialize(builder = ImmutableErrorsResponse.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface ErrorsResponse extends Serializable {
 

@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableForm;
 import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.ImmutableQuestionnaire;
@@ -180,14 +179,14 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
     return questionnaire;
   }
 
-  protected FormItem addQuestionnaire(ImmutableForm.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  protected FormItem addQuestionnaire(Form.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
     return addItem(formBuilder, "questionnaire", builder -> {
       builder.type("questionnaire");
       builderConsumer.accept(builder);
     });
   }
 
-  protected FormItem addItem(ImmutableForm.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  protected FormItem addItem(Form.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
     ImmutableFormItem.Builder builder = ImmutableFormItem.builder().id(itemId);
     builderConsumer.accept(builder);
     FormItem formItemBean = builder.build();

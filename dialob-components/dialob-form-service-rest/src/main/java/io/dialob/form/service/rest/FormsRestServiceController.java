@@ -153,7 +153,7 @@ public class FormsRestServiceController implements FormsRestService {
   @Override
   public ResponseEntity<Form> postForm(Form formDocument) {
     Form form = updateMetadata(formDocument);
-    form = ImmutableForm.builder().from(form).id(null).rev(null).build();
+    form = new Form.Builder().from(form).id(null).rev(null).build();
     Form savedForm = formDatabase.save(currentTenant.getId(), form);
     URI uri = ServletUriComponentsBuilder
       .fromCurrentRequest().path("/{id}")
@@ -166,7 +166,7 @@ public class FormsRestServiceController implements FormsRestService {
     try {
       Form formDocument = csvToFormParser.parseCsv(formCsv);
       Form form = updateMetadata(formDocument);
-      form = ImmutableForm.builder().from(form).id(null).rev(null).build();
+      form = new Form.Builder().from(form).id(null).rev(null).build();
       Form savedForm = formDatabase.save(currentTenant.getId(), form);
 
       URI uri = ServletUriComponentsBuilder
@@ -217,7 +217,7 @@ public class FormsRestServiceController implements FormsRestService {
     // form._id and request must match
     if (forced) {
       Form existingForm = formDatabase.findOne(currentTenant.getId(), formId);
-      form = ImmutableForm.builder()
+      form = new Form.Builder()
         .from(form)
         .id(formId)
         .rev(existingForm.getRev())
@@ -242,7 +242,7 @@ public class FormsRestServiceController implements FormsRestService {
 
     Form updatedForm;
     if (!dryRun) {
-      updatedForm = formDatabase.save(currentTenant.getId(), ImmutableForm.builder().from(form).metadata(ImmutableFormMetadata.builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
+      updatedForm = formDatabase.save(currentTenant.getId(), new Form.Builder().from(form).metadata(new Form.Metadata.Builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
       eventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder().source(getNodeId().getId()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
     } else {
       updatedForm = form;
@@ -264,7 +264,7 @@ public class FormsRestServiceController implements FormsRestService {
 
   private Form updateMetadata(Form form) {
     Date now = Date.from(Instant.now());
-    final ImmutableFormMetadata.Builder builder = ImmutableFormMetadata.builder().from(form.getMetadata());
+    final Form.Metadata.Builder builder = new Form.Metadata.Builder().from(form.getMetadata());
     builder.lastSaved(now);
     builder.tenantId(currentTenant.getId());
     String userId = currentUserProvider.getUserId();
@@ -273,7 +273,7 @@ public class FormsRestServiceController implements FormsRestService {
       builder.created(now);
       builder.creator(userId);
     }
-    return ImmutableForm.builder().from(form).metadata(builder.build()).build();
+    return new Form.Builder().from(form).metadata(builder.build()).build();
   }
 
   @Override
