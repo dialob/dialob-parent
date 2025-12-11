@@ -15,17 +15,15 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
-import org.immutables.value.Value;
-
 import java.io.Serializable;
 
-@Value.Immutable
-public interface Pair<L,R> extends Serializable {
+public record Pair<L,R>(
+  L left,
+  R right
+) implements Serializable {
 
-  @Value.Parameter
-  L getLeft();
-
-  @Value.Parameter
-  R getRight();
+  public static <L,R> Pair<L,R> of(L left, R right) {
+    return new Pair<>(left, right);
+  }
 
 }

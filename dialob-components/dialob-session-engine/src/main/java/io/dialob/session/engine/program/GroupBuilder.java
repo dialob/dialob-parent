@@ -211,18 +211,18 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
     builder = switch (type) {
       case ROOT -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
-          .addItems(ImmutablePair.of(Operators.not(ImmutableIsOnFirstPage.builder().build()), Action.Type.PREVIOUS))
-          .addItems(ImmutablePair.of(
+          .addItems(Pair.of(Operators.not(ImmutableIsOnFirstPage.builder().build()), Action.Type.PREVIOUS))
+          .addItems(Pair.of(
             Operators.and(Operators.not(ImmutableIsOnLastPage.builder().build()),
               Operators.not(ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build()))
             , Action.Type.NEXT))
-          .addItems(ImmutablePair.of(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()), Action.Type.COMPLETE))
-          .addItems(ImmutablePair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
+          .addItems(Pair.of(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()), Action.Type.COMPLETE))
+          .addItems(Pair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
         ).build());
       // Disable page when it's not active
       case PAGE -> builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
       case ROWGROUP -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
-          .addItems(ImmutablePair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
+          .addItems(Pair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
           ).build())
           .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
       // TODO hoisting page??
@@ -243,7 +243,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
       case ROOT -> builder
-          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> ImmutablePair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
+          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> Pair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
           .isInvalidAnswersExpression(ImmutableIsAnyInvalidAnswersOperator.builder().build());
     });
 
@@ -258,7 +258,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         .valueType(null)
         .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ImmutableItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).toList()).build())
         .allowedActionsExpression(ImmutableConditionalListOperator.builder()
-            .addItems(ImmutablePair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
+            .addItems(Pair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())
         .build()
       );

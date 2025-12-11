@@ -34,7 +34,7 @@ public interface ConditionalListOperator<T> extends Expression {
 
   @Override
   default Object eval(@NonNull EvalContext evalContext) {
-    return getItems().stream().filter(item -> (Boolean) item.getLeft().eval(evalContext)).map(Pair::getRight).toList();
+    return getItems().stream().filter(item -> (Boolean) item.left().eval(evalContext)).map(Pair::right).toList();
   }
 
   @NonNull
@@ -47,7 +47,7 @@ public interface ConditionalListOperator<T> extends Expression {
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
     return getItems().stream()
-      .map(Pair::getLeft)
+      .map(Pair::left)
       .map(Expression::getEvalRequiredConditions)
       .flatMap(Collection::stream)
       .collect(Collectors.toUnmodifiableSet());
