@@ -15,9 +15,7 @@
  */
 package io.dialob.api.form;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
@@ -33,7 +31,7 @@ import java.util.Map;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableFormItem.class)
-@JsonDeserialize(as = ImmutableFormItem.class)
+@JsonDeserialize(builder = ImmutableFormItem.Builder.class)
 @Gson.TypeAdapters
 @JsonIgnoreProperties({"style", "options"})
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
@@ -50,24 +48,29 @@ public interface FormItem extends Serializable {
   String getView();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Map<String, String> getLabel();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Map<String, String> getDescription();
 
   @Nullable
   String getRequired();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Map<String, String> getRequiredErrorText();
 
   @Nullable
   Boolean getReadOnly();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<String> getItems();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<String> getClassName();
 
   @Nullable
@@ -80,6 +83,7 @@ public interface FormItem extends Serializable {
   String getCanRemoveRowWhen();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<Validation> getValidations();
 
   @Nullable

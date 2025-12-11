@@ -23,7 +23,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableResponse.class)
-@JsonDeserialize(as = ImmutableResponse.class)
+@JsonDeserialize(builder = ImmutableResponse.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)

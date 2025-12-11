@@ -15,9 +15,7 @@
  */
 package io.dialob.api.questionnaire;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
@@ -41,7 +39,7 @@ import java.util.Set;
 @Value.Modifiable
 @Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
 @JsonSerialize(as = ImmutableQuestionnaire.class)
-@JsonDeserialize(as = ImmutableQuestionnaire.class)
+@JsonDeserialize(builder = ImmutableQuestionnaire.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface Questionnaire extends WithValidation<Questionnaire>, Serializable {
@@ -59,24 +57,30 @@ public interface Questionnaire extends WithValidation<Questionnaire>, Serializab
   String getRev();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<Answer> getAnswers();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<ContextValue> getContext();
 
   @Nullable
   String getActiveItem();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<Error> getErrors();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<VariableValue> getVariableValues();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<ValueSet> getValueSets();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Set<String> getActiveItems();
 
   @Valid
@@ -87,7 +91,7 @@ public interface Questionnaire extends WithValidation<Questionnaire>, Serializab
   @Value.Modifiable
   @Value.Style(typeImmutable = "ImmutableQuestionnaire*", typeModifiable = "ModifiableQuestionnaire*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
   @JsonSerialize(as = ImmutableQuestionnaireMetadata.class)
-  @JsonDeserialize(as = ImmutableQuestionnaireMetadata.class)
+  @JsonDeserialize(builder = ImmutableQuestionnaireMetadata.Builder.class)
   @Gson.TypeAdapters
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   abstract class Metadata implements Serializable {

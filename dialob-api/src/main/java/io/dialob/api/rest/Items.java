@@ -16,6 +16,8 @@
 package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +28,7 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableItems.class)
-@JsonDeserialize(as = ImmutableItems.class)
+@JsonDeserialize(builder = ImmutableItems.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(jdkOnly = true)
@@ -36,9 +38,11 @@ public interface Items {
   String getActiveItem();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<String> getItems();
 
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<String> getAvailableItems();
 
 }

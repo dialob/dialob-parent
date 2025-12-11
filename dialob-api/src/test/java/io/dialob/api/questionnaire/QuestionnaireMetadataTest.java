@@ -16,6 +16,7 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,4 +36,23 @@ class QuestionnaireMetadataTest {
     Questionnaire.Metadata metadata = ImmutableQuestionnaireMetadata.builder().formId("123").putAdditionalProperties("extraProp","extraValue").build();
     assertEquals("{\"formId\":\"123\",\"status\":\"NEW\",\"extraProp\":\"extraValue\"}", objectMapper.writeValueAsString(metadata));
   }
+  @Test
+  public void deserializeQuestionnaireWithAdditionalPropertiesElement() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    Questionnaire questionnaire = mapper.readValue("{\n" +
+      "  \"metadata\": {\n" +
+      "    \"formId\": \"sample-form\",\n" +
+      "    \"title\": \"Sample Form\",\n" +
+      "    \"additionalProperties\": {\n" +
+      "      \"customField1\": \"customValue1\"\n" +
+      "    },\n" +
+      "    \"customField3\": \"customValue3\"\n" +
+      "  }\n" +
+      "}\n", Questionnaire.class);
+    Assertions.assertEquals("customValue1",questionnaire.getMetadata().getAdditionalProperties().get("customField1"));
+    Assertions.assertEquals("customValue3",questionnaire.getMetadata().getAdditionalProperties().get("customField3"));
+    Assertions.assertNull(questionnaire.getMetadata().getAdditionalProperties().get("additionalProperties"));
+    Assertions.assertEquals("{\"metadata\":{\"formId\":\"sample-form\",\"status\":\"NEW\",\"customField1\":\"customValue1\",\"customField3\":\"customValue3\"}}", mapper.writeValueAsString(questionnaire));
+  }
+
 }

@@ -30,7 +30,7 @@ import java.util.Set;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableActionItem.class)
-@JsonDeserialize(as = ImmutableActionItem.class)
+@JsonDeserialize(builder = ImmutableActionItem.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(jdkOnly = true)

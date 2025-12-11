@@ -26,7 +26,7 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableFormPutResponse.class)
-@JsonDeserialize(as = ImmutableFormPutResponse.class)
+@JsonDeserialize(builder = ImmutableFormPutResponse.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)

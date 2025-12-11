@@ -32,7 +32,7 @@ import java.util.Map;
 @Value.Style(jdkOnly = true)
 @Value.Modifiable
 @JsonSerialize(as = ImmutableFormValueSetEntry.class)
-@JsonDeserialize(as = ImmutableFormValueSetEntry.class)
+@JsonDeserialize(builder = ImmutableFormValueSetEntry.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_NULL)
 @Gson.TypeAdapters(emptyAsNulls = true)
 public interface FormValueSetEntry extends Serializable {

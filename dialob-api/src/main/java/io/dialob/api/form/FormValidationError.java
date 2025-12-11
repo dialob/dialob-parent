@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableFormValidationError.class)
-@JsonDeserialize(as = ImmutableFormValidationError.class)
+@JsonDeserialize(builder = ImmutableFormValidationError.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)

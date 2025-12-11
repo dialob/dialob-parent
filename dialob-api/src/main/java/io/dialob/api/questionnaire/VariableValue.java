@@ -28,7 +28,7 @@ import java.io.Serializable;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableVariableValue.class)
-@JsonDeserialize(as = ImmutableVariableValue.class)
+@JsonDeserialize(builder = ImmutableVariableValue.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Value.Style(allParameters = true, jdkOnly = true)

@@ -15,10 +15,7 @@
  */
 package io.dialob.api.form;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
@@ -50,7 +47,7 @@ import java.util.Set;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableForm.class)
-@JsonDeserialize(as = ImmutableForm.class)
+@JsonDeserialize(builder = ImmutableForm.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
@@ -86,6 +83,7 @@ public interface Form extends WithValidation<Form>, FormEntity {
 
   @Valid
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Map<String, FormItem> getData();
 
   @Valid
@@ -94,14 +92,17 @@ public interface Form extends WithValidation<Form>, FormEntity {
 
   @Valid
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<Variable> getVariables();
 
   @Valid
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Map<String, Form> getNamespaces();
 
   @Valid
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   List<FormValueSet> getValueSets();
 
   /**
@@ -109,13 +110,14 @@ public interface Form extends WithValidation<Form>, FormEntity {
    * @return error text for required fields, unless not defined per item
    */
   @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
   Map<String, String> getRequiredErrorText();
 
   @Value.Immutable
   @Value.Style(typeImmutable = "ImmutableForm*", typeModifiable = "ModifiableForm*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
   @Value.Modifiable
   @JsonSerialize(as = ImmutableFormMetadata.class)
-  @JsonDeserialize(as = ImmutableFormMetadata.class)
+  @JsonDeserialize(builder = ImmutableFormMetadata.Builder.class)
   @Gson.TypeAdapters(emptyAsNulls = true)
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
@@ -137,11 +139,13 @@ public interface Form extends WithValidation<Form>, FormEntity {
     @Nullable String getSavedBy();
 
     @NotNull
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     Set<String> getLabels();
 
     @Nullable String getDefaultSubmitUrl();
 
     @NotNull
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     Set<String> getLanguages();
 
     @JsonInclude

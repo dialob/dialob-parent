@@ -31,7 +31,7 @@ import java.util.Map;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableFormValueSet.class)
-@JsonDeserialize(as = ImmutableFormValueSet.class)
+@JsonDeserialize(builder = ImmutableFormValueSet.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
