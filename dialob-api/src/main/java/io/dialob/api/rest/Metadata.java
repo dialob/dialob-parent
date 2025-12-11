@@ -29,7 +29,7 @@ import java.util.Date;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableMetadata.class)
-@JsonDeserialize(as = ImmutableMetadata.class)
+@JsonDeserialize(builder = ImmutableMetadata.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL)
 @Value.Style(jdkOnly = true)

@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableIdAndRevision.class)
-@JsonDeserialize(as = ImmutableIdAndRevision.class)
+@JsonDeserialize(builder = ImmutableIdAndRevision.Builder.class)
 @Gson.TypeAdapters
 @Value.Style(jdkOnly = true)
 public interface IdAndRevision extends Serializable {

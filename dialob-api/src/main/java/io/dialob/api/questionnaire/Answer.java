@@ -28,7 +28,7 @@ import java.util.Date;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableAnswer.class)
-@JsonDeserialize(as = ImmutableAnswer.class)
+@JsonDeserialize(builder = ImmutableAnswer.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)

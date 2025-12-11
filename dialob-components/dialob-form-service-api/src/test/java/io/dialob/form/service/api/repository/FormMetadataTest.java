@@ -54,7 +54,7 @@ class FormMetadataTest {
     assertTrue(formDocument.getMetadata().getLabels().contains("abc"));
     assertTrue(formDocument.getMetadata().getLabels().contains("123"));
     formDocument = ImmutableForm.builder().from(formDocument).metadata(ImmutableFormMetadata.builder().from(formDocument.getMetadata()).addLabels("ggg").build()).build();
-    assertEquals("{\"metadata\":{\"label\":\"test\",\"labels\":[\"123\",\"abc\",\"ggg\"]}}", objectMapper.writeValueAsString(formDocument));
+    assertEquals("{\"metadata\":{\"label\":\"test\",\"labels\":[\"abc\",\"123\",\"ggg\"]}}", objectMapper.writeValueAsString(formDocument));
   }
 
   @Test

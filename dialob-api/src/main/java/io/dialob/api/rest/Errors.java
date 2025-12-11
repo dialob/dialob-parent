@@ -30,7 +30,7 @@ import java.util.List;
 @Value.Immutable
 @Value.Enclosing
 @JsonSerialize(as = ImmutableErrors.class)
-@JsonDeserialize(as = ImmutableErrors.class)
+@JsonDeserialize(builder = ImmutableErrors.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(jdkOnly = true)
@@ -67,7 +67,7 @@ public abstract class Errors implements Serializable {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Value.Immutable
   @JsonSerialize(as = ImmutableErrors.Error.class)
-  @JsonDeserialize(as = ImmutableErrors.Error.class)
+  @JsonDeserialize(builder = ImmutableErrors.Error.Builder.class)
   @Gson.TypeAdapters
   @Value.Style(jdkOnly = true)
   public interface Error extends Serializable {

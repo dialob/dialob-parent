@@ -27,7 +27,7 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableActions.class)
-@JsonDeserialize(as = ImmutableActions.class)
+@JsonDeserialize(builder = ImmutableActions.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(jdkOnly = true)
