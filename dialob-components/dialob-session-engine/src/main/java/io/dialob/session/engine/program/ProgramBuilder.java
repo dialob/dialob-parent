@@ -18,7 +18,6 @@ package io.dialob.session.engine.program;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.common.Constants;
 import io.dialob.rule.parser.ParserUtil;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
@@ -214,7 +213,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
       errors.clear();
       uncompiledExpressions.removeIf(compilableExpression ->
         compileExpression(compilableExpression.getItemId().getParent().map(IdUtils::toString).orElse(null), ddrlExpressionCompiler, compilableExpression, error ->
-          errors.add(ImmutableFormValidationError.builder()
+          errors.add(new FormValidationError.Builder()
            .itemId(IdUtils.toString(compilableExpression.getItemId()))
            .type(compilableExpression.getType())
            .startIndex(error.getSpan().getStartIndex())

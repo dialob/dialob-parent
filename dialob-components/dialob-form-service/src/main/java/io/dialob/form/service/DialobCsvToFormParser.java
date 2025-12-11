@@ -16,7 +16,8 @@
 package io.dialob.form.service;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
 import io.dialob.common.Constants;
 import io.dialob.form.service.api.validation.CsvToFormParser;
 import org.apache.commons.csv.CSVFormat;
@@ -124,7 +125,7 @@ public class DialobCsvToFormParser implements CsvToFormParser {
 
       // Create Group 1 item
       List<String> groupItemIds = new ArrayList<>();
-      ImmutableFormItem.Builder groupBuilder = createFormItem("group1", "group", null, groupItemIds, languages);
+      FormItem.Builder groupBuilder = createFormItem("group1", "group", null, groupItemIds, languages);
       formItems.put("group1", groupBuilder.build());
 
       // Process remaining rows into FormItems
@@ -145,7 +146,7 @@ public class DialobCsvToFormParser implements CsvToFormParser {
         Map<String, String> labels = extractLabels(record, languages);
 
         // Create FormItem
-        ImmutableFormItem.Builder itemBuilder = ImmutableFormItem.builder();
+        FormItem.Builder itemBuilder = new FormItem.Builder();
         itemBuilder.id(id).type(type).label(labels);
         if (type.equals("text")) {
           itemBuilder.view("text");
@@ -165,8 +166,8 @@ public class DialobCsvToFormParser implements CsvToFormParser {
       return record.stream().allMatch(value -> value == null || value.isBlank());
     }
 
-  private ImmutableFormItem.Builder createFormItem(String id, String type, String view, List<String> items, Set<String> languages) {
-    ImmutableFormItem.Builder builder = ImmutableFormItem.builder()
+  private FormItem.Builder createFormItem(String id, String type, String view, List<String> items, Set<String> languages) {
+    FormItem.Builder builder = new FormItem.Builder()
       .id(id)
       .type(type)
       .label(createEmptyLabels(languages));

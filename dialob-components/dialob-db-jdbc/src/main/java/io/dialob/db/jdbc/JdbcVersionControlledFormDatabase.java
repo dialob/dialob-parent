@@ -17,7 +17,8 @@ package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormTag;
 import io.dialob.db.spi.exceptions.*;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
@@ -77,7 +78,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
 
   protected final ObjectMapper objectMapper;
 
-  private final RowMapper<FormTag> formTagRowMapper = (rs, rowNum) -> (FormTag) ImmutableFormTag.builder()
+  private final RowMapper<FormTag> formTagRowMapper = (rs, rowNum) -> (FormTag) new FormTag.Builder()
     .formName(rs.getString(1))
     .name(rs.getString(2))
     .description(rs.getString(3))
@@ -379,7 +380,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       if (count > 1) {
         throw new DocumentConflictException("Form %s tag %s is not unique".formatted(updateTag.getFormName(), updateTag.getName()));
       }
-      return ImmutableFormTag.builder().from(updateTag).formId(tag.getFormId()).refName(tag.getName()).build();
+      return new FormTag.Builder().from(updateTag).formId(tag.getFormId()).refName(tag.getName()).build();
     }));
 
   }

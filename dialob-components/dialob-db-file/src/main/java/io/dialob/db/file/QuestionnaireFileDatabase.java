@@ -17,7 +17,6 @@ package io.dialob.db.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -43,13 +42,13 @@ public class QuestionnaireFileDatabase extends AbstractFileDatabase<Questionnair
   @NonNull
   @Override
   protected Questionnaire updateDocumentId(@NonNull Questionnaire document, String id) {
-    return ImmutableQuestionnaire.builder().from(document).id(id).build();
+    return new Questionnaire.Builder().from(document).id(id).build();
   }
 
   @NonNull
   @Override
   protected Questionnaire updateDocumentRev(@NonNull Questionnaire document, String rev) {
-    return ImmutableQuestionnaire.builder().from(document).rev(rev).build();
+    return new Questionnaire.Builder().from(document).rev(rev).build();
   }
 
 }

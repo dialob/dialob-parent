@@ -15,11 +15,12 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormValueSet;
+import io.dialob.api.form.FormValueSetEntry;
+import io.dialob.api.form.Variable;
 import io.dialob.api.proto.Action;
-import io.dialob.api.questionnaire.ImmutableAnswer;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -187,10 +188,10 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     addItem(formBuilder, "selection1", builder -> builder.type("multichoice").valueSetId("vs1"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your selection is {selection1}"));
 
-    FormValueSet formValueSetBean = ImmutableFormValueSet.builder().id("vs1").addEntries(
-      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selectino 1").build(),
-      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selectino 2").build(),
-      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selectino 3").build()
+    FormValueSet formValueSetBean = new FormValueSet.Builder().id("vs1").addEntries(
+      new FormValueSetEntry.Builder().id("e1").putLabel("en", "Selectino 1").build(),
+      new FormValueSetEntry.Builder().id("e2").putLabel("en", "Selectino 2").build(),
+      new FormValueSetEntry.Builder().id("e3").putLabel("en", "Selectino 3").build()
     ).build();
     formBuilder.addValueSets(formValueSetBean);
 
@@ -255,29 +256,29 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     addItem(formBuilder, "selection2", builder -> builder.type("list").valueSetId("vs2"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your first selection is {selection1} and second selection is {selection2}"));
 
-    formBuilder.addValueSets(ImmutableFormValueSet.builder().id("vs1").addEntries(
-      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selection 1.1").build(),
-      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selection 1.2").build(),
-      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selection 1.3").build()
+    formBuilder.addValueSets(new FormValueSet.Builder().id("vs1").addEntries(
+      new FormValueSetEntry.Builder().id("e1").putLabel("en", "Selection 1.1").build(),
+      new FormValueSetEntry.Builder().id("e2").putLabel("en", "Selection 1.2").build(),
+      new FormValueSetEntry.Builder().id("e3").putLabel("en", "Selection 1.3").build()
     ).build());
-    formBuilder.addValueSets(ImmutableFormValueSet.builder().id("vs2").addEntries(
-      ImmutableFormValueSetEntry.builder().id("f1").putLabel("en", "Selection 2.1").build(),
-      ImmutableFormValueSetEntry.builder().id("f2").putLabel("en", "Selection 2.2").build(),
-      ImmutableFormValueSetEntry.builder().id("f3").putLabel("en", "Selection 2.3").build()
+    formBuilder.addValueSets(new FormValueSet.Builder().id("vs2").addEntries(
+      new FormValueSetEntry.Builder().id("f1").putLabel("en", "Selection 2.1").build(),
+      new FormValueSetEntry.Builder().id("f2").putLabel("en", "Selection 2.2").build(),
+      new FormValueSetEntry.Builder().id("f3").putLabel("en", "Selection 2.3").build()
     ).build());
 
     when(formDatabase.findOne(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"), any())).thenReturn(formBuilder.build());
     when(formDatabase.exists(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"))).thenReturn(true);
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId("shouldEvaluateValueSetsInCorrectOrder")
         .created(new Date())
         .language("en")
         .status(Questionnaire.Metadata.Status.OPEN)
         .build())
-        .addAnswers(ImmutableAnswer.of("selection1", "e1"))
-        .addAnswers(ImmutableAnswer.of("selection2", "f1"))
+        .addAnswers(Answer.of("selection1", "e1"))
+        .addAnswers(Answer.of("selection2", "f1"))
       .build();
 
     // -- doLogin();
@@ -340,10 +341,10 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     addItem(formBuilder, "selection1", builder -> builder.type("text").valueSetId("vs1"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your selection is {selection1:lowercase}"));
 
-    FormValueSet formValueSetBean = ImmutableFormValueSet.builder().id("vs1").addEntries(
-      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selectino 1").build(),
-      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selectino 2").build(),
-      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selectino 3").build()
+    FormValueSet formValueSetBean = new FormValueSet.Builder().id("vs1").addEntries(
+      new FormValueSetEntry.Builder().id("e1").putLabel("en", "Selectino 1").build(),
+      new FormValueSetEntry.Builder().id("e2").putLabel("en", "Selectino 2").build(),
+      new FormValueSetEntry.Builder().id("e3").putLabel("en", "Selectino 3").build()
     ).build();
     formBuilder.addValueSets(formValueSetBean);
 
@@ -406,7 +407,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     addItem(formBuilder, "value1", builder -> builder.type("number").defaultValue("4"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your value is {var1}"));
 
-    formBuilder.addVariables(ImmutableVariable.builder()
+    formBuilder.addVariables(new Variable.Builder()
       .name("var1")
       .expression("value1 * 0.5").build());
 

@@ -17,8 +17,6 @@ package io.dialob.questionnaire.service.api.test;
 
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableAction;
-import io.dialob.api.proto.ImmutableActions;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.questionnaire.service.api.FormActions;
@@ -94,7 +92,7 @@ public class FillAssertionBuilder {
   }
 
   public FillAssertionBuilder answer(String questionId, Object answer) {
-    final ImmutableAction action = ImmutableAction.builder()
+    final Action action = new Action.Builder()
       .type(Action.Type.ANSWER)
       .id(questionId)
       .answer(answer).build();
@@ -105,7 +103,7 @@ public class FillAssertionBuilder {
     return this;
   }
   public FillAssertionBuilder nextPage() {
-    final Action action = ImmutableAction.builder()
+    final Action action = new Action.Builder()
       .type(Action.Type.NEXT).build();
     ValidationEntry validationEntry = new ValidationEntry();
     validationEntry.action = action;
@@ -115,7 +113,7 @@ public class FillAssertionBuilder {
   }
 
   public FillAssertionBuilder previousPage() {
-    final Action action = ImmutableAction.builder()
+    final Action action = new Action.Builder()
       .type(Action.Type.PREVIOUS).build();
     ValidationEntry validationEntry = new ValidationEntry();
     validationEntry.action = action;
@@ -125,7 +123,7 @@ public class FillAssertionBuilder {
   }
 
   public FillAssertionBuilder complete() {
-    final Action action = ImmutableAction.builder()
+    final Action action = new Action.Builder()
       .type(Action.Type.COMPLETE).build();
     ValidationEntry validationEntry = new ValidationEntry();
     validationEntry.action = action;
@@ -163,7 +161,7 @@ public class FillAssertionBuilder {
       } else {
         FormActions formActions =  new FormActions();
         session.buildFullForm(new FormActionsUpdatesCallback(formActions));
-        validationEntry.actions = ImmutableActions.builder().actions(formActions.getActions()).build();
+        validationEntry.actions = new Actions.Builder().actions(formActions.getActions()).build();
       }
     }
     session.close();

@@ -19,8 +19,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +52,7 @@ class QuestionnaireDocumentTest {
 
     @Test
   void timestamps() throws Exception {
-      Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(Date.from(Instant.parse("2015-10-14T15:58:24.680Z"))).build()).build();
+      Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(Date.from(Instant.parse("2015-10-14T15:58:24.680Z"))).build()).build();
 
       String data = objectMapper.writeValueAsString(questionnaire);
       Assertions.assertEquals("{\"metadata\":{\"formId\":\"123\",\"status\":\"OPEN\",\"created\":\"2015-10-14T15:58:24.680+00:00\"}}", data);

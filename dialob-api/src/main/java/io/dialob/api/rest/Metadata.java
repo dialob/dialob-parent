@@ -29,11 +29,13 @@ import java.util.Date;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableMetadata.class)
-@JsonDeserialize(builder = ImmutableMetadata.Builder.class)
+@JsonDeserialize(builder = Metadata.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL)
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Metadata extends Serializable {
+
+  class Builder extends ImmutableMetadata.Builder { }
 
   @Nullable
   String getDescription();

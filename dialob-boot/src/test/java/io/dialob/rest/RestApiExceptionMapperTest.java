@@ -15,7 +15,7 @@
  */
 package io.dialob.rest;
 
-import io.dialob.api.rest.ImmutableErrors;
+import io.dialob.api.rest.Errors;
 import io.dialob.rest.type.ApiException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -28,9 +28,9 @@ class RestApiExceptionMapperTest {
   @Test
   void shouldReturnStatus500WhenErrorsDoNotDefinedIt() {
     RestApiExceptionMapper mapper = new RestApiExceptionMapper();
-    ResponseEntity entity = mapper.apiExceptionHandler(new ApiException(ImmutableErrors.builder().build()));
+    ResponseEntity entity = mapper.apiExceptionHandler(new ApiException(new Errors.Builder().build()));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
-    ImmutableErrors errorsOut = (ImmutableErrors) entity.getBody();
+    Errors errorsOut = (Errors) entity.getBody();
     assertEquals("Internal Server Error", errorsOut.getError());
     assertNull(errorsOut.getMessage());
     assertNotNull(errorsOut.getTimestamp());
@@ -42,9 +42,9 @@ class RestApiExceptionMapperTest {
   @Test
   void shouldReturnStatus500WhenErrorsDefinesUnknownStatus() {
     RestApiExceptionMapper mapper = new RestApiExceptionMapper();
-    ResponseEntity entity = mapper.apiExceptionHandler(new ApiException(ImmutableErrors.builder().status(999).build()));
+    ResponseEntity entity = mapper.apiExceptionHandler(new ApiException(new Errors.Builder().status(999).build()));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
-    ImmutableErrors errorsOut = (ImmutableErrors) entity.getBody();
+    Errors errorsOut = (Errors) entity.getBody();
     assertEquals("Internal Server Error", errorsOut.getError());
     assertNull(errorsOut.getMessage());
     assertNotNull(errorsOut.getTimestamp());

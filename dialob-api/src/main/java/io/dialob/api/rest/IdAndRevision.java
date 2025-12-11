@@ -26,10 +26,12 @@ import java.io.Serializable;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableIdAndRevision.class)
-@JsonDeserialize(builder = ImmutableIdAndRevision.Builder.class)
+@JsonDeserialize(builder = IdAndRevision.Builder.class)
 @Gson.TypeAdapters
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface IdAndRevision extends Serializable {
+
+  class Builder extends ImmutableIdAndRevision.Builder { }
 
   @JsonProperty("_id")
   @Gson.Named("_id")

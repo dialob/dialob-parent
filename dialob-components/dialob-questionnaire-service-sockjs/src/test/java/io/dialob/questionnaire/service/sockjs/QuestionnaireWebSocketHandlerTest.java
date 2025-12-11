@@ -17,7 +17,6 @@ package io.dialob.questionnaire.service.sockjs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.ActionItem;
-import io.dialob.api.proto.ImmutableActionItem;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -95,7 +94,7 @@ class QuestionnaireWebSocketHandlerTest {
     when(questionnaireSession.getRevision()).thenReturn("123");
     doAnswer(invocation -> {
       QuestionnaireSession.UpdatesCallback callback = invocation.getArgument(0);
-      ActionItem textQuestion = ImmutableActionItem.builder()
+      ActionItem textQuestion = new ActionItem.Builder()
         .type("text")
         .id("q1")
         .className(Collections.emptyList())

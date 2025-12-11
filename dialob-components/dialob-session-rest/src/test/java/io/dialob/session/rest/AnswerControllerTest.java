@@ -15,7 +15,9 @@
  */
 package io.dialob.session.rest;
 
-import io.dialob.api.proto.*;
+import io.dialob.api.proto.Action;
+import io.dialob.api.proto.ActionItem;
+import io.dialob.api.proto.Actions;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -127,15 +129,15 @@ class AnswerControllerTest {
   @Test
   void shouldReturn200AndUpdateActions() {
     QuestionnaireSession session = mock(QuestionnaireSession.class);
-    Actions requestActions = ImmutableActions.builder()
+    Actions requestActions = new Actions.Builder()
       .rev("aabb")
       .actions(new ArrayList<>()).build();
     when(questionnaireSessionService.findOne("123")).thenReturn(session);
 
-    doAnswer(invocation -> ImmutableActions.builder()
-        .addActions(ImmutableAction.builder()
+    doAnswer(invocation -> new Actions.Builder()
+        .addActions(new Action.Builder()
           .type(Action.Type.ITEM)
-          .item(ImmutableActionItem.builder().id("q1").type("note").build())
+          .item(new ActionItem.Builder().id("q1").type("note").build())
           .build())
         .rev("444334")
         .build()
@@ -162,7 +164,7 @@ class AnswerControllerTest {
     assertNull(responseEntity.getBody().getActions().getFirst().getTrace());
 
     when(actionProcessingService.answerQuestion("123", null, null)).thenThrow(RuntimeException.class);
-    responseEntity = answerController.answers("123", ImmutableActions.builder().build());
+    responseEntity = answerController.answers("123", new Actions.Builder().build());
     assertEquals(500, responseEntity.getStatusCode().value());
     assertEquals(SERVER_ERROR, responseEntity.getBody().getActions().getFirst().getType());
     assertNull(responseEntity.getBody().getActions().getFirst().getTrace());

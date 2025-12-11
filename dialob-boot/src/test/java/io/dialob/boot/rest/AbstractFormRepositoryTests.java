@@ -20,13 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionsFactory;
-import io.dialob.api.proto.ImmutableAction;
 import io.dialob.api.questionnaire.ContextValue;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.api.rest.IdAndRevision;
 import io.dialob.common.Constants;
@@ -123,7 +119,7 @@ abstract class AbstractFormRepositoryTests {
 
     doAnswer(invocation -> database.get(invocation.getArgument(1))).when(questionnaireDatabase).findOne(any(String.class), any(String.class));
     doAnswer(invocation -> {
-      ImmutableQuestionnaire document = invocation.getArgument(1);
+      Questionnaire document = invocation.getArgument(1);
       if (document.getId() == null) {
         document = document.withId(UUID.randomUUID().toString());
         document = document.withRev("1-" + document.getId());
@@ -173,9 +169,9 @@ abstract class AbstractFormRepositoryTests {
     return createQuestionnaireDocument(questionnaireId, questionnaireRev, formId, formRev, context, builder -> {});
   }
 
-  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context, Consumer<ImmutableQuestionnaire.Builder> builderCallback) {
-    ImmutableQuestionnaire.Builder builder = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+  Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context, Consumer<Questionnaire.Builder> builderCallback) {
+    Questionnaire.Builder builder = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formRev(formRev)
         .created(new Date())
@@ -193,22 +189,22 @@ abstract class AbstractFormRepositoryTests {
     return questionnaire;
   }
 
-  FormItem addQuestionnaire(Form.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  FormItem addQuestionnaire(Form.Builder formBuilder, Consumer<FormItem.Builder> builderConsumer) {
     return addItem(formBuilder, Constants.QUESTIONNAIRE, builder -> {
       builder.type(Constants.QUESTIONNAIRE);
       builderConsumer.accept(builder);
     });
   }
 
-  FormItem addItem(Form.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
-    ImmutableFormItem.Builder builder = ImmutableFormItem.builder().id(itemId);
+  FormItem addItem(Form.Builder formBuilder, String itemId, Consumer<FormItem.Builder> builderConsumer) {
+    FormItem.Builder builder = new FormItem.Builder().id(itemId);
     builderConsumer.accept(builder);
     FormItem formItemBean = builder.build();
     formBuilder.putData(formItemBean.getId(), formItemBean);
     return formItemBean;
   }
 
-  FormItem addGroup(Form.Builder formBuilder, String groupId, Consumer<ImmutableFormItem.Builder> builderConsumer, String... items) {
+  FormItem addGroup(Form.Builder formBuilder, String groupId, Consumer<FormItem.Builder> builderConsumer, String... items) {
     return addItem(formBuilder, groupId, builder -> {
       builderConsumer.accept(builder.type("group")
         .items(asList(items)));
@@ -316,7 +312,7 @@ abstract class AbstractFormRepositoryTests {
     }
 
     ResponseEntity<List<Action>> postAction(Action.Type actionType) throws Exception {
-      return postAction(ImmutableAction.builder().type(actionType).build());
+      return postAction(new Action.Builder().type(actionType).build());
     }
 
     ResponseEntity<List<Action>> postAction(Action action) throws Exception {

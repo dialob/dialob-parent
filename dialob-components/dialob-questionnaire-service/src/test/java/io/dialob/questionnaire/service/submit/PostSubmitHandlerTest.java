@@ -15,8 +15,6 @@
  */
 package io.dialob.questionnaire.service.submit;
 
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import org.junit.jupiter.api.Test;
@@ -57,7 +55,7 @@ class PostSubmitHandlerTest {
 
 
     postSubmitHandler.setRequestFactory(requestFactory);
-    Questionnaire document = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("").submitUrl("http://localhost:8080/here").build()).build();
+    Questionnaire document = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("").submitUrl("http://localhost:8080/here").build()).build();
     postSubmitHandler.submit(submitHandlerSettings, document);
 
     verify(requestFactory).createRequest(new URI("http://localhost:8080/here"), HttpMethod.POST);
@@ -90,7 +88,7 @@ class PostSubmitHandlerTest {
 
 
     postSubmitHandler.setRequestFactory(requestFactory);
-    Questionnaire document = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("").submitUrl("http://test:pass@localhost:8080/here").build()).build();
+    Questionnaire document = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("").submitUrl("http://test:pass@localhost:8080/here").build()).build();
     postSubmitHandler.submit(submitHandlerSettings, document);
 
     verify(requestFactory).createRequest(new URI("http://test:pass@localhost:8080/here"), HttpMethod.POST);

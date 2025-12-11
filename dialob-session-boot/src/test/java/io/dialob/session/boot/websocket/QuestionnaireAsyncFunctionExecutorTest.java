@@ -16,7 +16,7 @@
 package io.dialob.session.boot.websocket;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableVariable;
+import io.dialob.api.form.Variable;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -97,7 +97,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
     addItem(formBuilder, "note2", builder -> builder.type("note").putLabel("en","Things got Weird").activeWhen("testFunction(question1) = \"got it Weird\""));
     addItem(formBuilder, "question1", builder -> builder.type("text").putLabel("en","Question 1"));
 
-    formBuilder.addVariables(ImmutableVariable.builder()
+    formBuilder.addVariables(new Variable.Builder()
       .name("testResult")
       .expression("testFunction(question1)").build());
 

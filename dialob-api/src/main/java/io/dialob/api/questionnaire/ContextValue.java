@@ -28,11 +28,17 @@ import java.io.Serializable;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableContextValue.class)
-@JsonDeserialize(builder = ImmutableContextValue.Builder.class)
+@JsonDeserialize(builder = ContextValue.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(allParameters = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface ContextValue extends Serializable {
+
+  class Builder extends ImmutableContextValue.Builder { }
+
+  static ContextValue of(String id, @Nullable Object value) {
+    return ImmutableContextValue.of(id, value);
+  }
 
   @NotNull
   String getId();

@@ -17,7 +17,6 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.ActionItem;
-import io.dialob.api.proto.ImmutableActionItem;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -47,13 +46,13 @@ class QuestionTest {
   @Test
   void shouldSerializeMapToProps() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
-    ActionItem question = ImmutableActionItem.builder()
+    ActionItem question = new ActionItem.Builder()
       .id("shouldSerializeMapToProps")
       .type("list")
       .putProps("extraProp","extraValue")
       .build();
     assertEquals("{\"id\":\"shouldSerializeMapToProps\",\"type\":\"list\",\"props\":{\"extraProp\":\"extraValue\"}}", objectMapper.writeValueAsString(question));
-    question = ImmutableActionItem.builder().id("q1").type("list").build();
+    question = new ActionItem.Builder().id("q1").type("list").build();
     assertEquals("{\"id\":\"q1\",\"type\":\"list\"}", objectMapper.writeValueAsString(question));
   }
 

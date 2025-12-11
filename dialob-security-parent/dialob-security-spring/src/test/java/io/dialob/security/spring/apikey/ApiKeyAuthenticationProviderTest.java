@@ -15,6 +15,7 @@
  */
 package io.dialob.security.spring.apikey;
 
+import io.dialob.security.key.ApiKey;
 import io.dialob.security.key.ImmutableApiKey;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -74,7 +75,7 @@ class ApiKeyAuthenticationProviderTest {
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
 
-    final ImmutableApiKey validApiKey = ImmutableApiKey.builder()
+    final ApiKey validApiKey = ImmutableApiKey.builder()
       .clientId("client")
       .hash("hash")
       .build();

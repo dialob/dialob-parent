@@ -23,7 +23,10 @@ import io.dialob.api.proto.ActionsFactory;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.*;
 import io.dialob.api.questionnaire.Error;
-import io.dialob.api.rest.*;
+import io.dialob.api.rest.Errors;
+import io.dialob.api.rest.IdAndRevision;
+import io.dialob.api.rest.Items;
+import io.dialob.api.rest.Response;
 import io.dialob.common.Constants;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
@@ -108,7 +111,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     final Questionnaire.Metadata.Status status = metadata.getStatus();
     LOGGER.debug("POST /questionnaire {formId: '{}',formRev:'{}'}", formId, formRev);
     if (!formDatabase.exists(this.currentTenant.getId(), formId)) {
-      throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+      throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
         .code("NotExists")
         .context("metadata.formId")
         .error("Form do not exist")
@@ -134,14 +137,14 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     String sessionId = sessionQuestionnaire.getId();
     String rev = session.getQuestionnaire().getRev();
     if (sessionId == null) {
-      throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+      throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
         .code("noSessionId")
         .context("_id")
         .error("No session id").build())
         .status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build());
     }
     LOGGER.debug("questionnaire '{}' created", sessionId);
-    return ResponseEntity.status(HttpStatus.CREATED).body(ImmutableIdAndRevision.builder().id(sessionId).rev(rev).build());
+    return ResponseEntity.status(HttpStatus.CREATED).body(new IdAndRevision.Builder().id(sessionId).rev(rev).build());
   }
 
   /**
@@ -161,7 +164,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       formName,
       formTag,
       status,
-      row -> result.add(ImmutableQuestionnaireListItem.builder().id(row.getId()).metadata(row.getValue()).build()));
+      row -> result.add(new QuestionnaireListItem.Builder().id(row.getId()).metadata(row.getValue()).build()));
     return ResponseEntity.ok(result);
   }
 
@@ -185,7 +188,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   public ResponseEntity<Response> deleteQuestionnaire(String questionnaireId) {
     LOGGER.debug("DELETE /questionnaire/{}", questionnaireId);
     questionnaireRepository.delete(currentTenant.getId(), questionnaireId);
-    return ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
+    return ResponseEntity.ok(new Response.Builder().ok(true).build());
   }
 
   /**
@@ -284,7 +287,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     Object answer) // multivalued answer?
   {
     if (!isValidAnswerValue(answer)) {
-      return ResponseEntity.badRequest().body(singletonList(ImmutableError.builder().id(answerId).code("invalid_answer").description("Cannot handle answer data").build()));
+      return ResponseEntity.badRequest().body(singletonList(new Error.Builder().id(answerId).code("invalid_answer").description("Cannot handle answer data").build()));
     }
     if (answer instanceof List<?> list) {
       answer = list.stream()
@@ -336,7 +339,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     return inSession(questionnaireId, questionnaireSession -> questionnaireSession
       .getItemById(Constants.QUESTIONNAIRE)
       .map(question -> {
-        ImmutableItems.Builder builder = ImmutableItems.builder();
+        Items.Builder builder = new Items.Builder();
         if (question.getItems() != null) {
           builder = builder.items(question.getItems());
         }
@@ -360,7 +363,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
         return questionnaireSession
           .getItemById(Constants.QUESTIONNAIRE)
           .map(question -> {
-            ImmutableItems.Builder builder = ImmutableItems.builder();
+            Items.Builder builder = new Items.Builder();
             if (question.getItems() != null) {
               builder = builder.items(question.getItems());
             }
@@ -476,7 +479,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
           seenFormId = metadata.getFormId();
         }
         if (!seenFormId.equals(metadata.getFormId())) {
-          throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+          throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
             .code("NotSameForm")
             .context("metadata.formId")
             .error("Requested sessions don't have same form ID")
@@ -487,7 +490,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       if (seenFormId != null) {
         form = formDatabase.findOne(currentTenant.getId(), seenFormId);
       } else {
-        throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+        throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
           .code("not_found")
           .context("metadata.formId")
           .error("Could not find form").build())
@@ -499,7 +502,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
         form = formDatabase.findOne(currentTenant.getId(), getCsv.formId());
       } else {
         if (isBlank(getCsv.formName()) && isBlank(getCsv.formTag())) {
-          throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+          throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
             .code("formNameNotSet")
             .context("")
             .error("Form name and tag or form ID is not set").build())
@@ -527,7 +530,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       );
 
       if (questionnaireMetadataList.isEmpty()) {
-        throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+        throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
           .code("noSessionsFound")
           .context("")
           .error("No sessions found with given criteria").build())
@@ -541,7 +544,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
       return ResponseEntity.ok().contentType(MediaType.valueOf("text/csv")).body(csv);
     } catch (IOException e) {
       LOGGER.error("CSV Export failed", e);
-      throw new ApiException(ImmutableErrors.builder().addErrors(ImmutableErrors.Error.builder()
+      throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
         .code("CSVExportFailed")
         .context("exception")
         .error(e.getMessage()).build())

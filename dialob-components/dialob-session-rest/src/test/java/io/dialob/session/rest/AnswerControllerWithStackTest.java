@@ -16,7 +16,6 @@
 package io.dialob.session.rest;
 
 import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableActions;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.user.CurrentUserProvider;
@@ -75,7 +74,7 @@ class AnswerControllerWithStackTest {
   @Test
   void shouldReturn500WithStackIfEnabledOnAnswers() {
     when(actionProcessingService.answerQuestion(eq("123"), eq("rev-10"), isNotNull())).thenThrow(RuntimeException.class);
-    final ResponseEntity<Actions> responseEntity = answerController.answers("123", ImmutableActions.builder()
+    final ResponseEntity<Actions> responseEntity = answerController.answers("123", new Actions.Builder()
       .rev("rev-10")
       .actions(List.of())
       .build());

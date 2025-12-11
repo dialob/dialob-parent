@@ -15,7 +15,7 @@
  */
 package io.dialob.session.boot;
 
-import io.dialob.api.proto.ImmutableActions;
+import io.dialob.api.proto.Actions;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -102,7 +102,7 @@ class ApplicationCorsTest {
 
   @Test
   void shouldNotGetAnyCorsHeaderWhenCorsIsUndefined() throws Exception {
-    when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(ImmutableActions.builder().build()));
+    when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(new Actions.Builder().build()));
     mockMvc.perform(get(session("123456"))
         .header("Origin", "localhost") // triggers cors evaluation...
         .accept(MediaType.APPLICATION_JSON))
@@ -123,7 +123,7 @@ class ApplicationCorsTest {
   void shouldGetDefaultCorsHeadersIfCorsConfigured() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
 
-    when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(ImmutableActions.builder().build()));
+    when(answerController.getState("123456")).thenAnswer(inv -> ResponseEntity.ok(new Actions.Builder().build()));
     when(questionnaireSessionService.findOne("123456")).thenReturn(questionnaireSession);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id");
     when(questionnaireSession.getSessionId()).thenReturn(Optional.of("123456"));

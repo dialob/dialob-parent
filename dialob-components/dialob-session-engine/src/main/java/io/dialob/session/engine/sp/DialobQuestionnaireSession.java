@@ -204,7 +204,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       questionClientVisibility = QuestionClientVisibility.values()[input.readInt32()];
       state = State.values()[input.readInt32()];
 
-      ImmutableQuestionnaireMetadata.Builder metadataBuilder = ImmutableQuestionnaireMetadata.builder()
+      Questionnaire.Metadata.Builder metadataBuilder = new Questionnaire.Metadata.Builder()
         .status(Questionnaire.Metadata.Status.valueOf(input.readString()))
         .formId(input.readString())
         .formRev(readNullableString(input))
@@ -298,7 +298,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     var prevRevision = dialobSession.getRevision();
     if (isCompleted()) {
       return actionsResultBuilder
-        .actions(ImmutableActions.builder()
+        .actions(new Actions.Builder()
           .rev(prevRevision)
           .build())
         .build();
@@ -348,7 +348,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         publishQuestionnaireActions(newRevision, broadcastActions);
       }
       var actionsResult = actionsResultBuilder
-        .actions(ImmutableActions.builder()
+        .actions(new Actions.Builder()
           .actions(formActions.getActions())
           .rev(newRevision)
           .build())
@@ -371,7 +371,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public Questionnaire getQuestionnaire() {
-    return ImmutableQuestionnaire.builder()
+    return new Questionnaire.Builder()
       .id(dialobSession.getId())
       .rev(this.rev)
       .context(getContextVariableValues())
@@ -397,7 +397,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         default -> Questionnaire.Metadata.Status.OPEN;
       };
     }
-    return ImmutableQuestionnaireMetadata.builder()
+    return new Questionnaire.Metadata.Builder()
       .from(metadata)
       .lastAnswer(Date.from(dialobSession.getLastUpdate()))
       .completed(dialobSession.getCompleted() != null ? Date.from(dialobSession.getCompleted()) : null)
@@ -410,12 +410,12 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   private Iterable<? extends ValueSet> getProvidedValueSets() {
     return () -> dialobSession.getValueSetStates().values().stream().map(state ->
-      (ValueSet) ImmutableValueSet.builder()
+      (ValueSet) new ValueSet.Builder()
         .id(state.getId().getValueSetId())
         .entries(() -> state.getEntries().stream()
           .filter(ValueSetState.Entry::isProvided)
           .map(entry ->
-            (ValueSetEntry) ImmutableValueSetEntry.builder()
+            (ValueSetEntry) new ValueSetEntry.Builder()
               .key(entry.getId())
               .value(entry.getLabel())
               .build()).iterator()
@@ -430,7 +430,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         return Optional.of(itemState -> {
           if (Utils.isContextVariable(itemState.getType())) {
             Object value = ConversionUtil.toJSON(itemState.getValue());
-            answers.add(ImmutableContextValue.builder().id(IdUtils.toString(itemState.getId())).value(value == null ? null : value.toString()).build());
+            answers.add(new ContextValue.Builder().id(IdUtils.toString(itemState.getId())).value(value == null ? null : value.toString()).build());
           }
         });
       }
@@ -478,8 +478,8 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     dialobSession.accept(new DialobSessionVisitor() {
       @Override
       public Optional<ValueSetVisitor> visitValueSetStates() {
-        return Optional.of(valueSetState -> valueSets.add(ImmutableValueSet.builder().id(IdUtils.toString(valueSetState.getId())).entries(
-          valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).toList()
+        return Optional.of(valueSetState -> valueSets.add(new ValueSet.Builder().id(IdUtils.toString(valueSetState.getId())).entries(
+          valueSetState.getEntries().stream().map(entry -> new ValueSetEntry.Builder().key(entry.getId()).value(entry.getLabel()).build()).toList()
         ).build()));
       }
     });
@@ -495,7 +495,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       public Optional<ErrorVisitor> visitErrorStates() {
         return Optional.of(errorState -> {
           if (errorState.isActive()) {
-            errors.add(ImmutableError.builder()
+            errors.add(new Error.Builder()
               .code(errorState.getCode())
               .id(IdUtils.toString(errorState.getItemId()))
               .description(errorState.getLabel()).build()
@@ -569,7 +569,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       public Optional<ItemVisitor> visitItemStates() {
         return Optional.of(itemState -> {
           if (itemState.isActive() && isQuestionType(itemState)) {
-            final ImmutableAnswer.Builder answerBuilder = ImmutableAnswer.builder()
+            final Answer.Builder answerBuilder = new Answer.Builder()
               .id(IdUtils.toString(itemState.getId()))
               .value(itemState.getAnswer());
             ItemId itemId = itemState.getPrototypeId();
@@ -601,7 +601,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         return Optional.of(itemState -> {
           if (Utils.isProgramVariable(itemState.getType())) {
             Object value = ConversionUtil.toJSON(itemState.getValue());
-            answers.add(ImmutableVariableValue.builder().id(IdUtils.toString(itemState.getId())).value(value == null ? null : value.toString()).build());
+            answers.add(new VariableValue.Builder().id(IdUtils.toString(itemState.getId())).value(value == null ? null : value.toString()).build());
           }
         });
       }
@@ -731,8 +731,8 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   private void publishQuestionnaireActions(String nextRevision, List<Action> actionQueue) {
     if (!actionQueue.isEmpty() && eventPublisher != null) {
-      final ImmutableActions.Builder builder = ImmutableActions.builder().rev(nextRevision);
-      actionQueue.stream().map(action -> ImmutableAction.builder().from(action).serverEvent(true).build()).forEach(builder::addActions);
+      final Actions.Builder builder = new Actions.Builder().rev(nextRevision);
+      actionQueue.stream().map(action -> new Action.Builder().from(action).serverEvent(true).build()).forEach(builder::addActions);
       getSessionId().ifPresent(sessionId -> eventPublisher.actions(sessionId, builder.build()));
     }
   }

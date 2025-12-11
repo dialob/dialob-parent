@@ -16,7 +16,6 @@
 package io.dialob.questionnaire.service.api.event;
 
 import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableActions;
 import io.dialob.integration.api.event.EventPublisher;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.ResysSecurityConstants;
@@ -100,7 +99,7 @@ class QuestionnaireEventPublisherTest {
   @Test
   void publishesQuestionnaireActionsEvent() {
     String questionnaireId = "q5";
-    Actions actions = ImmutableActions.builder().build();
+    Actions actions = new Actions.Builder().build();
     Tenant tenant = Tenant.of("tenant4");
     when(currentTenant.get()).thenReturn(tenant);
 

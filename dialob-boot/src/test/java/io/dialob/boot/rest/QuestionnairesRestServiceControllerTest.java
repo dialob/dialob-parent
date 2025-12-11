@@ -16,7 +16,7 @@
 package io.dialob.boot.rest;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.FormItem;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.ApplicationAutoConfiguration;
 import io.dialob.boot.settings.AdminApplicationSettings;
@@ -303,12 +303,12 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
     when(formDatabase.findOne(tenantId, "invalid2", "1-invalid2")).thenReturn(new Form.Builder()
       .id("invalid2")
       .rev("1-invalid2")
-      .putData("questionnaire", ImmutableFormItem.builder()
+      .putData("questionnaire", new FormItem.Builder()
         .id("questionnaire")
         .type("questionnaire")
         .addItems("q1")
         .build())
-      .putData("q1", ImmutableFormItem.builder()
+      .putData("q1", new FormItem.Builder()
         .id("q1")
         .type("text")
         .activeWhen("virhe")

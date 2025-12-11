@@ -21,8 +21,6 @@ import com.google.common.net.InetAddresses;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableAction;
-import io.dialob.api.proto.ImmutableActions;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
 import io.dialob.questionnaire.service.api.FormActions;
@@ -125,7 +123,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
   protected void sendFullForm() {
     taskExecutor.execute(() -> {
-      final ImmutableActions.Builder actions = ImmutableActions.builder();
+      final Actions.Builder actions = new Actions.Builder();
       try {
         QuestionnaireSession questionnaireSession = questionnaireSessionService.findOne(this.questionnaireId);
         FormActions formActions = new FormActions();
@@ -135,7 +133,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
         actions.rev(revision);
       } catch(DocumentNotFoundException e) {
         LOGGER.debug("Action QUESTIONNAIRE_NOT_FOUND: backend response '{}'", e.getMessage());
-        actions.addActions(ImmutableAction.builder()
+        actions.addActions(new Action.Builder()
           .type(Action.Type.SERVER_ERROR)
           .serverEvent(true)
           .message("not found")
@@ -203,7 +201,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
         for (final Action action : actions1) {
           // TODO Is there better solution to prevent broadcast loop?
           if (action.getServerEvent() == null || !action.getServerEvent()) {
-            handleAction(questionnaireId, ImmutableAction.builder().from(action).resourceId(id).build(), actions.getRev());
+            handleAction(questionnaireId, new Action.Builder().from(action).resourceId(id).build(), actions.getRev());
 
           }
         }
@@ -219,9 +217,9 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       }
 
       if (!actionList.isEmpty()) {
-        Actions returnActions = ImmutableActions.builder()
+        Actions returnActions = new Actions.Builder()
           .rev(prevRev)
-          .actions(actionList.stream().map(action -> ImmutableAction.builder().from(action).serverEvent(true).build()).toList())
+          .actions(actionList.stream().map(action -> new Action.Builder().from(action).serverEvent(true).build()).toList())
           .build();
         sendMessage(returnActions);
       }
@@ -256,7 +254,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
         List<Action> filteredActions = actions.getActions().stream()
           .filter(action -> !session.getId().equals(action.getResourceId()))
           .toList();
-        sendMessage(ImmutableActions.builder().from(actions).actions(filteredActions).build());
+        sendMessage(new Actions.Builder().from(actions).actions(filteredActions).build());
       } catch (SockJsTransportFailureException transportFailureException) {
         // Occurs normally when client disconnects unexpectedly. Spring have already
         // closed connection here. We can ignore this exception.
@@ -270,7 +268,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   }
 
   private Action createNotifyServerErrorAction(Exception e) {
-    final ImmutableAction.Builder action = ImmutableAction.builder()
+    final Action.Builder action = new Action.Builder()
       .type(Action.Type.SERVER_ERROR)
       .serverEvent(true);
     if (reportStackTrace) {
@@ -285,8 +283,8 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
   public void onQuestionnaireCompletedEvent(QuestionnaireCompletedEvent event) {
     if (isForThisHandler(event)) {
-      sendMessage(ImmutableActions.builder()
-        .addActions(ImmutableAction.builder()
+      sendMessage(new Actions.Builder()
+        .addActions(new Action.Builder()
           .type(Action.Type.COMPLETE)
           .id(event.getQuestionnaireId())
           .serverEvent(true)

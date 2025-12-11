@@ -16,8 +16,6 @@
 package io.dialob.spring.boot.redis;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -153,9 +151,9 @@ class QuestionnaireDialobSessionRedisSerializerTest {
     //     return ;
     final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
       .formId("test-form")
-      .questionnaire(ImmutableQuestionnaire.builder()
+      .questionnaire(new Questionnaire.Builder()
         .id("questionnaire-12")
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test-form")
           .owner("tester")
           .created(new Date(1))

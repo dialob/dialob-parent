@@ -16,7 +16,6 @@
 package io.dialob.session.engine.session;
 
 import io.dialob.api.proto.Action;
-import io.dialob.api.proto.ImmutableAction;
 import io.dialob.session.engine.session.command.*;
 import io.dialob.session.engine.session.model.IdUtils;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyAnswerAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.ANSWER)
       .id("answerId")
       .answer("testAnswer")
@@ -53,7 +52,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplySetValueAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.SET_VALUE)
       .id("varId")
       .value("newValue")
@@ -73,7 +72,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplySetFailedAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.SET_FAILED)
       .id("varId")
       .build();
@@ -91,7 +90,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyNextPageAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.NEXT)
       .build();
 
@@ -106,7 +105,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyPreviousPageAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.PREVIOUS)
       .build();
 
@@ -121,7 +120,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyGotoPageAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.GOTO)
       .id("pageId")
       .build();
@@ -140,7 +139,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyCompleteAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.COMPLETE)
       .build();
 
@@ -155,7 +154,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyAddRowAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.ADD_ROW)
       .id("rowId")
       .build();
@@ -173,7 +172,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyDeleteRowAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.DELETE_ROW)
       .id("rowId.0")
       .build();
@@ -191,7 +190,7 @@ class ActionToCommandMapperTest {
   @Test
   void deleteRowActionIsNotOnWrongTarget() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.DELETE_ROW)
       .id("rowId")
       .build();
@@ -209,7 +208,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplySetLocaleAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.SET_LOCALE)
       .value("en-US")
       .build();
@@ -227,7 +226,7 @@ class ActionToCommandMapperTest {
   @Test
   void testApplyUnsupportedAction() {
     // Arrange
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.RESET)
       .build();
 

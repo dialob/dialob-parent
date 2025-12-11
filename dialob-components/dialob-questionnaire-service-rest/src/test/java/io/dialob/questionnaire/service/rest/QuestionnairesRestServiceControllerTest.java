@@ -18,7 +18,9 @@ package io.dialob.questionnaire.service.rest;
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.*;
-import io.dialob.api.questionnaire.*;
+import io.dialob.api.questionnaire.Answer;
+import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.api.questionnaire.QuestionnaireFactory;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.api.FormDatabase;
@@ -74,7 +76,7 @@ class QuestionnairesRestServiceControllerTest {
 
   public static final QuestionnaireSession.DispatchActionsResult EMPTY_IMMUTABLE_ACTIONS =
     ImmutableQuestionnaireSession.DispatchActionsResult.builder()
-      .actions(ImmutableActions.builder().build())
+      .actions(new Actions.Builder().build())
       .isDidComplete(false)
       .build();
 
@@ -174,8 +176,8 @@ class QuestionnairesRestServiceControllerTest {
     when(questionnaireSessionService.findOne("1234")).thenReturn(questionnaireSession);
     when(questionnaireSession.getAnswers()).thenReturn(
       Arrays.asList(
-        ImmutableAnswer.builder().id("question1").value("1").build(),
-        ImmutableAnswer.builder().id("question2").value(Arrays.asList("a", "b", "c")).build()
+        new Answer.Builder().id("question1").value("1").build(),
+        new Answer.Builder().id("question2").value(Arrays.asList("a", "b", "c")).build()
       ));
 
     mockMvc.perform(get("/questionnaires/{questionnaireId}/answers", "1234")
@@ -344,10 +346,10 @@ class QuestionnairesRestServiceControllerTest {
     when(formDatabase.exists("t-123", "new-form")).thenReturn(true);
     QuestionnaireSessionBuilder builder = mock(QuestionnaireSessionBuilder.class);
     QuestionnaireSession session = mock(QuestionnaireSession.class);
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
       .id("new-questionnaire")
       .rev("1-new-questionnaire")
-      .metadata(ImmutableQuestionnaireMetadata.builder().formId("shouldPostNewQuestionnaire").build())
+      .metadata(new Questionnaire.Metadata.Builder().formId("shouldPostNewQuestionnaire").build())
       .build();
 
     when(questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()).thenReturn(builder);
@@ -494,7 +496,7 @@ class QuestionnairesRestServiceControllerTest {
         @NonNull
         @Override
         public Questionnaire.Metadata getValue() {
-          return ImmutableQuestionnaireMetadata.builder().formId("f1").build();
+          return new Questionnaire.Metadata.Builder().formId("f1").build();
         }
       });
       consumer.accept(new QuestionnaireDatabase.MetadataRow() {
@@ -507,7 +509,7 @@ class QuestionnairesRestServiceControllerTest {
         @NonNull
         @Override
         public Questionnaire.Metadata getValue() {
-          return ImmutableQuestionnaireMetadata.builder().formId("f2").build();
+          return new Questionnaire.Metadata.Builder().formId("f2").build();
         }
       });
       return null;
@@ -567,7 +569,7 @@ class QuestionnairesRestServiceControllerTest {
     QuestionnaireSession session = mock(QuestionnaireSession.class);
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    ActionItem questionnaireItem = ImmutableActionItem.builder()
+    ActionItem questionnaireItem = new ActionItem.Builder()
       .id("questionnaire")
       .type("questionnaire")
       .activeItem("page3")
@@ -587,7 +589,7 @@ class QuestionnairesRestServiceControllerTest {
   @Test
   void pagesUpdateShouldTryNavigateToPages() throws Exception {
     QuestionnaireSession session = mock(QuestionnaireSession.class);
-    ActionItem questionnaireItem = ImmutableActionItem.builder()
+    ActionItem questionnaireItem = new ActionItem.Builder()
       .id("questionnaire")
       .type("questionnaire")
       .activeItem("page3")
@@ -623,9 +625,9 @@ class QuestionnairesRestServiceControllerTest {
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     when(session.getErrors()).thenReturn(Arrays.asList(
-      ImmutableError.builder().description("error").code("bad_error").id("q1").build(),
-      ImmutableError.builder().description("not good error").code("worse_error").id("q2").build(),
-      ImmutableError.builder().description("really not good error").code("worse_error_twice").id("q2").build()
+      new io.dialob.api.questionnaire.Error.Builder().description("error").code("bad_error").id("q1").build(),
+      new io.dialob.api.questionnaire.Error.Builder().description("not good error").code("worse_error").id("q2").build(),
+      new io.dialob.api.questionnaire.Error.Builder().description("really not good error").code("worse_error_twice").id("q2").build()
     ));
     mockMvc.perform(get("/questionnaires/abc123/errors").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
@@ -668,8 +670,8 @@ class QuestionnairesRestServiceControllerTest {
   void shouldGetItems() throws Exception {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    ActionItem question1 = ImmutableActionItem.builder().id("question1").type("text").build();
-    ActionItem question2 = ImmutableActionItem.builder().id("question2").type("text").build();
+    ActionItem question1 = new ActionItem.Builder().id("question1").type("text").build();
+    ActionItem question2 = new ActionItem.Builder().id("question2").type("text").build();
 
     when(session.getItems()).thenReturn(Arrays.asList(question1, question2));
     mockMvc.perform(get("/questionnaires/abc123/items").accept(MediaType.APPLICATION_JSON))
@@ -686,7 +688,7 @@ class QuestionnairesRestServiceControllerTest {
   void shouldGetItemById() throws Exception {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    final ActionItem question1 = ImmutableActionItem.builder()
+    final ActionItem question1 = new ActionItem.Builder()
       .id("question1").type("text").build();
 
     when(session.getItemById("question1")).thenReturn(Optional.of(question1));
@@ -718,7 +720,7 @@ class QuestionnairesRestServiceControllerTest {
   void shouldGetQuestionRows() throws Exception {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    final ActionItem question1 = ImmutableActionItem.builder()
+    final ActionItem question1 = new ActionItem.Builder()
       .id("question1")
       .type("rowgroup")
       .items(Arrays.asList("row1", "row2", "row3")).build();
@@ -738,7 +740,7 @@ class QuestionnairesRestServiceControllerTest {
   void shouldGet404IfQuestionIsNotRowgroup() throws Exception {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    final ActionItem question1 = ImmutableActionItem.builder()
+    final ActionItem question1 = new ActionItem.Builder()
       .id("question1")
       .type("group")
       .items(Arrays.asList("row1", "row2", "row3")).build();
@@ -757,7 +759,7 @@ class QuestionnairesRestServiceControllerTest {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    final ActionItem question1 = ImmutableActionItem.builder()
+    final ActionItem question1 = new ActionItem.Builder()
       .id("question1")
       .type("rowgroup")
       .items(Arrays.asList("row1", "row2", "row3")).build();
@@ -783,7 +785,7 @@ class QuestionnairesRestServiceControllerTest {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
-    final ActionItem question1 = ImmutableActionItem.builder()
+    final ActionItem question1 = new ActionItem.Builder()
       .id("question1")
       .type("rowgroup")
       .items(Arrays.asList("row1", "row2", "row3")).build();
@@ -809,8 +811,8 @@ class QuestionnairesRestServiceControllerTest {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     when(session.getValueSets()).thenReturn(Arrays.asList(
-      ImmutableValueSet.builder().id("vs1").entries(Arrays.asList(ImmutableValueSetEntry.builder().key("vs1-key1").value("vs1-value1").build(), ImmutableValueSetEntry.builder().key("vs1-key2").value("vs1-value2").build())).build(),
-      ImmutableValueSet.builder().id("vs2").entries(Arrays.asList(ImmutableValueSetEntry.builder().key("vs2-key1").value("vs2-value1").build(), ImmutableValueSetEntry.builder().key("vs2-key2").value("vs2-value2").build())).build()
+      new ValueSet.Builder().id("vs1").entries(Arrays.asList(new ValueSetEntry.Builder().key("vs1-key1").value("vs1-value1").build(), new ValueSetEntry.Builder().key("vs1-key2").value("vs1-value2").build())).build(),
+      new ValueSet.Builder().id("vs2").entries(Arrays.asList(new ValueSetEntry.Builder().key("vs2-key1").value("vs2-value1").build(), new ValueSetEntry.Builder().key("vs2-key2").value("vs2-value2").build())).build()
     ));
 
     mockMvc.perform(get("/questionnaires/abc123/valueSets").accept(MediaType.APPLICATION_JSON))
@@ -828,8 +830,8 @@ class QuestionnairesRestServiceControllerTest {
     final QuestionnaireSession session = mock(QuestionnaireSession.class);
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     when(session.getValueSets()).thenReturn(Arrays.asList(
-      ImmutableValueSet.builder().id("vs1").entries(Arrays.asList(ImmutableValueSetEntry.builder().key("vs1-key1").value("vs1-value1").build(), ImmutableValueSetEntry.builder().key("vs1-key2").value("vs1-value2").build())).build(),
-      ImmutableValueSet.builder().id("vs2").entries(Arrays.asList(ImmutableValueSetEntry.builder().key("vs2-key1").value("vs2-value1").build(), ImmutableValueSetEntry.builder().key("vs2-key2").value("vs2-value2").build())).build()
+      new ValueSet.Builder().id("vs1").entries(Arrays.asList(new ValueSetEntry.Builder().key("vs1-key1").value("vs1-value1").build(), new ValueSetEntry.Builder().key("vs1-key2").value("vs1-value2").build())).build(),
+      new ValueSet.Builder().id("vs2").entries(Arrays.asList(new ValueSetEntry.Builder().key("vs2-key1").value("vs2-value1").build(), new ValueSetEntry.Builder().key("vs2-key2").value("vs2-value2").build())).build()
     ));
 
     mockMvc.perform(get("/questionnaires/abc123/valueSets/vs2").accept(MediaType.APPLICATION_JSON))
@@ -869,7 +871,7 @@ class QuestionnairesRestServiceControllerTest {
 
 
   private void verifyCompleteAction(QuestionnaireSession session, String id) {
-    verify(session).dispatchActions(Collections.singletonList(ImmutableAction.builder()
+    verify(session).dispatchActions(Collections.singletonList(new Action.Builder()
       .type(Action.Type.COMPLETE).id(id).build()));
   }
 

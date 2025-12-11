@@ -16,7 +16,7 @@
 package io.dialob.boot.controller;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.security.OAuth2AuthenticationStrategy;
 import io.dialob.boot.security.QuestionnaireSecurityConfigurer;
 import io.dialob.boot.settings.*;
@@ -125,7 +125,7 @@ class FillControllerTest extends AbstractUIControllerTest {
 
   @Test
   void shouldRenderFillPageFromURLTemplate() throws Exception {
-    when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("xx").build()).build());
+    when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(new Questionnaire.Metadata.Builder().formId("321").tenantId("xx").build()).build());
 
     mockMvc.perform(get("/fill/123").params(tenantParam).accept(MediaType.TEXT_HTML))
 //      .andExpect(header().string("location",""))
@@ -148,7 +148,7 @@ class FillControllerTest extends AbstractUIControllerTest {
 
   @Test
   void shouldRenderFillPageFromDefaultTemplateWhenTenantIsNotDefined() throws Exception {
-    when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(ImmutableQuestionnaireMetadata.builder().formId("321").tenantId("yy").build()).build());
+    when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(new Questionnaire.Metadata.Builder().formId("321").tenantId("yy").build()).build());
 
     mockMvc.perform(get("/fill/123").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())

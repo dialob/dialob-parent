@@ -27,11 +27,13 @@ import java.util.Date;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableFormTag.class)
-@JsonDeserialize(builder = ImmutableFormTag.Builder.class)
+@JsonDeserialize(builder = FormTag.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface FormTag extends FormEntity {
+
+  class Builder extends ImmutableFormTag.Builder { }
 
   enum Type {
     NORMAL,

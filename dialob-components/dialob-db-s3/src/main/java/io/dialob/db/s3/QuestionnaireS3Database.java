@@ -17,8 +17,6 @@ package io.dialob.db.s3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -40,7 +38,7 @@ public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> i
       String id = extractObjectName(object.key());
       consumer.accept(ImmutableMetadataRow.of(
         id,
-        ImmutableQuestionnaireMetadata.builder()
+        new Questionnaire.Metadata.Builder()
           .lastAnswer(Date.from(object.lastModified()))
           .build()
       ));
@@ -50,13 +48,13 @@ public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> i
   @NonNull
   @Override
   protected Questionnaire updateDocumentId(@NonNull Questionnaire document, String id) {
-    return ImmutableQuestionnaire.builder().from(document).id(id).build();
+    return new Questionnaire.Builder().from(document).id(id).build();
   }
 
   @NonNull
   @Override
   protected Questionnaire updateDocumentRev(@NonNull Questionnaire document, String rev) {
-    return ImmutableQuestionnaire.builder().from(document).rev(rev).build();
+    return new Questionnaire.Builder().from(document).rev(rev).build();
   }
 
   @Override

@@ -28,13 +28,19 @@ import java.util.Date;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableAnswer.class)
-@JsonDeserialize(builder = ImmutableAnswer.Builder.class)
+@JsonDeserialize(builder = Answer.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Answer extends Serializable {
 
-  @Value.Parameter
+  class Builder extends ImmutableAnswer.Builder { }
+
+  static Answer of(String id, @Nullable Object value) {
+    return ImmutableAnswer.of(id,value);
+  }
+
+    @Value.Parameter
   String getId();
 
   /**

@@ -17,7 +17,6 @@ package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.DependencyLoopException;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
@@ -212,7 +211,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
         if (command instanceof UpdateCommand updateCommand) {
           itemId = updateCommand.getTargetId();
         }
-        throw new DependencyLoopException("dependency loop", List.of(ImmutableFormValidationError.builder()
+        throw new DependencyLoopException("dependency loop", List.of(new FormValidationError.Builder()
           .type(FormValidationError.Type.GENERAL)
           .level(FormValidationError.Level.ERROR)
           .message("dependency loop")

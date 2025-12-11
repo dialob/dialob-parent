@@ -39,7 +39,7 @@ class QuestionnaireTest {
 
   @Test
   void shouldThrowConstraintExceptionOnMissingMetadata() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableQuestionnaire.builder().build());
+    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
 
@@ -49,7 +49,7 @@ class QuestionnaireTest {
 
   @Test
   void shouldThrowConstraintExceptionOnPartialMetadata() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().build()).build());
+    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().build()).build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
 

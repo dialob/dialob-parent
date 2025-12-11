@@ -26,11 +26,13 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableValueSet.class)
-@JsonDeserialize(builder = ImmutableValueSet.Builder.class)
+@JsonDeserialize(builder = ValueSet.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL)
-@Value.Style(deepImmutablesDetection = true, jdkOnly = true)
+@Value.Style(deepImmutablesDetection = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PUBLIC)
 public interface ValueSet extends Serializable {
+
+  class Builder extends ImmutableValueSet.Builder { }
 
   String getId();
 

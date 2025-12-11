@@ -16,7 +16,7 @@
 package io.dialob.session.boot.websocket;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableValidation;
+import io.dialob.api.form.Validation;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -87,7 +87,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       addItem(formBuilder, "g1", builder -> builder.type("rowgroup").putLabel("en","Ryhma").addItems("q1", "q2", "q3"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en","Kysymys 1"));
       addItem(formBuilder, "q2", builder -> builder.type("text").putLabel("en","Kysymys 2").addValidations(
-        ImmutableValidation.builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
+        new Validation.Builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
       ));
       addItem(formBuilder, "q3", builder -> builder.type("text").putLabel("en","Kysymys 3").activeWhen("q2 = \"correct answer\""));
       formBuilder.metadata(new Form.Metadata.Builder().label("Kysely").build());

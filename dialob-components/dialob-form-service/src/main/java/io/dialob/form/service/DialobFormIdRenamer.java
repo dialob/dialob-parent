@@ -76,7 +76,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
   }
 
   private FormItem renameItemAndAttributes(FormItem item, UnaryOperator<String> idRenamer, String oldId, String newId) {
-    ImmutableFormItem.Builder builder = ImmutableFormItem.builder().from(renameAttributes(item, idRenamer, oldId, newId));
+    FormItem.Builder builder = new FormItem.Builder().from(renameAttributes(item, idRenamer, oldId, newId));
     if (oldId.equals(item.getId())) {
       builder.id(newId);
     }
@@ -87,7 +87,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
 
   @Override
   public FormItem renameAttributes(@NonNull FormItem item, @NonNull UnaryOperator<String> idRenamer, @NonNull String oldId, @NonNull String newId) {
-    ImmutableFormItem.Builder builder = ImmutableFormItem.builder().from(item);
+    FormItem.Builder builder = new FormItem.Builder().from(item);
     if (item.getActiveWhen() != null) {
       builder.activeWhen(idRenamer.apply(item.getActiveWhen()));
     }
@@ -100,7 +100,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     if (item.getCanRemoveRowWhen() != null) {
       builder.canRemoveRowWhen(idRenamer.apply(item.getCanRemoveRowWhen()));
     }
-    List<Validation> validations = item.getValidations().stream().map(validation -> (Validation) ImmutableValidation.builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).toList();
+    List<Validation> validations = item.getValidations().stream().map(validation -> (Validation) new Validation.Builder().from(validation).rule(idRenamer.apply(validation.getRule())).build()).toList();
     builder.validations(validations);
 
     // Child refs
@@ -135,7 +135,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     List<io.dialob.api.form.Variable> updatedVariables = new ArrayList<>();
     // Handle variable expressions
     form.getVariables().forEach(v -> {
-        ImmutableVariable.Builder builder = ImmutableVariable.builder().from(v);
+        Variable.Builder builder = new Variable.Builder().from(v);
         if (!Boolean.TRUE.equals(v.getContext())) {
           builder.expression(idRenamer.apply(v.getExpression()));
         }
@@ -150,10 +150,10 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     // Handle valueset expressions
     List<FormValueSet> updatedValueSets = new ArrayList<>();
     form.getValueSets().forEach(vset -> {
-      ImmutableFormValueSet.Builder vsBuilder = ImmutableFormValueSet.builder().from(vset);
+      FormValueSet.Builder vsBuilder = new FormValueSet.Builder().from(vset);
       List<FormValueSetEntry> updatedVsEntries = new ArrayList<>();
       vset.getEntries().forEach(ve -> {
-        ImmutableFormValueSetEntry.Builder vseBuilder = ImmutableFormValueSetEntry.builder().from(ve);
+        FormValueSetEntry.Builder vseBuilder = new FormValueSetEntry.Builder().from(ve);
 
         if (ve.getWhen() != null) {
           vseBuilder.when(idRenamer.apply(ve.getWhen()));
@@ -170,7 +170,7 @@ public class DialobFormIdRenamer implements FormIdRenamer {
   }
 
   private FormValidationError createRenamerExpressionCompilerError(String oldId, String message) {
-    return ImmutableFormValidationError.builder()
+    return new FormValidationError.Builder()
       .type(FormValidationError.Type.GENERAL)
       .itemId(oldId)
       .message(message)

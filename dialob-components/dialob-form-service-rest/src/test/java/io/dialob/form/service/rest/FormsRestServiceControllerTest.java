@@ -16,7 +16,8 @@
 package io.dialob.form.service.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormTag;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.DialobCsvToFormParser;
 import io.dialob.form.service.api.FormDatabase;
@@ -298,7 +299,7 @@ class FormsRestServiceControllerTest {
   @Test
   void shouldTryUpdateTag() throws Exception {
 
-    FormTag newTag = ImmutableFormTag.builder().refName("tagi").build();
+    FormTag newTag = new FormTag.Builder().refName("tagi").build();
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
 
     when(currentTenant.getId()).thenReturn("t-123");
@@ -307,7 +308,7 @@ class FormsRestServiceControllerTest {
     when(nodeId.getId()).thenReturn("testnode");
     when(formVersionControlDatabase.getFormDatabase()).thenReturn(formDatabase);
     when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
-    when(formVersionControlDatabase.moveTag(eq("t-123"), any())).thenReturn(Optional.of(ImmutableFormTag.builder()
+    when(formVersionControlDatabase.moveTag(eq("t-123"), any())).thenReturn(Optional.of(new FormTag.Builder()
       .formName("myform")
       .name("newtag")
       .formId("4321")
@@ -321,7 +322,7 @@ class FormsRestServiceControllerTest {
     verify(currentTenant,atLeastOnce()).getId();
     verify(currentTenant).get();
     verify(formVersionControlDatabase).isName("t-123","myform");
-    verify(formVersionControlDatabase).moveTag(eq("t-123"), eq(ImmutableFormTag.builder()
+    verify(formVersionControlDatabase).moveTag(eq("t-123"), eq(new FormTag.Builder()
       .formName("myform")
       .name("newtag")
       .refName("tagi")
@@ -334,7 +335,7 @@ class FormsRestServiceControllerTest {
   @Test
   void shouldCreateTagWithCreatorParam() throws Exception {
 
-    FormTag newTag = ImmutableFormTag.builder()
+    FormTag newTag = new FormTag.Builder()
       .name("newtag")
       .formId("1234")
       .formName("myform")
@@ -347,7 +348,7 @@ class FormsRestServiceControllerTest {
     when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
     when(nodeId.getId()).thenReturn("testnode");
     when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
-    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123")).thenReturn(Optional.of(ImmutableFormTag.builder()
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123")).thenReturn(Optional.of(new FormTag.Builder()
       .formName("myform")
       .name("newtag")
       .formId("4321")
@@ -371,20 +372,20 @@ class FormsRestServiceControllerTest {
   @Test
   void shouldCreateTagWithCurrentUserProvider() throws Exception {
 
-    FormTag newTag = ImmutableFormTag.builder()
+    FormTag newTag = new FormTag.Builder()
       .name("newtag")
       .formId("1234")
       .formName("myform")
       .build();
 
-    String tagJson = objectMapper.writerFor(ImmutableFormTag.class).writeValueAsString(newTag);
+    String tagJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
 
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
     when(currentUserProvider.getUserId()).thenReturn("user");
     when(nodeId.getId()).thenReturn("testnode");
     when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
-    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user")).thenReturn(Optional.of(ImmutableFormTag.builder()
+    when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user")).thenReturn(Optional.of(new FormTag.Builder()
       .formName("myform")
       .name("newtag")
       .formId("4321")

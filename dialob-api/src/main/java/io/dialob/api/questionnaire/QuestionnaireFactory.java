@@ -21,20 +21,20 @@ public final class QuestionnaireFactory {
   private QuestionnaireFactory() {}
 
   public static Answer answer(String id, Object value) {
-    return ImmutableAnswer.builder().id(id).value(value).build();
+    return new Answer.Builder().id(id).value(value).build();
   }
 
   public static ContextValue contextValue(String id, Object value) {
-    return ImmutableContextValue.builder().id(id).value(value).build();
+    return new ContextValue.Builder().id(id).value(value).build();
   }
 
   public static VariableValue variableValue(String id, Object value) {
-    return ImmutableVariableValue.builder().id(id).value(value).build();
+    return new VariableValue.Builder().id(id).value(value).build();
   }
 
   public static Questionnaire questionnaire(String id, String formId) {
-    return ImmutableQuestionnaire.builder().id(id)
-          .metadata(ImmutableQuestionnaireMetadata.builder().formId(formId).build()).build();
+    return new Questionnaire.Builder().id(id)
+          .metadata(new Questionnaire.Metadata.Builder().formId(formId).build()).build();
   }
 
 }

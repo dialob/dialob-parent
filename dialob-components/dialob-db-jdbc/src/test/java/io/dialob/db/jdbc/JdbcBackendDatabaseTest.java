@@ -17,8 +17,6 @@ package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
@@ -171,10 +169,10 @@ public abstract class JdbcBackendDatabaseTest {
       eq("update dialob.questionnaire set rev = ?, status = ?, updated = ?, data = ?, owner = ? where id = ? and rev = ? and tenant_id = ?"),
       eq(13), any(String.class), any(Timestamp.class), any(InputStream.class), isNull(), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12), eq(""));
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
       .id("12300000000000000000000000000000")
       .rev("12")
-      .metadata(ImmutableQuestionnaireMetadata.builder().formId(Hex.encodeHexString(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})).build())
+      .metadata(new Questionnaire.Metadata.Builder().formId(Hex.encodeHexString(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})).build())
       .build();
 
     Object document = jdbcBackendDatabase.save("", questionnaire);
@@ -201,10 +199,10 @@ public abstract class JdbcBackendDatabaseTest {
       eq("update dialob.questionnaire set rev = ?, updated = ?, label = ?, data = ? where id = ? and rev = ? and tenant_id = ?"),
       eq(13), any(Timestamp.class), any(String.class), any(InputStream.class), eq(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(12));
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
       .id("12300000000000000000000000000000")
       .rev("12")
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(Hex.encodeHexString(new byte[] {0x12, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}))
         .owner("me")
         .build())
@@ -305,7 +303,7 @@ public abstract class JdbcBackendDatabaseTest {
     when(dataSource.getConnection()).thenReturn(connection);
     var jdbcBackendDatabase = jdbcBackendDatabase(new TransactionTemplate(new DataSourceTransactionManager(dataSource)), jdbcTemplate, databaseHandler(), objectMapper, "dialob");
 
-    doReturn(ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build()).when(jdbcTemplate).queryForObject(
+    doReturn(new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build()).when(jdbcTemplate).queryForObject(
       eq("select rev, tenant_id, form_document_id, status, created, updated, data from dialob.questionnaire where id = ? and rev = ? and tenant_id = ?"),
       any(RowMapper.class),
       eq(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}), eq(Integer.valueOf(1)), eq("")

@@ -16,7 +16,7 @@
 package io.dialob.db.jdbc;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.FormItem;
 import io.dialob.form.service.api.FormDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Tag;
@@ -42,7 +42,7 @@ class PostgreSQLFormVersionControlDatabaseTest extends AbstractFormVersionContro
     Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test form").labels(Set.of("label1", "label2")).build()).build();
     form = getJdbcFormDatabase().save(getCurrentTenant().getId(), form);
 
-    Form form2 = new Form.Builder().from(form).putData("questionnaire", ImmutableFormItem.builder()
+    Form form2 = new Form.Builder().from(form).putData("questionnaire", new FormItem.Builder()
       .id("questionnaire")
       .type("questionnaire")
       .build())

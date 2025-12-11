@@ -19,10 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.questionnaire.ContextValue;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -106,7 +103,7 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
 
     doAnswer(invocation -> database.get(invocation.getArgument(1))).when(questionnaireDatabase).findOne(anyString(), anyString());
     doAnswer(invocation -> {
-      ImmutableQuestionnaire document = invocation.getArgument(1);
+      Questionnaire document = invocation.getArgument(1);
       if (document.getId() == null) {
         document = document.withId(UUID.randomUUID().toString());
         document = document.withRev("1-" + document.getId());
@@ -153,8 +150,8 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev) {
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formRev(formRev)
         .build())
@@ -166,8 +163,8 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   protected Questionnaire createQuestionnaireDocument(String questionnaireId, String questionnaireRev, String formId, String formRev, List<ContextValue> context) {
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formRev(formRev)
         .build())
@@ -179,15 +176,15 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
     return questionnaire;
   }
 
-  protected FormItem addQuestionnaire(Form.Builder formBuilder, Consumer<ImmutableFormItem.Builder> builderConsumer) {
+  protected FormItem addQuestionnaire(Form.Builder formBuilder, Consumer<FormItem.Builder> builderConsumer) {
     return addItem(formBuilder, "questionnaire", builder -> {
       builder.type("questionnaire");
       builderConsumer.accept(builder);
     });
   }
 
-  protected FormItem addItem(Form.Builder formBuilder, String itemId, Consumer<ImmutableFormItem.Builder> builderConsumer) {
-    ImmutableFormItem.Builder builder = ImmutableFormItem.builder().id(itemId);
+  protected FormItem addItem(Form.Builder formBuilder, String itemId, Consumer<FormItem.Builder> builderConsumer) {
+    FormItem.Builder builder = new FormItem.Builder().id(itemId);
     builderConsumer.accept(builder);
     FormItem formItemBean = builder.build();
     formBuilder.putData(formItemBean.getId(), formItemBean);
@@ -211,8 +208,8 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
   }
 
   protected WebSocketRequestTestTemplate.ExpectionBuilder createAndOpenSession(String formId, String rev) {
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formRev(rev)
         .created(new Date())

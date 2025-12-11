@@ -54,9 +54,9 @@ class FormTest {
   @Test
   void testFormItemAdditionalProperties() throws Exception {
     Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("laabeli").putAdditionalProperties("extra","value").build())
-      .addValueSets(ImmutableFormValueSet.builder()
+      .addValueSets(new FormValueSet.Builder()
         .id("vs1")
-        .addEntries(ImmutableFormValueSetEntry.builder().id("id1").putLabel("fi","ota1").putAdditionalProperties("selite","extravalue").build())
+        .addEntries(new FormValueSetEntry.Builder().id("id1").putLabel("fi","ota1").putAdditionalProperties("selite","extravalue").build())
         .putAdditionalProperties("extraItem","valuee")
         .build()).build();
     String expected = "{\"metadata\":{\"label\":\"laabeli\",\"extra\":\"value\"},\"valueSets\":[{\"id\":\"vs1\",\"entries\":[{\"id\":\"id1\",\"label\":{\"fi\":\"ota1\"},\"selite\":\"extravalue\"}],\"extraItem\":\"valuee\"}]}";

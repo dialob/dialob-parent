@@ -30,11 +30,14 @@ import java.util.List;
 @Value.Immutable
 @Value.Enclosing
 @JsonSerialize(as = ImmutableErrors.class)
-@JsonDeserialize(builder = ImmutableErrors.Builder.class)
+@JsonDeserialize(builder = Errors.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public abstract class Errors implements Serializable {
+
+  public static class Builder extends ImmutableErrors.Builder { }
+
 
   @Schema(description = "error timestamp")
   @Nullable
@@ -67,10 +70,12 @@ public abstract class Errors implements Serializable {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Value.Immutable
   @JsonSerialize(as = ImmutableErrors.Error.class)
-  @JsonDeserialize(builder = ImmutableErrors.Error.Builder.class)
+  @JsonDeserialize(builder = Errors.Error.Builder.class)
   @Gson.TypeAdapters
-  @Value.Style(jdkOnly = true)
+  @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
   public interface Error extends Serializable {
+
+    class Builder extends ImmutableErrors.Error.Builder { }
 
     @Schema(description = "Error classifying code")
     @Nullable

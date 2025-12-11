@@ -15,7 +15,10 @@
  */
 package io.dialob.form.service;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
+import io.dialob.api.form.FormValidationError;
+import io.dialob.api.form.FormValueSet;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
@@ -77,7 +80,7 @@ public class DialobFormItemCopier implements FormItemCopier {
   private String copySingleItem(Form.Builder formBuilder, Form form, Map<String, String> idRenameMap, FormItem sourceItem) {
     Map<String, FormItem> formData = form.getData();
     String nextID = findNextID(formData, sourceItem.getId());
-    ImmutableFormItem.Builder builder = ImmutableFormItem.builder()
+    FormItem.Builder builder = new FormItem.Builder()
       .from(sourceItem)
       .id(nextID);
     idRenameMap.put(sourceItem.getId(), nextID);
@@ -91,7 +94,7 @@ public class DialobFormItemCopier implements FormItemCopier {
       } else {
         String newValueSetId = findNextValuesetId(form, sourceItem.getValueSetId());
         FormValueSet sourceValueSet = findValueSet(form, sourceItem.getValueSetId());
-        FormValueSet newValueSet = ImmutableFormValueSet.builder().from(sourceValueSet)
+        FormValueSet newValueSet = new FormValueSet.Builder().from(sourceValueSet)
           .id(newValueSetId).build();
         builder.valueSetId(newValueSetId);
         formBuilder.addValueSets(newValueSet);
@@ -118,7 +121,7 @@ public class DialobFormItemCopier implements FormItemCopier {
     Map<String, FormItem> formData = form.getData();
     FormItem sourceItem = formData.get(idToCopy);
     if (sourceItem == null) {
-      errors.add(ImmutableFormValidationError.builder()
+      errors.add(new FormValidationError.Builder()
         .itemId(idToCopy)
         .message("FORM_SOURCE_ITEM_NOT_FOUND")
         .type(FormValidationError.Type.GENERAL).build());
@@ -131,7 +134,7 @@ public class DialobFormItemCopier implements FormItemCopier {
 
     // Update container, if any
     findContainerItem(form, idToCopy).ifPresent(containerItem -> {
-      ImmutableFormItem.Builder formItemBuilder = ImmutableFormItem.builder().from(containerItem);
+      FormItem.Builder formItemBuilder = new FormItem.Builder().from(containerItem);
       int index = containerItem.getItems().indexOf(idToCopy);
       List<String> itemList = new ArrayList<>(containerItem.getItems());
       itemList.add(index + 1, newId);

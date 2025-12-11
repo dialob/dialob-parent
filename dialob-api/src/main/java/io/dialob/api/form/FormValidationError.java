@@ -26,11 +26,13 @@ import java.util.Optional;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableFormValidationError.class)
-@JsonDeserialize(builder = ImmutableFormValidationError.Builder.class)
+@JsonDeserialize(builder = FormValidationError.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface FormValidationError extends Serializable {
+
+  class Builder extends ImmutableFormValidationError.Builder { }
 
   enum Level {
     INFO,

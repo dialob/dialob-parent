@@ -16,8 +16,6 @@
 package io.dialob.session.engine.sp;
 
 import io.dialob.api.questionnaire.Answer;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -48,7 +46,7 @@ class DialobQuestionnaireSessionTest {
     DialobSession dialobSession = Mockito.mock();
     DialobProgram dialobProgram = Mockito.mock();
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock();
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)
@@ -113,7 +111,7 @@ class DialobQuestionnaireSessionTest {
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)
@@ -177,7 +175,7 @@ class DialobQuestionnaireSessionTest {
     DialobSession dialobSession = Mockito.mock(DialobSession.class);
     DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)
@@ -263,7 +261,7 @@ class DialobQuestionnaireSessionTest {
       new ArrayList<>(), null, null, null);
     DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)
@@ -321,7 +319,7 @@ class DialobQuestionnaireSessionTest {
 
     DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("123").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)

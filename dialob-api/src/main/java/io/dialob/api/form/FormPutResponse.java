@@ -26,11 +26,13 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableFormPutResponse.class)
-@JsonDeserialize(builder = ImmutableFormPutResponse.Builder.class)
+@JsonDeserialize(builder = FormPutResponse.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface FormPutResponse extends Response {
+
+  class Builder extends ImmutableFormPutResponse.Builder { }
 
   String getId();
 

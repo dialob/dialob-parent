@@ -18,7 +18,9 @@ package io.dialob.questionnaire.service.api.session;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.proto.ValueSet;
-import io.dialob.api.questionnaire.*;
+import io.dialob.api.questionnaire.Answer;
+import io.dialob.api.questionnaire.ContextValue;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.FormDataMissingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -187,8 +189,8 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   @NonNull
   protected Questionnaire createNewQuestionnaire(@NonNull String formId, String formRev, String formName, String label, String submitUrl, String creator, String owner, Map<String, Object> additionalProperties, boolean useLatest) {
-    final ImmutableQuestionnaire.Builder questionnaire = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    final Questionnaire.Builder questionnaire = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formName(formName)
         .formRev(useLatest ? LATEST_REV : formRev)

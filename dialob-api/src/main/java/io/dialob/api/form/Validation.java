@@ -31,11 +31,13 @@ import java.util.Map;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableValidation.class)
-@JsonDeserialize(builder = ImmutableValidation.Builder.class)
+@JsonDeserialize(builder = Validation.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Validation extends Serializable {
+
+  class Builder extends ImmutableValidation.Builder { }
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)

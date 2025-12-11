@@ -16,7 +16,7 @@
 package io.dialob.session.engine.sp;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableFormItem;
+import io.dialob.api.form.FormItem;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -81,7 +81,7 @@ class DialobQuestionnaireSessionBuilderTest {
   void shouldInitializeSessionWithCorrectActiveItem() {
     final Form form = new Form.Builder()
       .id("123")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
       .metadata(new Form.Metadata.Builder().label("test form").build())
       .build();
 
@@ -110,7 +110,7 @@ class DialobQuestionnaireSessionBuilderTest {
   void shouldParseShowDisabled() {
     final Form form = new Form.Builder()
       .id("123")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
       .metadata(new Form.Metadata.Builder().label("test form")
         .putAdditionalProperties("showDisabled", "True")
         .build())
@@ -129,7 +129,7 @@ class DialobQuestionnaireSessionBuilderTest {
   void shouldParseShowDisabled2() {
     final Form form = new Form.Builder()
       .id("123")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
       .metadata(new Form.Metadata.Builder().label("test form")
         .putAdditionalProperties("showDisabled", true)
         .build())

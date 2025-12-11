@@ -37,12 +37,28 @@ import java.util.Set;
 
 @Value.Immutable
 @Value.Modifiable
-@Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonSerialize(as = ImmutableQuestionnaire.class)
-@JsonDeserialize(builder = ImmutableQuestionnaire.Builder.class)
+@JsonDeserialize(builder = Questionnaire.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface Questionnaire extends WithValidation<Questionnaire>, Serializable {
+
+  default Questionnaire withId(@Nullable String string) {
+    return new Questionnaire.Builder()
+      .from(this)
+      .id(string)
+      .build();
+  }
+
+  default Questionnaire withRev(@Nullable String string) {
+    return new Questionnaire.Builder()
+      .from(this)
+      .rev(string)
+      .build();
+  }
+
+  class Builder extends ImmutableQuestionnaire.Builder { }
 
   @JsonProperty("_id")
   @Gson.Named("_id")
@@ -89,12 +105,14 @@ public interface Questionnaire extends WithValidation<Questionnaire>, Serializab
 
   @Value.Immutable
   @Value.Modifiable
-  @Value.Style(typeImmutable = "ImmutableQuestionnaire*", typeModifiable = "ModifiableQuestionnaire*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+  @Value.Style(typeImmutable = "ImmutableQuestionnaire*", typeModifiable = "ModifiableQuestionnaire*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
   @JsonSerialize(as = ImmutableQuestionnaireMetadata.class)
-  @JsonDeserialize(builder = ImmutableQuestionnaireMetadata.Builder.class)
+  @JsonDeserialize(builder = Metadata.Builder.class)
   @Gson.TypeAdapters
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   abstract class Metadata implements Serializable {
+
+    public static class Builder extends ImmutableQuestionnaireMetadata.Builder { }
 
     public enum Status {
       NEW,

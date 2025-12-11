@@ -24,9 +24,12 @@ import java.io.Serializable;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableQuestionnaireListItem.class)
-@JsonDeserialize(builder = ImmutableQuestionnaireListItem.Builder.class)
+@JsonDeserialize(builder = QuestionnaireListItem.Builder.class)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @Gson.TypeAdapters
 public interface QuestionnaireListItem extends Serializable {
+
+  class Builder extends ImmutableQuestionnaireListItem.Builder { }
 
   String getId();
 
