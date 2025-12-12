@@ -43,7 +43,7 @@ public interface LocalizedLabelOperator extends Expression {
 
   static LocalizedLabelOperator createLocalizedLabelOperator(@NonNull ProgramBuilder programBuilder, @NonNull Label label) {
     Map<String, Expression> value = new HashMap<>();
-    label.getLabels().forEach((key, labelString) -> {
+    label.labels().forEach((key, labelString) -> {
       int i = 0;
       final Matcher matcher = EXPRESSION_PATTERN.matcher(labelString);
       final List<Expression> expressions = new ArrayList<>();

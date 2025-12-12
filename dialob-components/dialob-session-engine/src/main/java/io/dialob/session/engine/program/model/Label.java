@@ -17,23 +17,34 @@ package io.dialob.session.engine.program.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import org.immutables.value.Value;
 
+import java.util.HashMap;
 import java.util.Map;
 
-@Value.Immutable
-public interface Label extends ProgramNode {
+public record Label(
+  @NonNull Map<String, String> labels
+) implements ProgramNode {
 
-  @NonNull
-  static Label createLabel(@NonNull Map<String,String> map) {
-    return ImmutableLabel.builder().putAllLabels(map).build();
+  public static final Label EMPTY_LABEL = new Label(Map.of());
+
+  public Label {
+    labels = Map.copyOf(labels);
   }
 
   @NonNull
-  Map<String, String> getLabels();
+  public static Label of(@NonNull Map<String,String> map) {
+    return new Label(map);
+  }
+
+  @NonNull
+  public Label with(@NonNull String label, @NonNull String value) {
+    var map = new HashMap<>(labels);
+    map.put(label, value);
+    return Label.of(map);
+  }
 
   @Nullable
-  default String getLabel(@NonNull String language) {
-    return getLabels().get(language);
+  public String getLabel(@NonNull String language) {
+    return labels().get(language);
   }
 }

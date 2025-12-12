@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P extends ExpressionCompiler & BuilderParent> implements Builder<P>, AliasesProvider {
 
-  public static final ImmutableLabel EMPTY_LABEL = ImmutableLabel.builder().build();
+  public static final Label EMPTY_LABEL = Label.EMPTY_LABEL;
 
   private final ProgramBuilder programBuilder;
 
@@ -99,22 +99,22 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T setLabel(Map<String, String> label) {
-    this.label = ImmutableLabel.builder().putAllLabels(label).build();
+    this.label = Label.of(label);
     return (T) this;
   }
 
   public T setLabel(String language, String label) {
-    this.label = ImmutableLabel.builder().from(this.label).putLabels(language, label).build();
+    this.label = this.label.with(language, label);
     return (T) this;
   }
 
   public T setDescription(Map<String,String> description) {
-    this.description = ImmutableLabel.builder().putAllLabels(description).build();
+    this.description = Label.of(description);
     return (T) this;
   }
 
   public T setDescription(String language, String description) {
-    this.description = ImmutableLabel.builder().from(this.description).putLabels(language, description).build();
+    this.description = this.description.with(language, description);
     return (T) this;
   }
 
@@ -205,7 +205,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   LocalizedLabelOperator createLabelOperator(Map<String, String> label) {
-    return createLabelOperator(Label.createLabel(label));
+    return createLabelOperator(Label.of(label));
   }
   LocalizedLabelOperator createLabelOperator(Label label) {
     return LocalizedLabelOperator.createLocalizedLabelOperator(getProgramBuilder(), label);

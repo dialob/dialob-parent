@@ -24,7 +24,7 @@ import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.ImmutableError;
 import io.dialob.session.engine.program.model.ImmutableFormItem;
-import io.dialob.session.engine.program.model.ImmutableLabel;
+import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatchers;
 import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
@@ -42,17 +42,15 @@ import static java.util.stream.Collectors.toMap;
 
 public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,ProgramBuilder> implements ExpressionCompiler, BuilderParent, HasDefaultValue {
 
-  public static final ImmutableLabel REQUIRED_LABEL = ImmutableLabel.builder()
-    .putLabels("fi", "T\u00E4yt\u00E4 puuttuva tieto.")
-    .putLabels("en", "Fill in the missing information.")
-    .putLabels("sv", "Fyll i uppgift som saknas.")
-    .build();
+  public static final Label REQUIRED_LABEL = Label.of(
+    Map.of("fi", "T\u00E4yt\u00E4 puuttuva tieto.",
+           "en", "Fill in the missing information.",
+           "sv", "Fyll i uppgift som saknas."));
 
-  public static final ImmutableLabel INVALID_SELECTION_LABEL = ImmutableLabel.builder()
-    .putLabels("fi", "Tarkista valinta.")
-    .putLabels("en", "Check the selection.")
-    .putLabels("sv", "Kontrollera valet.")
-    .build();
+  public static final Label INVALID_SELECTION_LABEL = Label.of(
+    Map.of("fi", "Tarkista valinta.",
+           "en", "Check the selection.",
+           "sv", "Kontrollera valet."));
 
   private Object defaultValue;
 
