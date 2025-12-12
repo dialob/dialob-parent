@@ -58,7 +58,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm -r install
+        pnpm -r install --ignore-scripts
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
