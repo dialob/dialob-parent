@@ -22,7 +22,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.ImmutableNotOnPageExpression;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.program.model.ImmutableGroup;
+import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
@@ -195,7 +195,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       }
     });
 
-    ImmutableGroup.Builder builder = ImmutableGroup.builder()
+    Group.Builder builder = new Group.Builder()
       .id(id)
       .type(type.getItemType())
       .view(view)

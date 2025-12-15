@@ -25,8 +25,8 @@ import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.*;
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.spring.tenant.TenantGrantedAuthority;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import io.dialob.tenant.service.rest.DialobTenantServiceAutoConfiguration;
@@ -184,7 +184,7 @@ class ApiControllerOnlyApiTest extends AbstractControllerTest {
     doReturn(Arrays.asList(
       new SimpleGrantedAuthority(Permissions.FORMS_GET),
       new SimpleGrantedAuthority(Permissions.QUESTIONNAIRES_GET),
-      ImmutableTenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
+      TenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
       .when(apiKeyAuthoritiesProvider).loadAuthorities(loadedApiKey);
     doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000"));
 
@@ -221,7 +221,7 @@ class ApiControllerOnlyApiTest extends AbstractControllerTest {
     doReturn(Optional.of(loadedApiKey)).when(clientApiKeyService).findByClientId("30313233-3435-3637-3839-313233343536");
     doNothing().when(apiKeyValidator).validateApiKey(eq(loadedApiKey), any(ApiKey.class));
     doReturn(List.of(
-      ImmutableTenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
+      TenantGrantedAuthority.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000")))
       .when(apiKeyAuthoritiesProvider).loadAuthorities(loadedApiKey);
     doReturn(true).when(tenantAccessEvaluator).doesUserHaveAccessToTenant(Tenant.of("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000"));
 

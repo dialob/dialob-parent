@@ -20,7 +20,10 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 
 @org.immutables.value.Value.Immutable
+@org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
 public interface ConditionalValue<T> extends ProgramNode, Value<T> {
+
+  class Builder<T> extends ImmutableConditionalValue.Builder<T> { }
 
   Expression getWhen();
 

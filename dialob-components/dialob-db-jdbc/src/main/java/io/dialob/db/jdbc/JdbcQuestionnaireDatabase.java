@@ -24,7 +24,6 @@ import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -302,7 +301,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
       Timestamp created = resultSet.getTimestamp(5);
       Timestamp updated = resultSet.getTimestamp(6);
       String owner = resultSet.getString(7);
-      consumer.accept(ImmutableMetadataRow.of(toId(idBytes), new Questionnaire.Metadata.Builder()
+      consumer.accept(MetadataRow.of(toId(idBytes), new Questionnaire.Metadata.Builder()
         .created(new Date(created.getTime()))
         .lastAnswer(updated)
         .formId(toId(formIdBytes))

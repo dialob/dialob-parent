@@ -21,9 +21,9 @@ import io.dialob.common.Constants;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.*;
+import io.dialob.session.engine.program.model.Error;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.program.model.ImmutableError;
-import io.dialob.session.engine.program.model.ImmutableFormItem;
+import io.dialob.session.engine.program.model.FormItem;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatchers;
 import io.dialob.session.engine.session.model.ImmutableValueSetId;
@@ -60,7 +60,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
   private String valueSetId;
 
-  private final List<io.dialob.session.engine.program.model.Error> errors = new ArrayList<>();
+  private final List<Error> errors = new ArrayList<>();
 
   private final List<ValidationBuilder> validationBuilders = new ArrayList<>();
 
@@ -149,7 +149,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     validationBuilders.forEach(validationBuilder -> validationBuilder.setPrototype(prototype));
     validationBuilders.forEach(validationBuilder -> validationBuilder.afterExpressionCompilation(errorConsumer));
     getProgramBuilder().addItem(
-      ImmutableFormItem.builder()
+      new FormItem.Builder()
         .id(id)
         .type(type)
         .view(view)
@@ -191,13 +191,13 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     return required != null && required || requiredWhen != null;
   }
 
-  private void createRequiredError(Consumer<io.dialob.session.engine.program.model.Error> errorConsumer) {
+  private void createRequiredError(Consumer<Error> errorConsumer) {
     var expression = not(isAnswered(getId()));
     if (requiredWhen != null) {
       // Should not return null when requiredWhen is not blank
       expression = and(expression, isRequired(getId()));
     }
-    errorConsumer.accept(ImmutableError.builder()
+    errorConsumer.accept(new Error.Builder()
       .itemId(getId())
       .code(Constants.ERROR_CODE_REQUIRED)
       .isPrototype(getId().isPartial())
@@ -206,7 +206,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       .label(createLabelOperator(REQUIRED_LABEL)).build());
   }
 
-  private void createNotValidSelectionError(Consumer<io.dialob.session.engine.program.model.Error> errorConsumer) {
+  private void createNotValidSelectionError(Consumer<Error> errorConsumer) {
     if (valueSetId == null) {
       return;
     }
@@ -232,7 +232,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       isAnswered(getId()),
       not(check)
     );
-    errorConsumer.accept(ImmutableError.builder()
+    errorConsumer.accept(new io.dialob.session.engine.program.model.Error.Builder()
       .itemId(getId())
       .code(Constants.ERROR_INVALID_SELECTION)
       .isPrototype(getId().isPartial())
@@ -251,7 +251,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     return compileExpression(expression, aliasesProvider, expressionConsumer, type, index);
   }
 
-  public void addError(io.dialob.session.engine.program.model.Error error) {
+  public void addError(Error error) {
     errors.add(error);
   }
 

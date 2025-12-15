@@ -18,7 +18,6 @@ package io.dialob.db.file;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 
 import java.util.function.Consumer;
@@ -34,7 +33,7 @@ public class QuestionnaireFileDatabase extends AbstractFileDatabase<Questionnair
     forAllFiles(file -> {
       Questionnaire questionnaire = loadFile(file);
       if (questionnaire != null) {
-        consumer.accept(ImmutableMetadataRow.of(questionnaire.getId(), questionnaire.getMetadata()));
+        consumer.accept(MetadataRow.of(questionnaire.getId(), questionnaire.getMetadata()));
       }
     });
   }

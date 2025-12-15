@@ -84,7 +84,7 @@ class DefaultTenantGrantedAuthorityProviderTest {
     SecurityContextHolder.setContext(context);
     AbstractAuthenticationToken authentication = mock();
     when(context.getAuthentication()).thenReturn(authentication);
-    when(authentication.getAuthorities()).thenReturn(List.of(ImmutableTenantGrantedAuthority.of("123", "read")));
+    when(authentication.getAuthorities()).thenReturn(List.of(TenantGrantedAuthority.of("123", "read")));
     var provider = new DefaultTenantGrantedAuthorityProvider();
     Optional<Tenant> optionalTenant = provider.get();
     assertTrue(optionalTenant.isPresent());

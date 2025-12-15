@@ -26,7 +26,7 @@ class GroupTest {
 
   @Test
   void shouldAcceptNullPropertyValues() {
-    var group = ImmutableGroup.builder()
+    var group = new Group.Builder()
       .id(IdUtils.toId("x"))
       .type("g")
       .itemsExpression(Mockito.mock(Expression.class))

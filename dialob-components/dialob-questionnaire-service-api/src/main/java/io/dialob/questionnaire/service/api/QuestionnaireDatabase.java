@@ -88,7 +88,7 @@ public interface QuestionnaireDatabase {
    * @return a {@code MetadataRow} containing the questionnaire's identifier and metadata; never null.
    */
   default MetadataRow findMetadata(String tenantId, String questionnaireId) {
-    return ImmutableMetadataRow.builder().id(questionnaireId).value(findOne(tenantId, questionnaireId).getMetadata()).build();
+    return new MetadataRow.Builder().id(questionnaireId).value(findOne(tenantId, questionnaireId).getMetadata()).build();
   }
 
   /**
@@ -104,7 +104,15 @@ public interface QuestionnaireDatabase {
    * holds the actual metadata details represented by {@link Questionnaire.Metadata}.
    */
   @Value.Immutable
+  @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
   interface MetadataRow extends Serializable {
+
+    class Builder extends ImmutableMetadataRow.Builder { }
+
+    static MetadataRow of(String id, Questionnaire.Metadata value) {
+      return ImmutableMetadataRow.of(id, value);
+    }
+
     @NonNull
     @Value.Parameter
     String getId();

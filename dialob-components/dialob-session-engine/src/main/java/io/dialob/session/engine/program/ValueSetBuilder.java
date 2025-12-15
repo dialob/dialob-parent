@@ -18,7 +18,6 @@ package io.dialob.session.engine.program;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.program.model.ImmutableValueSet;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
 import io.dialob.session.engine.session.model.ItemId;
@@ -43,7 +42,7 @@ public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, Progra
   @Override
   protected void afterExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     valueSetEntryBuilders.forEach(valueSetEntryBuilder -> valueSetEntryBuilder.afterExpressionCompilation(errorConsumer));
-    getProgramBuilder().add(ImmutableValueSet.builder().id(getIdStr()).entries(values).build());
+    getProgramBuilder().add(new ValueSet.Builder().id(getIdStr()).entries(values).build());
   }
 
   public ValueSetEntryBuilder addValue(String id) {

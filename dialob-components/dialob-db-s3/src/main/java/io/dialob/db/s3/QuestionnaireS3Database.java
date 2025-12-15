@@ -18,7 +18,6 @@ package io.dialob.db.s3;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -36,7 +35,7 @@ public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> i
   public void findAllMetadata(String tenantId, String ownerId, String formId, String formName, String formTag, Questionnaire.Metadata.Status status, @NonNull Consumer<MetadataRow> consumer) {
     forAllObjects(tenantId, object -> {
       String id = extractObjectName(object.key());
-      consumer.accept(ImmutableMetadataRow.of(
+      consumer.accept(MetadataRow.of(
         id,
         new Questionnaire.Metadata.Builder()
           .lastAnswer(Date.from(object.lastModified()))

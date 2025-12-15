@@ -237,7 +237,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
       return false;
     }
     ddrlExpressionCompiler.getAsyncFunctionVariableExpressions().forEach((key, value) -> addItem(
-      ImmutableVariableItem.builder()
+      new VariableItem.Builder()
         .id(IdUtils.toId(key))
         .type("variable")
         .isPrototype(false)
@@ -285,7 +285,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     if (rootItem == null) {
       throw new DialobProgramBuildException("Form do not have root");
     }
-    return ImmutableProgram.builder()
+    return new Program.Builder()
       .id(id)
       .rootItem(rootItem)
       .items(items)

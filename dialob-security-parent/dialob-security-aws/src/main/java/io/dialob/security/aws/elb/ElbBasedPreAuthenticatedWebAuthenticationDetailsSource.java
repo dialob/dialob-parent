@@ -20,7 +20,7 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.JWTProcessor;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
+import io.dialob.security.spring.tenant.GroupGrantedAuthority;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
@@ -71,7 +71,7 @@ public class ElbBasedPreAuthenticatedWebAuthenticationDetailsSource implements
       List<String> stringListClaim = accesstoken.getStringListClaim(groupsClaim);
       if (stringListClaim != null) {
         authorities = grantedAuthoritiesMapper.mapAuthorities(
-          stringListClaim.stream().map(claim -> ImmutableGroupGrantedAuthority.of(claim,claim)).toList()
+          stringListClaim.stream().map(claim -> GroupGrantedAuthority.of(claim,claim)).toList()
         );
       }
       return new PreAuthenticatedGrantedAuthoritiesWebAuthenticationDetails(

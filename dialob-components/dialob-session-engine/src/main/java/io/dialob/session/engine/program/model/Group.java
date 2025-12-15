@@ -20,8 +20,10 @@ import org.immutables.value.Value;
 import java.util.Optional;
 
 @Value.Immutable
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Group extends DisplayItem {
+
+  class Builder extends ImmutableGroup.Builder { }
 
   Expression getItemsExpression();
 

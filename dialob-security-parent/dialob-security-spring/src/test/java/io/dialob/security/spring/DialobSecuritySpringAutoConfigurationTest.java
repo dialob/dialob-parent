@@ -15,9 +15,9 @@
  */
 package io.dialob.security.spring;
 
-import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import io.dialob.security.spring.tenant.GroupGrantedAuthority;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
+import io.dialob.security.spring.tenant.TenantGrantedAuthority;
 import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class DialobSecuritySpringAutoConfigurationTest {
           .hasSingleBean(TenantAccessEvaluator.class);
         var mapper = context.getBean(GrantedAuthoritiesMapper.class);
         Assertions.assertTrue(mapper.mapAuthorities(Collections.emptySet()).isEmpty());
-        Assertions.assertTrue(mapper.mapAuthorities(List.of(ImmutableGroupGrantedAuthority.of("g1", "a"))).isEmpty());
+        Assertions.assertTrue(mapper.mapAuthorities(List.of(GroupGrantedAuthority.of("g1", "a"))).isEmpty());
       });
   }
 
@@ -90,7 +90,7 @@ class DialobSecuritySpringAutoConfigurationTest {
           .hasSingleBean(TenantAccessEvaluator.class);
         var mapper = context.getBean(GrantedAuthoritiesMapper.class);
         Assertions.assertTrue(mapper.mapAuthorities(Collections.emptySet()).isEmpty());
-        Collection<? extends GrantedAuthority> grantedAuthorities = mapper.mapAuthorities(List.of(ImmutableGroupGrantedAuthority.of("g1", "g1")));
+        Collection<? extends GrantedAuthority> grantedAuthorities = mapper.mapAuthorities(List.of(GroupGrantedAuthority.of("g1", "g1")));
         Assertions.assertEquals(2, grantedAuthorities.size());
       });
   }
@@ -108,22 +108,22 @@ class DialobSecuritySpringAutoConfigurationTest {
       ));
 
     Assertions.assertEquals(Set.of(
-      ImmutableGroupGrantedAuthority.of("none", "none")
-    ), mapper.apply(ImmutableGroupGrantedAuthority.of("none", "none")).collect(Collectors.toSet()));
+      GroupGrantedAuthority.of("none", "none")
+    ), mapper.apply(GroupGrantedAuthority.of("none", "none")).collect(Collectors.toSet()));
 
     Assertions.assertEquals(Set.of(
-      ImmutableTenantGrantedAuthority.of("t1", "t1")
-    ), mapper.apply(ImmutableGroupGrantedAuthority.of("g1", "g1")).collect(Collectors.toSet()));
+      TenantGrantedAuthority.of("t1", "t1")
+    ), mapper.apply(GroupGrantedAuthority.of("g1", "g1")).collect(Collectors.toSet()));
 
     Assertions.assertEquals(Set.of(
-      ImmutableTenantGrantedAuthority.of("t1", "t1"),
-      ImmutableTenantGrantedAuthority.of("t2", "t2")
-    ), mapper.apply(ImmutableGroupGrantedAuthority.of("g2", "g2")).collect(Collectors.toSet()));
+      TenantGrantedAuthority.of("t1", "t1"),
+      TenantGrantedAuthority.of("t2", "t2")
+    ), mapper.apply(GroupGrantedAuthority.of("g2", "g2")).collect(Collectors.toSet()));
 
     Assertions.assertEquals(Set.of(
-      ImmutableTenantGrantedAuthority.of("t1", "t1"),
-      ImmutableTenantGrantedAuthority.of("t2", "t2")
-    ), mapper.apply(ImmutableGroupGrantedAuthority.of("g2", "g2")).collect(Collectors.toSet()));
+      TenantGrantedAuthority.of("t1", "t1"),
+      TenantGrantedAuthority.of("t2", "t2")
+    ), mapper.apply(GroupGrantedAuthority.of("g2", "g2")).collect(Collectors.toSet()));
 
   }
 

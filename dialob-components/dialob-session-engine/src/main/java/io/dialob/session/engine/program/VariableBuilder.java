@@ -20,7 +20,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.ImmutableContextVariableReference;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.program.model.ImmutableVariableItem;
+import io.dialob.session.engine.program.model.VariableItem;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 
@@ -103,7 +103,7 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
         .map(value -> Utils.validateDefaultValue(IdUtils.toString(id), valueExpression.getValueType(), value, errorConsumer));
     }
     getProgramBuilder().addItem(
-      ImmutableVariableItem.builder()
+      new VariableItem.Builder()
         .id(id)
         .type(context ? "context" : "variable")
         .isPrototype(false)

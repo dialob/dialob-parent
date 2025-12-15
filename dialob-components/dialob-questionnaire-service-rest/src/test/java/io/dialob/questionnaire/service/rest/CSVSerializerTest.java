@@ -23,7 +23,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
@@ -176,7 +175,7 @@ class CSVSerializerTest {
   }
 
   private QuestionnaireDatabase.MetadataRow getQuestionnaireMetadataRow(Questionnaire questionnaire) {
-    return ImmutableMetadataRow.builder().id(questionnaire.getId()).value(new Questionnaire.Metadata.Builder().from(questionnaire.getMetadata()).build()).build();
+    return new QuestionnaireDatabase.MetadataRow.Builder().id(questionnaire.getId()).value(new Questionnaire.Metadata.Builder().from(questionnaire.getMetadata()).build()).build();
   }
 
   @Test

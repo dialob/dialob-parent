@@ -22,8 +22,8 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.arith.ImmutableIsActiveOperator;
 import io.dialob.session.engine.program.expr.arith.ImmutableIsDisabledOperator;
 import io.dialob.session.engine.program.expr.arith.Operators;
+import io.dialob.session.engine.program.model.Error;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.program.model.ImmutableError;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import org.apache.commons.lang3.StringUtils;
@@ -91,7 +91,7 @@ public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, Qu
       return;
     }
     getParent().addError(
-      ImmutableError.builder()
+      new Error.Builder()
         .itemId(getQuestionId())
         .code(errorCode)
         .isPrototype(prototype)

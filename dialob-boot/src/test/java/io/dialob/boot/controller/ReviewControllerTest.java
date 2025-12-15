@@ -19,7 +19,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.security.SecurityConfiguration;
 import io.dialob.boot.settings.*;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.spring.tenant.TenantAccessEvaluator;
 import io.dialob.security.tenant.CurrentTenant;
@@ -122,7 +121,7 @@ class ReviewControllerTest extends AbstractUIControllerTest {
   @Test
   @WithMockUser(username = "testUser", authorities = {"admin", "itest"})
   void test() throws Exception {
-    when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(ImmutableMetadataRow.builder().id("123").value(new Questionnaire.Metadata.Builder().formId("321").tenantId("xx").build()).build());
+    when(questionnaireDatabase.findMetadata(null, "123")).thenReturn(new QuestionnaireDatabase.MetadataRow.Builder().id("123").value(new Questionnaire.Metadata.Builder().formId("321").tenantId("xx").build()).build());
 
     mockMvc.perform(get("/review/123").params(tenantParam).accept(MediaType.TEXT_HTML))
       .andExpect(status().isOk())

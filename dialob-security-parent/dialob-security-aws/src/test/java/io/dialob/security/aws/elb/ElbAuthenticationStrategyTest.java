@@ -17,7 +17,7 @@ package io.dialob.security.aws.elb;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.JWTProcessor;
-import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
+import io.dialob.security.spring.tenant.GroupGrantedAuthority;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -83,8 +83,8 @@ class ElbAuthenticationStrategyTest  extends TestBase {
     Assertions.assertEquals("00000000-0000-0000-0000-000000000002", authenticationToken.getName());
     Assertions.assertEquals(idToken, authenticationToken.getCredentials());
     Assertions.assertEquals("00000000-0000-0000-0000-000000000002", ((UserDetails)authenticationToken.getPrincipal()).getUsername());
-    Assertions.assertIterableEquals(List.of(ImmutableGroupGrantedAuthority.of("admin", "admin")), ((UserDetails)authenticationToken.getPrincipal()).getAuthorities());
-    Assertions.assertIterableEquals(List.of(ImmutableGroupGrantedAuthority.of("admin", "admin")), authenticationToken.getAuthorities());
+    Assertions.assertIterableEquals(List.of(GroupGrantedAuthority.of("admin", "admin")), ((UserDetails)authenticationToken.getPrincipal()).getAuthorities());
+    Assertions.assertIterableEquals(List.of(GroupGrantedAuthority.of("admin", "admin")), authenticationToken.getAuthorities());
 
     SecurityContextHolder.clearContext();
 

@@ -83,11 +83,11 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T addClassname(@NonNull String className) {
-    return addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
+    return addClassname(new ConstantValue.Builder<String>().value(className).valueType(ValueType.STRING).build());
   }
 
   public T addClassname(String when, @NonNull String className) {
-    if (!compileExpression(when, expression -> addClassname(ImmutableConditionalValue.<String>builder().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, Optional.empty())) {
+    if (!compileExpression(when, expression -> addClassname(new ConditionalValue.Builder<String>().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, Optional.empty())) {
       addClassname(className);
     }
     return (T) this;
@@ -161,7 +161,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   public T addClassnames(List<String> classNames) {
     classNames.stream()
-      .map(className -> ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build())
+      .map(className -> new ConstantValue.Builder<String>().value(className).valueType(ValueType.STRING).build())
       .forEach(this.classNames::add);
     return (T) this;
   }

@@ -81,7 +81,7 @@ public class DialobSecuritySpringAutoConfiguration {
         return Stream.of(authority);
       }
       return groups
-          .stream().map(tenantId -> ImmutableTenantGrantedAuthority.builder()
+          .stream().map(tenantId -> new TenantGrantedAuthority.Builder()
             .authority(tenants.getOrDefault(tenantId, UNKNOWN_TENANT).name())
             .tenantId(tenantId)
             .build());

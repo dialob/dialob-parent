@@ -15,7 +15,7 @@
  */
 package io.dialob.tenant.service.rest;
 
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import io.dialob.security.spring.tenant.TenantGrantedAuthority;
 import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -43,7 +43,7 @@ class GrantedAuthorityTenantsProviderTest {
   void shouldReturnListOfTenantsFromAuthorizations() {
 
     SecurityContextHolder.setContext(new SecurityContextImpl(new TestingAuthenticationToken("","", List.of(
-      ImmutableTenantGrantedAuthority.of("12312", "aa")
+      TenantGrantedAuthority.of("12312", "aa")
     ))));
 
     TenantsProvider tenantsProvider = new GrantedAuthorityTenantsProvider();
