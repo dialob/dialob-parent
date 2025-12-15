@@ -23,7 +23,7 @@ public interface CurrentUserProvider {
   CurrentUser get();
 
   default String getUserId() {
-    return get().getUserId();
+    return get().userId();
   }
 
 }

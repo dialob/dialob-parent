@@ -98,7 +98,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     if (currentUserProvider.isPresent()) {
       CurrentUser currentUser = currentUserProvider.get().get();
       if (currentUser!=null) {
-        return currentUser.getUserId();
+        return currentUser.userId();
       }
     } else {
       LOGGER.debug("No currentUserProvider defined");

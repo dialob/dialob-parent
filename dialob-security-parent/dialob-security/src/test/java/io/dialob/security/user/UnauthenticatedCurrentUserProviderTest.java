@@ -22,7 +22,7 @@ class UnauthenticatedCurrentUserProviderTest {
 
   @Test
   void test() {
-    Assertions.assertEquals("unauthenticated", UnauthenticatedCurrentUserProvider.INSTANCE.get().getUserId());
+    Assertions.assertEquals("unauthenticated", UnauthenticatedCurrentUserProvider.INSTANCE.get().userId());
   }
 
 

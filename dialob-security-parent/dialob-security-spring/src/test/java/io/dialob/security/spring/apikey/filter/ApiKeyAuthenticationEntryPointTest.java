@@ -61,10 +61,10 @@ class ApiKeyAuthenticationEntryPointTest {
     final String content = outputStream.toString();
     ErrorsResponse errorsResponse = objectMapper.readValue(content, ErrorsResponse.class);
 
-    Assertions.assertEquals("Forbidden",errorsResponse.getError());
-    Assertions.assertEquals("Invalid key",errorsResponse.getMessage());
-    Assertions.assertEquals((Integer) 403, errorsResponse.getStatus());
-    Assertions.assertNotNull(errorsResponse.getTimestamp());
+    Assertions.assertEquals("Forbidden", errorsResponse.error());
+    Assertions.assertEquals("Invalid key", errorsResponse.message());
+    Assertions.assertEquals((Integer) 403, errorsResponse.status());
+    Assertions.assertNotNull(errorsResponse.timestamp());
     Mockito.verifyNoMoreInteractions(request, response);
   }
 }

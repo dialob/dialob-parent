@@ -17,7 +17,7 @@ package io.dialob.security.spring.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.dialob.security.ImmutableErrorsResponse;
+import io.dialob.security.ErrorsResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +46,7 @@ public class ApiKeyAuthenticationEntryPoint implements AuthenticationEntryPoint 
     if (authException != null) {
       response.setStatus(HttpStatus.FORBIDDEN.value());
       response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-      response.getOutputStream().write(objectMapper.writeValueAsBytes(ImmutableErrorsResponse.builder()
+      response.getOutputStream().write(objectMapper.writeValueAsBytes(new ErrorsResponse.Builder()
         .status(HttpStatus.FORBIDDEN.value())
         .error(HttpStatus.FORBIDDEN.getReasonPhrase())
         .message(authException.getMessage())

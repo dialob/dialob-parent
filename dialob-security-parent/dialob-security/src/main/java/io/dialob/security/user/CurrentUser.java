@@ -15,29 +15,14 @@
  */
 package io.dialob.security.user;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
-@Getter
-public class CurrentUser implements Serializable {
-
-  private final String userId;
-
-  private final String displayName;
-
-  private final String firstName;
-
-  private final String lastName;
-
-  private final String email;
-
-  public CurrentUser(String userId, String displayName, String firstName, String lastName, String email) {
-    this.userId = userId;
-    this.displayName = displayName;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-  }
+public record CurrentUser(
+  String userId,
+  String displayName,
+  String firstName,
+  String lastName,
+  String email
+) implements Serializable {
 
 }
