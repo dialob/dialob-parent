@@ -18,14 +18,21 @@ package io.dialob.integration.api.event;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.security.tenant.Tenant;
+import lombok.Getter;
 import org.immutables.value.Value;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormUpdatedEvent.class)
-@JsonDeserialize(builder = ImmutableFormUpdatedEvent.Builder.class)
+@Value.Builder
+@JsonSerialize(as = FormUpdatedEvent.class)
+@JsonDeserialize(builder = FormUpdatedEventBuilder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-public interface FormUpdatedEvent extends FormEvent, DistributedEvent {
+public record FormUpdatedEvent(
+  @Getter Tenant tenant,
+  @Getter String formId,
+  @Getter String source,
+  @Getter String revision
+) implements FormEvent, DistributedEvent {
 
-  String getRevision();
+
 
 }

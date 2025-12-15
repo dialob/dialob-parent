@@ -20,21 +20,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.dialob.security.tenant.Tenant;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormTaggedEvent.class)
-@JsonDeserialize(builder = ImmutableFormTaggedEvent.Builder.class)
+@Value.Builder
+@JsonSerialize(as = FormTaggedEvent.class)
+@JsonDeserialize(builder = FormTaggedEventBuilder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-public interface FormTaggedEvent extends FormEvent, DistributedEvent {
+public record FormTaggedEvent(
+  @Getter @NonNull Tenant tenant,
+  @Getter @NonNull String formId,
+  @Getter @NonNull String source,
+  @Getter @NonNull String formName,
+  @Nullable String refName,
+  @Getter @NonNull String tagName
+) implements FormEvent, DistributedEvent {
 
-  @NonNull
-  String getFormName();
-
-  @NonNull
-  String getTagName();
-
-  @Nullable
-  String getRefName();
 }

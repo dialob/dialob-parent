@@ -31,9 +31,9 @@ import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.integration.api.NodeId;
-import io.dialob.integration.api.event.ImmutableFormDeletedEvent;
-import io.dialob.integration.api.event.ImmutableFormTaggedEvent;
-import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
+import io.dialob.integration.api.event.FormDeletedEventBuilder;
+import io.dialob.integration.api.event.FormTaggedEventBuilder;
+import io.dialob.integration.api.event.FormUpdatedEventBuilder;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
@@ -245,7 +245,7 @@ public class FormsRestServiceController implements FormsRestService {
     Form updatedForm;
     if (!dryRun) {
       updatedForm = formDatabase.save(currentTenant.getId(), new Form.Builder().from(form).metadata(new Form.Metadata.Builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
-      eventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder().source(getNodeId().getId()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
+      eventPublisher.publishEvent(new FormUpdatedEventBuilder().source(getNodeId().getId()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
     } else {
       updatedForm = form;
     }
@@ -284,7 +284,7 @@ public class FormsRestServiceController implements FormsRestService {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Or Response.Status.METHOD_NOT_ALLOWED ??
     }
     formDatabase.delete(currentTenant.getId(), formId);
-    eventPublisher.publishEvent(ImmutableFormDeletedEvent.builder().source(getNodeId().getId()).tenant(currentTenant.get()).formId(formId).build());
+    eventPublisher.publishEvent(new FormDeletedEventBuilder().source(getNodeId().getId()).tenant(currentTenant.get()).formId(formId).build());
     return ok();
   }
 
@@ -361,7 +361,7 @@ public class FormsRestServiceController implements FormsRestService {
 
   protected ResponseEntity<Response> fireFormTaggedEvent(Optional<FormTag> formTag) {
     return formTag.map(newTag -> {
-      eventPublisher.publishEvent(ImmutableFormTaggedEvent.builder()
+      eventPublisher.publishEvent(new FormTaggedEventBuilder()
         .tenant(currentTenant.get())
         .source(getNodeId().getId())
         .formName(newTag.getFormName())

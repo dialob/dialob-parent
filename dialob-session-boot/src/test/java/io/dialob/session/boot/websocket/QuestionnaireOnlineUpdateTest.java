@@ -20,7 +20,7 @@ import io.dialob.api.form.FormItem;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
-import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
+import io.dialob.integration.api.event.FormUpdatedEventBuilder;
 import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfiguration;
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
 import io.dialob.security.tenant.Tenant;
@@ -118,7 +118,7 @@ class QuestionnaireOnlineUpdateTest extends AbstractWebSocketTests {
         updateFormOnlineBuilder2.putData(formItemBean.getId(), formItemBean);
         addItem(updateFormOnlineBuilder2, "q2", builder -> builder.type("text").putLabel("en", "Kysymys 2"));
         shouldFindForm(updateFormOnlineBuilder2.build());
-        applicationEventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder()
+        applicationEventPublisher.publishEvent(new FormUpdatedEventBuilder()
           .source("sourc3")
           .formId("updateFormOnline")
           .tenant(Tenant.of("testTenant"))
