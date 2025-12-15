@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.Date;
@@ -35,7 +34,7 @@ public class FormS3Database extends AbstractS3Database<Form> implements FormData
   public void findAllMetadata(String tenantId, Form.Metadata metadata, @NonNull Consumer<FormMetadataRow> consumer) {
     forAllObjects(tenantId, object -> {
       String id = extractObjectName(object.key());
-      consumer.accept(ImmutableFormMetadataRow.of(
+      consumer.accept(FormMetadataRow.of(
         id,
         new Form.Metadata.Builder()
           .lastSaved(Date.from(object.lastModified()))

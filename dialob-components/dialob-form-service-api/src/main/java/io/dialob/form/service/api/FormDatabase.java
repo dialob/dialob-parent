@@ -17,7 +17,6 @@ package io.dialob.form.service.api;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
-import org.immutables.value.Value;
 
 import java.util.function.Consumer;
 
@@ -42,15 +41,24 @@ public interface FormDatabase {
   @NonNull
   Form save(String tenantId, @NonNull Form document);
 
-  @Value.Immutable
-  interface FormMetadataRow {
-    @Value.Parameter
-    @NonNull
-    String getId();
+  record FormMetadataRow(
+    @NonNull String id,
+    @NonNull Form.Metadata value
+  ) {
 
-    @Value.Parameter
+    public static FormMetadataRow of(String id, Form.Metadata metadata) {
+      return new FormMetadataRow(id, metadata);
+    }
+
     @NonNull
-    Form.Metadata getValue();
+    public String getId() {
+      return id;
+    }
+
+    @NonNull
+    public Form.Metadata getValue() {
+      return value;
+    }
   }
 
   void findAllMetadata(String tenantId, Form.Metadata metadata, @NonNull Consumer<FormMetadataRow> consumer);

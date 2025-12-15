@@ -22,7 +22,6 @@ import io.dialob.api.form.FormTag;
 import io.dialob.db.spi.exceptions.*;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -510,7 +509,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
               throw new RuntimeException("Unable to parse label array formName = %s, TenantId = %s".formatted(name, tId), e);
             }
           }
-          consumer.accept(ImmutableFormMetadataRow.of(name, metadataBuilder.build()));
+          consumer.accept(FormMetadataRow.of(name, metadataBuilder.build()));
         }
         return null;
       }, params.toArray());

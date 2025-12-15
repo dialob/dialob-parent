@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 
 import java.util.Date;
 import java.util.Objects;
@@ -52,7 +51,7 @@ public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDataba
   public void findAllMetadata(String tenantId, Form.Metadata metadata, @NonNull Consumer<FormMetadataRow> consumer) {
     forAllObjects(tenantId, object -> {
       String id = extractObjectName(object.getName());
-      consumer.accept(ImmutableFormMetadataRow.of(
+      consumer.accept(FormMetadataRow.of(
         id,
         new Form.Metadata.Builder()
           .lastSaved(Date.from(object.getProperties().getLastModified().toInstant()))

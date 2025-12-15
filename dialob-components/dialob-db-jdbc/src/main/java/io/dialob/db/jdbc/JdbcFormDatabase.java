@@ -22,7 +22,6 @@ import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -188,7 +187,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
             throw new RuntimeException("Unable to parse label array", e);
           }
         }
-        consumer.accept(ImmutableFormMetadataRow.of(toId(id), metadataBuilder.build()));
+        consumer.accept(FormMetadataRow.of(toId(id), metadataBuilder.build()));
       }, params.toArray());
       return null;
     });

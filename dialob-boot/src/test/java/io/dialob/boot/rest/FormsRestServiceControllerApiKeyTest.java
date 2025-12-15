@@ -15,7 +15,6 @@
  */
 package io.dialob.boot.rest;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.boot.Application;
 import io.dialob.boot.security.SecurityConfiguration;
@@ -187,32 +186,8 @@ class FormsRestServiceControllerApiKeyTest {
   void shouldLookupFormsFromRepository() {
     doAnswer(invocation -> {
       Consumer consumer = (Consumer) invocation.getArguments()[2];
-      consumer.accept(new FormDatabase.FormMetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "1";
-        }
-
-        @NonNull
-        @Override
-        public Form.Metadata getValue() {
-          return new Form.Metadata.Builder().label("l1").build();
-        }
-      });
-      consumer.accept(new FormDatabase.FormMetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "2";
-        }
-
-        @NonNull
-        @Override
-        public Form.Metadata getValue() {
-          return new Form.Metadata.Builder().label("l2").build();
-        }
-      });
+      consumer.accept(FormDatabase.FormMetadataRow.of("1", new Form.Metadata.Builder().label("l1").build()));
+      consumer.accept(FormDatabase.FormMetadataRow.of("2", new Form.Metadata.Builder().label("l2").build()));
       return null;
     }).when(formDatabase).findAllMetadata(anyString(), isNull(), any(Consumer.class));
 

@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 
 import java.util.function.Consumer;
 
@@ -34,7 +33,7 @@ public class FormFileDatabase extends AbstractFileDatabase<Form> implements Form
     forAllFiles(file -> {
       final Form document = loadFile(file);
       if (document != null) {
-        consumer.accept(ImmutableFormMetadataRow.of(document.getId(), document.getMetadata()));
+        consumer.accept(FormMetadataRow.of(document.getId(), document.getMetadata()));
       }
     });
   }
