@@ -245,7 +245,7 @@ public class FormsRestServiceController implements FormsRestService {
     Form updatedForm;
     if (!dryRun) {
       updatedForm = formDatabase.save(currentTenant.getId(), new Form.Builder().from(form).metadata(new Form.Metadata.Builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
-      eventPublisher.publishEvent(new FormUpdatedEventBuilder().source(getNodeId().getId()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
+      eventPublisher.publishEvent(new FormUpdatedEventBuilder().source(getNodeId().id()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
     } else {
       updatedForm = form;
     }
@@ -284,7 +284,7 @@ public class FormsRestServiceController implements FormsRestService {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Or Response.Status.METHOD_NOT_ALLOWED ??
     }
     formDatabase.delete(currentTenant.getId(), formId);
-    eventPublisher.publishEvent(new FormDeletedEventBuilder().source(getNodeId().getId()).tenant(currentTenant.get()).formId(formId).build());
+    eventPublisher.publishEvent(new FormDeletedEventBuilder().source(getNodeId().id()).tenant(currentTenant.get()).formId(formId).build());
     return ok();
   }
 
@@ -363,7 +363,7 @@ public class FormsRestServiceController implements FormsRestService {
     return formTag.map(newTag -> {
       eventPublisher.publishEvent(new FormTaggedEventBuilder()
         .tenant(currentTenant.get())
-        .source(getNodeId().getId())
+        .source(getNodeId().id())
         .formName(newTag.getFormName())
         .tagName(newTag.getName())
         .formId(newTag.getFormId())

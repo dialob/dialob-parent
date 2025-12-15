@@ -16,21 +16,22 @@
 package io.dialob.integration.api;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableNodeId.class)
-@JsonDeserialize(builder = ImmutableNodeId.Builder.class)
-public interface NodeId extends Serializable {
+public record NodeId(
+  @NonNull String id
+) implements Serializable {
 
-  String getId();
+  public NodeId() {
+    this(UUID.randomUUID().toString());
+  }
 
-  String getHost();
-
-  int getPort();
+  public NodeId {
+    id = Objects.requireNonNull(id, "id must not be null");
+  }
 
 }

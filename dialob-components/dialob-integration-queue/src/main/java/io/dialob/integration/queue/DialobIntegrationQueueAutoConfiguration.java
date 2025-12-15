@@ -16,23 +16,17 @@
 package io.dialob.integration.queue;
 
 import io.dialob.integration.api.Constants;
-import io.dialob.integration.api.ImmutableNodeId;
 import io.dialob.integration.api.NodeId;
 import io.dialob.integration.queue.redis.DistributedEventBridge;
 import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.UUID;
 
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(name = "io.dialob.integration.redis.DialobIntegrationRedisAutoConfiguration")
@@ -40,9 +34,8 @@ import java.util.UUID;
 public class DialobIntegrationQueueAutoConfiguration {
 
   @Bean
-  public NodeId nodeId(ServerProperties serverProperties) throws UnknownHostException {
-    String host = InetAddress.getLocalHost().getHostName();
-    NodeId nodeId = ImmutableNodeId.builder().id(UUID.randomUUID().toString()).host(host).port(serverProperties.getPort()).build();
+  public NodeId nodeId() {
+    var nodeId = new NodeId();
     LOGGER.info("Created node : {}", nodeId);
     return nodeId;
   }

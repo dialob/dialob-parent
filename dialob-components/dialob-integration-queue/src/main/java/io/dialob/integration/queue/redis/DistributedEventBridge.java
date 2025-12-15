@@ -27,6 +27,8 @@ import org.springframework.integration.support.MessageBuilderFactory;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageDeliveryException;
 
+import java.util.Objects;
+
 @Slf4j
 public class DistributedEventBridge {
 
@@ -69,6 +71,6 @@ public class DistributedEventBridge {
   }
 
   private boolean isFromThisNode(DistributedEvent event) {
-    return nodeId.getId().equals(event.getSource());
+    return Objects.equals(nodeId.id(), event.getSource());
   }
 }

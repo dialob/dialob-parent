@@ -305,7 +305,7 @@ class FormsRestServiceControllerTest {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
     when(currentUserProvider.getUserId()).thenReturn("user");
-    when(nodeId.getId()).thenReturn("testnode");
+    when(nodeId.id()).thenReturn("testnode");
     when(formVersionControlDatabase.getFormDatabase()).thenReturn(formDatabase);
     when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
     when(formVersionControlDatabase.moveTag(eq("t-123"), any())).thenReturn(Optional.of(new FormTag.Builder()
@@ -346,7 +346,7 @@ class FormsRestServiceControllerTest {
 
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
-    when(nodeId.getId()).thenReturn("testnode");
+    when(nodeId.id()).thenReturn("testnode");
     when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
     when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123")).thenReturn(Optional.of(new FormTag.Builder()
       .formName("myform")
@@ -362,7 +362,7 @@ class FormsRestServiceControllerTest {
 
     verify(currentTenant,atLeastOnce()).getId();
     verify(currentTenant).get();
-    verify(nodeId).getId();
+    verify(nodeId).id();
     verify(formVersionControlDatabase).isName("t-123","myform");
     verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user-123");
 
@@ -383,7 +383,7 @@ class FormsRestServiceControllerTest {
     when(currentTenant.getId()).thenReturn("t-123");
     when(currentTenant.get()).thenReturn(Tenant.of("t-123"));
     when(currentUserProvider.getUserId()).thenReturn("user");
-    when(nodeId.getId()).thenReturn("testnode");
+    when(nodeId.id()).thenReturn("testnode");
     when(formVersionControlDatabase.isName("t-123","myform")).thenReturn(true);
     when(formVersionControlDatabase.createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user")).thenReturn(Optional.of(new FormTag.Builder()
       .formName("myform")
@@ -400,7 +400,7 @@ class FormsRestServiceControllerTest {
     verify(currentTenant,atLeastOnce()).getId();
     verify(currentTenant).get();
     verify(currentUserProvider).getUserId();
-    verify(nodeId).getId();
+    verify(nodeId).id();
     verify(formVersionControlDatabase).isName("t-123","myform");
     verify(formVersionControlDatabase).createTag("t-123", "myform", "newtag", null, "1234", FormTag.Type.NORMAL, "user");
 
