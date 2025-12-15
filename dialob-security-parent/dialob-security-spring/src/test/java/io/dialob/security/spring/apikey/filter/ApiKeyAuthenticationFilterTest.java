@@ -16,7 +16,6 @@
 package io.dialob.security.spring.apikey.filter;
 
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationToken;
@@ -88,7 +87,7 @@ class ApiKeyAuthenticationFilterTest {
       try {
         SecurityContextHolder.setStrategyName("MODE_GLOBAL");
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("user", "pass"));
-        when(keyRequestExtractor.extract(request)).thenReturn(ImmutableApiKey.of("cli").withToken("sig"));
+        when(keyRequestExtractor.extract(request)).thenReturn(ApiKey.of("cli").withToken("sig"));
         apiKeyAuthenticationFilter.attemptAuthentication(request);
       } finally {
         verify(keyRequestExtractor).extract(request);
@@ -102,7 +101,7 @@ class ApiKeyAuthenticationFilterTest {
   @Test
   void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated() {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
-      ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
+      ApiKey apiKey = ApiKey.of("cli").withToken("sig");
       ApiKeyAuthenticationToken apiAuthenticationToken = Mockito.mock(ApiKeyAuthenticationToken.class);
       try {
         when(keyRequestExtractor.extract(request)).thenReturn(apiKey);
@@ -122,7 +121,7 @@ class ApiKeyAuthenticationFilterTest {
   @Test
   void shouldThrowApiKeyAuthenticationExceptionIfApiKeyCannotBeAuthenticated2() {
     Assertions.assertThrows(ApiKeyAuthenticationException.class, () -> {
-      ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
+      ApiKey apiKey = ApiKey.of("cli").withToken("sig");
       try {
         when(keyRequestExtractor.extract(request)).thenReturn(apiKey);
         when(authenticationManager.authenticate(any(ApiKeyAuthenticationToken.class))).thenReturn(null);
@@ -138,7 +137,7 @@ class ApiKeyAuthenticationFilterTest {
 
   @Test
   void shouldAcceptValidatedKey() {
-    ApiKey apiKey = ImmutableApiKey.of("cli").withToken("sig");
+    ApiKey apiKey = ApiKey.of("cli").withToken("sig");
     ApiKeyAuthenticationToken apiAuthenticationToken = Mockito.mock(ApiKeyAuthenticationToken.class);
     when(keyRequestExtractor.extract(request)).thenReturn(apiKey);
     when(apiAuthenticationToken.isAuthenticated()).thenReturn(true);

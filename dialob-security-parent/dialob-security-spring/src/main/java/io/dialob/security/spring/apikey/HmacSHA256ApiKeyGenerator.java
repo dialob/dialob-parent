@@ -17,7 +17,6 @@ package io.dialob.security.spring.apikey;
 
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -48,7 +47,7 @@ public class HmacSHA256ApiKeyGenerator implements ApiKeyGenerator {
       byte[] tokenBytes = new byte[30];
       System.arraycopy(clientIdUUID, 0, tokenBytes, 0, 16);
       System.arraycopy(secret, 0, tokenBytes, 16, 14);
-      return ImmutableApiKey.builder()
+      return new ApiKey.Builder()
         .clientId(clientId)
         .hash(Base64.getEncoder().encodeToString(hash))
         .token(Base64.getEncoder().encodeToString(tokenBytes))

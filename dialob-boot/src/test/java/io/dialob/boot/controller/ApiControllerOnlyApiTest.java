@@ -21,7 +21,6 @@ import io.dialob.common.Permissions;
 import io.dialob.form.service.rest.FormsRestServiceController;
 import io.dialob.questionnaire.service.rest.QuestionnairesRestServiceController;
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import io.dialob.security.spring.AuthenticationStrategy;
 import io.dialob.security.spring.apikey.*;
@@ -174,7 +173,7 @@ class ApiControllerOnlyApiTest extends AbstractControllerTest {
 
   @Test
   void canAccessFormsWithApiKey() throws Exception {
-    ApiKey loadedApiKey = ImmutableApiKey.builder()
+    ApiKey loadedApiKey = new ApiKey.Builder()
       .clientId("30313233-3435-3637-3839-313233343536")
       .tenantId("00000000-0000-0000-0000-000000000000")
       .hash("abc")
@@ -213,7 +212,7 @@ class ApiControllerOnlyApiTest extends AbstractControllerTest {
 
   @Test
   void fetchTenantsWithApiKey() throws Exception {
-    ApiKey loadedApiKey = ImmutableApiKey.builder()
+    ApiKey loadedApiKey = new ApiKey.Builder()
       .clientId("30313233-3435-3637-3839-313233343536")
       .tenantId("00000000-0000-0000-0000-000000000000")
       .hash("abc")

@@ -16,7 +16,6 @@
 package io.dialob.security.spring.apikey;
 
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -64,7 +63,7 @@ class ApiKeyAuthenticationProviderTest {
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
 
     ApiKeyAuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
-    final Authentication authentication = new ApiKeyAuthenticationToken(Collections.emptyList(), ImmutableApiKey.of("client").withHash("hash"));
+    final Authentication authentication = new ApiKeyAuthenticationToken(Collections.emptyList(), ApiKey.of("client").withHash("hash"));
     assertSame(authentication, authenticationProvider.authenticate(authentication));
     Mockito.verifyNoMoreInteractions(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
   }
@@ -75,7 +74,7 @@ class ApiKeyAuthenticationProviderTest {
     ApiKeyAuthoritiesProvider apiKeyAuthoritiesProvider = Mockito.mock(ApiKeyAuthoritiesProvider.class);
     ApiKeyValidator apiKeyValidator = Mockito.mock(ApiKeyValidator.class);
 
-    final ApiKey validApiKey = ImmutableApiKey.builder()
+    final ApiKey validApiKey = new ApiKey.Builder()
       .clientId("client")
       .hash("hash")
       .build();
@@ -84,7 +83,7 @@ class ApiKeyAuthenticationProviderTest {
 
 
     ApiKeyAuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
-    final Authentication authentication = new ApiKeyAuthenticationToken(Collections.emptyList(), ImmutableApiKey.of("client").withToken("token"));
+    final Authentication authentication = new ApiKeyAuthenticationToken(Collections.emptyList(), ApiKey.of("client").withToken("token"));
     final Authentication authentication2 = authenticationProvider.authenticate(authentication);
 
 
@@ -95,7 +94,7 @@ class ApiKeyAuthenticationProviderTest {
 
     verify(apiKeyService).findByClientId("client");
     verify(apiKeyAuthoritiesProvider).loadAuthorities(validApiKey);
-    verify(apiKeyValidator).validateApiKey(validApiKey, ImmutableApiKey.of("client").withToken("token"));
+    verify(apiKeyValidator).validateApiKey(validApiKey, ApiKey.of("client").withToken("token"));
 
     Mockito.verifyNoMoreInteractions(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
   }
@@ -111,7 +110,7 @@ class ApiKeyAuthenticationProviderTest {
     ApiKeyAuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
     assertThrows(
       BadCredentialsException.class,
-      () -> authenticationProvider.authenticate(new ApiKeyAuthenticationToken(Collections.emptyList(), ImmutableApiKey.of("client").withToken("token"))));
+      () -> authenticationProvider.authenticate(new ApiKeyAuthenticationToken(Collections.emptyList(), ApiKey.of("client").withToken("token"))));
 
     verify(apiKeyService).findByClientId("client");
     Mockito.verifyNoMoreInteractions(apiKeyService, apiKeyAuthoritiesProvider, apiKeyValidator);
