@@ -168,7 +168,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   @Override
   public Optional<ValueSetVisitor> visitValueSets() {
     return Optional.of(valueSet -> {
-      updates.add(CommandFactory.updateValueSet(ImmutableValueSetId.of(valueSet.getId()), valueSet.getEntries()));
+      updates.add(CommandFactory.updateValueSet(new ValueSetId(valueSet.getId()), valueSet.getEntries()));
       ValueSetState valueSetState = new ValueSetState(valueSet.getId());
       valueSetState = valueSetState.update().setEntries(findProvidedValueSetEntries.apply(valueSetState.getId())).get();
       valueSets.add(valueSetState);

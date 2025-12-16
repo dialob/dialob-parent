@@ -16,7 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ImmutableValueSetId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class ValueSetToListOperatorTest {
   void nonExistingValueSetDoesNotGenerateList() {
     EvalContext context = Mockito.mock(EvalContext.class);
     ValueSetToListOperator valueSetToListOperator = ImmutableValueSetToListOperator.builder()
-      .valueSetId(ImmutableValueSetId.of("vs1")).build();
+      .valueSetId(new ValueSetId("vs1")).build();
     Object result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(
       List.of(), (Iterable<?>) result);
@@ -47,11 +47,11 @@ class ValueSetToListOperatorTest {
       ValueSetState.Entry.of("b", "Label B"),
       ValueSetState.Entry.of("c", "Label C")
     )).get();
-    when(context.getValueSetState(ImmutableValueSetId.of("vs1")))
+    when(context.getValueSetState(new ValueSetId("vs1")))
       .thenReturn(Optional.of(vss));
 
     ValueSetToListOperator valueSetToListOperator = ImmutableValueSetToListOperator.builder()
-      .valueSetId(ImmutableValueSetId.of("vs1")).build();
+      .valueSetId(new ValueSetId("vs1")).build();
     Object result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(
       List.of("a","b","c"), (Iterable<?>) result);

@@ -20,8 +20,8 @@ import io.dialob.session.engine.program.ProgramBuilder;
 import io.dialob.session.engine.program.expr.OutputFormatter;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -154,11 +154,11 @@ class LocalizedLabelOperatorTest {
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
     when(valueSet.getEntries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
-    when(context.getValueSetState(ImmutableValueSetId.of("vs1"))).thenReturn(Optional.of(valueSet));
+    when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
     assertEquals("Otsikko Choice 1", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
-    verify(context).getValueSetState(ImmutableValueSetId.of("vs1"));
+    verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verify(valueSet).getEntries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
@@ -172,11 +172,11 @@ class LocalizedLabelOperatorTest {
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
     when(valueSet.getEntries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
-    when(context.getValueSetState(ImmutableValueSetId.of("vs1"))).thenReturn(Optional.of(valueSet));
+    when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
     assertEquals("Otsikko choice 1", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
-    verify(context).getValueSetState(ImmutableValueSetId.of("vs1"));
+    verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verify(valueSet).getEntries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
@@ -191,11 +191,11 @@ class LocalizedLabelOperatorTest {
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
     when(valueSet.getEntries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
-    when(context.getValueSetState(ImmutableValueSetId.of("vs1"))).thenReturn(Optional.of(valueSet));
+    when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
     assertEquals("Otsikko CHOICE 1", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
-    verify(context).getValueSetState(ImmutableValueSetId.of("vs1"));
+    verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verify(valueSet).getEntries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
@@ -226,12 +226,12 @@ class LocalizedLabelOperatorTest {
         ValueSetState.Entry.of("x2","Choice 2")
       )
     );
-    when(context.getValueSetState(ImmutableValueSetId.of("vs1"))).thenReturn(Optional.of(valueSet));
+    when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
 
     assertEquals("Otsikko Choice 1, Choice 2", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
-    verify(context).getValueSetState(ImmutableValueSetId.of("vs1"));
+    verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verify(valueSet).getEntries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);

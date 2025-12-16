@@ -23,8 +23,8 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import org.apache.commons.lang3.StringUtils;
 import org.immutables.value.Value;
 
@@ -91,7 +91,7 @@ public interface LocalizedLabelOperator extends Expression {
 
   static Expression toStringExpression(@NonNull ProgramBuilder programBuilder, ItemId itemId, VariableReference variableReference) {
     return programBuilder.findValueSetIdForItem(itemId)
-      .<Expression>map(valueSetId -> ImmutableValueSetEntryToStringOperator.of(ImmutableValueSetId.of(valueSetId), variableReference))
+      .<Expression>map(valueSetId -> ImmutableValueSetEntryToStringOperator.of(new ValueSetId(valueSetId), variableReference))
       .orElseGet(() -> ImmutableToStringOperator.of(variableReference));
   }
 

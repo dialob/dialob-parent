@@ -25,7 +25,10 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.command.Trigger;
 import io.dialob.session.engine.session.command.UpdateCommand;
-import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.model.ErrorId;
+import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -126,7 +129,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
 
   @Override
   public Optional<ValueSetVisitor> visitValueSets() {
-    return Optional.of(valueSet -> updateCommandFactory.createUpdateValueSetCommand(ImmutableValueSetId.of(valueSet.getId()), valueSet.getEntries()));
+    return Optional.of(valueSet -> updateCommandFactory.createUpdateValueSetCommand(new ValueSetId(valueSet.getId()), valueSet.getEntries()));
   }
 
   @Override

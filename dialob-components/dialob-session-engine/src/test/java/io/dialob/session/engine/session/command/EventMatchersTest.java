@@ -17,8 +17,8 @@ package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import org.junit.jupiter.api.Test;
 
 import static io.dialob.session.engine.session.command.EventMatchers.*;
@@ -72,9 +72,9 @@ class EventMatchersTest {
 
   @Test
   void valueSetUpdate() {
-    assertTrue(whenValueSetUpdated(ImmutableValueSetId.of("vs1")).matches(valueSetUpdatedEvent(ImmutableValueSetId.of("vs1"))));
-    assertFalse(whenValueSetUpdated(ImmutableValueSetId.of("vs1")).matches(valueSetUpdatedEvent(ImmutableValueSetId.of("vs2"))));
-    assertFalse(whenValueSetUpdated(ImmutableValueSetId.of("vs1")).matches(itemsChangedEvent(onTarget(toRef("vs1")))));
+    assertTrue(whenValueSetUpdated(new ValueSetId("vs1")).matches(valueSetUpdatedEvent(new ValueSetId("vs1"))));
+    assertFalse(whenValueSetUpdated(new ValueSetId("vs1")).matches(valueSetUpdatedEvent(new ValueSetId("vs2"))));
+    assertFalse(whenValueSetUpdated(new ValueSetId("vs1")).matches(itemsChangedEvent(onTarget(toRef("vs1")))));
   }
 
 }

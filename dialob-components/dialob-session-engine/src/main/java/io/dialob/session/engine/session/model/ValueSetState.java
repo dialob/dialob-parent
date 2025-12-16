@@ -117,7 +117,7 @@ public class ValueSetState implements SessionObject {
   }
 
   public ValueSetState(@NonNull String id) {
-    this.id = ImmutableValueSetId.of(id);
+    this.id = new ValueSetId(id);
   }
 
   public ValueSetState(@NonNull ValueSetState valueSetState) {

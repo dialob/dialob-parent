@@ -26,9 +26,9 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.FormItem;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatchers;
-import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemRef;
+import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -216,7 +216,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
         .lhs(ImmutableSizeOperator.builder()
           .expression(ImmutableIntersectionOperator.builder()
             .lhs(Operators.var(getId(), ValueType.STRING))
-            .rhs(ImmutableValueSetToListOperator.of(ImmutableValueSetId.of(valueSetId)))
+            .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
             .build()).build())
         .rhs(ImmutableSizeOperator.builder()
           .expression(Operators.var(getId(), ValueType.STRING)).build())
@@ -224,7 +224,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     } else {
       check = ImmutableInOperator.builder()
         .lhs(var(getId(), ValueType.STRING))
-        .rhs(ImmutableValueSetToListOperator.of(ImmutableValueSetId.of(valueSetId)))
+        .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
         .build();
     }
     var expression = and(
