@@ -18,10 +18,21 @@ package io.dialob.rest;
 import io.dialob.api.rest.Errors;
 import io.dialob.rest.type.ApiException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import java.lang.reflect.Executable;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class RestApiExceptionMapperTest {
 
@@ -51,6 +62,51 @@ class RestApiExceptionMapperTest {
     assertNull(errorsOut.getTrace());
     assertNull(errorsOut.getPath());
     assertNull(errorsOut.getErrors());
+  }
+
+  @Test
+  void shouldReturnErrorWithoutDetails() {
+    RestApiExceptionMapper mapper = new RestApiExceptionMapper();
+    MethodArgumentNotValidException exception = mock();
+    BindingResult bindingResult = mock();
+    when(exception.getBindingResult()).thenReturn(bindingResult);
+    when(bindingResult.getAllErrors()).thenReturn(List.of());
+    var entity = mapper.handleMethodArgumentNotValidException(exception);
+
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, entity.getStatusCode());
+    Errors errorsResult = (Errors) entity.getBody();
+    assertEquals(new Errors.Builder()
+      .timestamp(errorsResult.getTimestamp())
+      .status(422).error("Unprocessable Entity").build(), errorsResult);
+
+    Mockito.verify(exception, Mockito.times(1)).getBindingResult();
+    Mockito.verify(exception, Mockito.times(1)).getMessage();
+    Mockito.verify(bindingResult, Mockito.times(1)).getAllErrors();
+    Mockito.verifyNoMoreInteractions(exception);
+  }
+  @Test
+
+  void shouldReturnErrorWithDetails() {
+    RestApiExceptionMapper mapper = new RestApiExceptionMapper();
+    MethodArgumentNotValidException exception = mock();
+    BindingResult bindingResult = mock();
+    when(exception.getBindingResult()).thenReturn(bindingResult);
+    when(bindingResult.getAllErrors()).thenReturn(List.of(new ObjectError("objectName", "defaultMessage")));
+    var entity = mapper.handleMethodArgumentNotValidException(exception);
+
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, entity.getStatusCode());
+    Errors errorsResult = (Errors) entity.getBody();
+    assertEquals(new Errors.Builder()
+      .timestamp(errorsResult.getTimestamp())
+      .addErrors(new Errors.Error.Builder()
+        .error("defaultMessage")
+        .build())
+      .status(422).error("Unprocessable Entity").build(), errorsResult);
+
+    Mockito.verify(exception, Mockito.times(1)).getBindingResult();
+    Mockito.verify(exception, Mockito.times(1)).getMessage();
+    Mockito.verify(bindingResult, Mockito.times(1)).getAllErrors();
+    Mockito.verifyNoMoreInteractions(exception);
   }
 
 }
