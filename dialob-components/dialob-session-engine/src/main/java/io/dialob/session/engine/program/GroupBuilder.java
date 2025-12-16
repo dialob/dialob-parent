@@ -24,9 +24,9 @@ import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemIdPartial;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -172,7 +172,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .map(AbstractItemBuilder::getId)
       .map(
         getType() == Type.ROWGROUP ?
-        itemId -> ((ImmutableItemRef) itemId).withParent(ImmutableItemIdPartial.of(Optional.of(getId()))) :
+        itemId -> ((ImmutableItemRef) itemId).withParent(new ItemIdPartial(getId())) :
         itemId -> itemId
       )
       .toList();
@@ -250,7 +250,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
     getProgramBuilder().addItem(builder.build());
     if (type == Type.ROWGROUP) {
       // Row prototype for row group ..
-      final ImmutableItemIdPartial rowGroupPrototypeId = ImmutableItemIdPartial.of(Optional.of(id));
+      final ItemIdPartial rowGroupPrototypeId = new ItemIdPartial(id);
       getProgramBuilder().addItem(builder
         .id(rowGroupPrototypeId)
         .type("row")

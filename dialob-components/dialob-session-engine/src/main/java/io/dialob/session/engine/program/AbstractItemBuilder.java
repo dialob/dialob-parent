@@ -22,9 +22,9 @@ import io.dialob.session.engine.program.expr.arith.BooleanOperators;
 import io.dialob.session.engine.program.expr.arith.LocalizedLabelOperator;
 import io.dialob.session.engine.program.model.*;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemIdPartial;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.StringUtils;
@@ -197,7 +197,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   void setupId() {
     // FormVisitor guarantees hierarchical visiting order
-    this.itemId = findHostingRowgroupId().map(hostingGroup -> ImmutableItemRef.of(id, Optional.of(ImmutableItemIdPartial.of(Optional.of(hostingGroup))))).orElse((ImmutableItemRef) IdUtils.toId(id));
+    this.itemId = findHostingRowgroupId().map(hostingGroup -> ImmutableItemRef.of(id, Optional.of(new ItemIdPartial(hostingGroup)))).orElse((ImmutableItemRef) IdUtils.toId(id));
   }
 
   public Optional<ValueType> getValueType() {

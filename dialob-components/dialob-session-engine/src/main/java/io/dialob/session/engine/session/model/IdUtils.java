@@ -91,7 +91,7 @@ public class IdUtils {
       if (StringUtils.isNumeric(s)) {
         id = ImmutableItemIndex.of(Integer.parseInt(s), Optional.ofNullable(id));
       } else if ("*".equals(s)) {
-        id = ImmutableItemIdPartial.of(Optional.ofNullable(id));
+        id = new ItemIdPartial(id);
       } else {
         id = ImmutableItemRef.of(s, Optional.ofNullable(id));
       }
@@ -152,7 +152,7 @@ public class IdUtils {
       byte type = input.readRawByte();
       return switch (type) {
         case 1 -> ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
-        case 2 -> ImmutableItemIdPartial.of(Optional.ofNullable(readIdFrom(input)));
+        case 2 -> new ItemIdPartial(readIdFrom(input));
         case 3 -> ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
         default -> throw new RuntimeException("unknown id type " + type);
       };

@@ -41,7 +41,7 @@ class IdUtilsTest {
 
     assertEquals("var1.10.a", IdUtils.toString(ImmutableItemRef.of("a", Optional.of(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("var1")))))));
     assertEquals("var1.10", IdUtils.toString(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("var1")))));
-    assertEquals("var1.*", IdUtils.toString(ImmutableItemIdPartial.of(Optional.of(IdUtils.toId("var1")))));
+    assertEquals("var1.*", IdUtils.toString(new ItemIdPartial(IdUtils.toId("var1"))));
   }
 
 

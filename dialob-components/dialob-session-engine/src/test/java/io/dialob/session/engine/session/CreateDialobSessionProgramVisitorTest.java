@@ -217,7 +217,7 @@ class CreateDialobSessionProgramVisitorTest {
       .build();
 
     final var row = new Group.Builder()
-      .id(ImmutableItemIdPartial.of(Optional.of(itemId)))
+      .id(new ItemIdPartial(itemId))
       .type("row")
       .isPrototype(true)
       .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())

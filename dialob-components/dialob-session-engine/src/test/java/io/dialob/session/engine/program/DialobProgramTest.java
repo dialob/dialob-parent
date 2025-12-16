@@ -24,8 +24,8 @@ import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.command.event.ImmutableActiveUpdatedEvent;
 import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
+import io.dialob.session.engine.session.model.ItemIdPartial;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -92,7 +92,7 @@ class DialobProgramTest {
     // when
     Optional<Item> rgroup = dialobProgram.getItem(IdUtils.toId("rgroup"));
     Assertions.assertTrue(rgroup.isPresent());
-    rgroup = dialobProgram.getItem(ImmutableItemIdPartial.of(Optional.of(IdUtils.toId("rgroup"))));
+    rgroup = dialobProgram.getItem(new ItemIdPartial(IdUtils.toId("rgroup")));
     Assertions.assertTrue(rgroup.isPresent());
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
@@ -140,10 +140,10 @@ class DialobProgramTest {
     // when
     Optional<Item> rgroup = dialobProgram.getItem(IdUtils.toId("rgroup"));
     Assertions.assertTrue(rgroup.isPresent());
-    rgroup = dialobProgram.getItem(ImmutableItemIdPartial.of(Optional.of(IdUtils.toId("rgroup"))));
+    rgroup = dialobProgram.getItem(new ItemIdPartial(IdUtils.toId("rgroup")));
     Assertions.assertTrue(rgroup.isPresent());
 
-    Optional<Item> question2 = dialobProgram.getItem(ImmutableItemRef.of("question2", Optional.of(ImmutableItemIdPartial.of(Optional.of(IdUtils.toId("rgroup"))))));
+    Optional<Item> question2 = dialobProgram.getItem(ImmutableItemRef.of("question2", Optional.of(new ItemIdPartial(IdUtils.toId("rgroup")))));
     Assertions.assertTrue(question2.isPresent());
 
     Set<Event> allUpdates = dialobProgram.allUpdates();

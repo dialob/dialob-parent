@@ -25,7 +25,7 @@ class ItemIdPartialTest {
 
   @Test
   void test() {
-    ItemId itemIdPartial = ImmutableItemIdPartial.of(Optional.of(ImmutableItemRef.of("i1", Optional.empty())));
+    ItemId itemIdPartial = new ItemIdPartial(ImmutableItemRef.of("i1", Optional.empty()));
     ItemId itemId = IdUtils.toId("i1.3");
     IdUtils.matches(itemIdPartial, itemId);
     assertTrue(IdUtils.matches(itemIdPartial, itemId));
