@@ -89,7 +89,7 @@ public class ErrorState implements SessionObject {
   }
 
   public ErrorState(@NonNull ItemId itemId, String code, String label) {
-    this(ImmutableErrorId.of(itemId, code), label);
+    this(new ErrorId(itemId, code), label);
   }
 
   public ErrorState(@NonNull ErrorId targetId, String label) {
@@ -118,11 +118,11 @@ public class ErrorState implements SessionObject {
   }
 
   public ItemId getItemId() {
-    return targetId.getItemId();
+    return targetId.itemId();
   }
 
   public String getCode() {
-    return targetId.getCode();
+    return targetId.code();
   }
 
   @Override
@@ -141,12 +141,12 @@ public class ErrorState implements SessionObject {
   }
 
   public void writeTo(CodedOutputStream output) throws IOException {
-    IdUtils.writeIdTo(targetId.getItemId(), output);
-    if (targetId.getCode() == null) {
+    IdUtils.writeIdTo(targetId.itemId(), output);
+    if (targetId.code() == null) {
       output.writeBoolNoTag(false);
     } else {
       output.writeBoolNoTag(true);
-      output.writeStringNoTag(targetId.getCode());
+      output.writeStringNoTag(targetId.code());
     }
     output.writeStringNoTag(label);
     output.writeBoolNoTag(active);

@@ -298,7 +298,7 @@ public final class EventMatchers {
     @Override
     default boolean matches(Event event) {
       if (event instanceof ErrorEvent errorEvent) {
-        return getTargetId().equals(errorEvent.getErrorId().getItemId());
+        return getTargetId().equals(errorEvent.getErrorId().itemId());
       }
       return false;
     }

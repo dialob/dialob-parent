@@ -48,7 +48,7 @@ public class IdUtils {
     while (id.isPresent()) {
       itemId = id.get();
       if (itemId instanceof ErrorId errorId) {
-        return toString(errorId.getItemId()) + ":" + errorId.getCode();
+        return toString(errorId.itemId()) + ":" + errorId.code();
       } else if (itemId instanceof ItemRef ref) {
         idChain.add(ref.getId());
       } else if (itemId instanceof ItemIndex index) {

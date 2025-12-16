@@ -17,35 +17,33 @@ package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import org.immutables.value.Value;
 
 import java.util.Optional;
 
-@Value.Immutable
-public interface ErrorId extends ItemId {
+public record ErrorId(
+  @NonNull ItemId itemId,
+  @Nullable String code
+) implements ItemId {
 
-  @Value.Parameter
-  @NonNull
-  ItemId getItemId();
 
-  @Value.Parameter
-  @Nullable
-  String getCode();
-
-  default String getValue() {
+  @Override
+  public String getValue() {
     // TODO
-    return getCode();
+    return this.code;
   }
 
-  ErrorId withItemId(ItemId value);
-
-  default Optional<ItemId> getParent() {
-    return Optional.of(getItemId());
+  public ErrorId withItemId(ItemId itemId) {
+    return new ErrorId(itemId, this.code);
   }
 
   @Override
-  default boolean isPartial() {
-    return getItemId().isPartial();
+  public Optional<ItemId> getParent() {
+    return Optional.of(this.itemId);
+  }
+
+  @Override
+  public boolean isPartial() {
+    return this.itemId.isPartial();
   }
 }
 

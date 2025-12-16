@@ -33,16 +33,16 @@ class ItemIdPartialTest {
 
   @Test
   void partialErrorsShouldNotMatch() {
-    ErrorId errorId1 = ImmutableErrorId.of(IdUtils.toId("i1.3"),"ERR");
-    ErrorId errorId2 = ImmutableErrorId.of(IdUtils.toId("i2.3"),"ERR");
+    ErrorId errorId1 = new ErrorId(IdUtils.toId("i1.3"),"ERR");
+    ErrorId errorId2 = new ErrorId(IdUtils.toId("i2.3"),"ERR");
     assertNotEquals(errorId1,errorId2);
     assertFalse(IdUtils.matches(errorId1, errorId2));
   }
 
   @Test
   void partialErrorsShouldMatch() {
-    ErrorId errorId1 = ImmutableErrorId.of(IdUtils.toId("i1.*"),"ERR");
-    ErrorId errorId2 = ImmutableErrorId.of(IdUtils.toId("i1.3"),"ERR");
+    ErrorId errorId1 = new ErrorId(IdUtils.toId("i1.*"),"ERR");
+    ErrorId errorId2 = new ErrorId(IdUtils.toId("i1.3"),"ERR");
     assertNotEquals(errorId1,errorId2);
     assertTrue(IdUtils.matches(errorId1, errorId2));
   }

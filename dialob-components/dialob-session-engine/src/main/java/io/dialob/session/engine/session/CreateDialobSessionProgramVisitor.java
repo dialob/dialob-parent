@@ -152,7 +152,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   @Override
   public Optional<ErrorVisitor> visitErrors() {
     return Optional.of(error -> {
-      final ErrorId targetId = ImmutableErrorId.of(error.getItemId(), error.getCode());
+      final ErrorId targetId = new ErrorId(error.getItemId(), error.getCode());
       ErrorState errorState = new ErrorState(targetId, (String) null);
       if (error.isPrototype()) {
         errorPrototypes.add(errorState);

@@ -15,8 +15,8 @@
  */
 package io.dialob.session.engine.session.command;
 
+import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableErrorId;
 import io.dialob.session.engine.session.model.ImmutableValueSetId;
 import io.dialob.session.engine.session.model.ItemId;
 import org.junit.jupiter.api.Test;
@@ -36,11 +36,11 @@ class EventMatchersTest {
 
   @Test
   void errorEventMatchers() {
-    assertTrue(errorActivity(anyError()).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
-    assertTrue(errorActivity(targetError(IdUtils.toId("a"))).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
-    assertFalse(errorActivity(targetError(IdUtils.toId("b"))).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
-    assertTrue(errorActivity(error(ImmutableErrorId.of(IdUtils.toId("a"),"b"))).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
-    assertFalse(errorActivity(error(ImmutableErrorId.of(IdUtils.toId("b"),"a"))).matches(errorActivityUpdatedEvent(ImmutableErrorId.of(toRef("a"),"b"))));
+    assertTrue(errorActivity(anyError()).matches(errorActivityUpdatedEvent(new ErrorId(toRef("a"),"b"))));
+    assertTrue(errorActivity(targetError(IdUtils.toId("a"))).matches(errorActivityUpdatedEvent(new ErrorId(toRef("a"),"b"))));
+    assertFalse(errorActivity(targetError(IdUtils.toId("b"))).matches(errorActivityUpdatedEvent(new ErrorId(toRef("a"),"b"))));
+    assertTrue(errorActivity(error(new ErrorId(IdUtils.toId("a"),"b"))).matches(errorActivityUpdatedEvent(new ErrorId(toRef("a"),"b"))));
+    assertFalse(errorActivity(error(new ErrorId(IdUtils.toId("b"),"a"))).matches(errorActivityUpdatedEvent(new ErrorId(toRef("a"),"b"))));
   }
 
   private ItemId toRef(String a) {

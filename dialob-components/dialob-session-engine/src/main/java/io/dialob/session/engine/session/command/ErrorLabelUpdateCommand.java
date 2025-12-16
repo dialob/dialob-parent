@@ -40,7 +40,7 @@ public interface ErrorLabelUpdateCommand extends ErrorUpdateCommand {
     var set = new HashSet<>(getExpression().getEvalRequiredConditions());
     set.add(EventMatchers.whenSessionLocaleUpdated());
     if (getTargetId().isPartial()) {
-      set.add(EventMatchers.whenItemAdded(getTargetId().getItemId()));
+      set.add(EventMatchers.whenItemAdded(getTargetId().itemId()));
     }
     return Set.copyOf(set);
   }

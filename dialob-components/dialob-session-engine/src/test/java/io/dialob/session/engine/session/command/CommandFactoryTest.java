@@ -115,7 +115,7 @@ class CommandFactoryTest {
     Expression expression =
       Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), ImmutableConstant.builder().valueType(ValueType.INTEGER).value(0).build()));
     //;
-    UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(ImmutableErrorId.of(itemId, "err"), expression);
+    UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
     Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();
     List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();

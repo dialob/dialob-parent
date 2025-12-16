@@ -115,7 +115,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
   @Override
   public Optional<ErrorVisitor> visitErrors() {
     return Optional.of(error -> {
-      final ErrorId targetId = ImmutableErrorId.of(error.getItemId(), error.getCode());
+      final ErrorId targetId = new ErrorId(error.getItemId(), error.getCode());
       updateCommandFactory.createUpdateValidationCommand(targetId, error.getValidationExpression());
       error.getDisabledExpression().ifPresent(disabledExpression -> updateCommandFactory.createUpdateValidationDisabled(targetId, disabledExpression));
       if (error.getLabel() != null) {
