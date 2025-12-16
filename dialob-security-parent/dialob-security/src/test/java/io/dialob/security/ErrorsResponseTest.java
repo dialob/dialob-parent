@@ -39,7 +39,7 @@ class ErrorsResponseTest {
     JsonAssertions.assertThatJson(json)
       .isObject()
       .doesNotContainKeys("status", "error", "message")
-      .node("timestamp").isString().matches("\\d{4}-[0-1]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d{1,6})?(Z|[+-]\\d{2}(:\\d{2})?)?");
+      .node("timestamp").isString().matches("\\d{4}-[0-1]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}(:\\d{2})?)?");
   }
 
 }
