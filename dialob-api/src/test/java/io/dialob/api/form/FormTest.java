@@ -30,6 +30,16 @@ class FormTest {
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
+  void hasBuilder() {
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("label").build())
+      .build();
+    Assertions.assertNotNull(form);
+    Assertions.assertNotNull(form.getMetadata());
+    Assertions.assertEquals("label", form.getMetadata().getLabel());
+  }
+
+  @Test
   void metadataIsRequired() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Form.Builder().build());
     assertEquals(1, exception.getConstraintViolations().size());

@@ -26,6 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class AnswerTest {
 
   @Test
+  void hasBuilder() {
+    Answer.Builder builder = new Answer.Builder();
+    builder.id("q1");
+    Answer answer = builder.build();
+    assertEquals("q1", answer.getId());
+  }
+
+  @Test
   void shouldParseAnswer() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Answer answer = objectMapper.readValue("{\"id\":\"q1\"}", Answer.class);

@@ -27,6 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class QuestionnaireTest {
 
   @Test
+  void hasBuilder() {
+    Questionnaire.Builder builder = new Questionnaire.Builder();
+    builder.id("12");
+    builder.metadata(new Questionnaire.Metadata.Builder().formId("123").build());
+    Questionnaire questionnaire = builder.build();
+    assertEquals("12", questionnaire.getId());
+    assertEquals("123", questionnaire.getMetadata().getFormId());
+  }
+
+  @Test
   void gsonShouldSerializeCompatibleJson() {
     Questionnaire questionnaire = QuestionnaireFactory.questionnaire("12","123");
     Gson gson = new GsonBuilder()

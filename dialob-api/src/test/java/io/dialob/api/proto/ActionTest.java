@@ -23,6 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ActionTest {
 
   @Test
+  void hasBuilder() {
+    Action action = new Action.Builder()
+      .type(Action.Type.ANSWER)
+      .build();
+    assertEquals(Action.Type.ANSWER, action.getType());
+  }
+
+  @Test
   void shouldParseAction() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Action action = objectMapper.readValue("{\"type\":\"ANSWER\"}", Action.class);
