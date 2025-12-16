@@ -56,4 +56,20 @@ class QuestionnaireTest {
     assertEquals("must not be null", constraintViolation.getMessage());
     assertEquals("metadata.formId", constraintViolation.getPropertyPath().toString());
   }
+
+  @Test
+  void shouldCreateValidQuestionnaire() {
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .id("12")
+      .metadata(new Questionnaire.Metadata.Builder().formId("123").build())
+      .build();
+
+    Assertions.assertEquals(questionnaire, questionnaire.withId("12"));
+    Questionnaire actual = questionnaire.withId("123");
+    Assertions.assertNotEquals(questionnaire, actual);
+    Assertions.assertEquals("123", actual.getId());
+    Assertions.assertEquals(questionnaire, questionnaire.withRev(null));
+    Assertions.assertEquals("r12", questionnaire.withRev("r12").getRev());
+
+  }
 }
