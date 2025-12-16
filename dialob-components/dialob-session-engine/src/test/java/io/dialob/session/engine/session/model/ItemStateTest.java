@@ -19,6 +19,8 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -88,7 +90,14 @@ class ItemStateTest {
     Assertions.assertEquals(itemState1, ItemState.readFrom(inputStream));
     Assertions.assertEquals(itemState2, ItemState.readFrom(inputStream));
     Assertions.assertEquals(itemState3, ItemState.readFrom(inputStream));
+  }
 
+  @Test
+  void shouldEqualsAndHashCode() {
+    EqualsVerifier.forClass(ItemState.class)
+      .suppress(Warning.NONFINAL_FIELDS)
+      .withIgnoredFields("value")
+      .verify();
   }
 
 }

@@ -38,7 +38,7 @@ import static io.dialob.session.engine.Utils.writeNullableString;
 
 @EqualsAndHashCode
 @ToString
-public class ItemState implements SessionObject {
+public final class ItemState implements SessionObject {
 
   @Serial
   private static final long serialVersionUID = -3974128908954128671L;
@@ -61,7 +61,7 @@ public class ItemState implements SessionObject {
     ERROR,
 
     /**
-     * expecting value from asyncronous evaluation
+     * expecting value from asynchronous evaluation
      */
     PENDING
   }
@@ -104,7 +104,7 @@ public class ItemState implements SessionObject {
   @Getter
   private String description;
 
-  // indicates whethet questionnaire is completed
+  // indicates whether questionnaire is completed
 
   @Getter
   private List<String> classNames = List.of();
@@ -121,23 +121,22 @@ public class ItemState implements SessionObject {
 
   private ItemId activePage;
 
-  protected void setBits(boolean toValue, int bit) {
+  private void setBits(boolean toValue, int bit) {
     if (toValue) {
       setBits(bit);
     } else {
       resetBits(bit);
     }
   }
-  protected void setBits(int bit) {
+  private void setBits(int bit) {
     bits = bits | bit;
   }
 
-
-  protected void resetBits(int bit) {
+  private void resetBits(int bit) {
     bits = bits & (~bit);
   }
 
-  protected boolean isBit(int bit) {
+  private boolean isBit(int bit) {
     return (bits & bit) != 0;
   }
 

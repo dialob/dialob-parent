@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.session.model;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -47,4 +48,8 @@ class ItemIdPartialTest {
     assertTrue(IdUtils.matches(errorId1, errorId2));
   }
 
+  @Test
+  void shouldEquals() {
+    EqualsVerifier.forClass(ItemIdPartial.class).verify();
+  }
 }

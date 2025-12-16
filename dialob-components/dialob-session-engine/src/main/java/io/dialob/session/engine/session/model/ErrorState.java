@@ -29,7 +29,7 @@ import java.util.Objects;
 
 @EqualsAndHashCode
 @ToString
-public class ErrorState implements SessionObject {
+public final class ErrorState implements SessionObject {
 
   @Serial
   private static final long serialVersionUID = -6652593868401573582L;
