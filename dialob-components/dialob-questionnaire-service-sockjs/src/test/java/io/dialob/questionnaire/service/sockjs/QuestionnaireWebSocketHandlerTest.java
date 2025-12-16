@@ -19,6 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
+import io.dialob.questionnaire.service.api.event.ImmutableQuestionnaireCompletedEvent;
+import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -161,6 +164,178 @@ class QuestionnaireWebSocketHandlerTest {
     verify(taskExecutor).execute(any(Runnable.class));
     verify(questionnaireSessionService).findOne("123-321");
     verifyNoMoreInteractions(taskExecutor, questionnaireSessionService);
+  }
+
+  // ========== Tests for onQuestionnaireCompletedEvent ==========
+
+  @Test
+  void shouldSendCompleteActionWhenQuestionnaireCompletedEventIsForThisHandler() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler to set questionnaireId
+    doAnswer(invocation -> {
+      // Don't execute the task for initialization
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Create a completed event for the same questionnaire
+    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
+      .questionnaireId("questionnaire-123")
+      .tenant(Tenant.of("test-tenant"))
+      .build();
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
+
+    // Verify that a COMPLETE action was sent
+    verify(webSocketSession, new VerificationMode() {
+      @Override
+      public void verify(VerificationData data) {
+        // Find the sendMessage call (should be the last one after initialization)
+        boolean foundCompleteMessage = false;
+        for (int i = data.getAllInvocations().size() - 1; i >= 0; i--) {
+          if ("sendMessage".equals(data.getAllInvocations().get(i).getMethod().getName())) {
+            TextMessage textMessage = data.getAllInvocations().get(i).getArgument(0);
+            String message = new String(textMessage.asBytes());
+            if (message.contains("\"type\":\"COMPLETE\"") &&
+                message.contains("\"id\":\"questionnaire-123\"")) {
+              foundCompleteMessage = true;
+              break;
+            }
+          }
+        }
+        assertEquals(true, foundCompleteMessage, "Expected COMPLETE action to be sent");
+      }
+
+      @Override
+      public VerificationMode description(String description) {
+        return this;
+      }
+    }).sendMessage(any(TextMessage.class));
+  }
+
+  @Test
+  void shouldNotSendMessageWhenQuestionnaireCompletedEventIsNotForThisHandler() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler to set questionnaireId
+    doAnswer(invocation -> {
+      // Don't execute the task for initialization
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Clear the mock to track only new interactions
+    Mockito.clearInvocations(webSocketSession);
+
+    // Create a completed event for a DIFFERENT questionnaire
+    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
+      .questionnaireId("different-questionnaire-456")
+      .tenant(Tenant.of("test-tenant"))
+      .build();
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
+
+    // Verify that NO message was sent
+    verify(webSocketSession, never()).sendMessage(any(TextMessage.class));
+  }
+
+  @Test
+  void shouldSendCompleteActionWithCorrectQuestionnaireId() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-789");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-xyz");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Create a completed event
+    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
+      .questionnaireId("questionnaire-789")
+      .tenant(Tenant.of("test-tenant"))
+      .build();
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
+
+    // Verify the message contains COMPLETE action with correct questionnaire ID
+    ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+    verify(webSocketSession, atLeastOnce()).sendMessage(messageCaptor.capture());
+
+    // Find the COMPLETE message in the captured messages
+    boolean foundCompleteMessage = false;
+    for (TextMessage msg : messageCaptor.getAllValues()) {
+      String message = new String(msg.asBytes());
+      if (message.contains("\"type\":\"COMPLETE\"") && message.contains("\"id\":\"questionnaire-789\"")) {
+        foundCompleteMessage = true;
+        break;
+      }
+    }
+    assertEquals(true, foundCompleteMessage, "Expected to find a COMPLETE action message with correct questionnaire ID");
+  }
+
+  @Test
+  void shouldNotSendMessageWhenSessionIsClosed() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Close the session
+    when(webSocketSession.isOpen()).thenReturn(false);
+
+    // Clear the mock to track only new interactions
+    Mockito.clearInvocations(webSocketSession);
+
+    // Create a completed event
+    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
+      .questionnaireId("questionnaire-123")
+      .tenant(Tenant.of("test-tenant"))
+      .build();
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
+
+    // Verify that NO message was sent because session is closed
+    verify(webSocketSession, never()).sendMessage(any(TextMessage.class));
   }
 
 }
