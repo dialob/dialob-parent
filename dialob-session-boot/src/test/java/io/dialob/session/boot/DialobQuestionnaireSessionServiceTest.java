@@ -372,21 +372,24 @@ class DialobQuestionnaireSessionServiceTest {
       .answer("question1", LocalDate.now().toString())
       .assertThat(assertion -> {
         assertion.hasSize(2)
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ERROR, null, null, null, "question1"),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ERROR, null, null, null, "question1"),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
       .nextPage()
       .assertThat(assertion -> {
         assertion
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("group1", "page1", "question1"), null, null, null),
-          tuple(ITEM, null, "page2", "Second page", null),
-          tuple(ITEM, null, "question2", "Sivu kysymys", null),
-          tuple(ITEM, null, "group2", "New Group", null),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ITEMS, Arrays.asList("group1", "page1", "question1"), null, null, null),
+            tuple(ITEM, null, "page2", "Second page", null),
+            tuple(ITEM, null, "question2", "Sivu kysymys", null),
+            tuple(ITEM, null, "group2", "New Group", null),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
       .nextPage()
       .assertThat(assertion -> {
@@ -395,26 +398,31 @@ class DialobQuestionnaireSessionServiceTest {
       .previousPage()
       .assertThat(assertion -> {
         assertion
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
-          tuple(ITEM, null, "page1", "New Page", null),
-          tuple(ITEM, null, "question1", "New Question", null),
-          tuple(ITEM, null, "group1", "New Group", null),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
+            tuple(ITEM, null, "page1", "New Page", null),
+            tuple(ITEM, null, "question1", "New Question", null),
+            tuple(ITEM, null, "group1", "New Group", null),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
 //      .answer("question1", LocalDate.now().toString())
       .answer("question1", "2019-01-01")
       .assertThat(assertion -> {
         assertion.hasSize(1)
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Kysely", null)
         );
       })
       .nextPage()
       .assertThat(assertion -> {
         assertion.hasSize(5)
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("group1", "page1", "question1"), null, null, null),
           tuple(ITEM, null, "page2", "Second page", null),
           tuple(ITEM, null, "question2", "Sivu kysymys", null),
@@ -425,15 +433,17 @@ class DialobQuestionnaireSessionServiceTest {
       .nextPage()
       .assertThat(assertion -> {
         assertion.hasSize(7) // Now page4 is available, because question1 is whenValidUpdated
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
-          tuple(ITEM, null, "page3", "third page", null),
-          tuple(ITEM, null, "question3", "New Question", null),
-          tuple(ITEM, null, "question4", "New Question", null),
-          tuple(ITEM, null, "question5", "New Question", null),
-          tuple(ITEM, null, "group3", "New Group", null),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
+            tuple(ITEM, null, "page3", "third page", null),
+            tuple(ITEM, null, "question3", "New Question", null),
+            tuple(ITEM, null, "question4", "New Question", null),
+            tuple(ITEM, null, "question5", "New Question", null),
+            tuple(ITEM, null, "group3", "New Group", null),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
       .apply();
   }
@@ -489,18 +499,22 @@ class DialobQuestionnaireSessionServiceTest {
     fillForm("io/dialob/session/engine/hiddengroup.json")
       .answer("question1", true)
       .assertThat(assertion -> assertion
-        .extracting("type", "item.id").containsExactlyInAnyOrder(
+        .extracting("type", "item.id")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, "question2"),
           tuple(ITEM, "group2")
         ))
       .answer("question2", true)
       .assertThat(assertion -> assertion
-        .extracting("type", "item.id").containsExactly(
+        .extracting("type", "item.id")
+        .containsExactly(
           tuple(ITEM, "question3")
         ))
       .answer("question1", false)
       .assertThat(assertion -> assertion.hasSize(1)
-        .extracting("type", "ids").containsExactlyInAnyOrder( // question3 is also removed as it is controlled by a question from hidden group
+        .extracting("type", "ids")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder( // question3 is also removed as it is controlled by a question from hidden group
           tuple(REMOVE_ITEMS, Arrays.asList("question3", "group2", "question2"))
         ))
       .apply();
@@ -952,7 +966,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .answer("decimal1", null)
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("surveygroup1", "boolean1", "survey1"), null, null, null)
         ))
       .apply();
@@ -985,7 +1001,9 @@ class DialobQuestionnaireSessionServiceTest {
       .assertThat(AbstractIterableAssert::isEmpty)
       .answer("list1", "c")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("text1", "group3"), null, null, null)
         ))
       .answer("list1", null)
@@ -1124,19 +1142,23 @@ class DialobQuestionnaireSessionServiceTest {
       })
       .answer("enableError","true")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER), null),
           tuple(ERROR, null, null, null, null, "text1")
         ))
       .answer("enableError","false")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT, Action.Type.COMPLETE), null),
           tuple(REMOVE_ERROR, null, null, null, null, "text1")
         ))
       .nextPage()
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("group1", "text1", "enableError", "group2"), null, null, null, null),
           tuple(ITEM, null, "page2Error", null, null, null),
           tuple(ITEM, null, "group5", null, null, null),
@@ -1151,7 +1173,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .previousPage()
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("page2Error", "group5", "group3"), null, null, null, null),
           tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT), null),
           tuple(ITEM, null, "group1", null, null, null),
@@ -1910,7 +1934,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .deleteRow("rowgroup1.1") // issue https://github.com/dialob/dialob-parent/issues/15
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "rowgroup1", null, List.of("rowgroup1.0"), Set.of(ADD_ROW), null),
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.1.text1", "rowgroup1.1"), null, null, null, null, null),

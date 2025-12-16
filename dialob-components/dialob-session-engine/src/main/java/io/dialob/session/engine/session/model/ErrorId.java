@@ -18,8 +18,6 @@ package io.dialob.session.engine.session.model;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 
-import java.util.Optional;
-
 public record ErrorId(
   @NonNull ItemId itemId,
   @Nullable String code
@@ -37,8 +35,8 @@ public record ErrorId(
   }
 
   @Override
-  public Optional<ItemId> getParent() {
-    return Optional.of(this.itemId);
+  public ItemId parent() {
+    return this.itemId;
   }
 
   @Override

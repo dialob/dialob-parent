@@ -16,21 +16,17 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 import java.util.Optional;
 
 public record ItemIndex(
   @NonNull Integer index,
-  @NonNull ItemId parent
+  @Nullable ItemId parent
 ) implements ItemId {
 
   public  static ItemIndex of(@NonNull Integer index, Optional<ItemId> parent) {
     return new ItemIndex(index, parent.orElse(null));
-  }
-
-  @Override
-  public Optional<ItemId> getParent() {
-    return Optional.ofNullable(parent);
   }
 
   @NonNull
@@ -42,5 +38,11 @@ public record ItemIndex(
   public String getValue() {
     return Integer.toString(getIndex());
   }
+
+  @Override
+  public <I extends ItemId> ItemId withParent(I parent) {
+    return new ItemIndex(index, parent);
+  }
+
 
 }

@@ -15,15 +15,16 @@
  */
 package io.dialob.session.engine.session.model;
 
-import org.immutables.value.Value;
-
 import java.io.Serializable;
 import java.util.Optional;
 
 public interface ItemId extends Serializable {
 
-  @Value.Parameter(order = 1)
-  Optional<ItemId> getParent();
+  ItemId parent();
+
+  default Optional<ItemId> getParent() {
+    return Optional.ofNullable(parent());
+  }
 
   String getValue();
 
@@ -36,7 +37,7 @@ public interface ItemId extends Serializable {
   }
 
   default ItemId withParent(Optional<? extends ItemId> parent) {
-    return this;
+    return parent.map(this::withParent).orElse(this);
   }
 
 }

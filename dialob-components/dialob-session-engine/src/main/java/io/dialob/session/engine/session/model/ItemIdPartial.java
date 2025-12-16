@@ -17,16 +17,9 @@ package io.dialob.session.engine.session.model;
 
 import io.dialob.api.annotation.Nullable;
 
-import java.util.Optional;
-
 public record ItemIdPartial(
   @Nullable ItemId parent
 ) implements ItemId {
-
-  @Override
-  public Optional<ItemId> getParent() {
-    return Optional.ofNullable(parent);
-  }
 
   @Override
   public boolean isPartial() {

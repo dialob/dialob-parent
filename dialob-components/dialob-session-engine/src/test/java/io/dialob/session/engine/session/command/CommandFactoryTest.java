@@ -37,7 +37,7 @@ class CommandFactoryTest {
   @Test
   void emptyItemsListDoNotTriggerChange() {
     ItemState itemState = new ItemState(
-      ImmutableItemRef.of("i1", Optional.empty()),
+      ItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
       null,
       true,
@@ -47,7 +47,7 @@ class CommandFactoryTest {
       null, null);
 
     ItemState itemState2 = new ItemState(
-      ImmutableItemRef.of("i1", Optional.empty()),
+      ItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
       null,
       true,
@@ -64,8 +64,8 @@ class CommandFactoryTest {
     itemState2 = itemState2.update().setItems(List.of()).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ItemRef.of("i1", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ItemRef.of("i1", Optional.empty()))).get();
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
   }
@@ -73,7 +73,7 @@ class CommandFactoryTest {
   @Test
   void differenceOnItemsShouldTriggerChanges() {
     ItemState itemState = new ItemState(
-      ImmutableItemRef.of("i1", Optional.empty()),
+      ItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
       null,
       true,
@@ -83,7 +83,7 @@ class CommandFactoryTest {
       null, null);
 
     ItemState itemState2 = new ItemState(
-      ImmutableItemRef.of("i1", Optional.empty()),
+      ItemRef.of("i1", Optional.empty()),
       null, "rowgroup",
       null,
       true,
@@ -91,21 +91,21 @@ class CommandFactoryTest {
       null,
       null,
       null, null);
-    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ItemRef.of("i1", Optional.empty()))).get();
     itemState2 = itemState2.update().setItems(List.of()).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
-    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i2", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ItemRef.of("i2", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
     itemState = itemState.update().setItems(List.of()).get();
-    itemState2 = itemState.update().setItems(List.of(ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(List.of(ItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
 
-    itemState = itemState.update().setItems(List.of(ImmutableItemRef.of("i2", Optional.empty()))).get();
-    itemState2 = itemState.update().setItems(Arrays.asList(ImmutableItemRef.of("i2", Optional.empty()), ImmutableItemRef.of("i1", Optional.empty()))).get();
+    itemState = itemState.update().setItems(List.of(ItemRef.of("i2", Optional.empty()))).get();
+    itemState2 = itemState.update().setItems(Arrays.asList(ItemRef.of("i2", Optional.empty()), ItemRef.of("i1", Optional.empty()))).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
   }
 

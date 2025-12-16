@@ -17,8 +17,6 @@ package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-import java.util.Optional;
-
 public record ValueSetId(
   @NonNull String valueSetId
 ) implements ItemId {
@@ -32,7 +30,8 @@ public record ValueSetId(
   }
 
   @Override
-  public Optional<ItemId> getParent() {
-    return Optional.empty();
+  public ItemId parent() {
+    return null;
   }
+
 }

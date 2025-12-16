@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class IdUtils {
 
-  public static final ItemId QUESTIONNAIRE_ID = ImmutableItemRef.of(Constants.QUESTIONNAIRE, Optional.empty());
+  public static final ItemId QUESTIONNAIRE_ID = ItemRef.of(Constants.QUESTIONNAIRE, Optional.empty());
 
   public static String toString(ValueSetId valueSetId) {
     if (valueSetId == null) {
@@ -44,19 +44,18 @@ public class IdUtils {
       return null;
     }
     var idChain = new ArrayList<String>();
-    Optional<ItemId> id = Optional.of(itemId);
-    while (id.isPresent()) {
-      itemId = id.get();
-      if (itemId instanceof ErrorId errorId) {
-        return toString(errorId.itemId()) + ":" + errorId.code();
-      } else if (itemId instanceof ItemRef ref) {
-        idChain.add(ref.getId());
-      } else if (itemId instanceof ItemIndex index) {
-        idChain.add(index.getIndex().toString());
-      } else if (itemId instanceof ItemIdPartial) {
-        idChain.add("*");
+    while (itemId != null) {
+      switch (itemId) {
+        case ErrorId(ItemId itemId1, String code) -> {
+          return toString(itemId1) + ":" + code;
+        }
+        case ItemRef(String ref, ItemId ignored2) -> idChain.add(ref);
+        case ItemIndex(Integer index, ItemId ignored1) -> idChain.add(index.toString());
+        case ItemIdPartial ignored -> idChain.add("*");
+        default -> {
+        }
       }
-      id = itemId.getParent();
+      itemId = itemId.parent();
     }
     Collections.reverse(idChain);
     return StringUtils.join(idChain,".");
@@ -87,13 +86,13 @@ public class IdUtils {
     }
     String[] strings = itemId.split("\\.");
     ItemId id = null;
-    for (String s : strings) {
+    for (var s : strings) {
       if (StringUtils.isNumeric(s)) {
-        id = ItemIndex.of(Integer.parseInt(s), Optional.ofNullable(id));
+        id = new ItemIndex(Integer.parseInt(s), id);
       } else if ("*".equals(s)) {
         id = new ItemIdPartial(id);
       } else {
-        id = ImmutableItemRef.of(s, Optional.ofNullable(id));
+        id = new ItemRef(s, id);
       }
     }
     if (id == null) {
@@ -132,16 +131,17 @@ public class IdUtils {
       return;
     }
     output.writeBoolNoTag(true);
-    if (id instanceof ItemRef itemRef) {
-      output.write((byte) 1);
-      output.writeStringNoTag(itemRef.getValue());
-    } else if (id instanceof ItemIdPartial) {
-      output.write((byte) 2);
-    } else if (id instanceof ItemIndex itemRef) {
-      output.write((byte) 3);
-      output.writeInt32NoTag(itemRef.getIndex());
-    } else {
-      throw new RuntimeException("unknown id type " + id);
+    switch (id) {
+      case ItemRef itemRef -> {
+        output.write((byte) 1);
+        output.writeStringNoTag(itemRef.getValue());
+      }
+      case ItemIdPartial ignored -> output.write((byte) 2);
+      case ItemIndex itemRef -> {
+        output.write((byte) 3);
+        output.writeInt32NoTag(itemRef.getIndex());
+      }
+      default -> throw new RuntimeException("unknown id type " + id);
     }
     writeIdTo(id.getParent().orElse(null), output);
   }
@@ -149,11 +149,11 @@ public class IdUtils {
   @Nullable
   public static ItemId readIdFrom(CodedInputStream input) throws IOException {
     if (input.readBool()) {
-      byte type = input.readRawByte();
+      var type = input.readRawByte();
       return switch (type) {
-        case 1 -> ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
+        case 1 -> new ItemRef(input.readString(), readIdFrom(input));
         case 2 -> new ItemIdPartial(readIdFrom(input));
-        case 3 -> ItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
+        case 3 -> new ItemIndex(input.readInt32(), readIdFrom(input));
         default -> throw new RuntimeException("unknown id type " + type);
       };
     }

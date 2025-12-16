@@ -24,9 +24,9 @@ import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemIdPartial;
+import io.dialob.session.engine.session.model.ItemRef;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -172,7 +172,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .map(AbstractItemBuilder::getId)
       .map(
         getType() == Type.ROWGROUP ?
-        itemId -> ((ImmutableItemRef) itemId).withParent(new ItemIdPartial(getId())) :
+        itemId -> itemId.withParent(new ItemIdPartial(getId())) :
         itemId -> itemId
       )
       .toList();
@@ -256,7 +256,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         .type("row")
         .isPrototype(true)
         .valueType(null)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ImmutableItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).toList()).build())
+        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).toList()).build())
         .allowedActionsExpression(ImmutableConditionalListOperator.builder()
             .addItems(Pair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())

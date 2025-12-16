@@ -51,7 +51,7 @@ public class DialobSession implements ItemStates, Serializable {
   @Serial
   private static final long serialVersionUID = 1180110179877247767L;
 
-  public static final ImmutableItemRef QUESTIONNAIRE_REF = (ImmutableItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);
+  public static final ItemRef QUESTIONNAIRE_REF = (ItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);
 
   @Getter
   @NonNull

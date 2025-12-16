@@ -24,8 +24,8 @@ import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.command.event.ImmutableActiveUpdatedEvent;
 import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemIdPartial;
+import io.dialob.session.engine.session.model.ItemRef;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -143,7 +143,7 @@ class DialobProgramTest {
     rgroup = dialobProgram.getItem(new ItemIdPartial(IdUtils.toId("rgroup")));
     Assertions.assertTrue(rgroup.isPresent());
 
-    Optional<Item> question2 = dialobProgram.getItem(ImmutableItemRef.of("question2", Optional.of(new ItemIdPartial(IdUtils.toId("rgroup")))));
+    Optional<Item> question2 = dialobProgram.getItem(ItemRef.of("question2", Optional.of(new ItemIdPartial(IdUtils.toId("rgroup")))));
     Assertions.assertTrue(question2.isPresent());
 
     Set<Event> allUpdates = dialobProgram.allUpdates();

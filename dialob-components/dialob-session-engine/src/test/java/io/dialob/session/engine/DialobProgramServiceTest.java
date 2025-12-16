@@ -25,9 +25,8 @@ import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
+import io.dialob.session.engine.session.model.ItemRef;
 import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
@@ -51,7 +50,7 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
     DialobProgram dialobProgram = programFromFormCompiler.compileForm(formDocument);
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
-    assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
+    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
     DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
@@ -64,11 +63,10 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
     when(visitor.visitUpdatedValueSets()).thenReturn(Optional.of(valueSetVisitor));
 
-    InOrder order = Mockito.inOrder(visitor, errorVisitor, itemVisitor, valueSetVisitor);
 
-    assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
+    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
     sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
-    assertEquals(Optional.of((ImmutableItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
+    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
 
     sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "35")));
     assertValueEquals(dialobSession,toRef("question1"), BigInteger.valueOf(35));
@@ -86,13 +84,14 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
       .accept(visitor);
     assertValueEquals(dialobSession,toRef("question6"),"opt2");
 
+    var order = Mockito.inOrder(visitor, errorVisitor, itemVisitor, valueSetVisitor);
     order.verify(visitor).start();
     order.verify(visitor).visitUpdatedItems();
+    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question10")), argThat(activeItem("question10")));
+    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("group4")), argThat(activeItem("group4")));
+    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("page2")), argThat(activeItem("page2")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(activeItem("questionnaire")), argThat(activeItem("questionnaire")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question9")), argThat(activeItem("question9")));
-    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question10")), argThat(activeItem("question10")));
-    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("page2")), argThat(activeItem("page2")));
-    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("group4")), argThat(activeItem("group4")));
     order.verify(itemVisitor).end();
     order.verify(visitor).visitUpdatedErrorStates();
     order.verify(errorVisitor).end();
@@ -101,7 +100,7 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     order.verify(visitor).visitAsyncFunctionCalls();
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
-    Mockito.verifyNoMoreInteractions(visitor, itemVisitor, valueSetVisitor);
+    Mockito.verifyNoMoreInteractions(visitor, errorVisitor, itemVisitor, valueSetVisitor);
     assertNotNull(dialobProgram);
   }
 

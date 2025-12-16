@@ -111,14 +111,14 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ItemState> activeItem(String id) {
-    return isItem("activeItem(" + id + ")", itemState -> itemState.getId().equals(IdUtils.toId(id)) && itemState.isActive());
+    return isItem("activeItem(%s)".formatted(id), itemState -> itemState.getId().equals(IdUtils.toId(id)) && itemState.isActive());
   }
 
   public ArgumentMatcher<ItemState> inactiveItem() {
     return isItem("inactiveItem", item -> !item.isActive());
   }
   public ArgumentMatcher<ItemState> inactiveItem(String id) {
-    return isItem("inactiveItem(" + id + ")", item -> item.getId().equals(IdUtils.toId(id)) && !item.isActive());
+    return isItem("inactiveItem(%s)".formatted(id), item -> item.getId().equals(IdUtils.toId(id)) && !item.isActive());
   }
 
   public ArgumentMatcher<ErrorState> inactiveError() {

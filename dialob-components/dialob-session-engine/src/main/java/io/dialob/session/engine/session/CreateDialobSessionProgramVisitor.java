@@ -257,7 +257,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
               .map(groupPrototype -> (RowItemsExpression) groupPrototype.getItemsExpression())
               .flatMap(rowItemsExpression -> rowItemsExpression.getItemIds().stream())
               .map(ItemId::getValue)
-              .map(name -> ImmutableItemRef.of(name, Optional.of(rowId))));
+              .map(name -> ItemRef.of(name, Optional.of(rowId))));
         });
       }).flatMap(itemIdToCreate -> prototypeItems
       .stream()
