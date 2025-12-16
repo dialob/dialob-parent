@@ -89,7 +89,7 @@ public class IdUtils {
     ItemId id = null;
     for (String s : strings) {
       if (StringUtils.isNumeric(s)) {
-        id = ImmutableItemIndex.of(Integer.parseInt(s), Optional.ofNullable(id));
+        id = ItemIndex.of(Integer.parseInt(s), Optional.ofNullable(id));
       } else if ("*".equals(s)) {
         id = new ItemIdPartial(id);
       } else {
@@ -104,7 +104,7 @@ public class IdUtils {
 
   public static ItemId withIndex(ItemId itemId, int index) {
     // TODO Check
-    return itemId.withParent(ImmutableItemIndex.of(index, itemId.getParent().flatMap(ItemId::getParent)));
+    return itemId.withParent(ItemIndex.of(index, itemId.getParent().flatMap(ItemId::getParent)));
   }
 
   public static boolean matches(@NonNull Optional<ItemId> itemIdLh, @NonNull Optional<ItemId> itemIdRh) {
@@ -153,7 +153,7 @@ public class IdUtils {
       return switch (type) {
         case 1 -> ImmutableItemRef.of(input.readString(), Optional.ofNullable(readIdFrom(input)));
         case 2 -> new ItemIdPartial(readIdFrom(input));
-        case 3 -> ImmutableItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
+        case 3 -> ItemIndex.of(input.readInt32(), Optional.ofNullable(readIdFrom(input)));
         default -> throw new RuntimeException("unknown id type " + type);
       };
     }

@@ -34,13 +34,13 @@ class IdUtilsTest {
     assertNull(IdUtils.toString((ItemId) null));
     assertNull(IdUtils.toString(null));
     assertEquals("var1", IdUtils.toString(IdUtils.toId("var1")));
-    assertEquals("1", IdUtils.toString(ImmutableItemIndex.of(1,Optional.empty())));
-    assertEquals("10", IdUtils.toString(ImmutableItemIndex.of(10,Optional.empty())));
-    assertEquals("10.var1", IdUtils.toString(ImmutableItemRef.of("var1", Optional.of(ImmutableItemIndex.of(10,Optional.empty())))));
-    assertEquals("a.10.var1", IdUtils.toString(ImmutableItemRef.of("var1", Optional.of(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("a")))))));
+    assertEquals("1", IdUtils.toString(ItemIndex.of(1,Optional.empty())));
+    assertEquals("10", IdUtils.toString(ItemIndex.of(10,Optional.empty())));
+    assertEquals("10.var1", IdUtils.toString(ImmutableItemRef.of("var1", Optional.of(ItemIndex.of(10,Optional.empty())))));
+    assertEquals("a.10.var1", IdUtils.toString(ImmutableItemRef.of("var1", Optional.of(ItemIndex.of(10,Optional.of(IdUtils.toId("a")))))));
 
-    assertEquals("var1.10.a", IdUtils.toString(ImmutableItemRef.of("a", Optional.of(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("var1")))))));
-    assertEquals("var1.10", IdUtils.toString(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("var1")))));
+    assertEquals("var1.10.a", IdUtils.toString(ImmutableItemRef.of("a", Optional.of(ItemIndex.of(10,Optional.of(IdUtils.toId("var1")))))));
+    assertEquals("var1.10", IdUtils.toString(ItemIndex.of(10,Optional.of(IdUtils.toId("var1")))));
     assertEquals("var1.*", IdUtils.toString(new ItemIdPartial(IdUtils.toId("var1"))));
   }
 
@@ -49,13 +49,13 @@ class IdUtilsTest {
   void testToId() {
     assertNull(IdUtils.toIdNullable(null));
     assertEquals(IdUtils.toId("var1"), IdUtils.toId("var1"));
-    assertEquals(ImmutableItemIndex.of(1,Optional.empty()), IdUtils.toId("1"));
-    assertEquals(ImmutableItemIndex.of(10,Optional.empty()), IdUtils.toId("10"));
-    assertEquals(ImmutableItemRef.of("var1", Optional.of(ImmutableItemIndex.of(10,Optional.empty()))), IdUtils.toId("10.var1"));
-    assertEquals(ImmutableItemRef.of("var1", Optional.of(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("a"))))), IdUtils.toId("a.10.var1"));
+    assertEquals(ItemIndex.of(1,Optional.empty()), IdUtils.toId("1"));
+    assertEquals(ItemIndex.of(10,Optional.empty()), IdUtils.toId("10"));
+    assertEquals(ImmutableItemRef.of("var1", Optional.of(ItemIndex.of(10,Optional.empty()))), IdUtils.toId("10.var1"));
+    assertEquals(ImmutableItemRef.of("var1", Optional.of(ItemIndex.of(10,Optional.of(IdUtils.toId("a"))))), IdUtils.toId("a.10.var1"));
 
-    assertEquals(ImmutableItemRef.of("a", Optional.of(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("var1"))))), IdUtils.toId("var1.10.a"));
-    assertEquals(ImmutableItemIndex.of(10,Optional.of(IdUtils.toId("var1"))), IdUtils.toId("var1.10"));
+    assertEquals(ImmutableItemRef.of("a", Optional.of(ItemIndex.of(10,Optional.of(IdUtils.toId("var1"))))), IdUtils.toId("var1.10.a"));
+    assertEquals(ItemIndex.of(10,Optional.of(IdUtils.toId("var1"))), IdUtils.toId("var1.10"));
   }
 
 

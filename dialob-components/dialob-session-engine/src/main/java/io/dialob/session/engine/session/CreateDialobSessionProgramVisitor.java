@@ -246,7 +246,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           return Stream.empty();
         }
         return rowNumbers.stream().flatMap(rowNumber -> {
-          final ItemId rowId = ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()));
+          final ItemId rowId = ItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()));
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
@@ -294,7 +294,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             .update().setItems(
               ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> (ItemId) ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).toList()
+                .map(rowNumber -> (ItemId) ItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).toList()
             ).get();
         }
         return rowGroup;

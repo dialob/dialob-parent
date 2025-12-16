@@ -16,16 +16,30 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface ItemIndex extends ItemId {
+import java.util.Optional;
 
-  @Value.Parameter(order = 0)
+public record ItemIndex(
+  @NonNull Integer index,
+  @NonNull ItemId parent
+) implements ItemId {
+
+  public  static ItemIndex of(@NonNull Integer index, Optional<ItemId> parent) {
+    return new ItemIndex(index, parent.orElse(null));
+  }
+
+  @Override
+  public Optional<ItemId> getParent() {
+    return Optional.ofNullable(parent);
+  }
+
   @NonNull
-  Integer getIndex();
+  public Integer getIndex() {
+    return index;
+  }
 
-  default String getValue() {
+  @Override
+  public String getValue() {
     return Integer.toString(getIndex());
   }
 

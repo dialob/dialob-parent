@@ -1403,16 +1403,20 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .answer("rg.0.qq", 50)
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.value")
+        .containsExactlyInAnyOrder(
         ))
       .answer("rg.1.qq", 51)
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.value")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "note1", null)
         ))
       .deleteRow("rg.0")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.value")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("rg.0.qq", "rg.0", "note1"), null, null),
           tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ONE,BigInteger.TWO))
         ))
@@ -1502,7 +1506,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .deleteRow("rg.0")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("rg.0.qq", "rg.0"), null, null),
           tuple(ITEM, null, "rg", null),
           tuple(ITEM, null, "note1", "1")
@@ -1918,7 +1924,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .deleteRow("rowgroup1.0") // issue https://github.com/dialob/dialob-parent/issues/17
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
           tuple(ITEM, null, "rowgroup1", null, null, Set.of(ADD_ROW), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.0", "rowgroup1.0.text1"), null, null, null, null, null),

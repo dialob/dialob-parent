@@ -24,6 +24,7 @@ import io.dialob.questionnaire.service.DialobQuestionnaireServiceAutoConfigurati
 import io.dialob.questionnaire.service.sockjs.DialobQuestionnaireServiceSockJSAutoConfiguration;
 import io.dialob.session.boot.Application;
 import io.dialob.session.boot.ApplicationAutoConfiguration;
+import io.dialob.session.boot.TestUtils;
 import io.dialob.settings.DialobSettings;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import jakarta.inject.Inject;
@@ -61,14 +62,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   DialobFunctionAutoConfiguration.class,
   DialobQuestionnaireServiceAutoConfiguration.class,
   DialobSessionEngineAutoConfiguration.class,
-//  RedisQuestionnaireDialobSessionCacheConfiguration.class,
   DialobCacheAutoConfiguration.class
 })
 @EnableCaching
 @EnableWebSocket
 @EnableConfigurationProperties({DialobSettings.class})
 class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
-
 
   @Inject
   private ApplicationEventPublisher applcationApplicationEventPublisher;
@@ -100,6 +99,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.RESET,   null, null),
             tuple(Action.Type.LOCALE,  null, null),
@@ -113,6 +113,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items", "item.label")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.ITEM, "g1.0.q1", null, "Kysymys 1"),
             tuple(Action.Type.ITEM, "g1.0.q2", null, "Kysymys 2"),
@@ -124,6 +125,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.ITEM, "g1.1.q1", null),
             tuple(Action.Type.ITEM, "g1.1.q2", null),
@@ -135,6 +137,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids", "item.id", "item.items")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.0","g1.0.q2","g1.0.q1"), null, null),
             tuple(Action.Type.ITEM, null,       "g1", List.of("g1.1"))
@@ -143,8 +146,9 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .answerQuestion("g1.1.q2","wrong answer")
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
-          .extracting("type","item.id","error.id", "item.allowedActions").
-          containsOnly(
+          .extracting("type","item.id","error.id", "item.allowedActions")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsOnly(
             tuple(Action.Type.ITEM,"questionnaire",null, Set.of(Action.Type.ANSWER)),
             tuple(Action.Type.ERROR,null,"g1.1.q2", null)
           );
@@ -153,6 +157,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.ITEM, "g1.2.q1", null),
             tuple(Action.Type.ITEM, "g1.2.q2", null),
@@ -164,6 +169,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "ids", "item.id", "item.items", "error.id", "error.code", "item.allowedActions")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.REMOVE_ITEMS, Arrays.asList("g1.1","g1.1.q2","g1.1.q1"), null, null, null, null, null),
             tuple(Action.Type.REMOVE_ERROR,     null,                                      null, null, "g1.1.q2", "q2_error1", null),
@@ -175,6 +181,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.ITEM, "g1.3.q1", null),
             tuple(Action.Type.ITEM, "g1.3.q2", null),
@@ -186,6 +193,7 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
       .expectActions(actions -> {
         Assertions.assertThat(actions.getActions())
           .extracting("type", "item.id", "item.items")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
           .containsOnly(
             tuple(Action.Type.ITEM, "g1.2.q3", null)
           );

@@ -17,8 +17,8 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ImmutableItemIndex;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemIndex;
 import io.dialob.session.engine.session.model.ItemState;
 import org.immutables.value.Value;
 
@@ -40,7 +40,7 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
-    var newItems = rowNumbers.stream().map(row -> (ItemId) ImmutableItemIndex.of(row.intValue(), Optional.of(getTargetId()))).toList();
+    var newItems = rowNumbers.stream().map(row -> (ItemId) ItemIndex.of(row.intValue(), Optional.of(getTargetId()))).toList();
     return itemState.update()
       .setItems(newItems)
       .get();
