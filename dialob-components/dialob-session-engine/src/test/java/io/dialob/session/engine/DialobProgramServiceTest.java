@@ -26,7 +26,6 @@ import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ImmutableItemRef;
-import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -45,10 +44,8 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     FormFinder formFinder = mock(FormFinder.class);
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
-    AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
-    QuestionnaireDialobProgramService service = QuestionnaireDialobProgramService.newBuilder().setFormDatabase(formFinder).setProgramFromFormCompiler(programFromFormCompiler).build();
-//    Form formDocument = Mockito.mock(Form.class);
+
     String formFile = "form.json";
     Form formDocument = loadForm(formFile);
 
@@ -93,7 +90,9 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     order.verify(visitor).visitUpdatedItems();
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(activeItem("questionnaire")), argThat(activeItem("questionnaire")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question9")), argThat(activeItem("question9")));
+    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("question10")), argThat(activeItem("question10")));
     order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("page2")), argThat(activeItem("page2")));
+    order.verify(itemVisitor, times(1)).visitUpdatedItemState(argThat(inactiveItem("group4")), argThat(activeItem("group4")));
     order.verify(itemVisitor).end();
     order.verify(visitor).visitUpdatedErrorStates();
     order.verify(errorVisitor).end();
@@ -102,8 +101,7 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     order.verify(visitor).visitAsyncFunctionCalls();
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
-    Mockito.verifyNoMoreInteractions(visitor);
-//    DialobProgram formProgram = service.compileForm(formDocument);
+    Mockito.verifyNoMoreInteractions(visitor, itemVisitor, valueSetVisitor);
     assertNotNull(dialobProgram);
   }
 
