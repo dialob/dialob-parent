@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class IdUtils {
 
-  public static final ItemId QUESTIONNAIRE_ID = ItemRef.of(Constants.QUESTIONNAIRE, Optional.empty());
+  public static final ItemId QUESTIONNAIRE_ID = new ItemRef(Constants.QUESTIONNAIRE, null);
 
   public static String toString(ValueSetId valueSetId) {
     if (valueSetId == null) {
@@ -103,7 +103,7 @@ public class IdUtils {
 
   public static ItemId withIndex(ItemId itemId, int index) {
     // TODO Check
-    return itemId.withParent(ItemIndex.of(index, itemId.getParent().flatMap(ItemId::getParent)));
+    return itemId.withParent(new ItemIndex(index, itemId.getParent().flatMap(ItemId::getParent).orElse(null)));
   }
 
   public static boolean matches(@NonNull Optional<ItemId> itemIdLh, @NonNull Optional<ItemId> itemIdRh) {

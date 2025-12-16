@@ -143,7 +143,7 @@ class DialobProgramTest {
     rgroup = dialobProgram.getItem(new ItemIdPartial(IdUtils.toId("rgroup")));
     Assertions.assertTrue(rgroup.isPresent());
 
-    Optional<Item> question2 = dialobProgram.getItem(ItemRef.of("question2", Optional.of(new ItemIdPartial(IdUtils.toId("rgroup")))));
+    Optional<Item> question2 = dialobProgram.getItem(new ItemRef("question2", new ItemIdPartial(IdUtils.toId("rgroup"))));
     Assertions.assertTrue(question2.isPresent());
 
     Set<Event> allUpdates = dialobProgram.allUpdates();

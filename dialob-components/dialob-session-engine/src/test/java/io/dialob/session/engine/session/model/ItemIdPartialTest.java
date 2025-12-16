@@ -18,15 +18,13 @@ package io.dialob.session.engine.session.model;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ItemIdPartialTest {
 
   @Test
   void test() {
-    ItemId itemIdPartial = new ItemIdPartial(ItemRef.of("i1", Optional.empty()));
+    ItemId itemIdPartial = new ItemIdPartial(new ItemRef("i1", null));
     ItemId itemId = IdUtils.toId("i1.3");
     IdUtils.matches(itemIdPartial, itemId);
     assertTrue(IdUtils.matches(itemIdPartial, itemId));

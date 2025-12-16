@@ -246,7 +246,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           return Stream.empty();
         }
         return rowNumbers.stream().flatMap(rowNumber -> {
-          final ItemId rowId = ItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()));
+          final ItemId rowId = new ItemIndex(rowNumber.intValue(), rowGroup.getId());
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
@@ -257,7 +257,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
               .map(groupPrototype -> (RowItemsExpression) groupPrototype.getItemsExpression())
               .flatMap(rowItemsExpression -> rowItemsExpression.getItemIds().stream())
               .map(ItemId::getValue)
-              .map(name -> ItemRef.of(name, Optional.of(rowId))));
+              .map(name -> new ItemRef(name, rowId)));
         });
       }).flatMap(itemIdToCreate -> prototypeItems
       .stream()
@@ -294,7 +294,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             .update().setItems(
               ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> (ItemId) ItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).toList()
+                .map(rowNumber -> (ItemId) new ItemIndex(rowNumber.intValue(), rowGroup.getId())).toList()
             ).get();
         }
         return rowGroup;

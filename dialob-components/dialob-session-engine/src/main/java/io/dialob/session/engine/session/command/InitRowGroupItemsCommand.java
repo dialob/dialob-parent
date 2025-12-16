@@ -25,7 +25,6 @@ import org.immutables.value.Value;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
@@ -40,7 +39,10 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
-    var newItems = rowNumbers.stream().map(row -> (ItemId) ItemIndex.of(row.intValue(), Optional.of(getTargetId()))).toList();
+    var newItems = rowNumbers.stream().map(row -> {
+      ItemId parent = getTargetId();
+      return (ItemId) new ItemIndex(row.intValue(), parent);
+    }).toList();
     return itemState.update()
       .setItems(newItems)
       .get();

@@ -256,7 +256,10 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         .type("row")
         .isPrototype(true)
         .valueType(null)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> ItemRef.of(itemId.getValue(), Optional.of(rowGroupPrototypeId))).toList()).build())
+        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> {
+          String id1 = itemId.getValue();
+          return new ItemRef(id1, rowGroupPrototypeId);
+        }).toList()).build())
         .allowedActionsExpression(ImmutableConditionalListOperator.builder()
             .addItems(Pair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())

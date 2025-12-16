@@ -18,16 +18,10 @@ package io.dialob.session.engine.session.model;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.annotation.Nullable;
 
-import java.util.Optional;
-
 public record ItemRef(
   @NonNull String id,
   @Nullable ItemId parent
 ) implements ItemId {
-
-  public static ItemRef of(String id, Optional<? extends ItemId> parent) {
-    return new ItemRef(id, parent.orElse(null));
-  }
 
   @NonNull
   public String getId() {

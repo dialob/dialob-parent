@@ -197,7 +197,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   void setupId() {
     // FormVisitor guarantees hierarchical visiting order
-    this.itemId = findHostingRowgroupId().map(hostingGroup -> ItemRef.of(id, Optional.of(new ItemIdPartial(hostingGroup)))).orElse((ItemRef) IdUtils.toId(id));
+    this.itemId = findHostingRowgroupId().map(hostingGroup -> new ItemRef(id, new ItemIdPartial(hostingGroup))).orElse((ItemRef) IdUtils.toId(id));
   }
 
   public Optional<ValueType> getValueType() {
