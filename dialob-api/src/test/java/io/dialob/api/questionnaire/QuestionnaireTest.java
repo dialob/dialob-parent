@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class QuestionnaireTest {
 
@@ -34,6 +35,18 @@ class QuestionnaireTest {
     Questionnaire questionnaire = builder.build();
     assertEquals("12", questionnaire.getId());
     assertEquals("123", questionnaire.getMetadata().getFormId());
+  }
+
+  @Test
+  void updateRevAndId() {
+    Questionnaire.Builder builder = new Questionnaire.Builder();
+    builder.id("12").rev("r1");
+    builder.metadata(new Questionnaire.Metadata.Builder().formId("123").build());
+    Questionnaire questionnaire = builder.build();
+
+    assertEquals(questionnaire, questionnaire.withId("12").withRev("r1"));
+    assertNotEquals(questionnaire, questionnaire.withId("122"));
+    assertNotEquals(questionnaire, questionnaire.withRev("r2"));
   }
 
   @Test
@@ -76,7 +89,7 @@ class QuestionnaireTest {
 
     Assertions.assertEquals(questionnaire, questionnaire.withId("12"));
     Questionnaire actual = questionnaire.withId("123");
-    Assertions.assertNotEquals(questionnaire, actual);
+    assertNotEquals(questionnaire, actual);
     Assertions.assertEquals("123", actual.getId());
     Assertions.assertEquals(questionnaire, questionnaire.withRev(null));
     Assertions.assertEquals("r12", questionnaire.withRev("r12").getRev());
