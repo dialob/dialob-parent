@@ -15,9 +15,16 @@
  */
 package io.dialob.session.engine.session.model;
 
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 class ErrorStateTest {
 
@@ -28,5 +35,25 @@ class ErrorStateTest {
       .verify();
   }
 
+  static Stream<ErrorState> errorStates() {
+    return Stream.of(
+      new ErrorState(IdUtils.toId("id"), "code", "message"),
+      new ErrorState(IdUtils.toId("id"), null, "message")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("errorStates")
+  void shouldSerialize(ErrorState errorState) throws Exception {
+    byte[] bytes;
+    try (var output = new java.io.ByteArrayOutputStream()) {
+      CodedOutputStream output1 = CodedOutputStream.newInstance(output);
+      errorState.writeTo(output1);
+      output1.flush();
+      bytes = output.toByteArray();
+    }
+    ErrorState parsed = ErrorState.readFrom(CodedInputStream.newInstance(bytes));
+    Assertions.assertThat(parsed).isEqualTo(errorState);
+  }
 
 }
