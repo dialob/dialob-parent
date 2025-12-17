@@ -25,7 +25,7 @@ import java.io.Serializable;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableToken.class)
-@JsonDeserialize(as = ImmutableToken.class)
+@JsonDeserialize(builder = ImmutableToken.Builder.class)
 public interface Token extends Serializable {
 
   @JsonProperty("access_token")

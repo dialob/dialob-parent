@@ -15,9 +15,8 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableVariable;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.Variable;
 import io.dialob.api.proto.Action;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -87,10 +86,10 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
 
     functionRegistry.configureFunction("testFunction", QuestionnaireAsyncFunctionExecutorTest.class, true);
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder()
+    Form.Builder formBuilder = new Form.Builder()
       .id("shouldEvaluateFunctionAsynchronously")
       .rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("question1","note1","note2"));
@@ -98,7 +97,7 @@ public class QuestionnaireAsyncFunctionExecutorTest extends AbstractWebSocketTes
     addItem(formBuilder, "note2", builder -> builder.type("note").putLabel("en","Things got Weird").activeWhen("testFunction(question1) = \"got it Weird\""));
     addItem(formBuilder, "question1", builder -> builder.type("text").putLabel("en","Question 1"));
 
-    formBuilder.addVariables(ImmutableVariable.builder()
+    formBuilder.addVariables(new Variable.Builder()
       .name("testResult")
       .expression("testFunction(question1)").build());
 

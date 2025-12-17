@@ -16,12 +16,11 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.ImmutableContextVariableReference;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.program.model.ImmutableVariableItem;
+import io.dialob.session.engine.program.model.VariableItem;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 
@@ -91,20 +90,20 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
       this.valueExpression = Utils.mapQuestionTypeToValueType(this.type)
         .map(valueType -> ImmutableContextVariableReference.builder().itemId(id).valueType(valueType).build()).orElse(null);
       if (valueExpression == null) {
-        errorConsumer.accept(ImmutableFormValidationError.builder().itemId(getIdStr()).message("CONTEXT_VARIABLE_UNDEFINED_TYPE").type(FormValidationError.Type.VARIABLE).build());
+        errorConsumer.accept(new FormValidationError.Builder().itemId(getIdStr()).message("CONTEXT_VARIABLE_UNDEFINED_TYPE").type(FormValidationError.Type.VARIABLE).build());
         return;
       }
     }
     Optional<Object> resolvedDefaultValue;
     if (valueExpression == null) {
-      errorConsumer.accept(ImmutableFormValidationError.builder().itemId(getIdStr()).message("RB_VARIABLE_NEEDS_EXPRESSION").type(FormValidationError.Type.VARIABLE).build());
+      errorConsumer.accept(new FormValidationError.Builder().itemId(getIdStr()).message("RB_VARIABLE_NEEDS_EXPRESSION").type(FormValidationError.Type.VARIABLE).build());
       return;
     } else {
       resolvedDefaultValue = getDefaultValue()
         .map(value -> Utils.validateDefaultValue(IdUtils.toString(id), valueExpression.getValueType(), value, errorConsumer));
     }
     getProgramBuilder().addItem(
-      ImmutableVariableItem.builder()
+      new VariableItem.Builder()
         .id(id)
         .type(context ? "context" : "variable")
         .isPrototype(false)

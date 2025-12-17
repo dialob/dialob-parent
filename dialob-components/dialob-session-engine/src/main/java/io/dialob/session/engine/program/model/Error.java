@@ -23,7 +23,10 @@ import org.immutables.value.Value;
 import java.util.Optional;
 
 @Value.Immutable
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Error extends StructuralNode {
+
+  class Builder extends ImmutableError.Builder { }
 
   @Nullable
   String getCode();

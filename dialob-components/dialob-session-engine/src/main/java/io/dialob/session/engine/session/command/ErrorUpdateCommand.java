@@ -37,7 +37,7 @@ public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
     Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
     if (getTargetId().isPartial()) {
       var builder = new HashSet<>(eventMatchers);
-      builder.add(EventMatchers.whenItemAdded(getTargetId().getItemId()));
+      builder.add(EventMatchers.whenItemAdded(getTargetId().itemId()));
       findConcreteItem(getTargetId()).map(EventMatchers::whenItemsChanged).ifPresent(builder::add);
       return Set.copyOf(builder);
     }

@@ -16,8 +16,7 @@
 package io.dialob.security.spring.apikey;
 
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import io.dialob.security.spring.tenant.TenantGrantedAuthority;
 import lombok.Data;
 import org.immutables.value.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -76,7 +75,7 @@ public class FixedClientApiKeyService implements ClientApiKeyService, ApiKeyAuth
   public Optional<ApiKey> findByClientId(String clientId) {
     ApiKeyEntry entry = apiKeyEntries.get(clientId);
     if (entry != null) {
-      return Optional.of(ImmutableApiKey.builder()
+      return Optional.of(new ApiKey.Builder()
         .clientId(entry.getClientId())
         .hash(entry.getHash())
         .owner(entry.getClientId())
@@ -107,7 +106,7 @@ public class FixedClientApiKeyService implements ClientApiKeyService, ApiKeyAuth
       authorities.add(new SimpleGrantedAuthority("admin"));
       authorities.add(new SimpleGrantedAuthority("api"));
     }
-    apiKey.getTenantId().ifPresent(tenantId -> authorities.add(ImmutableTenantGrantedAuthority.of(tenantId, tenantId)));
+    apiKey.getTenantId().ifPresent(tenantId -> authorities.add(TenantGrantedAuthority.of(tenantId, tenantId)));
     return authorities;
   }
 

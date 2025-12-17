@@ -54,6 +54,6 @@ public class DelegateCurrentUserProvider implements CurrentUserProvider {
   }
 
   private boolean isValidUser(CurrentUser currentUser) {
-    return !currentUser.getUserId().equals(UnauthenticatedCurrentUserProvider.UNAUTHENTICATED);
+    return !currentUser.userId().equals(UnauthenticatedCurrentUserProvider.UNAUTHENTICATED);
   }
 }

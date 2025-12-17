@@ -51,7 +51,7 @@ public class DialobSession implements ItemStates, Serializable {
   @Serial
   private static final long serialVersionUID = 1180110179877247767L;
 
-  public static final ImmutableItemRef QUESTIONNAIRE_REF = (ImmutableItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);
+  public static final ItemRef QUESTIONNAIRE_REF = (ItemRef) IdUtils.toId(Constants.QUESTIONNAIRE);
 
   @Getter
   @NonNull
@@ -206,10 +206,10 @@ public class DialobSession implements ItemStates, Serializable {
       valueSets.forEach(item -> this.valueSetStates.put(item.getId(), item));
     }
     if (errors != null) {
-      errors.forEach(item -> this.errorStates.put(ImmutableErrorId.of(item.getItemId(),item.getCode()), item));
+      errors.forEach(item -> this.errorStates.put(new ErrorId(item.getItemId(),item.getCode()), item));
     }
     if (errorPrototypes != null) {
-      errorPrototypes.forEach(item -> this.errorPrototypes.put(ImmutableErrorId.of(item.getItemId(),item.getCode()), item));
+      errorPrototypes.forEach(item -> this.errorPrototypes.put(new ErrorId(item.getItemId(),item.getCode()), item));
     }
     if (prototypes != null) {
       prototypes.forEach(prototype -> this.itemPrototypes.put(prototype.getId(), prototype));
@@ -298,7 +298,7 @@ public class DialobSession implements ItemStates, Serializable {
         updated();
       }
       case ErrorUpdateCommand errorUpdateCommand -> {
-        EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().getItemId());
+        EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().itemId());
         applyErrorUpdateCommand(context, errorUpdateCommand);
         updated();
       }
@@ -425,7 +425,7 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   public Optional<ErrorState> getErrorState(ItemId itemId, String code) {
-    return Optional.ofNullable(errorStates.get(ImmutableErrorId.of(itemId, code)));
+    return Optional.ofNullable(errorStates.get(new ErrorId(itemId, code)));
   }
 
   @NonNull

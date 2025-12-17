@@ -15,22 +15,23 @@
  */
 package io.dialob.session.engine.session.model;
 
-import org.immutables.value.Value;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
-import java.util.Optional;
+public record ValueSetId(
+  @NonNull String valueSetId
+) implements ItemId {
 
-@Value.Immutable
-public interface ValueSetId extends ItemId {
+  public String getValueSetId() {
+    return valueSetId;
+  }
 
-  @Value.Parameter
-  String getValueSetId();
-
-  default String getValue() {
-    return getValueSetId();
+  public String getValue() {
+    return this.valueSetId;
   }
 
   @Override
-  default Optional<ItemId> getParent() {
-    return Optional.empty();
+  public ItemId parent() {
+    return null;
   }
+
 }

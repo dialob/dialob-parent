@@ -16,7 +16,6 @@
 package io.dialob.security.spring.apikey;
 
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -65,7 +64,7 @@ class RequestHeaderApiKeyExtractorTest {
   void shouldReturnAlreadyExractedKey() {
     RequestHeaderApiKeyExtractor extractor = new RequestHeaderApiKeyExtractor();
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    ApiKey apiKey = ImmutableApiKey.of("123");
+    ApiKey apiKey = ApiKey.of("123");
     when(request.getAttribute(RequestHeaderApiKeyExtractor.REQUEST_APIKEY_ATTRIBUTE)).thenReturn(apiKey);
 
     assertSame(apiKey, extractor.extract(request));
@@ -100,7 +99,7 @@ class RequestHeaderApiKeyExtractorTest {
 
     verify(request).getAttribute(RequestHeaderApiKeyExtractor.REQUEST_APIKEY_ATTRIBUTE);
     verify(request).getHeader("x-api-key");
-    verify(request).setAttribute(RequestHeaderApiKeyExtractor.REQUEST_APIKEY_ATTRIBUTE, ImmutableApiKey.builder()
+    verify(request).setAttribute(RequestHeaderApiKeyExtractor.REQUEST_APIKEY_ATTRIBUTE, new ApiKey.Builder()
       .clientId("399802cd-86cf-46ce-8fb4-dc4968fd1329").token("Hac2TpVmtbg9sZkyfUM=").build());
     Mockito.verifyNoMoreInteractions(request);
   }

@@ -18,7 +18,6 @@ package io.dialob.security.spring.apikey;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.security.UUIDUtils;
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 import io.dialob.security.key.ServletRequestApiKeyExtractor;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,7 +75,7 @@ public class RequestHeaderApiKeyExtractor implements ServletRequestApiKeyExtract
       if (StringUtils.isBlank(tokenHash)) {
         return null;
       }
-      return ImmutableApiKey.of(clientId).withToken(tokenHash);
+      return ApiKey.of(clientId).withToken(tokenHash);
     } catch (IllegalArgumentException e) {
       LOGGER.error("Invalid api key request");
       return null;

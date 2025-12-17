@@ -21,14 +21,26 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 import org.springframework.security.core.GrantedAuthority;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableTenantGrantedAuthority.class)
-@JsonDeserialize(as = ImmutableTenantGrantedAuthority.class)
+@Value.Builder
+@JsonSerialize(as = TenantGrantedAuthority.class)
+@JsonDeserialize(builder = TenantGrantedAuthority.Builder.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface TenantGrantedAuthority extends GrantedAuthority {
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+public record TenantGrantedAuthority(
+  String tenantId,
+  String authority
+) implements GrantedAuthority {
 
-  @Value.Parameter
-  String getTenantId();
+  public static class Builder extends TenantGrantedAuthorityBuilder {
+  }
+
+  public static TenantGrantedAuthority of(String tenantId, String authority) {
+    return new TenantGrantedAuthority(tenantId, authority);
+  }
+
+  public String getTenantId() {
+    return tenantId;
+  }
 
   /**
    * Tenant's display name as authority
@@ -36,7 +48,8 @@ public interface TenantGrantedAuthority extends GrantedAuthority {
    * @return tenant display name
    */
   @Override
-  @Value.Parameter
-  String getAuthority();
+  public String getAuthority() {
+    return authority;
+  }
 
 }

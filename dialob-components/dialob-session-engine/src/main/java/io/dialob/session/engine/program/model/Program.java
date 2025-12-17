@@ -28,7 +28,10 @@ import java.util.stream.Stream;
 
 
 @Value.Immutable
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Program extends ProgramNode {
+
+  class Builder extends ImmutableProgram.Builder { }
 
   @NonNull
   String getId();

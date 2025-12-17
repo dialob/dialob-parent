@@ -16,7 +16,6 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -39,7 +38,7 @@ class VariableBuilderTest {
       .setDefaultValue("err")
       .afterExpressionCompilation(errorConsumer);
 
-    verify(errorConsumer).accept(ImmutableFormValidationError.builder()
+    verify(errorConsumer).accept(new FormValidationError.Builder()
       .itemId("id")
       .type(FormValidationError.Type.GENERAL)
       .level(FormValidationError.Level.ERROR)
@@ -63,7 +62,7 @@ class VariableBuilderTest {
       .setDefaultValue("err")
       .afterExpressionCompilation(errorConsumer);
 
-    verify(errorConsumer).accept(ImmutableFormValidationError.builder()
+    verify(errorConsumer).accept(new FormValidationError.Builder()
       .itemId("id")
       .type(FormValidationError.Type.VARIABLE)
       .level(FormValidationError.Level.ERROR)

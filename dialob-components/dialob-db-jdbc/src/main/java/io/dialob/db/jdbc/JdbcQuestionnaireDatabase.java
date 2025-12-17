@@ -18,15 +18,12 @@ package io.dialob.db.jdbc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormTag;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.common.Constants;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -68,12 +65,12 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
   protected Questionnaire toObject(byte[] oid, int objectRev, String tenantId, byte[] formId, @NonNull String status, Timestamp created, Timestamp updated, Reader reader) {
     try {
       final Questionnaire questionnaire = objectMapper.readValue(reader, Questionnaire.class);
-      ImmutableQuestionnaire.Builder builder = ImmutableQuestionnaire.builder()
+      Questionnaire.Builder builder = new Questionnaire.Builder()
         .from(questionnaire)
         .id(toId(oid))
         .rev(Integer.toString(objectRev));
       Questionnaire.Metadata metadata = questionnaire.getMetadata();
-      builder.metadata(ImmutableQuestionnaireMetadata.builder().from(metadata)
+      builder.metadata(new Questionnaire.Metadata.Builder().from(metadata)
         .created(new Date(created.getTime()))
         .lastAnswer(new Date(updated.getTime()))
         .formId(toId(formId))
@@ -135,8 +132,8 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
       byte[] formId = mapToFormDocumentId(tenantId, metadata.getFormId(), metadata.getFormRev());
       String status = metadata.getStatus().toString();
       String owner = metadata.getOwner();
-      Questionnaire documentNew = ImmutableQuestionnaire.builder().from(document)
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      Questionnaire documentNew = new Questionnaire.Builder().from(document)
+        .metadata(new Questionnaire.Metadata.Builder()
           .from(metadata)
           .formId(Utils.toString(formId))
           .formRev(null)
@@ -204,11 +201,11 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
                                           @NonNull Timestamp timestamp,
                                           @Nullable String tenantId)
   {
-    ImmutableQuestionnaire.Builder builder = ImmutableQuestionnaire.builder()
+    Questionnaire.Builder builder = new Questionnaire.Builder()
       .from(document)
       .id(toId(oid))
       .rev(Integer.toString(revision));
-    ImmutableQuestionnaireMetadata.Builder metadataBuilder = ImmutableQuestionnaireMetadata.builder()
+    Questionnaire.Metadata.Builder metadataBuilder = new Questionnaire.Metadata.Builder()
       .from(document.getMetadata());
     if (document.getMetadata().getCreated() == null) {
       metadataBuilder.created(new Date(timestamp.getTime()));
@@ -304,7 +301,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
       Timestamp created = resultSet.getTimestamp(5);
       Timestamp updated = resultSet.getTimestamp(6);
       String owner = resultSet.getString(7);
-      consumer.accept(ImmutableMetadataRow.of(toId(idBytes), ImmutableQuestionnaireMetadata.builder()
+      consumer.accept(MetadataRow.of(toId(idBytes), new Questionnaire.Metadata.Builder()
         .created(new Date(created.getTime()))
         .lastAnswer(updated)
         .formId(toId(formIdBytes))
@@ -318,13 +315,13 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
   @NonNull
   @Override
   protected Questionnaire updateDocumentId(@NonNull Questionnaire document, String id) {
-    return ImmutableQuestionnaire.builder().from(document).id(id).build();
+    return new Questionnaire.Builder().from(document).id(id).build();
   }
 
   @NonNull
   @Override
   protected Questionnaire updateDocumentRev(@NonNull Questionnaire document, String rev) {
-    return ImmutableQuestionnaire.builder().from(document).rev(rev).build();
+    return new Questionnaire.Builder().from(document).rev(rev).build();
   }
 
 }

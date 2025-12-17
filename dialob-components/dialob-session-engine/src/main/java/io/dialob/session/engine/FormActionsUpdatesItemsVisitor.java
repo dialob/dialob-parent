@@ -17,7 +17,6 @@ package io.dialob.session.engine;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.ActionItem;
-import io.dialob.api.questionnaire.ImmutableError;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.session.engine.session.model.*;
 
@@ -51,7 +50,7 @@ public class FormActionsUpdatesItemsVisitor extends AbstractFormActionsUpdatesIt
   }
 
   protected void inactivated(@NonNull ErrorState updated) {
-    formActions.removeError(ImmutableError.builder().id(IdUtils.toString(updated.getItemId())).code(updated.getCode()).build());
+    formActions.removeError(new io.dialob.api.questionnaire.Error.Builder().id(IdUtils.toString(updated.getItemId())).code(updated.getCode()).build());
   }
 
   protected void disabled(@NonNull ItemState updated) {

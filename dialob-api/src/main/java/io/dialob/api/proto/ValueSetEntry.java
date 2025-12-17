@@ -26,11 +26,17 @@ import java.io.Serializable;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableValueSetEntry.class)
-@JsonDeserialize(builder = ImmutableValueSetEntry.Builder.class)
+@JsonDeserialize(builder = ValueSetEntry.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true)
+@Value.Style(allParameters = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface ValueSetEntry extends Serializable {
+
+  static ValueSetEntry of(String a, String first) {
+    return ImmutableValueSetEntry.of(a, first);
+  }
+
+  class Builder extends ImmutableValueSetEntry.Builder { }
 
   String getKey();
 

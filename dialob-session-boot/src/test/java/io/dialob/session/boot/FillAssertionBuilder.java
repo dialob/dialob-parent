@@ -15,8 +15,9 @@
  */
 package io.dialob.session.boot;
 
-import io.dialob.api.proto.*;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
+import io.dialob.api.proto.Action;
+import io.dialob.api.proto.Actions;
+import io.dialob.api.proto.ActionsFactory;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.questionnaire.service.api.FormActionsUpdatesCallback;
@@ -115,7 +116,7 @@ public class FillAssertionBuilder {
   }
 
   public FillAssertionBuilder answer(String questionId, Object answer) {
-    return queueAction(ImmutableAction.builder()
+    return queueAction(new Action.Builder()
       .type(Action.Type.ANSWER)
       .id(questionId)
       .answer(answer).build());
@@ -129,7 +130,7 @@ public class FillAssertionBuilder {
   }
 
   public FillAssertionBuilder addRow(String id) {
-    return queueAction(ImmutableAction.builder()
+    return queueAction(new Action.Builder()
       .type(Action.Type.ADD_ROW)
       .id(id).build());
   }
@@ -139,24 +140,24 @@ public class FillAssertionBuilder {
   }
 
   public FillAssertionBuilder deleteRow(String id) {
-    return queueAction(ImmutableAction.builder()
+    return queueAction(new Action.Builder()
       .type(Action.Type.DELETE_ROW)
       .id(id).build());
   }
 
   public FillAssertionBuilder nextPage() {
-    return queueAction(ImmutableAction.builder()
+    return queueAction(new Action.Builder()
       .type(Action.Type.NEXT).build());
   }
 
   public FillAssertionBuilder previousPage() {
-    return queueAction(ImmutableAction.builder()
+    return queueAction(new Action.Builder()
       .type(Action.Type.PREVIOUS).build());
   }
 
   public FillAssertionBuilder complete(boolean expected) {
     completed = expected;
-    return queueAction(ImmutableAction.builder()
+    return queueAction(new Action.Builder()
       .type(Action.Type.COMPLETE).build());
   }
 
@@ -177,10 +178,8 @@ public class FillAssertionBuilder {
     String sessionId = UUID.randomUUID().toString();
 
     final QuestionnaireDatabase questionnaireDatabase = mock(QuestionnaireDatabase.class);
-    when(questionnaireDatabase.save(anyString(), any(Questionnaire.class))).then(invocation -> {
-      final ImmutableQuestionnaire questionnaire = invocation.getArgument(0);
-      return questionnaire.withId(sessionId);
-    });
+    when(questionnaireDatabase.save(anyString(), any(Questionnaire.class)))
+      .then(invocation -> invocation.<Questionnaire>getArgument(0).withId(sessionId));
 
     AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
 
@@ -205,13 +204,13 @@ public class FillAssertionBuilder {
     for (final ValidationEntry validationEntry : validationEntries) {
       if (validationEntry.getSessionConsumer() != null) {
         validationEntry.getSessionConsumer().accept(session);
-        validationEntry.setActions(ImmutableActions.builder().build());
+        validationEntry.setActions(new Actions.Builder().build());
       } else if (validationEntry.getAction() != null) {
         validationEntry.setActions(session.dispatchActions(Collections.singletonList(validationEntry.getAction())).getActions());
       } else {
         FormActions formActions =  new FormActions();
         session.buildFullForm(new FormActionsUpdatesCallback(formActions));
-        validationEntry.setActions(ImmutableActions.builder().actions(formActions.getActions()).build());
+        validationEntry.setActions(new Actions.Builder().actions(formActions.getActions()).build());
       }
     }
 

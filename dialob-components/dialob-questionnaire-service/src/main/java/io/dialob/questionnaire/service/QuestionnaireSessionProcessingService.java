@@ -18,7 +18,6 @@ package io.dialob.questionnaire.service;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableActions;
 import io.dialob.common.Constants;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
@@ -129,7 +128,7 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
       throw new DocumentNotFoundException("Could not find questionnaire %s".formatted(questionnaireId));
     }
     if (session.isCompleted()) {
-      return ImmutableActions.builder().rev(session.getRev()).build();
+      return new Actions.Builder().rev(session.getRev()).build();
     }
     final QuestionnaireSession.DispatchActionsResult response = session.dispatchActions(revision, actions);
     if (response.isDidComplete()) {

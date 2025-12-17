@@ -19,7 +19,7 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.proto.Action;
-import io.dialob.api.proto.ImmutableActionItem;
+import io.dialob.api.proto.ActionItem;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
@@ -288,7 +288,7 @@ class UtilsTest {
 
   @Test
   void testToActionItem() {
-    UnaryOperator<ImmutableActionItem.Builder> post = mock();
+    UnaryOperator<ActionItem.Builder> post = mock();
     var itemState = new ItemState(IdUtils.toId("item"), null, "list", null, null);
     itemState = itemState.update()
       .setItems(List.of(IdUtils.toId("id1")))

@@ -15,10 +15,9 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableFormValueSet;
-import io.dialob.api.form.ImmutableFormValueSetEntry;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormValueSet;
+import io.dialob.api.form.FormValueSetEntry;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ValueSetEntry;
 import io.dialob.cache.DialobCacheAutoConfiguration;
@@ -78,28 +77,28 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
   void updateFormLocaleOnline() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
 
-    ImmutableForm.Builder updateFormOnlineBuilder = ImmutableForm.builder();
-    Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
+    Form.Builder updateFormOnlineBuilder = new Form.Builder();
+    Consumer<Form.Builder> initializer = formBuilder -> {
       addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1") );
       addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en", "Group").putLabel("fi","Ryhmä").addItems("q1","g2"));
       addItem(formBuilder, "g2", builder -> builder.type("group").putLabel("en", "Group 2").putLabel("fi","Ryhmä 2").addItems("q2"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en", "Question").putLabel("fi","Kysymys").putDescription("en","Hard one").putDescription("fi","Vaikea"));
       addItem(formBuilder, "q2", builder -> builder.type("text").putLabel("en", "Question 2").putLabel("fi","Kysymys 2").activeWhen("language = 'fi'"));
-      formBuilder.addValueSets(ImmutableFormValueSet.builder()
+      formBuilder.addValueSets(new FormValueSet.Builder()
         .id("vs1")
         .addEntries(
-          ImmutableFormValueSetEntry.builder()
+          new FormValueSetEntry.Builder()
             .id("choice-1")
             .putLabel("en","Choice 1")
             .putLabel("fi","Valinta 1")
             .build(),
-          ImmutableFormValueSetEntry.builder()
+          new FormValueSetEntry.Builder()
             .id("choice-2")
             .putLabel("en","Choice 2")
             .putLabel("fi","Valinta 2")
             .build()
         ).build());
-      formBuilder.metadata(ImmutableFormMetadata.builder().languages(Arrays.asList("en","fi")).label("Kysely").build());
+      formBuilder.metadata(new Form.Metadata.Builder().languages(Arrays.asList("en","fi")).label("Kysely").build());
     };
     initializer.accept(updateFormOnlineBuilder);
     updateFormOnlineBuilder
@@ -107,7 +106,7 @@ class QuestionnaireLocaleUpdateTest extends AbstractWebSocketTests {
       .rev("1")
       .build();
 
-    final ImmutableForm form1 = updateFormOnlineBuilder.build();
+    final Form form1 = updateFormOnlineBuilder.build();
     shouldFindForm(form1);
 
     createAndOpenSession("updateFormLocaleOnline")

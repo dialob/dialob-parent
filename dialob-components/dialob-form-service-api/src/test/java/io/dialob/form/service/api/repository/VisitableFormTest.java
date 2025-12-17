@@ -16,9 +16,7 @@
 package io.dialob.form.service.api.repository;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.FormItem;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -31,7 +29,7 @@ class VisitableFormTest {
 
   @Test
   void shouldCallVisitorInOrder() {
-    Form form = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
+    Form form = new Form.Builder().metadata(new Form.Metadata.Builder().label("test").build()).build();
     FormVisitor formVisitor = Mockito.mock(FormVisitor.class);
 
     VisitableForm.makeVisitableForm(form).accept(formVisitor);
@@ -53,15 +51,15 @@ class VisitableFormTest {
 
   @Test
   void shouldCallVisitorInOrder2() {
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("test").build())
-      .putData("question1", ImmutableFormItem.builder().id("question1").type("text").build())
-      .putData("group1", ImmutableFormItem.builder().id("group1").type("group").addItems("question1","nonexisting").build())
-      .putData("page1", ImmutableFormItem.builder().id("page1").type("group").addItems("group1").build())
-      .putData("group2", ImmutableFormItem.builder().id("group2").type("group").addItems("question2").build())
-      .putData("page2", ImmutableFormItem.builder().id("page2").type("group").addItems("group2").build())
-      .putData("pagenotexists", ImmutableFormItem.builder().id("pagenotexists").type("group").addItems("group1").build())
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").addItems("page1","page2").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("test").build())
+      .putData("question1", new FormItem.Builder().id("question1").type("text").build())
+      .putData("group1", new FormItem.Builder().id("group1").type("group").addItems("question1","nonexisting").build())
+      .putData("page1", new FormItem.Builder().id("page1").type("group").addItems("group1").build())
+      .putData("group2", new FormItem.Builder().id("group2").type("group").addItems("question2").build())
+      .putData("page2", new FormItem.Builder().id("page2").type("group").addItems("group2").build())
+      .putData("pagenotexists", new FormItem.Builder().id("pagenotexists").type("group").addItems("group1").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").addItems("page1","page2").build())
       .build();
     FormVisitor formVisitor = Mockito.mock(FormVisitor.class);
     FormItemVisitor formItemVisitor = Mockito.mock(FormItemVisitor.class);

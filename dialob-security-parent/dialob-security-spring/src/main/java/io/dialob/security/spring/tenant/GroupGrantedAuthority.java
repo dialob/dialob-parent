@@ -21,14 +21,26 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 import org.springframework.security.core.GrantedAuthority;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableGroupGrantedAuthority.class)
-@JsonDeserialize(as = ImmutableGroupGrantedAuthority.class)
+@Value.Builder
+@JsonSerialize(as = GroupGrantedAuthority.class)
+@JsonDeserialize(builder = GroupGrantedAuthority.Builder.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface GroupGrantedAuthority extends GrantedAuthority {
+public record GroupGrantedAuthority(
+  String groupId,
+  String authority
+) implements GrantedAuthority {
+
+  public static class Builder extends GroupGrantedAuthorityBuilder {
+  }
+
+  public static GroupGrantedAuthority of(String groupId, String authority) {
+    return new GroupGrantedAuthority(groupId, authority);
+  }
 
   @Value.Parameter
-  String getGroupId();
+  public String getGroupId() {
+    return groupId;
+  }
 
   /**
    * Group's display name as authority
@@ -37,6 +49,8 @@ public interface GroupGrantedAuthority extends GrantedAuthority {
    */
   @Override
   @Value.Parameter
-  String getAuthority();
+  public String getAuthority() {
+    return authority;
+  }
 
 }

@@ -16,7 +16,6 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.ItemIdMatchers;
@@ -123,7 +122,7 @@ class QuestionBuilderTest {
       .setDefaultValue("err")
       .beforeExpressionCompilation(errorConsumer);
 
-    verify(errorConsumer).accept(eq(ImmutableFormValidationError.builder()
+    verify(errorConsumer).accept(eq(new FormValidationError.Builder()
       .itemId("q1")
       .level(FormValidationError.Level.ERROR)
       .message("VALUE_TYPE_NOT_SET")
@@ -146,7 +145,7 @@ class QuestionBuilderTest {
       .setType("number")
       .beforeExpressionCompilation(errorConsumer);
 
-    verify(errorConsumer).accept(eq(ImmutableFormValidationError.builder()
+    verify(errorConsumer).accept(eq(new FormValidationError.Builder()
       .itemId("q1")
       .level(FormValidationError.Level.ERROR)
       .message("INVALID_DEFAULT_VALUE")

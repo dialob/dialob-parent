@@ -17,7 +17,9 @@ package io.dialob.questionnaire.service.sockjs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.proto.*;
+import io.dialob.api.proto.Action;
+import io.dialob.api.proto.Actions;
+import io.dialob.api.proto.ActionsFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -152,7 +154,7 @@ public class WebSocketRequestTestTemplate {
       return when(new WhenMessage(name) {
         @Override
         public void accept(final WebSocketSession webSocketSession) throws Exception {
-          final WebSocketMessage<String> webSockerMessage = new TextMessage(objectMapper.writeValueAsString(ImmutableActions.builder().from(actions).rev(revision).build()));
+          final WebSocketMessage<String> webSockerMessage = new TextMessage(objectMapper.writeValueAsString(new Actions.Builder().from(actions).rev(revision).build()));
           websocketMessages.add("--> " + webSockerMessage.getPayload());
           webSocketSession.sendMessage(webSockerMessage);
         }
@@ -160,19 +162,19 @@ public class WebSocketRequestTestTemplate {
     }
 
     public ExpectionBuilder when(String name, Action action) {
-      return when(name, ImmutableActions.builder()
+      return when(name, new Actions.Builder()
         .addActions(action).build());
     }
 
     public ExpectionBuilder answerQuestion(String questionId, String answer) {
-      return when("answerQuestion(\"" + questionId + "\",\"" + answer + "\")", ImmutableAction.builder()
+      return when("answerQuestion(\"" + questionId + "\",\"" + answer + "\")", new Action.Builder()
         .type(Action.Type.ANSWER)
         .answer(answer)
         .id(questionId).build());
     }
 
     public ExpectionBuilder answerQuestion(String questionId, List<String> answer) {
-      return when("answerQuestion(\"" + questionId + "\",\"" + answer + "\")", ImmutableAction.builder()
+      return when("answerQuestion(\"" + questionId + "\",\"" + answer + "\")", new Action.Builder()
         .type(Action.Type.ANSWER)
         .answer(answer)
         .id(questionId).build());
@@ -184,25 +186,25 @@ public class WebSocketRequestTestTemplate {
 
 
     public ExpectionBuilder addRow(String rowGroupId) {
-      return when("addRow(\"" + rowGroupId + "\")", ImmutableAction.builder()
+      return when("addRow(\"" + rowGroupId + "\")", new Action.Builder()
         .type(Action.Type.ADD_ROW)
         .id(rowGroupId).build());
     }
 
     public ExpectionBuilder deleteRow(String rowGroupId) {
-      return when("deleteRow(\"" + rowGroupId + "\")", ImmutableAction.builder()
+      return when("deleteRow(\"" + rowGroupId + "\")", new Action.Builder()
         .type(Action.Type.DELETE_ROW)
         .id(rowGroupId).build());
     }
 
     public ExpectionBuilder nextPage() {
-      final Action action = ImmutableAction.builder()
+      final Action action = new Action.Builder()
         .type(Action.Type.NEXT).build();
       return when("nextPage()", action);
     }
 
     public ExpectionBuilder prevPage() {
-      return when("prevPage()", ImmutableAction.builder()
+      return when("prevPage()", new Action.Builder()
         .type(Action.Type.PREVIOUS).build());
     }
 

@@ -16,7 +16,9 @@
 package io.dialob.questionnaire.csvserializer;
 
 import io.dialob.api.form.*;
-import io.dialob.api.questionnaire.*;
+import io.dialob.api.questionnaire.Answer;
+import io.dialob.api.questionnaire.ContextValue;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -89,29 +91,29 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeHeaderWithMultichoice() {
-    FormValueSet valueSet = ImmutableFormValueSet.builder()
+    FormValueSet valueSet = new FormValueSet.Builder()
       .id("vs1")
       .addEntries(
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice1")
           .label(Map.of("en", "Choice 1"))
           .build(),
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice2")
           .label(Map.of("en", "Choice 2"))
           .build()
       )
       .build();
 
-    FormItem multichoiceItem = ImmutableFormItem.builder()
+    FormItem multichoiceItem = new FormItem.Builder()
       .id("mc1")
       .type(Constants.MULTICHOICE)
       .valueSetId("vs1")
       .label(Map.of("en", "Select Multiple"))
       .build();
 
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("mc1", multichoiceItem)
       .addValueSets(valueSet)
       .build();
@@ -147,7 +149,7 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeHeaderWithExportFalseProp() {
-    FormItem excludedItem = ImmutableFormItem.builder()
+    FormItem excludedItem = new FormItem.Builder()
       .id("excluded1")
       .type(Constants.TEXT)
       .label(Map.of("en", "Excluded Question"))
@@ -169,19 +171,19 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeHeaderWithContextVariables() {
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("text1", createTextItem("text1", "Question 1"))
       .addVariables(
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .name("var1")
           .context(true)
           .build(),
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .name("var2")
           .context(false)
           .build(),
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .name("var3")
           .context(true)
           .build()
@@ -290,29 +292,29 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeQuestionnairesWithChoiceAnswers() throws IOException {
-    FormValueSet valueSet = ImmutableFormValueSet.builder()
+    FormValueSet valueSet = new FormValueSet.Builder()
       .id("vs1")
       .addEntries(
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice1")
           .label(Map.of("en", "Choice 1 Label"))
           .build(),
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice2")
           .label(Map.of("en", "Choice 2 Label"))
           .build()
       )
       .build();
 
-    FormItem choiceItem = ImmutableFormItem.builder()
+    FormItem choiceItem = new FormItem.Builder()
       .id("choice1")
       .type(Constants.LIST)
       .valueSetId("vs1")
       .label(Map.of("en", "Choose One"))
       .build();
 
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("choice1", choiceItem)
       .addValueSets(valueSet)
       .build();
@@ -332,33 +334,33 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeQuestionnairesWithMultichoiceAnswers() throws IOException {
-    FormValueSet valueSet = ImmutableFormValueSet.builder()
+    FormValueSet valueSet = new FormValueSet.Builder()
       .id("vs1")
       .addEntries(
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice1")
           .label(Map.of("en", "Choice 1 Label"))
           .build(),
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice2")
           .label(Map.of("en", "Choice 2 Label"))
           .build(),
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice3")
           .label(Map.of("en", "Choice 3 Label"))
           .build()
       )
       .build();
 
-    FormItem multichoiceItem = ImmutableFormItem.builder()
+    FormItem multichoiceItem = new FormItem.Builder()
       .id("mc1")
       .type(Constants.MULTICHOICE)
       .valueSetId("vs1")
       .label(Map.of("en", "Choose Multiple"))
       .build();
 
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("mc1", multichoiceItem)
       .addValueSets(valueSet)
       .build();
@@ -398,36 +400,36 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeQuestionnairesWithContextVariables() throws IOException {
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("text1", createTextItem("text1", "Question 1"))
       .addVariables(
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .name("sessionId")
           .context(true)
           .build(),
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .name("userId")
           .context(true)
           .build()
       )
       .build();
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
       .id("q1")
       .metadata(
-        ImmutableQuestionnaireMetadata.builder()
+        new Questionnaire.Metadata.Builder()
           .language("en")
           .formId("form1")
           .build()
       )
       .addAnswers(createAnswer("text1", "TEXT", "Answer 1"))
       .addContext(
-        ImmutableContextValue.builder()
+        new ContextValue.Builder()
           .id("sessionId")
           .value("session-123")
           .build(),
-        ImmutableContextValue.builder()
+        new ContextValue.Builder()
           .id("userId")
           .value("user-456")
           .build()
@@ -444,11 +446,11 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeQuestionnairesWithMissingContextVariable() throws IOException {
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("text1", createTextItem("text1", "Question 1"))
       .addVariables(
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .name("sessionId")
           .context(true)
           .build()
@@ -499,7 +501,7 @@ class CSVSerializerUnitTest {
     );
 
     Questionnaire questionnaire = createQuestionnaire("q1", "en",
-      ImmutableAnswer.builder()
+      new Answer.Builder()
         .id("text1")
         .type("TEXT")
         .build()
@@ -515,25 +517,25 @@ class CSVSerializerUnitTest {
 
   @Test
   void testSerializeQuestionnairesWithUnknownChoiceValue() throws IOException {
-    FormValueSet valueSet = ImmutableFormValueSet.builder()
+    FormValueSet valueSet = new FormValueSet.Builder()
       .id("vs1")
       .addEntries(
-        ImmutableFormValueSetEntry.builder()
+        new FormValueSetEntry.Builder()
           .id("choice1")
           .label(Map.of("en", "Choice 1"))
           .build()
       )
       .build();
 
-    FormItem choiceItem = ImmutableFormItem.builder()
+    FormItem choiceItem = new FormItem.Builder()
       .id("choice1")
       .type(Constants.LIST)
       .valueSetId("vs1")
       .label(Map.of("en", "Choose One"))
       .build();
 
-    Form form = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build())
+    Form form = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build())
       .putData("choice1", choiceItem)
       .addValueSets(valueSet)
       .build();
@@ -554,8 +556,8 @@ class CSVSerializerUnitTest {
   // Helper methods
 
   private Form createFormWithItems(FormItem... items) {
-    ImmutableForm.Builder builder = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Test Form").build());
+    Form.Builder builder = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Test Form").build());
     for (FormItem item : items) {
       builder.putData(item.getId(), item);
     }
@@ -563,7 +565,7 @@ class CSVSerializerUnitTest {
   }
 
   private FormItem createTextItem(String id, String label) {
-    return ImmutableFormItem.builder()
+    return new FormItem.Builder()
       .id(id)
       .type(Constants.TEXT)
       .label(Map.of("en", label))
@@ -571,7 +573,7 @@ class CSVSerializerUnitTest {
   }
 
   private FormItem createBooleanItem(String id, String label) {
-    return ImmutableFormItem.builder()
+    return new FormItem.Builder()
       .id(id)
       .type(Constants.BOOLEAN)
       .label(Map.of("en", label))
@@ -579,7 +581,7 @@ class CSVSerializerUnitTest {
   }
 
   private FormItem createItemWithType(String id, String type, String label) {
-    return ImmutableFormItem.builder()
+    return new FormItem.Builder()
       .id(id)
       .type(type)
       .label(Map.of("en", label))
@@ -587,10 +589,10 @@ class CSVSerializerUnitTest {
   }
 
   private Questionnaire createQuestionnaire(String id, String language, Answer... answers) {
-    ImmutableQuestionnaire.Builder builder = ImmutableQuestionnaire.builder()
+    Questionnaire.Builder builder = new Questionnaire.Builder()
       .id(id)
       .metadata(
-        ImmutableQuestionnaireMetadata.builder()
+        new Questionnaire.Metadata.Builder()
           .language(language)
           .formId("test-form")
           .build()
@@ -604,7 +606,7 @@ class CSVSerializerUnitTest {
   }
 
   private Answer createAnswer(String id, String type, Object value) {
-    return ImmutableAnswer.builder()
+    return new Answer.Builder()
       .id(id)
       .type(type)
       .value(value)

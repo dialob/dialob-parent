@@ -110,7 +110,7 @@ public class Expression implements ErrorLogger {
     @Override
     public int compareTo(@NonNull StringOper o) {
       // We want reverse order
-      return o.span.getStartIndex() - span.getStartIndex();
+      return o.span.startIndex() - span.startIndex();
     }
   }
 
@@ -142,7 +142,7 @@ public class Expression implements ErrorLogger {
     Collections.sort(opes);
     String updatedExpression = expression;
     for (StringOper op : opes) {
-      updatedExpression = updatedExpression.substring(0, op.span.getStartIndex()) + to + updatedExpression.substring(op.span.getStopIndex() + 1);
+      updatedExpression = updatedExpression.substring(0, op.span.startIndex()) + to + updatedExpression.substring(op.span.stopIndex() + 1);
     }
     return createExpression(updatedExpression);
   }

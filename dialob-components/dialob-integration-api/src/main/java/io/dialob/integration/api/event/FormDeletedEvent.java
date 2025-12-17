@@ -18,13 +18,34 @@ package io.dialob.integration.api.event;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.tenant.Tenant;
 import org.immutables.value.Value;
 
-
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormDeletedEvent.class)
-@JsonDeserialize(as = ImmutableFormDeletedEvent.class)
+@Value.Builder
+@JsonSerialize(as = FormDeletedEvent.class)
+@JsonDeserialize(builder = FormDeletedEventBuilder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-public interface FormDeletedEvent extends FormEvent, DistributedEvent {
+public record FormDeletedEvent(
+  @NonNull Tenant tenant,
+  @NonNull String source,
+  @NonNull String formId
+) implements FormEvent, DistributedEvent {
 
+  @Override
+  public String getSource() {
+    return source;
+  }
+
+  @NonNull
+  @Override
+  public String getFormId() {
+    return formId;
+  }
+
+  @NonNull
+  @Override
+  public Tenant getTenant() {
+    return tenant;
+  }
 }

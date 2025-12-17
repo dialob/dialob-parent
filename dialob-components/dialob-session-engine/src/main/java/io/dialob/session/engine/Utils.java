@@ -20,10 +20,10 @@ import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
-import io.dialob.api.proto.*;
+import io.dialob.api.proto.ActionItem;
+import io.dialob.api.proto.ValueSet;
+import io.dialob.api.proto.ValueSetEntry;
 import io.dialob.api.questionnaire.Error;
-import io.dialob.api.questionnaire.ImmutableError;
 import io.dialob.common.Constants;
 import io.dialob.rule.parser.ParserUtil;
 import io.dialob.rule.parser.api.ValueType;
@@ -133,28 +133,28 @@ public final class Utils {
 
   @NonNull
   public static ValueSet toValueSet(@NonNull ValueSetState valueSetState) {
-    return ImmutableValueSet.builder()
+    return new ValueSet.Builder()
       .id(IdUtils.toString(valueSetState.getId()))
-      .entries(valueSetState.getEntries().stream().map(entry -> ImmutableValueSetEntry.builder().key(entry.getId()).value(entry.getLabel()).build()).toList()).build();
+      .entries(valueSetState.getEntries().stream().map(entry -> new ValueSetEntry.Builder().key(entry.getId()).value(entry.getLabel()).build()).toList()).build();
   }
 
   @NonNull
   public static Error toError(@NonNull ErrorState updated) {
-    return ImmutableError.builder()
+    return new Error.Builder()
       .id(IdUtils.toString(updated.getItemId()))
       .code(updated.getCode())
       .description(updated.getLabel()).build();
   }
 
   @NonNull
-  public static ActionItem toActionItem(@NonNull ItemState itemState, UnaryOperator<ImmutableActionItem.Builder> post) {
+  public static ActionItem toActionItem(@NonNull ItemState itemState, UnaryOperator<ActionItem.Builder> post) {
     Object value;
     if (isVariable(itemState.getType())) {
       value = itemState.getValue();
     } else {
       value = itemState.getAnswer();
     }
-    final ImmutableActionItem.Builder actionItemBuilder = ImmutableActionItem.builder()
+    final ActionItem.Builder actionItemBuilder = new ActionItem.Builder()
       .disabled(itemState.isDisabled() ? true : null)
       .inactive(!itemState.isActive() ? true : null)
       .activeItem(itemState.getActivePage().map(IdUtils::toString).orElse(null))
@@ -354,7 +354,7 @@ public final class Utils {
   }
 
   public static FormValidationError createError(String itemId, String message) {
-    return ImmutableFormValidationError.builder()
+    return new FormValidationError.Builder()
       .type(FormValidationError.Type.GENERAL)
       .level(FormValidationError.Level.ERROR)
       .message(message)

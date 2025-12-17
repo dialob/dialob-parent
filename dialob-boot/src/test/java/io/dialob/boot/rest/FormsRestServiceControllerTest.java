@@ -15,8 +15,9 @@
  */
 package io.dialob.boot.rest;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
+import io.dialob.api.form.FormTag;
 import io.dialob.boot.Application;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.DialobFormServiceAutoConfiguration;
@@ -163,32 +164,8 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   void shouldLookupFormsFromRepository() throws Exception {
     doAnswer(invocation -> {
       Consumer consumer = (Consumer) invocation.getArguments()[2];
-      consumer.accept(new FormDatabase.FormMetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "1";
-        }
-
-        @NonNull
-        @Override
-        public Form.Metadata getValue() {
-          return ImmutableFormMetadata.builder().label("l1").build();
-        }
-      });
-      consumer.accept(new FormDatabase.FormMetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "2";
-        }
-
-        @NonNull
-        @Override
-        public Form.Metadata getValue() {
-          return ImmutableFormMetadata.builder().label("l2").build();
-        }
-      });
+      consumer.accept(FormDatabase.FormMetadataRow.of("1", new Form.Metadata.Builder().label("l1").build()));
+      consumer.accept(FormDatabase.FormMetadataRow.of("2", new Form.Metadata.Builder().label("l2").build()));
       return null;
     }).when(formDatabase).findAllMetadata(eq(tenantId), isNull(), any(Consumer.class));
 
@@ -204,10 +181,10 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"forms.get", "itest", "tenant.all"})
   void shouldLookupFormFromRepository() throws Exception {
 
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .id("form-id")
       .rev("2")
-      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
+      .metadata(new Form.Metadata.Builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "form-id", null)).thenReturn(formDocument);
@@ -248,14 +225,14 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   void shouldTriggerEventOnFormUpdate() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
-      ImmutableForm arg = (ImmutableForm) invocation.getArguments()[1];
+      Form arg = (Form) invocation.getArguments()[1];
       return arg.withRev("1");
     });
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .id("new-form")
       .rev("old")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .metadata(new Form.Metadata.Builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
       .build();
 
     // We need to return cfrs token on update action
@@ -285,7 +262,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @Disabled// TODO
   void shouldReturnErrorWhenRootITemIsMissing() throws Exception {
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
-      ImmutableForm arg = (ImmutableForm) invocation.getArguments()[0];
+      Form arg = (Form) invocation.getArguments()[0];
       return arg.withRev("1");
     });
     // We need to return cfrs token on update action
@@ -313,11 +290,11 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   void shouldRejectUpdateByNameWhenNotForced() throws Exception {
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
-      .thenReturn(Optional.of(ImmutableFormTag.builder().formName("form-name").formId("123-123").created(new Date()).build()));
-    Form formDocument = ImmutableForm.builder()
+      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(new Date()).build()));
+    Form formDocument = new Form.Builder()
       .name("form-name")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .metadata(new Form.Metadata.Builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
       .build();
 
     // We need to return cfrs token on update action
@@ -336,18 +313,18 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   void shouldAcceptUpdateByNameWhenForced() throws Exception {
     doReturn("00000000-0000-0000-0000-000000000000").when(currentTenant).getId();
 
-    Form formDocument = ImmutableForm.builder()
+    Form formDocument = new Form.Builder()
       .name("form-name")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .metadata(new Form.Metadata.Builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
       .build();
 
-    when(formDatabase.findOne(tenantId, "123-123")).thenReturn(ImmutableForm.builder().from(formDocument).id("123-123").rev("321").build());
+    when(formDatabase.findOne(tenantId, "123-123")).thenReturn(new Form.Builder().from(formDocument).id("123-123").rev("321").build());
 
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
-      .thenReturn(Optional.of(ImmutableFormTag.builder().formName("form-name").formId("123-123").created(new Date()).build()));
+      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(new Date()).build()));
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
-      ImmutableForm arg = (ImmutableForm) invocation.getArguments()[1];
+      Form arg = (Form) invocation.getArguments()[1];
       return arg.withRev("124");
     });
 
@@ -403,18 +380,18 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   void shouldBeAbleToPutLatestTag() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
     when(currentTenant.get()).thenReturn(Tenant.of(tenantId));
-    when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(true);
+    when(formVersionControlDatabase.updateLatest(tenantId, "formii", new FormTag.Builder().name("latest").formName("formii").formId("1243").build())).thenReturn(true);
 
     // We need to return cfrs token on update action
     mockMvc.perform(put(uri("api", "forms", "formii", "tags", "latest")).params(tenantParam).with(csrf().asHeader())
       .accept(MediaType.APPLICATION_JSON)
       .contentType(MediaType.APPLICATION_JSON)
-      .content(OBJECT_MAPPER.writeValueAsBytes(ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())))
+      .content(OBJECT_MAPPER.writeValueAsBytes(new FormTag.Builder().name("latest").formName("formii").formId("1243").build())))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.ok").value(true));
 
 
-    verify(formVersionControlDatabase).updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build());
+    verify(formVersionControlDatabase).updateLatest(tenantId, "formii", new FormTag.Builder().name("latest").formName("formii").formId("1243").build());
 
     verifyNoMoreInteractions(formVersionControlDatabase, listenerMock);
 
@@ -424,18 +401,18 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   void shouldNotModifyIfUpdateIsNotDone() throws Exception {
     when(currentTenant.getId()).thenReturn(tenantId);
-    when(formVersionControlDatabase.updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())).thenReturn(false);
+    when(formVersionControlDatabase.updateLatest(tenantId, "formii", new FormTag.Builder().name("latest").formName("formii").formId("1243").build())).thenReturn(false);
 
     // We need to return cfrs token on update action
     mockMvc.perform(put(uri("api", "forms", "formii", "tags", "latest")).params(tenantParam).with(csrf().asHeader())
       .accept(MediaType.APPLICATION_JSON)
       .contentType(MediaType.APPLICATION_JSON)
-      .content(OBJECT_MAPPER.writeValueAsBytes(ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build())))
+      .content(OBJECT_MAPPER.writeValueAsBytes(new FormTag.Builder().name("latest").formName("formii").formId("1243").build())))
       .andExpect(status().isNotModified())
       .andExpect(jsonPath("$.ok").value(false));
 
 
-    verify(formVersionControlDatabase).updateLatest(tenantId, "formii", ImmutableFormTag.builder().name("latest").formName("formii").formId("1243").build());
+    verify(formVersionControlDatabase).updateLatest(tenantId, "formii", new FormTag.Builder().name("latest").formName("formii").formId("1243").build());
 
     verifyNoMoreInteractions(formVersionControlDatabase, listenerMock);
 

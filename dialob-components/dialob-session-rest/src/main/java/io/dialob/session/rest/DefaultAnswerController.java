@@ -19,8 +19,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
-import io.dialob.api.proto.ImmutableAction;
-import io.dialob.api.proto.ImmutableActions;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
@@ -74,7 +72,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     if (!sessionPermissionEvaluator.hasAccess(sessionId, currentUser())) {
       return createQuestionnaireNotFoundResponse(sessionId, null);
     }
-    final ImmutableActions.Builder actions = ImmutableActions.builder();
+    final Actions.Builder actions = new Actions.Builder();
     try {
       QuestionnaireSession questionnaireSession = getQuestionnaireSession(sessionId);
       FormActions formActions = new FormActions();
@@ -100,7 +98,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
     if (currentUserProvider.isPresent()) {
       CurrentUser currentUser = currentUserProvider.get().get();
       if (currentUser!=null) {
-        return currentUser.getUserId();
+        return currentUser.userId();
       }
     } else {
       LOGGER.debug("No currentUserProvider defined");
@@ -145,7 +143,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
   protected ResponseEntity<Actions> createQuestionnaireNotFoundResponse(String sessionId, @Nullable DocumentNotFoundException e) {
     LOGGER.debug("Action QUESTIONNAIRE_NOT_FOUND: backend response '{}'", e != null ? e.getMessage() : "Security block");
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-      ImmutableActions.builder().addActions(ImmutableAction.builder()
+      new Actions.Builder().addActions(new Action.Builder()
         .type(Action.Type.SERVER_ERROR)
         .serverEvent(true)
         .message("not found")
@@ -155,7 +153,7 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
   protected ResponseEntity<Actions> createUpdateConflictResponse(String sessionId, @NonNull DocumentConflictException e) {
     LOGGER.debug("Action UPDATE_CONFLICT: backend response '{}'", e.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(
-      ImmutableActions.builder().addActions(ImmutableAction.builder()
+      new Actions.Builder().addActions(new Action.Builder()
         .type(Action.Type.SERVER_ERROR)
         .serverEvent(true)
         .message(e.getMessage())
@@ -163,11 +161,11 @@ public class DefaultAnswerController implements AnswerController, QuestionnaireA
   }
 
   private ResponseEntity<Actions> createServiceErrorResponse(Exception e) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ImmutableActions.builder().addActions(createNotifyServerErrorAction(e)).build());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Actions.Builder().addActions(createNotifyServerErrorAction(e)).build());
   }
 
   private Action createNotifyServerErrorAction(Exception e) {
-    final ImmutableAction.Builder action = ImmutableAction.builder();
+    final Action.Builder action = new Action.Builder();
     action.type(Action.Type.SERVER_ERROR);
     action.serverEvent(true);
     if (returnStackTrace) {

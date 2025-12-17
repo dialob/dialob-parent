@@ -15,7 +15,7 @@
  */
 package io.dialob.boot.controller;
 
-import io.dialob.security.spring.tenant.ImmutableTenantGrantedAuthority;
+import io.dialob.security.spring.tenant.TenantGrantedAuthority;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +45,7 @@ public class WithDialobUserSecurityContextFactory implements
       grantedAuthorities.add(new SimpleGrantedAuthority(authority));
     }
     for (String tenant : withUser.tenants()) {
-      grantedAuthorities.add(ImmutableTenantGrantedAuthority.of(tenant,tenant));
+      grantedAuthorities.add(TenantGrantedAuthority.of(tenant,tenant));
     }
 
     User principal = new User(username, withUser.password(), true, true, true, true,

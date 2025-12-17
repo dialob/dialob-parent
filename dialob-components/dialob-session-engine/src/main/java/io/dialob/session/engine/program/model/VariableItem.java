@@ -22,7 +22,10 @@ import org.immutables.value.Value;
 import java.util.Objects;
 
 @Value.Immutable
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface VariableItem extends Item {
+
+  class Builder extends ImmutableVariableItem.Builder { }
 
   @NonNull
   Expression getValueExpression();

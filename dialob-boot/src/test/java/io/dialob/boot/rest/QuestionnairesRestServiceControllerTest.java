@@ -15,9 +15,8 @@
  */
 package io.dialob.boot.rest;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.ApplicationAutoConfiguration;
 import io.dialob.boot.settings.AdminApplicationSettings;
@@ -162,8 +161,8 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
   @Test
   @WithMockUser(username = "testUser", authorities = {"itest", "questionnaires.post", "questionnaires.get", "tenant.all"})
   void testGetQuestionnaires() throws Exception {
-    ImmutableForm.Builder formDocument = ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build())
+    Form.Builder formDocument = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("Kysely").build())
       .id("123")
       .rev("321");
     addQuestionnaire(formDocument, builder -> builder.addClassName("main-questionnaire"));
@@ -272,10 +271,10 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
   void return422WhenTryingToCreateQuestionnaireForINvalidForm() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "invalid", "1-invalid");
     when(formDatabase.exists(tenantId, "invalid")).thenReturn(true);
-    when(formDatabase.findOne(tenantId, "invalid", "1-invalid")).thenReturn(ImmutableForm.builder()
+    when(formDatabase.findOne(tenantId, "invalid", "1-invalid")).thenReturn(new Form.Builder()
       .id("invalid")
       .rev("1-invalid")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("invalid")
         .build())
       .build());
@@ -301,20 +300,20 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
   void return422WhenTryingToCreateQuestionnaireForInvalidForm2() throws Exception {
     Questionnaire questionnaire = createQuestionnaireDocument("invalidQ", "1-invalidQ", "invalid2", "1-invalid2");
     when(formDatabase.exists(tenantId, "invalid2")).thenReturn(true);
-    when(formDatabase.findOne(tenantId, "invalid2", "1-invalid2")).thenReturn(ImmutableForm.builder()
+    when(formDatabase.findOne(tenantId, "invalid2", "1-invalid2")).thenReturn(new Form.Builder()
       .id("invalid2")
       .rev("1-invalid2")
-      .putData("questionnaire", ImmutableFormItem.builder()
+      .putData("questionnaire", new FormItem.Builder()
         .id("questionnaire")
         .type("questionnaire")
         .addItems("q1")
         .build())
-      .putData("q1", ImmutableFormItem.builder()
+      .putData("q1", new FormItem.Builder()
         .id("q1")
         .type("text")
         .activeWhen("virhe")
         .build())
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("invalid")
         .build())
       .build());

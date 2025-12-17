@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionsFactory;
-import io.dialob.api.proto.ImmutableAction;
 import io.dialob.session.engine.session.model.*;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -57,7 +56,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public Collection<Action> answer(ItemId questionId, String answer) {
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.ANSWER)
       .id(IdUtils.toString(questionId))
       .answer(answer).build();
@@ -69,7 +68,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public Collection<Action> addRow(ItemId itemId) {
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.ADD_ROW)
       .id(IdUtils.toString(itemId))
       .build();
@@ -77,7 +76,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public Collection<Action> setValue(ItemId variableId, Object value) {
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.SET_VALUE)
       .id(IdUtils.toString(variableId))
       .value(value).build();
@@ -85,20 +84,20 @@ public abstract class AbstractDialobProgramTest {
   }
 
   protected Collection<Action> gotoPage(String page) {
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.GOTO)
       .id(page).build();
     return Collections.singletonList(action);
   }
 
   protected Collection<Action> nextPage() {
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.NEXT).build();
     return Collections.singletonList(action);
   }
 
   protected Collection<Action> previousPage() {
-    Action action = ImmutableAction.builder()
+    Action action = new Action.Builder()
       .type(Action.Type.PREVIOUS).build();
     return Collections.singletonList(action);
   }
@@ -112,14 +111,14 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ItemState> activeItem(String id) {
-    return isItem("activeItem(" + id + ")", itemState -> itemState.getId().equals(IdUtils.toId(id)) && itemState.isActive());
+    return isItem("activeItem(%s)".formatted(id), itemState -> itemState.getId().equals(IdUtils.toId(id)) && itemState.isActive());
   }
 
   public ArgumentMatcher<ItemState> inactiveItem() {
     return isItem("inactiveItem", item -> !item.isActive());
   }
   public ArgumentMatcher<ItemState> inactiveItem(String id) {
-    return isItem("inactiveItem(" + id + ")", item -> item.getId().equals(IdUtils.toId(id)) && !item.isActive());
+    return isItem("inactiveItem(%s)".formatted(id), item -> item.getId().equals(IdUtils.toId(id)) && !item.isActive());
   }
 
   public ArgumentMatcher<ErrorState> inactiveError() {

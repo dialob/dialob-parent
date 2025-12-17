@@ -23,9 +23,9 @@ import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.expr.arith.ImmutableConstant;
 import io.dialob.session.engine.program.expr.arith.ImmutableContextVariableReference;
-import io.dialob.session.engine.program.model.ImmutableGroup;
-import io.dialob.session.engine.program.model.ImmutableProgram;
-import io.dialob.session.engine.program.model.ImmutableVariableItem;
+import io.dialob.session.engine.program.model.Group;
+import io.dialob.session.engine.program.model.Program;
+import io.dialob.session.engine.program.model.VariableItem;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
@@ -45,15 +45,15 @@ class ActiveDialobSessionUpdaterTest {
     FunctionRegistry functionRegistry = mock();
 
     DialobSessionEvalContextFactory contextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
-    DialobProgram program = DialobProgram.createDialobProgram(ImmutableProgram.builder()
+    DialobProgram program = DialobProgram.createDialobProgram(new Program.Builder()
       .id("p1")
-      .addItems(ImmutableVariableItem.builder()
+      .addItems(new VariableItem.Builder()
         .id(IdUtils.toId("c1"))
         .isPrototype(false)
         .type("context")
         .valueExpression(ImmutableContextVariableReference.builder().itemId(IdUtils.toId("c1")).valueType(ValueType.STRING).build())
         .build())
-      .rootItem(ImmutableGroup.builder().id(IdUtils.QUESTIONNAIRE_ID).type("questionnaire").itemsExpression(ImmutableConstant.builder().valueType(ValueType.STRING).value(emptyList()).build()).build())
+      .rootItem(new Group.Builder().id(IdUtils.QUESTIONNAIRE_ID).type("questionnaire").itemsExpression(ImmutableConstant.builder().valueType(ValueType.STRING).value(emptyList()).build()).build())
       .build());
 
     //String tenantId, final String sessionId, final String language, String activePage

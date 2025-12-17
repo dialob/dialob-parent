@@ -23,8 +23,8 @@ import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
 import io.dialob.session.engine.program.expr.arith.*;
-import io.dialob.session.engine.program.model.ImmutableFormItem;
-import io.dialob.session.engine.program.model.ImmutableGroup;
+import io.dialob.session.engine.program.model.FormItem;
+import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.Program;
 import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class CreateDialobSessionProgramVisitorTest {
     Program program = Mockito.mock(Program.class);
     createDialobSessionProgramVisitor.startProgram(program);
     createDialobSessionProgramVisitor.visitItems().ifPresent(itemVisitor -> {
-      itemVisitor.visitItem(ImmutableFormItem.builder()
+      itemVisitor.visitItem(new FormItem.Builder()
         .id(IdUtils.toId("proto"))
         .type("note")
         .isPrototype(true)
@@ -71,13 +71,13 @@ class CreateDialobSessionProgramVisitorTest {
     Program program = Mockito.mock(Program.class);
     createDialobSessionProgramVisitor.startProgram(program);
     createDialobSessionProgramVisitor.visitItems().ifPresent(itemVisitor -> {
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("rg"))
         .type("rowgroup")
         .isPrototype(false)
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
         .build());
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("rg.*"))
         .type("row")
         .isPrototype(true)
@@ -208,7 +208,7 @@ class CreateDialobSessionProgramVisitorTest {
     Program program = Mockito.mock(Program.class);
     final ItemId itemId = IdUtils.toId("rg");
 
-    final ImmutableGroup rowgroup = ImmutableGroup.builder()
+    final var rowgroup = new Group.Builder()
       .id(itemId)
       .type("rowgroup")
       .isPrototype(false)
@@ -216,8 +216,8 @@ class CreateDialobSessionProgramVisitorTest {
       .valueType(ValueType.arrayOf(ValueType.INTEGER))
       .build();
 
-    final ImmutableGroup row = ImmutableGroup.builder()
-      .id(ImmutableItemIdPartial.of(Optional.of(itemId)))
+    final var row = new Group.Builder()
+      .id(new ItemIdPartial(itemId))
       .type("row")
       .isPrototype(true)
       .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())

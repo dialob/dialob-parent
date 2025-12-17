@@ -18,10 +18,7 @@ package io.dialob.session.engine.session.command;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ImmutableItemStates;
-import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemState;
-import io.dialob.session.engine.session.model.ItemStates;
+import io.dialob.session.engine.session.model.*;
 import org.immutables.value.Value;
 
 import java.util.Objects;
@@ -53,7 +50,7 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
     final ImmutableItemStates.Builder builder = ImmutableItemStates.builder()
       .from(itemStates)
       .itemStates(itemStates.getItemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
-      .errorStates(itemStates.getErrorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().getItemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
+      .errorStates(itemStates.getErrorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
 
     // add new items states
     newItems.stream()

@@ -20,9 +20,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type")
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = ImmutableFormUpdatedEvent.class, name = "FormUpdated"),
-  @JsonSubTypes.Type(value = ImmutableFormDeletedEvent.class, name = "FormDeleted"),
-  @JsonSubTypes.Type(value = ImmutableFormTaggedEvent.class, name = "FormTagged")
+  @JsonSubTypes.Type(value = FormUpdatedEvent.class, name = "FormUpdated"),
+  @JsonSubTypes.Type(value = FormDeletedEvent.class, name = "FormDeleted"),
+  @JsonSubTypes.Type(value = FormTaggedEvent.class, name = "FormTagged")
 })
 public interface DistributedEvent extends Event {
 

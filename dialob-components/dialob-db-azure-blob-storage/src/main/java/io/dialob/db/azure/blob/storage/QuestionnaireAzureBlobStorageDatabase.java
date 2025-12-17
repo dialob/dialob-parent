@@ -18,10 +18,7 @@ package io.dialob.db.azure.blob.storage;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 
 import java.util.Date;
@@ -47,9 +44,9 @@ public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStor
   public void findAllMetadata(String tenantId, String ownerId, String formId, String formName, String formTag, Questionnaire.Metadata.Status status, @NonNull Consumer<MetadataRow> consumer) {
     forAllObjects(tenantId, object -> {
       String id = extractObjectName(object.getName());
-      consumer.accept(ImmutableMetadataRow.of(
+      consumer.accept(MetadataRow.of(
         id,
-        ImmutableQuestionnaireMetadata.builder()
+        new Questionnaire.Metadata.Builder()
           .lastAnswer(Date.from(object.getProperties().getLastModified().toInstant()))
           .build()
       ));
@@ -59,13 +56,13 @@ public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStor
   @NonNull
   @Override
   protected Questionnaire updateDocumentId(@NonNull Questionnaire document, String id) {
-    return ImmutableQuestionnaire.builder().from(document).id(id).build();
+    return new Questionnaire.Builder().from(document).id(id).build();
   }
 
   @NonNull
   @Override
   protected Questionnaire updateDocumentRev(@NonNull Questionnaire document, String rev) {
-    return ImmutableQuestionnaire.builder().from(document).rev(rev).build();
+    return new Questionnaire.Builder().from(document).rev(rev).build();
   }
 
 }

@@ -17,7 +17,6 @@ package io.dialob.session.engine.program;
 
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.form.service.api.validation.FormValidator;
 import org.junit.jupiter.api.Test;
 
@@ -35,14 +34,14 @@ class FormValidatorExecutorTest {
   void shouldCombineErrors() {
     FormValidator valA = mock(FormValidator.class);
     when(valA.validate(any(Form.class))).thenReturn(Arrays.asList(
-      ImmutableFormValidationError.builder().message("a").build(),
-      ImmutableFormValidationError.builder().message("b").build()
+      new FormValidationError.Builder().message("a").build(),
+      new FormValidationError.Builder().message("b").build()
     ));
 
     FormValidator valB = mock(FormValidator.class);
     when(valB.validate(any(Form.class))).thenReturn(Arrays.asList(
-      ImmutableFormValidationError.builder().message("c").build(),
-      ImmutableFormValidationError.builder().message("d").build()
+      new FormValidationError.Builder().message("c").build(),
+      new FormValidationError.Builder().message("d").build()
     ));
 
     List<FormValidator> validators = Arrays.asList(valA, valB);

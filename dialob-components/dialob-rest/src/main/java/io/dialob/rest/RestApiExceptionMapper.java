@@ -17,7 +17,6 @@ package io.dialob.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.rest.Errors;
-import io.dialob.api.rest.ImmutableErrors;
 import io.dialob.rest.type.ApiException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,12 +39,12 @@ public class RestApiExceptionMapper {
   @ExceptionHandler
   public ResponseEntity handleMethodArgumentNotValidException(@NonNull MethodArgumentNotValidException exception) {
     BindingResult bindingResult = exception.getBindingResult();
-    ImmutableErrors.Builder errorsBuilder = ImmutableErrors.builder()
+    Errors.Builder errorsBuilder = new Errors.Builder()
       .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
       .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase());
 
     for (ObjectError objectError : bindingResult.getAllErrors()) {
-      ImmutableErrors.Error.Builder builder = ImmutableErrors.Error.builder()
+      Errors.Error.Builder builder = new Errors.Error.Builder()
         .code(objectError.getCode())
         .error(objectError.getDefaultMessage());
       if (objectError instanceof FieldError fieldError) {
@@ -63,12 +62,12 @@ public class RestApiExceptionMapper {
 
   @ExceptionHandler
   public ResponseEntity valueInstantiationExceptionHandler(@NonNull com.fasterxml.jackson.databind.exc.ValueInstantiationException exception) {
-    ImmutableErrors.Builder builder = ImmutableErrors.builder();
+    Errors.Builder builder = new Errors.Builder();
     Throwable cause = exception.getCause();
     String message = exception.getMessage();
     if (cause instanceof ConstraintViolationException cve) {
       cve.getConstraintViolations().forEach(constraintViolation -> {
-        builder.addErrors(ImmutableErrors.Error.builder()
+        builder.addErrors(new Errors.Error.Builder()
           .error(constraintViolation.getMessage())
           .rejectedValue(constraintViolation.getInvalidValue())
           .context(constraintViolation.getPropertyPath().toString())
@@ -78,6 +77,7 @@ public class RestApiExceptionMapper {
     }
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(builder
       .message(message)
+      .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
       .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).build());
   }
 
@@ -85,7 +85,7 @@ public class RestApiExceptionMapper {
   public ResponseEntity apiExceptionHandler(@NonNull ApiException exception) {
     Errors errors = exception.getErrors();
     HttpStatus httpStatus = resolveHttpStatus(errors);
-    errors = ImmutableErrors.builder().from(errors).error(httpStatus.getReasonPhrase()).build();
+    errors = new Errors.Builder().from(errors).error(httpStatus.getReasonPhrase()).build();
     LOGGER.error("API Error ({}): {}", httpStatus, exception.getMessage(), exception);
     return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(errors);
   }

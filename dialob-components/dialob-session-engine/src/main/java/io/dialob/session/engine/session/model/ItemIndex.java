@@ -16,17 +16,27 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import org.immutables.value.Value;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
-@Value.Immutable
-public interface ItemIndex extends ItemId {
+public record ItemIndex(
+  @NonNull Integer index,
+  @Nullable ItemId parent
+) implements ItemId {
 
-  @Value.Parameter(order = 0)
   @NonNull
-  Integer getIndex();
+  public Integer getIndex() {
+    return index;
+  }
 
-  default String getValue() {
+  @Override
+  public String getValue() {
     return Integer.toString(getIndex());
   }
+
+  @Override
+  public <I extends ItemId> ItemId withParent(I parent) {
+    return new ItemIndex(index, parent);
+  }
+
 
 }

@@ -17,15 +17,14 @@ package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.arith.BooleanOperators;
 import io.dialob.session.engine.program.expr.arith.LocalizedLabelOperator;
 import io.dialob.session.engine.program.model.*;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableItemIdPartial;
-import io.dialob.session.engine.session.model.ImmutableItemRef;
 import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemIdPartial;
+import io.dialob.session.engine.session.model.ItemRef;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P extends ExpressionCompiler & BuilderParent> implements Builder<P>, AliasesProvider {
 
-  public static final ImmutableLabel EMPTY_LABEL = ImmutableLabel.builder().build();
+  public static final Label EMPTY_LABEL = Label.EMPTY_LABEL;
 
   private final ProgramBuilder programBuilder;
 
@@ -84,11 +83,11 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T addClassname(@NonNull String className) {
-    return addClassname(ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build());
+    return addClassname(new ConstantValue.Builder<String>().value(className).valueType(ValueType.STRING).build());
   }
 
   public T addClassname(String when, @NonNull String className) {
-    if (!compileExpression(when, expression -> addClassname(ImmutableConditionalValue.<String>builder().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, Optional.empty())) {
+    if (!compileExpression(when, expression -> addClassname(new ConditionalValue.Builder<String>().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, Optional.empty())) {
       addClassname(className);
     }
     return (T) this;
@@ -100,22 +99,22 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T setLabel(Map<String, String> label) {
-    this.label = ImmutableLabel.builder().putAllLabels(label).build();
+    this.label = Label.of(label);
     return (T) this;
   }
 
   public T setLabel(String language, String label) {
-    this.label = ImmutableLabel.builder().from(this.label).putLabels(language, label).build();
+    this.label = this.label.with(language, label);
     return (T) this;
   }
 
   public T setDescription(Map<String,String> description) {
-    this.description = ImmutableLabel.builder().putAllLabels(description).build();
+    this.description = Label.of(description);
     return (T) this;
   }
 
   public T setDescription(String language, String description) {
-    this.description = ImmutableLabel.builder().from(this.description).putLabels(language, description).build();
+    this.description = this.description.with(language, description);
     return (T) this;
   }
 
@@ -151,7 +150,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   protected void requireBooleanExpression(Expression expression, FormValidationError.Type type, Consumer<FormValidationError> errorConsumer) {
     if (expression != null && expression.getValueType() != ValueType.BOOLEAN) {
-      errorConsumer.accept(ImmutableFormValidationError.builder()
+      errorConsumer.accept(new FormValidationError.Builder()
         .itemId(id)
         .message("BOOLEAN_EXPRESSION_EXPECTED")
         .type(type)
@@ -162,7 +161,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   public T addClassnames(List<String> classNames) {
     classNames.stream()
-      .map(className -> ImmutableConstantValue.<String>builder().value(className).valueType(ValueType.STRING).build())
+      .map(className -> new ConstantValue.Builder<String>().value(className).valueType(ValueType.STRING).build())
       .forEach(this.classNames::add);
     return (T) this;
   }
@@ -198,7 +197,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   void setupId() {
     // FormVisitor guarantees hierarchical visiting order
-    this.itemId = findHostingRowgroupId().map(hostingGroup -> ImmutableItemRef.of(id, Optional.of(ImmutableItemIdPartial.of(Optional.of(hostingGroup))))).orElse((ImmutableItemRef) IdUtils.toId(id));
+    this.itemId = findHostingRowgroupId().map(hostingGroup -> new ItemRef(id, new ItemIdPartial(hostingGroup))).orElse((ItemRef) IdUtils.toId(id));
   }
 
   public Optional<ValueType> getValueType() {
@@ -206,7 +205,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   LocalizedLabelOperator createLabelOperator(Map<String, String> label) {
-    return createLabelOperator(Label.createLabel(label));
+    return createLabelOperator(Label.of(label));
   }
   LocalizedLabelOperator createLabelOperator(Label label) {
     return LocalizedLabelOperator.createLocalizedLabelOperator(getProgramBuilder(), label);

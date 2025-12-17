@@ -66,7 +66,7 @@ class GrantedTenantAccessEvaluatorTest {
     SecurityContextHolder.setContext(context);
     AbstractAuthenticationToken authentication = mock();
     when(context.getAuthentication()).thenReturn(authentication);
-    when(authentication.getAuthorities()).thenReturn(List.of(ImmutableTenantGrantedAuthority.of("123", "read")));
+    when(authentication.getAuthorities()).thenReturn(List.of(TenantGrantedAuthority.of("123", "read")));
 
     var evaluator = new GrantedTenantAccessEvaluator();
     when(tenant.id()).thenReturn("123");

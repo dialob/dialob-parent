@@ -18,8 +18,8 @@ package io.dialob.session.engine.program;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.ImmutableNotOnPageExpression;
 import io.dialob.session.engine.program.expr.arith.*;
-import io.dialob.session.engine.program.model.ImmutableFormItem;
-import io.dialob.session.engine.program.model.ImmutableGroup;
+import io.dialob.session.engine.program.model.FormItem;
+import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.Program;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.CommandFactory;
@@ -79,7 +79,7 @@ class DependencyResolverVisitorTest {
     visitor.startProgram(program);
 
     visitor.visitItems().ifPresent(itemVisitor -> {
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("questionnaire"))
         .type("questionnaire")
         .isPrototype(false)
@@ -109,47 +109,47 @@ class DependencyResolverVisitorTest {
     visitor.startProgram(program);
 
     visitor.visitItems().ifPresent(itemVisitor -> {
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("questionnaire"))
         .type("questionnaire")
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build())
         .isInvalidAnswersExpression(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()))
         .build());
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1"))
         .type("page")
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1", "page1group2")).build())
         .disabledExpression(ImmutableNotOnPageExpression.of(ref("page1")))
         .build());
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2"))
         .type("page")
         .itemsExpression(stringArray("page2group1", "page2group2"))
         .disabledExpression(ImmutableNotOnPageExpression.of(ref("page2")))
         .build());
 
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1group1"))
         .type("group")
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1item1","page1group1item2")).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
         .build());
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1group2"))
         .type("group")
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
         .build());
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2group1"))
         .type("group")
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
         .build());
-      itemVisitor.visitItem(ImmutableGroup.builder()
+      itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2group2"))
         .type("group")
         .itemsExpression(ImmutableConstant.builder().valueType(STRING_ARRAY_VALUE_TYPE).value(List.of()).build())
@@ -158,13 +158,13 @@ class DependencyResolverVisitorTest {
         .build());
 
 
-      itemVisitor.visitItem(ImmutableFormItem.builder()
+      itemVisitor.visitItem(new FormItem.Builder()
         .id(IdUtils.toId("page1group1item1"))
         .type("boolean")
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1group1")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page1group1")))
         .build());
-      itemVisitor.visitItem(ImmutableFormItem.builder()
+      itemVisitor.visitItem(new FormItem.Builder()
         .id(IdUtils.toId("page1group1item2"))
         .type("text")
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1group1")))

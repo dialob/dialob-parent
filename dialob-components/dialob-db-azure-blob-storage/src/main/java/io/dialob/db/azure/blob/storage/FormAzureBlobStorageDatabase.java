@@ -19,10 +19,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 
 import java.util.Date;
 import java.util.Objects;
@@ -54,9 +51,9 @@ public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDataba
   public void findAllMetadata(String tenantId, Form.Metadata metadata, @NonNull Consumer<FormMetadataRow> consumer) {
     forAllObjects(tenantId, object -> {
       String id = extractObjectName(object.getName());
-      consumer.accept(ImmutableFormMetadataRow.of(
+      consumer.accept(FormMetadataRow.of(
         id,
-        ImmutableFormMetadata.builder()
+        new Form.Metadata.Builder()
           .lastSaved(Date.from(object.getProperties().getLastModified().toInstant()))
           .tenantId(tenantId)
           .build()
@@ -66,13 +63,13 @@ public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDataba
   @NonNull
   @Override
   protected Form updateDocumentId(@NonNull Form form, String id) {
-    return ImmutableForm.builder().from(form).id(id).build();
+    return new Form.Builder().from(form).id(id).build();
   }
 
   @NonNull
   @Override
   protected Form updateDocumentRev(@NonNull Form form, String rev) {
-    return ImmutableForm.builder().from(form).rev(rev).build();
+    return new Form.Builder().from(form).rev(rev).build();
   }
 
 }

@@ -18,7 +18,6 @@ package io.dialob.form.service.api.repository;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
-import io.dialob.api.form.ImmutableFormItem;
 import io.dialob.api.form.Validation;
 import io.dialob.common.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +60,7 @@ public class VisitableForm {
           continue;
         }
         if (pages.contains(formItem.getId())) {
-          formItem = ImmutableFormItem.builder().from(formItem)
+          formItem = new FormItem.Builder().from(formItem)
             .type(Constants.PAGE).build();
         }
         formItemVisitor.start();

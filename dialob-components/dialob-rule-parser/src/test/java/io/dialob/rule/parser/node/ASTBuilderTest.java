@@ -13,7 +13,7 @@ class ASTBuilderTest {
   @Test
   void shouldThrowIllegalStateExceptionIfBuildCalledTooEarl() {
     ASTBuilder astBuilder = new ASTBuilder();
-    astBuilder.idExprNode(null, "x", ValueType.BOOLEAN, ImmutableSpan.of(0,1));
+    astBuilder.idExprNode(null, "x", ValueType.BOOLEAN, Span.of(0,1));
     Assertions.assertThrows(IllegalStateException.class, astBuilder::build);
   }
 
@@ -21,7 +21,7 @@ class ASTBuilderTest {
   @Test
   void shouldCreateIdNode() {
     ASTBuilder astBuilder = new ASTBuilder();
-    astBuilder.idExprNode(null, "x", ValueType.BOOLEAN, ImmutableSpan.of(0,1)).closeExpr();
+    astBuilder.idExprNode(null, "x", ValueType.BOOLEAN, Span.of(0,1)).closeExpr();
     NodeBase nodeBase = astBuilder.build();
 
     assertEquals("x", nodeBase.toString());
@@ -34,7 +34,7 @@ class ASTBuilderTest {
   void shouldCreateCallNode() {
     ASTBuilder astBuilder = new ASTBuilder();
 
-    astBuilder.callExprNode("func", ValueType.BOOLEAN, ImmutableSpan.of(0,4)).closeExpr();
+    astBuilder.callExprNode("func", ValueType.BOOLEAN, Span.of(0,4)).closeExpr();
     NodeBase nodeBase = astBuilder.build();
 
     assertEquals("(func)", nodeBase.toString());

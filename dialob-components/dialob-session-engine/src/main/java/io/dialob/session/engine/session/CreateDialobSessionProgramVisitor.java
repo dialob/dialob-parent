@@ -152,7 +152,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   @Override
   public Optional<ErrorVisitor> visitErrors() {
     return Optional.of(error -> {
-      final ErrorId targetId = ImmutableErrorId.of(error.getItemId(), error.getCode());
+      final ErrorId targetId = new ErrorId(error.getItemId(), error.getCode());
       ErrorState errorState = new ErrorState(targetId, (String) null);
       if (error.isPrototype()) {
         errorPrototypes.add(errorState);
@@ -168,7 +168,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   @Override
   public Optional<ValueSetVisitor> visitValueSets() {
     return Optional.of(valueSet -> {
-      updates.add(CommandFactory.updateValueSet(ImmutableValueSetId.of(valueSet.getId()), valueSet.getEntries()));
+      updates.add(CommandFactory.updateValueSet(new ValueSetId(valueSet.getId()), valueSet.getEntries()));
       ValueSetState valueSetState = new ValueSetState(valueSet.getId());
       valueSetState = valueSetState.update().setEntries(findProvidedValueSetEntries.apply(valueSetState.getId())).get();
       valueSets.add(valueSetState);
@@ -246,7 +246,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           return Stream.empty();
         }
         return rowNumbers.stream().flatMap(rowNumber -> {
-          final ItemId rowId = ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()));
+          final ItemId rowId = new ItemIndex(rowNumber.intValue(), rowGroup.getId());
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
@@ -257,7 +257,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
               .map(groupPrototype -> (RowItemsExpression) groupPrototype.getItemsExpression())
               .flatMap(rowItemsExpression -> rowItemsExpression.getItemIds().stream())
               .map(ItemId::getValue)
-              .map(name -> ImmutableItemRef.of(name, Optional.of(rowId))));
+              .map(name -> new ItemRef(name, rowId)));
         });
       }).flatMap(itemIdToCreate -> prototypeItems
       .stream()
@@ -294,7 +294,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             .update().setItems(
               ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> (ItemId) ImmutableItemIndex.of(rowNumber.intValue(), Optional.of(rowGroup.getId()))).toList()
+                .map(rowNumber -> (ItemId) new ItemIndex(rowNumber.intValue(), rowGroup.getId())).toList()
             ).get();
         }
         return rowGroup;

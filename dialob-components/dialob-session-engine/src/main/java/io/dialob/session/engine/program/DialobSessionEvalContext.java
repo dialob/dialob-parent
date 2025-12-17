@@ -229,7 +229,7 @@ public class DialobSessionEvalContext implements EvalContext {
     visitor.visitUpdatedErrorStates().ifPresent(updatedErrorStateVisitor -> {
       for (final ErrorId errorId : this.updatedErrorIds) {
         ErrorState originalState = originalStates.getErrorStates().get(errorId);
-        Optional<ErrorState> itemState1 = dialobSession.getErrorState(errorId.getItemId(), errorId.getCode());
+        Optional<ErrorState> itemState1 = dialobSession.getErrorState(errorId.itemId(), errorId.code());
         if (itemState1.map(itemState -> itemState != originalState).orElse(originalState != null)) {
           updatedErrorStateVisitor.visitUpdatedErrorState(originalState, itemState1.orElse(null));
         }

@@ -22,27 +22,25 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
+import java.util.Objects;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableErrorsResponse.class)
-@JsonDeserialize(as = ImmutableErrorsResponse.class)
+@Value.Builder
+@JsonSerialize(as = ErrorsResponse.class)
+@JsonDeserialize(builder = ErrorsResponse.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-public interface ErrorsResponse extends Serializable {
+public record ErrorsResponse(
+  @Nullable Instant timestamp,
+  @Nullable Integer status,
+  @Nullable String error,
+  @Nullable String message
+) implements Serializable {
 
-  @Nullable
-  @Value.Default
-  default Date getTimestamp() {
-    return new Date();
+  public ErrorsResponse {
+    timestamp = Objects.requireNonNullElseGet(timestamp, Instant::now);
   }
 
-  @Nullable
-  Integer getStatus();
-
-  @Nullable
-  String getError();
-
-  @Nullable
-  String getMessage();
+  public static class Builder extends ErrorsResponseBuilder {
+  }
 
 }

@@ -21,8 +21,6 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Assertions;
@@ -63,8 +61,8 @@ class FormAzureBlobStorageDatabaseTest {
   @Test
   void shouldGetSameObjectBackFromStorage() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -76,8 +74,8 @@ class FormAzureBlobStorageDatabaseTest {
   @Test
   void shouldRevisionObject() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -106,8 +104,8 @@ class FormAzureBlobStorageDatabaseTest {
   @Test
   void shouldGetTrueFromExistsWhenDocumentDoExists() {
     var database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -126,8 +124,8 @@ class FormAzureBlobStorageDatabaseTest {
   @Test
   void shouldBeAbleDeleteExistingDocument() {
     FormAzureBlobStorageDatabase database = new FormAzureBlobStorageDatabase(blobContainerClient, objectMapper, "forms", null);
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())
@@ -146,8 +144,8 @@ class FormAzureBlobStorageDatabaseTest {
     database.forAllObjects("00000000-0000-0000-0000-000000000000", scanner);
     Mockito.verifyNoMoreInteractions(scanner);
 
-    Form saved = database.save("00000000-0000-0000-0000-000000000000", ImmutableForm.builder()
-      .metadata(ImmutableFormMetadata.builder()
+    Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
+      .metadata(new Form.Metadata.Builder()
         .tenantId("00000000-0000-0000-0000-000000000000")
         .label("test")
         .build())

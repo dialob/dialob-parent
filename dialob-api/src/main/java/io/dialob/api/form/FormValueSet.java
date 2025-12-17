@@ -31,11 +31,13 @@ import java.util.Map;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableFormValueSet.class)
-@JsonDeserialize(builder = ImmutableFormValueSet.Builder.class)
+@JsonDeserialize(builder = FormValueSet.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface FormValueSet extends Serializable {
+
+  class Builder extends ImmutableFormValueSet.Builder { }
 
   @NotNull
   String getId();

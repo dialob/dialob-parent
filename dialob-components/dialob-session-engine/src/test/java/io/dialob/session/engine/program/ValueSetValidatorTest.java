@@ -15,7 +15,10 @@
  */
 package io.dialob.session.engine.program;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormValidationError;
+import io.dialob.api.form.FormValueSet;
+import io.dialob.api.form.FormValueSetEntry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,9 +30,9 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class ValueSetValidatorTest {
   private final ValueSetValidator valueSetValidator = new ValueSetValidator();
-  private final Form baseForm = ImmutableForm.builder()
+  private final Form baseForm = new Form.Builder()
       .name("test")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .addLanguages("en")
         .label("TestForm")
         .build()
@@ -37,10 +40,10 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldWarnOnEmptySet() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
-        ImmutableFormValueSet.builder()
+        new FormValueSet.Builder()
           .id("emptySetId")
           .build()
       ).build();
@@ -55,21 +58,21 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldErrorOnDuplicateKeys() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
-        ImmutableFormValueSet.builder()
+        new FormValueSet.Builder()
           .id("setId")
           .addEntries(
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("a")
               .putLabel("en", "One")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("a")
               .putLabel("en", "Two")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("b")
               .putLabel("en", "Three")
               .build()
@@ -87,21 +90,21 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldPassValidSet() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
-        ImmutableFormValueSet.builder()
+        new FormValueSet.Builder()
           .id("setId")
           .addEntries(
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("a")
               .putLabel("en", "One")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("b")
               .putLabel("en", "Two")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("c")
               .putLabel("en", "Three")
               .build()
@@ -115,21 +118,21 @@ class ValueSetValidatorTest {
 
   @Test
   void shouldErrorOnEmptyKey() {
-    ImmutableForm testForm = ImmutableForm.builder()
+    Form testForm = new Form.Builder()
       .from(baseForm)
       .addValueSets(
-        ImmutableFormValueSet.builder()
+        new FormValueSet.Builder()
           .id("setId")
           .addEntries(
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("a")
               .putLabel("en", "One")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("")
               .putLabel("en", "Two")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("c")
               .putLabel("en", "Three")
               .build()

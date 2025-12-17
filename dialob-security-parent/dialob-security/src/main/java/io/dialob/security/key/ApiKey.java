@@ -15,35 +15,74 @@
  */
 package io.dialob.security.key;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Value.Immutable
-@Value.Style()
-public interface ApiKey extends Serializable {
+@Value.Builder
+public record ApiKey(
+  String clientId,
+  @Nullable String token,
+  @Nullable String hash,
+  @Nullable String tenantId,
+  @Nullable String owner,
+  @Nullable LocalDateTime created,
+  @Nullable LocalDateTime startDateTime,
+  @Nullable LocalDateTime endDateTime
+) implements Serializable {
+
+  public static class Builder extends ApiKeyBuilder {}
+
+  public static ApiKey of(String clientId) {
+    return new Builder().clientId(clientId).build();
+  }
+
+  public ApiKey withToken(String token) {
+    return new Builder().from(this).token(token).build();
+  }
+
+  public ApiKey withHash(String hash) {
+    return new Builder().from(this).hash(hash).build();
+  }
 
   @Value.Parameter
-  String getClientId();
+  public String getClientId() {
+    return clientId;
+  }
 
-  Optional<String> getToken();
+  public Optional<String> getToken() {
+    return Optional.ofNullable(token);
+  }
 
-  Optional<String> getHash();
+  public Optional<String> getHash() {
+    return Optional.ofNullable(hash);
+  }
 
-  default boolean isValid() {
+  public boolean isValid() {
     return getHash().isPresent() && getToken().isEmpty();
   }
 
-  Optional<String> getTenantId();
+  public Optional<String> getTenantId() {
+    return Optional.ofNullable(tenantId);
+  }
 
-  Optional<String> getOwner();
+  public Optional<String> getOwner() {
+    return Optional.ofNullable(owner);
+  }
 
-  Optional<LocalDateTime> getCreated();
+  public Optional<LocalDateTime> getCreated() {
+    return Optional.ofNullable(created);
+  }
 
-  Optional<LocalDateTime> getStartDateTime();
+  public Optional<LocalDateTime> getStartDateTime() {
+    return Optional.ofNullable(startDateTime);
+  }
 
-  Optional<LocalDateTime> getEndDateTime();
+  public Optional<LocalDateTime> getEndDateTime() {
+    return Optional.ofNullable(endDateTime);
+  }
 
 }

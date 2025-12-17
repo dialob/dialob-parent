@@ -15,7 +15,7 @@
  */
 package io.dialob.security.spring.oauth2;
 
-import io.dialob.security.spring.tenant.ImmutableGroupGrantedAuthority;
+import io.dialob.security.spring.tenant.GroupGrantedAuthority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
@@ -44,7 +44,7 @@ public class MapClaimToGroups implements UnaryOperator<Stream<? extends GrantedA
         var groups = getGroups(oAuth2UserAuthority);
         if (groups != null) {
           return Stream.concat(Stream.of(authority), groups.stream()
-            .map((String groupName) -> ImmutableGroupGrantedAuthority.of(groupName, groupName)));
+            .map((String groupName) -> GroupGrantedAuthority.of(groupName, groupName)));
         }
       }
       return Stream.of(authority);

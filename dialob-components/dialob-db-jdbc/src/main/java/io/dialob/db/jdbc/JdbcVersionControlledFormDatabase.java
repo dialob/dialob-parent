@@ -17,11 +17,11 @@ package io.dialob.db.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormTag;
 import io.dialob.db.spi.exceptions.*;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -77,7 +77,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
 
   protected final ObjectMapper objectMapper;
 
-  private final RowMapper<FormTag> formTagRowMapper = (rs, rowNum) -> (FormTag) ImmutableFormTag.builder()
+  private final RowMapper<FormTag> formTagRowMapper = (rs, rowNum) -> (FormTag) new FormTag.Builder()
     .formName(rs.getString(1))
     .name(rs.getString(2))
     .description(rs.getString(3))
@@ -247,7 +247,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     assertTenantContextDefined(tenantId);
     Form form = getFormDatabase().findOne(tenantId, formId);
     // bypass save validation
-    form = formDatabase.save(tenantId, ImmutableForm.builder().from(form).id(null).rev(null).build());
+    form = formDatabase.save(tenantId, new Form.Builder().from(form).id(null).rev(null).build());
     return form.getId();
   }
 
@@ -379,7 +379,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
       if (count > 1) {
         throw new DocumentConflictException("Form %s tag %s is not unique".formatted(updateTag.getFormName(), updateTag.getName()));
       }
-      return ImmutableFormTag.builder().from(updateTag).formId(tag.getFormId()).refName(tag.getName()).build();
+      return new FormTag.Builder().from(updateTag).formId(tag.getFormId()).refName(tag.getName()).build();
     }));
 
   }
@@ -495,7 +495,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
           String label = rs.getString(5);
           String labels = rs.getString(6);
 
-          ImmutableFormMetadata.Builder metadataBuilder = ImmutableFormMetadata.builder()
+          Form.Metadata.Builder metadataBuilder = new Form.Metadata.Builder()
             .tenantId(tId)
             .created(new Date(created.getTime()))
             .lastSaved(new Date(updated.getTime()))
@@ -509,7 +509,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
               throw new RuntimeException("Unable to parse label array formName = %s, TenantId = %s".formatted(name, tId), e);
             }
           }
-          consumer.accept(ImmutableFormMetadataRow.of(name, metadataBuilder.build()));
+          consumer.accept(FormMetadataRow.of(name, metadataBuilder.build()));
         }
         return null;
       }, params.toArray());

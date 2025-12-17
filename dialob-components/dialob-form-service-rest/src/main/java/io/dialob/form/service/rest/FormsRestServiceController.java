@@ -17,8 +17,10 @@ package io.dialob.form.service.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dialob.api.form.*;
-import io.dialob.api.rest.ImmutableResponse;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormPutResponse;
+import io.dialob.api.form.FormTag;
+import io.dialob.api.form.FormValidationError;
 import io.dialob.api.rest.Response;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.CsvParsingException;
@@ -29,9 +31,9 @@ import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.integration.api.NodeId;
-import io.dialob.integration.api.event.ImmutableFormDeletedEvent;
-import io.dialob.integration.api.event.ImmutableFormTaggedEvent;
-import io.dialob.integration.api.event.ImmutableFormUpdatedEvent;
+import io.dialob.integration.api.event.FormDeletedEventBuilder;
+import io.dialob.integration.api.event.FormTaggedEventBuilder;
+import io.dialob.integration.api.event.FormUpdatedEventBuilder;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
@@ -60,8 +62,8 @@ public class FormsRestServiceController implements FormsRestService {
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
-  private static final ResponseEntity<Response> OK = ResponseEntity.ok(ImmutableResponse.builder().ok(true).build());
-  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(ImmutableResponse.builder().ok(false).build());
+  private static final ResponseEntity<Response> OK = ResponseEntity.ok(new Response.Builder().ok(true).build());
+  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new Response.Builder().ok(false).build());
 
   private static ResponseEntity<Response> ok() {
     return OK;
@@ -138,7 +140,7 @@ public class FormsRestServiceController implements FormsRestService {
       return ResponseEntity.badRequest().body(null);
     }
     Pair<Form, List<FormValidationError>> resultPair = formItemCopier.copyFormItem(form, itemId);
-    ImmutableFormPutResponse.Builder putResponseBuilder = ImmutableFormPutResponse.builder()
+    FormPutResponse.Builder putResponseBuilder = new FormPutResponse.Builder()
       .id(form.getId())
       .rev(form.getRev()).ok(true);
     if (!resultPair.getRight().isEmpty()) {
@@ -153,7 +155,7 @@ public class FormsRestServiceController implements FormsRestService {
   @Override
   public ResponseEntity<Form> postForm(Form formDocument) {
     Form form = updateMetadata(formDocument);
-    form = ImmutableForm.builder().from(form).id(null).rev(null).build();
+    form = new Form.Builder().from(form).id(null).rev(null).build();
     Form savedForm = formDatabase.save(currentTenant.getId(), form);
     URI uri = ServletUriComponentsBuilder
       .fromCurrentRequest().path("/{id}")
@@ -166,7 +168,7 @@ public class FormsRestServiceController implements FormsRestService {
     try {
       Form formDocument = csvToFormParser.parseCsv(formCsv);
       Form form = updateMetadata(formDocument);
-      form = ImmutableForm.builder().from(form).id(null).rev(null).build();
+      form = new Form.Builder().from(form).id(null).rev(null).build();
       Form savedForm = formDatabase.save(currentTenant.getId(), form);
 
       URI uri = ServletUriComponentsBuilder
@@ -175,7 +177,7 @@ public class FormsRestServiceController implements FormsRestService {
 
       // Success Response
       return ResponseEntity.created(uri)
-        .body(ImmutableFormPutResponse.builder()
+        .body(new FormPutResponse.Builder()
         .ok(true)
         .id(savedForm.getId())
         .rev(savedForm.getRev())
@@ -184,7 +186,7 @@ public class FormsRestServiceController implements FormsRestService {
     } catch (CsvParsingException e) {
       // Bad Request Response
       return ResponseEntity.badRequest()
-        .body(ImmutableFormPutResponse.builder()
+        .body(new FormPutResponse.Builder()
         .ok(false)
         .error("CSV_PARSING_ERROR")
         .reason(e.getMessage())
@@ -217,7 +219,7 @@ public class FormsRestServiceController implements FormsRestService {
     // form._id and request must match
     if (forced) {
       Form existingForm = formDatabase.findOne(currentTenant.getId(), formId);
-      form = ImmutableForm.builder()
+      form = new Form.Builder()
         .from(form)
         .id(formId)
         .rev(existingForm.getRev())
@@ -225,7 +227,7 @@ public class FormsRestServiceController implements FormsRestService {
     } else if (!formId.equals(formBody.getId())) {
       return ResponseEntity
         .badRequest()
-        .body(ImmutableFormPutResponse.builder().ok(false).error("INCONSISTENT_ID").reason("_id does not match with resource " + formId).build());
+        .body(new FormPutResponse.Builder().ok(false).error("INCONSISTENT_ID").reason("_id does not match with resource " + formId).build());
     }
 
     boolean includeForm = false;
@@ -242,12 +244,12 @@ public class FormsRestServiceController implements FormsRestService {
 
     Form updatedForm;
     if (!dryRun) {
-      updatedForm = formDatabase.save(currentTenant.getId(), ImmutableForm.builder().from(form).metadata(ImmutableFormMetadata.builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
-      eventPublisher.publishEvent(ImmutableFormUpdatedEvent.builder().source(getNodeId().getId()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
+      updatedForm = formDatabase.save(currentTenant.getId(), new Form.Builder().from(form).metadata(new Form.Metadata.Builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
+      eventPublisher.publishEvent(new FormUpdatedEventBuilder().source(getNodeId().id()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
     } else {
       updatedForm = form;
     }
-    ImmutableFormPutResponse.Builder putResponse = ImmutableFormPutResponse.builder().id(updatedForm.getId()).rev(updatedForm.getRev());
+    FormPutResponse.Builder putResponse = new FormPutResponse.Builder().id(updatedForm.getId()).rev(updatedForm.getRev());
     if (!errors.isEmpty()) {
       putResponse.ok(false);
       errors.forEach(putResponse::addErrors);
@@ -264,7 +266,7 @@ public class FormsRestServiceController implements FormsRestService {
 
   private Form updateMetadata(Form form) {
     Date now = Date.from(Instant.now());
-    final ImmutableFormMetadata.Builder builder = ImmutableFormMetadata.builder().from(form.getMetadata());
+    final Form.Metadata.Builder builder = new Form.Metadata.Builder().from(form.getMetadata());
     builder.lastSaved(now);
     builder.tenantId(currentTenant.getId());
     String userId = currentUserProvider.getUserId();
@@ -273,7 +275,7 @@ public class FormsRestServiceController implements FormsRestService {
       builder.created(now);
       builder.creator(userId);
     }
-    return ImmutableForm.builder().from(form).metadata(builder.build()).build();
+    return new Form.Builder().from(form).metadata(builder.build()).build();
   }
 
   @Override
@@ -282,7 +284,7 @@ public class FormsRestServiceController implements FormsRestService {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Or Response.Status.METHOD_NOT_ALLOWED ??
     }
     formDatabase.delete(currentTenant.getId(), formId);
-    eventPublisher.publishEvent(ImmutableFormDeletedEvent.builder().source(getNodeId().getId()).tenant(currentTenant.get()).formId(formId).build());
+    eventPublisher.publishEvent(new FormDeletedEventBuilder().source(getNodeId().id()).tenant(currentTenant.get()).formId(formId).build());
     return ok();
   }
 
@@ -313,7 +315,7 @@ public class FormsRestServiceController implements FormsRestService {
   public ResponseEntity<Response> putFormTagLatest(String formId, FormTag tag) {
     return formVersionControlDatabase.map(versionControlDatabase -> {
       if (versionControlDatabase.updateLatest(currentTenant.getId(), formId, tag)) {
-        return fireFormTaggedEvent(Optional.of(ImmutableFormTag.builder().from(tag).formId(StringUtils.defaultString(formId)).build()));
+        return fireFormTaggedEvent(Optional.of(new FormTag.Builder().from(tag).formId(StringUtils.defaultString(formId)).build()));
       }
       return NOT_MODIFIED_RESPONSE;
     }).orElse(ResponseEntity.notFound().build());
@@ -342,7 +344,7 @@ public class FormsRestServiceController implements FormsRestService {
   @Override
   public ResponseEntity<Response> putFormTag(String formId, String tagName, FormTag requestTag) {
     if (StringUtils.isBlank(requestTag.getRefName())) {
-      return ResponseEntity.badRequest().body(ImmutableFormPutResponse.builder().ok(false).error("INCOMPLETE").reason("ref_name is required field").build());
+      return ResponseEntity.badRequest().body(new FormPutResponse.Builder().ok(false).error("INCOMPLETE").reason("ref_name is required field").build());
 
     }
     return formVersionControlDatabase.map(versionControlDatabase -> {
@@ -351,7 +353,7 @@ public class FormsRestServiceController implements FormsRestService {
         Form form = versionControlDatabase.getFormDatabase().findOne(currentTenant.getId(), formId);
         formName = form.getName();
       }
-      FormTag updateTag = ImmutableFormTag.builder().from(requestTag).formName(formName).name(tagName).build();
+      FormTag updateTag = new FormTag.Builder().from(requestTag).formName(formName).name(tagName).build();
       Optional<FormTag> formTag = versionControlDatabase.moveTag(currentTenant.getId(), updateTag);
       return fireFormTaggedEvent(formTag);
     }).orElse(ResponseEntity.notFound().build());
@@ -359,9 +361,9 @@ public class FormsRestServiceController implements FormsRestService {
 
   protected ResponseEntity<Response> fireFormTaggedEvent(Optional<FormTag> formTag) {
     return formTag.map(newTag -> {
-      eventPublisher.publishEvent(ImmutableFormTaggedEvent.builder()
+      eventPublisher.publishEvent(new FormTaggedEventBuilder()
         .tenant(currentTenant.get())
-        .source(getNodeId().getId())
+        .source(getNodeId().id())
         .formName(newTag.getFormName())
         .tagName(newTag.getName())
         .formId(newTag.getFormId())

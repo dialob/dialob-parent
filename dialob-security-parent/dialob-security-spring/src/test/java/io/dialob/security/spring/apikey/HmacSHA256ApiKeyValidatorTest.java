@@ -16,7 +16,6 @@
 package io.dialob.security.spring.apikey;
 
 import io.dialob.security.key.ApiKey;
-import io.dialob.security.key.ImmutableApiKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -60,70 +59,70 @@ class HmacSHA256ApiKeyValidatorTest {
         return true;
       }
     };
-    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .hash("abc")
-      .build(), ImmutableApiKey.builder()
+      .build(), new ApiKey.Builder()
       .clientId("123-123")
       .hash("hh")
       .build()
     ));
-    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .token("abc")
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .hash("hh")
       .build()
     ));
-    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .token("abc")
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .build()
     ));
-    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .hash("hh")
       .build()
     ));
-    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .hash("abc")
       .endDateTime(LocalDateTime.now().minusDays(1))
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .token("hh")
       .build()
     ));
-    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertThrows(BadCredentialsException.class, () -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .hash("abc")
       .startDateTime(LocalDateTime.now().plusDays(1))
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .token("hh")
       .build()
     ));
 
     //
-    Assertions.assertDoesNotThrow(() -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertDoesNotThrow(() -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .hash("abc")
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .token("hh")
       .build()
     ));
-    Assertions.assertDoesNotThrow(() -> validator.validateApiKey(ImmutableApiKey.builder()
+    Assertions.assertDoesNotThrow(() -> validator.validateApiKey(new ApiKey.Builder()
       .clientId("123-123")
       .hash("abc")
       .startDateTime(LocalDateTime.now().minusDays(1))
       .endDateTime(LocalDateTime.now().plusDays(1))
-      .build(),ImmutableApiKey.builder()
+      .build(),new ApiKey.Builder()
       .clientId("123-123")
       .token("hh")
       .build()

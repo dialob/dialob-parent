@@ -15,7 +15,7 @@
  */
 package io.dialob.boot;
 
-import io.dialob.api.rest.ImmutableErrors;
+import io.dialob.api.rest.Errors;
 import io.dialob.session.engine.DialobProgramBuildException;
 import io.dialob.session.engine.program.ProgramBuilderException;
 import org.springframework.http.HttpStatus;
@@ -38,7 +38,7 @@ public class DialobProgramExceptionHandlers {
   }
 
   private ResponseEntity buildResponse(HttpStatus status, String message) {
-    return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(ImmutableErrors.builder()
+    return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(new Errors.Builder()
       .status(status.value())
       .error(status.getReasonPhrase())
       .message(message)

@@ -17,7 +17,6 @@ package io.dialob.db.spi.spring;
 
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import io.dialob.api.rest.Errors;
-import io.dialob.api.rest.ImmutableErrors;
 import io.dialob.db.spi.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -158,10 +157,10 @@ public class DatabaseExceptionMapper {
   public ResponseEntity<Errors> invalidDefinitionException(InvalidDefinitionException exception) {
     if (exception.getCause() instanceof ConstraintViolationException constraintViolationException) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(
-        ImmutableErrors.builder().error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+        new Errors.Builder().error(HttpStatus.BAD_REQUEST.getReasonPhrase())
           .status(HttpStatus.BAD_REQUEST.value())
           .message(constraintViolationException.getMessage())
-          .errors(constraintViolationException.getConstraintViolations().stream().<Errors.Error>map(constraintViolation -> ImmutableErrors.Error.builder()
+          .errors(constraintViolationException.getConstraintViolations().stream().<Errors.Error>map(constraintViolation -> new Errors.Error.Builder()
             .error(constraintViolation.getMessage())
             .rejectedValue(constraintViolation.getInvalidValue())
             .context(constraintViolation.getPropertyPath().toString())
@@ -197,7 +196,7 @@ public class DatabaseExceptionMapper {
   protected ResponseEntity<Errors> buildResponse(HttpStatus httpStatus, String reason) {
     LOGGER.error("Data access error ({}): {}", httpStatus.value(), reason);
     return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(
-      ImmutableErrors.builder().error(httpStatus.getReasonPhrase())
+      new Errors.Builder().error(httpStatus.getReasonPhrase())
         .status(httpStatus.value())
         .message(reason)
       .build()

@@ -18,7 +18,6 @@ package io.dialob.questionnaire.service.api;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
-import io.dialob.api.proto.ImmutableAction;
 import io.dialob.api.questionnaire.Error;
 
 import java.io.Serializable;
@@ -28,7 +27,7 @@ import java.util.Locale;
 
 public class FormActions implements Serializable {
 
-  private static final ImmutableAction RESET_ACTION = ImmutableAction.builder()
+  private static final Action RESET_ACTION = new Action.Builder()
     .type(Action.Type.RESET)
     .build();
 
@@ -61,20 +60,20 @@ public class FormActions implements Serializable {
 
   public void locale(Locale locale) {
     if (locale != null) {
-      preActions.add(ImmutableAction.builder()
+      preActions.add(new Action.Builder()
         .type(Action.Type.LOCALE)
         .value(locale.toString()).build());
     }
   }
 
   public void newQuestion(@NonNull ActionItem question) {
-    added.add(ImmutableAction.builder()
+    added.add(new Action.Builder()
       .type(Action.Type.ITEM)
       .item(question).build());
   }
 
   public void updateQuestion(@NonNull ActionItem question) {
-    updated.add(ImmutableAction.builder()
+    updated.add(new Action.Builder()
       .type(Action.Type.ITEM)
       .item(question).build());
   }
@@ -84,13 +83,13 @@ public class FormActions implements Serializable {
   }
 
   public void newValueSet(@NonNull io.dialob.api.proto.ValueSet valueSet) {
-    added.add(ImmutableAction.builder()
+    added.add(new Action.Builder()
       .type(Action.Type.VALUE_SET)
       .valueSet(valueSet).build());
   }
 
   public void updateValueSet(@NonNull io.dialob.api.proto.ValueSet valueSet) {
-    updated.add(ImmutableAction.builder()
+    updated.add(new Action.Builder()
       .type(Action.Type.VALUE_SET)
       .valueSet(valueSet).build());
   }
@@ -100,13 +99,13 @@ public class FormActions implements Serializable {
   }
 
   public void addError(@NonNull Error error) {
-    addedErrors.add(ImmutableAction.builder()
+    addedErrors.add(new Action.Builder()
       .type(Action.Type.ERROR)
       .error(error).build());
   }
 
   public void removeError(@NonNull Error error) {
-    removedErrors.add(ImmutableAction.builder()
+    removedErrors.add(new Action.Builder()
       .type(Action.Type.REMOVE_ERROR)
       .error(error).build());
   }
@@ -118,7 +117,7 @@ public class FormActions implements Serializable {
 
   public void complete() {
     postActions.add(
-      ImmutableAction.builder()
+      new Action.Builder()
         .type(Action.Type.COMPLETE)
         .build()
     );
@@ -132,12 +131,12 @@ public class FormActions implements Serializable {
     actions.addAll(removedErrors);
 
     if (!removedQuestions.isEmpty()) {
-      actions.add(ImmutableAction.builder()
+      actions.add(new Action.Builder()
         .type(Action.Type.REMOVE_ITEMS)
         .ids(removedQuestions).build());
     }
     if (!removedValueSets.isEmpty()) {
-      actions.add(ImmutableAction.builder()
+      actions.add(new Action.Builder()
         .type(Action.Type.REMOVE_VALUE_SETS)
         .ids(removedValueSets).build());
     }

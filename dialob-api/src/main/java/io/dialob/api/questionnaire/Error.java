@@ -27,11 +27,13 @@ import java.io.Serializable;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableError.class)
-@JsonDeserialize(builder = ImmutableError.Builder.class)
+@JsonDeserialize(builder = Error.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true, jdkOnly = true)
+@Value.Style(allParameters = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Error extends Serializable {
+
+  class Builder extends ImmutableError.Builder { }
 
   String getId();
 

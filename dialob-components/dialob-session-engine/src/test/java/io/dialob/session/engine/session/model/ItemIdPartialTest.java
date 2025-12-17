@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine.session.model;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +24,7 @@ class ItemIdPartialTest {
 
   @Test
   void test() {
-    ItemId itemIdPartial = ImmutableItemIdPartial.of(Optional.of(ImmutableItemRef.of("i1", Optional.empty())));
+    ItemId itemIdPartial = new ItemIdPartial(new ItemRef("i1", null));
     ItemId itemId = IdUtils.toId("i1.3");
     IdUtils.matches(itemIdPartial, itemId);
     assertTrue(IdUtils.matches(itemIdPartial, itemId));
@@ -33,18 +32,22 @@ class ItemIdPartialTest {
 
   @Test
   void partialErrorsShouldNotMatch() {
-    ErrorId errorId1 = ImmutableErrorId.of(IdUtils.toId("i1.3"),"ERR");
-    ErrorId errorId2 = ImmutableErrorId.of(IdUtils.toId("i2.3"),"ERR");
+    ErrorId errorId1 = new ErrorId(IdUtils.toId("i1.3"),"ERR");
+    ErrorId errorId2 = new ErrorId(IdUtils.toId("i2.3"),"ERR");
     assertNotEquals(errorId1,errorId2);
     assertFalse(IdUtils.matches(errorId1, errorId2));
   }
 
   @Test
   void partialErrorsShouldMatch() {
-    ErrorId errorId1 = ImmutableErrorId.of(IdUtils.toId("i1.*"),"ERR");
-    ErrorId errorId2 = ImmutableErrorId.of(IdUtils.toId("i1.3"),"ERR");
+    ErrorId errorId1 = new ErrorId(IdUtils.toId("i1.*"),"ERR");
+    ErrorId errorId2 = new ErrorId(IdUtils.toId("i1.3"),"ERR");
     assertNotEquals(errorId1,errorId2);
     assertTrue(IdUtils.matches(errorId1, errorId2));
   }
 
+  @Test
+  void shouldEquals() {
+    EqualsVerifier.forClass(ItemIdPartial.class).verify();
+  }
 }

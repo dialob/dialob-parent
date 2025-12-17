@@ -16,7 +16,10 @@
 package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormValidationError;
+import io.dialob.api.form.FormValueSet;
+import io.dialob.api.form.FormValueSetEntry;
 import io.dialob.form.service.api.validation.FormValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +37,7 @@ public class ValueSetValidator implements FormValidator {
     // Warn about empty valueset
     if (valueSet.getEntries().isEmpty()) {
       result.add(
-        ImmutableFormValidationError.builder()
+        new FormValidationError.Builder()
           .type(FormValidationError.Type.VALUESET)
           .level(FormValidationError.Level.WARNING)
           .message("VALUESET_EMPTY")
@@ -49,7 +52,7 @@ public class ValueSetValidator implements FormValidator {
       .collect(Collectors.groupingBy(FormValueSetEntry::getId, Collectors.toList()))
       .values().stream().filter(l -> l.size() > 1)
       .flatMap(List::stream)
-      .map(e -> ImmutableFormValidationError.builder()
+      .map(e -> new FormValidationError.Builder()
                 .type(FormValidationError.Type.VALUESET)
                 .level(FormValidationError.Level.ERROR)
                 .message("VALUESET_DUPLICATE_KEY")
@@ -62,7 +65,7 @@ public class ValueSetValidator implements FormValidator {
     // Check empties
     valueSet.getEntries().stream()
       .filter(e -> StringUtils.isBlank(e.getId()))
-      .map(e -> ImmutableFormValidationError.builder()
+      .map(e -> new FormValidationError.Builder()
         .type(FormValidationError.Type.VALUESET)
         .level(FormValidationError.Level.ERROR)
         .message("VALUESET_EMPTY_KEY")

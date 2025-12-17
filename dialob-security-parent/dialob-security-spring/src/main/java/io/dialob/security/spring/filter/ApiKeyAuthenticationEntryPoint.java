@@ -17,7 +17,8 @@ package io.dialob.security.spring.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.dialob.security.ImmutableErrorsResponse;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.dialob.security.ErrorsResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +34,9 @@ public class ApiKeyAuthenticationEntryPoint implements AuthenticationEntryPoint 
   private final ObjectMapper objectMapper;
 
   public ApiKeyAuthenticationEntryPoint() {
-    this(new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    this(new ObjectMapper()
+      .registerModule(new JavaTimeModule())
+      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false));
   }
 
@@ -46,7 +49,7 @@ public class ApiKeyAuthenticationEntryPoint implements AuthenticationEntryPoint 
     if (authException != null) {
       response.setStatus(HttpStatus.FORBIDDEN.value());
       response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-      response.getOutputStream().write(objectMapper.writeValueAsBytes(ImmutableErrorsResponse.builder()
+      response.getOutputStream().write(objectMapper.writeValueAsBytes(new ErrorsResponse.Builder()
         .status(HttpStatus.FORBIDDEN.value())
         .error(HttpStatus.FORBIDDEN.getReasonPhrase())
         .message(authException.getMessage())

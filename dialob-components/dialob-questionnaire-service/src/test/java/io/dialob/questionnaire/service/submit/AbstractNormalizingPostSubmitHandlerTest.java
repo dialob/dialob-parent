@@ -15,10 +15,9 @@
  */
 package io.dialob.questionnaire.service.submit;
 
-import io.dialob.api.questionnaire.ImmutableAnswer;
-import io.dialob.api.questionnaire.ImmutableContextValue;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Answer;
+import io.dialob.api.questionnaire.ContextValue;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.junit.jupiter.api.Assertions;
@@ -40,22 +39,22 @@ class AbstractNormalizingPostSubmitHandlerTest {
       }
     };
 
-    submitHandler.submit(settings, ImmutableQuestionnaire.builder()
+    submitHandler.submit(settings, new Questionnaire.Builder()
       .id("q-12")
       .rev("123")
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId("f-1")
         .build())
-      .addAnswers(ImmutableAnswer.of("a1", false))
-      .addAnswers(ImmutableAnswer.of("a2", 1))
-      .addAnswers(ImmutableAnswer.of("a3", "hello"))
-      .addAnswers(ImmutableAnswer.of("a4", 1.0))
-      .addAnswers(ImmutableAnswer.of("a5", null))
-      .addContext(ImmutableContextValue.of("c1", false))
-      .addContext(ImmutableContextValue.of("c2", 1))
-      .addContext(ImmutableContextValue.of("c3", "hello"))
-      .addContext(ImmutableContextValue.of("c4", 1.0))
-      .addContext(ImmutableContextValue.of("c5", null))
+      .addAnswers(Answer.of("a1", false))
+      .addAnswers(Answer.of("a2", 1))
+      .addAnswers(Answer.of("a3", "hello"))
+      .addAnswers(Answer.of("a4", 1.0))
+      .addAnswers(Answer.of("a5", null))
+      .addContext(ContextValue.of("c1", false))
+      .addContext(ContextValue.of("c2", 1))
+      .addContext(ContextValue.of("c3", "hello"))
+      .addContext(ContextValue.of("c4", 1.0))
+      .addContext(ContextValue.of("c5", null))
       .build());
 
 

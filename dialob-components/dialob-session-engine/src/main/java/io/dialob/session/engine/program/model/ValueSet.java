@@ -21,7 +21,10 @@ import java.util.List;
 
 @org.immutables.value.Value.Immutable
 @org.immutables.value.Value.Enclosing
+@org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
 public interface ValueSet extends ProgramNode {
+
+  class Builder extends ImmutableValueSet.Builder { }
 
   @NonNull
   String getId();
@@ -30,7 +33,10 @@ public interface ValueSet extends ProgramNode {
   List<Value<Entry>> getEntries();
 
   @org.immutables.value.Value.Immutable
+  @org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
   interface Entry extends ProgramNode {
+
+    class Builder extends ImmutableValueSet.Entry.Builder { }
 
     String getKey();
 

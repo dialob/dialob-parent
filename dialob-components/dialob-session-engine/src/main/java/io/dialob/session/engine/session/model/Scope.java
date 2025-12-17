@@ -19,7 +19,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.Set;
 
 @Value.Immutable
@@ -43,7 +42,8 @@ public interface Scope extends Serializable {
     return getScopeId().getParent().map(scopeParent -> {
       ItemId scopedId = itemId;
       if (itemId.getParent().isEmpty()){
-        scopedId = ImmutableItemRef.of(itemId.getValue(), Optional.of(getScopeId()));
+        String id = itemId.getValue();
+        scopedId = new ItemRef(id, getScopeId());
       } else {
         if (IdUtils.matches(itemId, getScopeId())) {
           scopedId = getScopeId();

@@ -28,11 +28,13 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableItems.class)
-@JsonDeserialize(builder = ImmutableItems.Builder.class)
+@JsonDeserialize(builder = Items.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Items {
+
+  class Builder extends ImmutableItems.Builder { }
 
   @NotNull
   String getActiveItem();

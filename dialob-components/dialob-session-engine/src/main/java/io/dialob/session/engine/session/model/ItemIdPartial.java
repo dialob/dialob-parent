@@ -15,17 +15,19 @@
  */
 package io.dialob.session.engine.session.model;
 
-import org.immutables.value.Value;
+import io.dialob.api.annotation.Nullable;
 
-@Value.Immutable
-public interface ItemIdPartial extends ItemId {
+public record ItemIdPartial(
+  @Nullable ItemId parent
+) implements ItemId {
 
   @Override
-  default boolean isPartial() {
+  public boolean isPartial() {
     return true;
   }
 
-  default String getValue() {
+  @Override
+  public String getValue() {
     return "*";
   }
 

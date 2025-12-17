@@ -30,11 +30,13 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableAction.class)
-@JsonDeserialize(builder = ImmutableAction.Builder.class)
+@JsonDeserialize(builder = Action.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Action extends Serializable {
+
+  class Builder extends ImmutableAction.Builder { }
 
   @Getter
   enum Type {

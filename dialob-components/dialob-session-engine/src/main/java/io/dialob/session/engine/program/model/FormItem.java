@@ -18,6 +18,9 @@ package io.dialob.session.engine.program.model;
 import org.immutables.value.Value;
 
 @Value.Immutable
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface FormItem extends DisplayItem {
+
+  class Builder extends ImmutableFormItem.Builder { }
+
 }

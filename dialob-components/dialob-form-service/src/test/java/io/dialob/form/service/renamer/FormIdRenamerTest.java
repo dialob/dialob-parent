@@ -182,7 +182,7 @@ class FormIdRenamerTest {
   @Test
   void testRenamerOnInvalidSyntax() {
     Form form = loadForm();
-    form = ImmutableForm.builder().from(form).putData("question4", ImmutableFormItem.builder().from(form.getData().get("question4")).activeWhen("\"entry1\" inn question1").build()).build();
+    form = new Form.Builder().from(form).putData("question4", new FormItem.Builder().from(form.getData().get("question4")).activeWhen("\"entry1\" inn question1").build()).build();
     Pair<Form, List<FormValidationError>> resultPair = formIdRenamer.renameIdentifiers(form, "question1", "test");
     assertEquals(0, resultPair.getRight().size());
     assertEquals("\"entry1\" inn question1", resultPair.getLeft().getData().get("question4").getActiveWhen());

@@ -23,8 +23,31 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class QuestionnaireTest {
+
+  @Test
+  void hasBuilder() {
+    Questionnaire.Builder builder = new Questionnaire.Builder();
+    builder.id("12");
+    builder.metadata(new Questionnaire.Metadata.Builder().formId("123").build());
+    Questionnaire questionnaire = builder.build();
+    assertEquals("12", questionnaire.getId());
+    assertEquals("123", questionnaire.getMetadata().getFormId());
+  }
+
+  @Test
+  void updateRevAndId() {
+    Questionnaire.Builder builder = new Questionnaire.Builder();
+    builder.id("12").rev("r1");
+    builder.metadata(new Questionnaire.Metadata.Builder().formId("123").build());
+    Questionnaire questionnaire = builder.build();
+
+    assertEquals(questionnaire, questionnaire.withId("12").withRev("r1"));
+    assertNotEquals(questionnaire, questionnaire.withId("122"));
+    assertNotEquals(questionnaire, questionnaire.withRev("r2"));
+  }
 
   @Test
   void gsonShouldSerializeCompatibleJson() {
@@ -39,7 +62,7 @@ class QuestionnaireTest {
 
   @Test
   void shouldThrowConstraintExceptionOnMissingMetadata() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableQuestionnaire.builder().build());
+    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
 
@@ -49,11 +72,27 @@ class QuestionnaireTest {
 
   @Test
   void shouldThrowConstraintExceptionOnPartialMetadata() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().build()).build());
+    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().build()).build());
     assertEquals(1, exception.getConstraintViolations().size());
     ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
 
     assertEquals("must not be null", constraintViolation.getMessage());
     assertEquals("metadata.formId", constraintViolation.getPropertyPath().toString());
+  }
+
+  @Test
+  void shouldCreateValidQuestionnaire() {
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .id("12")
+      .metadata(new Questionnaire.Metadata.Builder().formId("123").build())
+      .build();
+
+    Assertions.assertEquals(questionnaire, questionnaire.withId("12"));
+    Questionnaire actual = questionnaire.withId("123");
+    assertNotEquals(questionnaire, actual);
+    Assertions.assertEquals("123", actual.getId());
+    Assertions.assertEquals(questionnaire, questionnaire.withRev(null));
+    Assertions.assertEquals("r12", questionnaire.withRev("r12").getRev());
+
   }
 }

@@ -25,10 +25,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
-import io.dialob.api.proto.ImmutableValueSetEntry;
-import io.dialob.api.questionnaire.ImmutableContextValue;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.proto.ValueSetEntry;
+import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.FormFinder;
@@ -250,7 +248,7 @@ class DialobQuestionnaireSessionServiceTest {
 
     Mockito.reset(questionnaireDatabase, formFinder);
     when(questionnaireDatabase.save(anyString(), any(Questionnaire.class))).thenAnswer(invocation -> {
-      ImmutableQuestionnaire questionnaire = (ImmutableQuestionnaire) invocation.getArguments()[1];
+      Questionnaire questionnaire = (Questionnaire) invocation.getArguments()[1];
       return questionnaire.withId(docId);
     });
 
@@ -268,7 +266,7 @@ class DialobQuestionnaireSessionServiceTest {
     protected FillAssertionBuilder fillForm(Form formDocument, Questionnaire questionnaire) {
     String docId = UUID.randomUUID().toString();
     String formId = formDocument.getId();
-    questionnaire = ImmutableQuestionnaire.builder().from(questionnaire).id(docId).metadata(ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
+    questionnaire = new Questionnaire.Builder().from(questionnaire).id(docId).metadata(new Questionnaire.Metadata.Builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
 
     Mockito.reset(questionnaireDatabase, formFinder);
     when(questionnaireDatabase.findOne(tenantId, docId)).thenReturn(questionnaire);
@@ -374,21 +372,24 @@ class DialobQuestionnaireSessionServiceTest {
       .answer("question1", LocalDate.now().toString())
       .assertThat(assertion -> {
         assertion.hasSize(2)
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ERROR, null, null, null, "question1"),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ERROR, null, null, null, "question1"),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
       .nextPage()
       .assertThat(assertion -> {
         assertion
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("group1", "page1", "question1"), null, null, null),
-          tuple(ITEM, null, "page2", "Second page", null),
-          tuple(ITEM, null, "question2", "Sivu kysymys", null),
-          tuple(ITEM, null, "group2", "New Group", null),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ITEMS, Arrays.asList("group1", "page1", "question1"), null, null, null),
+            tuple(ITEM, null, "page2", "Second page", null),
+            tuple(ITEM, null, "question2", "Sivu kysymys", null),
+            tuple(ITEM, null, "group2", "New Group", null),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
       .nextPage()
       .assertThat(assertion -> {
@@ -397,26 +398,31 @@ class DialobQuestionnaireSessionServiceTest {
       .previousPage()
       .assertThat(assertion -> {
         assertion
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
-          tuple(ITEM, null, "page1", "New Page", null),
-          tuple(ITEM, null, "question1", "New Question", null),
-          tuple(ITEM, null, "group1", "New Group", null),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
+            tuple(ITEM, null, "page1", "New Page", null),
+            tuple(ITEM, null, "question1", "New Question", null),
+            tuple(ITEM, null, "group1", "New Group", null),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
 //      .answer("question1", LocalDate.now().toString())
       .answer("question1", "2019-01-01")
       .assertThat(assertion -> {
         assertion.hasSize(1)
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Kysely", null)
         );
       })
       .nextPage()
       .assertThat(assertion -> {
         assertion.hasSize(5)
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("group1", "page1", "question1"), null, null, null),
           tuple(ITEM, null, "page2", "Second page", null),
           tuple(ITEM, null, "question2", "Sivu kysymys", null),
@@ -427,15 +433,17 @@ class DialobQuestionnaireSessionServiceTest {
       .nextPage()
       .assertThat(assertion -> {
         assertion.hasSize(7) // Now page4 is available, because question1 is whenValidUpdated
-          .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
-          tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
-          tuple(ITEM, null, "page3", "third page", null),
-          tuple(ITEM, null, "question3", "New Question", null),
-          tuple(ITEM, null, "question4", "New Question", null),
-          tuple(ITEM, null, "question5", "New Question", null),
-          tuple(ITEM, null, "group3", "New Group", null),
-          tuple(ITEM, null, "questionnaire", "Kysely", null)
-        );
+          .extracting("type", "ids", "item.id", "item.label", "error.id")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsExactlyInAnyOrder(
+            tuple(REMOVE_ITEMS, Arrays.asList("page2", "group2", "question2"), null, null, null),
+            tuple(ITEM, null, "page3", "third page", null),
+            tuple(ITEM, null, "question3", "New Question", null),
+            tuple(ITEM, null, "question4", "New Question", null),
+            tuple(ITEM, null, "question5", "New Question", null),
+            tuple(ITEM, null, "group3", "New Group", null),
+            tuple(ITEM, null, "questionnaire", "Kysely", null)
+          );
       })
       .apply();
   }
@@ -491,18 +499,22 @@ class DialobQuestionnaireSessionServiceTest {
     fillForm("io/dialob/session/engine/hiddengroup.json")
       .answer("question1", true)
       .assertThat(assertion -> assertion
-        .extracting("type", "item.id").containsExactlyInAnyOrder(
+        .extracting("type", "item.id")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, "question2"),
           tuple(ITEM, "group2")
         ))
       .answer("question2", true)
       .assertThat(assertion -> assertion
-        .extracting("type", "item.id").containsExactly(
+        .extracting("type", "item.id")
+        .containsExactly(
           tuple(ITEM, "question3")
         ))
       .answer("question1", false)
       .assertThat(assertion -> assertion.hasSize(1)
-        .extracting("type", "ids").containsExactlyInAnyOrder( // question3 is also removed as it is controlled by a question from hidden group
+        .extracting("type", "ids")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder( // question3 is also removed as it is controlled by a question from hidden group
           tuple(REMOVE_ITEMS, Arrays.asList("question3", "group2", "question2"))
         ))
       .apply();
@@ -954,7 +966,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .answer("decimal1", null)
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("surveygroup1", "boolean1", "survey1"), null, null, null)
         ))
       .apply();
@@ -987,7 +1001,9 @@ class DialobQuestionnaireSessionServiceTest {
       .assertThat(AbstractIterableAssert::isEmpty)
       .answer("list1", "c")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("text1", "group3"), null, null, null)
         ))
       .answer("list1", null)
@@ -1126,19 +1142,23 @@ class DialobQuestionnaireSessionServiceTest {
       })
       .answer("enableError","true")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER), null),
           tuple(ERROR, null, null, null, null, "text1")
         ))
       .answer("enableError","false")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT, Action.Type.COMPLETE), null),
           tuple(REMOVE_ERROR, null, null, null, null, "text1")
         ))
       .nextPage()
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("group1", "text1", "enableError", "group2"), null, null, null, null),
           tuple(ITEM, null, "page2Error", null, null, null),
           tuple(ITEM, null, "group5", null, null, null),
@@ -1153,7 +1173,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .previousPage()
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("page2Error", "group5", "group3"), null, null, null, null),
           tuple(ITEM, null, "questionnaire", "Test NEXT", Set.of(Action.Type.ANSWER, Action.Type.NEXT), null),
           tuple(ITEM, null, "group1", null, null, null),
@@ -1229,7 +1251,7 @@ class DialobQuestionnaireSessionServiceTest {
           tuple(RESET, null, null, null, null),
           tuple(LOCALE, null, null, null, null),
           tuple(ITEM, null, "questionnaire", null, null),
-          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ImmutableValueSetEntry.of("a","First"), ImmutableValueSetEntry.of("b","Second"), ImmutableValueSetEntry.of("c","Third"), ImmutableValueSetEntry.of("custom1","Custom 1"), ImmutableValueSetEntry.of("custom2","Custom 2")))
+          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ValueSetEntry.of("a","First"), ValueSetEntry.of("b","Second"), ValueSetEntry.of("c","Third"), ValueSetEntry.of("custom1","Custom 1"), ValueSetEntry.of("custom2","Custom 2")))
         );
       })
       .apply();
@@ -1241,74 +1263,74 @@ class DialobQuestionnaireSessionServiceTest {
       .assertState(assertion -> {
         assertion
           .extracting("type", "ids", "item.id", "valueSet.id", "valueSet.entries").contains(
-          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ImmutableValueSetEntry.of("a","First"), ImmutableValueSetEntry.of("c","Third")))
+          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ValueSetEntry.of("a","First"), ValueSetEntry.of("c","Third")))
         );
         //, ImmutableValueSetEntry.of("b","Second"), ImmutableValueSetEntry.of("c","Third"), ImmutableValueSetEntry.of("custom1","Custom 1"), ImmutableValueSetEntry.of("custom2","Custom 2")
       })
       .answer("text1","b is ok")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "valueSet.id", "valueSet.entries").contains(
-          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ImmutableValueSetEntry.of("a","First"), ImmutableValueSetEntry.of("b","Second")))
+          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ValueSetEntry.of("a","First"), ValueSetEntry.of("b","Second")))
         ))
       .answer("text1","b is not ok")
       .assertThat(assertion -> assertion
         .extracting("type", "ids", "item.id", "valueSet.id", "valueSet.entries").contains(
-          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ImmutableValueSetEntry.of("a","First"), ImmutableValueSetEntry.of("c","Third")))
+          tuple(VALUE_SET, null, null, "vs1", Arrays.asList(ValueSetEntry.of("a","First"), ValueSetEntry.of("c","Third")))
         ))
       .apply();
   }
 
   @Test
   void testPublishedVariables() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
       .id("test")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("test")
         .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("gg")
           .build())
-        .putData("gg", ImmutableFormItem.builder()
+        .putData("gg", new FormItem.Builder()
           .id("gg")
           .type("group")
           .addItems("qq")
           .build())
-        .putData("qq", ImmutableFormItem.builder()
+        .putData("qq", new FormItem.Builder()
           .id("qq")
           .type("number")
           .build())
       .addVariables(
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .context(true)
           .name("ctx")
           .published(true)
           .contextType("text")
           .build(),
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .context(false)
           .name("var")
           .published(true)
           .expression("5 + qq")
           .build(),
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .context(true)
           .name("ctx2")
           .contextType("text")
           .build(),
-        ImmutableVariable.builder()
+        new Variable.Builder()
           .context(false)
           .name("var2")
           .expression("'xxx'")
           .build()
       )
       .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
-        .addContext(ImmutableContextValue.builder()
+        .addContext(new ContextValue.Builder()
           .id("ctx")
           .value("testivalue")
           .build())
@@ -1336,39 +1358,39 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testReducer() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("g")
           .build())
-        .putData("g", ImmutableFormItem.builder()
+        .putData("g", new FormItem.Builder()
           .id("g")
           .type("group")
           .addItems("rg")
           .addItems("note1")
           .build())
-        .putData("rg", ImmutableFormItem.builder()
+        .putData("rg", new FormItem.Builder()
           .id("rg")
           .type("rowgroup")
           .addItems("qq")
           .build())
-        .putData("qq", ImmutableFormItem.builder()
+        .putData("qq", new FormItem.Builder()
           .id("qq")
           .type("number")
           .build())
-        .putData("note1", ImmutableFormItem.builder()
+        .putData("note1", new FormItem.Builder()
           .id("note1")
           .activeWhen("sum of qq > 100")
           .type("note")
           .build())
         .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
         .build())
@@ -1405,16 +1427,20 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .answer("rg.0.qq", 50)
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.value")
+        .containsExactlyInAnyOrder(
         ))
       .answer("rg.1.qq", 51)
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.value")
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "note1", null)
         ))
       .deleteRow("rg.0")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.value").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.value")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("rg.0.qq", "rg.0", "note1"), null, null),
           tuple(ITEM, null, "rg", Arrays.asList(BigInteger.ONE,BigInteger.TWO))
         ))
@@ -1423,40 +1449,40 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testRowCount() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("g")
           .build())
-        .putData("g", ImmutableFormItem.builder()
+        .putData("g", new FormItem.Builder()
           .id("g")
           .type("group")
           .addItems("rg")
           .addItems("note1")
           .build())
-        .putData("rg", ImmutableFormItem.builder()
+        .putData("rg", new FormItem.Builder()
           .id("rg")
           .type("rowgroup")
           .addItems("qq")
           .build())
-        .putData("qq", ImmutableFormItem.builder()
+        .putData("qq", new FormItem.Builder()
           .id("qq")
           .type("number")
           .build())
-        .putData("note1", ImmutableFormItem.builder()
+        .putData("note1", new FormItem.Builder()
           .id("note1")
           .label(Map.of("en","{rc}"))
           .type("note")
           .build())
-        .addVariables(ImmutableVariable.of("rc", "count(rg)"))
+        .addVariables(Variable.of("rc", "count(rg)"))
         .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
         .build())
@@ -1504,7 +1530,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .deleteRow("rg.0")
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, Arrays.asList("rg.0.qq", "rg.0"), null, null),
           tuple(ITEM, null, "rg", null),
           tuple(ITEM, null, "note1", "1")
@@ -1515,17 +1543,17 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testMultiChoiceCount() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("g")
           .build())
-        .putData("g", ImmutableFormItem.builder()
+        .putData("g", new FormItem.Builder()
           .id("g")
           .type("group")
           .addItems("mc")
@@ -1533,56 +1561,56 @@ class DialobQuestionnaireSessionServiceTest {
           .addItems("note2")
           .addItems("text1")
           .build())
-        .putData("note1", ImmutableFormItem.builder()
+        .putData("note1", new FormItem.Builder()
           .id("note1")
           .type("note")
           .putLabel("en","{rc}")
           .build())
-        .putData("note2", ImmutableFormItem.builder()
+        .putData("note2", new FormItem.Builder()
           .id("note2")
           .type("note")
           .putLabel("en","wohoo")
           .activeWhen("count(mc) > 0")
           .build())
-        .putData("text1", ImmutableFormItem.builder()
+        .putData("text1", new FormItem.Builder()
           .id("text1")
           .type("text")
           .putLabel("en","?")
-          .addValidations(ImmutableValidation.builder()
+          .addValidations(new Validation.Builder()
             .putMessage("en","err")
             .rule("count(mc) = 3")
             .build())
           .build())
-        .putData("mc", ImmutableFormItem.builder()
+        .putData("mc", new FormItem.Builder()
           .id("mc")
           .type("multichoice")
           .valueSetId("vs")
           .build())
-        .addVariables(ImmutableVariable.of("rc", "count(mc)"))
-        .addValueSets(ImmutableFormValueSet.builder()
+        .addVariables(Variable.of("rc", "count(mc)"))
+        .addValueSets(new FormValueSet.Builder()
           .id("vs")
           .addEntries(
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("1")
               .putLabel("en","one")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("2")
               .putLabel("en","two")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("3")
               .putLabel("en","three")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("4")
               .putLabel("en","four")
               .build()
           )
           .build())
         .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
         .build())
@@ -1625,52 +1653,52 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void testMultiChoiceInvalidAnswer() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("g")
           .build())
-        .putData("g", ImmutableFormItem.builder()
+        .putData("g", new FormItem.Builder()
           .id("g")
           .type("group")
           .addItems("mc")
           .addItems("text1")
           .build())
-        .putData("text1", ImmutableFormItem.builder()
+        .putData("text1", new FormItem.Builder()
           .id("text1")
           .type("text")
           .putLabel("en", "?")
           .build())
-        .putData("mc", ImmutableFormItem.builder()
+        .putData("mc", new FormItem.Builder()
           .id("mc")
           .type("multichoice")
           .valueSetId("vs")
           .build())
-        .addValueSets(ImmutableFormValueSet.builder()
+        .addValueSets(new FormValueSet.Builder()
           .id("vs")
           .addEntries(
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("1")
               .putLabel("en", "one")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("2")
               .putLabel("en", "two")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("3")
               .putLabel("en", "three")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("4")
               .putLabel("en", "four")
               .build(),
-            ImmutableFormValueSetEntry.builder()
+            new FormValueSetEntry.Builder()
               .id("5")
               .putLabel("en", "three")
               .when("text1 = 'ok'")
@@ -1678,8 +1706,8 @@ class DialobQuestionnaireSessionServiceTest {
           )
           .build())
         .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
         .build())
@@ -1769,52 +1797,52 @@ class DialobQuestionnaireSessionServiceTest {
 
   @Test
   void cannotCompleteWhenQuestionnaireHasMissingAnswers() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("page1")
           .addItems("page2")
           .build())
-        .putData("page1", ImmutableFormItem.builder()
+        .putData("page1", new FormItem.Builder()
           .id("page1")
           .type("page")
           .addItems("group1")
           .build())
-        .putData("page2", ImmutableFormItem.builder()
+        .putData("page2", new FormItem.Builder()
           .id("page2")
           .type("page")
           .addItems("group2")
           .build())
-        .putData("group1", ImmutableFormItem.builder()
+        .putData("group1", new FormItem.Builder()
           .id("group1")
           .type("group")
           .addItems("text1")
           .build())
-        .putData("group2", ImmutableFormItem.builder()
+        .putData("group2", new FormItem.Builder()
           .id("group2")
           .type("group")
           .addItems("text2")
           .build())
-        .putData("text1", ImmutableFormItem.builder()
+        .putData("text1", new FormItem.Builder()
           .id("text1")
           .type("text")
           .putLabel("en","1")
           .required("false")
           .build())
-        .putData("text2", ImmutableFormItem.builder()
+        .putData("text2", new FormItem.Builder()
           .id("text2")
           .type("text")
           .putLabel("en","2")
           .required("true")
           .build())
         .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
         .build())
@@ -1906,7 +1934,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .deleteRow("rowgroup1.1") // issue https://github.com/dialob/dialob-parent/issues/15
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "rowgroup1", null, List.of("rowgroup1.0"), Set.of(ADD_ROW), null),
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.1.text1", "rowgroup1.1"), null, null, null, null, null),
@@ -1920,7 +1950,9 @@ class DialobQuestionnaireSessionServiceTest {
         ))
       .deleteRow("rowgroup1.0") // issue https://github.com/dialob/dialob-parent/issues/17
       .assertThat(assertion -> assertion
-        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id").containsExactlyInAnyOrder(
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.allowedActions", "error.id")
+        .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+        .containsExactlyInAnyOrder(
           tuple(ITEM, null, "questionnaire", "Multirow", asList("page1", "page2"), Set.of(Action.Type.ANSWER, Action.Type.NEXT, COMPLETE), null),
           tuple(ITEM, null, "rowgroup1", null, null, Set.of(ADD_ROW), null),
           tuple(REMOVE_ITEMS, asList("rowgroup1.0", "rowgroup1.0.text1"), null, null, null, null, null),
@@ -1932,42 +1964,42 @@ class DialobQuestionnaireSessionServiceTest {
   @Test
   @Tag("github-29")
   void ghIssue29ConditionalsOnRowGroupActions() {
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
         .id("test")
-        .metadata(ImmutableFormMetadata.builder()
+        .metadata(new Form.Metadata.Builder()
           .label("test")
           .build())
-        .putData("questionnaire", ImmutableFormItem.builder()
+        .putData("questionnaire", new FormItem.Builder()
           .id("questionnaire")
           .type("questionnaire")
           .addItems("g")
           .build())
-        .putData("g", ImmutableFormItem.builder()
+        .putData("g", new FormItem.Builder()
           .id("g")
           .type("group")
           .addItems("q","q2","rg")
           .build())
-        .putData("q", ImmutableFormItem.builder()
+        .putData("q", new FormItem.Builder()
           .id("q")
           .required("false")
           .type("text")
           .build())
-        .putData("q2", ImmutableFormItem.builder()
+        .putData("q2", new FormItem.Builder()
           .id("q2")
           .required("false")
           .type("text")
           .build())
-        .putData("rg", ImmutableFormItem.builder()
+        .putData("rg", new FormItem.Builder()
           .id("rg")
           .type("rowgroup")
           .addItems("qq")
           .canAddRowWhen("q != 'ok'")
           .canRemoveRowWhen("q2 != 'ok'")
           .build())
-        .addVariables(ImmutableVariable.of("rc", "count(rg)"))
+        .addVariables(Variable.of("rc", "count(rg)"))
         .build(),
-      ImmutableQuestionnaire.builder()
-        .metadata(ImmutableQuestionnaireMetadata.builder()
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
           .formId("test")
           .build())
         .build())
@@ -2089,16 +2121,16 @@ class DialobQuestionnaireSessionServiceTest {
       return null;
     }).when(functionRegistry).invokeFunction(any(), any(), any());
 
-    fillForm(ImmutableForm.builder()
+    fillForm(new Form.Builder()
       .id("test")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("test")
         .build())
-      .putData("questionnaire", ImmutableFormItem.builder().type("questionnaire").id("questionnaire").addItems("group1").build())
-      .putData("group1", ImmutableFormItem.builder().type("group").id("group1").addItems("question1", "note1").build())
-      .putData("question1", ImmutableFormItem.builder().type("text").id("question1").putLabel("en","Content").build())
-      .putData("note1", ImmutableFormItem.builder().type("note").id("note1").putLabel("en","var1 = {var1}").build())
-      .addVariables(ImmutableVariable.builder()
+      .putData("questionnaire", new FormItem.Builder().type("questionnaire").id("questionnaire").addItems("group1").build())
+      .putData("group1", new FormItem.Builder().type("group").id("group1").addItems("question1", "note1").build())
+      .putData("question1", new FormItem.Builder().type("text").id("question1").putLabel("en","Content").build())
+      .putData("note1", new FormItem.Builder().type("note").id("note1").putLabel("en","var1 = {var1}").build())
+      .addVariables(new Variable.Builder()
         .name("var1")
         .expression("useObjectFunction({'key1': 'value1', 'key2': 2, 'question1': question1})")
         .build())

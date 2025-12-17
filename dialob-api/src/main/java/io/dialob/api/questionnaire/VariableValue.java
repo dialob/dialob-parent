@@ -28,11 +28,13 @@ import java.io.Serializable;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableVariableValue.class)
-@JsonDeserialize(builder = ImmutableVariableValue.Builder.class)
+@JsonDeserialize(builder = VariableValue.Builder.class)
 @Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true, jdkOnly = true)
+@Value.Style(allParameters = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface VariableValue extends Serializable {
+
+  class Builder extends ImmutableVariableValue.Builder { }
 
   @NotNull
   String getId();

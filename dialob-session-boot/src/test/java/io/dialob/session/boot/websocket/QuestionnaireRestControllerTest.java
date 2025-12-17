@@ -15,11 +15,12 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormValueSet;
+import io.dialob.api.form.FormValueSetEntry;
+import io.dialob.api.form.Variable;
 import io.dialob.api.proto.Action;
-import io.dialob.api.questionnaire.ImmutableAnswer;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -73,8 +74,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
   @Test
   void testGetQuestionnaires() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("123").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("123").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire"));
 
 
@@ -105,8 +106,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   void testNextPage() throws Exception {
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("testNextPage").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("testNextPage").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1", "g2"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1"));
@@ -179,18 +180,18 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
 
   @Test
   void shouldInterpolateValueSetEntriesMultiChoice() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryyx").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldInterpolateValueSetEntryyx").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("selection1","note1"));
     addItem(formBuilder, "selection1", builder -> builder.type("multichoice").valueSetId("vs1"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your selection is {selection1}"));
 
-    FormValueSet formValueSetBean = ImmutableFormValueSet.builder().id("vs1").addEntries(
-      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selectino 1").build(),
-      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selectino 2").build(),
-      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selectino 3").build()
+    FormValueSet formValueSetBean = new FormValueSet.Builder().id("vs1").addEntries(
+      new FormValueSetEntry.Builder().id("e1").putLabel("en", "Selectino 1").build(),
+      new FormValueSetEntry.Builder().id("e2").putLabel("en", "Selectino 2").build(),
+      new FormValueSetEntry.Builder().id("e3").putLabel("en", "Selectino 3").build()
     ).build();
     formBuilder.addValueSets(formValueSetBean);
 
@@ -245,8 +246,8 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   @Tag("github-107")
   void shouldEvaluateValueSetsInCorrectOrder() throws Exception {
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldEvaluateValueSetsInCorrectOrder").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
 
@@ -255,29 +256,29 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     addItem(formBuilder, "selection2", builder -> builder.type("list").valueSetId("vs2"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your first selection is {selection1} and second selection is {selection2}"));
 
-    formBuilder.addValueSets(ImmutableFormValueSet.builder().id("vs1").addEntries(
-      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selection 1.1").build(),
-      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selection 1.2").build(),
-      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selection 1.3").build()
+    formBuilder.addValueSets(new FormValueSet.Builder().id("vs1").addEntries(
+      new FormValueSetEntry.Builder().id("e1").putLabel("en", "Selection 1.1").build(),
+      new FormValueSetEntry.Builder().id("e2").putLabel("en", "Selection 1.2").build(),
+      new FormValueSetEntry.Builder().id("e3").putLabel("en", "Selection 1.3").build()
     ).build());
-    formBuilder.addValueSets(ImmutableFormValueSet.builder().id("vs2").addEntries(
-      ImmutableFormValueSetEntry.builder().id("f1").putLabel("en", "Selection 2.1").build(),
-      ImmutableFormValueSetEntry.builder().id("f2").putLabel("en", "Selection 2.2").build(),
-      ImmutableFormValueSetEntry.builder().id("f3").putLabel("en", "Selection 2.3").build()
+    formBuilder.addValueSets(new FormValueSet.Builder().id("vs2").addEntries(
+      new FormValueSetEntry.Builder().id("f1").putLabel("en", "Selection 2.1").build(),
+      new FormValueSetEntry.Builder().id("f2").putLabel("en", "Selection 2.2").build(),
+      new FormValueSetEntry.Builder().id("f3").putLabel("en", "Selection 2.3").build()
     ).build());
 
     when(formDatabase.findOne(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"), any())).thenReturn(formBuilder.build());
     when(formDatabase.exists(eq(tenantId), eq("shouldEvaluateValueSetsInCorrectOrder"))).thenReturn(true);
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId("shouldEvaluateValueSetsInCorrectOrder")
         .created(new Date())
         .language("en")
         .status(Questionnaire.Metadata.Status.OPEN)
         .build())
-        .addAnswers(ImmutableAnswer.of("selection1", "e1"))
-        .addAnswers(ImmutableAnswer.of("selection2", "f1"))
+        .addAnswers(Answer.of("selection1", "e1"))
+        .addAnswers(Answer.of("selection2", "f1"))
       .build();
 
     // -- doLogin();
@@ -332,18 +333,18 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   void shouldInterpolateValueSetEntryy() throws Exception {
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldInterpolateValueSetEntryy").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldInterpolateValueSetEntryy").rev("321")
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("selection1","note1"));
     addItem(formBuilder, "selection1", builder -> builder.type("text").valueSetId("vs1"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your selection is {selection1:lowercase}"));
 
-    FormValueSet formValueSetBean = ImmutableFormValueSet.builder().id("vs1").addEntries(
-      ImmutableFormValueSetEntry.builder().id("e1").putLabel("en", "Selectino 1").build(),
-      ImmutableFormValueSetEntry.builder().id("e2").putLabel("en", "Selectino 2").build(),
-      ImmutableFormValueSetEntry.builder().id("e3").putLabel("en", "Selectino 3").build()
+    FormValueSet formValueSetBean = new FormValueSet.Builder().id("vs1").addEntries(
+      new FormValueSetEntry.Builder().id("e1").putLabel("en", "Selectino 1").build(),
+      new FormValueSetEntry.Builder().id("e2").putLabel("en", "Selectino 2").build(),
+      new FormValueSetEntry.Builder().id("e3").putLabel("en", "Selectino 3").build()
     ).build();
     formBuilder.addValueSets(formValueSetBean);
 
@@ -398,15 +399,15 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
   @Test
   void shouldHandleBigDecimalVariables() throws Exception {
 
-    ImmutableForm.Builder formBuilder = ImmutableForm.builder().id("shouldHandleBigDecimalVariables").rev("321")
-      .metadata(ImmutableFormMetadata.builder().label("bigD").build());
+    Form.Builder formBuilder = new Form.Builder().id("shouldHandleBigDecimalVariables").rev("321")
+      .metadata(new Form.Metadata.Builder().label("bigD").build());
 
     addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("g1"));
     addItem(formBuilder, "g1", builder -> builder.type("group").putLabel("en","Group1").addItems("value1","note1"));
     addItem(formBuilder, "value1", builder -> builder.type("number").defaultValue("4"));
     addItem(formBuilder, "note1", builder -> builder.type("note").putLabel("en","Your value is {var1}"));
 
-    formBuilder.addVariables(ImmutableVariable.builder()
+    formBuilder.addVariables(new Variable.Builder()
       .name("var1")
       .expression("value1 * 0.5").build());
 

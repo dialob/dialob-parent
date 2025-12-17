@@ -25,7 +25,7 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableGroup.class)
-@JsonDeserialize(as = ImmutableGroup.class)
+@JsonDeserialize(builder = ImmutableGroup.Builder.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface Group extends Serializable {
 

@@ -17,7 +17,6 @@ package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
-import io.dialob.api.form.ImmutableFormValidationError;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.DependencyLoopException;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
@@ -26,7 +25,10 @@ import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.command.Trigger;
 import io.dialob.session.engine.session.command.UpdateCommand;
-import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.model.ErrorId;
+import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -116,7 +118,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
   @Override
   public Optional<ErrorVisitor> visitErrors() {
     return Optional.of(error -> {
-      final ErrorId targetId = ImmutableErrorId.of(error.getItemId(), error.getCode());
+      final ErrorId targetId = new ErrorId(error.getItemId(), error.getCode());
       updateCommandFactory.createUpdateValidationCommand(targetId, error.getValidationExpression());
       error.getDisabledExpression().ifPresent(disabledExpression -> updateCommandFactory.createUpdateValidationDisabled(targetId, disabledExpression));
       if (error.getLabel() != null) {
@@ -127,7 +129,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
 
   @Override
   public Optional<ValueSetVisitor> visitValueSets() {
-    return Optional.of(valueSet -> updateCommandFactory.createUpdateValueSetCommand(ImmutableValueSetId.of(valueSet.getId()), valueSet.getEntries()));
+    return Optional.of(valueSet -> updateCommandFactory.createUpdateValueSetCommand(new ValueSetId(valueSet.getId()), valueSet.getEntries()));
   }
 
   @Override
@@ -212,7 +214,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
         if (command instanceof UpdateCommand updateCommand) {
           itemId = updateCommand.getTargetId();
         }
-        throw new DependencyLoopException("dependency loop", List.of(ImmutableFormValidationError.builder()
+        throw new DependencyLoopException("dependency loop", List.of(new FormValidationError.Builder()
           .type(FormValidationError.Type.GENERAL)
           .level(FormValidationError.Level.ERROR)
           .message("dependency loop")

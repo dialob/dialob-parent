@@ -47,12 +47,18 @@ import java.util.Set;
 @Value.Immutable
 @Value.Modifiable
 @JsonSerialize(as = ImmutableForm.class)
-@JsonDeserialize(builder = ImmutableForm.Builder.class)
+@JsonDeserialize(builder = Form.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Form extends WithValidation<Form>, FormEntity {
+
+  default Form withRev(String number) {
+    return new Form.Builder().from(this).rev(number).build();
+  }
+
+  class Builder extends ImmutableForm.Builder { }
 
   /**
    * Retrieves the unique identifier of the form.
@@ -114,14 +120,17 @@ public interface Form extends WithValidation<Form>, FormEntity {
   Map<String, String> getRequiredErrorText();
 
   @Value.Immutable
-  @Value.Style(typeImmutable = "ImmutableForm*", typeModifiable = "ModifiableForm*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true)
+  @Value.Style(typeImmutable = "ImmutableForm*", typeModifiable = "ModifiableForm*", validationMethod = Value.Style.ValidationMethod.NONE, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true, jakarta = true, defaultAsDefault = true)
   @Value.Modifiable
   @JsonSerialize(as = ImmutableFormMetadata.class)
-  @JsonDeserialize(builder = ImmutableFormMetadata.Builder.class)
+  @JsonDeserialize(builder = Form.Metadata.Builder.class)
   @Gson.TypeAdapters(emptyAsNulls = true)
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   interface Metadata extends Serializable {
+
+    class Builder extends ImmutableFormMetadata.Builder {
+    }
 
     @NotNull
     String getLabel();

@@ -16,7 +16,6 @@
 package io.dialob.boot.rest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.Application;
 import io.dialob.boot.security.SecurityConfiguration;
@@ -193,7 +192,7 @@ class QuestionnairesRestControllerApiKeyTest {
         @NonNull
         @Override
         public Questionnaire.Metadata getValue() {
-          return ImmutableQuestionnaireMetadata.builder().formId("").label("l1").build();
+          return new Questionnaire.Metadata.Builder().formId("").label("l1").build();
         }
       });
       consumer.accept(new QuestionnaireDatabase.MetadataRow() {
@@ -206,7 +205,7 @@ class QuestionnairesRestControllerApiKeyTest {
         @NonNull
         @Override
         public Questionnaire.Metadata getValue() {
-          return ImmutableQuestionnaireMetadata.builder().formId("").label("l2").build();
+          return new Questionnaire.Metadata.Builder().formId("").label("l2").build();
         }
       });
       return null;

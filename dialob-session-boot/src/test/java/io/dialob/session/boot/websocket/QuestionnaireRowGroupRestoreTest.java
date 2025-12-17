@@ -15,13 +15,10 @@
  */
 package io.dialob.session.boot.websocket;
 
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
-import io.dialob.api.form.ImmutableValidation;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.Validation;
 import io.dialob.api.proto.Action;
-import io.dialob.api.questionnaire.ImmutableAnswer;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.cache.DialobCacheAutoConfiguration;
 import io.dialob.function.DialobFunctionAutoConfiguration;
@@ -79,34 +76,34 @@ class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
 
   @Test
   void shouldAddAndRemoveRows() throws Exception {
-    ImmutableForm.Builder formBuilder1 = ImmutableForm.builder()
+    Form.Builder formBuilder1 = new Form.Builder()
       .id("testGetQuestionnaires-123")
       .rev("1")
-      .metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+      .metadata(new Form.Metadata.Builder().label("Kysely").build());
 
 
-    Consumer<ImmutableForm.Builder> initializer = formBuilder -> {
+    Consumer<Form.Builder> initializer = formBuilder -> {
       addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("p1"));
       addItem(formBuilder, "p1", builder -> builder.type("group").putLabel("en","Sivu").addItems("g1"));
       addItem(formBuilder, "g1", builder -> builder.type("rowgroup").putLabel("en","Ryhma").addItems("q1", "q2", "q3"));
       addItem(formBuilder, "q1", builder -> builder.type("text").putLabel("en","Kysymys 1"));
       addItem(formBuilder, "q2", builder -> builder.type("text").putLabel("en","Kysymys 2").addValidations(
-        ImmutableValidation.builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
+        new Validation.Builder().message(Map.of("en","error")).rule("answer = \"wrong answer\"").build()
       ));
       addItem(formBuilder, "q3", builder -> builder.type("text").putLabel("en","Kysymys 3").activeWhen("q2 = \"correct answer\""));
-      formBuilder.metadata(ImmutableFormMetadata.builder().label("Kysely").build());
+      formBuilder.metadata(new Form.Metadata.Builder().label("Kysely").build());
     };
     initializer.accept(formBuilder1);
-    final ImmutableForm form = formBuilder1.build();
+    final Form form = formBuilder1.build();
     shouldFindForm(form);
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder()
-      .addAnswers(ImmutableAnswer.of("g1", Arrays.asList(BigInteger.TWO,BigInteger.ONE)))
-      .addAnswers(ImmutableAnswer.of("g1.1.q1", "Hello"))
-      .addAnswers(ImmutableAnswer.of("g1.1.q2", "correct answer"))
-      .addAnswers(ImmutableAnswer.of("g1.2.q2", "wrong answer"))
-      .addAnswers(ImmutableAnswer.of("g1.1.q3", "hello 3"))
-      .metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire = new Questionnaire.Builder()
+      .addAnswers(Answer.of("g1", Arrays.asList(BigInteger.TWO,BigInteger.ONE)))
+      .addAnswers(Answer.of("g1.1.q1", "Hello"))
+      .addAnswers(Answer.of("g1.1.q2", "correct answer"))
+      .addAnswers(Answer.of("g1.2.q2", "wrong answer"))
+      .addAnswers(Answer.of("g1.1.q3", "hello 3"))
+      .metadata(new Questionnaire.Metadata.Builder()
         .formId(form.getId())
         .formRev(form.getRev())
         .created(new Date())

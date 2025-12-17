@@ -49,17 +49,17 @@ public class ValueSetEntryBuilder extends AbstractItemBuilder<ValueSetEntryBuild
     requireBooleanExpression(activeWhen, getActiveWhenExpressionErrorType(), errorConsumer);
     Value<ValueSet.Entry> entryValue;
     if (activeWhen != null) {
-      entryValue = ImmutableConditionalValue.<ValueSet.Entry>builder()
+      entryValue = new ConditionalValue.Builder<ValueSet.Entry>()
         .when(activeWhen)
-        .value(ImmutableValueSet.Entry.builder()
+        .value(new ValueSet.Entry.Builder()
           .key(key)
           .label(createLabelOperator(label))
           .build())
         .valueType(ValueType.STRING)
         .build();
     } else {
-      entryValue = ImmutableConstantValue.<ValueSet.Entry>builder().value(
-        ImmutableValueSet.Entry.builder()
+      entryValue = new ConstantValue.Builder<ValueSet.Entry>().value(
+        new ValueSet.Entry.Builder()
           .key(key)
           .label(createLabelOperator(label))
           .build()).build();

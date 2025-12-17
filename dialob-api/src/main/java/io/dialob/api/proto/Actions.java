@@ -27,11 +27,13 @@ import java.util.List;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableActions.class)
-@JsonDeserialize(builder = ImmutableActions.Builder.class)
+@JsonDeserialize(builder = Actions.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Actions extends Serializable {
+
+  class Builder extends ImmutableActions.Builder { }
 
   @Nullable String getRev();
 

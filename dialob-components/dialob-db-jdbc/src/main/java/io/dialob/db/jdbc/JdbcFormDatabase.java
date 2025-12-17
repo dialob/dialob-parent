@@ -18,13 +18,10 @@ package io.dialob.db.jdbc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
-import io.dialob.form.service.api.ImmutableFormMetadataRow;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -125,10 +122,10 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
   protected Form toObject(@NonNull byte[] oid, int objectRev, String tenantId, Timestamp created, Timestamp updated, Reader reader) {
     try {
       final Form form = objectMapper.readValue(reader, Form.class);
-      return ImmutableForm.builder().from(form)
+      return new Form.Builder().from(form)
         .id(toId(oid))
         .rev(Integer.toString(objectRev))
-        .metadata(ImmutableFormMetadata.builder().from(form.getMetadata()).created(new Date(created.getTime())).tenantId(tenantId).build())
+        .metadata(new Form.Metadata.Builder().from(form.getMetadata()).created(new Date(created.getTime())).tenantId(tenantId).build())
         .build();
     } catch (IOException e) {
       throw new DocumentCorruptedException("Could not read document " + toId(oid) + ":" + e.getMessage());
@@ -138,7 +135,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
   @NonNull
   @Override
   protected Form updatedDocument(@NonNull Form form, @NonNull byte[] oid, @NonNull Integer revision, @NonNull Timestamp timestamp, String tenantId) {
-    ImmutableFormMetadata.Builder builder = ImmutableFormMetadata.builder();
+    Form.Metadata.Builder builder = new Form.Metadata.Builder();
     if (form.getMetadata() != null) {
       builder = builder.from(form.getMetadata());
       builder = builder.created(new Date(timestamp.getTime()));
@@ -146,7 +143,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
     if (tenantId != null) {
       builder = builder.tenantId(tenantId);
     }
-    return ImmutableForm.builder().from(form)
+    return new Form.Builder().from(form)
       .id(toId(oid))
       .rev(Integer.toString(revision))
       .metadata(builder.build())
@@ -177,7 +174,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         Timestamp updated = resultSet.getTimestamp(4);
         String labels = resultSet.getString(5);
 
-        ImmutableFormMetadata.Builder metadataBuilder = ImmutableFormMetadata.builder()
+        Form.Metadata.Builder metadataBuilder = new Form.Metadata.Builder()
           .tenantId(tId)
           .created(new Date(created.getTime()))
           .lastSaved(new Date(updated.getTime()));
@@ -190,7 +187,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
             throw new RuntimeException("Unable to parse label array", e);
           }
         }
-        consumer.accept(ImmutableFormMetadataRow.of(toId(id), metadataBuilder.build()));
+        consumer.accept(FormMetadataRow.of(toId(id), metadataBuilder.build()));
       }, params.toArray());
       return null;
     });
@@ -199,13 +196,13 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
   @NonNull
   @Override
   protected Form updateDocumentId(@NonNull Form document, String id) {
-    return ImmutableForm.builder().from(document).id(id).build();
+    return new Form.Builder().from(document).id(id).build();
   }
 
   @NonNull
   @Override
   protected Form updateDocumentRev(@NonNull Form document, String rev) {
-    return ImmutableForm.builder().from(document).rev(rev).build();
+    return new Form.Builder().from(document).rev(rev).build();
   }
 
 }

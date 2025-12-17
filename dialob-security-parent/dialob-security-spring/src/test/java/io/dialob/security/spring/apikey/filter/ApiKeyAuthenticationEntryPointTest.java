@@ -18,6 +18,7 @@ package io.dialob.security.spring.apikey.filter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.security.ErrorsResponse;
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
 import io.dialob.security.spring.filter.ApiKeyAuthenticationEntryPoint;
@@ -41,6 +42,7 @@ class ApiKeyAuthenticationEntryPointTest {
   @Test
   void shouldMakeJsonErrorResponse() throws IOException, ServletException {
     final ObjectMapper objectMapper = new ObjectMapper()
+      .registerModule(new JavaTimeModule())
       .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
       .configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
@@ -61,10 +63,10 @@ class ApiKeyAuthenticationEntryPointTest {
     final String content = outputStream.toString();
     ErrorsResponse errorsResponse = objectMapper.readValue(content, ErrorsResponse.class);
 
-    Assertions.assertEquals("Forbidden",errorsResponse.getError());
-    Assertions.assertEquals("Invalid key",errorsResponse.getMessage());
-    Assertions.assertEquals((Integer) 403, errorsResponse.getStatus());
-    Assertions.assertNotNull(errorsResponse.getTimestamp());
+    Assertions.assertEquals("Forbidden", errorsResponse.error());
+    Assertions.assertEquals("Invalid key", errorsResponse.message());
+    Assertions.assertEquals((Integer) 403, errorsResponse.status());
+    Assertions.assertNotNull(errorsResponse.timestamp());
     Mockito.verifyNoMoreInteractions(request, response);
   }
 }

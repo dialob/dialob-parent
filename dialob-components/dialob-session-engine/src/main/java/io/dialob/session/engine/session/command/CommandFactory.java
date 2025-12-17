@@ -307,7 +307,7 @@ public final class CommandFactory {
 
   public static UpdateValidationCommand updateValidationCommand(ErrorId errorId, Expression expression) {
     return ImmutableUpdateValidationCommand.of(errorId, expression, List.of(
-      Triggers.<ErrorState>trigger(Triggers.validityUpdatedEvent(onTarget(errorId.getItemId()))).when(ERROR_ACTIVITY_CHANGED),
+      Triggers.<ErrorState>trigger(Triggers.validityUpdatedEvent(onTarget(errorId.itemId()))).when(ERROR_ACTIVITY_CHANGED),
       Triggers.<ErrorState>trigger(Triggers.errorActivityUpdatedEvent(errorId)).when(ERROR_ACTIVITY_CHANGED)
     ));
   }

@@ -15,9 +15,8 @@
  */
 package io.dialob.db.jdbc;
 
-import io.dialob.api.form.*;
-import io.dialob.api.questionnaire.ImmutableQuestionnaire;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormTag;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
@@ -56,7 +55,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   @Test
   void shouldSaveAndLoadForm() {
-    Form form = ImmutableForm.builder().name("shouldSaveAndLoadForm").metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form = new Form.Builder().name("shouldSaveAndLoadForm").metadata(new Form.Metadata.Builder().label("test form").build()).build();
 
     form = getJdbcFormVersionControlDatabase().getFormDatabase().save(getCurrentTenant().getId(), form);
     assertNotNull(form.getId());
@@ -68,8 +67,8 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
   }
   @Test
   void shouldRejectFormWithExistingName() {
-    Form form1 = ImmutableForm.builder().name("shouldSaveAndLoadForm").metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
-    Form form2 = ImmutableForm.builder().name("shouldSaveAndLoadForm").metadata(ImmutableFormMetadata.builder().label("test form").build()).build();
+    Form form1 = new Form.Builder().name("shouldSaveAndLoadForm").metadata(new Form.Metadata.Builder().label("test form").build()).build();
+    Form form2 = new Form.Builder().name("shouldSaveAndLoadForm").metadata(new Form.Metadata.Builder().label("test form").build()).build();
 
     getJdbcFormVersionControlDatabase().getFormDatabase().save(getCurrentTenant().getId(), form1);
     assertThrows(DocumentConflictException.class, () -> getJdbcFormVersionControlDatabase().getFormDatabase().save(getCurrentTenant().getId(), form2));
@@ -77,9 +76,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   @Test
   void shouldCreateControlledFormEntryWhenNewFormIsCreated() {
-    Form form = ImmutableForm.builder()
+    Form form = new Form.Builder()
       .name("uusi-lomake-1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("uusi lomake 1")
         .build()).build();
 
@@ -95,9 +94,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   @Test
   void shouldNotUpdateTaggedForm() {
-    Form form = ImmutableForm.builder()
+    Form form = new Form.Builder()
       .name("uusi-lomake-2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("uusi lomake 2")
         .build()).build();
 
@@ -119,9 +118,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   @Test
   void shouldFindAllTags() {
-    Form form = ImmutableForm.builder()
+    Form form = new Form.Builder()
       .name("shouldFindAllTags")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("shouldFindAllTags")
         .build()).build();
 
@@ -164,9 +163,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   @Test
   void shouldCreateTagWithNullableCreator() {
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -188,14 +187,14 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
   @Test
   void shouldFindTag() {
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
-    Form form2 = ImmutableForm.builder()
+    Form form2 = new Form.Builder()
       .name("form2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form2")
         .build()).build();
 
@@ -240,15 +239,15 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
     form1 = database.save(getCurrentTenant().getId(), form1);
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("form1").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("form1").build()).build();
 
     questionnaire = questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     assertEquals(form1.getId(), questionnaire.getMetadata().getFormId());
@@ -261,15 +260,15 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
-    Form form2 = ImmutableForm.builder()
+    Form form2 = new Form.Builder()
       .name("form2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form2")
         .build()).build();
 
@@ -279,7 +278,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     controlDatabase.createTag(getCurrentTenant().getId(), "form1", "tag2", null, form2.getId(), FormTag.Type.NORMAL, "user-1");
 
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("form1").formRev("tag2").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("form1").formRev("tag2").build()).build();
 
     questionnaire = questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     assertEquals(form2.getId(), questionnaire.getMetadata().getFormId());
@@ -292,29 +291,29 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
-    Form form2 = ImmutableForm.builder()
+    Form form2 = new Form.Builder()
       .name("form2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form2")
         .build()).build();
 
     form1 = database.save(getCurrentTenant().getId(), form1);
     form2 = database.save(getCurrentTenant().getId(), form2);
 
-    assertFalse(controlDatabase.updateLatest(getCurrentTenant().getId(), "form1", ImmutableFormTag.builder()
+    assertFalse(controlDatabase.updateLatest(getCurrentTenant().getId(), "form1", new FormTag.Builder()
       .formName("form1")
       .name("latest")
       .build()));
 
     assertEquals(form1.getId(), controlDatabase.findTag(getCurrentTenant().getId(), "form1", "latest").get().getFormId());
 
-    assertTrue(controlDatabase.updateLatest(getCurrentTenant().getId(), "form1", ImmutableFormTag.builder()
+    assertTrue(controlDatabase.updateLatest(getCurrentTenant().getId(), "form1", new FormTag.Builder()
       .formName("form1")
       .name("latest")
       .formId(form2.getId())
@@ -328,9 +327,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -350,15 +349,15 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
     form1 = database.save(getCurrentTenant().getId(), form1);
 
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId(form1.getId()).formRev("LATEST").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId(form1.getId()).formRev("LATEST").build()).build();
 
     questionnaire = questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     assertEquals(Questionnaire.Metadata.Status.NEW, questionnaire.getMetadata().getStatus());
@@ -372,9 +371,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -395,7 +394,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     assertTrue(controlDatabase.createTag(getCurrentTenant().getId(), "form1", "tag2", null, form2.getId(), FormTag.Type.NORMAL, "user-1").isPresent());
 
     setActiveTenant("tenant-1");
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("form1").formRev("tag2").build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("form1").formRev("tag2").build()).build();
 
     questionnaire = questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     assertEquals(form1.getId(), questionnaire.getMetadata().getFormId());
@@ -410,16 +409,16 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
     setActiveTenant("tenant-1");
 
-    Form form1 = database.save(getCurrentTenant().getId(), ImmutableForm.builder()
+    Form form1 = database.save(getCurrentTenant().getId(), new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build());
 
     setActiveTenant("tenant-2");
-    Form form2 = database.save(getCurrentTenant().getId(), ImmutableForm.builder()
+    Form form2 = database.save(getCurrentTenant().getId(), new Form.Builder()
       .name("form2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form2")
         .build()).build());
 
@@ -431,16 +430,16 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
     Assertions.assertThrows(DocumentNotFoundException.class, () -> {
       setActiveTenant("tenant-2");
-      Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId("form1").formRev("tag2").build()).build();
+      Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("form1").formRev("tag2").build()).build();
       questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     });
     Assertions.assertThrows(DocumentNotFoundException.class, () -> {
       setActiveTenant("tenant-2");
-      Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId(form1.getId()).build()).build();
+      Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId(form1.getId()).build()).build();
       questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     });
     setActiveTenant("tenant-1");
-    Questionnaire questionnaire = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder().formId(form1.getId()).build()).build();
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId(form1.getId()).build()).build();
     Questionnaire q = questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire);
     assertEquals("tenant-1", q.getMetadata().getTenantId());
   }
@@ -451,9 +450,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -487,9 +486,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -520,9 +519,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -536,9 +535,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormVersionControlDatabase controlDatabase = getJdbcFormVersionControlDatabase();
     final FormDatabase database = controlDatabase.getFormDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef+")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
@@ -551,15 +550,15 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
     final QuestionnaireDatabase questionnaireDatabase = getQuestionnaireDatabase();
 
-    Form form1 = ImmutableForm.builder()
+    Form form1 = new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build();
 
-    Form form2 = ImmutableForm.builder()
+    Form form2 = new Form.Builder()
       .name("form2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form2")
         .build()).build();
 
@@ -576,15 +575,15 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     assertTrue(controlDatabase.createTagOnLatest(getCurrentTenant().getId(), "form2", "tag2", null, true, "user-1").isPresent());
 
     setActiveTenant("tenant-1");
-    Questionnaire questionnaire1 = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire1 = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder()
       .formId("form1")
       .formRev("tag2").build()).build();
-    Questionnaire questionnaire1L = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire1L = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder()
       .formId("form1").build()).build();
-    Questionnaire questionnaire2 = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire2 = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder()
       .formId("form2")
       .formRev("tag2").build()).build();
-    Questionnaire questionnaire2L = ImmutableQuestionnaire.builder().metadata(ImmutableQuestionnaireMetadata.builder()
+    Questionnaire questionnaire2L = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder()
       .formId("form2").build()).build();
     questionnaire1 = questionnaireDatabase.save(getCurrentTenant().getId(), questionnaire1);
     assertNull(questionnaire1.getMetadata().getFormRev()); // not null?
@@ -625,15 +624,15 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
 
     setActiveTenant("tenant-1");
-    Form form1 = database.save(getCurrentTenant().getId(), ImmutableForm.builder()
+    Form form1 = database.save(getCurrentTenant().getId(), new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build());
 
-    Form form2 = database.save(getCurrentTenant().getId(), ImmutableForm.builder()
+    Form form2 = database.save(getCurrentTenant().getId(), new Form.Builder()
       .name("form2")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form2")
         .build()).build());
 
@@ -683,9 +682,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
 
     setActiveTenant("tenant-1");
-    Form form1 = database.save(getCurrentTenant().getId(), ImmutableForm.builder()
+    Form form1 = database.save(getCurrentTenant().getId(), new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build());
 
@@ -708,14 +707,14 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
 
     assertEquals((Integer)0, getJdbcTemplate().queryForObject("select count(*) from form_rev_archive", Integer.class));
 
-    controlDatabase.moveTag(getCurrentTenant().getId(), ImmutableFormTag.builder()
+    controlDatabase.moveTag(getCurrentTenant().getId(), new FormTag.Builder()
       .formName("form1")
       .name("tag1m")
       .refName("tag2")
       .type(FormTag.Type.MUTABLE)
       .build());
 
-    controlDatabase.moveTag(getCurrentTenant().getId(), ImmutableFormTag.builder()
+    controlDatabase.moveTag(getCurrentTenant().getId(), new FormTag.Builder()
       .formName("form1")
       .name("tag2m")
       .refName("tag1")
@@ -741,9 +740,9 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     final FormDatabase database = controlDatabase.getFormDatabase();
 
     setActiveTenant("tenant-1");
-    Form form1 = database.save(getCurrentTenant().getId(), ImmutableForm.builder()
+    Form form1 = database.save(getCurrentTenant().getId(), new Form.Builder()
       .name("form1")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("form1")
         .build()).build());
 
@@ -753,7 +752,7 @@ public abstract class AbstractFormVersionControlDatabaseTest implements JdbcBack
     controlDatabase.createTag(getCurrentTenant().getId(), "form1", "tag2", null, form2, FormTag.Type.NORMAL, "user-1");
 
 
-    assertThrows(DocumentNotFoundException.class, () -> controlDatabase.moveTag(getCurrentTenant().getId(), ImmutableFormTag.builder()
+    assertThrows(DocumentNotFoundException.class, () -> controlDatabase.moveTag(getCurrentTenant().getId(), new FormTag.Builder()
       .formName("form1")
       .name("tag1")
       .refName("tag2")

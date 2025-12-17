@@ -17,7 +17,7 @@ package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.model.ImmutableValueSetId;
+import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class IntersectionOperatorTest {
       ValueSetState.Entry.of("c", "Label C")
     )).get();
 
-    when(context.getValueSetState(ImmutableValueSetId.of("vs1")))
+    when(context.getValueSetState(new ValueSetId("vs1")))
       .thenReturn(Optional.of(vss));
 
     IntersectionOperator valueSetToListOperator = ImmutableIntersectionOperator.builder()

@@ -17,7 +17,10 @@ package io.dialob.session.engine.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.dialob.api.form.*;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
+import io.dialob.api.form.FormValidationError;
+import io.dialob.api.form.Variable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -51,14 +54,14 @@ class DialobFormValidatorTest {
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
 
-    List<FormValidationError> errors = validator.validate(ImmutableForm.builder()
+    List<FormValidationError> errors = validator.validate(new Form.Builder()
       .id("123")
-      .metadata(ImmutableFormMetadata.builder().label("").build())
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .addVariables(ImmutableVariable.builder().name("var1").build())
+      .metadata(new Form.Metadata.Builder().label("").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .addVariables(new Variable.Builder().name("var1").build())
       .build());
 
-    Assertions.assertThat(errors).contains(ImmutableFormValidationError.builder().itemId("var1").type(FormValidationError.Type.VARIABLE).message("RB_VARIABLE_NEEDS_EXPRESSION").build());
+    Assertions.assertThat(errors).contains(new FormValidationError.Builder().itemId("var1").type(FormValidationError.Type.VARIABLE).message("RB_VARIABLE_NEEDS_EXPRESSION").build());
 
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
@@ -69,11 +72,11 @@ class DialobFormValidatorTest {
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
 
-    List<FormValidationError> errors = validator.validate(ImmutableForm.builder()
+    List<FormValidationError> errors = validator.validate(new Form.Builder()
       .id("123")
-      .metadata(ImmutableFormMetadata.builder().label("").build())
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .addVariables(ImmutableVariable.builder().name("var1").expression("-1").build())
+      .metadata(new Form.Metadata.Builder().label("").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .addVariables(new Variable.Builder().name("var1").expression("-1").build())
       .build());
 
     Assertions.assertThat(errors).isEmpty();
@@ -91,7 +94,7 @@ class DialobFormValidatorTest {
 
     List<FormValidationError> errors = validator.validate(form);
 
-    Assertions.assertThat(errors).contains(ImmutableFormValidationError.builder()
+    Assertions.assertThat(errors).contains(new FormValidationError.Builder()
       .itemId("text1")
       .type(FormValidationError.Type.VISIBILITY)
       .message("NO_ORDER_RELATION_BETWEEN_TYPES")
@@ -112,7 +115,7 @@ class DialobFormValidatorTest {
 
     List<FormValidationError> errors = validator.validate(form);
 
-    Assertions.assertThat(errors).contains(ImmutableFormValidationError.builder()
+    Assertions.assertThat(errors).contains(new FormValidationError.Builder()
       .itemId("text1")
       .type(FormValidationError.Type.VALIDATION)
       .message("MATCHER_REGEX_SYNTAX_ERROR")
@@ -133,7 +136,7 @@ class DialobFormValidatorTest {
 
     List<FormValidationError> errors = validator.validate(form);
 
-    Assertions.assertThat(errors).contains(ImmutableFormValidationError.builder()
+    Assertions.assertThat(errors).contains(new FormValidationError.Builder()
       .itemId("text1")
       .type(FormValidationError.Type.VALIDATION)
       .message("MATCHER_DYNAMIC_REGEX")
@@ -173,24 +176,24 @@ class DialobFormValidatorTest {
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobFormValidator validator = new DialobFormValidator(compiler);
 
-    Form form = ImmutableForm.builder()
+    Form form = new Form.Builder()
       .id("yyy")
       .name("zzz")
-      .metadata(ImmutableFormMetadata.builder()
+      .metadata(new Form.Metadata.Builder()
         .label("xxx")
         .build())
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").addItems("page").build())
-      .putData("page", ImmutableFormItem.builder().id("page").type("group").addItems("rg","o1","o2","o3","o4").build())
-      .putData("rg", ImmutableFormItem.builder().id("rg").type("rowgroup").addItems("q1","q2","q3","q4","q5").build())
-      .putData("q1", ImmutableFormItem.builder().id("q1").type("number").build())
-      .putData("q2", ImmutableFormItem.builder().id("q2").type("decimal").build())
-      .putData("q3", ImmutableFormItem.builder().id("q3").type("boolean").build())
-      .putData("q4", ImmutableFormItem.builder().id("q4").type("text").build())
-      .putData("q5", ImmutableFormItem.builder().id("q5").type("note").activeWhen("sum of q1 > 0").build())
-      .putData("o1", ImmutableFormItem.builder().id("o1").type("note").activeWhen("sum of q1 > 0").build())
-      .putData("o2", ImmutableFormItem.builder().id("o2").type("note").activeWhen("xxx of q3").build())
-      .putData("o3", ImmutableFormItem.builder().id("o3").type("note").activeWhen("sum of q4 = \"\"").build())
-      .putData("o4", ImmutableFormItem.builder().id("o4").type("note").activeWhen("sum of (1)").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").addItems("page").build())
+      .putData("page", new FormItem.Builder().id("page").type("group").addItems("rg","o1","o2","o3","o4").build())
+      .putData("rg", new FormItem.Builder().id("rg").type("rowgroup").addItems("q1","q2","q3","q4","q5").build())
+      .putData("q1", new FormItem.Builder().id("q1").type("number").build())
+      .putData("q2", new FormItem.Builder().id("q2").type("decimal").build())
+      .putData("q3", new FormItem.Builder().id("q3").type("boolean").build())
+      .putData("q4", new FormItem.Builder().id("q4").type("text").build())
+      .putData("q5", new FormItem.Builder().id("q5").type("note").activeWhen("sum of q1 > 0").build())
+      .putData("o1", new FormItem.Builder().id("o1").type("note").activeWhen("sum of q1 > 0").build())
+      .putData("o2", new FormItem.Builder().id("o2").type("note").activeWhen("xxx of q3").build())
+      .putData("o3", new FormItem.Builder().id("o3").type("note").activeWhen("sum of q4 = \"\"").build())
+      .putData("o4", new FormItem.Builder().id("o4").type("note").activeWhen("sum of (1)").build())
 
       .build();
 

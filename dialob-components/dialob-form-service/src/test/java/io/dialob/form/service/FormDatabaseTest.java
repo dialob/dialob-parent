@@ -16,8 +16,6 @@
 package io.dialob.form.service;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormMetadata;
 import io.dialob.common.Constants;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
@@ -82,7 +80,7 @@ class FormDatabaseTest {
 
   @Test
   void shouldFetchFromServiceOnce() {
-    Form document = ImmutableForm.builder().metadata(ImmutableFormMetadata.builder().label("test").build()).build();
+    Form document = new Form.Builder().metadata(new Form.Metadata.Builder().label("test").build()).build();
     when(formDatabaseMock.findOne(tenantId, "1","2")).thenReturn(document);
     assertSame(document, formDatabase.findOne(tenantId, "1","2"));
     assertSame(document, formDatabase.findOne(tenantId, "1","2"));
@@ -100,7 +98,7 @@ class FormDatabaseTest {
 
   @Test
   void saveShouldPutDocumentInCache() {
-    Form document = ImmutableForm.builder().id("id-1").rev("rev-1").metadata(ImmutableFormMetadata.builder().label("test").build()).build();
+    Form document = new Form.Builder().id("id-1").rev("rev-1").metadata(new Form.Metadata.Builder().label("test").build()).build();
 
     when(formDatabaseMock.findOne(tenantId, "id-1")).thenThrow(DocumentNotFoundException.class);
     when(formDatabaseMock.findOne(tenantId, "id-1","rev-1")).thenThrow(DocumentNotFoundException.class);

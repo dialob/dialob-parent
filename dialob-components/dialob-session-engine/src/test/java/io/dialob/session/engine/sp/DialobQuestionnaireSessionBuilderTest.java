@@ -16,9 +16,7 @@
 package io.dialob.session.engine.sp;
 
 import io.dialob.api.form.Form;
-import io.dialob.api.form.ImmutableForm;
-import io.dialob.api.form.ImmutableFormItem;
-import io.dialob.api.form.ImmutableFormMetadata;
+import io.dialob.api.form.FormItem;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -81,10 +79,10 @@ class DialobQuestionnaireSessionBuilderTest {
 
   @Test
   void shouldInitializeSessionWithCorrectActiveItem() {
-    final Form form = ImmutableForm.builder()
+    final Form form = new Form.Builder()
       .id("123")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("test form").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .metadata(new Form.Metadata.Builder().label("test form").build())
       .build();
 
     DialobQuestionnaireSessionBuilder builder = createSessionBuilder(form);
@@ -110,10 +108,10 @@ class DialobQuestionnaireSessionBuilderTest {
 
   @Test
   void shouldParseShowDisabled() {
-    final Form form = ImmutableForm.builder()
+    final Form form = new Form.Builder()
       .id("123")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("test form")
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .metadata(new Form.Metadata.Builder().label("test form")
         .putAdditionalProperties("showDisabled", "True")
         .build())
       .build();
@@ -129,10 +127,10 @@ class DialobQuestionnaireSessionBuilderTest {
 
   @Test
   void shouldParseShowDisabled2() {
-    final Form form = ImmutableForm.builder()
+    final Form form = new Form.Builder()
       .id("123")
-      .putData("questionnaire", ImmutableFormItem.builder().id("questionnaire").type("questionnaire").build())
-      .metadata(ImmutableFormMetadata.builder().label("test form")
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+      .metadata(new Form.Metadata.Builder().label("test form")
         .putAdditionalProperties("showDisabled", true)
         .build())
       .build();

@@ -19,12 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.api.form.Form;
-import io.dialob.api.questionnaire.ImmutableQuestionnaireMetadata;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
-import io.dialob.questionnaire.service.api.ImmutableMetadataRow;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
@@ -177,7 +175,7 @@ class CSVSerializerTest {
   }
 
   private QuestionnaireDatabase.MetadataRow getQuestionnaireMetadataRow(Questionnaire questionnaire) {
-    return ImmutableMetadataRow.builder().id(questionnaire.getId()).value(ImmutableQuestionnaireMetadata.builder().from(questionnaire.getMetadata()).build()).build();
+    return new QuestionnaireDatabase.MetadataRow.Builder().id(questionnaire.getId()).value(new Questionnaire.Metadata.Builder().from(questionnaire.getMetadata()).build()).build();
   }
 
   @Test
