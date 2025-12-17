@@ -17,6 +17,10 @@ package io.dialob.rest;
 
 import io.dialob.api.rest.Errors;
 import io.dialob.rest.type.ApiException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.MethodParameter;
@@ -28,7 +32,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.lang.reflect.Executable;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -84,8 +91,8 @@ class RestApiExceptionMapperTest {
     Mockito.verify(bindingResult, Mockito.times(1)).getAllErrors();
     Mockito.verifyNoMoreInteractions(exception);
   }
-  @Test
 
+  @Test
   void shouldReturnErrorWithDetails() {
     RestApiExceptionMapper mapper = new RestApiExceptionMapper();
     MethodArgumentNotValidException exception = mock();
@@ -108,5 +115,69 @@ class RestApiExceptionMapperTest {
     Mockito.verify(bindingResult, Mockito.times(1)).getAllErrors();
     Mockito.verifyNoMoreInteractions(exception);
   }
+
+  @Test
+  void shouldConvertInstantiationExceptionHandlerWithoutConstrainViolations() {
+    RestApiExceptionMapper mapper = new RestApiExceptionMapper();
+    com.fasterxml.jackson.databind.exc.ValueInstantiationException exception = mock();
+    var entity = mapper.valueInstantiationExceptionHandler(exception);
+
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, entity.getStatusCode());
+    Errors errorsResult = (Errors) entity.getBody();
+    assertEquals(new Errors.Builder()
+      .timestamp(errorsResult.getTimestamp())
+      .status(422).error("Unprocessable Entity").build(), errorsResult);
+
+    Mockito.verify(exception, Mockito.times(1)).getCause();
+    Mockito.verify(exception, Mockito.times(1)).getMessage();
+    Mockito.verifyNoMoreInteractions(exception);
+  }
+
+
+  @Test
+  void shouldConvertInstantiationExceptionHandlerWithConstrainViolations() {
+    RestApiExceptionMapper mapper = new RestApiExceptionMapper();
+    com.fasterxml.jackson.databind.exc.ValueInstantiationException exception = mock();
+    ConstraintViolationException cvexception = mock();
+    when(exception.getCause()).thenReturn(cvexception);
+    ConstraintViolation cv = mock();
+    when(cvexception.getConstraintViolations()).thenReturn(Set.of(cv));
+    when(cv.getMessage()).thenReturn("message");
+    when(cv.getInvalidValue()).thenReturn("invalidValue");
+    when(cv.getPropertyPath()).thenReturn(new Path() {
+      @Override
+      public Iterator<Node> iterator() {
+        return Collections.emptyIterator();
+      }
+
+      @Override
+      public String toString() {
+        return "propertyPath";
+      }
+    });
+
+    var entity = mapper.valueInstantiationExceptionHandler(exception);
+
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, entity.getStatusCode());
+    Errors errorsResult = (Errors) entity.getBody();
+    assertEquals(new Errors.Builder()
+      .timestamp(errorsResult.getTimestamp())
+      .message("propertyPath: message")
+      .status(422).error("Unprocessable Entity")
+      .addErrors(new Errors.Error.Builder()
+        .context("propertyPath")
+        .error("message")
+        .rejectedValue("invalidValue")
+        .build())
+      .build(), errorsResult);
+
+    Mockito.verify(exception, Mockito.times(1)).getCause();
+    Mockito.verify(exception, Mockito.times(1)).getMessage();
+    Mockito.verify(cv, Mockito.times(1)).getInvalidValue();
+    Mockito.verify(cv, Mockito.times(2)).getMessage();
+    Mockito.verify(cv, Mockito.times(2)).getPropertyPath();
+    Mockito.verifyNoMoreInteractions(exception,cv);
+  }
+
 
 }

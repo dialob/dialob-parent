@@ -77,6 +77,7 @@ public class RestApiExceptionMapper {
     }
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(builder
       .message(message)
+      .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
       .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).build());
   }
 

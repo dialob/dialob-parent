@@ -40,6 +40,17 @@ class FormTest {
   }
 
   @Test
+  void testWithRev() {
+    Form form1 = new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("label").build())
+      .rev("1")
+      .build();
+    Form form2 = form1.withRev("2");
+    Assertions.assertEquals("1", form1.getRev());
+    Assertions.assertEquals("2", form2.getRev());
+  }
+
+  @Test
   void metadataIsRequired() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Form.Builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
