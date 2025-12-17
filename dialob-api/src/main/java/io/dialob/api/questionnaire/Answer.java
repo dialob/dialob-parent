@@ -17,46 +17,44 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.annotation.Nullable;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 import java.util.Date;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableAnswer.class)
+@Value.Builder
 @JsonDeserialize(builder = Answer.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Answer extends Serializable {
-
-  class Builder extends ImmutableAnswer.Builder { }
-
-  static Answer of(String id, @Nullable Object value) {
-    return ImmutableAnswer.of(id,value);
-  }
-
-    @Value.Parameter
-  String getId();
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@Immutable
+public record Answer(
+  @Getter @NonNull String id,
 
   /**
-   * Text and number field answers stored in orignal format
+   * Text and number field answers stored in original format
    *
    * @return user's answer in original format
    */
-  @Value.Parameter
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  @Nullable Object getValue();
+  @Getter @Nullable Object value,
+  @Getter @Nullable String type,
+  @Nullable Object acceptedValue,
+  @Nullable Date updated,
+  @Nullable String userId
+) implements Serializable {
 
-  @Nullable String getType();
+  public static class Builder extends AnswerBuilder { }
 
-  @Nullable Object getAcceptedValue();
+  public static Answer of(String id, @Nullable Object value) {
+    return new Builder().id(id).value(value).build();
+  }
 
-  @Nullable Date getUpdated();
-
-  @Nullable String getUserId();
+  public static Answer copyOf(Answer answer) {
+    return answer;
+  }
 
 }
