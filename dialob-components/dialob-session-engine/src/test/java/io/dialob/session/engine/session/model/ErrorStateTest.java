@@ -35,6 +35,21 @@ class ErrorStateTest {
       .verify();
   }
 
+  @Test
+  void shouldNotCreateNewStateWhenNoChanges() {
+    ErrorState errorState = new ErrorState(IdUtils.toId("id"), "code", "message");
+    ErrorState updated = errorState
+      .update(null)
+      .setActive(false)
+      .get();
+    Assertions.assertThat(updated).isSameAs(errorState);
+    updated = errorState
+      .update(null)
+      .setActive(true)
+      .get();
+    Assertions.assertThat(updated).isNotSameAs(errorState);
+  }
+
   static Stream<ErrorState> errorStates() {
     return Stream.of(
       new ErrorState(IdUtils.toId("id"), "code", "message"),
