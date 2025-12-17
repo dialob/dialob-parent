@@ -31,7 +31,7 @@ public record NodeId(
   }
 
   public NodeId {
-    id = Objects.requireNonNull(id, "id must not be null");
+    Objects.requireNonNull(id, "id must not be null");
   }
 
 }

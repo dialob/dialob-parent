@@ -20,8 +20,12 @@ import io.dialob.api.form.FormItem;
 import io.dialob.common.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -215,26 +219,19 @@ class DialobCsvToFormParserTest {
 
   // ========== Error Cases ==========
 
-  @Test
-  void shouldThrowExceptionForNullCsv() {
-    CsvParsingException exception = assertThrows(CsvParsingException.class, () -> {
-      parser.parseCsv(null);
-    });
-    assertEquals("CSV data is empty or null.", exception.getMessage());
+  private static Stream<Arguments> errorCases() {
+    return Stream.of(
+      Arguments.of("Null CSV", null),
+      Arguments.of("Empty CSV", ""),
+      Arguments.of("Blank CSV", "   ")
+    );
   }
 
-  @Test
-  void shouldThrowExceptionForEmptyCsv() {
+  @ParameterizedTest
+  @MethodSource("errorCases")
+  void shouldThrowExceptionForErrorCase(String description, String csv) {
     CsvParsingException exception = assertThrows(CsvParsingException.class, () -> {
-      parser.parseCsv("");
-    });
-    assertEquals("CSV data is empty or null.", exception.getMessage());
-  }
-
-  @Test
-  void shouldThrowExceptionForBlankCsv() {
-    CsvParsingException exception = assertThrows(CsvParsingException.class, () -> {
-      parser.parseCsv("   ");
+      parser.parseCsv(csv);
     });
     assertEquals("CSV data is empty or null.", exception.getMessage());
   }

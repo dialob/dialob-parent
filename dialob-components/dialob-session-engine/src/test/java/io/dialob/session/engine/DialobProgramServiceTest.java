@@ -16,7 +16,6 @@
 package io.dialob.session.engine;
 
 import io.dialob.api.form.Form;
-import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
@@ -33,14 +32,12 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
   @Test
   void shouldConstructFormProgram() throws Exception {
-    FormFinder formFinder = mock(FormFinder.class);
     FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
     DialobProgramFromFormCompiler programFromFormCompiler = new DialobProgramFromFormCompiler(functionRegistry);
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
@@ -101,7 +98,6 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
     Mockito.verifyNoMoreInteractions(visitor, errorVisitor, itemVisitor, valueSetVisitor);
-    assertNotNull(dialobProgram);
   }
 
   public Form loadForm(String formFile) throws java.io.IOException {

@@ -178,10 +178,8 @@ public class FillAssertionBuilder {
     String sessionId = UUID.randomUUID().toString();
 
     final QuestionnaireDatabase questionnaireDatabase = mock(QuestionnaireDatabase.class);
-    when(questionnaireDatabase.save(anyString(), any(Questionnaire.class))).then(invocation -> {
-      final Questionnaire questionnaire = invocation.getArgument(0);
-      return questionnaire.withId(sessionId);
-    });
+    when(questionnaireDatabase.save(anyString(), any(Questionnaire.class)))
+      .then(invocation -> invocation.<Questionnaire>getArgument(0).withId(sessionId));
 
     AsyncFunctionInvoker asyncFunctionInvoker = mock(AsyncFunctionInvoker.class);
 

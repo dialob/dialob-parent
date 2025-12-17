@@ -596,7 +596,6 @@ class FormsRestServiceControllerTest {
       .andExpect(jsonPath("$.ok", is(true)));
 
     // Verify forced path was taken by checking findOne was called
-//    verify(formDatabase).findOne("t-123", "1234");
     verify(currentTenant, atLeastOnce()).getId();
     verify(currentUserProvider).getUserId();
     verify(formValidatorExecutor).validate(any(Form.class));

@@ -53,6 +53,7 @@ public class IdUtils {
         case ItemIndex(Integer index, ItemId ignored1) -> idChain.add(index.toString());
         case ItemIdPartial ignored -> idChain.add("*");
         default -> {
+          // should not happen
         }
       }
       itemId = itemId.parent();

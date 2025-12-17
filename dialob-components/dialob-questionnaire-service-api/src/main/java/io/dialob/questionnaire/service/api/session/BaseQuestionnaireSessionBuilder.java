@@ -189,7 +189,7 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
 
   @NonNull
   protected Questionnaire createNewQuestionnaire(@NonNull String formId, String formRev, String formName, String label, String submitUrl, String creator, String owner, Map<String, Object> additionalProperties, boolean useLatest) {
-    final Questionnaire.Builder questionnaire = new Questionnaire.Builder()
+    final var builder = new Questionnaire.Builder()
       .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formName(formName)
@@ -205,16 +205,16 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
         .build());
 
     if (contextValues != null) {
-      questionnaire.context(contextValues);
+      builder.context(contextValues);
     }
     if (answers != null) {
-      questionnaire.answers(answers);
+      builder.answers(answers);
     }
     if (valueSets != null) {
-      questionnaire.valueSets(valueSets);
+      builder.valueSets(valueSets);
     }
-    questionnaire.activeItem(this.activeItem);
-    return questionnaire.build();
+    builder.activeItem(this.activeItem);
+    return builder.build();
   }
 
   @NonNull
