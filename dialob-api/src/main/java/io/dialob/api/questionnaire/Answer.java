@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Value.Immutable
-@Value.Modifiable
 @JsonSerialize(as = ImmutableAnswer.class)
 @JsonDeserialize(builder = Answer.Builder.class)
 @Gson.TypeAdapters

@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 @Value.Immutable
-@Value.Modifiable
 @JsonSerialize(as = ImmutableFormItem.class)
 @JsonDeserialize(builder = FormItem.Builder.class)
 @Gson.TypeAdapters

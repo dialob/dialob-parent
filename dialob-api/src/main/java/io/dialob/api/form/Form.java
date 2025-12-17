@@ -45,7 +45,6 @@ import java.util.Set;
  * The Form interface supports validation rules and ensures non-null constraints for key fields.
  */
 @Value.Immutable
-@Value.Modifiable
 @JsonSerialize(as = ImmutableForm.class)
 @JsonDeserialize(builder = Form.Builder.class)
 @Gson.TypeAdapters(emptyAsNulls = true)
@@ -121,7 +120,6 @@ public interface Form extends WithValidation<Form>, FormEntity {
 
   @Value.Immutable
   @Value.Style(typeImmutable = "ImmutableForm*", typeModifiable = "ModifiableForm*", validationMethod = Value.Style.ValidationMethod.NONE, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true, jakarta = true, defaultAsDefault = true)
-  @Value.Modifiable
   @JsonSerialize(as = ImmutableFormMetadata.class)
   @JsonDeserialize(builder = Form.Metadata.Builder.class)
   @Gson.TypeAdapters(emptyAsNulls = true)

@@ -93,7 +93,6 @@ public interface Questionnaire extends WithValidation<Questionnaire>, Serializab
   Metadata getMetadata();
 
   @Value.Immutable
-  @Value.Modifiable
   @Value.Style(typeImmutable = "ImmutableQuestionnaire*", typeModifiable = "ModifiableQuestionnaire*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
   @JsonSerialize(as = ImmutableQuestionnaireMetadata.class)
   @JsonDeserialize(builder = Metadata.Builder.class)

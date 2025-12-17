@@ -30,7 +30,6 @@ import java.util.Map;
 
 @Value.Immutable
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-@Value.Modifiable
 @JsonSerialize(as = ImmutableFormValueSetEntry.class)
 @JsonDeserialize(builder = FormValueSetEntry.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_NULL)
