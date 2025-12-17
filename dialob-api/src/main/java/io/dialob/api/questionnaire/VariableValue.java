@@ -17,29 +17,30 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableVariableValue.class)
+@Value.Builder
 @JsonDeserialize(builder = VariableValue.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface VariableValue extends Serializable {
-
-  class Builder extends ImmutableVariableValue.Builder { }
-
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+public record VariableValue(
   @NotNull
-  String getId();
+  @Getter String id,
 
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  @Nullable Object getValue();
+  @Getter @Nullable Object value
+) implements Serializable {
 
+  public static class Builder extends VariableValueBuilder {
+  }
+
+  public static VariableValue copyOf(VariableValue variableValue) {
+    return variableValue;
+  }
 
 }

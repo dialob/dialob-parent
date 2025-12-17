@@ -18,6 +18,7 @@ package io.dialob.api.questionnaire;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.Nullable;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
@@ -27,9 +28,9 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public record Error(
-  String id,
-  @Nullable String code,
-  @Nullable String description
+  @Getter String id,
+  @Getter @Nullable String code,
+  @Getter @Nullable String description
 ) implements Serializable {
 
   public static class Builder extends ErrorBuilder {

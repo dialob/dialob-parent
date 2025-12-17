@@ -31,4 +31,10 @@ class QuestionnaireListItemTest {
     assertEquals("12", questionnaireListItem.getId());
   }
 
+  @Test
+  void copyOfReturnsSameInstance() {
+    var element = new QuestionnaireListItem.Builder().id("k").build();
+    assertSame(element, QuestionnaireListItem.copyOf(element));
+  }
+
 }
