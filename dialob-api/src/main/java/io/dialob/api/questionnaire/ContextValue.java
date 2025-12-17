@@ -17,33 +17,35 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableContextValue.class)
+@Value.Builder
 @JsonDeserialize(builder = ContextValue.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Value.Style(allParameters = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface ContextValue extends Serializable {
-
-  class Builder extends ImmutableContextValue.Builder { }
-
-  static ContextValue of(String id, @Nullable Object value) {
-    return ImmutableContextValue.of(id, value);
-  }
-
+public record ContextValue(
   @NotNull
-  String getId();
+  @Getter String id,
 
   @JsonInclude(JsonInclude.Include.ALWAYS)
   @Nullable
-  Object getValue();
+  @Getter Object value
+
+) implements Serializable {
+
+  public static class Builder extends ContextValueBuilder { }
+
+  public static ContextValue copyOf(ContextValue contextValue) {
+    return contextValue;
+  }
+
+  public static ContextValue of(String id, @Nullable Object value) {
+    return new Builder().id(id).value(value).build();
+  }
 
 }

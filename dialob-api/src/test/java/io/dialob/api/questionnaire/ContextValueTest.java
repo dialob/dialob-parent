@@ -28,8 +28,14 @@ class ContextValueTest {
       .value("value1")
       .build();
     assertNotNull(contextValue);
-    assertEquals("key1", contextValue.getId());
-    assertEquals("value1", contextValue.getValue());
+    assertEquals("key1", contextValue.id());
+    assertEquals("value1", contextValue.value());
+  }
+
+  @Test
+  void copyOfReturnsSameInstance() {
+    var element = ContextValue.of("key2", 123);
+    assertSame(element, ContextValue.copyOf(element));
   }
 
 }

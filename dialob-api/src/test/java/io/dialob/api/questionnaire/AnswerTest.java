@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AnswerTest {
 
@@ -31,6 +30,12 @@ class AnswerTest {
     builder.id("q1");
     Answer answer = builder.build();
     assertEquals("q1", answer.id());
+  }
+
+  @Test
+  void copyOfReturnsSameInstance() {
+    var element = Answer.of("key2", 123);
+    assertSame(element, Answer.copyOf(element));
   }
 
   @Test
