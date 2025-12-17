@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.api.proto;
+package io.dialob.api.rest;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ValueSetEntryTest {
+class MetadataTest {
 
   @Test
   void hasBuilder() {
-    ValueSetEntry valueSetEntry = new ValueSetEntry.Builder()
-      .key("key1")
-      .value("Value 1")
-      .build();
-    assertNotNull(valueSetEntry);
-    assertEquals("key1", valueSetEntry.getKey());
-    assertEquals("Value 1", valueSetEntry.getValue());
-  }
-
-  @Test
-  void testOf() {
-    ValueSetEntry valueSetEntry = ValueSetEntry.of("key2", "Value 2");
-    assertNotNull(valueSetEntry);
-    assertEquals("key2", valueSetEntry.getKey());
-    assertEquals("Value 2", valueSetEntry.getValue());
+    Metadata.Builder builder = new Metadata.Builder();
+    builder.label("123");
+    Metadata metadata = builder.build();
+    assertEquals("123", metadata.getLabel());
   }
 
 }

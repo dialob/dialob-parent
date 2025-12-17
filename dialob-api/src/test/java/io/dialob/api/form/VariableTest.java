@@ -32,4 +32,12 @@ class VariableTest {
     assertEquals("some value", variable.getDefaultValue());
   }
 
+  @Test
+  void testOf() {
+    Variable variable = Variable.of("var2", "42");
+    assertNotNull(variable);
+    assertEquals("var2", variable.getName());
+    assertEquals("42", variable.getExpression());
+  }
+
 }
