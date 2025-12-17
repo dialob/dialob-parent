@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Set;
 
 @Value.Immutable
-@Value.Modifiable
 @Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonSerialize(as = ImmutableQuestionnaire.class)
 @JsonDeserialize(builder = Questionnaire.Builder.class)
@@ -44,19 +43,9 @@ import java.util.Set;
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public interface Questionnaire extends WithValidation<Questionnaire>, Serializable {
 
-  default Questionnaire withId(@Nullable String string) {
-    return new Questionnaire.Builder()
-      .from(this)
-      .id(string)
-      .build();
-  }
+  Questionnaire withId(@Nullable String string);
 
-  default Questionnaire withRev(@Nullable String string) {
-    return new Questionnaire.Builder()
-      .from(this)
-      .rev(string)
-      .build();
-  }
+  Questionnaire withRev(@Nullable String string);
 
   class Builder extends ImmutableQuestionnaire.Builder { }
 
