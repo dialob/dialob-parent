@@ -94,4 +94,14 @@ class IdUtilsTest {
     Assertions.assertEquals(IdUtils.toId("l1.*.p2"), IdUtils.readIdFrom(stream));
     Assertions.assertEquals(IdUtils.toId("l1.2"), IdUtils.readIdFrom(stream));
   }
+
+  @Test
+  void errorId() {
+    assertEquals("item:error", IdUtils.toString(new ErrorId(IdUtils.toId("item"), "error")));
+  }
+
+  @Test
+  void invalidId() {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> IdUtils.toId(""));
+  }
 }

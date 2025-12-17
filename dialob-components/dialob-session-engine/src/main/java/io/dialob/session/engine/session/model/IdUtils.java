@@ -91,7 +91,7 @@ public class IdUtils {
         id = new ItemIndex(Integer.parseInt(s), id);
       } else if ("*".equals(s)) {
         id = new ItemIdPartial(id);
-      } else {
+      } else if (!s.isEmpty()) {
         id = new ItemRef(s, id);
       }
     }
