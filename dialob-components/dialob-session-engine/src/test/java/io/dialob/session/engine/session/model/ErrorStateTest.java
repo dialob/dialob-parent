@@ -17,6 +17,7 @@ package io.dialob.session.engine.session.model;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import io.dialob.session.engine.Utils;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.assertj.core.api.Assertions;
@@ -33,6 +34,17 @@ class ErrorStateTest {
     EqualsVerifier.forClass(ErrorState.class)
       .suppress(Warning.NONFINAL_FIELDS)
       .verify();
+  }
+
+  @Test
+  void testUtils() {
+    ErrorState errorState = new ErrorState(IdUtils.toId("id"), "code", "message");
+
+    var error = Utils.toError(errorState);
+    org.junit.jupiter.api.Assertions.assertNotNull(error);
+    org.junit.jupiter.api.Assertions.assertEquals("message", error.getDescription());
+    org.junit.jupiter.api.Assertions.assertEquals("code", error.getCode());
+    org.junit.jupiter.api.Assertions.assertEquals("id", error.getId());
   }
 
   @Test
