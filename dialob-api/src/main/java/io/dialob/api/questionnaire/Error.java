@@ -17,27 +17,26 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableError.class)
+@Value.Builder
 @JsonDeserialize(builder = Error.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Error extends Serializable {
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+public record Error(
+  String id,
+  @Nullable String code,
+  @Nullable String description
+) implements Serializable {
 
-  class Builder extends ImmutableError.Builder { }
+  public static class Builder extends ErrorBuilder {
+  }
 
-  String getId();
-
-  @Nullable String getCode();
-
-  @Nullable String getDescription();
+  public static Error copyOf(Error error) {
+    return error;
+  }
 
 }
