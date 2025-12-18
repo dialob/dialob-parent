@@ -52,8 +52,7 @@ public record FormPutResponse(
   @Getter
   String reason,
 
-  @Getter
-  Boolean ok
+  boolean ok
 
 ) implements HasId<String>, Response {
 

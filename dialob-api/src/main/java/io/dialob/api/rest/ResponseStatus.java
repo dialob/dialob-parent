@@ -19,6 +19,6 @@ import java.io.Serializable;
 
 public interface ResponseStatus extends Serializable {
 
-  Boolean getOk();
+  boolean ok();
 
 }

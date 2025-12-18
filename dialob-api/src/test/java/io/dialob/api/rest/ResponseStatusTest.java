@@ -21,12 +21,14 @@ import org.junit.jupiter.api.Test;
 
 class ResponseStatusTest {
 
-//  @Test
-//  void testJsonSerialization() throws Exception {
-//    Assertions.assertEquals("{\"ok\":true}", new ObjectMapper().writeValueAsString(new Response.Builder().ok(true).build()));
-//    Assertions.assertEquals("{\"ok\":false}", new ObjectMapper().writeValueAsString(new Response.Builder().ok(false).build()));
-//    Assertions.assertEquals(new Response.Builder().ok(true).build(), new ObjectMapper().readValue("{\"ok\":true}", Response.class));
-//    Assertions.assertEquals(new Response.Builder().build(), new ObjectMapper().readValue("{}", Response.class));
-//  }
+  @Test
+  void testJsonSerialization() throws Exception {
+    var mapper = new ObjectMapper();
+
+    Assertions.assertEquals("{\"ok\":true}", mapper.writeValueAsString(Response.OK));
+    Assertions.assertEquals("{\"ok\":false}", mapper.writeValueAsString(Response.NOT_OK));
+    Assertions.assertEquals(new Response.ResposeRecord(true, null, null), mapper.readValue("{\"ok\":true}", Response.class));
+    Assertions.assertEquals(new Response.ResposeRecord(false, null, null), mapper.readValue("{}", Response.class));
+  }
 
 }
