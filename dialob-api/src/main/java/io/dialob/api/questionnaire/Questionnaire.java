@@ -33,7 +33,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Value.Builder
-@Value.Style(attributeBuilderDetection = true, deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.VALIDATION_API, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.VALIDATION_API, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonDeserialize(builder = Questionnaire.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record Questionnaire(
@@ -124,9 +124,8 @@ public record Questionnaire(
     String formName,
 
     @NotNull
-//  @Value.Default.(Status.NEW)
     @Getter
-    Status status, // NEW
+    Status status,
 
     @Nullable
     @Getter

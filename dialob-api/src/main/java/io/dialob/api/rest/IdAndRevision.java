@@ -17,30 +17,30 @@ package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableIdAndRevision.class)
+@Value.Builder
 @JsonDeserialize(builder = IdAndRevision.Builder.class)
-@Gson.TypeAdapters
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface IdAndRevision extends Serializable {
-
-  class Builder extends ImmutableIdAndRevision.Builder { }
-
+public record IdAndRevision(
   @JsonProperty("_id")
-  @Gson.Named("_id")
   @NotNull
-  String getId();
+  @Getter
+  String id,
 
   @JsonProperty("_rev")
-  @Gson.Named("_rev")
   @NotNull
-  String getRev();
+  @Getter
+  String rev
+
+) implements Serializable {
+
+  public static class Builder extends IdAndRevisionBuilder {
+  }
+
 
 }

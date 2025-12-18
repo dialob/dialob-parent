@@ -21,18 +21,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableResponse.class)
-@JsonDeserialize(builder = Response.Builder.class)
-@Gson.TypeAdapters
-@JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface Response extends ResponseStatus {
 
-  class Builder extends ImmutableResponse.Builder { }
+  Response OK = () -> true;
 
-  String getError();
+  Response NOT_OK = () -> false;
 
-  String getReason();
+  default String getError() {
+    return null;
+  }
+
+  default String getReason() {
+    return null;
+  }
 
 }

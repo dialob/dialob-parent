@@ -17,26 +17,30 @@ package io.dialob.api.proto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableActions.class)
+@Value.Builder
 @JsonDeserialize(builder = Actions.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Actions extends Serializable {
+public record Actions(
+  @Nullable
+  @Getter
+  String rev,
 
-  class Builder extends ImmutableActions.Builder { }
+  @Nullable
+  @Getter
+  List<Action> actions
 
-  @Nullable String getRev();
+) implements Serializable {
 
-  @Nullable List<Action> getActions();
+  public static class Builder extends ActionsBuilder {
+  }
+
 
 }

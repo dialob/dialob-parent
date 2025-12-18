@@ -18,39 +18,44 @@ package io.dialob.api.form;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.Map;
 
-@Value.Immutable
+@Value.Builder
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-@JsonSerialize(as = ImmutableFormValueSetEntry.class)
 @JsonDeserialize(builder = FormValueSetEntry.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_NULL)
-@Gson.TypeAdapters(emptyAsNulls = true)
-public interface FormValueSetEntry extends Serializable {
-
-  class Builder extends ImmutableFormValueSetEntry.Builder { }
-
+public record FormValueSetEntry(
   @NotNull
-  String getId();
+  @Getter
+  String id,
 
-  Map<String, String> getLabel();
+  @Getter
+  Map<String, String> label,
 
   @Nullable
-  String getWhen();
+  @Getter
+  String when,
 
   @JsonInclude
   @JsonAnyGetter
   @AllowNulls
   @Gson.Ignore
-  Map<String, Object> getAdditionalProperties();
+  @Getter
+  Map<String, Object> additionalProperties
+
+) implements Serializable {
+
+  public static class Builder extends FormValueSetEntryBuilder {
+  }
+
 
 
 

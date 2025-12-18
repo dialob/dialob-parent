@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 @Value.Builder
 @JsonDeserialize(builder = QuestionnaireListItem.Builder.class)
-@Value.Style(attributeBuilderDetection = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public record QuestionnaireListItem(
   @Getter @NonNull String id,
   @Getter Questionnaire.Metadata metadata

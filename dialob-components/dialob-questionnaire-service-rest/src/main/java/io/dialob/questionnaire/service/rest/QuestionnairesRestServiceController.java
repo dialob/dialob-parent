@@ -188,7 +188,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   public ResponseEntity<Response> deleteQuestionnaire(String questionnaireId) {
     LOGGER.debug("DELETE /questionnaire/{}", questionnaireId);
     questionnaireRepository.delete(currentTenant.getId(), questionnaireId);
-    return ResponseEntity.ok(new Response.Builder().ok(true).build());
+    return ResponseEntity.ok(Response.OK);
   }
 
   /**

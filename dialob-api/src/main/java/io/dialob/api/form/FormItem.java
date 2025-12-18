@@ -17,10 +17,10 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
@@ -28,78 +28,98 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormItem.class)
+@Value.Builder
 @JsonDeserialize(builder = FormItem.Builder.class)
-@Gson.TypeAdapters
 @JsonIgnoreProperties({"style", "options"})
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface FormItem extends Serializable {
-
-  class Builder extends ImmutableFormItem.Builder { }
+public record FormItem(
 
   @NotNull
-  String getId();
+  @Getter
+  String id,
 
   @NotNull
-  String getType();
+  @Getter
+  String type,
 
   @Nullable
-  String getView();
-
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, String> getLabel();
+  @Getter
+  String view,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, String> getDescription();
-
-  @Nullable
-  String getRequired();
+  @Getter
+  Map<String, String> label,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, String> getRequiredErrorText();
+  @Getter
+  Map<String, String> description,
 
   @Nullable
-  Boolean getReadOnly();
+  @Getter
+  String required,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<String> getItems();
+  @Getter
+  Map<String, String> requiredErrorText,
+
+  @Nullable
+  @Getter
+  Boolean readOnly,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<String> getClassName();
-
-  @Nullable
-  String getActiveWhen();
-
-  @Nullable
-  String getCanAddRowWhen();
-
-  @Nullable
-  String getCanRemoveRowWhen();
+  @Getter
+  List<String> items,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<Validation> getValidations();
+  @Getter
+  List<String> className,
 
   @Nullable
-  String getValueSetId();
+  @Getter
+  String activeWhen,
 
   @Nullable
-  Object getDefaultValue();
+  @Getter
+  String canAddRowWhen,
+
+  @Nullable
+  @Getter
+  String canRemoveRowWhen,
+
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  List<Validation> validations,
+
+  @Nullable
+  @Getter
+  String valueSetId,
+
+  @Nullable
+  @Getter
+  Object defaultValue,
 
   @Nullable @AllowNulls
-  Map<String, Object> getProps();
+  @Getter
+  Map<String, Object> props,
 
   @JsonInclude
   @JsonAnyGetter
   @AllowNulls
   @Gson.Ignore
-  Map<String, Object> getAdditionalProperties();
+  @Getter
+  Map<String, Object> additionalProperties
+
+) implements Serializable {
+
+  public static class Builder extends FormItemBuilder {
+  }
+
 
 }

@@ -62,8 +62,8 @@ public class FormsRestServiceController implements FormsRestService {
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
-  private static final ResponseEntity<Response> OK = ResponseEntity.ok(new Response.Builder().ok(true).build());
-  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new Response.Builder().ok(false).build());
+  private static final ResponseEntity<Response> OK = ResponseEntity.ok(Response.OK);
+  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(Response.NOT_OK);
 
   private static ResponseEntity<Response> ok() {
     return OK;
@@ -345,7 +345,6 @@ public class FormsRestServiceController implements FormsRestService {
   public ResponseEntity<Response> putFormTag(String formId, String tagName, FormTag requestTag) {
     if (StringUtils.isBlank(requestTag.getRefName())) {
       return ResponseEntity.badRequest().body(new FormPutResponse.Builder().ok(false).error("INCOMPLETE").reason("ref_name is required field").build());
-
     }
     return formVersionControlDatabase.map(versionControlDatabase -> {
       String formName = formId;

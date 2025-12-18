@@ -32,7 +32,7 @@ class QuestionnaireTest {
   void hasBuilder() {
     Questionnaire.Builder builder = new Questionnaire.Builder();
     builder.id("12");
-    builder.metadata(builder1 -> builder1.formId("123"));
+    builder.metadata(new Questionnaire.Metadata.Builder().formId("123").build());
     Questionnaire questionnaire = builder.build();
     assertEquals("12", questionnaire.getId());
     assertEquals("123", questionnaire.getMetadata().getFormId());

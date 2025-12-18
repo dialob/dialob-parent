@@ -17,26 +17,29 @@ package io.dialob.api.proto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableValueSet.class)
+@Value.Builder
 @JsonDeserialize(builder = ValueSet.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL)
 @Value.Style(deepImmutablesDetection = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PUBLIC)
-public interface ValueSet extends Serializable {
+public record ValueSet(
+  @Getter
+  String id,
 
-  class Builder extends ImmutableValueSet.Builder { }
+  @Getter
+  List<ValueSetEntry> entries
+) implements Serializable {
 
-  String getId();
+  public static class Builder extends ValueSetBuilder {
+  }
 
-  List<ValueSetEntry> getEntries();
-
+  public static ValueSet copyOf(ValueSet valueSet) {
+    return valueSet;
+  }
 
 }

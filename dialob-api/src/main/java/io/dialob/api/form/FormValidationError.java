@@ -17,31 +17,78 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.gson.Gson;
+import io.dialob.api.annotation.Nullable;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormValidationError.class)
+@Value.Builder
 @JsonDeserialize(builder = FormValidationError.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface FormValidationError extends Serializable {
+public record FormValidationError(
 
-  class Builder extends ImmutableFormValidationError.Builder { }
+  @Getter
+  String itemId,
 
-  enum Level {
+  @Getter
+  String message,
+
+  @Getter
+  Level level,
+
+  @Getter
+  Type type,
+
+  @Nullable
+  String expression,
+
+  @Nullable
+  Integer startIndex,
+
+  @Nullable
+  Integer endIndex,
+
+  @Nullable
+  Integer index
+
+) implements Serializable {
+
+  public FormValidationError {
+    level = Objects.requireNonNullElse(level, Level.ERROR);
+  }
+
+  public Optional<String> getExpression() {
+    return Optional.ofNullable(expression);
+  }
+
+  public Optional<Integer> getStartIndex() {
+    return Optional.ofNullable(startIndex);
+  }
+
+  public Optional<Integer> getEndIndex() {
+    return Optional.ofNullable(endIndex);
+  }
+
+  public Optional<Integer> getIndex() {
+    return Optional.ofNullable(index);
+  }
+
+
+  public static class Builder extends FormValidationErrorBuilder {
+  }
+
+  public enum Level {
     INFO,
     WARNING,
     ERROR,
     FATAL
   }
 
-  enum Type {
+  public enum Type {
     VISIBILITY,
     VALIDATION,
     REQUIREMENT,
@@ -55,24 +102,5 @@ public interface FormValidationError extends Serializable {
     CANADDROW,
     CANREMOVEROW
   }
-
-  String getItemId();
-
-  String getMessage();
-
-  @Value.Default
-  default Level getLevel() {
-    return Level.ERROR;
-  }
-
-  Type getType();
-
-  Optional<String> getExpression();
-
-  Optional<Integer> getStartIndex();
-
-  Optional<Integer> getEndIndex();
-
-  Optional<Integer> getIndex();
 
 }

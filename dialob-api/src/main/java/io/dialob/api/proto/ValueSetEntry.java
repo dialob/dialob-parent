@@ -17,30 +17,38 @@ package io.dialob.api.proto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableValueSetEntry.class)
+@Value.Builder
 @JsonDeserialize(builder = ValueSetEntry.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(allParameters = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface ValueSetEntry extends Serializable {
-
-  static ValueSetEntry of(String a, String first) {
-    return ImmutableValueSetEntry.of(a, first);
-  }
-
-  class Builder extends ImmutableValueSetEntry.Builder { }
-
-  String getKey();
+@Value.Style(overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+public record ValueSetEntry(
+  @Getter
+  String key,
 
   @Nullable
-  String getValue();
+  @Getter
+  String value
+
+) implements Serializable {
+
+  public static ValueSetEntry of(String key, String value) {
+    return new ValueSetEntry.Builder().key(key).value(value).build();
+  }
+
+  public static class Builder extends ValueSetEntryBuilder {
+  }
+
+
+  public static ValueSetEntry copyOf(ValueSetEntry valueSetEntry) {
+    return valueSetEntry;
+  }
+
+
 
 }

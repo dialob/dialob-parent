@@ -17,13 +17,12 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -44,31 +43,22 @@ import java.util.Set;
  * <p>
  * The Form interface supports validation rules and ensures non-null constraints for key fields.
  */
-@Value.Immutable
-@JsonSerialize(as = ImmutableForm.class)
+@Value.Builder
 @JsonDeserialize(builder = Form.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Form extends WithValidation<Form>, FormEntity {
-
-  default Form withRev(String number) {
-    return new Form.Builder().from(this).rev(number).build();
-  }
-
-  class Builder extends ImmutableForm.Builder { }
-
+public record Form(
   /**
    * Retrieves the unique identifier of the form.
    *
    * @return the form's unique identifier as a String, or null if the identifier is not set.
    */
   @JsonProperty("_id")
-  @Gson.Named("_id")
   @Id
   @Nullable
-  String getId();
+  @Getter
+  String id,
 
   /**
    * Retrieves the revision identifier of the form. The revision identifier
@@ -78,37 +68,43 @@ public interface Form extends WithValidation<Form>, FormEntity {
    * @return the revision identifier as a String, or null if the revision is not set.
    */
   @JsonProperty("_rev")
-  @Gson.Named("_rev")
   @Version
   @Nullable
-  String getRev();
+  @Getter
+  String rev,
 
   @Nullable
-  String getName();
+  @Getter
+  String name,
 
   @Valid
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, FormItem> getData();
+  @Getter
+  Map<String, FormItem> data,
 
   @Valid
   @NotNull
-  Metadata getMetadata();
-
-  @Valid
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<Variable> getVariables();
-
-  @Valid
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, Form> getNamespaces();
+  @Getter
+  Metadata metadata,
 
   @Valid
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<FormValueSet> getValueSets();
+  @Getter
+  List<Variable> variables,
+
+  @Valid
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  Map<String, Form> namespaces,
+
+  @Valid
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  List<FormValueSet> valueSets,
 
   /**
    *
@@ -116,48 +112,77 @@ public interface Form extends WithValidation<Form>, FormEntity {
    */
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, String> getRequiredErrorText();
+  @Getter
+  Map<String, String> requiredErrorText
 
-  @Value.Immutable
-  @Value.Style(typeImmutable = "ImmutableForm*", typeModifiable = "ModifiableForm*", validationMethod = Value.Style.ValidationMethod.NONE, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true, jakarta = true, defaultAsDefault = true)
-  @JsonSerialize(as = ImmutableFormMetadata.class)
-  @JsonDeserialize(builder = Form.Metadata.Builder.class)
-  @Gson.TypeAdapters(emptyAsNulls = true)
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-  interface Metadata extends Serializable {
+) implements WithValidation<Form>, FormEntity {
 
-    class Builder extends ImmutableFormMetadata.Builder {
+  public Form withRev(String number) {
+    return new Form.Builder().from(this).rev(number).build();
+  }
+
+  public static class Builder extends FormBuilder {
+
+    @Override
+    public Form build() {
+      return super.build().validate();
     }
 
+  }
+
+
+  @Value.Builder
+  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true, jakarta = true, defaultAsDefault = true)
+  @JsonDeserialize(builder = Form.Metadata.Builder.class)
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
+  public record Metadata(
     @NotNull
-    String getLabel();
+    @Getter
+    String label,
 
-    @Nullable Date getCreated();
+    @Getter
+    @Nullable Date created,
 
-    @Nullable Date getLastSaved();
+    @Getter
+    @Nullable Date lastSaved,
 
-    @Nullable Boolean getValid();
+    @Getter
+    @Nullable Boolean valid,
 
-    @Nullable String getCreator();
+    @Getter
+    @Nullable String creator,
 
-    @Nullable String getTenantId();
+    @Getter
+    @Nullable String tenantId,
 
-    @Nullable String getSavedBy();
+    @Getter
+    @Nullable String savedBy,
 
     @NotNull
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    Set<String> getLabels();
+    @Getter
+    Set<String> labels,
 
-    @Nullable String getDefaultSubmitUrl();
+    @Getter
+    @Nullable String defaultSubmitUrl,
 
     @NotNull
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    Set<String> getLanguages();
+    @Getter
+    Set<String> languages,
 
     @JsonInclude
     @JsonAnyGetter
     @AllowNulls
-    Map<String,Object> getAdditionalProperties();
+    @Getter
+    Map<String, Object> additionalProperties
+
+  ) implements Serializable {
+
+    @JsonIgnoreType
+    public static class Builder extends MetadataBuilder {
+    }
+
   }
 }

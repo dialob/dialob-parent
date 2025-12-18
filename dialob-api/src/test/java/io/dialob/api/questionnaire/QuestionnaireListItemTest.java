@@ -33,7 +33,7 @@ class QuestionnaireListItemTest {
 
   @Test
   void copyOfReturnsSameInstance() {
-    var element = new QuestionnaireListItem.Builder().id("k").build();
+    var element = new QuestionnaireListItem.Builder().id("k").metadata(new Questionnaire.Metadata.Builder().build()).build();
     assertSame(element, QuestionnaireListItem.copyOf(element));
   }
 

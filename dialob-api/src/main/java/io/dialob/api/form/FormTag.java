@@ -17,54 +17,63 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.util.Date;
+import java.util.Objects;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormTag.class)
+@Value.Builder
 @JsonDeserialize(builder = FormTag.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface FormTag extends FormEntity {
+public record FormTag(
+  @NotNull
+  @Getter
+  String formName,
 
-  class Builder extends ImmutableFormTag.Builder { }
+  @NotNull
+  @Getter
+  String name,
 
-  enum Type {
-    NORMAL,
-    MUTABLE
+  @Nullable
+  @Getter
+  String refName,
+
+  @Nullable
+  @Getter
+  Date created,
+
+  @Nullable
+  @Getter
+  String formId,
+
+  @Nullable
+  @Getter
+  String description,
+
+  @Nullable
+  @Getter
+  String creator,
+
+  @NotNull
+  @Getter
+  Type type
+
+) implements FormEntity {
+
+  public FormTag {
+    type = Objects.requireNonNullElse(type, Type.NORMAL);
   }
 
-  @NotNull
-  String getFormName();
+  public static class Builder extends FormTagBuilder {
+  }
 
-  @NotNull
-  String getName();
-
-  @Nullable
-  String getRefName();
-
-  @Nullable
-  Date getCreated();
-
-  @Nullable
-  String getFormId();
-
-  @Nullable
-  String getDescription();
-
-  @Nullable
-  String getCreator();
-
-  @NotNull
-  @Value.Default
-  default Type getType() {
-    return Type.NORMAL;
+  public enum Type {
+    NORMAL,
+    MUTABLE
   }
 
 }
