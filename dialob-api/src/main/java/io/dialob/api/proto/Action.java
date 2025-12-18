@@ -18,8 +18,10 @@ package io.dialob.api.proto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.questionnaire.Error;
+import io.dialob.api.rest.HasId;
 import lombok.Getter;
 import org.immutables.value.Value;
 
@@ -29,13 +31,12 @@ import java.util.List;
 @Value.Builder
 @JsonDeserialize(builder = Action.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
 public record Action(
   @Getter
   Type type,
 
   @Nullable
-  @Getter
   String id,
 
   @Nullable
@@ -79,7 +80,7 @@ public record Action(
   @Nullable
   @Getter
   String resourceId
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends ActionBuilder {
   }

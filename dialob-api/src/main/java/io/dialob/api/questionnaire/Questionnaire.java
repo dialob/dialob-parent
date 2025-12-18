@@ -18,8 +18,10 @@ package io.dialob.api.questionnaire;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ValueSet;
+import io.dialob.api.rest.HasId;
 import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -32,14 +34,14 @@ import java.io.Serializable;
 import java.util.*;
 
 @Value.Builder
-@Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.VALIDATION_API, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.VALIDATION_API)
 @JsonDeserialize(builder = Questionnaire.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record Questionnaire(
   @JsonProperty("_id")
   @Id
   @Nullable
-  @Getter
   String id,
 
   @JsonProperty("_rev")
@@ -86,7 +88,7 @@ public record Questionnaire(
   @NotNull
   @Getter
   Metadata metadata
-) implements WithValidation<Questionnaire>, Serializable {
+) implements HasId<String>, WithValidation<Questionnaire>, Serializable {
 
   public Questionnaire withId(@Nullable String id) {
     return new Builder().from(this).id(id).build();
@@ -107,7 +109,8 @@ public record Questionnaire(
 
 
   @Value.Builder
-  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+  @ApiType
+  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
   @JsonDeserialize(builder = Questionnaire.Metadata.Builder.class)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   public record Metadata(

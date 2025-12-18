@@ -18,7 +18,9 @@ package io.dialob.api.questionnaire;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import lombok.Getter;
 import org.immutables.value.Value;
 
@@ -29,10 +31,10 @@ import java.util.Date;
 @Value.Builder
 @JsonDeserialize(builder = Answer.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
 @Immutable
 public record Answer(
-  @Getter @NonNull String id,
+  @NonNull String id,
 
   /**
    * Text and number field answers stored in original format
@@ -45,7 +47,7 @@ public record Answer(
   @Nullable Object acceptedValue,
   @Nullable Date updated,
   @Nullable String userId
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends AnswerBuilder { }
 

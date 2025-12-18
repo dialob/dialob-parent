@@ -19,7 +19,9 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.immutables.value.Value;
@@ -28,12 +30,12 @@ import java.io.Serializable;
 import java.util.Map;
 
 @Value.Builder
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
 @JsonDeserialize(builder = FormValueSetEntry.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_NULL)
 public record FormValueSetEntry(
+
   @NotNull
-  @Getter
   String id,
 
   @Getter
@@ -49,7 +51,7 @@ public record FormValueSetEntry(
   @Getter
   Map<String, Object> additionalProperties
 
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends FormValueSetEntryBuilder {
   }

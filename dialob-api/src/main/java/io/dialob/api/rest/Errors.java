@@ -17,6 +17,7 @@ package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -30,7 +31,7 @@ import java.util.Objects;
 @Value.Builder
 @JsonDeserialize(builder = Errors.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
 public record Errors(
   @Schema(description = "error timestamp")
   @Nullable
@@ -77,7 +78,7 @@ public record Errors(
   @Value.Builder
 
   @JsonDeserialize(builder = Errors.Error.Builder.class)
-  @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+  @ApiType
   public record Error(
 
     @Schema(description = "Error classifying code")

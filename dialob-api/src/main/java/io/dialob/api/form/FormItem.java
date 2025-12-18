@@ -18,7 +18,9 @@ package io.dialob.api.form;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.immutables.value.Value;
@@ -31,11 +33,11 @@ import java.util.Map;
 @JsonDeserialize(builder = FormItem.Builder.class)
 @JsonIgnoreProperties({"style", "options"})
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record FormItem(
 
   @NotNull
-  @Getter
   String id,
 
   @NotNull
@@ -114,7 +116,7 @@ public record FormItem(
   @Getter
   Map<String, Object> additionalProperties
 
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends FormItemBuilder {
   }

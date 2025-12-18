@@ -18,7 +18,9 @@ package io.dialob.api.form;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -42,31 +44,26 @@ import java.util.Set;
  * using libraries such as JSON and Gson. It also integrates with MongoDB for repository storage.
  * <p>
  * The Form interface supports validation rules and ensures non-null constraints for key fields.
+ *
+ * @param id The form's unique identifier as a String, or null if the identifier is not set.
+ * @param rev The revision identifier as a String, or null if the revision is not set. The revision identifier
+ *            is used to track changes to the form, ensuring version control and
+ *            consistency during updates or modifications.
+ * @param requiredErrorText  Error text for required fields, unless not defined per item.
+ *
  */
 @Value.Builder
 @JsonDeserialize(builder = Form.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record Form(
-  /**
-   * Retrieves the unique identifier of the form.
-   *
-   * @return the form's unique identifier as a String, or null if the identifier is not set.
-   */
   @JsonProperty("_id")
   @Id
   @Nullable
-  @Getter
   String id,
 
-  /**
-   * Retrieves the revision identifier of the form. The revision identifier
-   * is used to track changes to the form, ensuring version control and
-   * consistency during updates or modifications.
-   *
-   * @return the revision identifier as a String, or null if the revision is not set.
-   */
   @JsonProperty("_rev")
   @Version
   @Nullable
@@ -106,16 +103,12 @@ public record Form(
   @Getter
   List<FormValueSet> valueSets,
 
-  /**
-   *
-   * @return error text for required fields, unless not defined per item
-   */
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
   @Getter
   Map<String, String> requiredErrorText
 
-) implements WithValidation<Form>, FormEntity {
+) implements HasId<String>, WithValidation<Form>, FormEntity {
 
   public Form withRev(String number) {
     return new Form.Builder().from(this).rev(number).build();
@@ -132,7 +125,8 @@ public record Form(
 
 
   @Value.Builder
-  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true, jakarta = true, defaultAsDefault = true)
+  @ApiType
+  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
   @JsonDeserialize(builder = Form.Metadata.Builder.class)
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)

@@ -17,6 +17,8 @@ package io.dialob.api.proto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.dialob.api.annotation.ApiType;
+import io.dialob.api.rest.HasId;
 import lombok.Getter;
 import org.immutables.value.Value;
 
@@ -26,14 +28,13 @@ import java.util.List;
 @Value.Builder
 @JsonDeserialize(builder = ValueSet.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL)
-@Value.Style(deepImmutablesDetection = true, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PUBLIC)
+@ApiType
 public record ValueSet(
-  @Getter
   String id,
 
   @Getter
   List<ValueSetEntry> entries
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends ValueSetBuilder {
   }

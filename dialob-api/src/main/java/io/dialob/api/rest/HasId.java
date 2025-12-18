@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.api.validation;
+package io.dialob.api.rest;
 
-import org.immutables.value.Value;
+public interface HasId<T> {
 
-public interface WithValidation<T extends WithValidation<T>> {
+  T id();
 
-  static <T extends WithValidation> T validate(T instance) {
-    return (T) DialobApiValidatorLocator.getValidator().validate(instance);
+  default T getId() {
+    return id();
   }
 
-  @Value.Check
-  default T validate() {
-    return (T) validate(this);
-  }
 }

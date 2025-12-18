@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.api.validation;
+package io.dialob.api.annotation;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
-public interface WithValidation<T extends WithValidation<T>> {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  static <T extends WithValidation> T validate(T instance) {
-    return (T) DialobApiValidatorLocator.getValidator().validate(instance);
-  }
-
-  @Value.Check
-  default T validate() {
-    return (T) validate(this);
-  }
+@JsonSerialize
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+@Target({ElementType.PACKAGE, ElementType.TYPE})
+@Retention(RetentionPolicy.CLASS)
+public @interface ApiType {
 }

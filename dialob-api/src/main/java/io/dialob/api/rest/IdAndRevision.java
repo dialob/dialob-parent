@@ -17,6 +17,7 @@ package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.dialob.api.annotation.ApiType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.immutables.value.Value;
@@ -24,12 +25,11 @@ import org.immutables.value.Value;
 import java.io.Serializable;
 
 @Value.Builder
+@ApiType
 @JsonDeserialize(builder = IdAndRevision.Builder.class)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public record IdAndRevision(
   @JsonProperty("_id")
   @NotNull
-  @Getter
   String id,
 
   @JsonProperty("_rev")
@@ -37,7 +37,7 @@ public record IdAndRevision(
   @Getter
   String rev
 
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends IdAndRevisionBuilder {
   }

@@ -17,7 +17,9 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.immutables.value.Value;
@@ -27,14 +29,14 @@ import java.io.Serializable;
 @Value.Builder
 @JsonDeserialize(builder = VariableValue.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@ApiType
 public record VariableValue(
   @NotNull
-  @Getter String id,
+  String id,
 
   @JsonInclude(JsonInclude.Include.ALWAYS)
   @Getter @Nullable Object value
-) implements Serializable {
+) implements HasId<String>, Serializable {
 
   public static class Builder extends VariableValueBuilder {
   }
