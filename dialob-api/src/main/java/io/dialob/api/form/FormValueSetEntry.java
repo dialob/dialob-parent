@@ -22,7 +22,6 @@ import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
@@ -47,7 +46,6 @@ public record FormValueSetEntry(
   @JsonInclude
   @JsonAnyGetter
   @AllowNulls
-  @Gson.Ignore
   @Getter
   Map<String, Object> additionalProperties
 

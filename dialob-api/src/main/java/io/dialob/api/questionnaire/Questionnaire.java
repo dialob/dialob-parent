@@ -24,7 +24,6 @@ import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -38,14 +37,12 @@ import java.util.*;
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record Questionnaire(
   @JsonProperty("_id")
-  @Gson.Named("_id")
   @Id
   @Nullable
   @Getter
   String id,
 
   @JsonProperty("_rev")
-  @Gson.Named("_rev")
   @Version
   @Nullable
   @Getter
@@ -187,7 +184,6 @@ public record Questionnaire(
     @JsonInclude
     @JsonAnyGetter
     @AllowNulls
-    @Gson.Ignore
     @Getter
     Map<String, Object> additionalProperties
   ) implements Serializable {

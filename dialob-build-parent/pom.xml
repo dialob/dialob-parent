@@ -334,11 +334,6 @@
       </dependency>
       <dependency>
         <groupId>org.immutables</groupId>
-        <artifactId>gson</artifactId>
-        <version>${immutables.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.immutables</groupId>
         <artifactId>mongo</artifactId>
         <version>${immutables.version}</version>
       </dependency>

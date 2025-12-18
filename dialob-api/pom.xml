@@ -60,10 +60,6 @@
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.immutables</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>jakarta.validation</groupId>

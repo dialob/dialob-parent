@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
@@ -43,7 +42,6 @@ public record FormValueSet(
   @JsonInclude
   @JsonAnyGetter
   @AllowNulls
-  @Gson.Ignore
   @Getter
   Map<String, Object> additionalProperties
 
