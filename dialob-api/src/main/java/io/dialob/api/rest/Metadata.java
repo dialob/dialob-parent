@@ -25,7 +25,7 @@ import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Value.Builder
 @JsonDeserialize(builder = Metadata.Builder.class)
@@ -44,11 +44,11 @@ public record Metadata(
 
   @Nullable
   @Getter
-  Date created,
+  Instant created,
 
   @Nullable
   @Getter
-  Date lastSaved,
+  Instant lastSaved,
 
   @Nullable
   @Getter

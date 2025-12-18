@@ -23,7 +23,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.immutables.value.Value;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 @Value.Builder
@@ -46,7 +46,7 @@ public record FormTag(
 
   @Nullable
   @Getter
-  Date created,
+  Instant created,
 
   @Nullable
   @Getter

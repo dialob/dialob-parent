@@ -32,11 +32,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Period;
-import java.util.*;
+import java.time.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -176,13 +176,13 @@ class UtilsTest {
     Utils.writeObjectValue(outputStream, null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
-    var d = new Date();
+    var d = Instant.now();
 
     buffer = new ByteArrayOutputStream();
     outputStream = CodedOutputStream.newInstance(buffer);
     Utils.writeNullableDate(outputStream, d);
     Utils.writeNullableDate(outputStream, null);
-    assertEquals(8, outputStream.getTotalBytesWritten());
+    assertEquals(10, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
     var inputStream = CodedInputStream.newInstance(buffer.toByteArray());

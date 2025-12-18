@@ -31,7 +31,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;
-import java.util.*;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 @Value.Builder
 @ApiType
@@ -137,19 +141,19 @@ public record Questionnaire(
 
     @Nullable
     @Getter
-    Date created,
+    Instant created,
 
     @Nullable
     @Getter
-    Date lastAnswer,
+    Instant lastAnswer,
 
     @Nullable
     @Getter
-    Date opened,
+    Instant opened,
 
     @Nullable
     @Getter
-    Date completed,
+    Instant completed,
 
     @Nullable
     @Getter

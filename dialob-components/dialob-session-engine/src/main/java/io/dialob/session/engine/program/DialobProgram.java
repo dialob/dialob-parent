@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -138,9 +139,9 @@ public class DialobProgram implements Serializable {
                                      final String activePage,
                                      @NonNull CreateDialobSessionProgramVisitor.InitialValueResolver initialValueResolver,
                                      CreateDialobSessionProgramVisitor.ProvidedValueSetEntriesResolver findProvidedValueSetEntries,
-                                     Date completed,
-                                     Date opened,
-                                     Date lastAnswer) {
+                                     Instant completed,
+                                     Instant opened,
+                                     Instant lastAnswer) {
     final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, completed, opened, lastAnswer);
     program.accept(createDialobSessionProgramVisitor);
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();

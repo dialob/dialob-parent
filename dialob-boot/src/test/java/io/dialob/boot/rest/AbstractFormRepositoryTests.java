@@ -17,6 +17,7 @@ package io.dialob.boot.rest;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
@@ -50,7 +51,11 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -74,7 +79,8 @@ abstract class AbstractFormRepositoryTests {
 
   String tenantId = "00000000-0000-0000-0000-000000000000";
 
-  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+    .registerModule(new JavaTimeModule());
 
   MultiValueMap<String, String> tenantParam = new LinkedMultiValueMap<>();
 
@@ -174,7 +180,7 @@ abstract class AbstractFormRepositoryTests {
       .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formRev(formRev)
-        .created(new Date())
+        .created(Instant.now())
         .status(Questionnaire.Metadata.Status.OPEN)
         .build())
       .id(questionnaireId)

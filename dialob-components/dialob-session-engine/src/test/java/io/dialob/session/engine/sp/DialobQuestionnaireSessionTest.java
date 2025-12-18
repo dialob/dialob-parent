@@ -30,7 +30,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -302,8 +306,8 @@ class DialobQuestionnaireSessionTest {
     ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, Arrays.asList(1,2,3), Arrays.asList(1,2,3), null, null);
     ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, Arrays.asList(1,2,3), Arrays.asList(1,2,3), null, null);
 
-    Date opened = new Date(1L);
-    Date lastAnswer = new Date(2L);
+    var opened = Instant.ofEpochMilli(1L);
+    var lastAnswer = Instant.ofEpochMilli(2L);
 
     DialobSession dialobSession = new DialobSession(
       "tenant",

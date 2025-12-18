@@ -26,6 +26,7 @@ import io.dialob.session.engine.session.model.*;
 import lombok.Getter;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -39,11 +40,11 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
   private final String language;
 
-  private final Date completed;
+  private final Instant completed;
 
-  private final Date opened;
+  private final Instant opened;
 
-  private final Date lastAnswer;
+  private final Instant lastAnswer;
 
   @Getter
   private DialobSession dialobSession;
@@ -91,9 +92,9 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     InitialValueResolver initialValueResolver,
     ProvidedValueSetEntriesResolver findProvidedValueSetEntries,
     Map<ItemId, List<Command<?>>> itemCommands,
-    Date completed,
-    Date opened,
-    Date lastAnswer) {
+    Instant completed,
+    Instant opened,
+    Instant lastAnswer) {
     this.tenantId = tenantId;
     this.sessionId = sessionId;
     this.language = language;

@@ -45,9 +45,9 @@ public class TestBase {
   String accesstoken(Instant now, KeyPair kp) throws JOSEException {
     JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
       .subject("00000000-0000-0000-0000-000000000000")
-      .issueTime(new Date(now.toEpochMilli()))
+      .issueTime(Date.from(now))
       .issuer("https://example.com/authority")
-      .expirationTime(new Date(now.plus(5, ChronoUnit.MINUTES).toEpochMilli()))
+      .expirationTime(Date.from(now.plus(5, ChronoUnit.MINUTES)))
       .jwtID("00000000-0000-0000-0000-000000000001")
       .claim("cognito:groups", List.of("admin"))
       .claim("token_use", "access")
@@ -55,7 +55,7 @@ public class TestBase {
       .claim("version", 2)
       .claim("client_id", "clientii")
       .claim("username", "00000000-0000-0000-0000-000000000000")
-      .claim("auth_time", new Date(now.minus(5, ChronoUnit.MINUTES).toEpochMilli()))
+      .claim("auth_time", Date.from(now.minus(5, ChronoUnit.MINUTES)))
       .build();
 
     com.nimbusds.jose.jwk.RSAKey key = new com.nimbusds.jose.jwk.RSAKey.Builder((RSAPublicKey) kp.getPublic())
@@ -79,11 +79,11 @@ public class TestBase {
     .claim("given_name", "Hemmo")
     .claim("family_name", "Hbo")
     .claim("email", "hemmo.hbo@example.com")
-    .claim("exp", new Date(now.plus(5, ChronoUnit.MINUTES).toEpochMilli()))
+    .claim("exp", Date.from(now.plus(5, ChronoUnit.MINUTES)))
     .claim("username", "00000000-0000-0000-0000-000000000002")
     .subject("00000000-0000-0000-0000-000000000002")
     .issuer("https://example.com/authority")
-    .expirationTime(new Date(now.plus(5, ChronoUnit.MINUTES).toEpochMilli()))
+    .expirationTime(Date.from(now.plus(5, ChronoUnit.MINUTES)))
     .build();
 
     JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)

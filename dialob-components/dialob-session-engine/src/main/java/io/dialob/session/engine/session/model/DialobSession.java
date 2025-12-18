@@ -66,11 +66,11 @@ public class DialobSession implements ItemStates, Serializable {
   private String revision;
 
   @NonNull
-  private Date lastUpdate = new Date();
+  private Instant lastUpdate = Instant.now();
 
-  private Date completed;
+  private Instant completed;
 
-  private Date opened;
+  private Instant opened;
 
   @Getter
   @Setter
@@ -98,7 +98,7 @@ public class DialobSession implements ItemStates, Serializable {
     writeNullableString(output, id);
     output.writeStringNoTag(revision);
     output.writeStringNoTag(language);
-    output.writeInt64NoTag(lastUpdate.getTime());
+    writeNullableDate(output, lastUpdate);
     writeNullableDate(output, completed);
     writeNullableDate(output, opened);
     output.writeInt32NoTag(asyncUpdateCount);
@@ -136,7 +136,7 @@ public class DialobSession implements ItemStates, Serializable {
     DialobSession session = new DialobSession(tenantId, id);
     session.revision = input.readString();
     session.language = input.readString();
-    session.lastUpdate = new Date(input.readInt64());
+    session.lastUpdate = readNullableDate(input);
     session.completed = readNullableDate(input);
     session.opened = readNullableDate(input);
     session.asyncUpdateCount = input.readInt32();
@@ -186,18 +186,18 @@ public class DialobSession implements ItemStates, Serializable {
     List<ValueSetState> valueSets,
     List<ErrorState> errors,
     List<ErrorState> errorPrototypes,
-    Date completed,
-    Date opened,
-    Date lastAnswer)
+    Instant completed,
+    Instant opened,
+    Instant lastAnswer)
   {
     this(tenantId, id);
     this.revision = revision;
     this.language = language;
     if (completed != null) {
-      this.completed = new Date(completed.getTime());
+      this.completed = completed;
     }
     if (opened != null) {
-      this.opened = new Date(opened.getTime());
+      this.opened = opened;
     }
     if (items != null) {
       items.forEach(item -> itemStates.put(item.getId(), item));
@@ -217,7 +217,7 @@ public class DialobSession implements ItemStates, Serializable {
     updated();
     if (lastAnswer != null) {
       // updated() updates lastUpdate. To retain persistent value
-      this.lastUpdate = new Date(lastAnswer.getTime());
+      this.lastUpdate = lastAnswer;
     }
   }
 
@@ -225,9 +225,9 @@ public class DialobSession implements ItemStates, Serializable {
     this.id = id;
     this.tenantId = dialobSession.tenantId;
     this.revision = dialobSession.revision;
-    this.lastUpdate = new Date(dialobSession.lastUpdate.getTime());
-    this.opened = dialobSession.opened != null ? new Date(dialobSession.opened.getTime()) : null;
-    this.completed = dialobSession.completed != null ? new Date(dialobSession.completed.getTime()) : null;
+    this.lastUpdate = dialobSession.lastUpdate;
+    this.opened = dialobSession.opened;
+    this.completed = dialobSession.completed;
     this.language = dialobSession.language;
     this.itemStates = new HashMap<>(dialobSession.itemStates);
     this.itemPrototypes = new HashMap<>(dialobSession.itemPrototypes);
@@ -416,7 +416,7 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   protected void updated() {
-    lastUpdate = new Date();
+    lastUpdate = Instant.now();
     if (opened == null) {
       opened = lastUpdate;
     }
@@ -430,29 +430,23 @@ public class DialobSession implements ItemStates, Serializable {
 
   @NonNull
   public Instant getLastUpdate() {
-    return lastUpdate.toInstant();
+    return lastUpdate;
   }
 
   @Nullable
   public Instant getCompleted() {
-    if (completed == null) {
-      return null;
-    }
-    return completed.toInstant();
+    return completed;
   }
 
   @Nullable
   public Instant getOpened() {
-    if (opened == null) {
-      return null;
-    }
-    return opened.toInstant();
+    return opened;
   }
 
 
   @Nullable
   public Instant getLastAnswer() {
-    return lastUpdate.toInstant();
+    return lastUpdate;
   }
 
   public boolean isCompleted() {
@@ -461,7 +455,7 @@ public class DialobSession implements ItemStates, Serializable {
 
   public boolean complete() {
     if (this.completed == null) {
-      this.completed = new Date();
+      this.completed = Instant.now();
     }
     return isCompleted();
   }

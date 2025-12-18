@@ -399,9 +399,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     }
     return new Questionnaire.Metadata.Builder()
       .from(metadata)
-      .lastAnswer(Date.from(dialobSession.getLastUpdate()))
-      .completed(dialobSession.getCompleted() != null ? Date.from(dialobSession.getCompleted()) : null)
-      .opened(dialobSession.getOpened() != null ? Date.from(dialobSession.getOpened()) : null)
+      .lastAnswer(dialobSession.getLastUpdate())
+      .completed(dialobSession.getCompleted())
+      .opened(dialobSession.getOpened())
       .status(status)
       .language(dialobSession.getLanguage())
       .tenantId(dialobSession.getTenantId())

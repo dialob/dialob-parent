@@ -32,7 +32,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -81,7 +84,7 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
     .formName(rs.getString(1))
     .name(rs.getString(2))
     .description(rs.getString(3))
-    .created(rs.getTimestamp(4))
+    .created(rs.getTimestamp(4).toInstant())
     .formId(Utils.toString(getDatabaseHelper().fromJdbcId(rs.getBytes(5))))
     .type(FormTag.Type.valueOf(rs.getString(6).trim()))
     .refName(rs.getString(7))
@@ -497,8 +500,8 @@ public class JdbcVersionControlledFormDatabase implements FormDatabase, FormVers
 
           Form.Metadata.Builder metadataBuilder = new Form.Metadata.Builder()
             .tenantId(tId)
-            .created(new Date(created.getTime()))
-            .lastSaved(new Date(updated.getTime()))
+            .created(created.toInstant())
+            .lastSaved(updated.toInstant())
             .label(label);
 
           if (labels != null) {

@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.Date;
 
 class QuestionnaireDocumentTest {
 
@@ -47,15 +46,15 @@ class QuestionnaireDocumentTest {
         String data = "{\"_id\":\"609a38a672cf509eeca2b110c1022d35\",\"_rev\":\"1-a2ef6c9c6ab5d9c19603be0698b836b1\",\"answers\":[], \"metadata\": {\"formId\":\"609a38a672cf509eeca2b110c1021f3b\",\"formRev\":\"11-9ea0feacfd5911b129348e4d584679c9\",\"created\":1444838304680}}\n";
         Questionnaire questionnaire = objectMapper.readValue(data, Questionnaire.class);
         Assertions.assertNotNull(questionnaire);
-        Assertions.assertEquals(Date.from(Instant.parse("2015-10-14T15:58:24.680Z")), questionnaire.getMetadata().getCreated());
+        Assertions.assertEquals(Instant.parse("2015-10-14T15:58:24.680Z"), questionnaire.getMetadata().getCreated());
     }
 
     @Test
   void timestamps() throws Exception {
-      Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(Date.from(Instant.parse("2015-10-14T15:58:24.680Z"))).build()).build();
+      Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").status(Questionnaire.Metadata.Status.OPEN).created(Instant.parse("2015-10-14T15:58:24.680Z")).build()).build();
 
       String data = objectMapper.writeValueAsString(questionnaire);
-      Assertions.assertEquals("{\"metadata\":{\"formId\":\"123\",\"status\":\"OPEN\",\"created\":\"2015-10-14T15:58:24.680+00:00\"}}", data);
+      Assertions.assertEquals("{\"metadata\":{\"formId\":\"123\",\"status\":\"OPEN\",\"created\":\"2015-10-14T15:58:24.680Z\"}}", data);
 
     }
 

@@ -26,7 +26,7 @@ import org.immutables.value.Value;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Value.Builder
 @JsonDeserialize(builder = Answer.Builder.class)
@@ -45,7 +45,7 @@ public record Answer(
   @Getter @Nullable Object value,
   @Getter @Nullable String type,
   @Nullable Object acceptedValue,
-  @Nullable Date updated,
+  @Nullable Instant updated,
   @Nullable String userId
 ) implements HasId<String>, Serializable {
 

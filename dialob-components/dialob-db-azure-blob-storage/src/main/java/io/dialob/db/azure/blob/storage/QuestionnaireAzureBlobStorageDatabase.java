@@ -21,7 +21,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -47,7 +46,7 @@ public class QuestionnaireAzureBlobStorageDatabase extends AbstractAzureBlobStor
       consumer.accept(MetadataRow.of(
         id,
         new Questionnaire.Metadata.Builder()
-          .lastAnswer(Date.from(object.getProperties().getLastModified().toInstant()))
+          .lastAnswer(object.getProperties().getLastModified().toInstant())
           .build()
       ));
     });

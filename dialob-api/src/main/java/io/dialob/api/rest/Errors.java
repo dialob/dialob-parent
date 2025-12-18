@@ -24,7 +24,7 @@ import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ public record Errors(
   @Schema(description = "error timestamp")
   @Nullable
   @Getter
-  Date timestamp, // new Date()
+  Instant timestamp,
 
   @Schema(description = "HTTP status code", example = "403")
   @Nullable
@@ -68,7 +68,7 @@ public record Errors(
 ) implements Serializable {
 
   public Errors {
-    timestamp = Objects.requireNonNullElseGet(timestamp, Date::new);
+    timestamp = Objects.requireNonNullElseGet(timestamp, Instant::now);
   }
 
   public static class Builder extends ErrorsBuilder {

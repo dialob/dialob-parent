@@ -52,7 +52,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -265,7 +264,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   private Form updateMetadata(Form form) {
-    Date now = Date.from(Instant.now());
+    var now = Instant.now();
     final Form.Metadata.Builder builder = new Form.Metadata.Builder().from(form.getMetadata());
     builder.lastSaved(now);
     builder.tenantId(currentTenant.getId());

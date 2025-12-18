@@ -17,6 +17,7 @@ package io.dialob.questionnaire.service.api.utils;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +39,7 @@ class ConversionUtilTest {
     assertTrue(json.getClass().isArray());
     assertEquals(List.of("a"), ConversionUtil.toJSON(List.of("a")));
     assertEquals("1970-01-01", ConversionUtil.toJSON(new Date(321L)));
+    assertEquals("1970-01-01", ConversionUtil.toJSON(Instant.ofEpochMilli(321L)));
     assertEquals("TestType", ConversionUtil.toJSON(new TestType()));
   }
 

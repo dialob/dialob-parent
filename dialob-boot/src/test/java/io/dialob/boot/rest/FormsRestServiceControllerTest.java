@@ -58,7 +58,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -184,7 +183,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     Form formDocument = new Form.Builder()
       .id("form-id")
       .rev("2")
-      .metadata(new Form.Metadata.Builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
+      .metadata(new Form.Metadata.Builder().created(Instant.parse("2015-11-05T12:00:00.000Z")).label("test").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "form-id", null)).thenReturn(formDocument);
@@ -193,7 +192,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$._id").value("form-id"))
       .andExpect(jsonPath("$._rev").value("2"))
-      .andExpect(jsonPath("$.metadata.created").value("2015-11-05T12:00:00.000+00:00"));
+      .andExpect(jsonPath("$.metadata.created").value("2015-11-05T12:00:00Z"));
 
     verify(formDatabase, times(1)).findOne(tenantId, "form-id", null);
   }
@@ -232,7 +231,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .id("new-form")
       .rev("old")
       .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
-      .metadata(new Form.Metadata.Builder().created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).label("test").build())
+      .metadata(new Form.Metadata.Builder().created(Instant.parse("2015-11-05T12:00:00Z")).label("test").build())
       .build();
 
     // We need to return cfrs token on update action
@@ -290,11 +289,11 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   void shouldRejectUpdateByNameWhenNotForced() throws Exception {
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
-      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(new Date()).build()));
+      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(Instant.now()).build()));
     Form formDocument = new Form.Builder()
       .name("form-name")
       .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
-      .metadata(new Form.Metadata.Builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).build())
+      .metadata(new Form.Metadata.Builder().label("labeli").created(Instant.parse("2015-11-05T12:00:00Z")).build())
       .build();
 
     // We need to return cfrs token on update action
@@ -316,13 +315,13 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     Form formDocument = new Form.Builder()
       .name("form-name")
       .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
-      .metadata(new Form.Metadata.Builder().label("labeli").created(Date.from(Instant.parse("2015-11-05T12:00:00Z"))).tenantId("3tt").build())
+      .metadata(new Form.Metadata.Builder().label("labeli").created(Instant.parse("2015-11-05T12:00:00Z")).tenantId("3tt").build())
       .build();
 
     when(formDatabase.findOne(tenantId, "123-123")).thenReturn(new Form.Builder().from(formDocument).id("123-123").rev("321").build());
 
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
-      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(new Date()).build()));
+      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(Instant.now()).build()));
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
       Form arg = (Form) invocation.getArguments()[1];
       return arg.withRev("124");

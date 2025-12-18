@@ -30,7 +30,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,10 +136,10 @@ public record Form(
     String label,
 
     @Getter
-    @Nullable Date created,
+    @Nullable Instant created,
 
     @Getter
-    @Nullable Date lastSaved,
+    @Nullable Instant lastSaved,
 
     @Getter
     @Nullable Boolean valid,
