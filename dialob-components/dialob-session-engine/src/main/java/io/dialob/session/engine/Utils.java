@@ -207,14 +207,16 @@ public final class Utils {
       output.writeBoolNoTag(false);
     } else {
       output.writeBoolNoTag(true);
-      output.writeInt64NoTag(date.getEpochSecond() * 1_000_000 + date.getNano() / 1_000);
+      output.writeInt64NoTag(date.getEpochSecond());
+      output.writeInt32NoTag(date.getNano());
     }
   }
 
   public static Instant readNullableDate(@NonNull CodedInputStream input) throws IOException {
     if (input.readBool()) {
       long epoch = input.readInt64();
-      return Instant.ofEpochSecond(epoch / 1_000_000, (epoch % 1_000_000) * 1_000);
+      long nano = input.readInt32();
+      return Instant.ofEpochSecond(epoch, nano);
     }
     return null;
   }

@@ -176,13 +176,13 @@ class UtilsTest {
     Utils.writeObjectValue(outputStream, null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
-    var d = Instant.now();
+    var d = Instant.ofEpochMilli(12345672889123L);
 
     buffer = new ByteArrayOutputStream();
     outputStream = CodedOutputStream.newInstance(buffer);
     Utils.writeNullableDate(outputStream, d);
     Utils.writeNullableDate(outputStream, null);
-    assertEquals(10, outputStream.getTotalBytesWritten());
+    assertEquals(11, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
     var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
