@@ -19,9 +19,9 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Value;
 import io.dialob.session.engine.program.model.ValueSet;
-import io.dialob.session.engine.session.command.event.ImmutableProtoTypeItemsAddedEventsProvider;
-import io.dialob.session.engine.session.command.event.ImmutableRowItemsAddedEventsProvider;
-import io.dialob.session.engine.session.command.event.ImmutableRowItemsRemovedEventsProvider;
+import io.dialob.session.engine.session.command.event.ProtoTypeItemsAddedEventsProvider;
+import io.dialob.session.engine.session.command.event.RowItemsAddedEventsProvider;
+import io.dialob.session.engine.session.command.event.RowItemsRemovedEventsProvider;
 import io.dialob.session.engine.session.command.event.ValueSetUpdatedEvent;
 import io.dialob.session.engine.session.model.*;
 
@@ -332,9 +332,9 @@ public final class CommandFactory {
   public static SessionUpdateCommand createRowGroupFromPrototypeCommand(ItemId rowProtoTypeId) {
     return ImmutableCreateRowGroupFromPrototypeCommand.of(rowProtoTypeId,
       List.of(
-        trigger(ImmutableRowItemsAddedEventsProvider.of(rowProtoTypeId))
+        trigger(new RowItemsAddedEventsProvider(rowProtoTypeId))
           .when(ItemStatesPredicates.ITEM_STATES_CHANGED),
-        trigger(ImmutableRowItemsRemovedEventsProvider.of(rowProtoTypeId))
+        trigger(new RowItemsRemovedEventsProvider(rowProtoTypeId))
           .when(ItemStatesPredicates.ITEM_STATES_CHANGED)
       )
     );
@@ -342,7 +342,7 @@ public final class CommandFactory {
 
   public static SessionUpdateCommand createRowGroupItemsFromPrototypeCommand(ItemId rowProtoTypeId, List<ItemId> itemPrototypeIds) {
     return ImmutableCreateRowGroupItemsFromPrototypeCommand.of(rowProtoTypeId, rowProtoTypeId, List.of(
-      trigger(ImmutableProtoTypeItemsAddedEventsProvider.of(itemPrototypeIds)).when(ItemStatesPredicates.ITEM_STATES_CHANGED)
+      trigger(new ProtoTypeItemsAddedEventsProvider(itemPrototypeIds)).when(ItemStatesPredicates.ITEM_STATES_CHANGED)
     ));
   }
 }

@@ -19,23 +19,20 @@ import io.dialob.session.engine.session.command.Triggers;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemStates;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@Value.Immutable
-public interface ProtoTypeItemsAddedEventsProvider extends Triggers.EventsProvider<ItemStates> {
-
-  @Value.Parameter
-  List<ItemId> getItemPrototypeIds();
+public record ProtoTypeItemsAddedEventsProvider(
+  List<ItemId> itemPrototypeIds
+) implements Triggers.EventsProvider<ItemStates> {
 
   @Override
-  default Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState) {
+  public Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState) {
     if (originalState == null && updatedState == null) {
-      return getItemPrototypeIds().stream().map(itemId -> new ItemAddedEvent(itemId, itemId));
+      return this.itemPrototypeIds().stream().map(itemId -> new ItemAddedEvent(itemId, itemId));
     }
     if (updatedState == null) {
       return Stream.empty();
@@ -48,7 +45,7 @@ public interface ProtoTypeItemsAddedEventsProvider extends Triggers.EventsProvid
 
     return newItems.stream()
       .flatMap(itemId ->
-        getItemPrototypeIds().stream()
+        this.itemPrototypeIds().stream()
           .filter(itemPrototypeId -> IdUtils.matches(itemPrototypeId, itemId))
           .findFirst()
           .map(foundPrototypeId -> new ItemAddedEvent(itemId, foundPrototypeId))

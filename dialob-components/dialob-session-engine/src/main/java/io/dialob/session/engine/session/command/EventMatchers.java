@@ -24,11 +24,11 @@ import io.dialob.session.engine.session.model.ValueSetId;
 
 public final class EventMatchers {
 
-  private static final EventMatchers.ActivePageEventMatcher ACTIVE_PAGE_EVENT_MATCHER = EventMatchers.ActivePageEventMatcher.instance();
+  private static final EventMatchers.QuestionnaireEventMatcher ACTIVE_PAGE_EVENT_MATCHER = EventMatchers.ActivePageEventMatcher.instance();
 
-  private static final EventMatchers.AvailableItemsEventMatcher AVAILABLE_ITEMS_EVENT_MATCHER = EventMatchers.AvailableItemsEventMatcher.instance();
+  private static final EventMatchers.QuestionnaireEventMatcher AVAILABLE_ITEMS_EVENT_MATCHER = EventMatchers.AvailableItemsEventMatcher.instance();
 
-  private static final EventMatchers.AnyErrorEventMatcher ANY_ERROR_EVENT_MATCHER = EventMatchers.AnyErrorEventMatcher.instance();
+  private static final EventMatchers.ErrorEventMatcher ANY_ERROR_EVENT_MATCHER = EventMatchers.AnyErrorEventMatcher.instance();
 
   private EventMatchers() {
   }
@@ -339,7 +339,7 @@ public final class EventMatchers {
     @Override
     public boolean matches(Event event) {
       if (event instanceof ErrorEvent errorEvent) {
-        return targetId().equals(errorEvent.getErrorId().itemId());
+        return targetId().equals(errorEvent.errorId().itemId());
       }
       return false;
     }
@@ -352,7 +352,7 @@ public final class EventMatchers {
     @Override
     public boolean matches(Event event) {
       if (event instanceof ErrorEvent targetEvent) {
-        return errorId().equals(targetEvent.getErrorId());
+        return errorId().equals(targetEvent.errorId());
       }
       return false;
     }
@@ -364,8 +364,7 @@ public final class EventMatchers {
 
     @Override
     public boolean matches(Event event) {
-      if (event instanceof ErrorEvent) {
-        ErrorActiveUpdatedEvent targetEvent = (ErrorActiveUpdatedEvent) event;
+      if (event instanceof ErrorActiveUpdatedEvent targetEvent) {
         return errorEventMatcher().matches(targetEvent);
       }
       return false;

@@ -18,9 +18,6 @@ package io.dialob.session.engine.session.command.event;
 import io.dialob.session.engine.session.model.ErrorId;
 
 public interface ErrorEvent extends Event {
-  default ErrorId getErrorId() {
-    return errorId();
-  }
 
   ErrorId errorId();
 

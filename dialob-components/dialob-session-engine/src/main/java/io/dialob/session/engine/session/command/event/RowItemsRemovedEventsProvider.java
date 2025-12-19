@@ -18,21 +18,19 @@ package io.dialob.session.engine.session.command.event;
 import io.dialob.session.engine.session.command.Triggers;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemStates;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@Value.Immutable
-public interface RowItemsRemovedEventsProvider extends Triggers.EventsProvider<ItemStates> {
+public record RowItemsRemovedEventsProvider(
+  ItemId itemPrototypeId
+) implements Triggers.EventsProvider<ItemStates> {
 
-  @Value.Parameter
-  ItemId getRowProtoTypeId();
-
-  default Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState){
+  @Override
+  public Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState){
     if (originalState == null && updatedState == null) {
-      return Stream.of(new ItemRemovedEvent(getRowProtoTypeId()));
+      return Stream.of(new ItemRemovedEvent(this.itemPrototypeId()));
     }
     if (originalState == null) {
       return Stream.empty();
