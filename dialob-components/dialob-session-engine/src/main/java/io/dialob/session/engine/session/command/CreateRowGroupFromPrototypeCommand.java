@@ -18,7 +18,6 @@ package io.dialob.session.engine.session.command;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ImmutableItemStates;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
@@ -44,7 +43,7 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
 
       final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
       final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
-      return context.findPrototype(getItemPrototypeId()).map(prototypeState -> (ItemStates) ImmutableItemStates.builder()
+      return context.findPrototype(getItemPrototypeId()).map(prototypeState -> (ItemStates) new ItemStates.Builder()
         .from(itemStates)
         .itemStates(itemStates.getItemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
         .putAllItemStates(newItems.stream().map(prototypeState::withId).collect(toMap(ItemState::getId, item -> item)))

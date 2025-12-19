@@ -84,7 +84,7 @@ class DialobSessionTest {
       @NonNull
       @Override
       public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
-        return ImmutableItemStates.builder().from(target).putItemStates(ITEM_STATE.getId(), ITEM_STATE).build();
+        return new ItemStates.Builder().from(target).putItemStates(ITEM_STATE.getId(), ITEM_STATE).build();
       }
     };
     session.applyUpdate(context, command);
@@ -111,7 +111,7 @@ class DialobSessionTest {
       @NonNull
       @Override
       public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
-        return ImmutableItemStates.builder().build();
+        return new ItemStates.Builder().build();
       }
     };
     session.applyUpdate(context, command);
@@ -138,7 +138,7 @@ class DialobSessionTest {
       @NonNull
       @Override
       public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
-        return ImmutableItemStates.builder().putItemStates(ITEM_STATE.getId(), new ItemState(
+        return new ItemStates.Builder().putItemStates(ITEM_STATE.getId(), new ItemState(
           ITEM_STATE.getId(),
           null, "text", null,
           true, null, "hello", null,

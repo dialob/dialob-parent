@@ -134,11 +134,11 @@ class CommandFactoryTest {
     ItemState itemRow = new ItemState(IdUtils.toId("g1.0"), null, "group", null, true, null, null, null, null, null);
     ItemState itemState2 = itemState1.update().setItems(List.of(IdUtils.toId("g1.0"))).get();
 
-    ItemStates itemStates1 = ImmutableItemStates.builder()
+    ItemStates itemStates1 = new ItemStates.Builder()
       .putItemStates(itemState1.getId(), itemState1)
       .build();
 
-    ItemStates itemStates2 = ImmutableItemStates.builder()
+    ItemStates itemStates2 = new ItemStates.Builder()
       .putItemStates(itemRow.getId(), itemRow)
       .putItemStates(itemState2.getId(), itemState2)
       .build();

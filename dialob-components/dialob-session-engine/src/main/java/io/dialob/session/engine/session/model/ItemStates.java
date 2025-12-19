@@ -21,7 +21,10 @@ import org.immutables.value.Value;
 import java.util.Map;
 
 @Value.Immutable
+@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public interface ItemStates {
+
+  class Builder extends ImmutableItemStates.Builder {}
 
   @NonNull
   Map<ItemId,ItemState> getItemStates();

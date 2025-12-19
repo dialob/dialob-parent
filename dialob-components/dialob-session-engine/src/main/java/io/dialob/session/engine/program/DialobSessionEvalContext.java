@@ -79,7 +79,7 @@ public class DialobSessionEvalContext implements EvalContext {
     this.dialobSession = dialobSession;
     this.updatesConsumer = updatesConsumer;
     this.activating = activating;
-    this.originalStates = ImmutableItemStates.builder().from(dialobSession).build();
+    this.originalStates = new ItemStates.Builder().from(dialobSession).build();
     this.pendingUpdates = new HashMap<>();
     this.updatedItemIds = new HashSet<>();
     this.updatedErrorIds = new HashSet<>();
