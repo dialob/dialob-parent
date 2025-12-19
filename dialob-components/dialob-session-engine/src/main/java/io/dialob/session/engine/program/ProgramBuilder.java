@@ -37,7 +37,6 @@ import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.immutables.value.Value;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -210,9 +209,9 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
             errors.add(new FormValidationError.Builder()
               .itemId(IdUtils.toString(compilableExpression.itemId()))
               .type(compilableExpression.type())
-              .startIndex(error.getSpan().startIndex())
-              .endIndex(error.getSpan().stopIndex())
-              .message(error.getErrorCode())
+              .startIndex(error.span().startIndex())
+              .endIndex(error.span().stopIndex())
+              .message(error.errorCode())
               .index(compilableExpression.index())
               .build());
           }

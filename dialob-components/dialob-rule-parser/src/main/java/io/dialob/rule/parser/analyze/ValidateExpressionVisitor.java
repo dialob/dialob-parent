@@ -17,7 +17,6 @@ package io.dialob.rule.parser.analyze;
 
 import io.dialob.rule.parser.AstMatcher;
 import io.dialob.rule.parser.api.CompilerErrorCode;
-import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.node.NodeOperator;
@@ -33,7 +32,7 @@ public class ValidateExpressionVisitor extends AstMatcher {
 
   public ValidateExpressionVisitor() {
     whenMatches(parent(isNull()).and(idNode().or(constNode().and(valueType(not(is(ValueType.BOOLEAN)))))), node -> {
-      errors.add(ImmutableRuleExpressionCompilerError.builder().errorCode(CompilerErrorCode.INCOMPLETE_EXPRESSION).span(node.getSpan()).build());
+      errors.add(RuleExpressionCompilerError.of(CompilerErrorCode.INCOMPLETE_EXPRESSION, node.getSpan()));
       return node;
     });
 
@@ -42,7 +41,7 @@ public class ValidateExpressionVisitor extends AstMatcher {
         .and(callNode(operCategory(not(is(NodeOperator.Category.LOGICAL)))))
         .and(callNode(operCategory(not(is(NodeOperator.Category.FUNCTION)))).or(valueType(not(is(ValueType.BOOLEAN))))),
       node -> {
-        errors.add(ImmutableRuleExpressionCompilerError.builder().errorCode(CompilerErrorCode.INCOMPLETE_EXPRESSION).span(node.getSpan()).build());
+        errors.add(RuleExpressionCompilerError.of(CompilerErrorCode.INCOMPLETE_EXPRESSION, node.getSpan()));
         return node;
       });
   }

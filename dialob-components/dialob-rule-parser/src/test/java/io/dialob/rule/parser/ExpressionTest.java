@@ -83,7 +83,7 @@ class ExpressionTest {
     expression = Expression.createExpression(variableFinder, new HashMap<>(), "a a");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("SYNTAX_ERROR");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsOnly(2);
@@ -99,7 +99,7 @@ class ExpressionTest {
     expression = Expression.createExpression(variableFinder, new HashMap<>(), "1+true");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("CANNOT_ADD_TYPES");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsOnly(0);
@@ -116,7 +116,7 @@ class ExpressionTest {
     expression = Expression.createExpression(variableFinder, new HashMap<>(), "date + 1");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("CANNOT_ADD_TYPES");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsOnly(0);
@@ -131,7 +131,7 @@ class ExpressionTest {
     expression = Expression.createExpression(variableFinder, new HashMap<>(), "1 day > 1");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("NO_ORDER_RELATION_BETWEEN_TYPES");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsOnly(0);
@@ -146,7 +146,7 @@ class ExpressionTest {
     expression = Expression.createExpression(variableFinder, new HashMap<>(), "1 day = 1");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("NO_EQUALITY_RELATION_BETWEEN_TYPES");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsOnly(0);
@@ -161,7 +161,7 @@ class ExpressionTest {
     expression = Expression.createExpression(variableFinder, new HashMap<>(), "a = 'x ");
     assertEquals(2, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("SYNTAX_ERROR");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsExactly(4, 7);
@@ -178,7 +178,7 @@ class ExpressionTest {
     Expression expression = Expression.createExpression(variableFinder, new HashMap<>(), "a is blank");
     assertEquals(1, expression.getErrors().size());
     assertThat(expression.getErrors())
-      .extracting(RuleExpressionCompilerError::getErrorCode)
+      .extracting(RuleExpressionCompilerError::errorCode)
       .containsOnly("STRING_VALUE_EXPECTED");
     assertThat(expression.getErrors())
       .extracting("span.startIndex").containsExactly(0);

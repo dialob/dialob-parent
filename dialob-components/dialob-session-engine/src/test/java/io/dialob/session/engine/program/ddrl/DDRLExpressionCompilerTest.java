@@ -433,18 +433,18 @@ class DDRLExpressionCompilerTest {
     reset(errorConsumer);
 
     assertFalse(ddrlExpressionCompiler.compile(variableFinder, "a in a", errorConsumer).isPresent());
-    verify(errorConsumer).accept(argThat(argument -> argument.getErrorCode().equals("ARRAY_TYPE_UNEXPECTED")));
+    verify(errorConsumer).accept(argThat(argument -> argument.errorCode().equals("ARRAY_TYPE_UNEXPECTED")));
     verifyNoMoreInteractions(errorConsumer);
     reset(errorConsumer);
 
     assertFalse(ddrlExpressionCompiler.compile(variableFinder, "a in s", errorConsumer).isPresent());
-    verify(errorConsumer).accept(argThat(argument -> argument.getErrorCode().equals("ARRAY_TYPE_EXPECTED")));
-    verify(errorConsumer).accept(argThat(argument -> argument.getErrorCode().equals("ARRAY_TYPE_UNEXPECTED")));
+    verify(errorConsumer).accept(argThat(argument -> argument.errorCode().equals("ARRAY_TYPE_EXPECTED")));
+    verify(errorConsumer).accept(argThat(argument -> argument.errorCode().equals("ARRAY_TYPE_UNEXPECTED")));
     verifyNoMoreInteractions(errorConsumer);
     reset(errorConsumer);
 
     assertFalse(ddrlExpressionCompiler.compile(variableFinder, "s in s", errorConsumer).isPresent());
-    verify(errorConsumer).accept(argThat(argument -> argument.getErrorCode().equals("ARRAY_TYPE_EXPECTED")));
+    verify(errorConsumer).accept(argThat(argument -> argument.errorCode().equals("ARRAY_TYPE_EXPECTED")));
     verifyNoMoreInteractions(errorConsumer);
     reset(errorConsumer);
 
