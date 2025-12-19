@@ -126,23 +126,21 @@ public class Triggers {
     return ImmutableItemsChangedEvent.of(targetEvent);
   }
 
-  @Value.Immutable
-  interface RowGroupItemsInitEventsProvider extends EventsProvider<ItemState> {
-
-    @Value.Parameter
-    ItemId getPrototypeId();
+  record RowGroupItemsInitEventsProvider(
+    ItemId prototypeId
+  ) implements EventsProvider<ItemState> {
 
     @Override
-    default Stream<Event> createEvents(ItemState originalState, ItemState updatedState) {
+    public Stream<Event> createEvents(ItemState originalState, ItemState updatedState) {
       return originalState == null && updatedState == null ?
-        Stream.of(ImmutableRowGroupItemsInitEvent.of(getPrototypeId(), getPrototypeId(), onTarget(getPrototypeId()))) :
-        Stream.of(ImmutableRowGroupItemsInitEvent.of(updatedState.getId(), getPrototypeId(), onTarget(getPrototypeId())));
+        Stream.of(ImmutableRowGroupItemsInitEvent.of(prototypeId(), prototypeId(), onTarget(prototypeId()))) :
+        Stream.of(ImmutableRowGroupItemsInitEvent.of(updatedState.getId(), prototypeId(), onTarget(prototypeId())));
     }
   }
 
 
   public static EventsProvider<ItemState> rowGroupItemsInitEvent(ItemId prototypeId) {
-    return ImmutableTriggers.RowGroupItemsInitEventsProvider.of(prototypeId);
+    return new RowGroupItemsInitEventsProvider(prototypeId);
   }
 
   public static Event disabledUpdatedEvent(TargetEvent targetEvent) {
