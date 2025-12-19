@@ -35,7 +35,7 @@ public interface ProtoTypeItemsAddedEventsProvider extends Triggers.EventsProvid
   @Override
   default Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState) {
     if (originalState == null && updatedState == null) {
-      return getItemPrototypeIds().stream().map(itemId -> ImmutableItemAddedEvent.of(itemId, itemId));
+      return getItemPrototypeIds().stream().map(itemId -> new ItemAddedEvent(itemId, itemId));
     }
     if (updatedState == null) {
       return Stream.empty();
@@ -51,7 +51,7 @@ public interface ProtoTypeItemsAddedEventsProvider extends Triggers.EventsProvid
         getItemPrototypeIds().stream()
           .filter(itemPrototypeId -> IdUtils.matches(itemPrototypeId, itemId))
           .findFirst()
-          .map(foundPrototypeId -> ImmutableItemAddedEvent.of(itemId, foundPrototypeId))
+          .map(foundPrototypeId -> new ItemAddedEvent(itemId, foundPrototypeId))
           .stream()
       );
   }

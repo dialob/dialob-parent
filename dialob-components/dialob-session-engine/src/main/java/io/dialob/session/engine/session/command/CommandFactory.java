@@ -22,7 +22,7 @@ import io.dialob.session.engine.program.model.ValueSet;
 import io.dialob.session.engine.session.command.event.ImmutableProtoTypeItemsAddedEventsProvider;
 import io.dialob.session.engine.session.command.event.ImmutableRowItemsAddedEventsProvider;
 import io.dialob.session.engine.session.command.event.ImmutableRowItemsRemovedEventsProvider;
-import io.dialob.session.engine.session.command.event.ImmutableValueSetUpdatedEvent;
+import io.dialob.session.engine.session.command.event.ValueSetUpdatedEvent;
 import io.dialob.session.engine.session.model.*;
 
 import java.util.Arrays;
@@ -324,7 +324,7 @@ public final class CommandFactory {
 
   public static UpdateValueSetCommand updateValueSet(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
     return ImmutableUpdateValueSetCommand.of(valueSetId, entries, List.of(
-      Triggers.<ValueSetState>trigger(ImmutableValueSetUpdatedEvent.of(valueSetId))
+      Triggers.<ValueSetState>trigger(new ValueSetUpdatedEvent(valueSetId))
         .when(ValueStatePredicates.VALUE_SET_STATE_CHANGED)
       ));
   }

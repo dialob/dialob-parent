@@ -16,8 +16,8 @@
 package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.command.event.ImmutableItemsChangedEvent;
-import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
+import io.dialob.session.engine.session.command.event.ItemsChangedEvent;
+import io.dialob.session.engine.session.command.event.TargetEvent;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
@@ -93,7 +93,7 @@ class CreateRowGroupFromPrototypeCommandTest {
     CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
     Assertions.assertTrue(
       command.getEventMatchers().stream()
-        .anyMatch(eventMatcher -> eventMatcher.matches(ImmutableItemsChangedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("g1.0"))))));
+        .anyMatch(eventMatcher -> eventMatcher.matches(ItemsChangedEvent.of(TargetEvent.of(IdUtils.toId("g1.0"))))));
   }
 
   @Test
@@ -101,7 +101,7 @@ class CreateRowGroupFromPrototypeCommandTest {
     CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
     Assertions.assertFalse(
       command.getEventMatchers().stream()
-        .anyMatch(eventMatcher -> eventMatcher.matches(ImmutableItemsChangedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("g2"))))));
+        .anyMatch(eventMatcher -> eventMatcher.matches(ItemsChangedEvent.of(TargetEvent.of(IdUtils.toId("g2"))))));
   }
 
 

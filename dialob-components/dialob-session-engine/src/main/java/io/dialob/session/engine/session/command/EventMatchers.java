@@ -21,16 +21,14 @@ import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
-import org.immutables.value.Value;
 
-@Value.Enclosing
 public final class EventMatchers {
 
-  private static final ImmutableEventMatchers.ActivePageEventMatcher ACTIVE_PAGE_EVENT_MATCHER = ImmutableEventMatchers.ActivePageEventMatcher.builder().build();
+  private static final EventMatchers.ActivePageEventMatcher ACTIVE_PAGE_EVENT_MATCHER = EventMatchers.ActivePageEventMatcher.instance();
 
-  private static final ImmutableEventMatchers.AvailableItemsEventMatcher AVAILABLE_ITEMS_EVENT_MATCHER = ImmutableEventMatchers.AvailableItemsEventMatcher.builder().build();
+  private static final EventMatchers.AvailableItemsEventMatcher AVAILABLE_ITEMS_EVENT_MATCHER = EventMatchers.AvailableItemsEventMatcher.instance();
 
-  private static final ImmutableEventMatchers.AnyErrorEventMatcher ANY_ERROR_EVENT_MATCHER = ImmutableEventMatchers.AnyErrorEventMatcher.builder().build();
+  private static final EventMatchers.AnyErrorEventMatcher ANY_ERROR_EVENT_MATCHER = EventMatchers.AnyErrorEventMatcher.instance();
 
   private EventMatchers() {
   }
@@ -40,43 +38,43 @@ public final class EventMatchers {
   }
 
   public static ErrorEventMatcher error(@NonNull ErrorId errorId) {
-    return ImmutableEventMatchers.ErrorIdEventMatcher.of(errorId);
+    return new EventMatchers.ErrorIdEventMatcher(errorId);
   }
 
   public static ErrorEventMatcher targetError(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.TargetErrorEventMatcher.of(itemId);
+    return new EventMatchers.TargetErrorEventMatcher(itemId);
   }
 
   public static EventMatcher whenActiveUpdated(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.IsActiveTargetEventMatcher.of(itemId);
+    return new EventMatchers.IsActiveTargetEventMatcher(itemId);
   }
 
   public static EventMatcher whenValueUpdated(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.TargetIdEventMatcher.of(itemId);
+    return new EventMatchers.TargetIdEventMatcher(itemId);
   }
 
   public static EventMatcher whenRequiredUpdated(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.IsRequiredTargetEventMatcher.of(itemId);
+    return new EventMatchers.IsRequiredTargetEventMatcher(itemId);
   }
 
   public static EventMatcher whenDisabledUpdatedEvent(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.IsDisabledTargetEventMatcher.of(itemId);
+    return new EventMatchers.IsDisabledTargetEventMatcher(itemId);
   }
 
   public static EventMatcher whenRowsCanBeAddedUpdatedEvent(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.RowsCanBeAddedUpdatedEventMatcher.builder().build();
+    return EventMatchers.RowsCanBeAddedUpdatedEventMatcher.instance();
   }
 
   public static EventMatcher whenRowCanBeRemovedUpdatedEvent(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.RowCanBeRemovedUpdatedEventMatcher.builder().build();
+    return EventMatchers.RowCanBeRemovedUpdatedEventMatcher.instance();
   }
 
   public static EventMatcher whenValidUpdated(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.IsValidTargetEventMatcher.of(itemId);
+    return new EventMatchers.IsValidTargetEventMatcher(itemId);
   }
 
   public static EventMatcher whenAnyInvalidAnswersUpdated() {
-    return ImmutableEventMatchers.AnyInvalidAnswersUpdatedEventMatcher.builder().build();
+    return EventMatchers.AnyInvalidAnswersUpdatedEventMatcher.instance();
   }
 
   public static EventMatcher whenActivePageUpdated() {
@@ -88,44 +86,43 @@ public final class EventMatchers {
   }
 
   public static EventMatcher whenAnsweredUpdated(@NonNull ItemId itemId) {
-    return ImmutableEventMatchers.AnsweredTargetEventMatcher.of(itemId);
+    return EventMatchers.AnsweredTargetEventMatcher.of(itemId);
   }
 
   public static EventMatcher whenItemsChanged(@NonNull ItemId groupId) {
-    return ImmutableEventMatchers.ItemsChangedEventMatcher.of(groupId);
+    return new EventMatchers.ItemsChangedEventMatcher(groupId);
   }
 
   public static EventMatcher whenItemAdded(@NonNull ItemId prototypeId) {
-    return ImmutableEventMatchers.ItemAddedEventMatcher.of(prototypeId);
+    return new EventMatchers.ItemAddedEventMatcher(prototypeId);
   }
   public static EventMatcher whenItemRemoved(@NonNull ItemId prototypeId) {
-    return ImmutableEventMatchers.ItemRemovedEventMatcher.of(prototypeId);
+    return new EventMatchers.ItemRemovedEventMatcher(prototypeId);
   }
   public static EventMatcher whenRowGroupItemsInit(@NonNull ItemId prototypeId) {
-    return ImmutableEventMatchers.RowGroupItemsInitEventMatcher.of(prototypeId);
+    return new EventMatchers.RowGroupItemsInitEventMatcher(prototypeId);
   }
 
   public static EventMatcher errorActivity(@NonNull ErrorEventMatcher errorEventMatcher) {
-    return ImmutableEventMatchers.ErrorActivityEventMatcher.of(errorEventMatcher);
+    return new EventMatchers.ErrorActivityEventMatcher(errorEventMatcher);
   }
 
   public static EventMatcher whenValueSetUpdated(@NonNull ValueSetId valueSetId) {
-    return ImmutableEventMatchers.ValueSetUpdatedEventMatcher.of(valueSetId);
+    return new EventMatchers.ValueSetUpdatedEventMatcher(valueSetId);
   }
 
   public static EventMatcher whenSessionLocaleUpdated() {
     return event -> event instanceof SessionLocaleUpdatedEvent;
   }
 
-    @Value.Immutable
-  public interface TargetIdEventMatcher extends EventMatcher {
-    @Value.Parameter
-    ItemId getTargetId();
+  public record TargetIdEventMatcher(
+      ItemId targetId
+    ) implements EventMatcher {
 
     @Override
-    default boolean matches(Event event) {
-      if (event instanceof TargetEvent targetEvent) {
-        return IdUtils.matches(getTargetId(), targetEvent.getTargetId());
+    public boolean matches(Event event) {
+      if (event instanceof TargetEvent(ItemId id)) {
+        return IdUtils.matches(targetId(), id);
       }
       return false;
     }
@@ -136,8 +133,11 @@ public final class EventMatchers {
 
   interface AttributeEventMatcher<E extends AttributeEvent> extends EventMatcher {
 
-    @Value.Parameter
-    ItemId getTargetMatcher();
+    ItemId targetMatcher();
+
+    default ItemId getTargetMatcher() {
+      return targetMatcher();
+    }
 
     boolean eventTypeMatches(Event event);
 
@@ -145,135 +145,173 @@ public final class EventMatchers {
     default boolean matches(Event event) {
       if (eventTypeMatches(event)) {
         E attributeEvent = (E) event;
-        TargetEvent targetEvent = attributeEvent.getTarget();
-        return IdUtils.matches(getTargetMatcher(), targetEvent.getTargetId());
+        TargetEvent targetEvent = attributeEvent.target();
+        return IdUtils.matches(getTargetMatcher(), targetEvent.targetId());
       }
       return false;
     }
   }
 
-  @Value.Immutable
-  interface IsActiveTargetEventMatcher extends AttributeEventMatcher<ActiveUpdatedEvent> {
+  record IsActiveTargetEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<ActiveUpdatedEvent> {
     @Override
-    default boolean eventTypeMatches(Event event) {
+    public boolean eventTypeMatches(Event event) {
       return event instanceof ActiveUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface IsRequiredTargetEventMatcher extends AttributeEventMatcher<ActiveUpdatedEvent> {
+  record IsRequiredTargetEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<ActiveUpdatedEvent> {
     @Override
-    default boolean eventTypeMatches(Event event) {
+    public boolean eventTypeMatches(Event event) {
       return event instanceof RequiredUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface IsDisabledTargetEventMatcher extends AttributeEventMatcher<DisabledUpdatedEvent> {
+  record IsDisabledTargetEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<DisabledUpdatedEvent> {
     @Override
-    default boolean eventTypeMatches(Event event) {
+    public boolean eventTypeMatches(Event event) {
       return event instanceof DisabledUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface IsValidTargetEventMatcher extends AttributeEventMatcher<ValidUpdatedEvent> {
+  record IsValidTargetEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<ValidUpdatedEvent> {
     @Override
-    default boolean eventTypeMatches(Event event) {
+    public boolean eventTypeMatches(Event event) {
       return event instanceof ValidUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface AnyInvalidAnswersUpdatedEventMatcher extends EventMatcher {
+  record AnyInvalidAnswersUpdatedEventMatcher() implements EventMatcher {
+
+    private static final AnyInvalidAnswersUpdatedEventMatcher INSTANCE = new AnyInvalidAnswersUpdatedEventMatcher();
+
+    public static EventMatcher instance() {
+      return INSTANCE;
+    }
+
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       return event instanceof AnyInvalidAnswersUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface ItemAddedEventMatcher extends EventMatcher {
-
-    @Value.Parameter
-    ItemId getPrototypeId();
+  record ItemAddedEventMatcher(
+    ItemId prototypeId
+  ) implements EventMatcher {
 
     @Override
-    default boolean matches(Event event) {
-      return event instanceof ItemAddedEvent iae && iae.getPrototypeId().equals(getPrototypeId());
+    public boolean matches(Event event) {
+      return event instanceof ItemAddedEvent iae && iae.getPrototypeId().equals(prototypeId());
     }
   }
 
-  @Value.Immutable
-  interface ItemRemovedEventMatcher extends EventMatcher {
-
-    @Value.Parameter
-    ItemId getPrototypeId();
+  record ItemRemovedEventMatcher(
+    ItemId prototypeId
+  ) implements EventMatcher {
 
     @Override
-    default boolean matches(Event event) {
-      return event instanceof ItemRemovedEvent ire && IdUtils.matches(getPrototypeId(), ire.getRemoveItemId());
+    public boolean matches(Event event) {
+      return event instanceof ItemRemovedEvent ire && IdUtils.matches(prototypeId(), ire.getRemoveItemId());
     }
   }
 
-  @Value.Immutable
-  interface RowGroupItemsInitEventMatcher extends EventMatcher {
-
-    @Value.Parameter
-    ItemId getPrototypeId();
+  record RowGroupItemsInitEventMatcher(
+    ItemId prototypeId
+  ) implements EventMatcher {
 
     @Override
-    default boolean matches(Event event) {
-      return event instanceof RowGroupItemsInitEvent rgiie && rgiie.getPrototypeId().equals(getPrototypeId());
+    public boolean matches(Event event) {
+      return event instanceof RowGroupItemsInitEvent rgiie && rgiie.getPrototypeId().equals(prototypeId());
     }
   }
 
-  @Value.Immutable
-  interface RowsCanBeAddedUpdatedEventMatcher extends EventMatcher {
+  record RowsCanBeAddedUpdatedEventMatcher() implements EventMatcher {
+
+    private static final RowsCanBeAddedUpdatedEventMatcher INSTANCE = new RowsCanBeAddedUpdatedEventMatcher();
+
+    public static EventMatcher instance() {
+      return INSTANCE;
+    }
 
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       return event instanceof RowsCanBeAddedUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface RowCanBeRemovedUpdatedEventMatcher extends EventMatcher {
+  record RowCanBeRemovedUpdatedEventMatcher() implements EventMatcher {
+    private static final RowCanBeRemovedUpdatedEventMatcher INSTANCE = new RowCanBeRemovedUpdatedEventMatcher();
+
+    public static EventMatcher instance() {
+      return INSTANCE;
+    }
+
 
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       return event instanceof RowCanBeRemovedUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface ItemsChangedEventMatcher extends AttributeEventMatcher<ItemsChangedEvent> {
+  record ItemsChangedEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<ItemsChangedEvent> {
     @Override
-    default boolean eventTypeMatches(Event event) {
+    public boolean eventTypeMatches(Event event) {
       return event instanceof ItemsChangedEvent;
     }
   }
 
-  @Value.Immutable
-  interface AnsweredTargetEventMatcher extends AttributeEventMatcher<AnsweredUpdatedEvent> {
+  record AnsweredTargetEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<AnsweredUpdatedEvent> {
+
+    public static AnsweredTargetEventMatcher of(ItemId targetMatcher) {
+      return new AnsweredTargetEventMatcher(targetMatcher);
+    }
+
     @Override
-    default boolean eventTypeMatches(Event event) {
+    public ItemId getTargetMatcher() {
+      return targetMatcher;
+    }
+
+    @Override
+    public boolean eventTypeMatches(Event event) {
       return event instanceof AnsweredUpdatedEvent;
     }
   }
 
-  @Value.Immutable(prehash = true)
-  interface ActivePageEventMatcher extends QuestionnaireEventMatcher {
+  record ActivePageEventMatcher() implements QuestionnaireEventMatcher {
+
+    private static final ActivePageEventMatcher INSTANCE = new ActivePageEventMatcher();
+
+    private static ActivePageEventMatcher instance() {
+      return INSTANCE;
+    }
+
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       return event instanceof ActivePageUpdatedEvent;
     }
   }
 
-  @Value.Immutable
-  interface AvailableItemsEventMatcher extends QuestionnaireEventMatcher {
+  record AvailableItemsEventMatcher() implements QuestionnaireEventMatcher {
+
+    private static final AvailableItemsEventMatcher INSTANCE = new AvailableItemsEventMatcher();
+
+    private static AvailableItemsEventMatcher instance() {
+      return INSTANCE;
+    }
+
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       return event instanceof AvailableItemsUpdatedEvent;
     }
   }
@@ -281,53 +319,54 @@ public final class EventMatchers {
   interface ErrorEventMatcher extends EventMatcher {
   }
 
-  @Value.Immutable
-  interface AnyErrorEventMatcher extends ErrorEventMatcher {
+  record AnyErrorEventMatcher() implements ErrorEventMatcher {
+    private static final AnyErrorEventMatcher INSTANCE = new AnyErrorEventMatcher();
+
+    private static AnyErrorEventMatcher instance() {
+      return INSTANCE;
+    }
+
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       return event instanceof ErrorEvent;
     }
   }
 
-  @Value.Immutable
-  interface TargetErrorEventMatcher extends ErrorEventMatcher {
-
-    @Value.Parameter
-    ItemId getTargetId();
+  record TargetErrorEventMatcher(
+    ItemId targetId
+  ) implements ErrorEventMatcher {
 
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       if (event instanceof ErrorEvent errorEvent) {
-        return getTargetId().equals(errorEvent.getErrorId().itemId());
+        return targetId().equals(errorEvent.getErrorId().itemId());
       }
       return false;
     }
   }
 
-  @Value.Immutable
-  interface ErrorIdEventMatcher extends ErrorEventMatcher {
-    @Value.Parameter
-    ErrorId getErrorId();
+  record ErrorIdEventMatcher(
+    ErrorId errorId
+  ) implements ErrorEventMatcher {
 
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       if (event instanceof ErrorEvent targetEvent) {
-        return getErrorId().equals(targetEvent.getErrorId());
+        return errorId().equals(targetEvent.getErrorId());
       }
       return false;
     }
   }
 
-  @Value.Immutable
-  interface ErrorActivityEventMatcher extends ErrorEventMatcher {
-    @Value.Parameter
-    ErrorEventMatcher getErrorEventMatcher();
+  record ErrorActivityEventMatcher(
+    ErrorEventMatcher errorEventMatcher
+  ) implements ErrorEventMatcher {
 
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       if (event instanceof ErrorEvent) {
         ErrorActiveUpdatedEvent targetEvent = (ErrorActiveUpdatedEvent) event;
-        return getErrorEventMatcher().matches(targetEvent);
+        return errorEventMatcher().matches(targetEvent);
       }
       return false;
     }
@@ -336,17 +375,17 @@ public final class EventMatchers {
 
   interface ValueSetEventMatcher extends EventMatcher {
 
-    @Value.Parameter
-    ValueSetId getValueSetId();
+    ValueSetId valueSetId();
 
   }
 
-  @Value.Immutable
-  interface ValueSetUpdatedEventMatcher extends ValueSetEventMatcher {
+  record ValueSetUpdatedEventMatcher(
+    ValueSetId valueSetId
+  ) implements ValueSetEventMatcher {
     @Override
-    default boolean matches(Event event) {
+    public boolean matches(Event event) {
       if (event instanceof ValueSetUpdatedEvent targetEvent) {
-        return getValueSetId().equals(targetEvent.getValueSetId());
+        return valueSetId().equals(targetEvent.getValueSetId());
       }
       return false;
     }

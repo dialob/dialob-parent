@@ -21,7 +21,7 @@ import io.dialob.session.engine.program.expr.arith.NumberOperators;
 import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.command.event.ImmutableItemAddedEvent;
+import io.dialob.session.engine.session.command.event.ItemAddedEvent;
 import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -146,7 +146,7 @@ class CommandFactoryTest {
     List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
 
     assertFalse(events.isEmpty());
-    assertEquals(ImmutableItemAddedEvent.of(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.getFirst());
+    assertEquals(new ItemAddedEvent(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.getFirst());
   }
 
   @Test

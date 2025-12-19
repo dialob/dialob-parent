@@ -177,10 +177,10 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
           .filter(eventMatcher -> eventMatcher instanceof EventMatchers.TargetIdEventMatcher)
           .map(eventMatcher -> (EventMatchers.TargetIdEventMatcher) eventMatcher)
           .map(itemId -> getProgramBuilder()
-            .findDefaultValueForItem(itemId.getTargetId())
+            .findDefaultValueForItem(itemId.targetId())
             // If item has default (fallback) value, it's always available for expression
             .<Expression>map(defaultValue -> BooleanOperators.FALSE)
-              .orElse(ImmutableIsInactiveOrNullOperator.of(itemId.getTargetId())))
+              .orElse(ImmutableIsInactiveOrNullOperator.of(itemId.targetId())))
           .filter(expression -> expression != BooleanOperators.FALSE)
         .toArray(Expression[]::new));
   }

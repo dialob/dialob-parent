@@ -16,10 +16,13 @@
 package io.dialob.session.engine.session.command.event;
 
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface TargetEvent extends Event {
-  @Value.Parameter
-  ItemId getTargetId();
+public record TargetEvent(
+  ItemId targetId
+) implements Event {
+
+  public static TargetEvent of(ItemId targetId) {
+    return new TargetEvent(targetId);
+  }
+
 }

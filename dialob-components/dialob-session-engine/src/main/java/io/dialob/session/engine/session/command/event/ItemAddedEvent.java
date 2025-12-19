@@ -16,15 +16,20 @@
 package io.dialob.session.engine.session.command.event;
 
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface ItemAddedEvent extends Event {
+public record ItemAddedEvent(
+  ItemId addItemId,
 
-  @Value.Parameter
-  ItemId getAddItemId();
+  ItemId prototypeId
 
-  @Value.Parameter
-  ItemId getPrototypeId();
+) implements Event {
+
+  public ItemId getAddItemId() {
+    return addItemId();
+  }
+
+  public ItemId getPrototypeId() {
+    return prototypeId();
+  }
 
 }

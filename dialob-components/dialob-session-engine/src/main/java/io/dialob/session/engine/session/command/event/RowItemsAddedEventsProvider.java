@@ -32,7 +32,7 @@ public interface RowItemsAddedEventsProvider extends Triggers.EventsProvider<Ite
 
   default Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState) {
     if (originalState == null && updatedState == null) {
-      return Stream.of(ImmutableItemAddedEvent.of(getRowProtoTypeId(), getRowProtoTypeId()));
+      return Stream.of(new ItemAddedEvent(getRowProtoTypeId(), getRowProtoTypeId()));
     }
     if (updatedState == null) {
       return Stream.empty();
@@ -42,6 +42,6 @@ public interface RowItemsAddedEventsProvider extends Triggers.EventsProvider<Ite
       newItems = new HashSet<>(newItems);
       newItems.removeAll(originalState.getItemStates().keySet());
     }
-    return newItems.stream().map(itemId -> ImmutableItemAddedEvent.of(itemId, getRowProtoTypeId()));
+    return newItems.stream().map(itemId -> new ItemAddedEvent(itemId, getRowProtoTypeId()));
   }
 }

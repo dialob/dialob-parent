@@ -20,9 +20,9 @@ import io.dialob.session.engine.DependencyLoopException;
 import io.dialob.session.engine.program.model.Item;
 import io.dialob.session.engine.program.model.Program;
 import io.dialob.session.engine.session.command.Command;
+import io.dialob.session.engine.session.command.event.ActiveUpdatedEvent;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.command.event.ImmutableActiveUpdatedEvent;
-import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
+import io.dialob.session.engine.session.command.event.TargetEvent;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemIdPartial;
 import io.dialob.session.engine.session.model.ItemRef;
@@ -48,7 +48,7 @@ class DialobProgramTest {
     DialobProgram dialobProgram = DialobProgram.createDialobProgram(program);
 
     // when
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableTargetEvent.of(IdUtils.toId("question"))).toList();
+    List<Command<?>> updates = dialobProgram.findDependencies(TargetEvent.of(IdUtils.toId("question"))).toList();
 
     // expect
     assertNotNull(updates);
@@ -97,7 +97,7 @@ class DialobProgramTest {
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
 
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
+    List<Command<?>> updates = dialobProgram.findDependencies(new ActiveUpdatedEvent(TargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
 
     // expect
     assertNotNull(updates);
@@ -148,7 +148,7 @@ class DialobProgramTest {
 
     Set<Event> allUpdates = dialobProgram.allUpdates();
 
-    List<Command<?>> updates = dialobProgram.findDependencies(ImmutableActiveUpdatedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
+    List<Command<?>> updates = dialobProgram.findDependencies(new ActiveUpdatedEvent(TargetEvent.of(IdUtils.toId("rgroup.2")))).toList();
 
     // expect
     assertNotNull(updates);

@@ -48,7 +48,6 @@ public record ApiKey(
     return new Builder().from(this).hash(hash).build();
   }
 
-  @Value.Parameter
   public String getClientId() {
     return clientId;
   }

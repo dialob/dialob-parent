@@ -39,6 +39,6 @@ class LanguageExpressionTest {
   @Test
   void shouldDependOnLocaleChanges() {
     LanguageExpression languageExpression = StringOperators.languageOperator();
-    assertTrue(languageExpression.getEvalRequiredConditions().iterator().next().matches(SessionLocaleUpdatedEvent.INSTANCE));
+    assertTrue(languageExpression.getEvalRequiredConditions().iterator().next().matches(SessionLocaleUpdatedEvent.instance()));
   }
 }

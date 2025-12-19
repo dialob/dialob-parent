@@ -96,7 +96,7 @@ public class DialobProgram implements Serializable {
         return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(rowGroupItemsInitEvent.getGroupId())));
       }
       if (errorId.isPartial() && event instanceof TargetEvent targetEvent) {
-        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(errorId.itemId().withParent(targetEvent.getTargetId().getParent()))));
+        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(errorId.itemId().withParent(targetEvent.targetId().getParent()))));
       }
     } else if (command instanceof UpdateCommand updateCommand) {
       if (event instanceof ItemAddedEvent itemAddedEvent) {
