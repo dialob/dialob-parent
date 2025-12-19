@@ -150,7 +150,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
       .collect(Collectors.toMap(
         command -> command,
         command -> findTriggers(command)
-          .map(Trigger::getAllEvents)
+          .map(Trigger::allEvents)
           .flatMap(List::stream)
           .flatMap(event -> inputUpdates.entrySet().stream()
             .filter(entry -> entry.getKey().matches(event))

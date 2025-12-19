@@ -118,7 +118,7 @@ public class DialobProgram implements Serializable {
       .flatMap(List::stream)
       .map(Command::getTriggers)
       .flatMap(List::stream)
-      .map(Trigger::getAllEvents)
+      .map(Trigger::allEvents)
       .flatMap(List::stream)
       .collect(toSet());
   }

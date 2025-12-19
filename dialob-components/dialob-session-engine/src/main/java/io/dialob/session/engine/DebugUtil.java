@@ -54,7 +54,7 @@ public class DebugUtil {
     Set<Pair<ItemId, Event>> events = itemCommands.entrySet().stream()
       .flatMap(commandEntry -> commandEntry.getValue().stream()
         .flatMap(command -> command.getTriggers().stream())
-        .flatMap(trigger -> trigger.getAllEvents().stream())
+        .flatMap(trigger -> trigger.allEvents().stream())
         .map(event -> Pair.of(commandEntry.getKey(), event))).collect(toSet());
 
     Map<Pair<ItemId, Event>,List<UpdateCommand<?,?>>> eventToCommands = new HashMap<>();
@@ -76,7 +76,7 @@ public class DebugUtil {
         command.getTriggers()
           .forEach(trigger ->
             commandToEvent.computeIfAbsent(command, command1 -> new ArrayList<>())
-            .addAll(trigger.getAllEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).toList())));
+            .addAll(trigger.allEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).toList())));
 
     try(OutputStreamWriter writer = new FileWriter("deps.dot")) {
       SortedSet<String> nodes = new TreeSet<>();

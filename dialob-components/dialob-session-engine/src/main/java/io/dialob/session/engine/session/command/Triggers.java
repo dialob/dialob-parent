@@ -24,6 +24,7 @@ import io.dialob.session.engine.session.model.ValueSetId;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
@@ -51,9 +52,9 @@ public class Triggers {
 
     public Trigger<T> when(@NonNull BiPredicate<T, T> predicate) {
       if (event != null) {
-        return ImmutableStaticTrigger.<T>builder().when(predicate).addAllEvents(event).build();
+        return new StaticTrigger<>(predicate, List.of(event));
       }
-      return ImmutableDynamicTrigger.<T>builder().when(predicate).eventsProvider(eventsProvider).build();
+      return new DynamicTrigger<>(predicate, eventsProvider);
     }
   }
 

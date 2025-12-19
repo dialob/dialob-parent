@@ -117,7 +117,7 @@ class CommandFactoryTest {
     //;
     UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
     Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();
-    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).toList();
+    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::allEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();
     EventMatcher eventMatcher = i.next();
     assertFalse(eventMatcher.matches(eventList.getFirst()));

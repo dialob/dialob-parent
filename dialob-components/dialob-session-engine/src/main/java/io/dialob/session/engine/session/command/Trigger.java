@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
-@Value.Enclosing
 public interface Trigger<T> extends Serializable {
 
-  @Value.Parameter
-  BiPredicate<T,T> getWhen();
+  @NonNull
+  BiPredicate<T,T> when();
 
-  List<Event> getAllEvents();
+  @NonNull
+  List<Event> allEvents();
 
   /**
    * Return trigger action when trigger condition matches
@@ -41,11 +41,11 @@ public interface Trigger<T> extends Serializable {
    */
   @NonNull
   default Stream<Event> apply(@NonNull T itemState, T updateState) {
-    return getWhen().test(itemState, updateState) ? createEvent(itemState, updateState) : Stream.empty();
+    return when().test(itemState, updateState) ? createEvent(itemState, updateState) : Stream.empty();
   }
 
   default Stream<Event> createEvent(T itemState, T updateState) {
-    return getAllEvents().stream();
+    return allEvents().stream();
   }
 
 
