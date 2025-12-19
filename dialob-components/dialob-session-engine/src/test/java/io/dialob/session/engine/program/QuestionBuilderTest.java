@@ -21,7 +21,7 @@ import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.ItemIdMatchers;
 import io.dialob.session.engine.program.model.Program;
 import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ImmutableScope;
+import io.dialob.session.engine.session.model.Scope;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -100,7 +100,7 @@ class QuestionBuilderTest {
     Group g1 = (Group) program.findItemsBy(ItemIdMatchers.idIs(IdUtils.toId("g1"))).findFirst().get();
     assertFalse(g1.isPrototype());
 
-    final ImmutableScope rowScope = ImmutableScope.of(IdUtils.toId("g1.2"), Collections.emptySet());
+    final Scope rowScope = Scope.of(IdUtils.toId("g1.2"), Collections.emptySet());
     EvalContext context = mock(EvalContext.class);
     when(context.mapTo(any(), eq(true))).thenAnswer(invocation -> rowScope.mapTo(invocation.getArgument(0), true));
     Assertions.assertEquals(Arrays.asList(IdUtils.toId("g1.2.i1"), IdUtils.toId("g1.2.i2")), g1proto.getItemsExpression().eval(context));

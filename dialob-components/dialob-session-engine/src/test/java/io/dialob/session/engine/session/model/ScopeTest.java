@@ -24,7 +24,7 @@ class ScopeTest {
 
   @Test
   void test() {
-    Scope scope = ImmutableScope.of(IdUtils.toId("row.10"), Collections.emptySet());
+    Scope scope = Scope.of(IdUtils.toId("row.10"), Collections.emptySet());
     Assertions.assertEquals("row.10.q1", IdUtils.toString(scope.mapTo(IdUtils.toId("row.*.q1"), true)));
     Assertions.assertEquals("row.10", IdUtils.toString(scope.mapTo(IdUtils.toId("row.*"), true)));
   }

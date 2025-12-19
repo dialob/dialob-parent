@@ -330,7 +330,7 @@ public class DialobSession implements ItemStates, Serializable {
       .getItemState(itemId)
       .map(ItemState::getItems).orElseGet(Collections::emptyList));
     scopeItems.add(itemId);
-    return evalContext.withScope(ImmutableScope.of(itemId, scopeItems));
+    return evalContext.withScope(Scope.of(itemId, scopeItems));
   }
 
   private void applySessionUpdateCommand(EvalContext evalContext, SessionUpdateCommand command) {
