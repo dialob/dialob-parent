@@ -19,27 +19,24 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
-@org.immutables.value.Value.Immutable
-@org.immutables.value.Value.Enclosing
+@org.immutables.value.Value.Builder
 @org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
-public interface ValueSet extends ProgramNode {
-
-  class Builder extends ImmutableValueSet.Builder { }
+public record ValueSet(
 
   @NonNull
-  String getId();
+  String id,
 
   @NonNull
-  List<Value<Entry>> getEntries();
+  List<Value<Entry>> entries
 
-  @org.immutables.value.Value.Immutable
-  @org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
-  interface Entry extends ProgramNode {
+) implements ProgramNode {
 
-    class Builder extends ImmutableValueSet.Entry.Builder { }
+  public static class Builder extends ValueSetBuilder { }
 
-    String getKey();
+  public record Entry(
+    String key,
+    @NonNull Expression label
+  ) implements ProgramNode {
 
-    Expression getLabel();
   }
 }

@@ -41,7 +41,7 @@ public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, Progra
   @Override
   protected void afterExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     valueSetEntryBuilders.forEach(valueSetEntryBuilder -> valueSetEntryBuilder.afterExpressionCompilation(errorConsumer));
-    getProgramBuilder().add(new ValueSet.Builder().id(getIdStr()).entries(values).build());
+    getProgramBuilder().add(new ValueSet(getIdStr(), values));
   }
 
   public ValueSetEntryBuilder addValue(String id) {

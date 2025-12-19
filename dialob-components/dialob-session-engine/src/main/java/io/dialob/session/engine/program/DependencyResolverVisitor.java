@@ -129,7 +129,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
 
   @Override
   public Optional<ValueSetVisitor> visitValueSets() {
-    return Optional.of(valueSet -> updateCommandFactory.createUpdateValueSetCommand(new ValueSetId(valueSet.getId()), valueSet.getEntries()));
+    return Optional.of(valueSet -> updateCommandFactory.createUpdateValueSetCommand(new ValueSetId(valueSet.id()), valueSet.entries()));
   }
 
   @Override

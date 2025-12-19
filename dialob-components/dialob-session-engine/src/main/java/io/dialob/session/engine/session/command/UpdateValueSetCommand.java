@@ -56,7 +56,7 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
           this.getEntries().stream()
             .map(entryValue -> entryValue.eval(context))
             .filter(Objects::nonNull)
-            .map(entry -> ValueSetState.Entry.of(entry.getKey(), (String) entry.getLabel().eval(context))),
+            .map(entry -> ValueSetState.Entry.of(entry.key(), (String) entry.label().eval(context))),
           state.getEntries().stream().filter(ValueSetState.Entry::isProvided))
         .toList();
     return state.update().setEntries(entries).get();
