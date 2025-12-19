@@ -366,11 +366,11 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
     @Override
     @NonNull
-    public String mapAlias(String aliasName) {
-      if (aliases.containsKey(aliasName)) {
-        return IdUtils.toString(aliases.get(aliasName));
+    public String mapAlias(String alias) {
+      if (aliases.containsKey(alias)) {
+        return IdUtils.toString(aliases.get(alias));
       }
-      return aliasName;
+      return alias;
     }
 
     @Override

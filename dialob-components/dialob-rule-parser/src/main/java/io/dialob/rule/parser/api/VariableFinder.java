@@ -17,38 +17,10 @@ package io.dialob.rule.parser.api;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import org.immutables.value.Value;
 
 import java.util.Optional;
 
-@Value.Enclosing
 public interface VariableFinder {
-
-  interface Var {
-
-    String getName();
-
-    ValueType getValueType();
-
-  }
-
-  @Value.Immutable
-  interface Variable extends Var {
-
-    Optional<String> getScope();
-
-    Optional<Object> getPlaceHolderValue();
-
-    Optional<String> getValueSetId();
-
-  }
-
-  @Value.Immutable
-  interface Function extends Var {
-
-    boolean isAsync();
-
-  }
 
   @Nullable
   String getScope();
@@ -64,12 +36,12 @@ public interface VariableFinder {
   /**
    * Maps context specific alias id to real id
    *
-   * @param aliasName
+   * @param alias
    * @return id of actual variable
    */
   @NonNull
-  default String mapAlias(String aliasName) {
-    return aliasName;
+  default String mapAlias(String alias) {
+    return alias;
   }
 
   /**
@@ -80,11 +52,4 @@ public interface VariableFinder {
     return Optional.empty();
   }
 
-  default Optional<String> findValueSetIdFor(String variableId) {
-    return Optional.empty();
-  }
-
-  default Optional<Object> getVariableDefaultValue(String variableId) {
-    return Optional.empty();
-  }
 }
