@@ -247,7 +247,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
                          @NonNull AliasesProvider aliasesProvider,
                          @NonNull Consumer<Expression> expressionConsumer,
                          @NonNull FormValidationError.Type type,
-                         Optional<Integer> index) {
+                         Integer index) {
     return compileExpression(expression, aliasesProvider, expressionConsumer, type, index);
   }
 
@@ -263,7 +263,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
   public QuestionBuilder setRequiredWhen(String requiredWhen) {
     if (requiredWhen != null) {
-      compileExpression(requiredWhen, this, this::setRequiredWhen, FormValidationError.Type.REQUIREMENT, Optional.empty());
+      compileExpression(requiredWhen, this, this::setRequiredWhen, FormValidationError.Type.REQUIREMENT, null);
     }
     this.required = null;
     return this;

@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, QuestionBuilder> {
@@ -72,7 +71,7 @@ public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, Qu
       } else {
         this.activeWhen = expression;
       }
-    }, getActiveWhenExpressionErrorType(), Optional.empty());
+    }, getActiveWhenExpressionErrorType(), null);
     this.disabledExpression = ImmutableIsDisabledOperator.builder().itemId(questionId).build();
     return this;
   }

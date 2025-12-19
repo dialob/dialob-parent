@@ -45,7 +45,7 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
 
   public VariableBuilder setValueExpression(String valueExpression) {
     if (valueExpression != null) {
-      compileExpression(valueExpression, expression -> this.valueExpression = expression, FormValidationError.Type.VARIABLE, Optional.empty());
+      compileExpression(valueExpression, expression -> this.valueExpression = expression, FormValidationError.Type.VARIABLE, null);
     }
     return this;
   }
