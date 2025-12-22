@@ -113,7 +113,7 @@ class DependencyResolverVisitorTest {
         .id(IdUtils.toId("questionnaire"))
         .type("questionnaire")
         .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build())
-        .isInvalidAnswersExpression(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()))
+        .isInvalidAnswersExpression(Operators.not(IsAnyInvalidAnswersOperator.instance()))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1"))
@@ -240,7 +240,7 @@ IsActiveTargetEventMatcher{targetMatcher=TargetIdEventMatcher{targetId=group1}}=
     assertThat(visitor.getItemCommands()).hasSize(9)
       .containsEntry(IdUtils.toId("questionnaire"), asList(
         updateGroupItems(ref("questionnaire"), stringArray("page1", "page2")),
-        CommandFactory.updateIsInvalidAnswers(ref("questionnaire"), Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()))))
+        CommandFactory.updateIsInvalidAnswers(ref("questionnaire"), Operators.not(IsAnyInvalidAnswersOperator.instance()))))
       .containsEntry(IdUtils.toId("page1"), List.of(updateGroupItems(ref("page1"), stringArray("page1group1", "page1group2"))))
       .containsEntry(IdUtils.toId("page2"), List.of(updateGroupItems(ref("page2"), stringArray("page2group1", "page2group2"))))
       .containsEntry(IdUtils.toId("page1group1"), asList(updateDisabled(ref("page1group1"), ImmutableIsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group1"), stringArray("page1group1item1","page1group1item2"))))

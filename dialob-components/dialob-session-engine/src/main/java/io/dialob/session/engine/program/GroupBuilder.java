@@ -211,12 +211,12 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
     builder = switch (type) {
       case ROOT -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
-          .addItems(Pair.of(Operators.not(ImmutableIsOnFirstPage.builder().build()), Action.Type.PREVIOUS))
+          .addItems(Pair.of(Operators.not(IsOnFirstPage.instance()), Action.Type.PREVIOUS))
           .addItems(Pair.of(
-            Operators.and(Operators.not(ImmutableIsOnLastPage.builder().build()),
+            Operators.and(Operators.not(IsOnLastPage.instance()),
               Operators.not(ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build()))
             , Action.Type.NEXT))
-          .addItems(Pair.of(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()), Action.Type.COMPLETE))
+          .addItems(Pair.of(Operators.not(IsAnyInvalidAnswersOperator.instance()), Action.Type.COMPLETE))
           .addItems(Pair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
         ).build());
       // Disable page when it's not active
@@ -244,7 +244,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
       case ROOT -> builder
           .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> Pair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
-          .isInvalidAnswersExpression(ImmutableIsAnyInvalidAnswersOperator.builder().build());
+          .isInvalidAnswersExpression(IsAnyInvalidAnswersOperator.instance());
     });
 
     getProgramBuilder().addItem(builder.build());

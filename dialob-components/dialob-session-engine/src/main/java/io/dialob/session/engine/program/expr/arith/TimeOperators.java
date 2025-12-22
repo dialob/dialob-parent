@@ -25,18 +25,14 @@ import java.time.LocalTime;
 
 public class TimeOperators  extends ComparableTypeOperators<LocalTime> {
 
-  private static final Expression TODAY = ImmutableTodayExpression.builder().build();
-
-  private static final Expression NOW = ImmutableNowExpression.builder().build();
-
   @NonNull
   public static Expression today() {
-    return TODAY;
+    return TodayExpression.instance();
   }
 
   @NonNull
   public static Expression now() {
-    return NOW;
+    return NowExpression.instance();
   }
 
   @Nullable
