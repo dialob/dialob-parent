@@ -31,7 +31,7 @@ class CoerceToDecimalOperatorTest {
   void shouldEvalNullToNull() {
     Expression expression = mock();
     EvalContext context = mock();
-    var op = ImmutableCoerceToDecimalOperator.builder()
+    var op = new CoerceToDecimalOperator.Builder()
       .expression(expression).build();
 
     when(expression.eval(context)).thenReturn(null);
@@ -42,7 +42,7 @@ class CoerceToDecimalOperatorTest {
   void shouldEvalStringToBigDecimal() {
     Expression expression = mock();
     EvalContext context = mock();
-    var op = ImmutableCoerceToDecimalOperator.builder()
+    var op = new CoerceToDecimalOperator.Builder()
       .expression(expression).build();
 
     when(expression.eval(context)).thenReturn("1.0");
@@ -53,7 +53,7 @@ class CoerceToDecimalOperatorTest {
   void shouldEvalDoubleToBigDecimal() {
     Expression expression = mock();
     EvalContext context = mock();
-    var op = ImmutableCoerceToDecimalOperator.builder()
+    var op = new CoerceToDecimalOperator.Builder()
       .expression(expression).build();
 
     when(expression.eval(context)).thenReturn(1.0);
@@ -64,7 +64,7 @@ class CoerceToDecimalOperatorTest {
   void shouldEvalNumberToBigDecimal() {
     Expression expression = mock();
     EvalContext context = mock();
-    var op = ImmutableCoerceToDecimalOperator.builder()
+    var op = new CoerceToDecimalOperator.Builder()
       .expression(expression).build();
 
     when(expression.eval(context)).thenReturn(1);
@@ -75,7 +75,7 @@ class CoerceToDecimalOperatorTest {
   void shouldEvalBigDecimalToBigDecimal() {
     Expression expression = mock();
     EvalContext context = mock();
-    var op = ImmutableCoerceToDecimalOperator.builder()
+    var op = new CoerceToDecimalOperator.Builder()
       .expression(expression).build();
 
     when(expression.eval(context)).thenReturn(BigDecimal.valueOf(100, 2));
@@ -86,7 +86,7 @@ class CoerceToDecimalOperatorTest {
   void shouldNotEvalObject() {
     Expression expression = mock();
     EvalContext context = mock();
-    var op = ImmutableCoerceToDecimalOperator.builder()
+    var op = new CoerceToDecimalOperator.Builder()
       .expression(expression).build();
 
     when(expression.eval(context)).thenReturn(new Object());

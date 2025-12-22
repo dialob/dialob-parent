@@ -145,57 +145,57 @@ class CreateDialobSessionProgramVisitorTest {
 
     assertEquals(BigDecimal.valueOf(3.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_SUM,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
     assertEquals(BigInteger.valueOf(3), ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_SUM,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
     ).eval(context));
     assertNull(ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_SUM,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
     assertEquals(BigDecimal.valueOf(1.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_MIN,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
     assertEquals(BigInteger.valueOf(1), ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MIN,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
     ).eval(context));
     assertNull(ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MIN,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
     assertEquals(BigDecimal.valueOf(2.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_MAX,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
     assertEquals(BigInteger.valueOf(2), ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MAX,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
     ).eval(context));
     assertNull(ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MAX,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
     assertEquals(BigInteger.valueOf(2), new ArrayReducerOperator.Builder()
       .reducer(ArrayReducerOperator.ANSWER_COUNT)
-      .arrayExpression(ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"), ValueType.INTEGER))
+      .arrayExpression(CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"), ValueType.INTEGER))
       .placeholderValue(BigInteger.ZERO)
       .build().eval(context));
     assertEquals(BigInteger.valueOf(0), new ArrayReducerOperator.Builder()
       .reducer(ArrayReducerOperator.ANSWER_COUNT)
-      .arrayExpression(ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"), ValueType.INTEGER))
+      .arrayExpression(CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"), ValueType.INTEGER))
       .placeholderValue(BigInteger.ZERO)
       .build().eval(context));
   }

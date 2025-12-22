@@ -170,7 +170,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
 
     return ArrayReducerOperator.of(
       reducer,
-      ImmutableCollectRowFieldsOperator.of(varRef, itemValueType));
+      CollectRowFieldsOperator.of(varRef, itemValueType));
   }
 
   protected Expression validateRegexExpression(Expression patternExpr) {
@@ -209,7 +209,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
       return argument;
     }
     if (nodeValueType == ValueType.DECIMAL) {
-      return ImmutableCoerceToDecimalOperator.builder().expression(argument).build();
+      return new CoerceToDecimalOperator.Builder().expression(argument).build();
     }
     throw new CannotCoerceTypeException(argument.getValueType(), nodeValueType);
   }

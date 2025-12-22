@@ -26,19 +26,19 @@ class ConcatOperatorTest {
 
   @Test
   void emptyExpressionsGiveNonConditions() {
-    ConcatOperator op = ImmutableConcatOperator.builder().expressions(List.of()).build();
+    ConcatOperator op = new ConcatOperator.Builder().expressions(List.of()).build();
     Assertions.assertTrue(op.getEvalRequiredConditions().isEmpty());
   }
 
   @Test
   void constantExpressionGiveNonConditions() {
-    ConcatOperator op = ImmutableConcatOperator.builder().expressions(List.of(Constant.builder().valueType(ValueType.STRING).value("Hello").build())).build();
+    ConcatOperator op = new ConcatOperator.Builder().expressions(List.of(Constant.builder().valueType(ValueType.STRING).value("Hello").build())).build();
     Assertions.assertTrue(op.getEvalRequiredConditions().isEmpty());
   }
 
   @Test
   void twoExpressionsConditionsAreCombined() {
-    ConcatOperator op = ImmutableConcatOperator.builder().expressions(List.of(
+    ConcatOperator op = new ConcatOperator.Builder().expressions(List.of(
       ImmutableIsActiveOperator.builder().itemId(IdUtils.toId("q1")).build(),
       ImmutableIsActiveOperator.builder().itemId(IdUtils.toId("q2")).build()
     )).build();

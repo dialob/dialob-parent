@@ -27,26 +27,34 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Value.Immutable
-public interface ConditionalListOperator<T> extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ConditionalListOperator<T>(
+  List<Pair<Expression, T>> items
+) implements Expression {
 
-  List<Pair<Expression, T>> getItems();
+  public static final class Builder<T> extends ConditionalListOperatorBuilder<T> {}
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
-    return getItems().stream().filter(item -> (Boolean) item.left().eval(evalContext)).map(Pair::right).toList();
+  public Object eval(@NonNull EvalContext evalContext) {
+    return items().stream().filter(item -> (Boolean) item.left().eval(evalContext)).map(Pair::right).toList();
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return getItems().stream()
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return items().stream()
       .map(Pair::left)
       .map(Expression::getEvalRequiredConditions)
       .flatMap(Collection::stream)

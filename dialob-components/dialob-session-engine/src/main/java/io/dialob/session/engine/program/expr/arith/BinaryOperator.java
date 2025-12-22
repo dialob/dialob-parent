@@ -40,7 +40,6 @@ public record BinaryOperator<T>(
 
   public static final class Builder<T> extends BinaryOperatorBuilder<T> {}
 
-
   public static <B> Builder<B> builder() {
     return new Builder<>();
   }

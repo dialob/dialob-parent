@@ -210,7 +210,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .props(props);
 
     builder = switch (type) {
-      case ROOT -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
+      case ROOT -> builder.allowedActionsExpression(new ConditionalListOperator.Builder()
           .addItems(Pair.of(Operators.not(IsOnFirstPage.instance()), Action.Type.PREVIOUS))
           .addItems(Pair.of(
             Operators.and(Operators.not(IsOnLastPage.instance()),
@@ -221,8 +221,8 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         ).build());
       // Disable page when it's not active
       case PAGE -> builder.disabledExpression(ImmutableNotOnPageExpression.builder().page(id).build());
-      case ROWGROUP -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
-          .addItems(Pair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
+      case ROWGROUP -> builder.allowedActionsExpression(new ConditionalListOperator.Builder()
+          .addItems(Pair.of(CanAddRowsOperator.of(id), Action.Type.ADD_ROW)
           ).build())
           .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())).orElse(null));
       // TODO hoisting page??
@@ -243,7 +243,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
       case ROOT -> builder
-          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> Pair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
+          .availableItemsExpression(new ConditionalListOperator.Builder<ItemId>().addAllItems(itemIds.stream().map(item -> Pair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
           .isInvalidAnswersExpression(IsAnyInvalidAnswersOperator.instance());
     });
 
@@ -260,8 +260,8 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
           String id1 = itemId.getValue();
           return new ItemRef(id1, rowGroupPrototypeId);
         }).toList()).build())
-        .allowedActionsExpression(ImmutableConditionalListOperator.builder()
-            .addItems(Pair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
+        .allowedActionsExpression(new ConditionalListOperator.Builder()
+            .addItems(Pair.of(CanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())
         .build()
       );

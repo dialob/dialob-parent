@@ -34,7 +34,7 @@ public interface ReduceOperators {
     ValueType valueType = expression.getValueType();
     return ArrayReducerOperator.of(
       ArrayReducerOperator.sumOp(valueType),
-      ImmutableCollectRowFieldsOperator.of(protoTypeId, valueType)
+      CollectRowFieldsOperator.of(protoTypeId, valueType)
     );
   }
 
@@ -43,7 +43,7 @@ public interface ReduceOperators {
     ValueType valueType = expression.getValueType();
     return ArrayReducerOperator.of(
       ArrayReducerOperator.minOp(valueType),
-      ImmutableCollectRowFieldsOperator.of(protoTypeId, valueType)
+      CollectRowFieldsOperator.of(protoTypeId, valueType)
     );
   }
 
@@ -52,7 +52,7 @@ public interface ReduceOperators {
     ValueType valueType = expression.getValueType();
     return ArrayReducerOperator.of(
       ArrayReducerOperator.maxOp(valueType),
-      ImmutableCollectRowFieldsOperator.of(protoTypeId, valueType)
+      CollectRowFieldsOperator.of(protoTypeId, valueType)
     );
   }
 

@@ -27,25 +27,37 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Value.Immutable
-public interface ConcatOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ConcatOperator(
+  List<Expression> expressions
+) implements Expression {
 
-  List<Expression> getExpressions();
+  public static final class Builder extends ConcatOperatorBuilder {}
+
+  public List<Expression> getExpressions() {
+    return expressions;
+  }
 
   @Override
-  default String eval(@NonNull EvalContext context) {
+  public String eval(@NonNull EvalContext context) {
     return getExpressions().stream().map(expression -> (String) expression.eval(context)).collect(Collectors.joining());
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return getExpressions().stream()
       .map(Expression::getEvalRequiredConditions)
       .flatMap(Collection::stream)

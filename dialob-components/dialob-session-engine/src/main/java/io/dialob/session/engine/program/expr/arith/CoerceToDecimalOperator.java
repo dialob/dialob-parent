@@ -25,14 +25,25 @@ import org.immutables.value.Value;
 import java.math.BigDecimal;
 import java.util.Set;
 
-@Value.Immutable
-public interface CoerceToDecimalOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record CoerceToDecimalOperator(
+  Expression expression
+) implements Expression {
 
-  @Value.Parameter
-  Expression getExpression();
+  public static final class Builder extends CoerceToDecimalOperatorBuilder {}
+
+  public Expression getExpression() {
+    return expression;
+  }
 
   @Override
-  default BigDecimal eval(@NonNull EvalContext context) {
+  public BigDecimal eval(@NonNull EvalContext context) {
     Object eval = getExpression().eval(context);
     return switch (eval) {
       case null -> null;
@@ -47,13 +58,13 @@ public interface CoerceToDecimalOperator extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.DECIMAL;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return getExpression().getEvalRequiredConditions();
   }
 

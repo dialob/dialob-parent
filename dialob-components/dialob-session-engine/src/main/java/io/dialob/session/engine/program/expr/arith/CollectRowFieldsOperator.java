@@ -31,17 +31,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface CollectRowFieldsOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record CollectRowFieldsOperator(
+  ItemId itemId,
+  ValueType type
+) implements Expression {
 
-  @Value.Parameter
-  ItemId getItemId();
+  public static CollectRowFieldsOperator of(ItemId itemId, ValueType valueType) {
+    return new CollectRowFieldsOperator.Builder()
+      .itemId(itemId)
+      .type(valueType)
+      .build();
+  }
 
-  @Value.Parameter
-  ValueType getType();
+  public static final class Builder extends CollectRowFieldsOperatorBuilder {}
+
+  public ItemId getItemId() {
+    return itemId();
+  }
+
+  public ValueType getType() {
+    return type();
+  }
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     return getItemId().getParent().flatMap(ItemId::getParent)
       .map(rgId -> (List<BigInteger>) evalContext.getItemValue(rgId)).orElse(Collections.emptyList())
       .stream().map(rowNumber -> IdUtils.withIndex(getItemId(), rowNumber.intValue()))
@@ -50,7 +70,7 @@ public interface CollectRowFieldsOperator extends Expression {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     Set<EventMatcher> matchers = new HashSet<>();
     getItemId().getParent()
       .flatMap(ItemId::getParent)
@@ -64,7 +84,7 @@ public interface CollectRowFieldsOperator extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.arrayOf(getType());
   }
 

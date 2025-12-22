@@ -83,7 +83,7 @@ public interface LocalizedLabelOperator extends Expression {
         expressions.add(Constant.builder().value(ending).valueType(ValueType.STRING).build());
       }
       if (!expressions.isEmpty()) {
-        value.put(key, expressions.size() > 1 ? ImmutableConcatOperator.builder().addAllExpressions(expressions).build() : expressions.getFirst());
+        value.put(key, expressions.size() > 1 ? new ConcatOperator.Builder().addAllExpressions(expressions).build() : expressions.getFirst());
       }
     });
 

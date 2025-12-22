@@ -49,7 +49,7 @@ public record ArrayReducerOperator<T>(
 
   public static final class Builder<T> extends ArrayReducerOperatorBuilder<T> {}
 
-  public static <OT> Expression of(BinaryOperator<OT> binaryOperator, ImmutableCollectRowFieldsOperator of) {
+  public static <OT> Expression of(BinaryOperator<OT> binaryOperator, CollectRowFieldsOperator of) {
     return new ArrayReducerOperator.Builder<OT>()
       .reducer(binaryOperator)
       .arrayExpression(of)
