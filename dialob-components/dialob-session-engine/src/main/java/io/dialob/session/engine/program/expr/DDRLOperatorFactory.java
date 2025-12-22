@@ -268,7 +268,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
     Expression expression = arguments.getFirst();
     assert expression instanceof VariableReference;
     VariableReference variableReference = (VariableReference) expression;
-    return variableReference.getItemId();
+    return variableReference.itemId();
   }
 
   private Expression rhs(List<Expression> arguments) {

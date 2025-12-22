@@ -23,7 +23,7 @@ public interface ReduceOperators {
 
   static ItemId extractPrototypeId(Expression expression) {
     if (expression instanceof VariableReference variableReference) {
-      return variableReference.getItemId();
+      return variableReference.itemId();
     }
     throw new IllegalStateException("Only id expressions supported for now");
   }
