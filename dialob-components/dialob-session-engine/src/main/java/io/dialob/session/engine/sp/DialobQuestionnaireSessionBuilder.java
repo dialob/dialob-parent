@@ -85,12 +85,12 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
         if (item instanceof VariableItem) {
           for (ContextValue contextValue : questionnaire.getContext()) {
             if (id.equals(contextValue.getId())) {
-              return Optional.ofNullable(Utils.parse(item.getValueType(), contextValue.getValue()));
+              return Optional.ofNullable(Utils.parse(item.valueType(), contextValue.getValue()));
             }
           }
           for (VariableValue variableValue : questionnaire.getVariableValues()) {
             if (id.equals(variableValue.getId())) {
-              return Optional.ofNullable(Utils.parse(item.getValueType(), variableValue.getValue()));
+              return Optional.ofNullable(Utils.parse(item.valueType(), variableValue.getValue()));
             }
           }
         } else {

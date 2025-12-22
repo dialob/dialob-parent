@@ -156,14 +156,14 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
         .isPrototype(prototype)
         .valueType(Utils.mapQuestionTypeToValueType(type).orElse(null)) // 'note' do not have value
         .activeExpression(activeWhen)
-        .requiredExpression(Optional.ofNullable(requiredWhen))
+        .requiredExpression(requiredWhen)
         .disabledExpression(disabledExpression.getValue())
         .className(ImmutableConstant.builder().value(classNames).valueType(ValueType.arrayOf(ValueType.STRING)).build())
         .addAllErrors(errors)
         .labelExpression(labelOperator)
         .descriptionExpression(descriptionOperator)
-        .valueSetId(Optional.ofNullable(this.valueSetId))
-        .defaultValue(Optional.ofNullable(defaultValue))
+        .valueSetId(this.valueSetId)
+        .defaultValue(defaultValue)
         .props(props)
         .build());
   }

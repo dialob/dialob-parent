@@ -1023,14 +1023,14 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     FormItem notesum = (FormItem) program.getItem(IdUtils.toId("notesum")).get();
 
-    BinaryOperator expression = (BinaryOperator) notesum.getActiveExpression().get();
+    BinaryOperator expression = (BinaryOperator) notesum.activeExpressionOptional().get();
     GtOperator gtOperator = (GtOperator)expression.getNodes().get(1);
     ArrayReducerOperator arrayReducerOperator = (ArrayReducerOperator)gtOperator.getLhs();
     CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.getArrayExpression();
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());
 
-    assertTrue(notesum.getLabelExpression().isPresent());
-    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef[id=question4, parent=null]}}, Constant{value= or , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef[id=rg1, parent=null]}}]}}}", notesum.getLabelExpression().get().toString());
+    assertTrue(notesum.labelExpressionOptional().isPresent());
+    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef[id=question4, parent=null]}}, Constant{value= or , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef[id=rg1, parent=null]}}]}}}", notesum.labelExpressionOptional().get().toString());
   }
 
   @Test

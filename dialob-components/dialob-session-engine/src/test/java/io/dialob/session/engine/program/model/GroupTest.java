@@ -33,9 +33,9 @@ class GroupTest {
       .putProps("x", null)
       .build();
 
-    assertNotNull(group.getProps());
-    Assertions.assertTrue(group.getProps().containsKey("x"));
-    Assertions.assertNull(group.getProps().get("x"));
+    assertNotNull(group.props());
+    Assertions.assertTrue(group.props().containsKey("x"));
+    Assertions.assertNull(group.props().get("x"));
   }
 
 }

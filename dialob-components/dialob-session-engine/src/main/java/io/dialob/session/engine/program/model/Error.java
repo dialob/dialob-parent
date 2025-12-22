@@ -22,24 +22,34 @@ import org.immutables.value.Value;
 
 import java.util.Optional;
 
-@Value.Immutable
+@Value.Builder
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Error extends StructuralNode {
-
-  class Builder extends ImmutableError.Builder { }
-
+public record Error(
   @Nullable
-  String getCode();
+  String code,
 
   @NonNull
-  ItemId getItemId();
+  ItemId itemId,
 
   @NonNull
-  Expression getValidationExpression();
-
-  Optional<Expression> getDisabledExpression();
+  Expression validationExpression,
 
   @Nullable
-  Expression getLabel();
+  Expression disabledExpression,
+
+  @Nullable
+  Expression label,
+
+  @Value.Default.Boolean(false)
+  boolean isPrototype
+
+) implements StructuralNode {
+
+  public static final class Builder extends ErrorBuilder {
+  }
+
+  public Optional<Expression> disabledExpressionOptional() {
+    return Optional.ofNullable(disabledExpression());
+  }
 
 }

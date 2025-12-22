@@ -109,7 +109,7 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
         .isPrototype(false)
         .isPublished(this.published)
         .valueExpression(this.valueExpression)
-        .defaultValue(resolvedDefaultValue).build());
+        .defaultValue(resolvedDefaultValue.orElse(null)).build());
   }
 
   @Override

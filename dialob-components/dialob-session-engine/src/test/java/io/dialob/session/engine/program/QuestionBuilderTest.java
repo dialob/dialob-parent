@@ -103,12 +103,12 @@ class QuestionBuilderTest {
     final Scope rowScope = Scope.of(IdUtils.toId("g1.2"), Collections.emptySet());
     EvalContext context = mock(EvalContext.class);
     when(context.mapTo(any(), eq(true))).thenAnswer(invocation -> rowScope.mapTo(invocation.getArgument(0), true));
-    Assertions.assertEquals(Arrays.asList(IdUtils.toId("g1.2.i1"), IdUtils.toId("g1.2.i2")), g1proto.getItemsExpression().eval(context));
+    Assertions.assertEquals(Arrays.asList(IdUtils.toId("g1.2.i1"), IdUtils.toId("g1.2.i2")), g1proto.itemsExpression().eval(context));
     verify(context, times(2)).mapTo(any(), eq(true));
     verifyNoMoreInteractions(context);
 
     reset(context);
-    Assertions.assertEquals(Collections.emptyList(), g1.getItemsExpression().eval(context));
+    Assertions.assertEquals(Collections.emptyList(), g1.itemsExpression().eval(context));
     verifyNoMoreInteractions(context);
   }
 

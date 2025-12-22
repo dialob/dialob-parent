@@ -62,46 +62,46 @@ class DependencyResolverVisitor implements ProgramVisitor {
       public void visitGroup(@NonNull Group group) {
         visitDisplayItem(group);
         ItemId groupId;
-        if (isRowgroup(group.getType()) || isRow(group.getType())) {
-          groupId = group.getId();
+        if (isRowgroup(group.type()) || isRow(group.type())) {
+          groupId = group.id();
           if (group.isPrototype()) {
-            final Expression itemsExpression = group.getItemsExpression();
+            final Expression itemsExpression = group.itemsExpression();
             if (itemsExpression instanceof RowItemsExpression rowItemsExpression) {
               updateCommandFactory.createRowGroupItemsFromPrototype(groupId, rowItemsExpression.getItemIds());
 
             }
             updateCommandFactory.createUpdateGroupItems(groupId, itemsExpression);
-            group.getCanRemoveRowWhenExpression().ifPresent(expression -> updateCommandFactory.createUpdateRowCanBeRemovedCommand(groupId, expression));
+            group.canRemoveRowWhenExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateRowCanBeRemovedCommand(groupId, expression));
           } else {
             updateCommandFactory.initRowGroupItems(groupId);
-            group.getCanAddRowWhenExpression().ifPresent(expression -> updateCommandFactory.createUpdateRowsCanBeAddedCommand(groupId, expression));
+            group.canAddRowWhenExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateRowsCanBeAddedCommand(groupId, expression));
           }
         } else {
-          groupId = group.getId();
-          updateCommandFactory.createUpdateGroupItems(groupId, group.getItemsExpression());
+          groupId = group.id();
+          updateCommandFactory.createUpdateGroupItems(groupId, group.itemsExpression());
         }
-        group.getAvailableItemsExpression().ifPresent(expression -> updateCommandFactory.createUpdateAvailableItems(groupId, expression));
-        group.getIsInvalidAnswersExpression().ifPresent(expression -> updateCommandFactory.createUpdateIsInvalidAnswersCommand(groupId, expression));
-        group.getAllowedActionsExpression().ifPresent(expression -> updateCommandFactory.createUpdateAllowedActions(groupId, expression));
+        group.availableItemsExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateAvailableItems(groupId, expression));
+        group.isInvalidAnswersExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateIsInvalidAnswersCommand(groupId, expression));
+        group.allowedActionsExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateAllowedActions(groupId, expression));
       }
 
       @Override
       public void visitDisplayItem(@NonNull DisplayItem displayItem) {
-        final ItemId itemId = displayItem.getId();
-        displayItem.getActiveExpression().ifPresent(expression -> updateCommandFactory.createUpdateActivity(itemId, expression));
-        displayItem.getRequiredExpression().ifPresent(expression -> updateCommandFactory.createUpdateRequired(itemId, expression));
-        displayItem.getDisabledExpression().ifPresent(expression -> updateCommandFactory.createUpdateDisabled(itemId, expression));
-        displayItem.getLabelExpression().ifPresent(expression -> updateCommandFactory.createUpdateLabel(itemId, expression));
-        displayItem.getDescriptionExpression().ifPresent(expression -> updateCommandFactory.createUpdateDescription(itemId, expression));
-        displayItem.getClassName().ifPresent(expression -> updateCommandFactory.createUpdateClass(itemId, expression));
-        if (displayItem.isPrototype() && isRow(displayItem.getType())) {
+        final ItemId itemId = displayItem.id();
+        displayItem.activeExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateActivity(itemId, expression));
+        displayItem.requiredExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateRequired(itemId, expression));
+        displayItem.disabledExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateDisabled(itemId, expression));
+        displayItem.labelExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateLabel(itemId, expression));
+        displayItem.descriptionExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateDescription(itemId, expression));
+        displayItem.classNameOptional().ifPresent(expression -> updateCommandFactory.createUpdateClass(itemId, expression));
+        if (displayItem.isPrototype() && isRow(displayItem.type())) {
           updateCommandFactory.createRowGroupFromPrototype(itemId);
         }
       }
 
       @Override
       public void visitVariableItem(@NonNull VariableItem variableItem) {
-        updateCommandFactory.createUpdateVariable(variableItem.getId(), variableItem.getValueExpression());
+        updateCommandFactory.createUpdateVariable(variableItem.id(), variableItem.getValueExpression());
       }
 
     });
@@ -118,11 +118,11 @@ class DependencyResolverVisitor implements ProgramVisitor {
   @Override
   public Optional<ErrorVisitor> visitErrors() {
     return Optional.of(error -> {
-      final ErrorId targetId = new ErrorId(error.getItemId(), error.getCode());
-      updateCommandFactory.createUpdateValidationCommand(targetId, error.getValidationExpression());
-      error.getDisabledExpression().ifPresent(disabledExpression -> updateCommandFactory.createUpdateValidationDisabled(targetId, disabledExpression));
-      if (error.getLabel() != null) {
-        updateCommandFactory.createErrorLabelUpdateCommand(targetId, error.getLabel());
+      final ErrorId targetId = new ErrorId(error.itemId(), error.code());
+      updateCommandFactory.createUpdateValidationCommand(targetId, error.validationExpression());
+      error.disabledExpressionOptional().ifPresent(disabledExpression -> updateCommandFactory.createUpdateValidationDisabled(targetId, disabledExpression));
+      if (error.label() != null) {
+        updateCommandFactory.createErrorLabelUpdateCommand(targetId, error.label());
       }
     });
   }

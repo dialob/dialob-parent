@@ -138,7 +138,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         }
         dialobProgram.getItem(id)
           .filter(item -> item instanceof DisplayItem)
-          .map(item -> ((DisplayItem) item).getProps())
+          .map(item -> ((DisplayItem) item).props())
           .ifPresent(builder::props);
       }
       return builder;
@@ -578,7 +578,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
             }
 
             dialobProgram.getItem(itemId).ifPresent(item -> {
-              ValueType valueType = item.getValueType();
+              ValueType valueType = item.valueType();
               if (valueType != null) {
                 answerBuilder.type(valueType.getName());
               }
@@ -688,7 +688,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public String getFormId() {
-    return dialobProgram.getProgram().getId();
+    return dialobProgram.getProgram().id();
   }
 
   @Override

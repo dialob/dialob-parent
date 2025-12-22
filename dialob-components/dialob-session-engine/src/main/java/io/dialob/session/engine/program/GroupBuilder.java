@@ -220,14 +220,14 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
           .addItems(Pair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
         ).build());
       // Disable page when it's not active
-      case PAGE -> builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
+      case PAGE -> builder.disabledExpression(ImmutableNotOnPageExpression.builder().page(id).build());
       case ROWGROUP -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
           .addItems(Pair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
           ).build())
-          .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+          .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())).orElse(null));
       // TODO hoisting page??
       // Disable group when parent group is not active
-      case GROUP, SURVEYGROUP -> builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+      case GROUP, SURVEYGROUP -> builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())).orElse(null));
     };
 
     if (type.haveSubItems()) {
@@ -239,7 +239,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       // nothing here
       case GROUP, PAGE -> builder;
       case SURVEYGROUP -> builder
-          .valueSetId(Optional.ofNullable(this.valueSetId));
+          .valueSetId(this.valueSetId);
       case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
       case ROOT -> builder

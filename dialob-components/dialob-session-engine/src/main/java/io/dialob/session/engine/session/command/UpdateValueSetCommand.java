@@ -41,7 +41,7 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
     return getEntries().stream().flatMap(entryValue -> {
       Stream<EventMatcher> eventMatchers = Stream.empty();
       if (entryValue instanceof ConditionalValue conditionalValue) {
-        eventMatchers = conditionalValue.getWhen().getEvalRequiredConditions().stream();
+        eventMatchers = conditionalValue.when().getEvalRequiredConditions().stream();
       }
       // TODO collect label expressions
       return Stream.concat(Stream.of(EventMatchers.whenSessionLocaleUpdated()), eventMatchers);

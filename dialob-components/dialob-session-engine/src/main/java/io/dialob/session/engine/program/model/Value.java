@@ -20,7 +20,7 @@ import io.dialob.session.engine.program.EvalContext;
 
 public interface Value<T> {
 
-  ValueType getValueType();
+  ValueType valueType();
 
   T eval(EvalContext evalContext);
 

@@ -27,33 +27,29 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 
-@Value.Immutable
+@Value.Builder
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Program extends ProgramNode {
+public record Program(
+  @NonNull String id,
+  @NonNull Item rootItem,
+  @NonNull List<Item> items,
+  @NonNull List<ValueSet> valueSets
+) implements ProgramNode {
 
-  class Builder extends ImmutableProgram.Builder { }
+  public static final class Builder extends ProgramBuilder { }
 
-  @NonNull
-  String getId();
 
-  @NonNull
-  Item getRootItem();
-
-  List<Item> getItems();
-
-  List<ValueSet> getValueSets();
-
-  default void accept(ProgramVisitor visitor) {
+  public void accept(ProgramVisitor visitor) {
     final List<io.dialob.session.engine.program.model.Error> errors = new ArrayList<>();
     visitor.startProgram(this);
 
     visitor.visitItems().ifPresent(itemVisitor -> {
       // root item required!!
-      itemVisitor.visitItem(getRootItem());
-      getItems().forEach(item -> {
+      itemVisitor.visitItem(this.rootItem());
+      this.items().forEach(item -> {
         itemVisitor.visitItem(item);
         if (item instanceof DisplayItem displayItem) {
-          errors.addAll(displayItem.getErrors());
+          errors.addAll(displayItem.errors());
         }
       });
       itemVisitor.end();
@@ -65,27 +61,27 @@ public interface Program extends ProgramNode {
     });
 
     visitor.visitValueSets().ifPresent(valueSetVisitor -> {
-      getValueSets().forEach(valueSetVisitor::visitValueSet);
+      this.valueSets().forEach(valueSetVisitor::visitValueSet);
       valueSetVisitor.end();
     });
 
     visitor.end();
   }
 
-  default Stream<Item> findItemsBy(Predicate<ItemId> matcher) {
-    Stream<Item> itemStream = getItems().stream().filter(item -> matcher.test(item.getId()));
-    if (matcher.test(getRootItem().getId())) {
-      return Stream.concat(Stream.of(getRootItem()), itemStream);
+  public Stream<Item> findItemsBy(Predicate<ItemId> matcher) {
+    Stream<Item> itemStream = this.items().stream().filter(item -> matcher.test(item.id()));
+    if (matcher.test(this.rootItem().id())) {
+      return Stream.concat(Stream.of(this.rootItem()), itemStream);
     }
     return itemStream;
   }
 
-  default Optional<Item> getItem(ItemId id) {
+  public Optional<Item> getItem(ItemId id) {
     if (IdUtils.QUESTIONNAIRE_ID.equals(id)) {
-      return Optional.of(getRootItem());
+      return Optional.of(this.rootItem());
     }
-    for (Item item : getItems()) {
-      if (id.equals(item.getId())) {
+    for (Item item : this.items()) {
+      if (id.equals(item.id())) {
         return Optional.of(item);
       }
     }

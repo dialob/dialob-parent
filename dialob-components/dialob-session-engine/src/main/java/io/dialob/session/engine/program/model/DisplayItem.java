@@ -25,24 +25,24 @@ import java.util.Optional;
 public interface DisplayItem extends Item {
 
   @Nullable
-  String getView();
+  String view();
 
   @Nullable
-  Map<String, @org.checkerframework.checker.nullness.qual.Nullable Object> getProps();
+  Map<String, @org.checkerframework.checker.nullness.qual.Nullable Object> props();
 
-  Optional<Expression> getClassName();
+  Optional<Expression> classNameOptional();
 
-  Optional<Expression> getActiveExpression();
+  Optional<Expression> activeExpressionOptional();
 
-  Optional<Expression> getRequiredExpression();
+  Optional<Expression> requiredExpressionOptional();
 
-  Optional<Expression> getDisabledExpression();
+  Optional<Expression> disabledExpressionOptional();
 
-  Optional<Expression> getLabelExpression();
+  Optional<Expression> labelExpressionOptional();
 
-  Optional<Expression> getDescriptionExpression();
+  Optional<Expression> descriptionExpressionOptional();
 
   @NonNull
-  List<Error> getErrors();
+  List<Error> errors();
 
 }
