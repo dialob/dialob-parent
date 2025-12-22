@@ -26,17 +26,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface BinaryOperator<T> extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record BinaryOperator<T>(
+  List<Expression> nodes,
+  Reducer<T> reducer
+) implements Expression {
 
-  List<Expression> getNodes();
+  public static final class Builder<T> extends BinaryOperatorBuilder<T> {}
 
-  Reducer<T> getReducer();
+
+  public static <B> Builder<B> builder() {
+    return new Builder<>();
+  }
 
   @Override
-  default T eval(@NonNull EvalContext evalContext) {
+  public T eval(@NonNull EvalContext evalContext) {
     T result = null;
-    for (final Expression node : getNodes()) {
+    for (final Expression node : nodes()) {
       T value = (T) node.eval(evalContext);
       if (value == null) {
         return null;
@@ -44,7 +56,7 @@ public interface BinaryOperator<T> extends Expression {
       if (result == null) {
         result = value;
       } else {
-        result = this.getReducer().apply(result, value);
+        result = this.reducer().apply(result, value);
       }
     }
     return result;
@@ -52,15 +64,15 @@ public interface BinaryOperator<T> extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
-    return getReducer().getValueType();
+  public ValueType getValueType() {
+    return reducer().getValueType();
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     final Set<EventMatcher> deps = new HashSet<>();
-    for (Expression expression : getNodes()) {
+    for (Expression expression : nodes()) {
       deps.addAll(expression.getEvalRequiredConditions());
     }
     return deps;

@@ -85,13 +85,13 @@ public class DDRLOperatorFactory implements OperatorFactory {
     }
     switch(operatorSymbol) {
       case PLUS:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).add()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).add()).build();
       case MINUS:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).sub()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).sub()).build();
       case MULT:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).mult()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).mult()).build();
       case DIV:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).div()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).div()).build();
       case NEG:
         if (nodeValueType == ValueType.DECIMAL) {
           return ImmutableNegOperatorDecimal.builder().expression(unaryArg(arguments)).build();
@@ -106,9 +106,9 @@ public class DDRLOperatorFactory implements OperatorFactory {
         expr = unaryArg(arguments);
         break;
       case AND:
-        return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.AND).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<Boolean>().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.AND).build();
       case OR:
-        return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.OR).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<Boolean>().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.OR).build();
       case NE, EQ, LT, LE, GE, GT:
         return relationOf(operatorSymbol, lhs(arguments), rhs(arguments));
 

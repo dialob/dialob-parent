@@ -1024,7 +1024,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     FormItem notesum = (FormItem) program.getItem(IdUtils.toId("notesum")).get();
 
     BinaryOperator expression = (BinaryOperator) notesum.activeExpressionOptional().get();
-    GtOperator gtOperator = (GtOperator)expression.getNodes().get(1);
+    GtOperator gtOperator = (GtOperator)expression.nodes().get(1);
     ArrayReducerOperator arrayReducerOperator = (ArrayReducerOperator)gtOperator.getLhs();
     CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.arrayExpression();
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());

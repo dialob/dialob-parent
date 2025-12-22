@@ -36,11 +36,11 @@ public interface Operators {
   InfixOperator gt(Expression lhs, Expression rhs);
 
   static Expression and(@NonNull Expression ...expressions) {
-    return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.AND).build();
+    return BinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.AND).build();
   }
 
   static Expression or(@NonNull Expression ...expressions) {
-    return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.OR).build();
+    return BinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.OR).build();
   }
 
   static Expression isAnswered(ItemId id) {
