@@ -26,7 +26,6 @@ import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import lombok.extern.slf4j.Slf4j;
-import org.immutables.value.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.task.TaskRejectedException;
 
@@ -40,7 +39,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 @Slf4j
-@Value.Enclosing
 class FunctionRegistryImpl implements FunctionRegistry {
 
   private final CurrentTenant currentTenant;
@@ -61,8 +59,8 @@ class FunctionRegistryImpl implements FunctionRegistry {
   @Override
   public ValueType returnTypeOf(@NonNull String functionName, ValueType... argTypes) throws VariableNotDefinedException {
     for (ConfiguredFunction configuredFunction : configuredFunctions.get(functionName)) {
-      if (configuredFunction != null && configuredFunction.getArgumentMatcher().test(argTypes)) {
-        return configuredFunction.getReturnType();
+      if (configuredFunction != null && configuredFunction.argumentMatcher().test(argTypes)) {
+        return configuredFunction.returnType();
       }
     }
     throw new VariableNotDefinedException(functionName);
@@ -104,7 +102,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
             }
           }
           if (!argumentTypes.contains(null)) {
-            ImmutableConfiguredFunction.Builder builder = ImmutableConfiguredFunction.builder();
+            ConfiguredFunction.Builder builder = new ConfiguredFunction.Builder();
             if (argumentMatcher != null) {
               builder.argumentMatcher(argumentMatcher);
             }
@@ -113,7 +111,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
                 .functionName(functionName)
                 .staticMethodName(implementationName)
                 .returnType(returnType)
-                .addAllArgumentValueTypes(argumentTypes)
+                .argumentValueTypes(argumentTypes)
                 .argumentTypes(method.getParameterTypes())
                 .functionImplementationClass(implementationClass)
                 .isAsync(async)
@@ -150,7 +148,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
       Method method = findMethod(configuredFunction);
       if (method != null) {
         final Object out = method.invoke(null, args);
-        callback.succeeded(configuredFunction.getReturnType().getTypeClass().cast(out));
+        callback.succeeded(configuredFunction.returnType().getTypeClass().cast(out));
         return;
       }
       failure = "Can't find function " + functionName;
@@ -178,9 +176,9 @@ class FunctionRegistryImpl implements FunctionRegistry {
     if (configuredFunction == null) {
       return null;
     }
-    final Class implClass = configuredFunction.getFunctionImplementationClass();
+    final var implClass = configuredFunction.functionImplementationClass();
     // TODO: Caching by function name + arg values as key
-    return implClass.getMethod(configuredFunction.getStaticMethodName(), configuredFunction.getArgumentTypes());
+    return implClass.getMethod(configuredFunction.staticMethodName(), configuredFunction.argumentTypes());
   }
 
   /**

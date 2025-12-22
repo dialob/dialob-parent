@@ -15,43 +15,68 @@
  */
 package io.dialob.function;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.immutables.value.Value;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-@Value.Immutable
-interface ConfiguredFunction {
+@Value.Builder
+@Value.Style(
+  isSetOnBuilder = true,
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+record ConfiguredFunction(
+  String functionName,
 
-  String getFunctionName();
+  String staticMethodName,
 
-  String getStaticMethodName();
+  ValueType returnType,
 
-  ValueType getReturnType();
+  List<ValueType> argumentValueTypes,
 
-  List<ValueType> getArgumentValueTypes();
+  Class<?>[] argumentTypes,
 
-  @Value.Default
-  default Predicate<ValueType[]> getArgumentMatcher() {
-    return argTypes -> getArgumentValueTypes().equals(Arrays.asList(argTypes));
+  Class<?> functionImplementationClass,
+
+  boolean isAsync,
+
+  @Nullable
+  Predicate<ValueType[]> argumentMatcher,
+
+  @Nullable
+  String canonicalName
+
+) {
+
+  static class Builder extends ConfiguredFunctionBuilder {
+    @Override
+    public ConfiguredFunction build() {
+      if (!argumentTypesIsSet()) {
+        argumentTypes();
+      }
+      return super.build();
+    }
   }
 
-  Class<?>[] getArgumentTypes();
+  public ConfiguredFunction {
+    canonicalName = Objects.requireNonNullElseGet(canonicalName, () -> functionImplementationClass.getCanonicalName() + "." + staticMethodName);
+    argumentMatcher = Objects.requireNonNullElse(argumentMatcher, argTypes -> argumentValueTypes().equals(Arrays.asList(argTypes)));
+  }
 
-  Class getFunctionImplementationClass();
-
-  boolean isAsync();
-
-  default boolean doesMatch(String canonicalFunctionName, final Object... args) {
-    if (StringUtils.equalsAny(canonicalFunctionName, getFunctionName(), getCanonicalName())) {
-      final Class<?>[] argumentTypes = getArgumentTypes();
+  public boolean doesMatch(String canonicalFunctionName, final Object... args) {
+    if (Strings.CS.equalsAny(canonicalFunctionName, functionName(), canonicalName())) {
+      final var argumentTypes = argumentTypes();
       for (int i = 0; i < args.length; i++) {
         if (argumentTypes.length < i
-          || (args[i] != null && !argumentTypes[i].isAssignableFrom(args[i].getClass())))
-        {
+          || (args[i] != null && !argumentTypes[i].isAssignableFrom(args[i].getClass()))) {
           return false;
         }
       }
@@ -60,8 +85,5 @@ interface ConfiguredFunction {
     return false;
   }
 
-  default String getCanonicalName() {
-    return getFunctionImplementationClass().getCanonicalName() + "." + getStaticMethodName();
-  }
 }
 
