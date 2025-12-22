@@ -32,7 +32,7 @@ public interface ReduceOperators {
   static Expression sumOf(Expression expression) {
     ItemId protoTypeId = extractPrototypeId(expression);
     ValueType valueType = expression.getValueType();
-    return ImmutableArrayReducerOperator.of(
+    return ArrayReducerOperator.of(
       ArrayReducerOperator.sumOp(valueType),
       ImmutableCollectRowFieldsOperator.of(protoTypeId, valueType)
     );
@@ -41,7 +41,7 @@ public interface ReduceOperators {
   static Expression minOf(Expression expression) {
     ItemId protoTypeId = extractPrototypeId(expression);
     ValueType valueType = expression.getValueType();
-    return ImmutableArrayReducerOperator.of(
+    return ArrayReducerOperator.of(
       ArrayReducerOperator.minOp(valueType),
       ImmutableCollectRowFieldsOperator.of(protoTypeId, valueType)
     );
@@ -50,7 +50,7 @@ public interface ReduceOperators {
   static Expression maxOf(Expression expression) {
     ItemId protoTypeId = extractPrototypeId(expression);
     ValueType valueType = expression.getValueType();
-    return ImmutableArrayReducerOperator.of(
+    return ArrayReducerOperator.of(
       ArrayReducerOperator.maxOp(valueType),
       ImmutableCollectRowFieldsOperator.of(protoTypeId, valueType)
     );

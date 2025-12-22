@@ -168,7 +168,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
       throw new CannotReduceTypeWithOperatorException(operatorSymbol.name(), itemValueType);
     }
 
-    return ImmutableArrayReducerOperator.of(
+    return ArrayReducerOperator.of(
       reducer,
       ImmutableCollectRowFieldsOperator.of(varRef, itemValueType));
   }
