@@ -16,7 +16,7 @@
 package io.dialob.session.engine.session.command;
 
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.arith.ImmutableConstant;
+import io.dialob.session.engine.program.expr.arith.Constant;
 import io.dialob.session.engine.program.expr.arith.NumberOperators;
 import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.model.Expression;
@@ -113,7 +113,7 @@ class CommandFactoryTest {
   void shouldNotTriggerItself() {
     ItemId itemId = IdUtils.toId("q1");
     Expression expression =
-      Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), ImmutableConstant.builder().valueType(ValueType.INTEGER).value(0).build()));
+      Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), Constant.builder().valueType(ValueType.INTEGER).value(0).build()));
     //;
     UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
     Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();

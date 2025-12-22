@@ -157,8 +157,8 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
         .valueType(Utils.mapQuestionTypeToValueType(type).orElse(null)) // 'note' do not have value
         .activeExpression(activeWhen)
         .requiredExpression(requiredWhen)
-        .disabledExpression(disabledExpression.getValue())
-        .className(ImmutableConstant.builder().value(classNames).valueType(ValueType.arrayOf(ValueType.STRING)).build())
+        .disabledExpression(disabledExpression.get())
+        .className(Constant.builder().value(classNames).valueType(ValueType.arrayOf(ValueType.STRING)).build())
         .addAllErrors(errors)
         .labelExpression(labelOperator)
         .descriptionExpression(descriptionOperator)

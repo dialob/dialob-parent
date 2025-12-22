@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 
 public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilder> implements BuilderParent {
 
-  public static final Expression EMPTY_ARRAY_EXPRESSION = ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Collections.emptyList()).build();
+  public static final Expression EMPTY_ARRAY_EXPRESSION = Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Collections.emptyList()).build();
   private List<ItemId> itemIds;
 
   private Expression canAddRowWhen = BooleanOperators.TRUE;
@@ -204,7 +204,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .activeExpression(activeWhen)
       .canAddRowWhenExpression(canAddRowWhen)
       .canRemoveRowWhenExpression(canRemoveRowWhen)
-      .className(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(classNames).build())
+      .className(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(classNames).build())
       .labelExpression(createLabelOperator(label))
       .descriptionExpression(createLabelOperator(description))
       .props(props);
@@ -232,7 +232,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
     if (type.haveSubItems()) {
         builder = builder
-          .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(itemIds).build());
+          .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(itemIds).build());
      }
 
     builder = (switch (type) {

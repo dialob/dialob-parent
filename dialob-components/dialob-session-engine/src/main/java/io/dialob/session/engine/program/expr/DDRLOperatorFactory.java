@@ -177,9 +177,9 @@ public class DDRLOperatorFactory implements OperatorFactory {
     if (patternExpr instanceof Constant) {
       Constant<String> constant = (Constant<String>) patternExpr;
       try {
-        Pattern.compile(constant.getValue());
+        Pattern.compile(constant.value());
       } catch (PatternSyntaxException pse) {
-        throw new MatcherRegexErrorException(CompilerErrorCode.MATCHER_REGEX_SYNTAX_ERROR, constant.getValue());
+        throw new MatcherRegexErrorException(CompilerErrorCode.MATCHER_REGEX_SYNTAX_ERROR, constant.value());
       }
     } else {
       // TODO Reject dynamic regex for now.

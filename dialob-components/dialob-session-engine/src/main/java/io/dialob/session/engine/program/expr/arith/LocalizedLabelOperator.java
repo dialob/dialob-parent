@@ -49,9 +49,9 @@ public interface LocalizedLabelOperator extends Expression {
       final Matcher matcher = EXPRESSION_PATTERN.matcher(labelString);
       final List<Expression> expressions = new ArrayList<>();
       while (matcher.find()) {
-        expressions.add(ImmutableConstant.builder().value(labelString.substring(i, matcher.start())).valueType(ValueType.STRING).build());
+        expressions.add(Constant.builder().value(labelString.substring(i, matcher.start())).valueType(ValueType.STRING).build());
         if (matcher.group(1) == null) {
-          expressions.add(ImmutableConstant.builder().value(matcher.group(0)).valueType(ValueType.STRING).build());
+          expressions.add(Constant.builder().value(matcher.group(0)).valueType(ValueType.STRING).build());
         } else {
           String itemId = matcher.group(1);
           var variableReference = Operators.var(itemId, ValueType.STRING);
@@ -80,7 +80,7 @@ public interface LocalizedLabelOperator extends Expression {
       }
       String ending = labelString.substring(i);
       if (StringUtils.isNotEmpty(ending)) {
-        expressions.add(ImmutableConstant.builder().value(ending).valueType(ValueType.STRING).build());
+        expressions.add(Constant.builder().value(ending).valueType(ValueType.STRING).build());
       }
       if (!expressions.isEmpty()) {
         value.put(key, expressions.size() > 1 ? ImmutableConcatOperator.builder().addAllExpressions(expressions).build() : expressions.getFirst());

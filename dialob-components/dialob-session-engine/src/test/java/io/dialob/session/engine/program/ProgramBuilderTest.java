@@ -1030,7 +1030,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());
 
     assertTrue(notesum.labelExpressionOptional().isPresent());
-    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference[itemId=ItemRef[id=question4, parent=null], valueType=STRING]}, Constant{value= or , valueType=STRING}, ToStringOperator{expression=VariableReference[itemId=ItemRef[id=rg1, parent=null], valueType=STRING]}]}}}", notesum.labelExpressionOptional().get().toString());
+    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant[value=Kysymys 2 on , valueType=STRING], ToStringOperator{expression=VariableReference[itemId=ItemRef[id=question4, parent=null], valueType=STRING]}, Constant[value= or , valueType=STRING], ToStringOperator{expression=VariableReference[itemId=ItemRef[id=rg1, parent=null], valueType=STRING]}]}}}", notesum.labelExpressionOptional().get().toString());
   }
 
   @Test

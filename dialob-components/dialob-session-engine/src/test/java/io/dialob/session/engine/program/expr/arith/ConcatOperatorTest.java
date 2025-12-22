@@ -32,7 +32,7 @@ class ConcatOperatorTest {
 
   @Test
   void constantExpressionGiveNonConditions() {
-    ConcatOperator op = ImmutableConcatOperator.builder().expressions(List.of(ImmutableConstant.builder().valueType(ValueType.STRING).value("Hello").build())).build();
+    ConcatOperator op = ImmutableConcatOperator.builder().expressions(List.of(Constant.builder().valueType(ValueType.STRING).value("Hello").build())).build();
     Assertions.assertTrue(op.getEvalRequiredConditions().isEmpty());
   }
 

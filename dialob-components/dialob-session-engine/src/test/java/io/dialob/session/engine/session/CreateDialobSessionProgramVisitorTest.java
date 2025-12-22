@@ -75,7 +75,7 @@ class CreateDialobSessionProgramVisitorTest {
         .id(IdUtils.toId("rg"))
         .type("rowgroup")
         .isPrototype(false)
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("rg.*"))
@@ -212,7 +212,7 @@ class CreateDialobSessionProgramVisitorTest {
       .id(itemId)
       .type("rowgroup")
       .isPrototype(false)
-      .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
+      .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
       .valueType(ValueType.arrayOf(ValueType.INTEGER))
       .build();
 

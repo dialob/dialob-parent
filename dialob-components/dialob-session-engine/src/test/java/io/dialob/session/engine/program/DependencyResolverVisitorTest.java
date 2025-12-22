@@ -83,7 +83,7 @@ class DependencyResolverVisitorTest {
         .id(IdUtils.toId("questionnaire"))
         .type("questionnaire")
         .isPrototype(false)
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build())
         .build());
       itemVisitor.end();
     });
@@ -92,7 +92,7 @@ class DependencyResolverVisitorTest {
     assertTrue(visitor.getInputUpdates().isEmpty());
     assertThat(visitor.getItemCommands()).hasSize(1)
       .containsEntry(ref("questionnaire"), List.of(
-        updateGroupItems(ref("questionnaire"), ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build()))
+        updateGroupItems(ref("questionnaire"), Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build()))
       );
     verifyNoMoreInteractions(program);
   }
@@ -112,13 +112,13 @@ class DependencyResolverVisitorTest {
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("questionnaire"))
         .type("questionnaire")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1", "page2")).build())
         .isInvalidAnswersExpression(Operators.not(IsAnyInvalidAnswersOperator.instance()))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1"))
         .type("page")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1", "page1group2")).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1", "page1group2")).build())
         .disabledExpression(ImmutableNotOnPageExpression.of(ref("page1")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
@@ -131,28 +131,28 @@ class DependencyResolverVisitorTest {
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1group1"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1item1","page1group1item2")).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1item1","page1group1item2")).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1group2"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2group1"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2group2"))
         .type("group")
-        .itemsExpression(ImmutableConstant.builder().valueType(STRING_ARRAY_VALUE_TYPE).value(List.of()).build())
+        .itemsExpression(Constant.builder().valueType(STRING_ARRAY_VALUE_TYPE).value(List.of()).build())
         .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
         .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
         .build());
@@ -256,8 +256,8 @@ IsActiveTargetEventMatcher{targetMatcher=TargetIdEventMatcher{targetId=group1}}=
     verifyNoMoreInteractions(program);
   }
 
-  public ImmutableConstant<Object> stringArray(String... list) {
-    return ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList(list)).build();
+  public Constant<Object> stringArray(String... list) {
+    return Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList(list)).build();
   }
 
 

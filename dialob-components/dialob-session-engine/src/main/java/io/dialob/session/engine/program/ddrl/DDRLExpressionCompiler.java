@@ -124,7 +124,7 @@ public class DDRLExpressionCompiler {
     @Override
     @NonNull
     public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
-      expressions.add(ImmutableConstant.builder().valueType(requireNonNull(node.getValueType())).value(node.getAsValueType()).build());
+      expressions.add(Constant.builder().valueType(requireNonNull(node.getValueType())).value(node.getAsValueType()).build());
       return node;
     }
 
