@@ -19,12 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
-import io.dialob.questionnaire.service.api.event.ImmutableQuestionnaireCompletedEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
-import io.dialob.security.tenant.Tenant;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.security.tenant.Tenant;
 import io.dialob.settings.DialobSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -188,10 +187,10 @@ class QuestionnaireWebSocketHandlerTest {
     questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
 
     // Create a completed event for the same questionnaire
-    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
-      .questionnaireId("questionnaire-123")
-      .tenant(Tenant.of("test-tenant"))
-      .build();
+    QuestionnaireCompletedEvent event = new QuestionnaireCompletedEvent(
+      Tenant.of("test-tenant"),
+      "questionnaire-123"
+    );
 
     // Call the method under test
     questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
@@ -246,10 +245,10 @@ class QuestionnaireWebSocketHandlerTest {
     Mockito.clearInvocations(webSocketSession);
 
     // Create a completed event for a DIFFERENT questionnaire
-    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
-      .questionnaireId("different-questionnaire-456")
-      .tenant(Tenant.of("test-tenant"))
-      .build();
+    QuestionnaireCompletedEvent event = new QuestionnaireCompletedEvent(
+      Tenant.of("test-tenant"),
+      "different-questionnaire-456"
+    );
 
     // Call the method under test
     questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
@@ -277,10 +276,10 @@ class QuestionnaireWebSocketHandlerTest {
     questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
 
     // Create a completed event
-    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
-      .questionnaireId("questionnaire-789")
-      .tenant(Tenant.of("test-tenant"))
-      .build();
+    QuestionnaireCompletedEvent event = new QuestionnaireCompletedEvent(
+      Tenant.of("test-tenant"),
+      "questionnaire-789"
+    );
 
     // Call the method under test
     questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
@@ -326,11 +325,10 @@ class QuestionnaireWebSocketHandlerTest {
     Mockito.clearInvocations(webSocketSession);
 
     // Create a completed event
-    QuestionnaireCompletedEvent event = ImmutableQuestionnaireCompletedEvent.builder()
-      .questionnaireId("questionnaire-123")
-      .tenant(Tenant.of("test-tenant"))
-      .build();
-
+    QuestionnaireCompletedEvent event = new QuestionnaireCompletedEvent(
+      Tenant.of("test-tenant"),
+      "questionnaire-123"
+    );
     // Call the method under test
     questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
 

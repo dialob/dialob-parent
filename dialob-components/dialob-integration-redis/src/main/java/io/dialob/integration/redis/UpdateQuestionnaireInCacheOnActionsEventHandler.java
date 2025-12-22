@@ -42,8 +42,8 @@ public class UpdateQuestionnaireInCacheOnActionsEventHandler {
   @EventListener
   @Async
   public void onQuestionnaireActionsEvent(QuestionnaireActionsEvent event) {
-    TenantContextHolderCurrentTenant.runInTenantContext(event.getTenant(), () -> {
-      String questionnaireId = event.getQuestionnaireId();
+    TenantContextHolderCurrentTenant.runInTenantContext(event.tenant(), () -> {
+      String questionnaireId = event.questionnaireId();
       QuestionnaireSession session = this.questionnaireSessionService.findOne(questionnaireId, false);
       if (session != null) {
         Questionnaire questionnaire = session.getQuestionnaire();

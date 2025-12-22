@@ -97,7 +97,7 @@ public class ScheduledSessionEvictionPolicy {
   @EventListener
   protected void onFormUpdatedEvent(FormUpdatedEvent event) {
     LOGGER.debug("onFormUpdatedEvent({})", event);
-    final String formId = event.getFormId();
+    final String formId = event.formId();
     evictWhen(session -> session.usesLastestFormRevision() && formId.equals(session.getFormId()));
     cacheManager.flatMap(cacheManager -> Optional.ofNullable(cacheManager.getCache(Constants.PROGRAM_CACHE_NAME)))
       .ifPresent(programCache -> programCache.evict(formId));

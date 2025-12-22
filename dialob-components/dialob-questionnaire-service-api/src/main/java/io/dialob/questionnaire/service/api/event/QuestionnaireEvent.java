@@ -25,12 +25,12 @@ import io.dialob.integration.api.event.TenantScopedEvent;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type")
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = ImmutableQuestionnaireCompletedEvent.class, name = "QuestionnaireCompleted"),
-  @JsonSubTypes.Type(value = ImmutableQuestionnaireActionsEvent.class, name = "QuestionnaireActions"),
-  @JsonSubTypes.Type(value = ImmutableQuestionnaireClientConnectedEvent.class, name = "QuestionnaireClientConnected"),
-  @JsonSubTypes.Type(value = ImmutableQuestionnaireClientDisconnectedEvent.class, name = "QuestionnaireClientDisconnected"),
-  @JsonSubTypes.Type(value = ImmutableQuestionnaireCreatedEvent.class, name = "QuestionnaireCreated"),
-  @JsonSubTypes.Type(value = ImmutableQuestionnaireOpenedEvent.class, name = "QuestionnaireOpened")
+  @JsonSubTypes.Type(value = QuestionnaireCompletedEvent.class, name = "QuestionnaireCompleted"),
+  @JsonSubTypes.Type(value = QuestionnaireActionsEvent.class, name = "QuestionnaireActions"),
+  @JsonSubTypes.Type(value = QuestionnaireClientConnectedEvent.class, name = "QuestionnaireClientConnected"),
+  @JsonSubTypes.Type(value = QuestionnaireClientDisconnectedEvent.class, name = "QuestionnaireClientDisconnected"),
+  @JsonSubTypes.Type(value = QuestionnaireCreatedEvent.class, name = "QuestionnaireCreated"),
+  @JsonSubTypes.Type(value = QuestionnaireOpenedEvent.class, name = "QuestionnaireOpened")
 })
 public interface QuestionnaireEvent extends TenantScopedEvent {
 
@@ -38,6 +38,6 @@ public interface QuestionnaireEvent extends TenantScopedEvent {
    * @return questionnaire id of event
    */
   @NonNull
-  String getQuestionnaireId();
+  String questionnaireId();
 
 }

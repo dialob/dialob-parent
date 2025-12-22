@@ -50,7 +50,7 @@ public class CompleteQuestionnaireEventDelegateToAnswerSubmitHandler {
   @EventListener
   protected void onCompleteQuestionnaireHandler(QuestionnaireCompletedEvent event) {
     LOGGER.debug("Received: {}", event);
-    String tenantId = event.getTenant().id();
+    String tenantId = event.tenant().id();
     AnswerSubmitHandler.Settings submitHandlerSettings = new AnswerSubmitHandler.Settings() {
 
       @Override
@@ -71,7 +71,7 @@ public class CompleteQuestionnaireEventDelegateToAnswerSubmitHandler {
         return Collections.emptyMap();
       }
     };
-    String questionnaireId = event.getQuestionnaireId();
+    String questionnaireId = event.questionnaireId();
     QuestionnaireSession questionnaireSession = questionnaireSessionService.findOne(questionnaireId);
     if (questionnaireSession != null) {
       createSubmitHandler(submitHandlerSettings)

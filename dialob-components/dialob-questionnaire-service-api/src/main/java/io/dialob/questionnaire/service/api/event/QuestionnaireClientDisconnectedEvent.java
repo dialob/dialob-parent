@@ -15,15 +15,16 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
-import org.immutables.value.Value;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.tenant.Tenant;
 
 import java.net.InetAddress;
 
-@Value.Immutable
-public interface QuestionnaireClientDisconnectedEvent extends QuestionnaireEvent {
-
-  InetAddress getClient();
-
-  int getCloseStatus();
+public record QuestionnaireClientDisconnectedEvent(
+  @NonNull String questionnaireId,
+  @NonNull Tenant tenant,
+  InetAddress client,
+  int closeStatus
+) implements QuestionnaireEvent {
 
 }

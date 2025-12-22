@@ -16,13 +16,15 @@
 package io.dialob.questionnaire.service.api.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import org.immutables.value.Value;
+import io.dialob.security.tenant.Tenant;
 
 import java.net.InetAddress;
 
-@Value.Immutable
-public interface QuestionnaireClientConnectedEvent extends QuestionnaireEvent {
+public record QuestionnaireClientConnectedEvent(
+  @NonNull Tenant tenant,
+  @NonNull String questionnaireId,
+  @NonNull String sessionId,
+  @NonNull InetAddress client
+) implements QuestionnaireEvent {
 
-  @NonNull
-  InetAddress getClient();
 }

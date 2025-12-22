@@ -21,6 +21,6 @@ import io.dialob.security.tenant.Tenant;
 public interface TenantScopedEvent extends Event {
 
   @NonNull
-  Tenant getTenant();
+  Tenant tenant();
 
 }

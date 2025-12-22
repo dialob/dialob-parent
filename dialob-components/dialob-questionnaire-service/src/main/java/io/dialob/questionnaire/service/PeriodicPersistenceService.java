@@ -80,7 +80,7 @@ public class PeriodicPersistenceService {
 
   @EventListener
   public void onQuestionnaireActionsEvent(QuestionnaireActionsEvent event) {
-    tasks.compute(event.getQuestionnaireId(), (qId, previousSchedule) -> {
+    tasks.compute(event.questionnaireId(), (qId, previousSchedule) -> {
       if (previousSchedule != null && !previousSchedule.isDone()) {
         previousSchedule.cancel(false);
       }
