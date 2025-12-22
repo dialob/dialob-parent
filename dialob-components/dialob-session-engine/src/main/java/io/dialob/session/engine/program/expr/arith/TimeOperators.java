@@ -42,25 +42,25 @@ public class TimeOperators  extends ComparableTypeOperators<LocalTime> {
     if (operator == OperatorSymbol.MINUS) {
       if (lhsValueType == ValueType.DATE) {
         if (rhsValueType == ValueType.DATE) {
-          return ImmutableDateMinusDateOperator.builder().lhs(lhs).rhs(rhs).build();
+          return new DateMinusDateOperator.Builder().lhs(lhs).rhs(rhs).build();
         }
         if (rhsValueType == ValueType.PERIOD) {
-          return ImmutableDateMinusPeriodOperator.builder().lhs(lhs).rhs(rhs).build();
+          return new DateMinusPeriodOperator.Builder().lhs(lhs).rhs(rhs).build();
         }
       } else if (lhsValueType == ValueType.TIME) {
         if (rhsValueType == ValueType.TIME) {
-          return ImmutableTimeMinusTimeOperator.builder().lhs(lhs).rhs(rhs).build();
+          return new TimeMinusTimeOperator.Builder().lhs(lhs).rhs(rhs).build();
         }
         if (rhsValueType == ValueType.DURATION) {
-          return ImmutableTimeMinusDurationOperator.builder().lhs(lhs).rhs(rhs).build();
+          return new TimeMinusDurationOperator.Builder().lhs(lhs).rhs(rhs).build();
         }
       }
     } else if (operator == OperatorSymbol.PLUS) {
       if (lhsValueType == ValueType.DATE && rhsValueType == ValueType.PERIOD) {
-        return ImmutableDatePlusPeriodOperator.builder().lhs(lhs).rhs(rhs).build();
+        return new DatePlusPeriodOperator.Builder().lhs(lhs).rhs(rhs).build();
       }
       if (lhsValueType == ValueType.TIME && rhsValueType == ValueType.DURATION) {
-        return ImmutableTimePlusDurationOperator.builder().lhs(lhs).rhs(rhs).build();
+        return new TimePlusDurationOperator.Builder().lhs(lhs).rhs(rhs).build();
       }
     }
     return null;

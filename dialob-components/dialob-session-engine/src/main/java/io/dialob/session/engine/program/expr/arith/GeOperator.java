@@ -15,18 +15,34 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface GeOperator<T extends Comparable<T>> extends AbstractComparableRelationOperator<T> {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record GeOperator<T extends Comparable<T>>(
+  Expression lhs,
+  Expression rhs
+) implements AbstractComparableRelationOperator<T> {
+
+  public static <T extends Comparable<T>> GeOperator.Builder<T> builder() {
+    return new GeOperator.Builder<T>();
+  }
+
+  public static final class Builder<T extends Comparable<T>> extends GeOperatorBuilder<T> {}
 
   @Override
-  default boolean apply(int comp) {
+  public boolean apply(int comp) {
     return comp >= 0;
   }
 
   @Override
-  default String getOperator() {
+  public String getOperator() {
     return ">=";
   }
 

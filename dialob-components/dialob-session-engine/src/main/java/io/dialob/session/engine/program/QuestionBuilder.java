@@ -212,9 +212,9 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     }
     Expression check;
     if (Constants.MULTICHOICE.equals(type)) {
-      check = ImmutableEqOperator.builder()
+      check = EqOperator.builder()
         .lhs(ImmutableSizeOperator.builder()
-          .expression(ImmutableIntersectionOperator.builder()
+          .expression(new IntersectionOperator.Builder()
             .lhs(Operators.var(getId(), ValueType.STRING))
             .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
             .build()).build())
@@ -222,7 +222,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
           .expression(Operators.var(getId(), ValueType.STRING)).build())
         .build();
     } else {
-      check = ImmutableInOperator.builder()
+      check = new InOperator.Builder()
         .lhs(var(getId(), ValueType.STRING))
         .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
         .build();

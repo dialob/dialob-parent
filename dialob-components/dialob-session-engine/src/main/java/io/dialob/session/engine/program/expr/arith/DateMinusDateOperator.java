@@ -18,16 +18,28 @@ package io.dialob.session.engine.program.expr.arith;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
 import java.time.LocalDate;
 import java.time.Period;
 
-@Value.Immutable
-public interface DateMinusDateOperator extends InfixOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record DateMinusDateOperator(
+  Expression lhs,
+  Expression rhs
+) implements InfixOperator {
+
+  public static final class Builder extends DateMinusDateOperatorBuilder {}
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     LocalDate localDate = (LocalDate) getLhs().eval(evalContext);
     LocalDate localDate2 = (LocalDate) getRhs().eval(evalContext);
     if (localDate == null || localDate2 == null) {
@@ -38,7 +50,7 @@ public interface DateMinusDateOperator extends InfixOperator {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.PERIOD;
   }
 }

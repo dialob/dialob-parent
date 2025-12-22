@@ -32,13 +32,22 @@ public interface InfixOperator extends Expression {
    * @return left hand side expression of operator
    */
   @Value.Parameter
-  Expression getLhs();
+  default Expression getLhs() {
+    return lhs();
+  }
 
   /**
    * @return right hand side expression of operator
    */
   @Value.Parameter
-  Expression getRhs();
+  default Expression getRhs() {
+    return rhs();
+  }
+
+  Expression lhs();
+  Expression rhs();
+
+
 
   @NonNull
   @Override

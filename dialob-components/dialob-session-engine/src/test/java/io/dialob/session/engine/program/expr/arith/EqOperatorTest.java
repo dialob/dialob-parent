@@ -56,7 +56,7 @@ class EqOperatorTest {
   }
 
   protected EqOperator newEq(Expression lh, Expression rh) {
-    return ImmutableEqOperator.builder().lhs(lh).rhs(rh).build();
+    return new EqOperator.Builder().lhs(lh).rhs(rh).build();
   }
 
   @Test

@@ -64,7 +64,7 @@ class NeOperatorTest {
   }
 
   protected NeOperator newNe(Expression lh, Expression rh) {
-    return ImmutableNeOperator.builder().lhs(lh).rhs(rh).build();
+    return new NeOperator.Builder().lhs(lh).rhs(rh).build();
   }
 
 }

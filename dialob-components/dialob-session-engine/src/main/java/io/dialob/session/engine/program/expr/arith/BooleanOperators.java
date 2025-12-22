@@ -25,11 +25,11 @@ public class BooleanOperators implements Operators {
   public static final Constant<Boolean> TRUE = new Constant.Builder<Boolean>().valueType(ValueType.BOOLEAN).value(Boolean.TRUE).build();
 
   public InfixOperator eq(Expression lhs, Expression rhs) {
-    return ImmutableEqOperator.<Boolean>builder().lhs(lhs).rhs(rhs).build();
+    return new EqOperator.Builder<Boolean>().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator ne(Expression lhs, Expression rhs) {
-    return ImmutableNeOperator.<Boolean>builder().lhs(lhs).rhs(rhs).build();
+    return NeOperator.<Boolean>builder().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator le(Expression lhs, Expression rhs) {

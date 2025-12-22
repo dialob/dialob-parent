@@ -113,13 +113,13 @@ public class DDRLOperatorFactory implements OperatorFactory {
         return relationOf(operatorSymbol, lhs(arguments), rhs(arguments));
 
       case NOT_IN, IN:
-        expr = ImmutableInOperator.builder().lhs(first(arguments)).rhs(ImmutableExpressionList.builder().addAllExpressions(rest(arguments)).build()).build();
+        expr = new InOperator.Builder().lhs(first(arguments)).rhs(ImmutableExpressionList.builder().addAllExpressions(rest(arguments)).build()).build();
         break;
 
       case NOT_MATCHES, MATCHES:
         Expression patternExpr = rhs(arguments);
         validateRegexExpression(patternExpr);
-        expr = ImmutableMatchesOperator.builder().lhs(lhs(arguments)).rhs(patternExpr).build();
+        expr = new MatchesOperator.Builder().lhs(lhs(arguments)).rhs(patternExpr).build();
         break;
 
       case NOT_ANSWERED, ANSWERED:

@@ -18,16 +18,28 @@ package io.dialob.session.engine.program.expr.arith;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
 import java.time.Duration;
 import java.time.LocalTime;
 
-@Value.Immutable
-public interface TimeMinusTimeOperator extends InfixOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record TimeMinusTimeOperator(
+  Expression lhs,
+  Expression rhs
+) implements InfixOperator {
+
+  public static final class Builder extends TimeMinusTimeOperatorBuilder {}
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     LocalTime localTime = (LocalTime) getLhs().eval(evalContext);
     LocalTime localTime2 = (LocalTime) getRhs().eval(evalContext);
     if (localTime == null || localTime2 == null) {
@@ -38,7 +50,7 @@ public interface TimeMinusTimeOperator extends InfixOperator {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.DURATION;
   }
 }

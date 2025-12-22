@@ -16,25 +16,37 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.rule.parser.PeriodUtil;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
 import java.time.Period;
 
-@Value.Immutable
-public interface PeriodLeOperator extends AbstractRelationOperator<Period> {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record PeriodLeOperator(
+  Expression lhs,
+  Expression rhs
+) implements AbstractRelationOperator<Period> {
+
+  public static final class Builder extends PeriodLeOperatorBuilder {}
 
   @Override
-  default boolean apply(int comp) {
+  public boolean apply(int comp) {
     return comp <= 0;
   }
 
   @Override
-  default int compare(Period lhsResult, Period rhsResult) {
+  public int compare(Period lhsResult, Period rhsResult) {
     return PeriodUtil.comparePeriods(lhsResult,  rhsResult);
   }
 
   @Override
-  default String getOperator() {
+  public String getOperator() {
     return "<=";
   }
 }
