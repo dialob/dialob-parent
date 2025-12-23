@@ -16,7 +16,6 @@
 package io.dialob.questionnaire.service.rest;
 
 import com.google.common.collect.Lists;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.*;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -486,32 +485,8 @@ class QuestionnairesRestServiceControllerTest {
 
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = invocation.getArgument(6);
-      consumer.accept(new QuestionnaireDatabase.MetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "123";
-        }
-
-        @NonNull
-        @Override
-        public Questionnaire.Metadata getValue() {
-          return new Questionnaire.Metadata.Builder().formId("f1").build();
-        }
-      });
-      consumer.accept(new QuestionnaireDatabase.MetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "124";
-        }
-
-        @NonNull
-        @Override
-        public Questionnaire.Metadata getValue() {
-          return new Questionnaire.Metadata.Builder().formId("f2").build();
-        }
-      });
+      consumer.accept(new QuestionnaireDatabase.MetadataRow("123", new Questionnaire.Metadata.Builder().formId("f1").build()));
+      consumer.accept(new QuestionnaireDatabase.MetadataRow("124", new Questionnaire.Metadata.Builder().formId("f2").build()));
       return null;
     }).when(questionnaireDatabase).findAllMetadata(eq("t-123"), isNull(), isNull(), isNull(), isNull(), isNull(), any());
 

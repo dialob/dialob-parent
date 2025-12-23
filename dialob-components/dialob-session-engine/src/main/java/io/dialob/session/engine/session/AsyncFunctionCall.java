@@ -15,20 +15,52 @@
  */
 package io.dialob.session.engine.session;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
 import java.util.Optional;
 
-@Value.Immutable
-public interface AsyncFunctionCall {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record AsyncFunctionCall(
+  @Nullable
+  String id,
 
-  Optional<String> getId();
+  @Nullable
+  ItemId targetId,
 
-  Optional<ItemId> getTargetId();
+  String functionName,
 
-  String getFunctionName();
+  Object[] args
 
-  Object[] getArgs();
+) {
+
+  public static final class Builder extends AsyncFunctionCallBuilder {}
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public Optional<String> getId() {
+    return Optional.ofNullable(id());
+  }
+
+  public Optional<ItemId> getTargetId() {
+    return Optional.ofNullable(targetId());
+  }
+
+  public AsyncFunctionCall withId(String id) {
+    return new AsyncFunctionCall(id, targetId(), functionName(), args());
+  }
+
+  public AsyncFunctionCall withTargetId(ItemId targetId) {
+    return new AsyncFunctionCall(id(), targetId, functionName(), args());
+  }
 
 }

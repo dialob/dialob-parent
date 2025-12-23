@@ -103,23 +103,28 @@ public interface QuestionnaireDatabase {
    * The {@code id} uniquely identifies the metadata, while the {@code value}
    * holds the actual metadata details represented by {@link Questionnaire.Metadata}.
    */
-  @Value.Immutable
+  @Value.Builder
   @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-  interface MetadataRow extends Serializable {
+  record MetadataRow(
+    String id,
+    Questionnaire.Metadata value
+  ) implements Serializable {
 
-    class Builder extends ImmutableMetadataRow.Builder { }
+    public static final class Builder extends MetadataRowBuilder { }
 
-    static MetadataRow of(String id, Questionnaire.Metadata value) {
-      return ImmutableMetadataRow.of(id, value);
+    public static MetadataRow of(String id, Questionnaire.Metadata value) {
+      return new MetadataRow(id, value);
     }
 
     @NonNull
-    @Value.Parameter
-    String getId();
+    public String getId() {
+      return id();
+    }
 
     @NonNull
-    @Value.Parameter
-    Questionnaire.Metadata getValue();
+    public Questionnaire.Metadata getValue() {
+      return value();
+    }
   }
 
   /**

@@ -15,7 +15,6 @@
  */
 package io.dialob.boot.rest;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.boot.Application;
 import io.dialob.boot.security.SecurityConfiguration;
@@ -182,32 +181,8 @@ class QuestionnairesRestControllerApiKeyTest {
     doReturn("testTenant").when(currentTenant).getId();
     doAnswer(invocation -> {
       Consumer<QuestionnaireDatabase.MetadataRow> consumer = (Consumer<QuestionnaireDatabase.MetadataRow>) invocation.getArguments()[6];
-      consumer.accept(new QuestionnaireDatabase.MetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "1";
-        }
-
-        @NonNull
-        @Override
-        public Questionnaire.Metadata getValue() {
-          return new Questionnaire.Metadata.Builder().formId("").label("l1").build();
-        }
-      });
-      consumer.accept(new QuestionnaireDatabase.MetadataRow() {
-        @NonNull
-        @Override
-        public String getId() {
-          return "2";
-        }
-
-        @NonNull
-        @Override
-        public Questionnaire.Metadata getValue() {
-          return new Questionnaire.Metadata.Builder().formId("").label("l2").build();
-        }
-      });
+      consumer.accept(new QuestionnaireDatabase.MetadataRow("1", new Questionnaire.Metadata.Builder().formId("").label("l1").build()));
+      consumer.accept(new QuestionnaireDatabase.MetadataRow("2", new Questionnaire.Metadata.Builder().formId("").label("l2").build()));
       return null;
     }).when(questionnaireDatabaseMock()).findAllMetadata(anyString(), isNull(), isNull(), isNull(), isNull(), isNull(), any(Consumer.class));
 

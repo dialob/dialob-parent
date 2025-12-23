@@ -21,7 +21,6 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.DialobSessionUpdateHook;
 import io.dialob.session.engine.program.expr.OutputFormatter;
 import io.dialob.session.engine.session.AsyncFunctionCall;
-import io.dialob.session.engine.session.ImmutableAsyncFunctionCall;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.UpdateCommand;
 import io.dialob.session.engine.session.command.event.Event;
@@ -319,7 +318,7 @@ public class DialobSessionEvalContext implements EvalContext {
   @Override
   public String queueAsyncFunctionCall(AsyncFunctionCall asyncFunctionCall) {
     return asyncFunctionCall.getTargetId().map(itemId -> {
-      pendingUpdates.put(itemId, ((ImmutableAsyncFunctionCall) asyncFunctionCall)
+      pendingUpdates.put(itemId, asyncFunctionCall
         .withId(dialobSession.generateUpdateId()));
       return IdUtils.toString(itemId);
     }).orElse(null);

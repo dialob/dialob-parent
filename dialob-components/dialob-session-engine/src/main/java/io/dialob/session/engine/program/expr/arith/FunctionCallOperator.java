@@ -20,7 +20,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.ImmutableAsyncFunctionCall;
+import io.dialob.session.engine.session.AsyncFunctionCall;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.immutables.value.Value;
@@ -55,7 +55,7 @@ public record FunctionCallOperator(
     final FunctionRegistry functionRegistry = evalContext.getFunctionRegistry();
     final Object[] args = args().stream().map(arg -> arg.eval(evalContext)).toArray();
     if (functionRegistry.isAsyncFunction(functionName())) {
-      return ImmutableAsyncFunctionCall.builder()
+      return AsyncFunctionCall.builder()
         .functionName(functionName())
         .args(args)
         .build();
