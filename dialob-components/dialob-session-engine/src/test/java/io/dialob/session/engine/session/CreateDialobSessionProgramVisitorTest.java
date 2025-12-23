@@ -81,7 +81,7 @@ class CreateDialobSessionProgramVisitorTest {
         .id(IdUtils.toId("rg.*"))
         .type("row")
         .isPrototype(true)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build()).build());
+        .itemsExpression(new RowItemsExpression.Builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build()).build());
     });
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
@@ -220,7 +220,7 @@ class CreateDialobSessionProgramVisitorTest {
       .id(new ItemIdPartial(itemId))
       .type("row")
       .isPrototype(true)
-      .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())
+      .itemsExpression(new RowItemsExpression.Builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())
       .build();
 
 

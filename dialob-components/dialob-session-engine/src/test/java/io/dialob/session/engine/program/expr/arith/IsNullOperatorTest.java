@@ -32,7 +32,7 @@ class IsNullOperatorTest {
   @Test
   void shouldInspectItemById() {
 
-    IsNullOperator operator = ImmutableIsNullOperator.builder().itemId(IdUtils.toId("itemi")).build();
+    IsNullOperator operator = new IsNullOperator.Builder().itemId(IdUtils.toId("itemi")).build();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState item = new ItemState(IdUtils.toId("itemi"), null, "text", null, null);
 

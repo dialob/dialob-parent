@@ -25,14 +25,22 @@ import org.immutables.value.Value;
 import java.util.*;
 import java.util.stream.Stream;
 
-@Value.Immutable
-public interface ExpressionList extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ExpressionList(
+  List<Expression> expressions
+) implements Expression {
 
-  List<Expression> getExpressions();
+  public static final class Builder extends ExpressionListBuilder {}
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
-    return getExpressions().stream()
+  public Object eval(@NonNull EvalContext evalContext) {
+    return expressions().stream()
       .map(expression -> expression.eval(evalContext))
       .filter(Objects::nonNull)
       .flatMap(o -> {
@@ -47,15 +55,15 @@ public interface ExpressionList extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     var deps = new HashSet<EventMatcher>();
-    getExpressions().forEach(arg -> deps.addAll(arg.getEvalRequiredConditions()));
+    expressions().forEach(arg -> deps.addAll(arg.getEvalRequiredConditions()));
     return Set.copyOf(deps);
   }
 

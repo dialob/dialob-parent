@@ -17,18 +17,29 @@ package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface NegOperatorNumber extends NegOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record NegOperatorNumber(
+  Expression expression
+) implements NegOperator {
 
-  default Object neg(@NonNull Object value) {
+  public static final class Builder extends NegOperatorNumberBuilder {}
+
+  public Object neg(@NonNull Object value) {
     return -((Integer)value);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.INTEGER;
   }
 

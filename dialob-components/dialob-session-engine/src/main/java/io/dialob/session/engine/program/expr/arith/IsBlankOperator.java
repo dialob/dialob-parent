@@ -28,28 +28,36 @@ import java.util.Set;
 import static io.dialob.session.engine.session.command.EventMatchers.whenActiveUpdated;
 import static io.dialob.session.engine.session.command.EventMatchers.whenAnsweredUpdated;
 
-@Value.Immutable
-public interface IsBlankOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsBlankOperator(
+  ItemId questionId
+) implements Expression {
 
-  ItemId getQuestionId();
+  public static final class Builder extends IsBlankOperatorBuilder {}
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getQuestionId()).map(itemState -> itemState.isBlank() && itemState.isActive()).orElse(false);
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.questionId()).map(itemState -> itemState.isBlank() && itemState.isActive()).orElse(false);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return Set.of(
-      whenAnsweredUpdated(getQuestionId()),
-      whenActiveUpdated(getQuestionId())
+      whenAnsweredUpdated(questionId()),
+      whenActiveUpdated(questionId())
     );
   }
 }

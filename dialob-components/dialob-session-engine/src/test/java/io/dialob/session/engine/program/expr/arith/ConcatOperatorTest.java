@@ -39,8 +39,8 @@ class ConcatOperatorTest {
   @Test
   void twoExpressionsConditionsAreCombined() {
     ConcatOperator op = new ConcatOperator.Builder().expressions(List.of(
-      ImmutableIsActiveOperator.builder().itemId(IdUtils.toId("q1")).build(),
-      ImmutableIsActiveOperator.builder().itemId(IdUtils.toId("q2")).build()
+      new IsActiveOperator.Builder().itemId(IdUtils.toId("q1")).build(),
+      new IsActiveOperator.Builder().itemId(IdUtils.toId("q2")).build()
     )).build();
     Assertions.assertFalse(op.getEvalRequiredConditions().isEmpty());
     Assertions.assertEquals(2, op.getEvalRequiredConditions().size());

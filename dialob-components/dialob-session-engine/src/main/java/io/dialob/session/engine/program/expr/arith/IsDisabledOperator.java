@@ -28,27 +28,38 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenDisabledUpdatedEvent;
 
-@Value.Immutable
-public interface IsDisabledOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsDisabledOperator(
+  ItemId itemId
+) implements Expression {
 
-  @Value.Parameter
-  ItemId getItemId();
+  public static final class Builder extends IsDisabledOperatorBuilder {}
+
+  public static IsDisabledOperator of(@NonNull ItemId itemId) {
+    return new IsDisabledOperator(itemId);
+  }
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(ItemState::isDisabled).orElse(true);
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.itemId()).map(ItemState::isDisabled).orElse(true);
   }
 
   @Override
   @NonNull
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @Override
   @NonNull
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenDisabledUpdatedEvent(getItemId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenDisabledUpdatedEvent(itemId()));
   }
 
 }

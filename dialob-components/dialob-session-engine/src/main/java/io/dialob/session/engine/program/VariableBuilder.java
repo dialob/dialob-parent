@@ -18,7 +18,7 @@ package io.dialob.session.engine.program;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
-import io.dialob.session.engine.program.expr.arith.ImmutableContextVariableReference;
+import io.dialob.session.engine.program.expr.arith.ContextVariableReference;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.VariableItem;
 import io.dialob.session.engine.session.model.IdUtils;
@@ -88,7 +88,7 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
     final ItemId id = getId();
     if (context) {
       this.valueExpression = Utils.mapQuestionTypeToValueType(this.type)
-        .map(valueType -> ImmutableContextVariableReference.builder().itemId(id).valueType(valueType).build()).orElse(null);
+        .map(valueType -> new ContextVariableReference.Builder().itemId(id).valueType(valueType).build()).orElse(null);
       if (valueExpression == null) {
         errorConsumer.accept(new FormValidationError.Builder().itemId(getIdStr()).message("CONTEXT_VARIABLE_UNDEFINED_TYPE").type(FormValidationError.Type.VARIABLE).build());
         return;

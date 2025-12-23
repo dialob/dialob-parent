@@ -35,7 +35,7 @@ class FunctionCallOperatorTest {
     when(context.getFunctionRegistry()).thenReturn(functionRegistry);
     when(arg1.eval(context)).thenReturn("hello");
 
-    FunctionCallOperator op = ImmutableFunctionCallOperator.builder()
+    FunctionCallOperator op = new FunctionCallOperator.Builder()
       .functionName("func")
       .valueType(ValueType.STRING)
       .addArgs(arg1)

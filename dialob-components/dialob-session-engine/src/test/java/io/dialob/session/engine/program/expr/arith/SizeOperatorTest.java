@@ -31,7 +31,7 @@ class SizeOperatorTest {
   void testSizeOperator() {
     EvalContext context = Mockito.mock();
     Expression expression = Mockito.mock();
-    SizeOperator valueSetToListOperator = ImmutableSizeOperator.builder()
+    SizeOperator valueSetToListOperator = new SizeOperator.Builder()
       .expression(expression)
       .build();
 

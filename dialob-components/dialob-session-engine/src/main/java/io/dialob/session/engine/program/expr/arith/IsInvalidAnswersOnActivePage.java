@@ -34,16 +34,23 @@ import java.util.stream.Stream;
 import static io.dialob.session.engine.session.command.EventMatchers.anyError;
 import static io.dialob.session.engine.session.command.EventMatchers.errorActivity;
 
-@Value.Immutable
-public interface IsInvalidAnswersOnActivePage extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsInvalidAnswersOnActivePage(
+  ItemId pageContainerId
+) implements Expression {
 
-  Set<EventMatcher> ANY_ERROR = Set.of(errorActivity(anyError()));
+  private static final Set<EventMatcher> ANY_ERROR = Set.of(errorActivity(anyError()));
 
-  ItemId getPageContainerId();
+  public static class Builder extends IsInvalidAnswersOnActivePageBuilder {}
 
   @Override
-  default Boolean eval(@NonNull EvalContext context) {
-
+  public Boolean eval(@NonNull EvalContext context) {
     final Set<ItemId> questionsWithErrors = context.getErrorStates().stream()
       .filter(ErrorState::isActive)
       .map(ErrorState::getItemId)
@@ -52,7 +59,7 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
       return false;
     }
 
-    var pageItemIds = context.getItemState(getPageContainerId())
+    var pageItemIds = context.getItemState(pageContainerId())
       .flatMap(ItemState::getActivePage)
       .flatMap(context::getItemState)
       .map(ItemState::getItems)
@@ -64,7 +71,7 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
       .anyMatch(questionsWithErrors::contains);
   }
 
-  default Stream<? extends ItemState> findQuestionItems(@NonNull EvalContext context, Stream<ItemId> items) {
+  public Stream<? extends ItemState> findQuestionItems(@NonNull EvalContext context, Stream<ItemId> items) {
     return items
       .map(context::getItemState)
       .flatMap(Optional::stream)
@@ -78,13 +85,13 @@ public interface IsInvalidAnswersOnActivePage extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return ANY_ERROR;
   }
 }

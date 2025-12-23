@@ -29,14 +29,23 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
-@Value.Immutable
-public interface CountArrayLengthOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record CountArrayLengthOperator(
+  ItemId itemId
+) implements Expression {
 
-  ItemId getItemId();
+
+  public static final class Builder extends CountArrayLengthOperatorBuilder {}
 
   @Override
-  default BigInteger eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(itemState -> {
+  public BigInteger eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.itemId()).map(itemState -> {
       Object value = itemState.getValue();
       if (value == null) {
         return BigInteger.ZERO;
@@ -53,14 +62,14 @@ public interface CountArrayLengthOperator extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.INTEGER;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenValueUpdated(getItemId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenValueUpdated(itemId()));
   }
 
 }

@@ -67,7 +67,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
           if (group.isPrototype()) {
             final Expression itemsExpression = group.itemsExpression();
             if (itemsExpression instanceof RowItemsExpression rowItemsExpression) {
-              updateCommandFactory.createRowGroupItemsFromPrototype(groupId, rowItemsExpression.getItemIds());
+              updateCommandFactory.createRowGroupItemsFromPrototype(groupId, rowItemsExpression.itemIds());
 
             }
             updateCommandFactory.createUpdateGroupItems(groupId, itemsExpression);
@@ -101,7 +101,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
 
       @Override
       public void visitVariableItem(@NonNull VariableItem variableItem) {
-        updateCommandFactory.createUpdateVariable(variableItem.id(), variableItem.getValueExpression());
+        updateCommandFactory.createUpdateVariable(variableItem.id(), variableItem.valueExpression());
       }
 
     });

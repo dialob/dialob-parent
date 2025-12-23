@@ -17,18 +17,29 @@ package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface NotOperator extends UnaryOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record NotOperator(
+  Expression expression
+) implements UnaryOperator {
 
-  default Object apply(@NonNull Object value) {
+  public static final class Builder extends NotOperatorBuilder {}
+
+  public Object apply(@NonNull Object value) {
     return !((Boolean)value);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 

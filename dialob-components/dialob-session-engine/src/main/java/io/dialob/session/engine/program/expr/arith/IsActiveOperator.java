@@ -28,27 +28,38 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenActiveUpdated;
 
-@Value.Immutable
-public interface IsActiveOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsActiveOperator(
+  ItemId itemId
+) implements Expression {
 
-  @Value.Parameter
-  ItemId getItemId();
+  public static final class Builder extends IsActiveOperatorBuilder {}
+
+  public static IsActiveOperator of(ItemId itemId) {
+    return new IsActiveOperator.Builder().itemId(itemId).build();
+  }
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(ItemState::isActive).orElse(false);
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.itemId()).map(ItemState::isActive).orElse(false);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenActiveUpdated(getItemId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenActiveUpdated(itemId()));
   }
 
 }

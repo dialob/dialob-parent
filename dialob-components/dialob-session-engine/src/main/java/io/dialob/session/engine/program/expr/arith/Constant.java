@@ -33,7 +33,7 @@ public record Constant<T>(
   @NonNull ValueType valueType
 ) implements Expression {
 
-  public static <T> ConstantBuilder<T> builder() {
+  public static <T> Constant.Builder<T> builder() {
     return new Constant.Builder<>();
   }
 

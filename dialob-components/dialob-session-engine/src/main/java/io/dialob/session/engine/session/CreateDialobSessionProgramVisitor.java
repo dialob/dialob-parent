@@ -256,7 +256,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
                 IdUtils.matches(rowId, itemPrototype.id()))
               .map(itemPrototype -> (Group) itemPrototype)
               .map(groupPrototype -> (RowItemsExpression) groupPrototype.itemsExpression())
-              .flatMap(rowItemsExpression -> rowItemsExpression.getItemIds().stream())
+              .flatMap(rowItemsExpression -> rowItemsExpression.itemIds().stream())
               .map(ItemId::getValue)
               .map(name -> new ItemRef(name, rowId)));
         });
@@ -272,7 +272,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             Expression expression = group.itemsExpression();
             if (expression instanceof RowItemsExpression rowItemsExpression) {
               final Scope scope = Scope.of(itemIdToCreate, Set.of());
-              rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
+              rowItems = rowItemsExpression.itemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
             }
           }
           final Object newAnswer = initialValueResolver.apply(itemIdToCreate, item).orElse(null);

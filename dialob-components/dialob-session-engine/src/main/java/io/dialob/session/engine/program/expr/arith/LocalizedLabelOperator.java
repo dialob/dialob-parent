@@ -34,15 +34,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static io.dialob.session.engine.program.expr.arith.ImmutableToLowerCaseOperator.lowerCaseOf;
-import static io.dialob.session.engine.program.expr.arith.ImmutableToUpperCaseOperator.upperCaseOf;
+import static io.dialob.session.engine.program.expr.arith.ToLowerCaseOperator.lowerCaseOf;
+import static io.dialob.session.engine.program.expr.arith.ToUpperCaseOperator.upperCaseOf;
 
-@Value.Immutable
-public interface LocalizedLabelOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record LocalizedLabelOperator(
+  Map<String, Expression> value
+) implements Expression {
 
-  Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([\\w]*?)(:.*?)?}");
+  static final Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([\\w]*?)(:.*?)?}");
 
-  static LocalizedLabelOperator createLocalizedLabelOperator(@NonNull ProgramBuilder programBuilder, @NonNull Label label) {
+  public static LocalizedLabelOperator createLocalizedLabelOperator(@NonNull ProgramBuilder programBuilder, @NonNull Label label) {
     Map<String, Expression> value = new HashMap<>();
     label.labels().forEach((key, labelString) -> {
       int i = 0;
@@ -61,7 +69,7 @@ public interface LocalizedLabelOperator extends Expression {
             format = Strings.CS.removeStart(format, ":");
             switch (format) {
               case "key":
-                expressions.add(ImmutableToStringOperator.of(variableReference));
+                expressions.add(ToStringOperator.of(variableReference));
                 break;
               case "lowercase":
                 expressions.add(lowerCaseOf(toStringExpression(programBuilder, IdUtils.toId(itemId), variableReference)));
@@ -70,7 +78,7 @@ public interface LocalizedLabelOperator extends Expression {
                 expressions.add(upperCaseOf(toStringExpression(programBuilder, IdUtils.toId(itemId), variableReference)));
                 break;
               default:
-                expressions.add(ImmutableFormatOperator.of(variableReference, format));
+                expressions.add(FormatOperator.of(variableReference, format));
             }
           } else {
             expressions.add(toStringExpression(programBuilder, IdUtils.toId(itemId), variableReference));
@@ -87,22 +95,23 @@ public interface LocalizedLabelOperator extends Expression {
       }
     });
 
-    return ImmutableLocalizedLabelOperator.of(value);
+    return LocalizedLabelOperator.of(value);
+  }
+
+  public static LocalizedLabelOperator of(Map<String, Expression> value) {
+    return new LocalizedLabelOperator(value);
   }
 
   static Expression toStringExpression(@NonNull ProgramBuilder programBuilder, ItemId itemId, VariableReference variableReference) {
     return programBuilder.findValueSetIdForItem(itemId)
-      .<Expression>map(valueSetId -> ImmutableValueSetEntryToStringOperator.of(new ValueSetId(valueSetId), variableReference))
-      .orElseGet(() -> ImmutableToStringOperator.of(variableReference));
+      .<Expression>map(valueSetId -> ValueSetEntryToStringOperator.of(new ValueSetId(valueSetId), variableReference))
+      .orElseGet(() -> ToStringOperator.of(variableReference));
   }
 
-  @NonNull
-  @Value.Parameter
-  Map<String, Expression> getValue();
 
   @Override
-  default String eval(@NonNull EvalContext evalContext) {
-    Expression expression = getValue().get(evalContext.getLanguage());
+  public String eval(@NonNull EvalContext evalContext) {
+    Expression expression = value().get(evalContext.getLanguage());
     if (expression == null) {
       return null;
     }
@@ -111,8 +120,8 @@ public interface LocalizedLabelOperator extends Expression {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return getValue()
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return value()
       .values()
       .stream()
       .map(Expression::getEvalRequiredConditions)
@@ -122,7 +131,7 @@ public interface LocalizedLabelOperator extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 

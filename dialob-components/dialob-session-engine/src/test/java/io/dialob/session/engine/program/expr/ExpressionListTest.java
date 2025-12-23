@@ -30,7 +30,7 @@ class ExpressionListTest {
   void shouldFlatLists() {
     Expression expr = Mockito.mock(Expression.class);
     EvalContext context = Mockito.mock(EvalContext.class);
-    ExpressionList list = ImmutableExpressionList.builder()
+    ExpressionList list = new ExpressionList.Builder()
       .addExpressions(expr)
       .build();
 

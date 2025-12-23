@@ -45,16 +45,10 @@ public record VariableItem(
 
   public static final class Builder extends VariableItemBuilder { }
 
-  @NonNull
-  public Expression getValueExpression() {
-    return valueExpression();
-  }
-
-
   @Override
   @NonNull
   public ValueType valueType() {
-    return Objects.requireNonNull(getValueExpression().getValueType());
+    return Objects.requireNonNull(this.valueExpression().getValueType());
   }
 
   @Override

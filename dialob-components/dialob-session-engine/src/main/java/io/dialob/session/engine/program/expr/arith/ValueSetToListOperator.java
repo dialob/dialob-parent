@@ -29,15 +29,30 @@ import org.immutables.value.Value;
 import java.util.Collections;
 import java.util.Set;
 
-@Value.Immutable
-public interface ValueSetToListOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ValueSetToListOperator(
+  ValueSetId valueSetId
+) implements Expression {
 
-  @Value.Parameter
-  ValueSetId getValueSetId();
+  public static final class Builder extends ValueSetToListOperatorBuilder {}
+
+  public ValueSetId getValueSetId() {
+    return valueSetId();
+  }
+
+  public static ValueSetToListOperator of(@NonNull ValueSetId valueSetId) {
+    return new ValueSetToListOperator(valueSetId);
+  }
 
   @Override
   @Nullable
-  default Object eval(@NonNull EvalContext context) {
+  public Object eval(@NonNull EvalContext context) {
     return context.getValueSetState(getValueSetId()).map(valueSetState -> valueSetState
       .getEntries()
       .stream()
@@ -48,13 +63,13 @@ public interface ValueSetToListOperator extends Expression {
 
   @Override
   @NonNull
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
   @Override
   @NonNull
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return Set.of(EventMatchers.whenValueSetUpdated(getValueSetId()));
   }
 }

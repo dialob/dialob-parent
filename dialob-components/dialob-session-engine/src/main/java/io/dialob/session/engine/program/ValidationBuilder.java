@@ -19,8 +19,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.arith.ImmutableIsActiveOperator;
-import io.dialob.session.engine.program.expr.arith.ImmutableIsDisabledOperator;
+import io.dialob.session.engine.program.expr.arith.IsActiveOperator;
+import io.dialob.session.engine.program.expr.arith.IsDisabledOperator;
 import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.model.Error;
 import io.dialob.session.engine.program.model.Expression;
@@ -65,14 +65,14 @@ public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, Qu
     compileExpression(when, expression -> {
       if (expression.getValueType() == ValueType.BOOLEAN) {
         this.activeWhen = Operators.and(
-          ImmutableIsActiveOperator.builder().itemId(questionId).build(),
+          new IsActiveOperator.Builder().itemId(questionId).build(),
           expression
         );
       } else {
         this.activeWhen = expression;
       }
     }, getActiveWhenExpressionErrorType(), null);
-    this.disabledExpression = ImmutableIsDisabledOperator.builder().itemId(questionId).build();
+    this.disabledExpression = new IsDisabledOperator.Builder().itemId(questionId).build();
     return this;
   }
 

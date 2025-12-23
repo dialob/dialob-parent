@@ -19,25 +19,23 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
-import org.immutables.value.Value;
 
 import java.util.Set;
 
 public interface UnaryOperator extends Expression {
 
-  @Value.Parameter
-  Expression getExpression();
+  Expression expression();
 
   @Override
   default Object eval(@NonNull EvalContext evalContext) {
-    Object value = getExpression().eval(evalContext);
+    Object value = expression().eval(evalContext);
     return value == null ? null : apply(value);
   }
 
   @NonNull
   @Override
   default Set<EventMatcher> getEvalRequiredConditions() {
-    return getExpression().getEvalRequiredConditions();
+    return expression().getEvalRequiredConditions();
   }
 
   Object apply(@NonNull Object value);

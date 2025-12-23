@@ -16,7 +16,7 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.ImmutableNotOnPageExpression;
+import io.dialob.session.engine.program.expr.NotOnPageExpression;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.FormItem;
 import io.dialob.session.engine.program.model.Group;
@@ -119,56 +119,56 @@ class DependencyResolverVisitorTest {
         .id(IdUtils.toId("page1"))
         .type("page")
         .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1", "page1group2")).build())
-        .disabledExpression(ImmutableNotOnPageExpression.of(ref("page1")))
+        .disabledExpression(NotOnPageExpression.of(ref("page1")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2"))
         .type("page")
         .itemsExpression(stringArray("page2group1", "page2group2"))
-        .disabledExpression(ImmutableNotOnPageExpression.of(ref("page2")))
+        .disabledExpression(NotOnPageExpression.of(ref("page2")))
         .build());
 
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1group1"))
         .type("group")
         .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(asList("page1group1item1","page1group1item2")).build())
-        .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
-        .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
+        .disabledExpression(IsDisabledOperator.of(ref("page1")))
+        .activeExpression(IsActiveOperator.of(ref("page1")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page1group2"))
         .type("group")
         .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
-        .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1")))
-        .activeExpression(ImmutableIsActiveOperator.of(ref("page1")))
+        .disabledExpression(IsDisabledOperator.of(ref("page1")))
+        .activeExpression(IsActiveOperator.of(ref("page1")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2group1"))
         .type("group")
         .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(List.of()).build())
-        .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
-        .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
+        .disabledExpression(IsDisabledOperator.of(ref("page2")))
+        .activeExpression(IsActiveOperator.of(ref("page2")))
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("page2group2"))
         .type("group")
         .itemsExpression(Constant.builder().valueType(STRING_ARRAY_VALUE_TYPE).value(List.of()).build())
-        .disabledExpression(ImmutableIsDisabledOperator.of(ref("page2")))
-        .activeExpression(ImmutableIsActiveOperator.of(ref("page2")))
+        .disabledExpression(IsDisabledOperator.of(ref("page2")))
+        .activeExpression(IsActiveOperator.of(ref("page2")))
         .build());
 
 
       itemVisitor.visitItem(new FormItem.Builder()
         .id(IdUtils.toId("page1group1item1"))
         .type("boolean")
-        .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1group1")))
-        .activeExpression(ImmutableIsActiveOperator.of(ref("page1group1")))
+        .disabledExpression(IsDisabledOperator.of(ref("page1group1")))
+        .activeExpression(IsActiveOperator.of(ref("page1group1")))
         .build());
       itemVisitor.visitItem(new FormItem.Builder()
         .id(IdUtils.toId("page1group1item2"))
         .type("text")
-        .disabledExpression(ImmutableIsDisabledOperator.of(ref("page1group1")))
-        .activeExpression(ImmutableIsActiveOperator.of(ref("page1group1")))
+        .disabledExpression(IsDisabledOperator.of(ref("page1group1")))
+        .activeExpression(IsActiveOperator.of(ref("page1group1")))
         .build());
 
       itemVisitor.end();
@@ -243,12 +243,12 @@ IsActiveTargetEventMatcher{targetMatcher=TargetIdEventMatcher{targetId=group1}}=
         CommandFactory.updateIsInvalidAnswers(ref("questionnaire"), Operators.not(IsAnyInvalidAnswersOperator.instance()))))
       .containsEntry(IdUtils.toId("page1"), List.of(updateGroupItems(ref("page1"), stringArray("page1group1", "page1group2"))))
       .containsEntry(IdUtils.toId("page2"), List.of(updateGroupItems(ref("page2"), stringArray("page2group1", "page2group2"))))
-      .containsEntry(IdUtils.toId("page1group1"), asList(updateDisabled(ref("page1group1"), ImmutableIsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group1"), stringArray("page1group1item1","page1group1item2"))))
-      .containsEntry(IdUtils.toId("page1group2"), asList(updateDisabled(ref("page1group2"), ImmutableIsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group2"), stringArray())))
-      .containsEntry(IdUtils.toId("page2group1"), asList(updateDisabled(ref("page2group1"), ImmutableIsDisabledOperator.of(ref("page2"))), updateGroupItems(ref("page2group1"), stringArray())))
-      .containsEntry(IdUtils.toId("page2group2"), asList(updateDisabled(ref("page2group2"), ImmutableIsDisabledOperator.of(ref("page2"))), updateGroupItems(ref("page2group2"), stringArray())))
-      .containsEntry(IdUtils.toId("page1group1item1"), List.of(updateDisabled(ref("page1group1item1"), ImmutableIsDisabledOperator.of(ref("group1")))))
-      .containsEntry(IdUtils.toId("page1group1item2"), List.of(updateDisabled(ref("page1group1item2"), ImmutableIsDisabledOperator.of(ref("group1")))))
+      .containsEntry(IdUtils.toId("page1group1"), asList(updateDisabled(ref("page1group1"), IsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group1"), stringArray("page1group1item1","page1group1item2"))))
+      .containsEntry(IdUtils.toId("page1group2"), asList(updateDisabled(ref("page1group2"), IsDisabledOperator.of(ref("page1"))), updateGroupItems(ref("page1group2"), stringArray())))
+      .containsEntry(IdUtils.toId("page2group1"), asList(updateDisabled(ref("page2group1"), IsDisabledOperator.of(ref("page2"))), updateGroupItems(ref("page2group1"), stringArray())))
+      .containsEntry(IdUtils.toId("page2group2"), asList(updateDisabled(ref("page2group2"), IsDisabledOperator.of(ref("page2"))), updateGroupItems(ref("page2group2"), stringArray())))
+      .containsEntry(IdUtils.toId("page1group1item1"), List.of(updateDisabled(ref("page1group1item1"), IsDisabledOperator.of(ref("group1")))))
+      .containsEntry(IdUtils.toId("page1group1item2"), List.of(updateDisabled(ref("page1group1item2"), IsDisabledOperator.of(ref("group1")))))
     ;
 
 

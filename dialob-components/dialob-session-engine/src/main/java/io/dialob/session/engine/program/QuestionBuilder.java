@@ -126,7 +126,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
     Optional<GroupBuilder> hoistingGroup = getHoistingGroup();
     final MutableObject<Expression> disabledExpression = new MutableObject<>(BooleanOperators.TRUE);
-    hoistingGroup.ifPresent(hoistingGroupBuilder -> disabledExpression.setValue(ImmutableIsDisabledOperator.builder().itemId(hoistingGroupBuilder.getId()).build()));
+    hoistingGroup.ifPresent(hoistingGroupBuilder -> disabledExpression.setValue(new IsDisabledOperator.Builder().itemId(hoistingGroupBuilder.getId()).build()));
 
     if (isRequiredDefined()) {
       createRequiredError(this::addError);
@@ -141,9 +141,9 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
     hoistingGroup.ifPresent(hoistingGroupBuilder -> {
       if (activeWhen == BooleanOperators.TRUE) {
-        activeWhen = ImmutableIsActiveOperator.builder().itemId(hoistingGroupBuilder.getId()).build();
+        activeWhen = new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build();
       } else {
-        activeWhen = Operators.and(ImmutableIsActiveOperator.builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
+        activeWhen = Operators.and(new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
       }
     });
     validationBuilders.forEach(validationBuilder -> validationBuilder.setPrototype(prototype));
@@ -180,7 +180,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
             .findDefaultValueForItem(itemId.targetId())
             // If item has default (fallback) value, it's always available for expression
             .<Expression>map(defaultValue -> BooleanOperators.FALSE)
-              .orElse(ImmutableIsInactiveOrNullOperator.of(itemId.targetId())))
+              .orElse(IsInactiveOrNullOperator.of(itemId.targetId())))
           .filter(expression -> expression != BooleanOperators.FALSE)
         .toArray(Expression[]::new));
   }
@@ -201,8 +201,8 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       .itemId(getId())
       .code(Constants.ERROR_CODE_REQUIRED)
       .isPrototype(getId().isPartial())
-      .validationExpression(Operators.and(ImmutableIsActiveOperator.builder().itemId(getId()).build(), expression))
-      .disabledExpression(ImmutableIsDisabledOperator.builder().itemId(getId()).build())
+      .validationExpression(Operators.and(new IsActiveOperator.Builder().itemId(getId()).build(), expression))
+      .disabledExpression(new IsDisabledOperator.Builder().itemId(getId()).build())
       .label(createLabelOperator(REQUIRED_LABEL)).build());
   }
 
@@ -213,22 +213,22 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     Expression check;
     if (Constants.MULTICHOICE.equals(type)) {
       check = EqOperator.builder()
-        .lhs(ImmutableSizeOperator.builder()
+        .lhs(new SizeOperator.Builder()
           .expression(new IntersectionOperator.Builder()
             .lhs(Operators.var(getId(), ValueType.STRING))
-            .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
+            .rhs(ValueSetToListOperator.of(new ValueSetId(valueSetId)))
             .build()).build())
-        .rhs(ImmutableSizeOperator.builder()
+        .rhs(new SizeOperator.Builder()
           .expression(Operators.var(getId(), ValueType.STRING)).build())
         .build();
     } else {
       check = new InOperator.Builder()
         .lhs(var(getId(), ValueType.STRING))
-        .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
+        .rhs(ValueSetToListOperator.of(new ValueSetId(valueSetId)))
         .build();
     }
     var expression = and(
-      ImmutableIsActiveOperator.builder().itemId(getId()).build(),
+      new IsActiveOperator.Builder().itemId(getId()).build(),
       isAnswered(getId()),
       not(check)
     );
@@ -237,7 +237,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       .code(Constants.ERROR_INVALID_SELECTION)
       .isPrototype(getId().isPartial())
       .validationExpression(expression)
-      .disabledExpression(ImmutableIsDisabledOperator.builder().itemId(getId()).build())
+      .disabledExpression(new IsDisabledOperator.Builder().itemId(getId()).build())
       .label(createLabelOperator(INVALID_SELECTION_LABEL)).build());
   }
 

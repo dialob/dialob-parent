@@ -49,7 +49,7 @@ class DDRLOperatorFactoryTest {
     Assertions.assertEquals(ValueType.BOOLEAN, op2.getValueType());
     InfixOperator ifop1 = (InfixOperator) op1;
     NotOperator not = (NotOperator) op2;
-    InfixOperator ifop2 = (InfixOperator) not.getExpression();
+    InfixOperator ifop2 = (InfixOperator) not.expression();
 
     Assertions.assertEquals(ValueType.STRING, ifop1.getLhs().getValueType());
     Assertions.assertEquals(ValueType.arrayOf(ValueType.STRING), ifop1.getRhs().getValueType());

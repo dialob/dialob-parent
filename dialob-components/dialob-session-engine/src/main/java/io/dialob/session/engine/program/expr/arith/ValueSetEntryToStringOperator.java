@@ -32,23 +32,35 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Value.Immutable
-public interface ValueSetEntryToStringOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ValueSetEntryToStringOperator(
+  ValueSetId valueSetId,
+  Expression expression
+) implements Expression {
 
-  @Value.Parameter
-  ValueSetId getValueSetId();
+  public static final class Builder extends ValueSetEntryToStringOperatorBuilder {}
 
-  @Value.Parameter
-  Expression getExpression();
+  public static ValueSetEntryToStringOperator of(ValueSetId valueSetId, Expression expression) {
+    return new ValueSetEntryToStringOperator.Builder()
+      .valueSetId(valueSetId)
+      .expression(expression)
+      .build();
+  }
 
   @Override
   @Nullable
-  default String eval(@NonNull EvalContext context) {
-    Object eval = getExpression().eval(context);
+  public String eval(@NonNull EvalContext context) {
+    Object eval = expression().eval(context);
     if (eval == null) {
       return null;
     }
-    Optional<ValueSetState> valueSetState = context.getValueSetState(getValueSetId());
+    Optional<ValueSetState> valueSetState = context.getValueSetState(valueSetId());
     return valueSetState.map(valueSetState1 -> {
       if (eval instanceof String string) { // For choice (answer is a scalar)
         for (ValueSetState.Entry entry : valueSetState1.getEntries()) {
@@ -66,15 +78,15 @@ public interface ValueSetEntryToStringOperator extends Expression {
 
   @Override
   @NonNull
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @Override
   @NonNull
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    final Set<EventMatcher> deps = new HashSet<>(getExpression().getEvalRequiredConditions());
-    deps.add(EventMatchers.whenValueSetUpdated(getValueSetId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    final Set<EventMatcher> deps = new HashSet<>(expression().getEvalRequiredConditions());
+    deps.add(EventMatchers.whenValueSetUpdated(valueSetId()));
     return deps;
   }
 }

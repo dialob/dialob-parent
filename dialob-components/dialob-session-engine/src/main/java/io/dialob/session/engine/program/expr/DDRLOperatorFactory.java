@@ -94,10 +94,10 @@ public class DDRLOperatorFactory implements OperatorFactory {
         return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).div()).build();
       case NEG:
         if (nodeValueType == ValueType.DECIMAL) {
-          return ImmutableNegOperatorDecimal.builder().expression(unaryArg(arguments)).build();
+          return new NegOperatorDecimal.Builder().expression(unaryArg(arguments)).build();
         }
         if (nodeValueType == ValueType.INTEGER) {
-          return ImmutableNegOperatorNumber.builder().expression(unaryArg(arguments)).build();
+          return new NegOperatorNumber.Builder().expression(unaryArg(arguments)).build();
         }
         throw new CannotNegateTypeException(nodeValueType);
       case NOT:
@@ -113,7 +113,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
         return relationOf(operatorSymbol, lhs(arguments), rhs(arguments));
 
       case NOT_IN, IN:
-        expr = new InOperator.Builder().lhs(first(arguments)).rhs(ImmutableExpressionList.builder().addAllExpressions(rest(arguments)).build()).build();
+        expr = new InOperator.Builder().lhs(first(arguments)).rhs(new ExpressionList.Builder().addAllExpressions(rest(arguments)).build()).build();
         break;
 
       case NOT_MATCHES, MATCHES:
@@ -135,11 +135,11 @@ public class DDRLOperatorFactory implements OperatorFactory {
         break;
 
       case COUNT:
-        expr = ImmutableCountArrayLengthOperator.builder().itemId(varRef(arguments)).build();
+        expr = new CountArrayLengthOperator.Builder().itemId(varRef(arguments)).build();
         break;
 
       case NOT_VALID, VALID:
-        expr = ImmutableIsValidOperator.of(varRef(arguments));
+        expr = IsValidOperator.of(varRef(arguments));
         break;
       case SUM, MIN, MAX, ALL, ANY:
         expr = createArrayReducingOperator(operatorSymbol, nodeValueType, varRef(arguments));
@@ -148,7 +148,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
         throw new IllegalStateException("Cannot handle operator " + operatorSymbol);
     }
     if (operatorSymbol.isNot()) {
-      return ImmutableNotOperator.builder().expression(expr).build();
+      return new NotOperator.Builder().expression(expr).build();
     }
     return expr;
 
@@ -190,7 +190,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
 
   @NonNull
   private Expression createFunctionInvocation(@NonNull ValueType nodeValueType, @NonNull String operator, @NonNull List<Expression> arguments) {
-    return ImmutableFunctionCallOperator.builder()
+    return new FunctionCallOperator.Builder()
       .valueType(nodeValueType)
       .addAllArgs(arguments)
       .functionName(operator)

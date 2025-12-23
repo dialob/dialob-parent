@@ -31,7 +31,7 @@ class IsEmptyOperatorTest {
   void testIsEmptyOperator() {
     EvalContext context = Mockito.mock();
     Expression expression = Mockito.mock();
-    IsEmptyOperator valueSetToListOperator = ImmutableIsEmptyOperator.builder()
+    IsEmptyOperator valueSetToListOperator = new IsEmptyOperator.Builder()
       .expression(expression)
       .build();
 

@@ -35,7 +35,7 @@ class IsInvalidAnswersOnActivePageTest {
   @Test
   void shouldReturnFalseIfNoActiveErrorFound() {
     EvalContext context = mock(EvalContext.class);
-    final ImmutableIsInvalidAnswersOnActivePage isInvalidAnswersOnActivePage = ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
+    final var isInvalidAnswersOnActivePage = new IsInvalidAnswersOnActivePage.Builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
 
     when(context.getErrorStates()).thenReturn(Collections.emptyList());
 
@@ -65,7 +65,7 @@ class IsInvalidAnswersOnActivePageTest {
     when(q1.getType()).thenReturn("text");
 
 
-    final ImmutableIsInvalidAnswersOnActivePage isInvalidAnswersOnActivePage = ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
+    final var isInvalidAnswersOnActivePage = new IsInvalidAnswersOnActivePage.Builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
     assertTrue(isInvalidAnswersOnActivePage.eval(context));
 
     verify(context).getErrorStates();
@@ -103,7 +103,7 @@ class IsInvalidAnswersOnActivePageTest {
     when(group1.getType()).thenReturn("group");
 
 
-    final ImmutableIsInvalidAnswersOnActivePage isInvalidAnswersOnActivePage = ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
+    final IsInvalidAnswersOnActivePage isInvalidAnswersOnActivePage = new IsInvalidAnswersOnActivePage.Builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
     assertTrue(isInvalidAnswersOnActivePage.eval(context));
 
     verify(context).getErrorStates();
