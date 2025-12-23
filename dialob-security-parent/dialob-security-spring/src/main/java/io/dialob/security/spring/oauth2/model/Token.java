@@ -16,34 +16,29 @@
 package io.dialob.security.spring.oauth2.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
 
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableToken.class)
-@JsonDeserialize(builder = ImmutableToken.Builder.class)
-public interface Token extends Serializable {
-
+public record Token(
   @JsonProperty("access_token")
   @Nullable
-  String getAccessToken();
+  String accessToken,
 
   @JsonProperty("token_type")
-  String getTokenType();
+  String tokenType,
 
   @JsonProperty("expires_in")
-  Integer getExpiresIn();
+  Integer expiresIn,
 
   @JsonProperty("scope")
   @Nullable
-  String getScope();
+  String scope,
 
   @JsonProperty("id_token")
   @Nullable
-  String getIdToken();
+  String idToken
+
+) implements Serializable {
 
 }

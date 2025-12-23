@@ -15,16 +15,14 @@
  */
 package io.dialob.security.spring.oauth2.model;
 
-import org.immutables.value.Value;
-
 import java.io.Serializable;
 
-@Value.Immutable
-public interface Tenant extends Serializable {
-
-  String getId();
+public record Tenant(
+  String id,
 
   @Nullable
-  String getName();
+  String name
+
+) implements Serializable {
 
 }

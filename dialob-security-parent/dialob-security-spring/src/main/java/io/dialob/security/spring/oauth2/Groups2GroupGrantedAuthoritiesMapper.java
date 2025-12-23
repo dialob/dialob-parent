@@ -46,11 +46,11 @@ public class Groups2GroupGrantedAuthoritiesMapper implements UnaryOperator<Strea
     return usersAndGroupsService.findUser(userId)
       .map(user -> {
         if (LOGGER.isTraceEnabled()) {
-          LOGGER.trace("Loaded user {}, groups : {}", user.getId(), user.getGroups());
+          LOGGER.trace("Loaded user {}, groups : {}", user.id(), user.groups());
         } else {
-          LOGGER.debug("Loaded user {}, {} groups", user.getId(), user.getGroups().size());
+          LOGGER.debug("Loaded user {}, {} groups", user.id(), user.groups().size());
         }
-        return user.getGroups().stream()
+        return user.groups().stream()
           .filter(this.groupFilter);
       }).orElseGet(() -> {
         LOGGER.warn("User {} not found", userId);
@@ -63,7 +63,7 @@ public class Groups2GroupGrantedAuthoritiesMapper implements UnaryOperator<Strea
     return stream.flatMap(grantedAuthority -> {
       if (grantedAuthority instanceof OAuth2UserAuthority oAuth2UserAuthority) {
         var sub = (String) oAuth2UserAuthority.getAttributes().get("sub");
-        return Stream.concat(Stream.of(grantedAuthority), loadUserGroups(sub).map(group -> GroupGrantedAuthority.of(group.getId(), group.getName())));
+        return Stream.concat(Stream.of(grantedAuthority), loadUserGroups(sub).map(group -> GroupGrantedAuthority.of(group.id(), group.name())));
       }
       return Stream.of(grantedAuthority);
     });
