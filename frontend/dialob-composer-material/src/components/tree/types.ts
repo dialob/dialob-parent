@@ -7,6 +7,8 @@ export interface TreeItem {
   title: string;
   collapsible?: boolean;
   collapsed?: boolean;
+  isFallbackLabel?: boolean;
+  isIdAsLabel?: boolean;
 }
 
 export type TreeItems = TreeItem[];
@@ -15,6 +17,8 @@ export interface FlattenedItem extends TreeItem {
   parentId: UniqueIdentifier | null;
   depth: number;
   index: number;
+  isFallbackLabel?: boolean;
+  isIdAsLabel?: boolean;
 }
 
 export type SensorContext = MutableRefObject<{

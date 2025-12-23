@@ -57,8 +57,9 @@ export const SortableTree: React.FC = () => {
   const [offsetLeft, setOffsetLeft] = React.useState(0);
 
   React.useEffect(() => {
-    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems));
-  }, [form.data, editor.activeFormLanguage, editor.collapsedItems]);
+    const availableLanguages = form.metadata.languages || [editor.activeFormLanguage];
+    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems, availableLanguages));
+  }, [form.data, editor.activeFormLanguage, editor.collapsedItems, form.metadata.languages]);
   
   const flattenedItems = React.useMemo(() => {
     const flattenedTree = flattenTree(items);
@@ -162,7 +163,7 @@ export const SortableTree: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-        {flattenedItems.map(({id, children, collapsed, collapsible, title, depth}) => (
+        {flattenedItems.map(({id, children, collapsed, collapsible, title, depth, isFallbackLabel, isIdAsLabel}) => (
           <SortableTreeItem
             key={id}
             id={id as string}
@@ -172,6 +173,8 @@ export const SortableTree: React.FC = () => {
             collapsible={collapsible}
             collapsed={Boolean(collapsed && children.length)}
             onCollapse={children.length ? () => handleCollapse(id) : undefined}
+            isFallbackLabel={isFallbackLabel}
+            isIdAsLabel={isIdAsLabel}
           />
         ))}
         {createPortal(

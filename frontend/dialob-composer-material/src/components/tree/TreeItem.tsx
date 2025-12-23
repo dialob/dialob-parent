@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Typography, Badge, alpha, Theme } from '@mui/material';
+import { IconButton, Typography, Badge, alpha, Theme, Tooltip } from '@mui/material';
 import { Handle } from './Handle';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { StyledListItem, StyledTreeItem } from './TreeItemComponents';
@@ -26,12 +26,15 @@ export interface TreeItemProps {
   collapsible?: boolean;
   onCollapse?(): void;
   wrapperRef?(node: HTMLLIElement): void;
+  isFallbackLabel?: boolean;
+  isIdAsLabel?: boolean;
 }
 
 export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, ref) => {
   const {
-    childCount, clone, depth, disableSelection, disableInteraction, ghost, 
-    handleProps, indentationWidth, collapsed, onCollapse, style, id, title, collapsible, wrapperRef 
+    childCount, clone, depth, disableSelection, disableInteraction, ghost,
+    handleProps, indentationWidth, collapsed, onCollapse, style, id, title, collapsible, wrapperRef,
+    isFallbackLabel, isIdAsLabel
   } = props;
   const { form } = useComposer();
   const { editor, setHighlightedItem, setActivePage, setActiveItem, setItemOptionsActiveTab } = useEditor();
@@ -41,6 +44,14 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
   const textColor = errorColor ?? (highlighted ? 'primary.main' : 'text.primary');
   const backgroundColor = (theme: Theme) => errorColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const item = form.data[id];
+
+  const maxTextLength = 50 - (depth * 5);
+  const truncatedTitle = title.length > maxTextLength
+    ? title.substring(0, maxTextLength) + '...'
+    : title;
+
+  const showTooltip = !isIdAsLabel;
+  const tooltipTitle = showTooltip ? `ID: ${id}` : '';
 
   React.useEffect(() => {
     if (editor?.highlightedItem?.id === id) {
@@ -91,23 +102,26 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
             <KeyboardArrowDown />
           </IconButton>
         )}
-        <Typography
-          variant="body2"
-          noWrap={clone ? false : true}
-          fontWeight={highlighted ? 'bold' : 'normal'}
-          color={textColor}
-          onClick={handleScrollTo}
-          onDoubleClick={handleOpenEditor}
-          sx={{
-            width: 1,
-            flexGrow: 1,
-            pl: 1,
-            userSelect: disableSelection ? 'none' : 'auto',
-            cursor: 'pointer',
-          }}
-        >
-          {title}
-        </Typography>
+        <Tooltip title={tooltipTitle} placement="right" arrow>
+          <Typography
+            variant="body2"
+            noWrap={clone ? false : true}
+            fontWeight={highlighted ? 'bold' : 'normal'}
+            color={textColor}
+            onClick={handleScrollTo}
+            onDoubleClick={handleOpenEditor}
+            sx={{
+              width: 1,
+              flexGrow: 1,
+              pl: 1,
+              userSelect: disableSelection ? 'none' : 'auto',
+              cursor: 'pointer',
+              fontStyle: isFallbackLabel ? 'italic' : 'normal',
+            }}
+          >
+            {truncatedTitle}
+          </Typography>
+        </Tooltip>
         {clone && childCount && childCount > 1 ? (
           <Badge
             badgeContent={childCount}

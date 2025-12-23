@@ -6,6 +6,42 @@ import { ItemConfig } from '../../defaults/types';
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
+interface LabelResult {
+  text: string;
+  isFallback: boolean;
+  isId: boolean;
+}
+
+function resolveLabelWithFallback(
+  item: DialobItem, 
+  activeLanguage: string, 
+  availableLanguages: string[]
+): LabelResult {
+  if (item.label?.[activeLanguage]) {
+    return { 
+      text: item.label[activeLanguage], 
+      isFallback: false, 
+      isId: false 
+    };
+  }
+
+  for (const lang of availableLanguages) {
+    if (lang !== activeLanguage && item.label?.[lang]) {
+      return { 
+        text: item.label[lang], 
+        isFallback: true, 
+        isId: false 
+      };
+    }
+  }
+
+  return { 
+    text: item.id, 
+    isFallback: false, 
+    isId: true 
+  };
+}
+
 const getDragDepth = (offset: number, indentationWidth: number) => {
   return Math.round(offset / indentationWidth);
 }
@@ -112,9 +148,9 @@ export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
   return root.children;
 }
 
-export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig, collapsedItems?: Record<string, boolean>): TreeItems => {
+export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig, collapsedItems?: Record<string, boolean>, availableLanguages?: string[]): TreeItems => {
   const createdNodes = new Map<string, TreeItem>();
-
+  const languages = availableLanguages || [language];
 
   const buildNode = (item: DialobItem): TreeItem => {
     if (createdNodes.has(item.id)) {
@@ -124,12 +160,16 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
     const treeCollapsible = config.items.find(c => c.matcher(item))?.props.treeCollapsible ?? false; 
     const isCollapsed = collapsedItems?.[item.id] ?? !treeCollapsible;
 
+    const labelResult = resolveLabelWithFallback(item, language, languages);
+
     const newNode: TreeItem = { 
       id: item.id, 
       children: [], 
-      title: item.id.startsWith('page') ? (item.label?.[language] ?? item.id) : item.id,
+      title: labelResult.text,
       collapsible: treeCollapsible,
-      collapsed: isCollapsed
+      collapsed: isCollapsed,
+      isFallbackLabel: labelResult.isFallback,
+      isIdAsLabel: labelResult.isId
     };
 
     createdNodes.set(item.id, newNode);
