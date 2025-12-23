@@ -27,14 +27,13 @@ export interface TreeItemProps {
   onCollapse?(): void;
   wrapperRef?(node: HTMLLIElement): void;
   isFallbackLabel?: boolean;
-  isIdAsLabel?: boolean;
 }
 
 export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, ref) => {
   const {
     childCount, clone, depth, disableSelection, disableInteraction, ghost,
     handleProps, indentationWidth, collapsed, onCollapse, style, id, title, collapsible, wrapperRef,
-    isFallbackLabel, isIdAsLabel
+    isFallbackLabel
   } = props;
   const { form } = useComposer();
   const { editor, setHighlightedItem, setActivePage, setActiveItem, setItemOptionsActiveTab } = useEditor();
