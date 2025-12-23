@@ -21,8 +21,8 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
-import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,18 +30,24 @@ import static io.dialob.session.engine.session.command.EventMatchers.whenItemRem
 import static io.dialob.session.engine.session.command.EventMatchers.whenRowGroupItemsInit;
 import static java.util.stream.Collectors.toMap;
 
-@Value.Immutable
-public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCommand, UpdateCommand<ItemId, ItemStates> {
-
-  @Value.Parameter
-  ItemId getItemPrototypeId();
+record CreateRowGroupItemsFromPrototypeCommand(
+  ItemId targetId,
+  ItemId itemPrototypeId,
+  List<Trigger<ItemStates>> triggers
+) implements SessionUpdateCommand, UpdateCommand<ItemId, ItemStates> {
 
   @NonNull
   @Override
-  default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
-    final ItemState currentItemState = itemStates.getItemStates().get(getTargetId());
+  public UpdateCommand<ItemId, ItemStates> withTargetId(@NonNull ItemId targetId) {
+    return new CreateRowGroupItemsFromPrototypeCommand(targetId, itemPrototypeId(), triggers);
+  }
+
+  @NonNull
+  @Override
+  public ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
+    final ItemState currentItemState = itemStates.getItemStates().get(targetId());
     Set<ItemId> currentItems = currentItemState != null ? Set.copyOf(currentItemState.getItems()) : Set.of();
-    Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
+    Set<ItemId> originalItems = context.getOriginalItemState(targetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
     final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
     final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
@@ -68,10 +74,11 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
+  public Set<EventMatcher> eventMatchers() {
     return Set.of(
-      whenRowGroupItemsInit(getItemPrototypeId()),
-      whenItemRemoved(getItemPrototypeId())
+      whenRowGroupItemsInit(itemPrototypeId()),
+      whenItemRemoved(itemPrototypeId())
     );
   }
+
 }

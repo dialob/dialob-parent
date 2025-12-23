@@ -75,7 +75,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 class QuestionnairesRestServiceControllerTest {
 
   public static final QuestionnaireSession.DispatchActionsResult EMPTY_IMMUTABLE_ACTIONS =
-    ImmutableQuestionnaireSession.DispatchActionsResult.builder()
+    QuestionnaireSession.DispatchActionsResult.builder()
       .actions(new Actions.Builder().build())
       .isDidComplete(false)
       .build();

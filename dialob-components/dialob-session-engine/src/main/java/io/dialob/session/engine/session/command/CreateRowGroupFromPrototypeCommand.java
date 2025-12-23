@@ -21,29 +21,28 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
-import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toMap;
 
-@Value.Immutable
-public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand {
-
-  @Value.Parameter
-  ItemId getItemPrototypeId();
+record CreateRowGroupFromPrototypeCommand(
+  ItemId itemPrototypeId,
+  List<Trigger<ItemStates>> triggers
+) implements SessionUpdateCommand {
 
   @NonNull
   @Override
-  default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
-    return getItemPrototypeId().getParent().flatMap(groupId -> {
+  public ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
+    return this.itemPrototypeId().getParent().flatMap(groupId -> {
       var currentItems = Set.copyOf(itemStates.getItemStates().get(groupId).getItems());
       var originalItems = context.getOriginalItemState(groupId).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
       final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
       final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
-      return context.findPrototype(getItemPrototypeId()).map(prototypeState -> (ItemStates) new ItemStates.Builder()
+      return context.findPrototype(this.itemPrototypeId()).map(prototypeState -> new ItemStates.Builder()
         .from(itemStates)
         .itemStates(itemStates.getItemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
         .putAllItemStates(newItems.stream().map(prototypeState::withId).collect(toMap(ItemState::getId, item -> item)))
@@ -53,8 +52,8 @@ public interface CreateRowGroupFromPrototypeCommand extends SessionUpdateCommand
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return getItemPrototypeId().getParent()
+  public Set<EventMatcher> eventMatchers() {
+    return this.itemPrototypeId().getParent()
       .map(EventMatchers::whenItemsChanged)
       .map(Set::of)
       .orElseGet(Set::of);

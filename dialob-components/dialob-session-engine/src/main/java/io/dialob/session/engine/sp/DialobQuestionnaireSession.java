@@ -26,7 +26,6 @@ import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.questionnaire.service.api.FormActionsUpdatesCallback;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
-import io.dialob.questionnaire.service.api.session.ImmutableQuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.utils.ConversionUtil;
 import io.dialob.rule.parser.api.ValueType;
@@ -292,7 +291,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public DispatchActionsResult dispatchActions(String revision, @NonNull Collection<Action> actions) {
-    var actionsResultBuilder = ImmutableQuestionnaireSession
+    var actionsResultBuilder = QuestionnaireSession
       .DispatchActionsResult.builder()
       .isDidComplete(false);
     var prevRevision = dialobSession.getRevision();

@@ -20,7 +20,6 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemIndex;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.math.BigInteger;
 import java.util.Collections;
@@ -29,18 +28,20 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
-@Value.Immutable
-public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
+record InitRowGroupItemsCommand(
+  ItemId targetId,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     List<BigInteger> rowNumbers = (List<BigInteger>) itemState.getValue();
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
     var newItems = rowNumbers.stream().map(row -> {
-      ItemId parent = getTargetId();
+      ItemId parent = targetId();
       return (ItemId) new ItemIndex(row.intValue(), parent);
     }).toList();
     return itemState.update()
@@ -50,7 +51,13 @@ public interface InitRowGroupItemsCommand extends AbstractUpdateCommand<ItemId,I
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return Set.of(whenValueUpdated(getTargetId()));
+  public Set<EventMatcher> eventMatchers() {
+    return Set.of(whenValueUpdated(targetId()));
+  }
+
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new InitRowGroupItemsCommand(targetId, triggers);
   }
 }

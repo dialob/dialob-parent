@@ -139,9 +139,9 @@ class DependencyResolverVisitor implements ProgramVisitor {
       .filter(command -> command instanceof UpdateCommand)
       .map(command -> (UpdateCommand<?,?>) command)
       .forEach(updateCommand ->
-        itemCommands.computeIfAbsent(updateCommand.getTargetId(),
+        itemCommands.computeIfAbsent(updateCommand.targetId(),
         targetId -> new ArrayList<>()).add(updateCommand));
-    updateCommandFactory.getAllCommands().forEach(updateCommand -> updateCommand.getEventMatchers().forEach(
+    updateCommandFactory.getAllCommands().forEach(updateCommand -> updateCommand.eventMatchers().forEach(
       eventMatcher -> inputUpdates.computeIfAbsent(requireNonNull(eventMatcher),
         key -> new ArrayList<>()).add(updateCommand)));
 
@@ -193,7 +193,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
   }
 
   private <T> Stream<Trigger<T>> findTriggers(Command<T> command) {
-    return command.getTriggers().stream();
+    return command.triggers().stream();
   }
 
   private void loopScan() {
@@ -212,7 +212,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
       if (contains) {
         ItemId itemId = IdUtils.QUESTIONNAIRE_ID;
         if (command instanceof UpdateCommand updateCommand) {
-          itemId = updateCommand.getTargetId();
+          itemId = updateCommand.targetId();
         }
         throw new DependencyLoopException("dependency loop", List.of(new FormValidationError.Builder()
           .type(FormValidationError.Type.GENERAL)

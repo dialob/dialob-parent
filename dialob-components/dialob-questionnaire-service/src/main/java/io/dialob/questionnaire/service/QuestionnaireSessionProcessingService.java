@@ -135,11 +135,11 @@ public class QuestionnaireSessionProcessingService implements ActionProcessingSe
       // when completed Note! save method updates also cache
       questionnaireSessionSaveService.save(session);
       session.getSessionId().ifPresent(sessionId -> eventPublisher.completed(session.getTenantId(), sessionId));
-      return response.getActions();
+      return response.actions();
     }
     // normal
     this.storeSessionIntoCache(questionnaireId, session);
-    return response.getActions();
+    return response.actions();
   }
 
   @NonNull

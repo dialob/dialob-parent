@@ -19,20 +19,24 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface GotoPage extends AbstractPageCommand {
+import java.util.List;
 
-  @NonNull
-  @Value.Parameter
-  ItemId getPage();
-
+record GotoPage(
+  ItemId page,
+  List<Trigger<ItemState>> triggers
+) implements AbstractPageCommand {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    return gotoPage(context, itemState, getPage());
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return this;
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+    return gotoPage(context, itemState, this.page());
   }
 
 }

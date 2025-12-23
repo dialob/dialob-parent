@@ -21,16 +21,22 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.List;
 
-@Value.Immutable
-public interface NextPage extends AbstractPageCommand {
+record NextPage(
+  List<Trigger<ItemState>> triggers
+) implements AbstractPageCommand {
+
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return this;
+  }
 
   @Override
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     ItemId page = null;
     if (!context.getItemState(IdUtils.QUESTIONNAIRE_ID).map(questionnaire -> questionnaire.getAllowedActions().contains(Action.Type.NEXT)).orElse(false)) {
       return itemState;

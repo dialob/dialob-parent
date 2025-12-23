@@ -38,13 +38,9 @@ public record CoerceToDecimalOperator(
 
   public static final class Builder extends CoerceToDecimalOperatorBuilder {}
 
-  public Expression getExpression() {
-    return expression;
-  }
-
   @Override
   public BigDecimal eval(@NonNull EvalContext context) {
-    Object eval = getExpression().eval(context);
+    Object eval = this.expression().eval(context);
     return switch (eval) {
       case null -> null;
       case BigDecimal decimal -> decimal;
@@ -65,7 +61,7 @@ public record CoerceToDecimalOperator(
   @NonNull
   @Override
   public Set<EventMatcher> getEvalRequiredConditions() {
-    return getExpression().getEvalRequiredConditions();
+    return this.expression().getEvalRequiredConditions();
   }
 
 }

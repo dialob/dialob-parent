@@ -107,7 +107,7 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private Stream<Command<?>> matchPartialCommands(Command<?> command) {
     if (command instanceof UpdateCommand updateCommand) {
-      final ItemId targetId = updateCommand.getTargetId();
+      final ItemId targetId = updateCommand.targetId();
       if (targetId.isPartial()) {
         return dialobSession.findMatchingItemIds(targetId).map((Function<? super ItemId, ? extends Command<?>>) updateCommand::withTargetId);
       }

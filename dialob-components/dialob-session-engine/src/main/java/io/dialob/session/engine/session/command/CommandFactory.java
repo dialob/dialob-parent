@@ -166,72 +166,80 @@ public final class CommandFactory {
 
   private static final List<Trigger<ItemState>> ACTIVE_PAGE_TRIGGERS = List.of(Triggers.<ItemState>trigger(Triggers.activePageUpdatedEvent()).when(ITEM_STATE_CHANGED));
 
-  private static final NextPage NEXT_PAGE = ImmutableNextPage.of(ACTIVE_PAGE_TRIGGERS);
+  private static final ItemUpdateCommand NEXT_PAGE = new NextPage(ACTIVE_PAGE_TRIGGERS);
 
-  private static final PrevPage PREV_PAGE = ImmutablePrevPage.of(ACTIVE_PAGE_TRIGGERS);
+  private static final ItemUpdateCommand PREV_PAGE = new PrevPage(ACTIVE_PAGE_TRIGGERS);
 
-  private static final Complete COMPLETE = ImmutableComplete.builder().build();
+  private static final ItemUpdateCommand COMPLETE = new Complete(emptyList());
 
   private CommandFactory() {
   }
 
-  public static NextPage nextPage() {
+  public static ItemUpdateCommand nextPage() {
     return NEXT_PAGE;
   }
 
-  public static PrevPage prevPage() {
+  public static ItemUpdateCommand prevPage() {
     return PREV_PAGE;
   }
 
-  public static Complete complete() {
+  public static ItemUpdateCommand complete() {
     return COMPLETE;
   }
 
-  public static GotoPage gotoPage(@NonNull ItemId page) {
-    return ImmutableGotoPage.of(page, ACTIVE_PAGE_TRIGGERS);
+  public static ItemUpdateCommand gotoPage(@NonNull ItemId page) {
+    return new GotoPage(page, ACTIVE_PAGE_TRIGGERS);
   }
 
-  public static SetAnswer setAnswer(@NonNull ItemId questionId, Object answer) {
-    return ImmutableSetAnswer.of(questionId, answer, Arrays.asList(
+  public static ItemUpdateCommand setAnswer(@NonNull ItemId questionId, Object answer) {
+    return new SetAnswer(questionId, answer, Arrays.asList(
       Triggers.<ItemState>trigger(stateChangedEvent(questionId)).when(ITEM_STATE_CHANGED),
       Triggers.<ItemState>trigger(Triggers.validityUpdatedEvent(onTarget(questionId))).when(ITEM_INVALIDITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.answeredUpdatedEvent(onTarget(questionId))).when(ITEM_ANSWERED_STATE_CHANGED)
     ));
   }
 
-  public static SetLocale setLocale(@NonNull String locale) {
-    return ImmutableSetLocale.of(locale, Collections.singletonList(
+  public static ItemUpdateCommand setLocale(@NonNull String locale) {
+    return new SetLocale(locale, Collections.singletonList(
       Triggers.<ItemState>trigger(sessionLocaleUpdatedEvent()).when(ALWAYS)
     ));
   }
 
-  public static SetVariableValue setVariableValue(@NonNull ItemId id, Object value) {
-    return ImmutableSetVariableValue.of(id, value, Arrays.asList(
+  public static ItemUpdateCommand setVariableValue(@NonNull ItemId id, Object value) {
+    return new SetVariableValue(id, value, Arrays.asList(
       Triggers.<ItemState>trigger(stateChangedEvent(id)).when(ITEM_STATE_CHANGED),
       Triggers.<ItemState>trigger(Triggers.statusUpdatedEvent(onTarget(id))).when(ITEM_STATUS_CHANGED)
     ));
   }
 
-  public static SetVariableFailed setVariableFailed(@NonNull ItemId id) {
-    return ImmutableSetVariableFailed.of(id, List.of(
+  public static ItemUpdateCommand setVariablePending(@NonNull ItemId id) {
+    return new SetVariablePending(id, emptyList());
+  }
+
+  public static ItemUpdateCommand setVariableFailed(@NonNull ItemId id) {
+    return new SetVariableFailed(id, List.of(
       Triggers.<ItemState>trigger(Triggers.statusUpdatedEvent(onTarget(id))).when(ITEM_STATUS_CHANGED)
     ));
   }
 
   public static ItemUpdateCommand deleteRow(@NonNull ItemId toBeRemoved) {
-    return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) ImmutableDeleteRow.of(parent, toBeRemoved, List.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> ImmutableNopCommand.of(toBeRemoved, emptyList()));
+    return toBeRemoved.getParent().map(parent -> (ItemUpdateCommand) new DeleteRow(parent, toBeRemoved, List.of(Triggers.<ItemState>trigger(stateChangedEvent(parent)).when(ITEM_STATE_CHANGED)))).orElseGet(() -> nop(toBeRemoved));
   }
 
-  public static AddRow addRow(@NonNull ItemId targetId) {
-    return ImmutableAddRow.of(targetId, List.of(Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)));
+  public static ItemUpdateCommand nop(@NonNull ItemId targetId) {
+    return new NopCommand(targetId, emptyList());
   }
 
-  public static InitRowGroupItemsCommand initRowGroupItemsCommand(@NonNull ItemId targetId) {
-    return ImmutableInitRowGroupItemsCommand.of(targetId, List.of(Triggers.<ItemState>trigger(itemsChangedEvent(onTarget(targetId))).when(GROUP_ITEMS_CHANGED)));
+  public static ItemUpdateCommand addRow(@NonNull ItemId targetId) {
+    return new AddRow(targetId, List.of(Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)));
   }
 
-  public static UpdateActivityCommand activityUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateActivityCommand.of(targetId, expression, List.of(
+  public static ItemUpdateCommand initRowGroupItemsCommand(@NonNull ItemId targetId) {
+    return new InitRowGroupItemsCommand(targetId, List.of(Triggers.<ItemState>trigger(itemsChangedEvent(onTarget(targetId))).when(GROUP_ITEMS_CHANGED)));
+  }
+
+  public static ItemUpdateCommand activityUpdate(ItemId targetId, Expression expression) {
+    return new UpdateActivityCommand(targetId, expression, List.of(
       Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_ACTIVITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.activityUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED),
       Triggers.<ItemState>trigger(Triggers.validityUpdatedEvent(onTarget(targetId))).when(ITEM_ACTIVITY_CHANGED),
@@ -239,98 +247,98 @@ public final class CommandFactory {
     ));
   }
 
-  public static UpdateRowsCanBeAddedCommand rowsCanBeAddedUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateRowsCanBeAddedCommand.of(targetId, expression, List.of(
+  public static ItemUpdateCommand rowsCanBeAddedUpdate(ItemId targetId, Expression expression) {
+    return new UpdateRowsCanBeAddedCommand(targetId, expression, List.of(
       Triggers.<ItemState>trigger(rowsCanBeAddedUpdatedEvent(onTarget(targetId))).when(ROWS_CAN_BE_ADDED_CHANGED)
     ));
   }
 
-  public static UpdateRowCanBeRemovedCommand rowCanBeRemovedUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateRowCanBeRemovedCommand.of(targetId, expression, List.of(
+  public static ItemUpdateCommand rowCanBeRemovedUpdate(ItemId targetId, Expression expression) {
+    return new UpdateRowCanBeRemovedCommand(targetId, expression, List.of(
       Triggers.<ItemState>trigger(rowCanBeRemovedUpdatedEvent(onTarget(targetId))).when(ROWS_CAN_BE_REMOVED_CHANGED)
     ));
   }
 
-  public static UpdateRequiredCommand requiredUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateRequiredCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.requiredUpdatedEvent(onTarget(targetId))).when(ITEM_REQUIRED_CHANGED)));
+  public static ItemUpdateCommand requiredUpdate(ItemId targetId, Expression expression) {
+    return new UpdateRequiredCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.requiredUpdatedEvent(onTarget(targetId))).when(ITEM_REQUIRED_CHANGED)));
   }
 
-  public static UpdateClassNames updateClassNames(ItemId targetId, Expression expression) {
-    return ImmutableUpdateClassNames.of(targetId, expression, emptyList());
+  public static ItemUpdateCommand updateClassNames(ItemId targetId, Expression expression) {
+    return new UpdateClassNames(targetId, expression, emptyList());
   }
 
-  public static UpdateLabelCommand labelUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateLabelCommand.of(targetId, expression, List.of(
+  public static ItemUpdateCommand labelUpdate(ItemId targetId, Expression expression) {
+    return new UpdateLabelCommand(targetId, expression, List.of(
       Triggers.<ItemState>trigger(Triggers.labelUpdatedEvent(onTarget(targetId))).when(ITEM_LABEL_CHANGED)
     ));
   }
 
-  public static UpdateDescriptionCommand descriptionUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateDescriptionCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.descriptionUpdatedEvent(onTarget(targetId))).when(ITEM_DESCRIPTION_CHANGED)));
+  public static ItemUpdateCommand descriptionUpdate(ItemId targetId, Expression expression) {
+    return new UpdateDescriptionCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.descriptionUpdatedEvent(onTarget(targetId))).when(ITEM_DESCRIPTION_CHANGED)));
   }
 
-  public static UpdateAllowedActionsCommand allowedActionsUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateAllowedActionsCommand.of(targetId, expression, emptyList());
+  public static ItemUpdateCommand allowedActionsUpdate(ItemId targetId, Expression expression) {
+    return new UpdateAllowedActionsCommand(targetId, expression, emptyList());
   }
 
-  public static UpdateIsInvalidAnswersCommand updateIsInvalidAnswers(ItemId targetId, Expression expression) {
-    return ImmutableUpdateIsInvalidAnswersCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.anyInvalidAnswersUpdatedEvent())
+  public static ItemUpdateCommand updateIsInvalidAnswers(ItemId targetId, Expression expression) {
+    return new UpdateIsInvalidAnswersCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.anyInvalidAnswersUpdatedEvent())
       .when(ITEM_INVALID_ANSWERS_CHANGED)));
   }
 
-  public static UpdateAvailableItemsCommand availableItemsUpdate(ItemId targetId, Expression expression) {
-    return ImmutableUpdateAvailableItemsCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.availableItemsUpdatedEvent())
+  public static ItemUpdateCommand availableItemsUpdate(ItemId targetId, Expression expression) {
+    return new UpdateAvailableItemsCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.availableItemsUpdatedEvent())
       .when(ITEM_STATE_CHANGED)));
   }
 
-  public static UpdateDisabledCommand updateDisabled(ItemId targetId, Expression expression) {
-    return ImmutableUpdateDisabledCommand.of(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.disabledUpdatedEvent(onTarget(targetId)))
+  public static ItemUpdateCommand updateDisabled(ItemId targetId, Expression expression) {
+    return new UpdateDisabledCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.disabledUpdatedEvent(onTarget(targetId)))
       .when(ITEM_STATE_CHANGED)));
   }
 
   public static ItemUpdateCommand updateGroupItems(ItemId targetId, Expression expression) {
     if (targetId instanceof ItemIdPartial) {
-      return ImmutableInitGroupItems.of(targetId, expression, List.of(
+      return new InitGroupItems(targetId, expression, List.of(
         // TODO Triggered event do not match correctly on command
         Triggers.trigger(Triggers.groupItemsUpdatedEvent(targetId)).when(ITEM_STATE_CHANGED),
         Triggers.trigger(Triggers.rowGroupItemsInitEvent(targetId)).when(ITEM_STATE_CHANGED)
       ));
     }
-    return ImmutableUpdateGroupItems.of(targetId, expression, List.of(
+    return new UpdateGroupItems(targetId, expression, List.of(
       Triggers.trigger(Triggers.groupItemsUpdatedEvent(onTarget(targetId))).when(ITEM_STATE_CHANGED)
     ));
   }
 
-  public static ValidationDisabledUpdateCommand validationDisabledUpdate(ErrorId errorId, Expression expression) {
-    return ImmutableValidationDisabledUpdateCommand.of(errorId, expression, emptyList());
+  public static ErrorUpdateCommand validationDisabledUpdate(ErrorId errorId, Expression expression) {
+    return new ValidationDisabledUpdateCommand(errorId, expression, emptyList());
   }
 
-  public static UpdateValidationCommand updateValidationCommand(ErrorId errorId, Expression expression) {
-    return ImmutableUpdateValidationCommand.of(errorId, expression, List.of(
+  public static ErrorUpdateCommand updateValidationCommand(ErrorId errorId, Expression expression) {
+    return new UpdateValidationCommand(errorId, expression, List.of(
       Triggers.<ErrorState>trigger(Triggers.validityUpdatedEvent(onTarget(errorId.itemId()))).when(ERROR_ACTIVITY_CHANGED),
       Triggers.<ErrorState>trigger(Triggers.errorActivityUpdatedEvent(errorId)).when(ERROR_ACTIVITY_CHANGED)
     ));
   }
 
-  public static ErrorLabelUpdateCommand errorLabelUpdateCommand(ErrorId errorId, Expression expression) {
-    return ImmutableErrorLabelUpdateCommand.of(errorId, expression, Collections.emptyList());
+  public static ErrorUpdateCommand errorLabelUpdateCommand(ErrorId errorId, Expression expression) {
+    return new ErrorLabelUpdateCommand(errorId, expression, Collections.emptyList());
   }
 
-  public static VariableUpdateCommand variableUpdateCommand(ItemId targetId, Expression expression) {
-    return ImmutableVariableUpdateCommand.of(targetId, expression, List.of(
+  public static ItemUpdateCommand variableUpdateCommand(ItemId targetId, Expression expression) {
+    return new VariableUpdateCommand(targetId, expression, List.of(
       Triggers.<ItemState>trigger(stateChangedEvent(targetId)).when(ITEM_STATE_CHANGED)
     ));
   }
 
-  public static UpdateValueSetCommand updateValueSet(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
-    return ImmutableUpdateValueSetCommand.of(valueSetId, entries, List.of(
+  public static ValueSetUpdateCommand updateValueSet(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
+    return new UpdateValueSetCommand(valueSetId, entries, List.of(
       Triggers.<ValueSetState>trigger(new ValueSetUpdatedEvent(valueSetId))
         .when(ValueStatePredicates.VALUE_SET_STATE_CHANGED)
       ));
   }
 
   public static SessionUpdateCommand createRowGroupFromPrototypeCommand(ItemId rowProtoTypeId) {
-    return ImmutableCreateRowGroupFromPrototypeCommand.of(rowProtoTypeId,
+    return new CreateRowGroupFromPrototypeCommand(rowProtoTypeId,
       List.of(
         trigger(new RowItemsAddedEventsProvider(rowProtoTypeId))
           .when(ItemStatesPredicates.ITEM_STATES_CHANGED),
@@ -341,7 +349,7 @@ public final class CommandFactory {
   }
 
   public static SessionUpdateCommand createRowGroupItemsFromPrototypeCommand(ItemId rowProtoTypeId, List<ItemId> itemPrototypeIds) {
-    return ImmutableCreateRowGroupItemsFromPrototypeCommand.of(rowProtoTypeId, rowProtoTypeId, List.of(
+    return new CreateRowGroupItemsFromPrototypeCommand(rowProtoTypeId, rowProtoTypeId, List.of(
       trigger(new ProtoTypeItemsAddedEventsProvider(itemPrototypeIds)).when(ItemStatesPredicates.ITEM_STATES_CHANGED)
     ));
   }

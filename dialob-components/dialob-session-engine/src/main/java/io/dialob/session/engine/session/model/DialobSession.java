@@ -290,7 +290,7 @@ public class DialobSession implements ItemStates, Serializable {
 
     switch (command) {
       case ItemUpdateCommand itemUpdateCommand -> {
-        ItemId itemId = itemUpdateCommand.getTargetId();
+        ItemId itemId = itemUpdateCommand.targetId();
         // TODO scope?
         EvalContext context = createScopedEvalContext(evalContext, itemId);
 
@@ -298,11 +298,11 @@ public class DialobSession implements ItemStates, Serializable {
         updated();
       }
       case ErrorUpdateCommand errorUpdateCommand -> {
-        EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.getTargetId().itemId());
+        EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.targetId().itemId());
         applyErrorUpdateCommand(context, errorUpdateCommand);
         updated();
       }
-      case UpdateValueSetCommand valueSetCommand -> {
+      case ValueSetUpdateCommand valueSetCommand -> {
         applyUpdateValueSetCommand(evalContext, valueSetCommand);
         updated();
       }
@@ -335,7 +335,7 @@ public class DialobSession implements ItemStates, Serializable {
 
   private void applySessionUpdateCommand(EvalContext evalContext, SessionUpdateCommand command) {
     final ItemStates newStates = command.update(evalContext, this);
-    command.getTriggers().stream()
+    command.triggers().stream()
       .flatMap(trigger -> trigger.apply(this, newStates))
       .forEach(event -> evalContext.getEventsConsumer().accept(event));
 
@@ -371,12 +371,12 @@ public class DialobSession implements ItemStates, Serializable {
     }));
   }
 
-  private void applyUpdateValueSetCommand(EvalContext evalContext, UpdateValueSetCommand updateCommand) {
+  private void applyUpdateValueSetCommand(EvalContext evalContext, ValueSetUpdateCommand updateCommand) {
     // alias 'answer' to error's target item.
     // TODO should be bound to command in more generic way
-    valueSetStates.computeIfPresent(updateCommand.getTargetId(), (key,state) -> {
+    valueSetStates.computeIfPresent(updateCommand.targetId(), (key, state) -> {
       ValueSetState updatedState = updateCommand.update(evalContext, state);
-      updateCommand.getTriggers().stream()
+      updateCommand.triggers().stream()
         .flatMap(trigger -> trigger.apply(state, updatedState))
         .forEach(event -> evalContext.getEventsConsumer().accept(event));
       evalContext.registerUpdate(updatedState, state);
@@ -387,9 +387,9 @@ public class DialobSession implements ItemStates, Serializable {
   private void applyErrorUpdateCommand(EvalContext evalContext, ErrorUpdateCommand updateCommand) {
     // alias 'answer' to error's target item.
     // TODO should be bound to command in more generic way
-    errorStates.computeIfPresent(updateCommand.getTargetId(), (key,state) -> {
+    errorStates.computeIfPresent(updateCommand.targetId(), (key, state) -> {
       ErrorState updatedState = updateCommand.update(evalContext, state);
-      updateCommand.getTriggers().stream()
+      updateCommand.triggers().stream()
         .flatMap(trigger -> trigger.apply(state, updatedState))
         .forEach(event -> evalContext.getEventsConsumer().accept(event));
       evalContext.registerUpdate(updatedState, state);
@@ -398,10 +398,10 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   private void applyItemUpdateCommand(EvalContext evalContext, ItemUpdateCommand updateCommand) {
-    itemStates.computeIfPresent(updateCommand.getTargetId(), (key,state) -> {
+    itemStates.computeIfPresent(updateCommand.targetId(), (key, state) -> {
 //      LOGGER.debug("Execute command: {}", updateCommand);
       final ItemState updatedState = updateCommand.update(evalContext, state);
-      updateCommand.getTriggers().stream()
+      updateCommand.triggers().stream()
         .flatMap(trigger -> trigger.apply(state, updatedState))
         .forEach(event -> evalContext.getEventsConsumer().accept(event));
 

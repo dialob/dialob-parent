@@ -206,7 +206,7 @@ public class FillAssertionBuilder {
         validationEntry.getSessionConsumer().accept(session);
         validationEntry.setActions(new Actions.Builder().build());
       } else if (validationEntry.getAction() != null) {
-        validationEntry.setActions(session.dispatchActions(Collections.singletonList(validationEntry.getAction())).getActions());
+        validationEntry.setActions(session.dispatchActions(Collections.singletonList(validationEntry.getAction())).actions());
       } else {
         FormActions formActions =  new FormActions();
         session.buildFullForm(new FormActionsUpdatesCallback(formActions));

@@ -115,9 +115,9 @@ class CommandFactoryTest {
     Expression expression =
       Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), Constant.builder().valueType(ValueType.INTEGER).value(0).build()));
     //;
-    UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
-    Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();
-    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::allEvents).flatMap(List::stream).toList();
+    var updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
+    Set<EventMatcher> eventMatchers = updateValidationCommand.eventMatchers();
+    List<Event> eventList = updateValidationCommand.triggers().stream().map(Trigger::allEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();
     EventMatcher eventMatcher = i.next();
     assertFalse(eventMatcher.matches(eventList.getFirst()));
@@ -143,7 +143,7 @@ class CommandFactoryTest {
       .putItemStates(itemState2.getId(), itemState2)
       .build();
 
-    List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
+    List<Event> events = command.triggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
 
     assertFalse(events.isEmpty());
     assertEquals(new ItemAddedEvent(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.getFirst());

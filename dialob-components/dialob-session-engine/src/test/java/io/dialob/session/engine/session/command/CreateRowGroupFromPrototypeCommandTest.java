@@ -46,7 +46,7 @@ class CreateRowGroupFromPrototypeCommandTest {
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
     when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.empty());
     when(states.getItemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemStates newStates = command.update(context, states);
     Assertions.assertSame(states, newStates);
 
@@ -73,7 +73,7 @@ class CreateRowGroupFromPrototypeCommandTest {
     when(groupState1.getId()).thenReturn(IdUtils.toId("g1"));
     when(groupState2.getId()).thenReturn(IdUtils.toId("g1"));
 
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemStates newStates = command.update(context, states);
     assertNotSame(states, newStates);
     assertTrue(newStates.getItemStates().containsKey(IdUtils.toId("g1.0")));
@@ -90,17 +90,17 @@ class CreateRowGroupFromPrototypeCommandTest {
   @Test
   @Disabled
   void eventMatcherShouldReactOnItemsChangedEvent() {
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*.q1"));
     Assertions.assertTrue(
-      command.getEventMatchers().stream()
+      command.eventMatchers().stream()
         .anyMatch(eventMatcher -> eventMatcher.matches(ItemsChangedEvent.of(TargetEvent.of(IdUtils.toId("g1.0"))))));
   }
 
   @Test
   void eventMatcherShouldNotReactOnItemsChangedEventOfDifferentGroup() {
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*.q1"));
     Assertions.assertFalse(
-      command.getEventMatchers().stream()
+      command.eventMatchers().stream()
         .anyMatch(eventMatcher -> eventMatcher.matches(ItemsChangedEvent.of(TargetEvent.of(IdUtils.toId("g2"))))));
   }
 

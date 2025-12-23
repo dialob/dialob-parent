@@ -85,7 +85,7 @@ public class DialobProgram implements Serializable {
   private <T, C extends Command<T>> Stream<C> mapTo(Event event, C command) {
     if (command instanceof ErrorUpdateCommand updateCommand) {
       // TODO remove instanceof checks
-      final ErrorId errorId = updateCommand.getTargetId();
+      final ErrorId errorId = updateCommand.targetId();
       if (event instanceof ItemAddedEvent itemAddedEvent) {
         return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(itemAddedEvent.getAddItemId())));
       }
@@ -116,7 +116,7 @@ public class DialobProgram implements Serializable {
     return this.inputUpdates.values()
       .stream()
       .flatMap(List::stream)
-      .map(Command::getTriggers)
+      .map(Command::triggers)
       .flatMap(List::stream)
       .map(Trigger::allEvents)
       .flatMap(List::stream)

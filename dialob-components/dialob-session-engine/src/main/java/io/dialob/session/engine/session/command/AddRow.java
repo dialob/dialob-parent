@@ -19,19 +19,26 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Value.Immutable
-public interface AddRow extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
+record AddRow(
+  ItemId targetId,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
+
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new AddRow(targetId, triggers);
+  }
 
   @Override
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (itemState.isRowsCanBeAdded()) {
       // calculate id for a new row
       List<BigInteger> rowNumbers = (List<BigInteger>) itemState.getValue();
@@ -51,4 +58,5 @@ public interface AddRow extends AbstractUpdateCommand<ItemId, ItemState>, ItemUp
     }
     return itemState;
   }
+
 }

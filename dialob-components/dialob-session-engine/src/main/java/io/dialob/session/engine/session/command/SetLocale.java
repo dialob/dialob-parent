@@ -16,29 +16,33 @@
 package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface SetLocale extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
+import java.util.List;
+
+record SetLocale(
+  String locale,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @NonNull
-  @Value.Default
-  default ItemId getTargetId() {
+  @Override
+  public ItemId targetId() {
     return DialobSession.QUESTIONNAIRE_REF;
   }
 
-  @Value.Parameter(order = 1)
-  @Nullable
-  String getLocale();
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return this;
+  }
 
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    context.setLanguage(getLocale());
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+    context.setLanguage(locale());
     return itemState;
   }
 

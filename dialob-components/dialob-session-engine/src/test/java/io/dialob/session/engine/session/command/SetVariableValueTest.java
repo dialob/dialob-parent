@@ -27,10 +27,7 @@ class SetVariableValueTest {
 
   @Test
   void shouldSetContextValue() {
-    ImmutableSetVariableValue setVariableValue = ImmutableSetVariableValue.builder()
-      .targetId(IdUtils.toId("c1"))
-      .value("new value")
-      .build();
+    var setVariableValue = CommandFactory.setVariableValue(IdUtils.toId("c1"), "new value");
 
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState itemState = new ItemState(IdUtils.toId("c1"), null, "context", null, null);

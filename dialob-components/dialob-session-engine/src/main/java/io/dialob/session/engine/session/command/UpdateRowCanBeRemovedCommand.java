@@ -17,17 +17,27 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface UpdateRowCanBeRemovedCommand extends AbstractUpdateBooleanAttributeCommand {
+import java.util.List;
+
+record UpdateRowCanBeRemovedCommand(
+  ItemId targetId, Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateBooleanAttributeCommand {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setRowCanBeRemoved(evalExpression(context)).get();
   }
 
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateRowCanBeRemovedCommand(targetId, expression(), triggers());
+  }
 }

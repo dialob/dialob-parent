@@ -21,38 +21,43 @@ import io.dialob.session.engine.program.model.ConstantValue;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface UpdateClassNames extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
-
-  @Value.Parameter(order = 1)
-  Expression getExpression();
+record UpdateClassNames(
+  ItemId targetId,
+  Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    Set<EventMatcher> set = new HashSet<>(getExpression().getEvalRequiredConditions());
-    if (getTargetId().isPartial()) {
-      set.add(EventMatchers.whenItemAdded(getTargetId()));
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateClassNames(targetId, expression(), triggers());
+  }
+
+  @NonNull
+  @Override
+  public Set<EventMatcher> eventMatchers() {
+    Set<EventMatcher> set = new HashSet<>(this.expression().getEvalRequiredConditions());
+    if (targetId().isPartial()) {
+      set.add(EventMatchers.whenItemAdded(targetId()));
     }
     return Set.copyOf(set);
   }
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     // classnames do not trigger dependencies
     return itemState.update().setClassNames(evalExpression(context)).get();
   }
 
-  default List<String> evalExpression(EvalContext context) {
-    List<ConstantValue<String>> stringValues = (List<ConstantValue<String>>) getExpression().eval(context);
+  public List<String> evalExpression(EvalContext context) {
+    List<ConstantValue<String>> stringValues = (List<ConstantValue<String>>) this.expression().eval(context);
     if (stringValues == null) {
       return Collections.emptyList();
     }

@@ -17,18 +17,29 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ErrorState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface UpdateValidationCommand extends ErrorUpdateCommand {
+import java.util.List;
+
+record UpdateValidationCommand(
+  ErrorId targetId,
+  Expression expression,
+  List<Trigger<ErrorState>> triggers
+) implements ErrorUpdateCommand {
 
   @NonNull
   @Override
-  default ErrorState update(@NonNull EvalContext context, @NonNull ErrorState state) {
-    final Object eval = getExpression().eval(context);
+  public UpdateCommand<ErrorId, ErrorState> withTargetId(@NonNull ErrorId targetId) {
+    return new UpdateValidationCommand(targetId, expression(), triggers());
+  }
+
+  @NonNull
+  @Override
+  public ErrorState update(@NonNull EvalContext context, @NonNull ErrorState state) {
+    final Object eval = expression().eval(context);
     ErrorState.UpdateBuilder updateBuilder = state.update(context).setActive(eval != null ? (Boolean) eval : false);
     return updateBuilder.get();
   }
-
 }

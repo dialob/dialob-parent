@@ -157,7 +157,7 @@ public class FillAssertionBuilder {
     session = questionnaireSessionBuilder.build();
     for (final ValidationEntry validationEntry : validationEntries) {
       if (validationEntry.action != null) {
-        validationEntry.actions = session.dispatchActions(session.getRevision(), Collections.singletonList(validationEntry.action)).getActions();
+        validationEntry.actions = session.dispatchActions(session.getRevision(), Collections.singletonList(validationEntry.action)).actions();
       } else {
         FormActions formActions =  new FormActions();
         session.buildFullForm(new FormActionsUpdatesCallback(formActions));

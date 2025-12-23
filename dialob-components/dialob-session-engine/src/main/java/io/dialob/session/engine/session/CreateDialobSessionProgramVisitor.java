@@ -228,7 +228,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
       .map(Map.Entry::getValue)
       .flatMap(List::stream)
       .map(command -> {
-        if (command instanceof UpdateCommand updateCommand && updateCommand.getTargetId().isPartial()) {
+        if (command instanceof UpdateCommand updateCommand && updateCommand.targetId().isPartial()) {
           command = updateCommand.withTargetId(targetId);
         }
         return command;

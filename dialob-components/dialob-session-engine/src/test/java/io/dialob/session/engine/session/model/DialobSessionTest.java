@@ -51,7 +51,7 @@ class DialobSessionTest {
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
-      public List<Trigger<ItemStates>> getTriggers() {
+      public List<Trigger<ItemStates>> triggers() {
         return List.of();
       }
 
@@ -77,7 +77,7 @@ class DialobSessionTest {
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
-      public List<Trigger<ItemStates>> getTriggers() {
+      public List<Trigger<ItemStates>> triggers() {
         return List.of();
       }
 
@@ -104,7 +104,7 @@ class DialobSessionTest {
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
-      public List<Trigger<ItemStates>> getTriggers() {
+      public List<Trigger<ItemStates>> triggers() {
         return List.of();
       }
 
@@ -131,7 +131,7 @@ class DialobSessionTest {
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
-      public List<Trigger<ItemStates>> getTriggers() {
+      public List<Trigger<ItemStates>> triggers() {
         return List.of();
       }
 
