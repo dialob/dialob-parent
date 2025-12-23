@@ -88,9 +88,9 @@ public class ComposerController extends BaseController {
     model.addAttribute("subApplicationName", settings.getSubApplicationName());
     model.addAttribute("appConfig", appConfig);
     final PageAttributes pageAttributes = pageSettingsProvider.findPageSettings("composer");
-    model.addAllAttributes(pageAttributes.getAttributes());
+    model.addAllAttributes(pageAttributes.attributes());
     index(model, request);
-    return pageAttributes.getTemplate();
+    return pageAttributes.template();
   }
 
   @GetMapping(path = "/{id}/config.json", produces = MediaType.APPLICATION_JSON_VALUE)

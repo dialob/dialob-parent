@@ -59,9 +59,9 @@ public class FillController extends BaseController {
       .backendApiUrl(settings.getBackendApiUrl())
       .build());
     final PageAttributes pageAttributes = pageSettingsProvider.findPageSettingsByQuestionnaireId("fill", questionnaireId);
-    model.addAllAttributes(pageAttributes.getAttributes());
+    model.addAllAttributes(pageAttributes.attributes());
     index(model, request);
-    return pageAttributes.getTemplate();
+    return pageAttributes.template();
   }
 
   @Builder
