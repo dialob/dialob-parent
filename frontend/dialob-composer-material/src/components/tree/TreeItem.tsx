@@ -50,9 +50,6 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
     ? title.substring(0, maxTextLength) + '...'
     : title;
 
-  const showTooltip = !isIdAsLabel;
-  const tooltipTitle = showTooltip ? `ID: ${id}` : '';
-
   React.useEffect(() => {
     if (editor?.highlightedItem?.id === id) {
       setHighlighted(true);
@@ -102,7 +99,7 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
             <KeyboardArrowDown />
           </IconButton>
         )}
-        <Tooltip title={tooltipTitle} placement="right" arrow>
+        <Tooltip title={`ID: ${id}`} placement="right" arrow>
           <Typography
             variant="body2"
             noWrap={clone ? false : true}
