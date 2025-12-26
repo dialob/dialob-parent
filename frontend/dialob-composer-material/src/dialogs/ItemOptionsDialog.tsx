@@ -17,6 +17,7 @@ import { useDocs } from '../utils/DocsUtils';
 import { SavingProvider } from './contexts/saving/SavingProvider';
 import { useSave } from './contexts/saving/useSave';
 import { DialobItem } from '../types';
+import { getCategoryItems } from '../utils/ConfigUtils';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -112,7 +113,8 @@ const ItemOptionsDialog: React.FC = () => {
   const [id, setId] = React.useState<string>(item?.id || '');
   const [idError, setIdError] = React.useState<boolean>(false);
   const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
-  const isInputType = item && resolvedConfig.categories.find(c => c.type === 'input')?.items.some(i => i.config.type === item.type);
+  const inputCategory = resolvedConfig.categories.find(c => c.type === 'input');
+  const isInputType = item && inputCategory && getCategoryItems(inputCategory).some(i => i.config.type === item.type);
   const docsUrl = useDocs(activeTab);
 
   React.useEffect(() => {

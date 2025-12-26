@@ -11,6 +11,7 @@ import { DEFAULT_ITEMTYPE_CONFIG } from "../defaults";
 import { FormattedMessage } from "react-intl";
 import { useBackend } from "../backend/useBackend";
 import { DialobItem, DialobItems } from "../types";
+import { getCategoryItems } from "../utils/ConfigUtils";
 
 
 const MAX_PAGE_NAME_LENGTH = 40;
@@ -98,7 +99,8 @@ const PageTabs: React.FC<{ items: DialobItems }> = ({ items }) => {
   const handleCreate = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
-    const groupTemplate = resolvedConfig.categories.find(c => c.type === 'structure')!.items.find(i => i.config.type === 'group')!.config;
+    const structureCategory = resolvedConfig.categories.find(c => c.type === 'structure')!;
+    const groupTemplate = getCategoryItems(structureCategory).find(i => i.config.type === 'group')!.config;
     const pageTemplate = { ...groupTemplate, view: 'page' };
     addItem(pageTemplate, 'questionnaire');
   }

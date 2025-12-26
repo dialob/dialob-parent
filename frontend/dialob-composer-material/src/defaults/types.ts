@@ -29,6 +29,12 @@ export interface ItemTypeConfig {
 export interface ItemTypeCategory {
   title: string,
   type: DialobCategoryType,
+  items?: CategoryItem[],
+  subcategories?: Subcategory[]
+}
+
+export interface Subcategory {
+  title: string,
   items: CategoryItem[]
 }
 

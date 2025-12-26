@@ -9,6 +9,7 @@ import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 import { useBackend } from '../../backend/useBackend';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { getCategoryItems } from '../../utils/ConfigUtils';
 
 type RuleType = 'visibility' | 'requirement' | 'canaddrow' | 'canremoverow';
 
@@ -40,7 +41,8 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     return null;
   }
 
-  if (!resolvedConfig.categories.find(c => c.type === 'input')?.items.find(i => i.config.type === item.type) && type === 'requirement') {
+  const inputCategory = resolvedConfig.categories.find(c => c.type === 'input');
+  if (inputCategory && !getCategoryItems(inputCategory).find(i => i.config.type === item.type) && type === 'requirement') {
     return null;
   }
 
