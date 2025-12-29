@@ -186,6 +186,7 @@ Form form = new Form.Builder()
 3. **Temporal types**: Replace `java.util.Date` with `java.time.Instant`
 4. **Accessor methods**: Use `field()` instead of `getField()` (deprecated `get*` methods available temporarily)
 5. **Copy pattern**: Use `new Builder().from(instance)` instead of `toBuilder()`
+6. **Gson removed**: Gson support has been completely removed - use Jackson 2.12+ for JSON serialization
 
 ## Troubleshooting
 
@@ -217,8 +218,8 @@ Instant instant = Instant.ofEpochMilli(timestamp);
 
 Records are serialized differently than traditional classes:
 - Ensure your serialization framework supports Java records
-- Jackson 2.12+ has native record support
-- Gson requires additional configuration for records
+- **Jackson 2.12+ is now required** (native record support)
+- **Gson support has been removed** - migrate to Jackson for JSON serialization
 - `Instant` serialization: Most frameworks serialize `Instant` as ISO-8601 strings by default
 
 ## Additional Resources
