@@ -64,12 +64,12 @@ record ConfiguredFunction(
     argumentMatcher = Objects.requireNonNullElse(argumentMatcher, argTypes -> argumentValueTypes().equals(Arrays.asList(argTypes)));
   }
 
-  public boolean doesMatch(String canonicalFunctionName, final Object... args) {
+  public boolean doesMatch(String canonicalFunctionName, final List<?> args) {
     if (Strings.CS.equalsAny(canonicalFunctionName, functionName(), canonicalName())) {
       final var argumentTypes = argumentTypes();
-      for (int i = 0; i < args.length; i++) {
+      for (int i = 0; i < args.size(); i++) {
         if (argumentTypes.size() < i
-          || (args[i] != null && !argumentTypes.get(i).isAssignableFrom(args[i].getClass()))) {
+          || (args.get(i) != null && !argumentTypes.get(i).isAssignableFrom(args.get(i).getClass()))) {
           return false;
         }
       }

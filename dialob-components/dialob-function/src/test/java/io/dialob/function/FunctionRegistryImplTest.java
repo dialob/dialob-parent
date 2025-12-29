@@ -29,6 +29,7 @@ import org.springframework.core.task.TaskRejectedException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -118,7 +119,7 @@ class FunctionRegistryImplTest {
     FunctionRegistry.FunctionCallback callback = Mockito.mock(FunctionRegistry.FunctionCallback.class);
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(taskExecutor, currentTenant);
     Mockito.doThrow(new TaskRejectedException("error")).when(taskExecutor).execute(any(Runnable.class));
-    functionRegistry.invokeFunctionAsync(callback, "mock");
+    functionRegistry.invokeFunctionAsync(callback, "mock", List.of());
     Mockito.verify(callback).failed("error");
   }
 

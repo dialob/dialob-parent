@@ -19,6 +19,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
 
+import java.util.List;
+
 public interface FunctionRegistry {
 
   @NonNull
@@ -26,9 +28,9 @@ public interface FunctionRegistry {
 
   boolean isAsyncFunction(String functionName);
 
-  void invokeFunction(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, Object... args);
+  void invokeFunction(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, List<?> args);
 
-  void invokeFunctionAsync(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, Object... args);
+  void invokeFunctionAsync(FunctionRegistry.FunctionCallback callback, @NonNull String functionName, List<?> args);
 
   void configureFunction(@NonNull String functionName, @NonNull String implementationName, @NonNull Class<?> implementationClass, boolean async);
 

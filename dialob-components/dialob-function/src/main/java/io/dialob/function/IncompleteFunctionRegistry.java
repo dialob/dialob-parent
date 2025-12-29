@@ -19,6 +19,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
 
+import java.util.List;
+
 public class IncompleteFunctionRegistry implements FunctionRegistry {
 
   @NonNull
@@ -33,12 +35,12 @@ public class IncompleteFunctionRegistry implements FunctionRegistry {
   }
 
   @Override
-  public void invokeFunction(FunctionCallback callback, @NonNull String functionName, Object... args) {
+  public void invokeFunction(FunctionCallback callback, @NonNull String functionName, List<?> args) {
     throw new UnsupportedOperationException("invokeFunction()");
   }
 
   @Override
-  public void invokeFunctionAsync(FunctionCallback callback, @NonNull String functionName, Object... args) {
+  public void invokeFunctionAsync(FunctionCallback callback, @NonNull String functionName, List<?> args) {
     throw new UnsupportedOperationException("invokeFunctionAsync()");
   }
 

@@ -21,6 +21,8 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 
 class FunctionCallOperatorTest {
@@ -46,7 +48,7 @@ class FunctionCallOperatorTest {
     verify(context).getFunctionRegistry();
     verify(arg1).eval(context);
     verify(functionRegistry).isAsyncFunction("func");
-    verify(functionRegistry).invokeFunction(any(), eq("func"), eq("hello"));
+    verify(functionRegistry).invokeFunction(any(), eq("func"), eq(List.of("hello")));
     verifyNoMoreInteractions(arg1, context, functionRegistry);
   }
 

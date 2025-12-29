@@ -30,6 +30,7 @@ import org.mockito.Mockito;
 import java.math.BigInteger;
 import java.time.*;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -512,7 +513,9 @@ class DDRLExpressionCompilerTest {
     Mockito.doAnswer(invocation -> {
       FunctionRegistry.FunctionCallback callback = invocation.getArgument(0);
       Object args = invocation.getArgument(2);
-      assertTrue(args instanceof Map);
+      assertTrue(args instanceof List<?>);
+      List<?> list = (List<?>) args;
+      assertTrue(list.get(0) instanceof Map);
       callback.succeeded(args);
       return null;
     }).when(functionRegistry).invokeFunction(any(), any(), any());
@@ -523,7 +526,7 @@ class DDRLExpressionCompilerTest {
     Optional<Expression> expression = ddrlExpressionCompiler.compile(variableFinder, "func({'a':'ba'})", errorConsumer);
     assertTrue(expression.isPresent());
     var object = expression.get().eval(evalContext);
-    Assertions.assertEquals(Map.of("a", "ba"), object);
+    Assertions.assertEquals(List.of(Map.of("a", "ba")), object);
 
 
     verifyNoMoreInteractions(errorConsumer);

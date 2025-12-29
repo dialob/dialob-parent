@@ -141,13 +141,13 @@ class FunctionRegistryImpl implements FunctionRegistry {
    * @param args          List of call arguments
    */
   @Override
-  public void invokeFunction(final FunctionRegistry.FunctionCallback callback, @NonNull String functionName, Object... args) {
+  public void invokeFunction(final FunctionRegistry.FunctionCallback callback, @NonNull String functionName, List<?> args) {
     String failure;
     try {
       ConfiguredFunction configuredFunction = findConfiguredFunction(functionName, args);
       Method method = findMethod(configuredFunction);
       if (method != null) {
-        final Object out = method.invoke(null, args);
+        final Object out = method.invoke(null, args.toArray());
         callback.succeeded(configuredFunction.returnType().getTypeClass().cast(out));
         return;
       }
@@ -162,7 +162,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
     callback.failed(failure);
   }
 
-  protected ConfiguredFunction findConfiguredFunction(final String canonicalFunctionName, final Object... args) {
+  protected ConfiguredFunction findConfiguredFunction(final String canonicalFunctionName, final List<?> args) {
     final String functionName = canonicalFunctionName.substring(canonicalFunctionName.lastIndexOf('.') + 1);
     for (final ConfiguredFunction configuredFunction : configuredFunctions.get(functionName)) {
       if (configuredFunction.doesMatch(canonicalFunctionName, args)) {
@@ -189,7 +189,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
    * @param args                  List of arguments
    */
   @Override
-  public void invokeFunctionAsync(final FunctionCallback callback, @NonNull String functionName, Object... args) {
+  public void invokeFunctionAsync(final FunctionCallback callback, @NonNull String functionName, List<?> args) {
     final Tenant tenant = currentTenant.get();
     try {
       taskExecutor.execute(() -> {

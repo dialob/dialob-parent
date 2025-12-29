@@ -15,7 +15,7 @@
  */
 package io.dialob.session.engine.session;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
@@ -38,7 +38,7 @@ public record AsyncFunctionCall(
 
   String functionName,
 
-  List<Object> args
+  List<@Nullable Object> args
 
 ) {
 
