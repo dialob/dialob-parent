@@ -22,9 +22,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public interface Response extends ResponseStatus {
 
-  Response OK = new ResposeRecord(true, null, null);
+  Response OK_RESPONSE = new ResposeRecord(true, null, null);
 
-  Response NOT_OK = new ResposeRecord(false, null, null);
+  Response NOT_OK_RESPONSE = new ResposeRecord(false, null, null);
 
   String getError();
 

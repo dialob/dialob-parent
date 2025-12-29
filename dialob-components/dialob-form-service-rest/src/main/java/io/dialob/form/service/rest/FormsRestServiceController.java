@@ -61,8 +61,8 @@ public class FormsRestServiceController implements FormsRestService {
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
-  private static final ResponseEntity<Response> OK = ResponseEntity.ok(Response.OK);
-  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(Response.NOT_OK);
+  private static final ResponseEntity<Response> OK = ResponseEntity.ok(Response.OK_RESPONSE);
+  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(Response.NOT_OK_RESPONSE);
 
   private static ResponseEntity<Response> ok() {
     return OK;

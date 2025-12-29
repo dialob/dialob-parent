@@ -25,8 +25,8 @@ class ResponseStatusTest {
   void testJsonSerialization() throws Exception {
     var mapper = new ObjectMapper();
 
-    Assertions.assertEquals("{\"ok\":true}", mapper.writeValueAsString(Response.OK));
-    Assertions.assertEquals("{\"ok\":false}", mapper.writeValueAsString(Response.NOT_OK));
+    Assertions.assertEquals("{\"ok\":true}", mapper.writeValueAsString(Response.OK_RESPONSE));
+    Assertions.assertEquals("{\"ok\":false}", mapper.writeValueAsString(Response.NOT_OK_RESPONSE));
     Assertions.assertEquals(new Response.ResposeRecord(true, null, null), mapper.readValue("{\"ok\":true}", Response.class));
     Assertions.assertEquals(new Response.ResposeRecord(false, null, null), mapper.readValue("{}", Response.class));
   }
