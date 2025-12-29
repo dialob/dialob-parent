@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.15
+
+### Patch Changes
+
+- tree label improvements, item type subcategories and menu nesting
+
 ## 0.0.14
 
 ### Patch Changes
