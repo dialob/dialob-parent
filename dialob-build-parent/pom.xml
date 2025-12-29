@@ -64,7 +64,7 @@
     <checkerframework.version>3.52.0</checkerframework.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-csv.version>1.14.1</commons-csv.version>
-    <commons-lang3.version>3.18.0</commons-lang3.version>
+    <commons-lang3.version>3.20.0</commons-lang3.version>
     <commons-text.version>1.15.0</commons-text.version>
     <commons-validator.version>1.10.1</commons-validator.version>
     <db2jcc.version>11.5.8.0</db2jcc.version>
