@@ -86,7 +86,25 @@ Questionnaire questionnaire = new Questionnaire.Builder()
     .build();
 ```
 
-### 5. Update Copy Operations
+### 5. Update Accessor Methods
+
+Records use direct field names as accessors instead of bean-style `get*` methods:
+
+```java
+// Before (bean-style)
+String id = questionnaire.getId();
+String formId = questionnaire.getMetadata().getFormId();
+Instant created = questionnaire.getCreated();
+
+// After (record-style)
+String id = questionnaire.id();
+String formId = questionnaire.metadata().formId();
+Instant created = questionnaire.created();
+```
+
+**Note:** For backward compatibility, the old `get*` methods are still available but are **deprecated** and will be removed in a future version. Migrate to the new accessor style as soon as possible.
+
+### 6. Update Copy Operations
 
 The `toBuilder()` pattern has been replaced with the `from()` method on the builder:
 
@@ -124,6 +142,18 @@ Questionnaire questionnaire = new Questionnaire.Builder()
     .build();
 ```
 
+### Accessing Fields
+
+```java
+// Use record-style accessors (preferred)
+String id = questionnaire.id();
+String formId = questionnaire.metadata().formId();
+Instant created = questionnaire.metadata().created();
+
+// Old bean-style accessors still work but are deprecated
+String id = questionnaire.getId();  // deprecated, will be removed
+```
+
 ### Copying with Modifications
 
 ```java
@@ -154,7 +184,8 @@ Form form = new Form.Builder()
 1. **Type names**: Remove `Immutable` prefix from all types
 2. **Builder creation**: Use `new Builder()` instead of static `builder()`
 3. **Temporal types**: Replace `java.util.Date` with `java.time.Instant`
-4. **Copy pattern**: Use `new Builder().from(instance)` instead of `toBuilder()`
+4. **Accessor methods**: Use `field()` instead of `getField()` (deprecated `get*` methods available temporarily)
+5. **Copy pattern**: Use `new Builder().from(instance)` instead of `toBuilder()`
 
 ## Troubleshooting
 
