@@ -20,6 +20,120 @@ const MAX_LABEL_LENGTH_WITH_INDICATORS = 45;
 const MAX_LABEL_LENGTH_WITHOUT_INDICATORS = 65;
 const MAX_RULE_LENGTH = 80;
 
+interface MenuAnchorOrigin {
+  vertical: 'top' | 'bottom';
+  horizontal: 'left' | 'right';
+}
+
+interface SubcategoryMenuProps {
+  subcategory: { title: string; items: { title: string; config: DialobItemTemplate }[] };
+  isOpen: boolean;
+  anchorEl: HTMLElement | null;
+  onClose: () => void;
+  onCreate: (e: React.MouseEvent<HTMLElement>, config: DialobItemTemplate) => void;
+  anchorOrigin?: MenuAnchorOrigin;
+  transformOrigin?: MenuAnchorOrigin;
+}
+
+interface CategoryMenuProps {
+  category: { title: string; items?: { title: string; config: DialobItemTemplate }[]; subcategories?: { title: string; items: { title: string; config: DialobItemTemplate }[] }[] };
+  isOpen: boolean;
+  anchorEl: HTMLElement | null;
+  chosenSubcategory: string | null;
+  subcategoryRefs: React.MutableRefObject<{ [key: string]: HTMLElement | null }>;
+  onClose: () => void;
+  onCreate: (e: React.MouseEvent<HTMLElement>, config: DialobItemTemplate) => void;
+  onSubcategoryClick: (e: React.MouseEvent<HTMLElement>, title: string) => void;
+  anchorOrigin?: MenuAnchorOrigin;
+  transformOrigin?: MenuAnchorOrigin;
+}
+
+const renderSubcategoryMenu = ({
+  subcategory,
+  isOpen,
+  anchorEl,
+  onClose,
+  onCreate,
+  anchorOrigin = { vertical: 'top', horizontal: 'right' },
+  transformOrigin
+}: SubcategoryMenuProps) => (
+  <Menu
+    open={isOpen}
+    onClose={onClose}
+    anchorEl={anchorEl}
+    disableScrollLock={true}
+    anchorOrigin={anchorOrigin}
+    transformOrigin={transformOrigin}
+    style={{ pointerEvents: 'none' }}
+    slotProps={{ paper: { style: { pointerEvents: 'auto' } } }}
+  >
+    {subcategory.items.map((i, itemIndex) => (
+      <MenuItem key={itemIndex} onClick={(e) => onCreate(e, i.config)}>
+        <Typography>{i.title}</Typography>
+      </MenuItem>
+    ))}
+  </Menu>
+);
+
+const renderCategoryMenu = ({
+  category,
+  isOpen,
+  anchorEl,
+  chosenSubcategory,
+  subcategoryRefs,
+  onClose,
+  onCreate,
+  onSubcategoryClick,
+  anchorOrigin = { vertical: 'top', horizontal: 'right' },
+  transformOrigin
+}: CategoryMenuProps) => {
+  const hasItems = category.items && category.items.length > 0;
+  const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+
+  return (
+    <Menu
+      open={isOpen}
+      onClose={onClose}
+      anchorEl={anchorEl}
+      disableScrollLock={true}
+      anchorOrigin={anchorOrigin}
+      transformOrigin={transformOrigin}
+      style={{ pointerEvents: 'none' }}
+      slotProps={{ paper: { style: { pointerEvents: 'auto' } } }}
+    >
+      {hasItems && category.items!.map((i, itemIndex) => (
+        <MenuItem key={`item-${itemIndex}`} onClick={(e) => onCreate(e, i.config)}>
+          <Typography>{i.title}</Typography>
+        </MenuItem>
+      ))}
+      
+      {hasItems && hasSubcategories && <Divider />}
+
+      {hasSubcategories && category.subcategories!.map((sub, subIndex) => {
+        const isSubcategoryOpen = sub.title === chosenSubcategory;
+
+        return (
+          <React.Fragment key={`sub-${subIndex}`}>
+            <MenuItem onClick={(e) => onSubcategoryClick(e, sub.title)}>
+              <Typography>{sub.title}</Typography>
+              <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
+            </MenuItem>
+            {renderSubcategoryMenu({
+              subcategory: sub,
+              isOpen: isSubcategoryOpen,
+              anchorEl: subcategoryRefs.current[sub.title],
+              onClose,
+              onCreate,
+              anchorOrigin,
+              transformOrigin
+            })}
+          </React.Fragment>
+        );
+      })}
+    </Menu>
+  );
+};
+
 const ItemHeaderButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1),
   paddingLeft: theme.spacing(2),
@@ -73,7 +187,13 @@ const resolveTypeName = (type: string | undefined, itemTypeConfig: ItemTypeConfi
   if (!type) {
     return '';
   }
-  const items = itemTypeConfig.categories.flatMap(c => c.items);
+  const items = itemTypeConfig.categories.flatMap(c => {
+    const directItems = c.items || [];
+    const subcategoryItems = c.subcategories 
+      ? c.subcategories.flatMap(sub => sub.items)
+      : [];
+    return [...directItems, ...subcategoryItems];
+  });
   const item = items.find(i => i.config.view === type || i.config.type === type);
   if (item) {
     return item.title;
@@ -211,7 +331,11 @@ export const ConversionMenu: React.FC<{ item?: DialobItem, inDialog?: boolean }>
 
   const handleConvert = (e: React.MouseEvent<HTMLElement>, config: DialobItemTemplate) => {
     handleClose(e);
-    inDialog ? convertInDialog(item.id, config) : changeItemType(item.id, config);
+    if (inDialog) {
+      convertInDialog(item.id, config);
+    } else {
+      changeItemType(item.id, config);
+    }
     setTypeName(resolveTypeName(config.type, config.itemTypes));
   }
 
@@ -246,60 +370,68 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
   const { setConfirmationDialogType, setActiveItem, setConfirmationActiveItem, setItemOptionsActiveTab, setHighlightedItem } = useEditor();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [chosenCategory, setChosenCategory] = React.useState<string | null>('');
+  const [chosenCategory, setChosenCategory] = React.useState<string | null>(null);
+  const [chosenSubcategory, setChosenSubcategory] = React.useState<string | null>(null);
   const open = Boolean(anchorEl);
   const categoriesOpen = Boolean(categoriesAnchorEl);
   const itemCategories = config.itemTypes.categories;
+  const categoryRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
+  const subcategoryRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, level: number, category?: string) => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>, level: number) => {
     if (level === 2) {
       setCategoriesAnchorEl(e.currentTarget);
-    } else if (level === 3 && category) {
-      setItemsAnchorEl(e.currentTarget);
-      setChosenCategory(category);
     } else {
       setAnchorEl(e.currentTarget);
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleClose = (e: any, level: number) => {
+  const handleCategoryClick = (e: React.MouseEvent<HTMLElement>, categoryTitle: string) => {
     e.stopPropagation();
-    if (level === 2) {
-      setCategoriesAnchorEl(null);
-    } else if (level === 3) {
-      setItemsAnchorEl(null);
+    categoryRefs.current[categoryTitle] = e.currentTarget;
+    if (chosenCategory === categoryTitle) {
       setChosenCategory(null);
+      setChosenSubcategory(null);
     } else {
-      setAnchorEl(null);
+      setChosenCategory(categoryTitle);
+      setChosenSubcategory(null);
+    }
+  };
+
+  const handleSubcategoryClick = (e: React.MouseEvent<HTMLElement>, subcategoryTitle: string) => {
+    e.stopPropagation();
+    subcategoryRefs.current[subcategoryTitle] = e.currentTarget;
+    if (chosenSubcategory === subcategoryTitle) {
+      setChosenSubcategory(null);
+    } else {
+      setChosenSubcategory(subcategoryTitle);
     }
   };
 
   const handleCloseAll = () => {
     setAnchorEl(null);
     setCategoriesAnchorEl(null);
-    setItemsAnchorEl(null);
     setChosenCategory(null);
+    setChosenSubcategory(null);
   }
 
   const handleOptions = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    handleClose(e, 1);
+    handleCloseAll();
     setActiveItem(item);
     setItemOptionsActiveTab('label');
   }
 
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    handleClose(e, 1);
+    handleCloseAll();
     setConfirmationActiveItem(item);
     setConfirmationDialogType('delete');
   }
 
   const handleDuplicate = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    handleClose(e, 1);
+    handleCloseAll();
     setConfirmationActiveItem(item);
     setConfirmationDialogType('duplicate');
   }
@@ -323,7 +455,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <MenuIcon sx={{ color: light ? 'white' : 'inherit', '&:hover': { color: 'divider', cursor: 'pointer' } }} />
       </Box>
-      <Menu open={open} onClose={(e) => handleClose(e, 1)} anchorEl={anchorEl} disableScrollLock={true}>
+      <Menu open={open} onClose={handleCloseAll} anchorEl={anchorEl} disableScrollLock={true}>
         <MenuItem onClick={(e) => handleOptions(e)}>
           <Tune sx={{ mr: 1 }} fontSize='small' />
           <FormattedMessage id='menus.options' />
@@ -341,22 +473,39 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
           <FormattedMessage id='menus.insert.below' />
           <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
         </MenuItem>}
-        <Menu open={categoriesOpen} onClose={(e) => handleClose(e, 2)} anchorEl={categoriesAnchorEl}
-          disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-          {itemCategories.map((c, index) => (
-            <MenuItem key={index} onClick={(e) => handleClick(e, 3, c.title)}>
-              <Typography>{c.title}</Typography>
-              <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-              <Menu open={c.title === chosenCategory} onClose={(e) => handleClose(e, 3)} anchorEl={itemsAnchorEl}
-                disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                {c.items.map((i, index) => (
-                  <MenuItem key={index} onClick={(e) => handleCreate(e, i.config)}>
-                    <Typography>{i.title}</Typography>
+        <Menu open={categoriesOpen} onClose={handleCloseAll} anchorEl={categoriesAnchorEl}
+          disableScrollLock={true} 
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          {itemCategories.map((c, index) => {
+            const hasSubcategories = c.subcategories && c.subcategories.length > 0;
+            const hasItems = c.items && c.items.length > 0;
+            const isCategoryOpen = c.title === chosenCategory;
+
+            if (hasSubcategories || hasItems) {
+              return (
+                <React.Fragment key={index}>
+                  <MenuItem onClick={(e) => handleCategoryClick(e, c.title)}>
+                    <Typography>{c.title}</Typography>
+                    <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
                   </MenuItem>
-                ))}
-              </Menu>
-            </MenuItem>
-          ))}
+                  {renderCategoryMenu({
+                    category: c,
+                    isOpen: isCategoryOpen,
+                    anchorEl: categoryRefs.current[c.title],
+                    chosenSubcategory,
+                    subcategoryRefs,
+                    onClose: handleCloseAll,
+                    onCreate: handleCreate,
+                    onSubcategoryClick: handleSubcategoryClick,
+                    anchorOrigin: { vertical: 'top', horizontal: 'left' },
+                    transformOrigin: { vertical: 'top', horizontal: 'right' }
+                  })}
+                </React.Fragment>
+              );
+            }
+            return null;
+          })}
         </Menu>
       </Menu>
     </>
@@ -368,30 +517,49 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { setHighlightedItem } = useEditor();
   const { config } = useBackend();
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [itemsAnchorEl, setItemsAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [chosenCategory, setChosenCategory] = React.useState<string | null>('');
+  const [chosenCategory, setChosenCategory] = React.useState<string | null>(null);
+  const [chosenSubcategory, setChosenSubcategory] = React.useState<string | null>(null);
   const categoriesOpen = Boolean(categoriesAnchorEl);
   const itemCategories = config.itemTypes.categories;
+  const categoryRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
+  const subcategoryRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>, category?: string) => {
+  const handleButtonClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    if (category) {
-      setItemsAnchorEl(e.currentTarget);
-      setChosenCategory(category);
+    setCategoriesAnchorEl(e.currentTarget);
+  };
+
+  const handleCategoryClick = (e: React.MouseEvent<HTMLElement>, categoryTitle: string) => {
+    e.stopPropagation();
+    categoryRefs.current[categoryTitle] = e.currentTarget;
+    if (chosenCategory === categoryTitle) {
+      setChosenCategory(null);
+      setChosenSubcategory(null);
     } else {
-      setCategoriesAnchorEl(e.currentTarget);
+      setChosenCategory(categoryTitle);
+      setChosenSubcategory(null);
     }
   };
 
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+  const handleSubcategoryClick = (e: React.MouseEvent<HTMLElement>, subcategoryTitle: string) => {
     e.stopPropagation();
+    subcategoryRefs.current[subcategoryTitle] = e.currentTarget;
+    if (chosenSubcategory === subcategoryTitle) {
+      setChosenSubcategory(null);
+    } else {
+      setChosenSubcategory(subcategoryTitle);
+    }
+  };
+
+  const handleClose = () => {
     setCategoriesAnchorEl(null);
-    setItemsAnchorEl(null);
     setChosenCategory(null);
+    setChosenSubcategory(null);
   };
 
   const handleCreate = (e: React.MouseEvent<HTMLElement>, itemTemplate: DialobItemTemplate) => {
-    handleClose(e);
+    e.stopPropagation();
+    handleClose();
     addItem(itemTemplate, item.id, undefined, { onAddItem: postCreate });
   }
 
@@ -402,25 +570,38 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
 
   return (
     <>
-      <Button onClick={handleClick} variant='contained' color='inherit' endIcon={<KeyboardArrowDown />}>
+      <Button onClick={handleButtonClick} variant='contained' color='inherit' endIcon={<KeyboardArrowDown />}>
         <Typography><FormattedMessage id='menus.add' /></Typography>
       </Button>
       <Menu open={categoriesOpen} onClose={handleClose} anchorEl={categoriesAnchorEl}
         disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        {itemCategories.map((c, index) => (
-          <MenuItem key={index} onClick={(e) => handleClick(e, c.title)}>
-            <Typography>{c.title}</Typography>
-            <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
-            <Menu open={c.title === chosenCategory} onClose={handleClose} anchorEl={itemsAnchorEl}
-              disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-              {c.items.map((i, index) => (
-                <MenuItem key={index} onClick={(e) => handleCreate(e, i.config)}>
-                  <Typography>{i.title}</Typography>
+        {itemCategories.map((c, index) => {
+          const hasSubcategories = c.subcategories && c.subcategories.length > 0;
+          const hasItems = c.items && c.items.length > 0;
+          const isCategoryOpen = c.title === chosenCategory;
+
+          if (hasSubcategories || hasItems) {
+            return (
+              <React.Fragment key={index}>
+                <MenuItem onClick={(e) => handleCategoryClick(e, c.title)}>
+                  <Typography>{c.title}</Typography>
+                  <KeyboardArrowRight sx={{ ml: 1 }} fontSize='small' />
                 </MenuItem>
-              ))}
-            </Menu>
-          </MenuItem>
-        ))}
+                {renderCategoryMenu({
+                  category: c,
+                  isOpen: isCategoryOpen,
+                  anchorEl: categoryRefs.current[c.title],
+                  chosenSubcategory,
+                  subcategoryRefs,
+                  onClose: handleClose,
+                  onCreate: handleCreate,
+                  onSubcategoryClick: handleSubcategoryClick
+                })}
+              </React.Fragment>
+            );
+          }
+          return null;
+        })}
       </Menu>
     </>
   )
