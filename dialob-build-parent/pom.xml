@@ -55,7 +55,7 @@
     <thirdparty.log.level>INFO</thirdparty.log.level>
 
     <!-- runtime dependencies -->
-    <spring-boot.version>3.5.8</spring-boot.version>
+    <spring-boot.version>3.5.9</spring-boot.version>
 
     <antlr4.version>4.13.2</antlr4.version>
     <aws-java-sdk.version>2.38.3</aws-java-sdk.version>
