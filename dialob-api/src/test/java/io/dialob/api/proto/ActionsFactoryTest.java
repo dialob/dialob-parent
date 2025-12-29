@@ -217,7 +217,7 @@ class ActionsFactoryTest {
 
   @Test
   void shouldCreateActionsWithRevAndNoActions() {
-    Actions actions = ActionsFactory.actions("rev123", new Action[0]);
+    Actions actions = ActionsFactory.actions("rev123");
 
     assertEquals("rev123", actions.getRev());
     assertNotNull(actions.getActions());

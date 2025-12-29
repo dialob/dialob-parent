@@ -42,7 +42,7 @@ class DialobFormValidatorTest {
   private Form loadForm(String formFile) {
     try {
       return objectMapper.readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(formFile), Form.class);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       Assertions.fail("Could not load " + formFile,e);
     }
     return null;

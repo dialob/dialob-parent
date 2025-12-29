@@ -120,10 +120,10 @@ public class ExpressionWriterVisitor implements ASTVisitor {
     if (subVisitor.nodeOperator != null && nodeOperator != null) {
       if (subVisitor.nodeOperator.category() == nodeOperator.category() &&
         subVisitor.nodeOperator.getPrecedenceWeight() < nodeOperator.getPrecedenceWeight()) {
-        return "(" + subVisitor.stringBuilder.toString() + ")";
+        return "(" + subVisitor.stringBuilder + ")";
       }
       if (nodeOperator.isUnary()) {
-        return "(" + subVisitor.stringBuilder.toString() + ")";
+        return "(" + subVisitor.stringBuilder + ")";
       }
     }
     return subVisitor.stringBuilder.toString();

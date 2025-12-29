@@ -26,6 +26,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.immutables.value.Value;
 
 import java.util.*;
@@ -53,11 +54,11 @@ public interface LocalizedLabelOperator extends Expression {
           expressions.add(ImmutableConstant.builder().value(matcher.group(0)).valueType(ValueType.STRING).build());
         } else {
           String itemId = matcher.group(1);
-          VariableReference variableReference = Operators.var(itemId, ValueType.STRING);
+          var variableReference = Operators.var(itemId, ValueType.STRING);
           String format = matcher.group(2);
           if (StringUtils.isNotBlank(format)) {
             // Drop leading ':'
-            format = StringUtils.removeStart(format, ":");
+            format = Strings.CS.removeStart(format, ":");
             switch (format) {
               case "key":
                 expressions.add(ImmutableToStringOperator.of(variableReference));
