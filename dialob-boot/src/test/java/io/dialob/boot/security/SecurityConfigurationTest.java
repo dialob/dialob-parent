@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -78,6 +79,7 @@ class SecurityConfigurationTest {
       .withBean(OAuth2AccessTokenResponseClient.class, () -> mock(OAuth2AccessTokenResponseClient.class))
       .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))
       .withBean(ClientRegistrationRepository.class, () -> mock(ClientRegistrationRepository.class))
+      .withBean(ObjectMapper.class, ObjectMapper::new)
       .withPropertyValues(
         "spring.profiles.active=ui",
         "dialob.security.enabled=true",
@@ -107,6 +109,7 @@ class SecurityConfigurationTest {
       .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
       .withBean(OAuth2AccessTokenResponseClient.class, () -> mock(OAuth2AccessTokenResponseClient.class))
       .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))
+      .withBean(ObjectMapper.class, ObjectMapper::new)
       .withPropertyValues(
         "spring.profiles.active=",
         "dialob.security.enabled=true")
@@ -134,6 +137,7 @@ class SecurityConfigurationTest {
       .withBean(JWTProcessor.class, () -> mock(JWTProcessor.class))
       .withBean(TenantAccessEvaluator.class, () -> mock(TenantAccessEvaluator.class))
       .withBean(GrantedAuthoritiesMapper.class, () -> mock(GrantedAuthoritiesMapper.class))
+      .withBean(ObjectMapper.class, ObjectMapper::new)
       .withPropertyValues(
         "spring.profiles.active=ui",
         "dialob.security.enabled=true",

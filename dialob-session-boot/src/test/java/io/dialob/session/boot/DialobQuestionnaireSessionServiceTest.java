@@ -15,9 +15,6 @@
  */
 package io.dialob.session.boot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
@@ -66,6 +63,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.SerializationUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -135,7 +133,7 @@ class DialobQuestionnaireSessionServiceTest {
 
     @Bean
     public ObjectMapper objectMapper() {
-      return new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
+      return new ObjectMapper();
     }
 
     @Bean

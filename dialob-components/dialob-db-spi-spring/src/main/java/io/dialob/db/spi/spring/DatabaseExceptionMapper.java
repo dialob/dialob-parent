@@ -15,7 +15,6 @@
  */
 package io.dialob.db.spi.spring;
 
-import tools.jackson.databind.exc.InvalidDefinitionException;
 import io.dialob.api.rest.Errors;
 import io.dialob.db.spi.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
@@ -25,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import tools.jackson.databind.exc.InvalidDefinitionException;
 
 /**
  * A controller advice class that maps database-related exceptions to appropriate HTTP responses.
@@ -83,7 +83,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  *     </tr>
  *     <tr>
  *       <td>{@link DocumentCorruptedException}</td>
- *       <td>422 (Unprocessable Entity)</td>
+ *       <td>422 (Unprocessable Content)</td>
  *       <td>Resource is corrupted; logs exception details.</td>
  *     </tr>
  *     <tr>
@@ -180,7 +180,7 @@ public class DatabaseExceptionMapper {
   @ExceptionHandler
   public ResponseEntity<Errors> handleDocumentCorruptedException(DocumentCorruptedException exception) {
     LOGGER.error("Data corrupt exception: {}", exception.getMessage(), exception);
-    return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+    return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, exception.getMessage());
   }
 
   @ExceptionHandler

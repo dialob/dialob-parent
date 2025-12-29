@@ -23,8 +23,8 @@ import io.dialob.security.tenant.CurrentTenant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
-import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,9 +48,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = MOCK, properties = {
   "spring.profiles.active=ui",
   "tenantId=itest",
-  "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
-  "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
-  "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATES_AS_TIMESTAMPS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "dialob.db.database-type=none",
   "spring.security.oauth2.client.registration[0].provider=own",
   "spring.security.oauth2.client.registration[0].clientId=cl1",

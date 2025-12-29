@@ -15,10 +15,6 @@
  */
 package io.dialob.boot.rest;
 
-import tools.jackson.databind.JavaType;
-import tools.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.proto.Action;
@@ -49,6 +45,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.time.Instant;
@@ -79,8 +77,7 @@ abstract class AbstractFormRepositoryTests {
 
   String tenantId = "00000000-0000-0000-0000-000000000000";
 
-  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-    .registerModule(new JavaTimeModule());
+  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   MultiValueMap<String, String> tenantParam = new LinkedMultiValueMap<>();
 

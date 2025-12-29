@@ -50,9 +50,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   "tenantId=itest",
   "dialob.security.enabled=true",
   "dialob.security.authenticationMethod=AWSELB",
-  "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
-  "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
-  "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATES_AS_TIMESTAMPS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "dialob.db.database-type=none",
   "dialob.security.groupPermissions.oprh\\.admin=manager.view",
   "dialob.security.groups-claim=true"

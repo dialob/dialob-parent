@@ -15,8 +15,6 @@
  */
 package io.dialob.security.spring.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dialob.security.ErrorsResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,17 +23,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
 public class ApiKeyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private final ObjectMapper objectMapper;
-
-  public ApiKeyAuthenticationEntryPoint() {
-    this(configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false));
-  }
 
   public ApiKeyAuthenticationEntryPoint(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;

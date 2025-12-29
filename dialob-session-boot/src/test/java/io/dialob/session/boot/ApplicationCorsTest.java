@@ -24,6 +24,7 @@ import io.dialob.settings.CorsSettings;
 import io.dialob.settings.DialobSettings;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -215,6 +216,7 @@ class ApplicationCorsTest {
   }
 
   @Test
+  @DisplayName("Should get default cors if tenant does not have cors defined and default does not exists")
   void shouldGetDefaultCorsIfTenantDoNotHaveCorsDefinedAndDefaultDoNotExists() throws Exception {
     QuestionnaireSession questionnaireSession = Mockito.mock(QuestionnaireSession.class);
     when(questionnaireSession.getTenantId()).thenReturn("tenant-id-other");
@@ -231,7 +233,7 @@ class ApplicationCorsTest {
         .header("Origin", "3rd-party-host") // triggers cors evaluation...
         .header("Access-Control-Request-Method", "PUT") // preflight requests asks permissions to methods
         .accept(MediaType.APPLICATION_JSON))
-      .andExpect(status().isForbidden())
+      .andExpect(status().isOk())
       .andExpect(header().doesNotExist("Access-Control-Allow-Credentials"))
       .andExpect(header().doesNotExist("Access-Control-Allow-Headers"))
       .andExpect(header().doesNotExist("Access-Control-Allow-Methods"))

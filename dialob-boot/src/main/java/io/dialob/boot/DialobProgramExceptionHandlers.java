@@ -29,12 +29,12 @@ public class DialobProgramExceptionHandlers {
 
   @ExceptionHandler
   public ResponseEntity<Errors> handleProgramBuilderException(ProgramBuilderException e) {
-    return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+    return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, e.getMessage());
   }
 
   @ExceptionHandler
   public ResponseEntity<Errors> handleDialobProgramBuildException(DialobProgramBuildException e) {
-    return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+    return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, e.getMessage());
   }
 
   private ResponseEntity<Errors> buildResponse(HttpStatus status, String message) {

@@ -99,7 +99,7 @@ public class DialobSettings {
 
     @NotNull
     @Valid
-    private DatabaseType databaseType;
+    private DatabaseType databaseType = DatabaseType.NONE;
 
     @Valid
     private JdbcSettings jdbc = new JdbcSettings();

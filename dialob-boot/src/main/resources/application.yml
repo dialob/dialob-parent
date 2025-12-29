@@ -1,7 +1,7 @@
 server:
   max-http-request-header-size: 64KB
   port: 8081
-  forward-headers-strategy: true
+  forward-headers-strategy: NATIVE
   servlet:
     contextPath: ""
     error:
@@ -11,7 +11,7 @@ server:
 spring:
   autoconfigure:
     exclude:
-    - "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"
+    - "org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration"
   profiles:
     active:
     - jdbc
@@ -23,11 +23,11 @@ spring:
   application:
     name: ${project.artifactId:dialob-boot}
   jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-      WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
-    deserialization:
-      READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+    datatype:
+      datetime:
+        READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+        WRITE_DATES_AS_TIMESTAMPS: false
+        WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
   cloud:
     gcp:
       core:

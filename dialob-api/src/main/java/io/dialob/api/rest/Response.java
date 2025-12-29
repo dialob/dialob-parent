@@ -30,7 +30,13 @@ public interface Response extends ResponseStatus {
 
   String getReason();
 
-  record ResposeRecord(boolean ok, String error, String reason) implements Response {
+  record ResposeRecord(
+    boolean ok,
+    String error,
+    String reason
+  ) implements Response {
+
+
     @Override
     public String getError() {
       return error;

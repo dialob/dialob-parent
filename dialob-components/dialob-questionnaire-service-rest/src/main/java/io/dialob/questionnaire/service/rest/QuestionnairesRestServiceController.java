@@ -122,7 +122,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
         .context("metadata.formId")
         .error("Form do not exist")
         .rejectedValue(formId).build())
-        .status(HttpStatus.UNPROCESSABLE_ENTITY.value()).build());
+        .status(HttpStatus.UNPROCESSABLE_CONTENT.value()).build());
     }
     final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
       .createOnly(true)

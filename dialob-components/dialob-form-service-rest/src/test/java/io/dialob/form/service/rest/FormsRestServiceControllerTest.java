@@ -15,7 +15,6 @@
  */
 package io.dialob.form.service.rest;
 
-import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.form.FormValidationError;
@@ -47,6 +46,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -437,8 +437,7 @@ class FormsRestServiceControllerTest {
         {
           "status":400,
           "error":"Bad Request",
-          "message":"com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.Form$Metadata` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]"
-        }
+          "message":"tools.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.Form$Metadata$Builder` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); byte offset: #UNKNOWN]"        }
         """))
       .andExpect(status().isBadRequest());
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);

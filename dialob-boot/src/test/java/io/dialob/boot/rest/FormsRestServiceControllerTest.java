@@ -42,10 +42,10 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.validation.autoconfigure.ValidationAutoConfiguration;
-import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.validation.autoconfigure.ValidationAutoConfiguration;
+import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -69,9 +69,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = MOCK, properties = {
   "dialob.security.enabled=true",
   "tenantId=itest",
-  "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
-  "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
-  "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATES_AS_TIMESTAMPS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "dialob.db.database-type=none",
   "spring.security.oauth2.client.registration[0].provider=own",
   "spring.security.oauth2.client.registration[0].clientId=cl1",
@@ -83,7 +83,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   "spring.security.oauth2.client.provider[own].authorizationUri=http://localhost:880",
   "spring.security.oauth2.client.provider[own].tokenUri=http://localhost:880",
   "spring.security.oauth2.client.provider[own].jwkSetUri=http://localhost:880",
-  "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+  "spring.autoconfigure.exclude[0]=org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration",
   "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
   "spring.data.redis.repositories.enabled=false",
   "management.health.db.enabled=false"

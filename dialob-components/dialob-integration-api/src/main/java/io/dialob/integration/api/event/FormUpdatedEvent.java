@@ -18,6 +18,8 @@ package io.dialob.integration.api.event;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.dialob.security.tenant.Tenant;
 import org.immutables.value.Value;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Value.Builder
 @Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)

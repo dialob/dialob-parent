@@ -16,9 +16,6 @@
 package io.dialob.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
@@ -30,8 +27,9 @@ import org.skyscreamer.jsonassert.RegularExpressionValueMatcher;
 import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.Instant;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ErrorsResponseTest {
 
@@ -40,7 +38,7 @@ class ErrorsResponseTest {
 
   @Test
   void readEmptyResponse() throws JSONException {
-    var error = ErrorsResponse.builder()
+    var error = new ErrorsResponse.Builder()
       .build();
     String actual = om.writeValueAsString(error);
     JSONAssert.assertEquals(
@@ -56,8 +54,11 @@ class ErrorsResponseTest {
   void shouldSetTimestampIfNull() {
     ErrorsResponse response = new ErrorsResponse(null, 400, "error", "message");
     assertNotNull(response.timestamp());
+  }
+
+  @Test
   void readWithFields() throws JSONException {
-    var error = ErrorsResponse.builder()
+    var error = new ErrorsResponse.Builder()
       .message("Message")
       .error("Error")
       .build();
@@ -76,12 +77,15 @@ class ErrorsResponseTest {
 
   @Test
   void shouldSerializeAsJson() throws JsonProcessingException {
-    var om = new ObjectMapper().registerModule(new JavaTimeModule()).configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    var om = new ObjectMapper();
     var json = om.writeValueAsString(new ErrorsResponse.Builder().build());
     JsonAssertions.assertThatJson(json)
       .isObject()
       .doesNotContainKeys("status", "error", "message")
       .node("timestamp").isString().matches("\\d{4}-[0-1]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}(:\\d{2})?)?");
+  }
+
+  @Test
   void writeWithEmptyFields() {
     var errorsResponse = om.readValue("""
       {
