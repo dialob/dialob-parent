@@ -24,7 +24,6 @@ import io.dialob.api.rest.HasId;
 import lombok.Getter;
 import org.immutables.value.Value;
 
-import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -32,7 +31,6 @@ import java.time.Instant;
 @JsonDeserialize(builder = Answer.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiType
-@Immutable
 public record Answer(
   @NonNull String id,
 
