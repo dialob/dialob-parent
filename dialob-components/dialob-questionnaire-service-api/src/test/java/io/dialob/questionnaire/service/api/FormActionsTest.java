@@ -50,8 +50,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.LOCALE, actions.get(0).getType());
-    assertEquals("en", actions.get(0).getValue());
+    assertEquals(Action.Type.LOCALE, actions.getFirst().getType());
+    assertEquals("en", actions.getFirst().getValue());
   }
 
   @Test
@@ -71,8 +71,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.ITEM, actions.get(0).getType());
-    assertEquals(item, actions.get(0).getItem());
+    assertEquals(Action.Type.ITEM, actions.getFirst().getType());
+    assertEquals(item, actions.getFirst().getItem());
   }
 
   @Test
@@ -83,8 +83,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.ITEM, actions.get(0).getType());
-    assertEquals(item, actions.get(0).getItem());
+    assertEquals(Action.Type.ITEM, actions.getFirst().getType());
+    assertEquals(item, actions.getFirst().getItem());
   }
 
   @Test
@@ -94,8 +94,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.REMOVE_ITEMS, actions.get(0).getType());
-    assertTrue(actions.get(0).getIds().contains("q1"));
+    assertEquals(Action.Type.REMOVE_ITEMS, actions.getFirst().getType());
+    assertTrue(actions.getFirst().getIds().contains("q1"));
   }
 
   @Test
@@ -107,11 +107,11 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.REMOVE_ITEMS, actions.get(0).getType());
-    assertEquals(3, actions.get(0).getIds().size());
-    assertTrue(actions.get(0).getIds().contains("q1"));
-    assertTrue(actions.get(0).getIds().contains("q2"));
-    assertTrue(actions.get(0).getIds().contains("q3"));
+    assertEquals(Action.Type.REMOVE_ITEMS, actions.getFirst().getType());
+    assertEquals(3, actions.getFirst().getIds().size());
+    assertTrue(actions.getFirst().getIds().contains("q1"));
+    assertTrue(actions.getFirst().getIds().contains("q2"));
+    assertTrue(actions.getFirst().getIds().contains("q3"));
   }
 
   @Test
@@ -124,8 +124,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.VALUE_SET, actions.get(0).getType());
-    assertEquals(valueSet, actions.get(0).getValueSet());
+    assertEquals(Action.Type.VALUE_SET, actions.getFirst().getType());
+    assertEquals(valueSet, actions.getFirst().getValueSet());
   }
 
   @Test
@@ -138,8 +138,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.VALUE_SET, actions.get(0).getType());
-    assertEquals(valueSet, actions.get(0).getValueSet());
+    assertEquals(Action.Type.VALUE_SET, actions.getFirst().getType());
+    assertEquals(valueSet, actions.getFirst().getValueSet());
   }
 
   @Test
@@ -149,8 +149,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.REMOVE_VALUE_SETS, actions.get(0).getType());
-    assertTrue(actions.get(0).getIds().contains("vs1"));
+    assertEquals(Action.Type.REMOVE_VALUE_SETS, actions.getFirst().getType());
+    assertTrue(actions.getFirst().getIds().contains("vs1"));
   }
 
   @Test
@@ -161,10 +161,10 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.REMOVE_VALUE_SETS, actions.get(0).getType());
-    assertEquals(2, actions.get(0).getIds().size());
-    assertTrue(actions.get(0).getIds().contains("vs1"));
-    assertTrue(actions.get(0).getIds().contains("vs2"));
+    assertEquals(Action.Type.REMOVE_VALUE_SETS, actions.getFirst().getType());
+    assertEquals(2, actions.getFirst().getIds().size());
+    assertTrue(actions.getFirst().getIds().contains("vs1"));
+    assertTrue(actions.getFirst().getIds().contains("vs2"));
   }
 
   @Test
@@ -175,8 +175,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.ERROR, actions.get(0).getType());
-    assertEquals(error, actions.get(0).getError());
+    assertEquals(Action.Type.ERROR, actions.getFirst().getType());
+    assertEquals(error, actions.getFirst().getError());
   }
 
   @Test
@@ -187,8 +187,8 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.REMOVE_ERROR, actions.get(0).getType());
-    assertEquals(error, actions.get(0).getError());
+    assertEquals(Action.Type.REMOVE_ERROR, actions.getFirst().getType());
+    assertEquals(error, actions.getFirst().getError());
   }
 
   @Test
@@ -198,7 +198,7 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.RESET, actions.get(0).getType());
+    assertEquals(Action.Type.RESET, actions.getFirst().getType());
   }
 
   @Test
@@ -208,7 +208,7 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals(Action.Type.COMPLETE, actions.get(0).getType());
+    assertEquals(Action.Type.COMPLETE, actions.getFirst().getType());
   }
 
   @Test
@@ -397,7 +397,7 @@ class FormActionsTest {
     List<Action> actions2 = formActions.getActions();
 
     assertEquals(actions1.size(), actions2.size());
-    assertEquals(actions1.get(0).getType(), actions2.get(0).getType());
+    assertEquals(actions1.getFirst().getType(), actions2.getFirst().getType());
   }
 
   @Test
@@ -409,7 +409,7 @@ class FormActionsTest {
     List<Action> actions = formActions.getActions();
 
     assertEquals(1, actions.size());
-    assertEquals("q2", actions.get(0).getItem().getId());
+    assertEquals("q2", actions.getFirst().getItem().getId());
   }
 
   @Test

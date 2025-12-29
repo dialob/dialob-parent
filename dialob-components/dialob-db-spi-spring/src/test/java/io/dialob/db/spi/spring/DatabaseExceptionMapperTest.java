@@ -151,7 +151,7 @@ class DatabaseExceptionMapperTest {
     // Verify constraint violation details are included
     assertNotNull(response.getBody().getErrors());
     assertTrue(response.getBody().getErrors().iterator().hasNext());
-    Errors.Error error = response.getBody().getErrors().iterator().next();
+    Errors.Error error = response.getBody().getErrors().getFirst();
     assertEquals("Field cannot be null", error.getError());
     assertEquals("fieldName", error.getContext());
   }

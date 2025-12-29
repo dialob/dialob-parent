@@ -161,7 +161,7 @@ class DialobCsvToFormParserTest {
     assertNotNull(questionnaire);
     assertEquals("questionnaire", questionnaire.getType());
     assertEquals(1, questionnaire.getItems().size());
-    assertEquals("page1", questionnaire.getItems().get(0));
+    assertEquals("page1", questionnaire.getItems().getFirst());
 
     // Verify page1
     FormItem page1 = data.get("page1");
@@ -169,14 +169,14 @@ class DialobCsvToFormParserTest {
     assertEquals("group", page1.getType());
     assertEquals("page", page1.getView());
     assertEquals(1, page1.getItems().size());
-    assertEquals("group1", page1.getItems().get(0));
+    assertEquals("group1", page1.getItems().getFirst());
 
     // Verify group1
     FormItem group1 = data.get("group1");
     assertNotNull(group1);
     assertEquals("group", group1.getType());
     assertEquals(1, group1.getItems().size());
-    assertEquals("q1", group1.getItems().get(0));
+    assertEquals("q1", group1.getItems().getFirst());
   }
 
   @Test
