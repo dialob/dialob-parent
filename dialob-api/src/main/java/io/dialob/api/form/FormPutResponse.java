@@ -17,28 +17,45 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
+import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import io.dialob.api.rest.Response;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.util.List;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableFormPutResponse.class)
+@Value.Builder
 @JsonDeserialize(builder = FormPutResponse.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface FormPutResponse extends Response {
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+public record FormPutResponse(
 
-  class Builder extends ImmutableFormPutResponse.Builder { }
+  String id,
 
-  String getId();
+  @Getter
+  String rev,
 
-  String getRev();
+  @Getter
+  List<FormValidationError> errors,
 
-  List<FormValidationError> getErrors();
+  @Getter
+  Form form,
 
-  Form getForm();
+  @Nullable
+  @Getter
+  String error,
+
+  @Nullable
+  @Getter
+  String reason,
+
+  boolean ok
+
+) implements HasId<String>, Response {
+
+  public static class Builder extends FormPutResponseBuilder { }
+
 }

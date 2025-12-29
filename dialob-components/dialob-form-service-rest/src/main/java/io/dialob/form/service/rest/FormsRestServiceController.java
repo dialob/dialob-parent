@@ -52,7 +52,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,8 +61,8 @@ public class FormsRestServiceController implements FormsRestService {
 
   public static final String TEMPLATE_FORM_ID = "00000000000000000000000000000000";
 
-  private static final ResponseEntity<Response> OK = ResponseEntity.ok(new Response.Builder().ok(true).build());
-  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new Response.Builder().ok(false).build());
+  private static final ResponseEntity<Response> OK = ResponseEntity.ok(Response.OK_RESPONSE);
+  public static final ResponseEntity<Response> NOT_MODIFIED_RESPONSE = ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(Response.NOT_OK_RESPONSE);
 
   private static ResponseEntity<Response> ok() {
     return OK;
@@ -265,7 +264,7 @@ public class FormsRestServiceController implements FormsRestService {
   }
 
   private Form updateMetadata(Form form) {
-    Date now = Date.from(Instant.now());
+    var now = Instant.now();
     final Form.Metadata.Builder builder = new Form.Metadata.Builder().from(form.getMetadata());
     builder.lastSaved(now);
     builder.tenantId(currentTenant.getId());
@@ -345,7 +344,6 @@ public class FormsRestServiceController implements FormsRestService {
   public ResponseEntity<Response> putFormTag(String formId, String tagName, FormTag requestTag) {
     if (StringUtils.isBlank(requestTag.getRefName())) {
       return ResponseEntity.badRequest().body(new FormPutResponse.Builder().ok(false).error("INCOMPLETE").reason("ref_name is required field").build());
-
     }
     return formVersionControlDatabase.map(versionControlDatabase -> {
       String formName = formId;

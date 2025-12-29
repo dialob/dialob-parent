@@ -219,7 +219,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
            .startIndex(error.getSpan().startIndex())
            .endIndex(error.getSpan().stopIndex())
            .message(error.getErrorCode())
-           .index(compilableExpression.getIndex())
+           .index(compilableExpression.getIndex().orElse(null))
            .build())
         ).map(expr -> {
           compilableExpression.getExpressionConsumer().accept(expr);

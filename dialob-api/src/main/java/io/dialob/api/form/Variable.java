@@ -17,56 +17,62 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@Value.Modifiable
-@JsonSerialize(as = ImmutableVariable.class)
+@Value.Builder
 @JsonDeserialize(builder = Variable.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Variable extends Serializable {
-
-  static Variable of(String name, String value) {
-    return ImmutableVariable.of(name, value);
-  }
-
-  class Builder extends ImmutableVariable.Builder { }
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+public record Variable(
 
   @NotNull
-  @Value.Parameter
-  String getName();
+  @Getter
+  String name,
 
   @Nullable
-  @Value.Parameter
-  String getExpression();
+  @Getter
+  String expression,
 
   @Nullable
-  Object getDefaultValue();
+  @Getter
+  Object defaultValue,
 
   /**
    * @return true when this is context variable
    */
   @Nullable
-  Boolean getContext();
+  @Getter
+  Boolean context,
 
   /**
    * @return true when context variable can be published and sent to client.
    */
   @Nullable
-  Boolean getPublished();
+  @Getter
+  Boolean published,
 
   @Nullable
-  String getContextType();
+  @Getter
+  String contextType,
 
   @Nullable
-  String getDescription();
+  @Getter
+  String description
+
+) implements Serializable {
+
+  public static Variable of(String name, String expression) {
+    return new Variable.Builder().name(name).expression(expression).build();
+  }
+
+  public static class Builder extends VariableBuilder {
+  }
 
 }

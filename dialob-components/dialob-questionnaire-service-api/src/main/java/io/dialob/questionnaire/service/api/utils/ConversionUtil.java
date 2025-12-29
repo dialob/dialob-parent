@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.api.utils;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -23,19 +24,14 @@ import java.util.List;
 public class ConversionUtil {
 
   public static Object toJSON(Object answer) {
-    if (answer == null) {
-      return null;
-    }
-    if (answer instanceof String[]) {
-      return answer;
-    }
-    if (answer instanceof List) {
-      return answer;
-    }
-    if (answer instanceof Date date) {
-      return date.toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-    return answer.toString();
+    return switch (answer) {
+      case null -> null;
+      case String[] strings -> strings;
+      case List<?> list -> list;
+      case Date date -> date.toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
+      case Instant instant -> instant.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE);
+      default -> answer.toString();
+    };
   }
 
 }

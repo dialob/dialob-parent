@@ -19,32 +19,38 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
+import java.io.Serializable;
 import java.util.List;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableItems.class)
+@Value.Builder
 @JsonDeserialize(builder = Items.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Items {
-
-  class Builder extends ImmutableItems.Builder { }
+@ApiType
+public record Items(
 
   @NotNull
-  String getActiveItem();
-
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<String> getItems();
+  @Getter
+  String activeItem,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<String> getAvailableItems();
+  @Getter
+  List<String> items,
+
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  List<String> availableItems
+
+) implements Serializable {
+
+  public static class Builder extends ItemsBuilder {
+  }
+
 
 }

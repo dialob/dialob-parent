@@ -41,6 +41,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -212,7 +213,7 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
       .metadata(new Questionnaire.Metadata.Builder()
         .formId(formId)
         .formRev(rev)
-        .created(new Date())
+        .created(Instant.now())
         .language("en")
         .status(Questionnaire.Metadata.Status.OPEN)
         .build()).build();

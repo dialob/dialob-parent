@@ -28,7 +28,6 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
-import java.sql.Date;
 import java.time.Instant;
 import java.util.function.Consumer;
 
@@ -77,7 +76,7 @@ class QuestionnaireS3DatabaseTest {
         .id("key1")
         .value(new Questionnaire.Metadata.Builder()
           .status(Questionnaire.Metadata.Status.NEW)
-          .lastAnswer(Date.from(now))
+          .lastAnswer(now)
           .build())
       .build())));
     verifyNoMoreInteractions(s3Client, listObjectsV2Response, consumer);

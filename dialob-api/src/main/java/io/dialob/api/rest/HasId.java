@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.api.questionnaire;
+package io.dialob.api.rest;
 
-import org.junit.jupiter.api.Test;
+public interface HasId<T> {
 
-import static org.junit.jupiter.api.Assertions.*;
+  T id();
 
-class ContextValueTest {
-
-  @Test
-  void hasBuilder() {
-    ContextValue contextValue = new ContextValue.Builder()
-      .id("key1")
-      .value("value1")
-      .build();
-    assertNotNull(contextValue);
-    assertEquals("key1", contextValue.id());
-    assertEquals("value1", contextValue.value());
-  }
-
-  @Test
-  void copyOfReturnsSameInstance() {
-    var element = ContextValue.of("key2", 123);
-    assertSame(element, ContextValue.copyOf(element));
+  default T getId() {
+    return id();
   }
 
 }

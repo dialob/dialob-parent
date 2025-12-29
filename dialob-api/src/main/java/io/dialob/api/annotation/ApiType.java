@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dialob.api.questionnaire;
+package io.dialob.api.annotation;
 
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-class ContextValueTest {
-
-  @Test
-  void hasBuilder() {
-    ContextValue contextValue = new ContextValue.Builder()
-      .id("key1")
-      .value("value1")
-      .build();
-    assertNotNull(contextValue);
-    assertEquals("key1", contextValue.id());
-    assertEquals("value1", contextValue.value());
-  }
-
-  @Test
-  void copyOfReturnsSameInstance() {
-    var element = ContextValue.of("key2", 123);
-    assertSame(element, ContextValue.copyOf(element));
-  }
-
+@JsonSerialize
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+@Target({ElementType.PACKAGE, ElementType.TYPE})
+@Retention(RetentionPolicy.CLASS)
+public @interface ApiType {
 }

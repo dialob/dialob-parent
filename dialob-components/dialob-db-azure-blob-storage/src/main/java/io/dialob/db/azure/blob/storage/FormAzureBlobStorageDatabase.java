@@ -21,7 +21,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.form.service.api.FormDatabase;
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -54,7 +53,7 @@ public class FormAzureBlobStorageDatabase extends AbstractAzureBlobStorageDataba
       consumer.accept(FormMetadataRow.of(
         id,
         new Form.Metadata.Builder()
-          .lastSaved(Date.from(object.getProperties().getLastModified().toInstant()))
+          .lastSaved(object.getProperties().getLastModified().toInstant())
           .tenantId(tenantId)
           .build()
       ));

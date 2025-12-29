@@ -46,7 +46,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -156,8 +156,8 @@ class QuestionnaireDialobSessionRedisSerializerTest {
         .metadata(new Questionnaire.Metadata.Builder()
           .formId("test-form")
           .owner("tester")
-          .created(new Date(1))
-          .lastAnswer(new Date(2))
+          .created(Instant.ofEpochMilli(1))
+          .lastAnswer(Instant.ofEpochMilli(2))
           .status(Questionnaire.Metadata.Status.OPEN)
           .creator("creator")
           .putAdditionalProperties("showDisabled", true)

@@ -17,40 +17,47 @@ package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableMetadata.class)
+@Value.Builder
 @JsonDeserialize(builder = Metadata.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Metadata extends Serializable {
-
-  class Builder extends ImmutableMetadata.Builder { }
+@ApiType
+public record Metadata(
 
   @Nullable
-  String getDescription();
+  @Getter
+  String description,
 
   @NotNull
   @Size(min = 1)
-  String getLabel();
+  @Getter
+  String label,
 
   @Nullable
-  Date getCreated();
+  @Getter
+  Instant created,
 
   @Nullable
-  Date getLastSaved();
+  @Getter
+  Instant lastSaved,
 
   @Nullable
-  Boolean getValid();
+  @Getter
+  Boolean valid
+
+) implements Serializable {
+
+  public static class Builder extends MetadataBuilder {
+  }
+
 
 }

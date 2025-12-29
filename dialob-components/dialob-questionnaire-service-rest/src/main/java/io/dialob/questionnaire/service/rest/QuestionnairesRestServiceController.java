@@ -188,7 +188,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   public ResponseEntity<Response> deleteQuestionnaire(String questionnaireId) {
     LOGGER.debug("DELETE /questionnaire/{}", questionnaireId);
     questionnaireRepository.delete(currentTenant.getId(), questionnaireId);
-    return ResponseEntity.ok(new Response.Builder().ok(true).build());
+    return ResponseEntity.ok(Response.OK_RESPONSE);
   }
 
   /**
@@ -519,10 +519,10 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
         Questionnaire.Metadata.Status.COMPLETED,
         metadata -> {
           // Filter by start and end date using last answer timestamp. TODO: use completion date when it gets available
-          if (getCsv.from() != null && getCsv.from().isAfter(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+          if (getCsv.from() != null && getCsv.from().isAfter(metadata.getValue().getLastAnswer().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
             return;
           }
-          if (getCsv.to() != null && getCsv.to().isBefore(metadata.getValue().getLastAnswer().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+          if (getCsv.to() != null && getCsv.to().isBefore(metadata.getValue().getLastAnswer().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
             return;
           }
           questionnaireMetadataList.add(metadata);

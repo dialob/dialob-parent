@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AnswerTest {
 
@@ -30,26 +29,32 @@ class AnswerTest {
     Answer.Builder builder = new Answer.Builder();
     builder.id("q1");
     Answer answer = builder.build();
-    assertEquals("q1", answer.getId());
+    assertEquals("q1", answer.id());
+  }
+
+  @Test
+  void copyOfReturnsSameInstance() {
+    var element = Answer.of("key2", 123);
+    assertSame(element, Answer.copyOf(element));
   }
 
   @Test
   void shouldParseAnswer() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
     Answer answer = objectMapper.readValue("{\"id\":\"q1\"}", Answer.class);
-    assertNull(answer.getValue());
-    assertEquals("q1", answer.getId());
+    assertNull(answer.value());
+    assertEquals("q1", answer.id());
 
     answer = objectMapper.readValue("{\"id\":\"q1\",\"value\":\"123\"}", Answer.class);
-    assertEquals("123",answer.getValue());
-    assertEquals("q1", answer.getId());
+    assertEquals("123",answer.value());
+    assertEquals("q1", answer.id());
 
     answer = objectMapper.readValue("{\"id\":\"q1\",\"value\":[\"123\"]}", Answer.class);
-    assertEquals(List.of("123"),answer.getValue());
-    assertEquals("q1", answer.getId());
+    assertEquals(List.of("123"),answer.value());
+    assertEquals("q1", answer.id());
 
     answer = objectMapper.readValue("{\"id\":\"q1\",\"value\":123}", Answer.class);
     assertEquals(123,answer.getValue());
-    assertEquals("q1", answer.getId());
+    assertEquals("q1", answer.id());
   }
 }

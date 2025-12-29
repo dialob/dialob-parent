@@ -16,23 +16,27 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.gson.Gson;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.annotation.ApiType;
+import io.dialob.api.rest.HasId;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableQuestionnaireListItem.class)
+@Value.Builder
 @JsonDeserialize(builder = QuestionnaireListItem.Builder.class)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-@Gson.TypeAdapters
-public interface QuestionnaireListItem extends Serializable {
+@ApiType
+public record QuestionnaireListItem(
+  @NonNull String id,
+  @Getter Questionnaire.Metadata metadata
+) implements HasId<String>, Serializable {
 
-  class Builder extends ImmutableQuestionnaireListItem.Builder { }
+  public static class Builder extends QuestionnaireListItemBuilder { }
 
-  String getId();
+  public static QuestionnaireListItem copyOf(QuestionnaireListItem questionnaireListItem) {
+    return questionnaireListItem;
+  }
 
-  Questionnaire.Metadata getMetadata();
 
 }

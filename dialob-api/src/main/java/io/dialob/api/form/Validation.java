@@ -19,31 +19,34 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.Map;
 
-@Value.Immutable
-@Value.Modifiable
-@JsonSerialize(as = ImmutableValidation.class)
+@Value.Builder
 @JsonDeserialize(builder = Validation.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Validation extends Serializable {
-
-  class Builder extends ImmutableValidation.Builder { }
-
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+public record Validation(
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, String> getMessage();
+  @Getter
+  Map<String, String> message,
 
   @Nullable
-  String getRule();
+  @Getter
+  String rule
+
+) implements Serializable {
+
+  public static class Builder extends ValidationBuilder {
+  }
+
 
 }

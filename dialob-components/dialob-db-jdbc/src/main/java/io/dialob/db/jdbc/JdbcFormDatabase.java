@@ -34,7 +34,6 @@ import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -125,7 +124,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
       return new Form.Builder().from(form)
         .id(toId(oid))
         .rev(Integer.toString(objectRev))
-        .metadata(new Form.Metadata.Builder().from(form.getMetadata()).created(new Date(created.getTime())).tenantId(tenantId).build())
+        .metadata(new Form.Metadata.Builder().from(form.getMetadata()).created(created.toInstant()).tenantId(tenantId).build())
         .build();
     } catch (IOException e) {
       throw new DocumentCorruptedException("Could not read document " + toId(oid) + ":" + e.getMessage());
@@ -138,7 +137,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
     Form.Metadata.Builder builder = new Form.Metadata.Builder();
     if (form.getMetadata() != null) {
       builder = builder.from(form.getMetadata());
-      builder = builder.created(new Date(timestamp.getTime()));
+      builder = builder.created(timestamp.toInstant());
     }
     if (tenantId != null) {
       builder = builder.tenantId(tenantId);
@@ -176,8 +175,8 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
 
         Form.Metadata.Builder metadataBuilder = new Form.Metadata.Builder()
           .tenantId(tId)
-          .created(new Date(created.getTime()))
-          .lastSaved(new Date(updated.getTime()));
+          .created(created.toInstant())
+          .lastSaved(updated.toInstant());
 
         if (labels != null) {
           try {

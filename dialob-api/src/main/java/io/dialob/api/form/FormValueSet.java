@@ -18,36 +18,39 @@ package io.dialob.api.form;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
+import io.dialob.api.rest.HasId;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-@Value.Immutable
-@Value.Modifiable
-@JsonSerialize(as = ImmutableFormValueSet.class)
+@Value.Builder
 @JsonDeserialize(builder = FormValueSet.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface FormValueSet extends Serializable {
-
-  class Builder extends ImmutableFormValueSet.Builder { }
-
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+public record FormValueSet(
   @NotNull
-  String getId();
+  String id,
 
-  List<FormValueSetEntry> getEntries();
+  @Getter
+  List<FormValueSetEntry> entries,
 
   @JsonInclude
   @JsonAnyGetter
   @AllowNulls
-  @Gson.Ignore
-  Map<String, Object> getAdditionalProperties();
+  @Getter
+  Map<String, Object> additionalProperties
+
+) implements HasId<String>, Serializable {
+
+  public static class Builder extends FormValueSetBuilder {
+  }
+
 
 }

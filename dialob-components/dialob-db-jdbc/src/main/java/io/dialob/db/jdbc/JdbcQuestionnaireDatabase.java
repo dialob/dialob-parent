@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -71,8 +70,8 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         .rev(Integer.toString(objectRev));
       Questionnaire.Metadata metadata = questionnaire.getMetadata();
       builder.metadata(new Questionnaire.Metadata.Builder().from(metadata)
-        .created(new Date(created.getTime()))
-        .lastAnswer(new Date(updated.getTime()))
+        .created(created.toInstant())
+        .lastAnswer(updated.toInstant())
         .formId(toId(formId))
         .tenantId(tenantId)
         .status(Questionnaire.Metadata.Status.valueOf(status.trim()))
@@ -208,7 +207,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
     Questionnaire.Metadata.Builder metadataBuilder = new Questionnaire.Metadata.Builder()
       .from(document.getMetadata());
     if (document.getMetadata().getCreated() == null) {
-      metadataBuilder.created(new Date(timestamp.getTime()));
+      metadataBuilder.created(timestamp.toInstant());
     }
     if (tenantId != null) {
       metadataBuilder.tenantId(tenantId);
@@ -302,8 +301,8 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
       Timestamp updated = resultSet.getTimestamp(6);
       String owner = resultSet.getString(7);
       consumer.accept(MetadataRow.of(toId(idBytes), new Questionnaire.Metadata.Builder()
-        .created(new Date(created.getTime()))
-        .lastAnswer(updated)
+        .created(created.toInstant())
+        .lastAnswer(updated.toInstant())
         .formId(toId(formIdBytes))
         .status(status)
         .owner(owner)

@@ -25,7 +25,11 @@ import io.dialob.questionnaire.service.api.FormDataMissingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSessionBuilder {
@@ -198,7 +202,7 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
         .creator(creator)
         .owner(Objects.toString(owner, creator))
         .status(status != null ? status : Questionnaire.Metadata.Status.NEW)
-        .created(new Date())
+        .created(Instant.now())
         .language(getLanguage())
         .submitUrl(this.submitUrl != null ? this.submitUrl : submitUrl)
         .additionalProperties(additionalProperties != null ? additionalProperties : Collections.emptyMap())

@@ -17,80 +17,94 @@ package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
-@Value.Immutable
-@Value.Enclosing
-@JsonSerialize(as = ImmutableErrors.class)
+@Value.Builder
 @JsonDeserialize(builder = Errors.Builder.class)
-@Gson.TypeAdapters
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public abstract class Errors implements Serializable {
-
-  public static class Builder extends ImmutableErrors.Builder { }
-
-
+@ApiType
+public record Errors(
   @Schema(description = "error timestamp")
   @Nullable
-  @Value.Default
-  public Date getTimestamp() {
-    return new Date();
-  }
+  @Getter
+  Instant timestamp,
 
   @Schema(description = "HTTP status code", example = "403")
   @Nullable
-  public abstract Integer getStatus();
+  @Getter
+  Integer status,
 
   @Nullable
-  public abstract String getError();
+  @Getter
+  String error,
 
   @Nullable
-  public abstract String getMessage();
+  @Getter
+  String message,
 
   @Schema(description = "Java stacktrace, if server is configured to send one.")
   @Nullable
-  public abstract String getTrace();
+  @Getter
+  String trace,
 
   @Nullable
-  public abstract String getPath();
+  @Getter
+  String path,
 
   @Schema(description = "List of identified errors in entity")
   @Nullable
-  public abstract List<Error> getErrors();
+  @Getter
+  List<Error> errors
+
+) implements Serializable {
+
+  public Errors {
+    timestamp = Objects.requireNonNullElseGet(timestamp, Instant::now);
+  }
+
+  public static class Builder extends ErrorsBuilder {
+  }
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  @Value.Immutable
-  @JsonSerialize(as = ImmutableErrors.Error.class)
-  @JsonDeserialize(builder = Errors.Error.Builder.class)
-  @Gson.TypeAdapters
-  @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-  public interface Error extends Serializable {
+  @Value.Builder
 
-    class Builder extends ImmutableErrors.Error.Builder { }
+  @JsonDeserialize(builder = Errors.Error.Builder.class)
+  @ApiType
+  public record Error(
 
     @Schema(description = "Error classifying code")
     @Nullable
-    String getCode();
+    @Getter
+    String code,
 
     @Schema(description = "Javascript path notation to entity attribute")
     @Nullable
-    String getContext();
+    @Getter
+    String context,
 
     @Schema(description = "Invalid value on entity attribute")
     @Nullable
-    Object getRejectedValue();
+    @Getter
+    Object rejectedValue,
 
     @Schema(description = "Error description")
     @Nullable
-    String getError();
+    @Getter
+    String error
+
+  ) implements Serializable {
+
+    public static class Builder extends ErrorBuilder {
+    }
+
   }
 }

@@ -29,9 +29,16 @@ class ErrorTest {
       .description("An error occurred")
       .build();
     assertNotNull(error);
-    assertEquals("123", error.getId());
-    assertEquals("ERR001", error.getCode());
-    assertEquals("An error occurred", error.getDescription());
+    assertEquals("123", error.id());
+    assertEquals("ERR001", error.code());
+    assertEquals("An error occurred", error.description());
   }
+
+  @Test
+  void copyOfReturnsSameInstance() {
+    var element = new Error.Builder().id("k").code("c").build();
+    assertSame(element, Error.copyOf(element));
+  }
+
 
 }

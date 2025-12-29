@@ -21,7 +21,6 @@ import io.dialob.api.form.Form;
 import io.dialob.form.service.api.FormDatabase;
 import software.amazon.awssdk.services.s3.S3Client;
 
-import java.util.Date;
 import java.util.function.Consumer;
 
 public class FormS3Database extends AbstractS3Database<Form> implements FormDatabase {
@@ -37,7 +36,7 @@ public class FormS3Database extends AbstractS3Database<Form> implements FormData
       consumer.accept(FormMetadataRow.of(
         id,
         new Form.Metadata.Builder()
-          .lastSaved(Date.from(object.lastModified()))
+          .lastSaved(object.lastModified())
           .tenantId(tenantId)
           .build()
       ));

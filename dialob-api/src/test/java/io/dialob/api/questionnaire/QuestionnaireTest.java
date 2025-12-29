@@ -15,8 +15,6 @@
  */
 package io.dialob.api.questionnaire;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
@@ -50,21 +48,10 @@ class QuestionnaireTest {
   }
 
   @Test
-  void gsonShouldSerializeCompatibleJson() {
-    Questionnaire questionnaire = QuestionnaireFactory.questionnaire("12","123");
-    Gson gson = new GsonBuilder()
-      .registerTypeAdapterFactory(new GsonAdaptersQuestionnaire())
-      .create();
-    String json = gson.toJson(questionnaire);
-    Assertions.assertEquals("{\"_id\":\"12\",\"metadata\":{\"formId\":\"123\",\"status\":\"NEW\"}}", json);
-  }
-
-
-  @Test
   void shouldThrowConstraintExceptionOnMissingMetadata() {
     ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().build());
     assertEquals(1, exception.getConstraintViolations().size());
-    ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
+    ConstraintViolation<?> constraintViolation = exception.getConstraintViolations().iterator().next();
 
     assertEquals("must not be null", constraintViolation.getMessage());
     assertEquals("metadata", constraintViolation.getPropertyPath().toString());

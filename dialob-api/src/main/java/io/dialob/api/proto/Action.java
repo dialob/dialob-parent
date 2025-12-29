@@ -18,28 +18,74 @@ package io.dialob.api.proto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.questionnaire.Error;
+import io.dialob.api.rest.HasId;
 import lombok.Getter;
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableAction.class)
+@Value.Builder
 @JsonDeserialize(builder = Action.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Action extends Serializable {
-
-  class Builder extends ImmutableAction.Builder { }
-
+@ApiType
+public record Action(
   @Getter
-  enum Type {
+  Type type,
+
+  @Nullable
+  String id,
+
+  @Nullable
+  @Getter
+  String message,
+
+  @Nullable
+  @Getter
+  String trace,
+
+  @Nullable
+  @Getter
+  ActionItem item,
+
+  @Nullable
+  @Getter
+  Error error,
+
+  @Nullable
+  @Getter
+  Object answer,
+
+  @Nullable
+  @Getter
+  List<String> ids,
+
+  @Nullable
+  @Getter
+  Object value,
+
+  @Nullable
+  @Getter
+  ValueSet valueSet,
+
+  @JsonIgnore
+  @Nullable
+  @Getter
+  Boolean serverEvent,
+
+  @JsonIgnore
+  @Nullable
+  @Getter
+  String resourceId
+) implements HasId<String>, Serializable {
+
+  public static class Builder extends ActionBuilder {
+  }
+
+  public enum Type {
     ANSWER(true),
     NEXT(true),
     PREVIOUS(true),
@@ -63,6 +109,7 @@ public interface Action extends Serializable {
     LOCALE(false),
     SET_LOCALE(true);
 
+    @Getter
     final boolean clientAction;
 
     Type(boolean clientAction) {
@@ -70,42 +117,5 @@ public interface Action extends Serializable {
     }
 
   }
-
-  Type getType();
-
-  @Nullable
-  String getId();
-
-  @Nullable
-  String getMessage();
-
-  @Nullable
-  String getTrace();
-
-  @Nullable
-  ActionItem getItem();
-
-  @Nullable
-  Error getError();
-
-  @Nullable
-  Object getAnswer();
-
-  @Nullable
-  List<String> getIds();
-
-  @Nullable
-  Object getValue();
-
-  @Nullable
-  ValueSet getValueSet();
-
-  @JsonIgnore
-  @Nullable
-  Boolean getServerEvent();
-
-  @JsonIgnore
-  @Nullable
-  String getResourceId();
 
 }

@@ -154,7 +154,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
         .itemId(id)
         .message("BOOLEAN_EXPRESSION_EXPECTED")
         .type(type)
-        .index(getIndex())
+        .index(getIndex().orElse(null))
         .build());
     }
   }

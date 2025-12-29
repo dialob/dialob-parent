@@ -17,19 +17,20 @@ package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
+import io.dialob.api.rest.HasId;
 import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,123 +44,139 @@ import java.util.Set;
  * using libraries such as JSON and Gson. It also integrates with MongoDB for repository storage.
  * <p>
  * The Form interface supports validation rules and ensures non-null constraints for key fields.
+ *
+ * @param id The form's unique identifier as a String, or null if the identifier is not set.
+ * @param rev The revision identifier as a String, or null if the revision is not set. The revision identifier
+ *            is used to track changes to the form, ensuring version control and
+ *            consistency during updates or modifications.
+ * @param requiredErrorText  Error text for required fields, unless not defined per item.
+ *
  */
-@Value.Immutable
-@Value.Modifiable
-@JsonSerialize(as = ImmutableForm.class)
+@Value.Builder
 @JsonDeserialize(builder = Form.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Form extends WithValidation<Form>, FormEntity {
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+public record Form(
+  @JsonProperty("_id")
+  @Id
+  @Nullable
+  String id,
 
-  default Form withRev(String number) {
+  @JsonProperty("_rev")
+  @Version
+  @Nullable
+  @Getter
+  String rev,
+
+  @Nullable
+  @Getter
+  String name,
+
+  @Valid
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  Map<String, FormItem> data,
+
+  @Valid
+  @NotNull
+  @Getter
+  Metadata metadata,
+
+  @Valid
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  List<Variable> variables,
+
+  @Valid
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  Map<String, Form> namespaces,
+
+  @Valid
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  List<FormValueSet> valueSets,
+
+  @NotNull
+  @JsonSetter(nulls = Nulls.AS_EMPTY)
+  @Getter
+  Map<String, String> requiredErrorText
+
+) implements HasId<String>, WithValidation<Form>, FormEntity {
+
+  public Form withRev(String number) {
     return new Form.Builder().from(this).rev(number).build();
   }
 
-  class Builder extends ImmutableForm.Builder { }
+  public static class Builder extends FormBuilder {
 
-  /**
-   * Retrieves the unique identifier of the form.
-   *
-   * @return the form's unique identifier as a String, or null if the identifier is not set.
-   */
-  @JsonProperty("_id")
-  @Gson.Named("_id")
-  @Id
-  @Nullable
-  String getId();
-
-  /**
-   * Retrieves the revision identifier of the form. The revision identifier
-   * is used to track changes to the form, ensuring version control and
-   * consistency during updates or modifications.
-   *
-   * @return the revision identifier as a String, or null if the revision is not set.
-   */
-  @JsonProperty("_rev")
-  @Gson.Named("_rev")
-  @Version
-  @Nullable
-  String getRev();
-
-  @Nullable
-  String getName();
-
-  @Valid
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, FormItem> getData();
-
-  @Valid
-  @NotNull
-  Metadata getMetadata();
-
-  @Valid
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<Variable> getVariables();
-
-  @Valid
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, Form> getNamespaces();
-
-  @Valid
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<FormValueSet> getValueSets();
-
-  /**
-   *
-   * @return error text for required fields, unless not defined per item
-   */
-  @NotNull
-  @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Map<String, String> getRequiredErrorText();
-
-  @Value.Immutable
-  @Value.Style(typeImmutable = "ImmutableForm*", typeModifiable = "ModifiableForm*", validationMethod = Value.Style.ValidationMethod.NONE, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE, jdkOnly = true, jakarta = true, defaultAsDefault = true)
-  @Value.Modifiable
-  @JsonSerialize(as = ImmutableFormMetadata.class)
-  @JsonDeserialize(builder = Form.Metadata.Builder.class)
-  @Gson.TypeAdapters(emptyAsNulls = true)
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-  interface Metadata extends Serializable {
-
-    class Builder extends ImmutableFormMetadata.Builder {
+    @Override
+    public Form build() {
+      return super.build().validate();
     }
 
+  }
+
+
+  @Value.Builder
+  @ApiType
+  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+  @JsonDeserialize(builder = Form.Metadata.Builder.class)
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
+  public record Metadata(
     @NotNull
-    String getLabel();
+    @Getter
+    String label,
 
-    @Nullable Date getCreated();
+    @Getter
+    @Nullable Instant created,
 
-    @Nullable Date getLastSaved();
+    @Getter
+    @Nullable Instant lastSaved,
 
-    @Nullable Boolean getValid();
+    @Getter
+    @Nullable Boolean valid,
 
-    @Nullable String getCreator();
+    @Getter
+    @Nullable String creator,
 
-    @Nullable String getTenantId();
+    @Getter
+    @Nullable String tenantId,
 
-    @Nullable String getSavedBy();
+    @Getter
+    @Nullable String savedBy,
 
     @NotNull
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    Set<String> getLabels();
+    @Getter
+    Set<String> labels,
 
-    @Nullable String getDefaultSubmitUrl();
+    @Getter
+    @Nullable String defaultSubmitUrl,
 
     @NotNull
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    Set<String> getLanguages();
+    @Getter
+    Set<String> languages,
 
     @JsonInclude
     @JsonAnyGetter
     @AllowNulls
-    Map<String,Object> getAdditionalProperties();
+    @Getter
+    Map<String, Object> additionalProperties
+
+  ) implements Serializable {
+
+    @JsonIgnoreType
+    public static class Builder extends MetadataBuilder {
+    }
+
   }
 }

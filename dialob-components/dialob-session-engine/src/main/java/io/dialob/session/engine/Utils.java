@@ -35,12 +35,8 @@ import io.dialob.session.engine.session.model.ValueSetState;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Period;
+import java.time.*;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -206,18 +202,21 @@ public final class Utils {
   }
 
 
-  public static void writeNullableDate(@NonNull CodedOutputStream output, Date date) throws IOException {
+  public static void writeNullableDate(@NonNull CodedOutputStream output, Instant date) throws IOException {
     if (date == null) {
       output.writeBoolNoTag(false);
     } else {
       output.writeBoolNoTag(true);
-      output.writeInt64NoTag(date.getTime());
+      output.writeInt64NoTag(date.getEpochSecond());
+      output.writeInt32NoTag(date.getNano());
     }
   }
 
-  public static Date readNullableDate(@NonNull CodedInputStream input) throws IOException {
+  public static Instant readNullableDate(@NonNull CodedInputStream input) throws IOException {
     if (input.readBool()) {
-      return new Date(input.readInt64());
+      long epoch = input.readInt64();
+      long nano = input.readInt32();
+      return Instant.ofEpochSecond(epoch, nano);
     }
     return null;
   }

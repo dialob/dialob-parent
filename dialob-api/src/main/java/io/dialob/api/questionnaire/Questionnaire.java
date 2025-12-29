@@ -17,91 +17,190 @@ package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ValueSet;
+import io.dialob.api.rest.HasId;
 import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.immutables.gson.Gson;
+import lombok.Getter;
 import org.immutables.value.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-@Value.Immutable
-@Value.Style(deepImmutablesDetection = true, validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-@JsonSerialize(as = ImmutableQuestionnaire.class)
+@Value.Builder
+@ApiType
+@Value.Style(validationMethod = Value.Style.ValidationMethod.VALIDATION_API)
 @JsonDeserialize(builder = Questionnaire.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-public interface Questionnaire extends WithValidation<Questionnaire>, Serializable {
-
-  Questionnaire withId(@Nullable String string);
-
-  Questionnaire withRev(@Nullable String string);
-
-  class Builder extends ImmutableQuestionnaire.Builder { }
-
+public record Questionnaire(
   @JsonProperty("_id")
-  @Gson.Named("_id")
   @Id
   @Nullable
-  String getId();
+  String id,
 
   @JsonProperty("_rev")
-  @Gson.Named("_rev")
   @Version
   @Nullable
-  String getRev();
+  @Getter
+  String rev,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<Answer> getAnswers();
+  @Getter
+  List<Answer> answers,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<ContextValue> getContext();
+  @Getter
+  List<ContextValue> context,
 
   @Nullable
-  String getActiveItem();
+  @Getter
+  String activeItem,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<Error> getErrors();
+  @Getter
+  List<Error> errors,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<VariableValue> getVariableValues();
+  @Getter
+  List<VariableValue> variableValues,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  List<ValueSet> getValueSets();
+  @Getter
+  List<ValueSet> valueSets,
 
   @NotNull
   @JsonSetter(nulls = Nulls.AS_EMPTY)
-  Set<String> getActiveItems();
+  @Getter
+  Set<String> activeItems,
 
   @Valid
   @NotNull
-  Metadata getMetadata();
+  @Getter
+  Metadata metadata
+) implements HasId<String>, WithValidation<Questionnaire>, Serializable {
 
-  @Value.Immutable
-  @Value.Modifiable
-  @Value.Style(typeImmutable = "ImmutableQuestionnaire*", typeModifiable = "ModifiableQuestionnaire*", validationMethod = Value.Style.ValidationMethod.NONE, jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-  @JsonSerialize(as = ImmutableQuestionnaireMetadata.class)
-  @JsonDeserialize(builder = Metadata.Builder.class)
-  @Gson.TypeAdapters
+  public Questionnaire withId(@Nullable String id) {
+    return new Builder().from(this).id(id).build();
+  }
+
+  public Questionnaire withRev(@Nullable String rev) {
+    return new Builder().from(this).rev(rev).build();
+  }
+
+  public static class Builder extends QuestionnaireBuilder {
+
+
+    @Override
+    public Questionnaire build() {
+      return super.build().validate();
+    }
+  }
+
+
+  @Value.Builder
+  @ApiType
+  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
+  @JsonDeserialize(builder = Questionnaire.Metadata.Builder.class)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-  abstract class Metadata implements Serializable {
+  public record Metadata(
 
-    public static class Builder extends ImmutableQuestionnaireMetadata.Builder { }
+    @NotNull
+    @Getter
+    String formId,
+
+    @Nullable
+    @Getter
+    String formName,
+
+    @NotNull
+    @Getter
+    Status status,
+
+    @Nullable
+    @Getter
+    String formRev,
+
+    @Nullable
+    @Getter
+    String tenantId,
+
+    @Nullable
+    @Getter
+    Instant created,
+
+    @Nullable
+    @Getter
+    Instant lastAnswer,
+
+    @Nullable
+    @Getter
+    Instant opened,
+
+    @Nullable
+    @Getter
+    Instant completed,
+
+    @Nullable
+    @Getter
+    String label,
+
+    @Nullable
+    @Getter
+    String submitUrl,
+
+    /**
+     * Completion reason, null if normally completed.
+     */
+    @Nullable
+    @Getter
+    Reason reason,
+
+    @Nullable
+    @Getter
+    String language,
+
+    /**
+     * userId of document owner
+     */
+    @Nullable
+    @Getter
+    String owner,
+
+    /**
+     * userId of one who created questionnaire
+     */
+    @Nullable
+    @Getter
+    String creator,
+
+    @JsonInclude
+    @JsonAnyGetter
+    @AllowNulls
+    @Getter
+    Map<String, Object> additionalProperties
+  ) implements Serializable {
+
+    public Metadata {
+      status = Objects.requireNonNullElse(status, Status.NEW);
+    }
+
+    public static class Builder extends MetadataBuilder {
+    }
 
     public enum Status {
       NEW,
@@ -114,67 +213,5 @@ public interface Questionnaire extends WithValidation<Questionnaire>, Serializab
       CANCELLED
     }
 
-    @NotNull
-    public abstract String getFormId();
-
-    @Nullable
-    public abstract String getFormName();
-
-    @NotNull
-    @Value.Default
-    public Status getStatus() {
-      return Status.NEW;
-    }
-
-    @Nullable
-    public abstract String getFormRev();
-
-    @Nullable
-    public abstract String getTenantId();
-
-    @Nullable
-    public abstract Date getCreated();
-
-    @Nullable
-    public abstract Date getLastAnswer();
-
-    @Nullable
-    public abstract Date getOpened();
-
-    @Nullable
-    public abstract Date getCompleted();
-
-    @Nullable
-    public abstract String getLabel();
-
-    @Nullable
-    public abstract String getSubmitUrl();
-
-    /**
-     * Completion reason, null if normally completed.
-     */
-    @Nullable
-    public abstract Reason getReason();
-
-    @Nullable
-    public abstract String getLanguage();
-
-    /**
-     * userId of document owner
-     */
-    @Nullable
-    public abstract String getOwner();
-
-    /**
-     * userId of one who created questionnaire
-     */
-    @Nullable
-    public abstract String getCreator();
-
-    @JsonInclude
-    @JsonAnyGetter
-    @AllowNulls
-    @Gson.Ignore
-    public abstract Map<String, Object> getAdditionalProperties();
   }
 }

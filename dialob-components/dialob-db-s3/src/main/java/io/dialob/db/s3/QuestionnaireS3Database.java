@@ -21,7 +21,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import software.amazon.awssdk.services.s3.S3Client;
 
-import java.util.Date;
 import java.util.function.Consumer;
 
 public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> implements QuestionnaireDatabase {
@@ -38,7 +37,7 @@ public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> i
       consumer.accept(MetadataRow.of(
         id,
         new Questionnaire.Metadata.Builder()
-          .lastAnswer(Date.from(object.lastModified()))
+          .lastAnswer(object.lastModified())
           .build()
       ));
     });

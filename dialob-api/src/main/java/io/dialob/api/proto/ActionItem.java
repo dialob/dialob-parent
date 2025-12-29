@@ -17,10 +17,11 @@ package io.dialob.api.proto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.api.annotation.AllowNulls;
+import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
-import org.immutables.gson.Gson;
+import io.dialob.api.rest.HasId;
+import lombok.Getter;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
@@ -28,49 +29,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableActionItem.class)
+@Value.Builder
 @JsonDeserialize(builder = ActionItem.Builder.class)
-@Gson.TypeAdapters(emptyAsNulls = true)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface ActionItem extends Serializable {
+@ApiType
+public record ActionItem(
 
-  class Builder extends ImmutableActionItem.Builder { }
+  String id,
 
-  String getId();
+  @Getter
+  String type,
 
-  String getType();
+  @Nullable @Getter String view,
 
-  @Nullable String getView();
+  @Nullable @Getter String label,
 
-  @Nullable String getLabel();
+  @Nullable @Getter String description,
 
-  @Nullable String getDescription();
+  @Nullable @Getter Boolean inactive,
 
-  @Nullable Boolean getInactive();
+  @Nullable @Getter Boolean disabled,
 
-  @Nullable Boolean getDisabled();
+  @Nullable @Getter Boolean required,
 
-  @Nullable Boolean getRequired();
+  @Nullable @Getter List<String> className,
 
-  @Nullable List<String> getClassName();
+  @Nullable @Getter Object value,
 
-  @Nullable Object getValue();
+  @Nullable @Getter List<String> items,
 
-  @Nullable List<String> getItems();
+  @Nullable @Getter String activeItem,
 
-  @Nullable String getActiveItem();
+  @Nullable @Getter List<String> availableItems,
 
-  @Nullable List<String> getAvailableItems();
+  @Nullable @Getter Set<Action.Type> allowedActions,
 
-  @Nullable Set<Action.Type> getAllowedActions();
+  @Nullable @Getter Boolean answered,
 
-  @Nullable Boolean getAnswered();
-
-  @Nullable String getValueSetId();
+  @Nullable @Getter String valueSetId,
 
   @Nullable @AllowNulls
-  Map<String, Object> getProps();
+  @Getter
+  Map<String, Object> props
+) implements HasId<String>, Serializable {
+
+  public static class Builder extends ActionItemBuilder {
+  }
+
 
 }

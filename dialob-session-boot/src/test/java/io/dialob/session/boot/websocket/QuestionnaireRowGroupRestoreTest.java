@@ -40,8 +40,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -106,7 +106,7 @@ class QuestionnaireRowGroupRestoreTest extends AbstractWebSocketTests {
       .metadata(new Questionnaire.Metadata.Builder()
         .formId(form.getId())
         .formRev(form.getRev())
-        .created(new Date())
+        .created(Instant.now())
         .status(Questionnaire.Metadata.Status.OPEN)
         .build()).build();
 

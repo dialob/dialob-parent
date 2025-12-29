@@ -40,7 +40,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
 
@@ -273,7 +273,7 @@ class QuestionnaireRestControllerTest extends AbstractWebSocketTests {
     Questionnaire questionnaire = new Questionnaire.Builder()
       .metadata(new Questionnaire.Metadata.Builder()
         .formId("shouldEvaluateValueSetsInCorrectOrder")
-        .created(new Date())
+        .created(Instant.now())
         .language("en")
         .status(Questionnaire.Metadata.Status.OPEN)
         .build())
