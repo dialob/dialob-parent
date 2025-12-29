@@ -42,7 +42,7 @@ record ConfiguredFunction(
 
   List<ValueType> argumentValueTypes,
 
-  Class<?>[] argumentTypes,
+  List<Class<?>> argumentTypes,
 
   Class<?> functionImplementationClass,
 
@@ -57,13 +57,6 @@ record ConfiguredFunction(
 ) {
 
   static class Builder extends ConfiguredFunctionBuilder {
-    @Override
-    public ConfiguredFunction build() {
-      if (!argumentTypesIsSet()) {
-        argumentTypes();
-      }
-      return super.build();
-    }
   }
 
   public ConfiguredFunction {
@@ -75,8 +68,8 @@ record ConfiguredFunction(
     if (Strings.CS.equalsAny(canonicalFunctionName, functionName(), canonicalName())) {
       final var argumentTypes = argumentTypes();
       for (int i = 0; i < args.length; i++) {
-        if (argumentTypes.length < i
-          || (args[i] != null && !argumentTypes[i].isAssignableFrom(args[i].getClass()))) {
+        if (argumentTypes.size() < i
+          || (args[i] != null && !argumentTypes.get(i).isAssignableFrom(args[i].getClass()))) {
           return false;
         }
       }

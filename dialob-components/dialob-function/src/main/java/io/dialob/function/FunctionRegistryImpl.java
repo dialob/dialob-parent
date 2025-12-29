@@ -112,7 +112,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
                 .staticMethodName(implementationName)
                 .returnType(returnType)
                 .argumentValueTypes(argumentTypes)
-                .argumentTypes(method.getParameterTypes())
+                .argumentTypes(List.of(method.getParameterTypes()))
                 .functionImplementationClass(implementationClass)
                 .isAsync(async)
               .build());
@@ -178,7 +178,7 @@ class FunctionRegistryImpl implements FunctionRegistry {
     }
     final var implClass = configuredFunction.functionImplementationClass();
     // TODO: Caching by function name + arg values as key
-    return implClass.getMethod(configuredFunction.staticMethodName(), configuredFunction.argumentTypes());
+    return implClass.getMethod(configuredFunction.staticMethodName(), configuredFunction.argumentTypes().toArray(new Class[0]));
   }
 
   /**

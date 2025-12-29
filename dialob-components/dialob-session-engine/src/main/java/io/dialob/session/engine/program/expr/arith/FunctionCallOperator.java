@@ -53,7 +53,7 @@ public record FunctionCallOperator(
   @Override
   public Object eval(@NonNull EvalContext evalContext) {
     final FunctionRegistry functionRegistry = evalContext.getFunctionRegistry();
-    final Object[] args = args().stream().map(arg -> arg.eval(evalContext)).toArray();
+    final var args = args().stream().map(arg -> arg.eval(evalContext)).toList();
     if (functionRegistry.isAsyncFunction(functionName())) {
       return AsyncFunctionCall.builder()
         .functionName(functionName())

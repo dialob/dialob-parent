@@ -19,6 +19,7 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Optional;
 
 @Value.Builder
@@ -37,7 +38,7 @@ public record AsyncFunctionCall(
 
   String functionName,
 
-  Object[] args
+  List<Object> args
 
 ) {
 
