@@ -114,17 +114,18 @@ class QuestionnaireEventPublisherTest {
 
   @Test
   void publishesClientConnectedEvent() {
+    String sessionId = "s1";
     String questionnaireId = "q6";
     InetAddress client = mock();
     Tenant tenant = Tenant.of("tenant5");
     when(currentTenant.get()).thenReturn(tenant);
 
-    questionnaireEventPublisher.clientConnected(questionnaireId, client);
+    questionnaireEventPublisher.clientConnected(questionnaireId, client, sessionId);
 
     verify(eventPublisher).publish(new QuestionnaireClientConnectedEvent(
       tenant,
       questionnaireId,
-      null,
+      sessionId,
       client
     ));
   }

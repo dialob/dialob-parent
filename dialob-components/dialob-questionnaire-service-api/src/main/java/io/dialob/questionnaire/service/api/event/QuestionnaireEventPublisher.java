@@ -112,13 +112,14 @@ public class QuestionnaireEventPublisher {
    * Publishes an event indicating that a client has connected to a questionnaire.
    *
    * @param questionnaireId the ID of the questionnaire
-   * @param client the client's IP address
+   * @param client          the client's IP address
+   * @param sessionId
    */
-  public void clientConnected(@NonNull String questionnaireId, InetAddress client) {
+  public void clientConnected(@NonNull String questionnaireId, InetAddress client, String sessionId) {
     applicationEventPublisher.publish(new QuestionnaireClientConnectedEvent(
       currentTenant.get(),
       questionnaireId,
-      null,
+      sessionId,
       client
     ));
   }

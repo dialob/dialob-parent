@@ -148,9 +148,10 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   }
 
   protected void publishConnectionEvent() {
-    InetAddress remoteAddress = resolveRealIp();
-    LOGGER.info("WebSocket session '{}' from {} trying connect to '{}'", this.session.getId(), remoteAddress, this.questionnaireId);
-    eventPublisher.clientConnected(questionnaireId, remoteAddress);
+    var remoteAddress = resolveRealIp();
+    var sessionId = this.session.getId();
+    LOGGER.info("WebSocket session '{}' from {} trying connect to '{}'", sessionId, remoteAddress, this.questionnaireId);
+    eventPublisher.clientConnected(questionnaireId, remoteAddress, sessionId);
   }
 
   protected void publishDisconnectionEvent(CloseStatus closeStatus) {
