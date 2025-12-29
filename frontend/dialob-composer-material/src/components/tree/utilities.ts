@@ -6,19 +6,51 @@ import { ItemConfig } from '../../defaults/types';
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
+interface LabelResult {
+  text: string;
+  isFallback: boolean;
+}
+
+function resolveLabelWithFallback(
+  item: DialobItem,
+  activeLanguage: string,
+  availableLanguages: string[]
+): LabelResult {
+  if (item.label?.[activeLanguage]) {
+    return {
+      text: item.label[activeLanguage],
+      isFallback: false
+    };
+  }
+
+  for (const lang of availableLanguages) {
+    if (lang !== activeLanguage && item.label?.[lang]) {
+      return {
+        text: item.label[lang],
+        isFallback: true
+      };
+    }
+  }
+
+  return {
+    text: item.id,
+    isFallback: false
+  };
+}
+
 const getDragDepth = (offset: number, indentationWidth: number) => {
   return Math.round(offset / indentationWidth);
 }
 
-export const getProjection =(
+export const getProjection = (
   items: FlattenedItem[],
   activeId: UniqueIdentifier,
   overId: UniqueIdentifier,
   dragOffset: number,
   indentationWidth: number
 ) => {
-  const overItemIndex = items.findIndex(({id}) => id === overId);
-  const activeItemIndex = items.findIndex(({id}) => id === activeId);
+  const overItemIndex = items.findIndex(({ id }) => id === overId);
+  const activeItemIndex = items.findIndex(({ id }) => id === activeId);
   const activeItem = items[activeItemIndex];
   const newItems = arrayMove(items, activeItemIndex, overItemIndex);
   const previousItem = newItems[overItemIndex - 1];
@@ -28,7 +60,7 @@ export const getProjection =(
   const maxDepth = getMaxDepth({
     previousItem,
   });
-  const minDepth = getMinDepth({nextItem});
+  const minDepth = getMinDepth({ nextItem });
   let depth = projectedDepth;
 
   if (projectedDepth >= maxDepth) {
@@ -58,10 +90,10 @@ export const getProjection =(
     return newParent ?? null;
   }
 
-  return {depth, maxDepth, minDepth, parentId: getParentId()};
+  return { depth, maxDepth, minDepth, parentId: getParentId() };
 }
 
-const getMaxDepth = ({previousItem}: {previousItem: FlattenedItem}) => {
+const getMaxDepth = ({ previousItem }: { previousItem: FlattenedItem }) => {
   if (previousItem) {
     return previousItem.depth + 1;
   }
@@ -69,7 +101,7 @@ const getMaxDepth = ({previousItem}: {previousItem: FlattenedItem}) => {
   return 0;
 }
 
-const getMinDepth = ({nextItem}: {nextItem: FlattenedItem}) => {
+const getMinDepth = ({ nextItem }: { nextItem: FlattenedItem }) => {
   if (nextItem) {
     return nextItem.depth;
   }
@@ -85,7 +117,7 @@ const flatten = (
   return items.reduce<FlattenedItem[]>((acc, item, index) => {
     return [
       ...acc,
-      {...item, parentId, depth, index},
+      { ...item, parentId, depth, index },
       ...flatten(item.children, item.id, depth + 1),
     ];
   }, []);
@@ -96,40 +128,43 @@ export const flattenTree = (items: TreeItems): FlattenedItem[] => {
 }
 
 export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
-  const root: TreeItem = {id: 'questionnaire', children: [], title: 'questionnaire'};
-  const nodes: Record<string, TreeItem> = {[root.id]: root};
-  const items = flattenedItems.map((item) => ({...item, children: []}));
+  const root: TreeItem = { id: 'questionnaire', children: [], title: 'questionnaire' };
+  const nodes: Record<string, TreeItem> = { [root.id]: root };
+  const items = flattenedItems.map((item) => ({ ...item, children: [] }));
 
   for (const item of items) {
-    const {id, children} = item;
+    const { id, children } = item;
     const parentId = item.parentId ?? root.id;
     const parent = nodes[parentId] ?? findItem(items, parentId);
 
-    nodes[id] = {id, children, title: item.title};
+    nodes[id] = { id, children, title: item.title };
     parent.children.push(item);
   }
 
   return root.children;
 }
 
-export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig, collapsedItems?: Record<string, boolean>): TreeItems => {
+export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig, collapsedItems?: Record<string, boolean>, availableLanguages?: string[]): TreeItems => {
   const createdNodes = new Map<string, TreeItem>();
-
+  const languages = availableLanguages || [language];
 
   const buildNode = (item: DialobItem): TreeItem => {
     if (createdNodes.has(item.id)) {
       return createdNodes.get(item.id)!;
     }
 
-    const treeCollapsible = config.items.find(c => c.matcher(item))?.props.treeCollapsible ?? false; 
+    const treeCollapsible = config.items.find(c => c.matcher(item))?.props.treeCollapsible ?? false;
     const isCollapsed = collapsedItems?.[item.id] ?? !treeCollapsible;
 
-    const newNode: TreeItem = { 
-      id: item.id, 
-      children: [], 
-      title: item.id.startsWith('page') ? (item.label?.[language] ?? item.id) : item.id,
+    const labelResult = resolveLabelWithFallback(item, language, languages);
+
+    const newNode: TreeItem = {
+      id: item.id,
+      children: [],
+      title: labelResult.text,
       collapsible: treeCollapsible,
-      collapsed: isCollapsed
+      collapsed: isCollapsed,
+      isFallbackLabel: labelResult.isFallback
     };
 
     createdNodes.set(item.id, newNode);
@@ -152,15 +187,15 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
 };
 
 export const findItem = (items: TreeItem[], itemId: UniqueIdentifier) => {
-  return items.find(({id}) => id === itemId);
+  return items.find(({ id }) => id === itemId);
 }
 
-export const findItemDeep =(
+export const findItemDeep = (
   items: TreeItems,
   itemId: UniqueIdentifier
 ): TreeItem | undefined => {
   for (const item of items) {
-    const {id, children} = item;
+    const { id, children } = item;
 
     if (id === itemId) {
       return item;
@@ -199,7 +234,7 @@ export const setProperty = <T extends keyof TreeItem>(
 }
 
 const countChildren = (items: TreeItem[], count = 0): number => {
-  return items.reduce((acc, {children}) => {
+  return items.reduce((acc, { children }) => {
     if (children.length) {
       return countChildren(children, acc + 1);
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import {
-  DndContext, closestCenter, PointerSensor, useSensor, useSensors, 
+  DndContext, closestCenter, PointerSensor, useSensor, useSensors,
   DragStartEvent, DragOverlay, DragMoveEvent, DragEndEvent, DragOverEvent, MeasuringStrategy,
   DropAnimation, defaultDropAnimation, UniqueIdentifier,
 } from '@dnd-kit/core';
@@ -24,9 +24,9 @@ const measuring = {
 };
 
 const dropAnimationConfig: DropAnimation = {
-  keyframes({transform}) {
+  keyframes({ transform }) {
     return [
-      {opacity: 1, transform: CSS.Transform.toString(transform.initial)},
+      { opacity: 1, transform: CSS.Transform.toString(transform.initial) },
       {
         opacity: 0,
         transform: CSS.Transform.toString({
@@ -38,8 +38,8 @@ const dropAnimationConfig: DropAnimation = {
     ];
   },
   easing: 'ease-out',
-  sideEffects({active}) {
-    active.node.animate([{opacity: 0}, {opacity: 1}], {
+  sideEffects({ active }) {
+    active.node.animate([{ opacity: 0 }, { opacity: 1 }], {
       duration: defaultDropAnimation.duration,
       easing: defaultDropAnimation.easing,
     });
@@ -57,13 +57,14 @@ export const SortableTree: React.FC = () => {
   const [offsetLeft, setOffsetLeft] = React.useState(0);
 
   React.useEffect(() => {
-    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems));
-  }, [form.data, editor.activeFormLanguage, editor.collapsedItems]);
-  
+    const availableLanguages = form.metadata.languages || [editor.activeFormLanguage];
+    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems, availableLanguages));
+  }, [form.data, editor.activeFormLanguage, editor.collapsedItems, form.metadata.languages]);
+
   const flattenedItems = React.useMemo(() => {
     const flattenedTree = flattenTree(items);
     const collapsedItems = flattenedTree.reduce<UniqueIdentifier[]>(
-      (acc, {children, collapsed, id}) =>
+      (acc, { children, collapsed, id }) =>
         collapsed && children.length ? [...acc, id] : acc,
       []
     );
@@ -77,8 +78,8 @@ export const SortableTree: React.FC = () => {
   const sensors = useSensors(useSensor(PointerSensor),);
 
   const projected = activeId && overId ? getProjection(flattenedItems, activeId, overId, offsetLeft, indentationWidth) : null;
-  const sortedIds = React.useMemo(() => flattenedItems.map(({id}) => id), [flattenedItems]);
-  const activeItem = activeId ? flattenedItems.find(({id}) => id === activeId) : null;
+  const sortedIds = React.useMemo(() => flattenedItems.map(({ id }) => id), [flattenedItems]);
+  const activeItem = activeId ? flattenedItems.find(({ id }) => id === activeId) : null;
 
   React.useEffect(() => {
     sensorContext.current = {
@@ -87,17 +88,17 @@ export const SortableTree: React.FC = () => {
     };
   }, [flattenedItems, offsetLeft]);
 
-  const handleDragStart = ({active: {id: activeId}}: DragStartEvent) => {
+  const handleDragStart = ({ active: { id: activeId } }: DragStartEvent) => {
     setActiveId(activeId);
     setOverId(activeId);
     document.body.style.setProperty('cursor', 'grabbing');
   }
 
-  const handleDragMove = ({delta}: DragMoveEvent) => {
+  const handleDragMove = ({ delta }: DragMoveEvent) => {
     setOffsetLeft(delta.x);
   }
 
-  const handleDragOver = ({over}: DragOverEvent) => {
+  const handleDragOver = ({ over }: DragOverEvent) => {
     setOverId(over?.id ?? null);
   }
 
@@ -162,7 +163,7 @@ export const SortableTree: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-        {flattenedItems.map(({id, children, collapsed, collapsible, title, depth}) => (
+        {flattenedItems.map(({ id, children, collapsed, collapsible, title, depth, isFallbackLabel }) => (
           <SortableTreeItem
             key={id}
             id={id as string}
@@ -172,6 +173,7 @@ export const SortableTree: React.FC = () => {
             collapsible={collapsible}
             collapsed={Boolean(collapsed && children.length)}
             onCollapse={children.length ? () => handleCollapse(id) : undefined}
+            isFallbackLabel={isFallbackLabel}
           />
         ))}
         {createPortal(
