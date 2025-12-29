@@ -103,21 +103,34 @@ Starts preview server for built application from `/dist` (No hot-reload!). Run `
 
 ### Item type configuration
 
-For exmaple: `src/defaults/itemTypes.js`
+Item type configuration defines the structure of the "Add Item" menu and available item types with their properties and behavior.
 
-Item type configuration corresponds to "Add new" item creation menu structure and also defines available item types including their configuration
+**See full example:** [`src/defaults/itemTypes.ts`](src/defaults/itemTypes.ts)
+
+**TypeScript types:** [`src/defaults/types.ts`](src/defaults/types.ts)
+
+#### Menu Structure
+
+The configuration supports **flexible menu nesting** with three options:
+
+1. **Flat structure** - Direct items in a category
+2. **Nested structure** - Items organized in subcategories
+3. **Mixed mode** - Both direct items AND subcategories in the same category
+
+#### Basic Example
 
 ```typescript
- DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
-   categories: [
+export const DEFAULT_ITEMTYPE_CONFIG: ItemTypeConfig = {
+  categories: [
     {
       title: 'Structure',
       type: 'structure',
       items: [
         {
           title: 'Group',
+          convertible: ['rowgroup'],
           optionEditors: [
-            {name: 'Additional option', editor: PropEditors.InputProp}
+            { name: 'Additional option', editor: PropEditors.InputProp }
           ],
           propEditors: {
             columns: {
@@ -135,56 +148,128 @@ Item type configuration corresponds to "Add new" item creation menu structure an
               columns: 1
             }
           }
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### Nested Structure with Subcategories
+
+```typescript
+{
+  title: 'Inputs',
+  type: 'input',
+  subcategories: [
+    {
+      title: 'Text fields',
+      items: [
+        {
+          title: 'Text',
+          convertible: ['textBox', 'address'],
+          config: {
+            type: 'text',
+            view: 'text'
+          }
         },
         {
-          title: 'Multi-choice',
-          convertible: ['list'],
-          propEditors: {
-            display: {
-              component: PropEditors.ChoiceProp,
-              props: {
-                options: [
-                  {key: 'dropdown', label: 'Dropdown'},
-                  {key: 'button', label: 'Button'},
-                  {key: 'checkbox', label: 'Checkbox'}
-                ]
-              }
-            }
-          },
+          title: 'Text box',
+          convertible: ['text', 'address'],
           config: {
-            type: 'multichoice',
-            props: {
-              display: 'dropdown',
-            }
+            type: 'text',
+            view: 'textBox'
           }
         }
       ]
     },
-        // ....
+    {
+      title: 'Numbers',
+      items: [
+        {
+          title: 'Decimal',
+          config: { type: 'decimal' }
+        },
+        {
+          title: 'Integer',
+          config: { type: 'number' }
+        }
       ]
-    },
-    // ....
+    }
   ]
- }
+}
 ```
 
-See: `src/defaults/type.ts` for TypeScript types
+This creates a menu hierarchy:
+```
+Inputs →
+  ├─ Text fields →
+  │    ├─ Text
+  │    └─ Text box
+  └─ Numbers →
+       ├─ Decimal
+       └─ Integer
+```
 
-* `categories` defines top-level categories, category object contains following attributes:
-  * `Title` Label used in UI
-  * `type` Category type, allowed values: `structure`, `input`, `output` - These are used to limit certain categories of items to be added into form depending on conditions
-  * `items` Array of item configurations within this category. Item objects contain following attributes
-    * `title` Label used in UI
-    * `convertible` (Optional) Array of item type identifiers into which this item can be converted. Entries are first matched by `view` attribute, if not found then by `type`. If omitted, item can't be converted to other types.
-    * `optionEditors` (Optional) Array of additional pages for item options dialog. Array of objects: `{name: 'Title of page', editor: OptionEditorComponent}` (see below)
-    * `propEditors` (Optional) if custom property editors are configured for item. If prop editor is not defined, it will be fallen back to plain text. Editor configuration is set of objects having prop name as a key:
-      * `component` : React component to use for editing the prop
-      * `props` : (Optional) Additional properties for the editing component. (see below)
-    * `config` : Snippet of Dialob form item configuration (See Dialob Form API). Any predefined structure is supported. only mandatory attribute is `type`. Item's default ID will be based on `view` attribute falling back to `type`
+#### Mixed Mode (Direct Items + Subcategories)
 
-**Note!** `props` Are item specific properties that are available at filling time
+You can combine both approaches in the same category:
 
-#### Prop editor configrurations
+```typescript
+{
+  title: 'Inputs',
+  type: 'input',
+  items: [
+    // Direct items (no submenu)
+    { title: 'Boolean', config: { type: 'boolean' } },
+    { title: 'Date', config: { type: 'date' } }
+  ],
+  subcategories: [
+    // Nested items (with submenu)
+    {
+      title: 'Text fields',
+      items: [
+        { title: 'Text', config: { type: 'text', view: 'text' } },
+        { title: 'Text box', config: { type: 'text', view: 'textBox' } }
+      ]
+    }
+  ]
+}
+```
+
+Renders as:
+```
+Inputs →
+  ├─ Boolean (clickable)
+  ├─ Date (clickable)
+  ├─── (separator) ───
+  └─ Text fields →
+       ├─ Text
+       └─ Text box
+```
+
+#### Configuration Reference
+
+**Category attributes:**
+* **`title`** - Label displayed in the menu
+* **`type`** - Category type: `'structure'`, `'input'`, or `'output'`. Used to filter which items can be added in different contexts
+* **`items`** - (Optional) Array of item configurations for direct menu items
+* **`subcategories`** - (Optional) Array of subcategory objects for nested menu structure
+
+**Subcategory attributes:**
+* **`title`** - Label displayed in the submenu
+* **`items`** - Array of item configurations
+
+**Item attributes:**
+* **`title`** - Label displayed in the menu
+* **`convertible`** - (Optional) Array of type identifiers this item can be converted to. Matched by `view` first, then `type`. If omitted, item cannot be converted
+* **`optionEditors`** - (Optional) Additional option pages for the item dialog: `{name: 'Title', editor: Component}`
+* **`propEditors`** - (Optional) Custom property editors (see below). If not defined, falls back to plain text input
+* **`config`** - Dialob form item configuration snippet. Required field: `type`. The item's default ID is based on `view` (if present) or `type`
+
+**Note:** `props` in the config are item-specific properties available at form filling time, not to be confused with React component props.
+
+#### Prop Editor Configurations
 
 Built in editors:
 
