@@ -20,18 +20,14 @@ import io.dialob.rest.type.ApiException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
-import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.lang.reflect.Executable;
-import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
