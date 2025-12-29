@@ -45,7 +45,7 @@ class DialobSessionEvalContextTest {
 
     final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
-    when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
+    when(dialobSession.itemStates()).thenReturn(itemStateHashMap);
 
     when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
 
@@ -73,9 +73,9 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession).getItemStates();
-    verify(dialobSession).getErrorStates();
-    verify(dialobSession).getValueSetStates();
+    verify(dialobSession).itemStates();
+    verify(dialobSession).errorStates();
+    verify(dialobSession).valueSetStates();
     verify(dialobSession).getItemState(any());
 
     verifyNoMoreInteractions(originalState, dialobSession);
@@ -117,9 +117,9 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession).getItemStates();
-    verify(dialobSession).getErrorStates();
-    verify(dialobSession).getValueSetStates();
+    verify(dialobSession).itemStates();
+    verify(dialobSession).errorStates();
+    verify(dialobSession).valueSetStates();
     verify(dialobSession).getItemState(any());
 
     verifyNoMoreInteractions(dialobSession);
@@ -137,7 +137,7 @@ class DialobSessionEvalContextTest {
 
     final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
-    when(dialobSession.getItemStates()).thenReturn(itemStateHashMap);
+    when(dialobSession.itemStates()).thenReturn(itemStateHashMap);
     when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
 
     when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.empty());
@@ -166,9 +166,9 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession).getItemStates();
-    verify(dialobSession).getErrorStates();
-    verify(dialobSession).getValueSetStates();
+    verify(dialobSession).itemStates();
+    verify(dialobSession).errorStates();
+    verify(dialobSession).valueSetStates();
     verify(dialobSession).getItemState(any());
 
     verifyNoMoreInteractions(originalState, dialobSession);

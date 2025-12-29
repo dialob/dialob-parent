@@ -37,10 +37,10 @@ public record ProtoTypeItemsAddedEventsProvider(
     if (updatedState == null) {
       return Stream.empty();
     }
-    Set<ItemId> newItems = updatedState.getItemStates().keySet();
+    Set<ItemId> newItems = updatedState.itemStates().keySet();
     if (originalState != null) {
       newItems = new HashSet<>(newItems);
-      newItems.removeAll(originalState.getItemStates().keySet());
+      newItems.removeAll(originalState.itemStates().keySet());
     }
 
     return newItems.stream()

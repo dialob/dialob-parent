@@ -141,7 +141,7 @@ public final class CommandFactory {
     ITEM_STATES_CHANGED {
       @Override
       public boolean test(ItemStates itemState, ItemStates itemState2) {
-        return itemState.getItemStates() != itemState2.getItemStates();
+        return itemState.itemStates() != itemState2.itemStates();
       }
     }
   }

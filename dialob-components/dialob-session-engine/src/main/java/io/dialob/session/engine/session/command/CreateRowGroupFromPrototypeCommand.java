@@ -37,14 +37,14 @@ record CreateRowGroupFromPrototypeCommand(
   @Override
   public ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     return this.itemPrototypeId().getParent().flatMap(groupId -> {
-      var currentItems = Set.copyOf(itemStates.getItemStates().get(groupId).getItems());
+      var currentItems = Set.copyOf(itemStates.itemStates().get(groupId).getItems());
       var originalItems = context.getOriginalItemState(groupId).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
       final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
       final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
       return context.findPrototype(this.itemPrototypeId()).map(prototypeState -> new ItemStates.Builder()
         .from(itemStates)
-        .itemStates(itemStates.getItemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
+        .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
         .putAllItemStates(newItems.stream().map(prototypeState::withId).collect(toMap(ItemState::getId, item -> item)))
         .build());
     }).orElse(itemStates);

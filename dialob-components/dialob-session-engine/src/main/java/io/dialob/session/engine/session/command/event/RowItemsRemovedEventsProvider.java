@@ -35,10 +35,10 @@ public record RowItemsRemovedEventsProvider(
     if (originalState == null) {
       return Stream.empty();
     }
-    Set<ItemId> removedItems = originalState.getItemStates().keySet();
+    Set<ItemId> removedItems = originalState.itemStates().keySet();
     if (updatedState != null) {
       removedItems = new HashSet<>(removedItems);
-      removedItems.removeAll(updatedState.getItemStates().keySet());
+      removedItems.removeAll(updatedState.itemStates().keySet());
     }
     return removedItems.stream().map(ItemRemovedEvent::new);
   }

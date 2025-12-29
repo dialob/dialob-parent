@@ -46,7 +46,7 @@ import static io.dialob.session.engine.Utils.*;
 @EqualsAndHashCode
 @ToString
 @Slf4j
-public class DialobSession implements ItemStates, Serializable {
+public class DialobSession implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 1180110179877247767L;
@@ -271,7 +271,7 @@ public class DialobSession implements ItemStates, Serializable {
 
     // --
     visitor.visitErrorStates().ifPresent(errorVisitor -> {
-      getErrorStates().values().forEach(errorVisitor::visitErrorState);
+      errorStates().values().forEach(errorVisitor::visitErrorState);
       errorVisitor.end();
     });
 
@@ -334,13 +334,18 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   private void applySessionUpdateCommand(EvalContext evalContext, SessionUpdateCommand command) {
-    final ItemStates newStates = command.update(evalContext, this);
+    final var oldStates = new ItemStates.Builder()
+      .putAllItemStates(itemStates())
+      .putAllErrorStates(errorStates())
+      .putAllValueSetStates(valueSetStates())
+      .build();
+    final var newStates = command.update(evalContext, oldStates);
     command.triggers().stream()
-      .flatMap(trigger -> trigger.apply(this, newStates))
+      .flatMap(trigger -> trigger.apply(oldStates, newStates))
       .forEach(event -> evalContext.getEventsConsumer().accept(event));
 
-    MapDifference<ErrorId,ErrorState> errorDiffs = Maps.difference(newStates.getErrorStates(), this.errorStates);
-    MapDifference<ItemId,ItemState> itemStatesDiffs = Maps.difference(newStates.getItemStates(), this.itemStates);
+    MapDifference<ErrorId,ErrorState> errorDiffs = Maps.difference(newStates.errorStates(), oldStates.errorStates());
+    MapDifference<ItemId,ItemState> itemStatesDiffs = Maps.difference(newStates.itemStates(), oldStates.itemStates());
 
     // Removed
     itemStatesDiffs.entriesOnlyOnRight().forEach((itemId, itemState) -> {
@@ -461,20 +466,17 @@ public class DialobSession implements ItemStates, Serializable {
   }
 
   @NonNull
-  @Override
-  public Map<ItemId, ItemState> getItemStates() {
+  public Map<ItemId, ItemState> itemStates() {
     return Collections.unmodifiableMap(itemStates);
   }
 
   @NonNull
-  @Override
-  public Map<ValueSetId, ValueSetState> getValueSetStates() {
+  public Map<ValueSetId, ValueSetState> valueSetStates() {
     return Collections.unmodifiableMap(valueSetStates);
   }
 
   @NonNull
-  @Override
-  public Map<ErrorId, ErrorState> getErrorStates() {
+  public Map<ErrorId, ErrorState> errorStates() {
     return Collections.unmodifiableMap(errorStates);
   }
 

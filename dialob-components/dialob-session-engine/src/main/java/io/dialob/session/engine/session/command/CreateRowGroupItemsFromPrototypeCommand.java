@@ -45,7 +45,7 @@ record CreateRowGroupItemsFromPrototypeCommand(
   @NonNull
   @Override
   public ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
-    final ItemState currentItemState = itemStates.getItemStates().get(targetId());
+    final ItemState currentItemState = itemStates.itemStates().get(targetId());
     Set<ItemId> currentItems = currentItemState != null ? Set.copyOf(currentItemState.getItems()) : Set.of();
     Set<ItemId> originalItems = context.getOriginalItemState(targetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
@@ -57,8 +57,8 @@ record CreateRowGroupItemsFromPrototypeCommand(
     // remove removed items and errors related to those
     final ItemStates.Builder builder = new ItemStates.Builder()
       .from(itemStates)
-      .itemStates(itemStates.getItemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
-      .errorStates(itemStates.getErrorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
+      .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
+      .errorStates(itemStates.errorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
 
     // add new items states
     newItems.stream()

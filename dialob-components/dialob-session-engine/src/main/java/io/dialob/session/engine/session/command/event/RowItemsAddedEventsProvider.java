@@ -34,10 +34,10 @@ public record RowItemsAddedEventsProvider(
     if (updatedState == null) {
       return Stream.empty();
     }
-    Set<ItemId> newItems = updatedState.getItemStates().keySet();
+    Set<ItemId> newItems = updatedState.itemStates().keySet();
     if (originalState != null) {
       newItems = new HashSet<>(newItems);
-      newItems.removeAll(originalState.getItemStates().keySet());
+      newItems.removeAll(originalState.itemStates().keySet());
     }
     return newItems.stream().map(itemId -> new ItemAddedEvent(itemId, this.itemPrototypeId()));
   }

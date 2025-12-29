@@ -20,19 +20,26 @@ import org.immutables.value.Value;
 
 import java.util.Map;
 
-@Value.Immutable
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface ItemStates {
-
-  class Builder extends ImmutableItemStates.Builder {}
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ItemStates(
+  @NonNull
+  Map<ItemId, ItemState> itemStates,
 
   @NonNull
-  Map<ItemId,ItemState> getItemStates();
+  Map<ValueSetId, ValueSetState> valueSetStates,
 
   @NonNull
-  Map<ValueSetId,ValueSetState> getValueSetStates();
+  Map<ErrorId, ErrorState> errorStates
+) {
 
-  @NonNull
-  Map<ErrorId,ErrorState> getErrorStates();
+  public static final class Builder extends ItemStatesBuilder {
+  }
+
 
 }
