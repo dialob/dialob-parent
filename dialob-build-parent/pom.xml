@@ -331,11 +331,6 @@
         <version>${db2jcc.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.immutables</groupId>
-        <artifactId>mongo</artifactId>
-        <version>${immutables.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>${commons-compress.version}</version>

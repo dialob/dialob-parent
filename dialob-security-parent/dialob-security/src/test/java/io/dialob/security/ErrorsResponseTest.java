@@ -15,7 +15,6 @@
  */
 package io.dialob.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
@@ -77,7 +76,7 @@ class ErrorsResponseTest {
 
 
   @Test
-  void shouldSerializeAsJson() throws JsonProcessingException {
+  void shouldSerializeAsJson() {
     var om = new ObjectMapper();
     var json = om.writeValueAsString(new ErrorsResponse.Builder().build());
     JsonAssertions.assertThatJson(json)

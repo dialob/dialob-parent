@@ -72,12 +72,6 @@
       <artifactId>spring-data-commons</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.github.spotbugs</groupId>
-      <artifactId>spotbugs-annotations</artifactId>
-      <version>4.9.8</version>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
