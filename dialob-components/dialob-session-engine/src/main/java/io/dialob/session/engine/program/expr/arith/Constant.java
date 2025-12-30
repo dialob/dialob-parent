@@ -21,17 +21,33 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface Constant<T> extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record Constant<T>(
+  T value,
+  @NonNull ValueType valueType
+) implements Expression {
 
-  T getValue();
+  public static <T> Constant.Builder<T> builder() {
+    return new Constant.Builder<>();
+  }
+
+  public static final class Builder<T> extends ConstantBuilder<T> {}
 
   @NonNull
-  ValueType getValueType();
+  @Override
+  public ValueType getValueType() {
+    return valueType;
+  }
 
   @Override
-  default T eval(@NonNull EvalContext evalContext) {
-    return getValue();
+  public T eval(@NonNull EvalContext evalContext) {
+    return this.value();
   }
 
 }

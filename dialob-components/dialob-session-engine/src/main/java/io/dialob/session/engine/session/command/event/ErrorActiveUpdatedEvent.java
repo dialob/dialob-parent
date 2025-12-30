@@ -15,8 +15,9 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
+import io.dialob.session.engine.session.model.ErrorId;
 
-@Value.Immutable
-public interface ErrorActiveUpdatedEvent extends ErrorEvent {
+public record ErrorActiveUpdatedEvent(
+  ErrorId errorId
+) implements ErrorEvent {
 }

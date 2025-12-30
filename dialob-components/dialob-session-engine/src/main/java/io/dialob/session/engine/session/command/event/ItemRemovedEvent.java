@@ -16,12 +16,13 @@
 package io.dialob.session.engine.session.command.event;
 
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface ItemRemovedEvent extends Event {
+public record ItemRemovedEvent(
+  ItemId removeItemId
+) implements Event {
 
-  @Value.Parameter
-  ItemId getRemoveItemId();
+  public ItemId getRemoveItemId() {
+    return removeItemId();
+  }
 
 }

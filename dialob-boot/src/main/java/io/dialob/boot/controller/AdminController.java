@@ -46,9 +46,9 @@ public class AdminController extends BaseController {
     model.addAttribute("_csrf", cfrsToken);
     model.addAttribute("adminConfig", getAdminConfig(cfrsToken, tenantId));
     final PageAttributes pageAttributes = pageSettingsProvider.findPageSettings("admin");
-    model.addAllAttributes(pageAttributes.getAttributes());
+    model.addAllAttributes(pageAttributes.attributes());
     index(model, request);
-    return pageAttributes.getTemplate();
+    return pageAttributes.template();
   }
 
   @GetMapping(path = "/config.json", produces = MediaType.APPLICATION_JSON_VALUE)

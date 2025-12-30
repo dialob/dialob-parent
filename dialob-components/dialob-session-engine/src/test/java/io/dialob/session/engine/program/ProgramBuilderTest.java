@@ -333,7 +333,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorInactive(session, toRef("question1"), "ERROR1");
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "wrong")));
@@ -364,7 +364,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorActive(session, toRef("question1"), "REQUIRED");
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "answer")));
@@ -395,7 +395,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     final DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertEquals(1, errorStates.size());
     assertErrorActive(session, toRef("question1"), "REQUIRED");
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "answer")));
@@ -531,7 +531,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertValueEquals(session, toRef("var1"), null);
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "1")));
@@ -570,7 +570,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertErrorInactive(session, toRef("question"), "err1");
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "a")));
@@ -611,7 +611,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertValueEquals(session, toRef("question1"), null);
     assertNotRequired(session, toRef("question2"));
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "y")));
@@ -657,7 +657,7 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     Assertions.assertNull(asyncVariable.getValue());
 
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
-    Collection<ErrorState> errorStates = session.getErrorStates().values();
+    Collection<ErrorState> errorStates = session.errorStates().values();
     assertFalse(errorStates.isEmpty());
     assertEquals(1, errorStates.size());
     assertValueEquals(session, toRef("question1"), null);
@@ -1023,14 +1023,14 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
 
     FormItem notesum = (FormItem) program.getItem(IdUtils.toId("notesum")).get();
 
-    BinaryOperator expression = (BinaryOperator) notesum.getActiveExpression().get();
-    GtOperator gtOperator = (GtOperator)expression.getNodes().get(1);
+    BinaryOperator expression = (BinaryOperator) notesum.activeExpressionOptional().get();
+    GtOperator gtOperator = (GtOperator)expression.nodes().get(1);
     ArrayReducerOperator arrayReducerOperator = (ArrayReducerOperator)gtOperator.getLhs();
-    CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.getArrayExpression();
+    CollectRowFieldsOperator collectRowFieldsOperator = (CollectRowFieldsOperator) arrayReducerOperator.arrayExpression();
     assertEquals(IdUtils.toId("rg1.*.question2"), collectRowFieldsOperator.getItemId());
 
-    assertTrue(notesum.getLabelExpression().isPresent());
-    assertEquals("LocalizedLabelOperator{value={fi=ConcatOperator{expressions=[Constant{value=Kysymys 2 on , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef[id=question4, parent=null]}}, Constant{value= or , valueType=STRING}, ToStringOperator{expression=VariableReference{valueType=STRING, itemId=ItemRef[id=rg1, parent=null]}}]}}}", notesum.getLabelExpression().get().toString());
+    assertTrue(notesum.labelExpressionOptional().isPresent());
+    assertEquals("LocalizedLabelOperator[value={fi=ConcatOperator[expressions=[Constant[value=Kysymys 2 on , valueType=STRING], ToStringOperator[expression=VariableReference[itemId=ItemRef[id=question4, parent=null], valueType=STRING]], Constant[value= or , valueType=STRING], ToStringOperator[expression=VariableReference[itemId=ItemRef[id=rg1, parent=null], valueType=STRING]]]]}]", notesum.labelExpressionOptional().get().toString());
   }
 
   @Test

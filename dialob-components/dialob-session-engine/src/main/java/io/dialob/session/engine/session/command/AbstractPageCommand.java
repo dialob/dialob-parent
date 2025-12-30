@@ -18,16 +18,13 @@ package io.dialob.session.engine.session.command;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 interface AbstractPageCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @NonNull
-  @Value.Default
-  default ItemId getTargetId() {
+  default ItemId targetId() {
     return DialobSession.QUESTIONNAIRE_REF;
   }
 
@@ -36,10 +33,6 @@ interface AbstractPageCommand extends AbstractUpdateCommand<ItemId,ItemState>, I
       return true;
     }
     return !context.getItemState(page).map(ItemState::isActive).orElse(false);
-  }
-
-  default boolean anyErrors(EvalContext context) {
-    return context.getErrorStates().stream().anyMatch(ErrorState::isActive);
   }
 
   default ItemState gotoPage(EvalContext context, ItemState itemState, ItemId page) {

@@ -15,12 +15,105 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
+import org.jspecify.annotations.Nullable;
 
-@Value.Immutable
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@Value.Builder
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface FormItem extends DisplayItem {
+public record FormItem(
 
-  class Builder extends ImmutableFormItem.Builder { }
+  @Nullable String view,
+
+  @Nullable Map<String, @org.checkerframework.checker.nullness.qual.Nullable Object> props,
+
+  @Nullable
+  Expression className,
+
+  @Nullable
+  Expression activeExpression,
+
+  @Nullable
+  Expression requiredExpression,
+
+  @Nullable
+  Expression disabledExpression,
+
+  @Nullable
+  Expression labelExpression,
+
+  @Nullable
+  Expression descriptionExpression,
+
+  @NonNull
+  List<Error> errors,
+
+  @NonNull
+  ItemId id,
+
+  @NonNull
+  String type,
+
+  @Nullable
+  ValueType valueType,
+
+  @Nullable
+  String valueSetId,
+
+  @Nullable
+  Object defaultValue,
+
+  @Value.Default.Boolean(false)
+  boolean isPrototype
+) implements DisplayItem {
+
+  @Override
+  public Optional<Expression> classNameOptional() {
+    return Optional.ofNullable(className);
+  }
+
+  @Override
+  public Optional<Expression> activeExpressionOptional() {
+    return Optional.ofNullable(activeExpression);
+  }
+
+  @Override
+  public Optional<Expression> requiredExpressionOptional() {
+    return Optional.ofNullable(requiredExpression);
+  }
+
+  @Override
+  public Optional<Expression> disabledExpressionOptional() {
+    return Optional.ofNullable(disabledExpression);
+  }
+
+  @Override
+  public Optional<Expression> labelExpressionOptional() {
+    return Optional.ofNullable(labelExpression);
+  }
+
+  @Override
+  public Optional<Expression> descriptionExpressionOptional() {
+    return Optional.ofNullable(descriptionExpression);
+  }
+
+  @Override
+  public Optional<String> valueSetIdOptional() {
+    return Optional.ofNullable(valueSetId);
+  }
+
+  @Override
+  public Optional<Object> defaultValueOptional() {
+    return Optional.ofNullable(defaultValue);
+  }
+
+  public static final class Builder extends FormItemBuilder {
+  }
 
 }

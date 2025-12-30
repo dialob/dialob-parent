@@ -19,18 +19,24 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface NowExpression extends Expression {
+public record NowExpression() implements Expression {
+
+  private static final Expression INSTANCE = new NowExpression();
+
+  public static Expression instance() {
+    return INSTANCE;
+  }
+
+
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     return evalContext.now();
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.TIME;
   }
 }

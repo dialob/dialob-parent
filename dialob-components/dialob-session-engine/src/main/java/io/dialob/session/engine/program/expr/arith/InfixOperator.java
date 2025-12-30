@@ -18,7 +18,6 @@ package io.dialob.session.engine.program.expr.arith;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,14 +30,21 @@ public interface InfixOperator extends Expression {
   /**
    * @return left hand side expression of operator
    */
-  @Value.Parameter
-  Expression getLhs();
+  default Expression getLhs() {
+    return lhs();
+  }
 
   /**
    * @return right hand side expression of operator
    */
-  @Value.Parameter
-  Expression getRhs();
+  default Expression getRhs() {
+    return rhs();
+  }
+
+  Expression lhs();
+  Expression rhs();
+
+
 
   @NonNull
   @Override

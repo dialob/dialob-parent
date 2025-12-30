@@ -17,7 +17,6 @@ package io.dialob.session.engine.program.ddrl;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.*;
@@ -60,11 +59,11 @@ public class DDRLExpressionCompiler {
     try {
       return Optional.of(convertToImmutableExpression(ast));
     } catch (ProgramBuilderException e) {
-      errorConsumer.accept(ImmutableRuleExpressionCompilerError.builder()
-        .errorCode(e.getMessage())
-        .span(e.getNode().getSpan())
-        .args(e.getArgs().toArray())
-        .build()
+      errorConsumer.accept(
+        RuleExpressionCompilerError.of(e.getMessage(),
+          e.getNode().getSpan(),
+          e.getArgs()
+        )
       );
     }
     return Optional.empty();
@@ -125,7 +124,7 @@ public class DDRLExpressionCompiler {
     @Override
     @NonNull
     public NodeBase visitConstExpr(@NonNull ConstExprNode node) {
-      expressions.add(ImmutableConstant.builder().valueType(requireNonNull(node.getValueType())).value(node.getAsValueType()).build());
+      expressions.add(Constant.builder().valueType(requireNonNull(node.getValueType())).value(node.getAsValueType()).build());
       return node;
     }
 

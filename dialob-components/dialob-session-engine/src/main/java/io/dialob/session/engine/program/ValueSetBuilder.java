@@ -26,7 +26,6 @@ import io.dialob.session.engine.spi.ExpressionCompiler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, ProgramBuilder> implements ExpressionCompiler, BuilderParent {
@@ -42,7 +41,7 @@ public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, Progra
   @Override
   protected void afterExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     valueSetEntryBuilders.forEach(valueSetEntryBuilder -> valueSetEntryBuilder.afterExpressionCompilation(errorConsumer));
-    getProgramBuilder().add(new ValueSet.Builder().id(getIdStr()).entries(values).build());
+    getProgramBuilder().add(new ValueSet(getIdStr(), values));
   }
 
   public ValueSetEntryBuilder addValue(String id) {
@@ -61,7 +60,7 @@ public class ValueSetBuilder extends AbstractItemBuilder<ValueSetBuilder, Progra
   }
 
   @Override
-  public boolean compile(@NonNull ItemId itemId, @NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> consumer, @NonNull FormValidationError.Type type, Optional<Integer> index) {
+  public boolean compile(@NonNull ItemId itemId, @NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> consumer, @NonNull FormValidationError.Type type, Integer index) {
     return getParent().compile(itemId, expression, aliasesProvider, consumer, type, index);
   }
 }

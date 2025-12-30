@@ -18,13 +18,25 @@ package io.dialob.session.engine.program.expr.arith;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface MatchesOperator extends InfixOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record MatchesOperator(
+  Expression lhs,
+  Expression rhs
+) implements InfixOperator {
+
+  public static final class Builder extends MatchesOperatorBuilder {}
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
+  public Boolean eval(@NonNull EvalContext evalContext) {
     String match = (String) getLhs().eval(evalContext);
     String pattern = (String) getRhs().eval(evalContext);
     if (match == null || pattern == null) {
@@ -35,7 +47,7 @@ public interface MatchesOperator extends InfixOperator {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 

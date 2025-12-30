@@ -16,24 +16,15 @@
 package io.dialob.security.spring.oauth2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableGroup.class)
-@JsonDeserialize(builder = ImmutableGroup.Builder.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface Group extends Serializable {
-
-  String getId();
-
-  @Nullable
-  String getName();
-
-  List<String> getMembers();
+public record Group(
+  String id,
+  @Nullable String name,
+  List<String> members
+) implements Serializable {
 
 }

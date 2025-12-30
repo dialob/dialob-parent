@@ -15,8 +15,12 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
+public record ActivePageUpdatedEvent() implements Event {
 
-@Value.Immutable
-public interface ActivePageUpdatedEvent extends Event {
+  private static final ActivePageUpdatedEvent INSTANCE = new ActivePageUpdatedEvent();
+
+  public static Event instance() {
+    return INSTANCE;
+  }
+
 }

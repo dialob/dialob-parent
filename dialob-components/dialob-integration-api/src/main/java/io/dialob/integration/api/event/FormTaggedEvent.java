@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.security.tenant.Tenant;
-import lombok.Getter;
 import org.immutables.value.Value;
 
 
@@ -30,12 +29,12 @@ import org.immutables.value.Value;
 @JsonDeserialize(builder = FormTaggedEventBuilder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record FormTaggedEvent(
-  @Getter @NonNull Tenant tenant,
-  @Getter @NonNull String formId,
-  @Getter @NonNull String source,
-  @Getter @NonNull String formName,
+  @NonNull Tenant tenant,
+  @NonNull String formId,
+  @NonNull String source,
+  @NonNull String formName,
   @Nullable String refName,
-  @Getter @NonNull String tagName
+  @NonNull String tagName
 ) implements FormEvent, DistributedEvent {
 
 }

@@ -31,7 +31,7 @@ class AddRowTest {
 
   @Test
   void shouldAddRow() {
-    AddRow addRow = CommandFactory.addRow(IdUtils.toId("rows"));
+    var addRow = CommandFactory.addRow(IdUtils.toId("rows"));
 
     EvalContext context = Mockito.mock(EvalContext.class);
 
@@ -53,7 +53,7 @@ class AddRowTest {
 
   @Test
   void shouldNotAddRowIfRowsCannotBeAdded() {
-    AddRow addRow = CommandFactory.addRow(IdUtils.toId("rows"));
+    var addRow = CommandFactory.addRow(IdUtils.toId("rows"));
     EvalContext context = Mockito.mock(EvalContext.class);
 
     ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);

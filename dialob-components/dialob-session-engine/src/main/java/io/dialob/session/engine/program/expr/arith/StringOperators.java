@@ -15,12 +15,12 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import io.dialob.session.engine.program.model.Expression;
+
 public class StringOperators extends ComparableTypeOperators<String> {
 
-  public static final ImmutableLanguageExpression LANGUAGE_EXPRESSION = ImmutableLanguageExpression.builder().build();
-
-  public static LanguageExpression languageOperator() {
-    return LANGUAGE_EXPRESSION;
+  public static Expression languageOperator() {
+    return LanguageExpression.instance();
   }
 
 }

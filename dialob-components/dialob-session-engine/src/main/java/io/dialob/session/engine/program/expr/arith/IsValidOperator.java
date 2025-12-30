@@ -28,15 +28,22 @@ import org.immutables.value.Value;
 
 import java.util.Set;
 
-@Value.Immutable
-public interface IsValidOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsValidOperator(ItemId itemId) implements Expression {
 
-  @Value.Parameter
-  ItemId getItemId();
+  public static IsValidOperator of(@NonNull ItemId itemId) {
+    return new IsValidOperator(itemId);
+  }
 
   @Override
-  default Boolean eval(@NonNull EvalContext context) {
-    ItemId itemId = context.mapTo(getItemId(), false);
+  public Boolean eval(@NonNull EvalContext context) {
+    ItemId itemId = context.mapTo(itemId(), false);
     return context.getItemState(itemId).map(itemState -> {
       if (Utils.isQuestionType(itemState)) {
         return context.getErrorStates().stream()
@@ -50,13 +57,13 @@ public interface IsValidOperator extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(EventMatchers.errorActivity(EventMatchers.targetError(getItemId())));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(EventMatchers.errorActivity(EventMatchers.targetError(itemId())));
   }
 }

@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
-
-@Value.Immutable
-public interface RowsCanBeAddedUpdatedEvent extends AttributeEvent {
+public record RowsCanBeAddedUpdatedEvent(
+  TargetEvent target
+) implements AttributeEvent {
 
 }

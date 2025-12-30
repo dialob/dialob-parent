@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.security.tenant.Tenant;
-import lombok.Getter;
 import org.immutables.value.Value;
 
 @Value.Builder
@@ -27,12 +26,10 @@ import org.immutables.value.Value;
 @JsonDeserialize(builder = FormUpdatedEventBuilder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record FormUpdatedEvent(
-  @Getter Tenant tenant,
-  @Getter String formId,
-  @Getter String source,
-  @Getter String revision
+  Tenant tenant,
+  String formId,
+  String source,
+  String revision
 ) implements FormEvent, DistributedEvent {
-
-
 
 }

@@ -53,14 +53,14 @@ class MatchesOperatorTest {
 
   @Test
   void nullValueRreturnsNull() {
-    MatchesOperator op = ImmutableMatchesOperator.builder().lhs(lhs).rhs(rhs).build();
+    MatchesOperator op = new MatchesOperator.Builder().lhs(lhs).rhs(rhs).build();
     when(lhs.eval(context)).thenReturn(null);
     when(rhs.eval(context)).thenReturn(".*");
     assertNull(op.eval(context));
   }
   @Test
   void nullPatternRreturnsNull() {
-    MatchesOperator op = ImmutableMatchesOperator.builder().lhs(lhs).rhs(rhs).build();
+    MatchesOperator op = new MatchesOperator.Builder().lhs(lhs).rhs(rhs).build();
     when(lhs.eval(context)).thenReturn("a");
     when(rhs.eval(context)).thenReturn(null);
     assertNull(op.eval(context));
@@ -69,7 +69,7 @@ class MatchesOperatorTest {
 
   @Test
   void bothNullReturnsNull() {
-    MatchesOperator op = ImmutableMatchesOperator.builder().lhs(lhs).rhs(rhs).build();
+    MatchesOperator op = new MatchesOperator.Builder().lhs(lhs).rhs(rhs).build();
     when(lhs.eval(context)).thenReturn("a");
     when(rhs.eval(context)).thenReturn(null);
     assertNull(op.eval(context));
@@ -79,7 +79,7 @@ class MatchesOperatorTest {
   void shouldMatchAnything() {
     lenient().when(lhs.eval(context)).thenReturn("a");
     lenient().when(rhs.eval(context)).thenReturn(".*");
-    MatchesOperator op = ImmutableMatchesOperator.builder().lhs(lhs).rhs(rhs).build();
+    MatchesOperator op = new MatchesOperator.Builder().lhs(lhs).rhs(rhs).build();
     assertTrue(op.eval(context));
     lenient().when(lhs.eval(context)).thenReturn("123");
     lenient().when(rhs.eval(context)).thenReturn(".*");
@@ -91,7 +91,7 @@ class MatchesOperatorTest {
 
   @Test
   void shouldMatchJustNumbers() {
-    MatchesOperator op = ImmutableMatchesOperator.builder().lhs(lhs).rhs(rhs).build();
+    MatchesOperator op = new MatchesOperator.Builder().lhs(lhs).rhs(rhs).build();
     lenient().when(lhs.eval(context)).thenReturn("123");
     lenient().when(rhs.eval(context)).thenReturn("\\d+");
     assertTrue(op.eval(context));
@@ -102,7 +102,7 @@ class MatchesOperatorTest {
 
   @Test
   void shouldMatchJustAlphabets() {
-    MatchesOperator op = ImmutableMatchesOperator.builder().lhs(lhs).rhs(rhs).build();
+    MatchesOperator op = new MatchesOperator.Builder().lhs(lhs).rhs(rhs).build();
     lenient().when(lhs.eval(context)).thenReturn("123");
     lenient().when(rhs.eval(context)).thenReturn("\\a+");
     assertFalse(op.eval(context));

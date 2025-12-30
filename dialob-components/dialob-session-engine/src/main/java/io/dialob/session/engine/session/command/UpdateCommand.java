@@ -17,7 +17,6 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
 /**
  *
@@ -27,9 +26,9 @@ import org.immutables.value.Value;
 public interface UpdateCommand<I extends ItemId,T> extends Command<T> {
 
   @NonNull
-  @Value.Parameter(order = 0)
-  I getTargetId();
+  I targetId();
 
-  UpdateCommand<I,T> withTargetId(I targetId);
+  @NonNull
+  UpdateCommand<I,T> withTargetId(@NonNull I targetId);
 
 }

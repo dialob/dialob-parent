@@ -71,6 +71,6 @@ public class DistributedEventBridge {
   }
 
   private boolean isFromThisNode(DistributedEvent event) {
-    return Objects.equals(nodeId.id(), event.getSource());
+    return Objects.equals(nodeId.id(), event.source());
   }
 }

@@ -28,27 +28,43 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenRowCanBeRemovedUpdatedEvent;
 
-@Value.Immutable
-public interface CanRemoveRowOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record CanRemoveRowOperator(
+  ItemId itemId
+) implements Expression {
 
-  @Value.Parameter
-  ItemId getItemId();
+  public static final class Builder extends CanRemoveRowOperatorBuilder {
+  }
+
+
+  public static CanRemoveRowOperator of(ItemId itemId) {
+    return new CanRemoveRowOperator.Builder()
+      .itemId(itemId)
+      .build();
+  }
+
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(ItemState::isRowCanBeRemoved).orElse(false);
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.itemId()).map(ItemState::isRowCanBeRemoved).orElse(false);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenRowCanBeRemovedUpdatedEvent(getItemId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenRowCanBeRemovedUpdatedEvent(this.itemId()));
   }
 
 }

@@ -20,20 +20,27 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface Complete extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
+import java.util.List;
+
+record Complete(
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @NonNull
-  @Value.Default
-  default ItemId getTargetId() {
+  public ItemId targetId() {
     return DialobSession.QUESTIONNAIRE_REF;
+  }
+
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return this;
   }
 
   @Override
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (!itemState.isInvalidAnswers()) {
       context.complete();
     }

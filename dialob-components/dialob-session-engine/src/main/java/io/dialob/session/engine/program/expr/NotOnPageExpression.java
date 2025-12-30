@@ -28,26 +28,38 @@ import org.immutables.value.Value;
 import java.util.Set;
 
 // Note! negative expression, because used to update page.whenDisabledUpdatedEvent field
-@Value.Immutable
-public interface NotOnPageExpression extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record NotOnPageExpression(
+  ItemId page
+) implements Expression {
 
-  @Value.Parameter
-  ItemId getPage();
+  public static class Builder extends NotOnPageExpressionBuilder {}
+
+  public static NotOnPageExpression of(@NonNull ItemId page) {
+    return new NotOnPageExpression(page);
+  }
+
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(DialobSession.QUESTIONNAIRE_REF).map(itemState -> !itemState.getActivePage().map(activePage -> activePage.equals(this.getPage())).orElse(false)).orElse(false);
+  public Object eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(DialobSession.QUESTIONNAIRE_REF).map(itemState -> !itemState.getActivePage().map(activePage -> activePage.equals(this.page())).orElse(false)).orElse(false);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return Set.of(EventMatchers.whenActivePageUpdated());
   }
 

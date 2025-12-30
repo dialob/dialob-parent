@@ -19,18 +19,18 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 
-@org.immutables.value.Value.Immutable
+@org.immutables.value.Value.Builder
 @org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
-public interface ConstantValue<T> extends ProgramNode, Value<T> {
+public record ConstantValue<T>(
+  T value,
+  @Nullable ValueType valueType
+) implements ProgramNode, Value<T> {
 
-  class Builder<T> extends ImmutableConstantValue.Builder<T> { }
+  public static final class Builder<T> extends ConstantValueBuilder<T> { }
 
-  T getValue();
 
-  @Nullable
-  ValueType getValueType();
-
-  default T eval(EvalContext evalContext) {
-    return getValue();
+  @Override
+  public T eval(EvalContext evalContext) {
+    return value();
   }
 }

@@ -19,33 +19,38 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.AsyncFunctionCall;
-import io.dialob.session.engine.session.ImmutableAsyncFunctionCall;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface VariableUpdateCommand extends AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
-
-  @Value.Parameter(order = 1)
-  Expression getExpression();
+record VariableUpdateCommand(
+  ItemId targetId,
+  Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return getExpression().getEvalRequiredConditions();
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new VariableUpdateCommand(targetId, expression, triggers);
   }
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    final Object eval = getExpression().eval(context);
+  public Set<EventMatcher> eventMatchers() {
+    return this.expression().getEvalRequiredConditions();
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+    final Object eval = this.expression().eval(context);
     // TODO handle multiple concurrent async updates?
     if (isPending(eval)) {
       context.queueAsyncFunctionCall(
-        ((ImmutableAsyncFunctionCall) eval).withTargetId(getTargetId()));
+        ((AsyncFunctionCall) eval).withTargetId(targetId()));
       return itemState.update()
         .setStatus(ItemState.Status.PENDING).get();
     } else {
@@ -54,7 +59,7 @@ public interface VariableUpdateCommand extends AbstractUpdateCommand<ItemId,Item
     }
   }
 
-  default boolean isPending(Object eval) {
+  public boolean isPending(Object eval) {
     return eval instanceof AsyncFunctionCall;
   }
 

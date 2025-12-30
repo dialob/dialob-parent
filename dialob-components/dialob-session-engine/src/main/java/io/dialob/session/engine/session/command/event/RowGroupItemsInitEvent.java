@@ -16,15 +16,19 @@
 package io.dialob.session.engine.session.command.event;
 
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface RowGroupItemsInitEvent extends GroupEvent {
+public record RowGroupItemsInitEvent(
+  ItemId groupId,
+  ItemId prototypeId,
+  TargetEvent target
+  ) implements GroupEvent {
 
-  @Value.Parameter(order = 0)
-  ItemId getGroupId();
+  public ItemId getGroupId() {
+    return groupId;
+  }
 
-  @Value.Parameter(order = 1)
-  ItemId getPrototypeId();
+  public ItemId getPrototypeId() {
+    return prototypeId;
+  }
 
 }

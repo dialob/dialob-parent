@@ -21,7 +21,7 @@ public interface AbstractUpdateBooleanAttributeCommand extends AbstractUpdateAtt
 
   @Override
   default Boolean evalExpression(EvalContext context) {
-    Boolean activity = (Boolean) getExpression().eval(context);
+    Boolean activity = (Boolean) expression().eval(context);
     if (activity == null) {
       return false;
     }

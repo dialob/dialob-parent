@@ -17,22 +17,34 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface UpdateIsInvalidAnswersCommand extends AbstractUpdateBooleanAttributeCommand {
+import java.util.List;
+
+record UpdateIsInvalidAnswersCommand(
+  ItemId targetId,
+  Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateBooleanAttributeCommand {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateIsInvalidAnswersCommand(targetId, expression, triggers);
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setInvalidAnswers(evalExpression(context)).get();
   }
 
   @Override
-  default Boolean evalExpression(EvalContext context) {
-    Boolean activity = (Boolean) getExpression().eval(context);
+  public Boolean evalExpression(EvalContext context) {
+    Boolean activity = (Boolean) expression().eval(context);
     if (activity == null) {
       return true;
     }

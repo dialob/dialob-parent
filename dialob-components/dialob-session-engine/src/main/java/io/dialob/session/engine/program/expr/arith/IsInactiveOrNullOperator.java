@@ -28,27 +28,36 @@ import java.util.Set;
 import static io.dialob.session.engine.session.command.EventMatchers.whenActiveUpdated;
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
-@Value.Immutable
-public interface IsInactiveOrNullOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsInactiveOrNullOperator(
+  ItemId itemId
+) implements Expression {
 
-  @Value.Parameter
-  ItemId getItemId();
+  public static IsInactiveOrNullOperator of(@NonNull ItemId itemId) {
+    return new IsInactiveOrNullOperator(itemId);
+  }
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(itemState -> !itemState.isActive() || itemState.getValue() == null).orElse(true);
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.itemId()).map(itemState -> !itemState.isActive() || itemState.getValue() == null).orElse(true);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenValueUpdated(getItemId()), whenActiveUpdated(getItemId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenValueUpdated(itemId()), whenActiveUpdated(itemId()));
   }
 
 }

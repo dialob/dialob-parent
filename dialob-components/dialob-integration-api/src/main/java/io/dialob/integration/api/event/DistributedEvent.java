@@ -26,6 +26,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface DistributedEvent extends Event {
 
-  String getSource();
+  String source();
 
 }

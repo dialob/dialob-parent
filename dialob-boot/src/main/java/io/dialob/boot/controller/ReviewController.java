@@ -93,9 +93,9 @@ public class ReviewController extends BaseController {
     }
     model.addAttribute("reviewOptions", reviewOptionsBuilder.build());
     final PageAttributes pageAttributes = pageSettingsProvider.findPageSettingsByQuestionnaireId("review", getReview.questionnaireId());
-    model.addAllAttributes(pageAttributes.getAttributes());
+    model.addAllAttributes(pageAttributes.attributes());
     index(model, request);
-    return pageAttributes.getTemplate();
+    return pageAttributes.template();
   }
 
 

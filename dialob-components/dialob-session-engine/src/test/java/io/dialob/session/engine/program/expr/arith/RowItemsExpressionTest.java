@@ -36,7 +36,7 @@ class RowItemsExpressionTest {
   void test() {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(), eq(true))).then(AdditionalAnswers.returnsFirstArg());
-    RowItemsExpression rowItemsExpression = ImmutableRowItemsExpression.builder().addItemIds(IdUtils.toId("q1")).build();
+    RowItemsExpression rowItemsExpression = new RowItemsExpression.Builder().addItemIds(IdUtils.toId("q1")).build();
     Collection<ItemId> ids = rowItemsExpression.eval(context);
     Assertions.assertIterableEquals(List.of(IdUtils.toId("q1")), ids);
 

@@ -46,7 +46,7 @@ class IntersectionOperatorTest {
     when(context.getValueSetState(new ValueSetId("vs1")))
       .thenReturn(Optional.of(vss));
 
-    IntersectionOperator valueSetToListOperator = ImmutableIntersectionOperator.builder()
+    IntersectionOperator valueSetToListOperator = new IntersectionOperator.Builder()
       .lhs(lhs)
       .rhs(rhs)
       .build();

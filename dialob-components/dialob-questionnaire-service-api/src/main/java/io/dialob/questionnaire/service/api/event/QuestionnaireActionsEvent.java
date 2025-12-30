@@ -17,12 +17,14 @@ package io.dialob.questionnaire.service.api.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Actions;
-import org.immutables.value.Value;
+import io.dialob.security.tenant.Tenant;
 
-@Value.Immutable
-public interface QuestionnaireActionsEvent extends QuestionnaireEvent {
+public record QuestionnaireActionsEvent(
+  @NonNull Tenant tenant,
+  @NonNull String questionnaireId,
+  @NonNull Actions actions
+) implements QuestionnaireEvent {
 
-  @NonNull
-  Actions getActions();
+
 
 }

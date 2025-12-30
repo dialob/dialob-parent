@@ -40,12 +40,22 @@ public interface QuestionnaireSession {
     ONLY_ENABLED // Default behaviour
   }
 
-  @Value.Immutable
-  interface DispatchActionsResult {
+  @Value.Builder
+  @Value.Style(
+    jakarta = true,
+    jdkOnly = true,
+    overshadowImplementation = true,
+    visibility = Value.Style.ImplementationVisibility.PACKAGE
+  )
+  record DispatchActionsResult(
+    Actions actions,
+    boolean isDidComplete
+  ) {
+    public static final class Builder extends ImmutableQuestionnaireSession.DispatchActionsResultBuilder {}
 
-    Actions getActions();
-
-    boolean isDidComplete();
+    public static Builder builder() {
+      return new Builder();
+    }
 
   }
 

@@ -21,32 +21,38 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface UpdateAllowedActionsCommand extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
-
-  @Value.Parameter(order = 1)
-  Expression getExpression();
+record UpdateAllowedActionsCommand(
+  ItemId targetId,
+  Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return getExpression().getEvalRequiredConditions();
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateAllowedActionsCommand(targetId, expression(), triggers);
   }
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public Set<EventMatcher> eventMatchers() {
+    return this.expression().getEvalRequiredConditions();
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setAllowedActions(evalExpression(context)).get();
   }
 
-  default Set<Action.Type> evalExpression(EvalContext context) {
-    return Set.copyOf((Collection<Action.Type>) getExpression().eval(context));
+  public Set<Action.Type> evalExpression(EvalContext context) {
+    return Set.copyOf((Collection<Action.Type>) this.expression().eval(context));
   }
 
 }

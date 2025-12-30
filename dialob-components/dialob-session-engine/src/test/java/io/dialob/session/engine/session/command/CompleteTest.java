@@ -16,7 +16,6 @@
 package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,7 +26,7 @@ class CompleteTest {
 
   @Test
   void shouldNotCompleteWhenQuestionnaireHasInvalidAnswers() {
-    Complete complete = ImmutableComplete.builder().targetId(IdUtils.toId("questionnaire")).build();
+    var complete = CommandFactory.complete();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState questionnaire = Mockito.mock(ItemState.class);
     when(questionnaire.isInvalidAnswers()).thenReturn(true);
@@ -40,7 +39,7 @@ class CompleteTest {
 
   @Test
   void shouldCompleteWhenQuestionnaireDoNotHaveInvalidAnswers() {
-    Complete complete = ImmutableComplete.builder().targetId(IdUtils.toId("questionnaire")).build();
+    var complete = CommandFactory.complete();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState questionnaire = Mockito.mock(ItemState.class);
     when(questionnaire.isInvalidAnswers()).thenReturn(false);

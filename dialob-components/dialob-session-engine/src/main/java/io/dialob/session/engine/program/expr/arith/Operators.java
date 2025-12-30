@@ -36,40 +36,40 @@ public interface Operators {
   InfixOperator gt(Expression lhs, Expression rhs);
 
   static Expression and(@NonNull Expression ...expressions) {
-    return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.AND).build();
+    return BinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.AND).build();
   }
 
   static Expression or(@NonNull Expression ...expressions) {
-    return ImmutableBinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.OR).build();
+    return BinaryOperator.<Boolean>builder().addNodes(expressions).reducer(Reducers.Bool.OR).build();
   }
 
   static Expression isAnswered(ItemId id) {
-    return ImmutableIsAnsweredOperator.builder().questionId(id).build();
+    return new IsAnsweredOperator.Builder().questionId(id).build();
   }
 
   static Expression isBlank(ItemId id) {
-    return ImmutableIsBlankOperator.builder().questionId(id).build();
+    return new IsBlankOperator.Builder().questionId(id).build();
   }
 
   static Expression isNull(ItemId id) {
-    return ImmutableIsNullOperator.builder().itemId(id).build();
+    return new IsNullOperator.Builder().itemId(id).build();
   }
 
   static Expression isActive(ItemId id) {
-    return ImmutableIsActiveOperator.builder().itemId(id).build();
+    return new IsActiveOperator.Builder().itemId(id).build();
   }
 
   static Expression isRequired(ItemId id) {
-    return ImmutableIsRequiredOperator.builder().itemId(id).build();
+    return new IsRequiredOperator.Builder().itemId(id).build();
   }
 
   static Expression not(Expression expression) {
-    return ImmutableNotOperator.builder().expression(expression).build();
+    return new NotOperator.Builder().expression(expression).build();
   }
 
 
   static Expression isDisabled(ItemId id) {
-    return ImmutableIsDisabledOperator.builder().itemId(id).build();
+    return new IsDisabledOperator.Builder().itemId(id).build();
   }
 
   static ItemId ref(String id) {
@@ -77,7 +77,7 @@ public interface Operators {
   }
 
   static VariableReference<?> var(@NonNull ItemId id, @NonNull ValueType valueType) {
-    return ImmutableVariableReference.builder().itemId(id).valueType(valueType).build();
+    return new VariableReference.Builder<>().itemId(id).valueType(valueType).build();
   }
   static VariableReference<?> var(@NonNull String id, @NonNull ValueType valueType) {
     return var(ref(id), valueType);

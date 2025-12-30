@@ -15,9 +15,12 @@
  */
 package io.dialob.questionnaire.service.api.event;
 
-import org.immutables.value.Value;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.tenant.Tenant;
 
-@Value.Immutable
-public interface QuestionnaireCompletedEvent extends QuestionnaireEvent {
+public record QuestionnaireCompletedEvent(
+  @NonNull Tenant tenant,
+  @NonNull String questionnaireId
+) implements QuestionnaireEvent {
 
 }

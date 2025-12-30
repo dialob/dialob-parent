@@ -16,11 +16,11 @@
 package io.dialob.session.engine.spi;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface ExpressionCompiler {
@@ -30,6 +30,6 @@ public interface ExpressionCompiler {
                   @NonNull AliasesProvider aliasesProvider,
                   @NonNull Consumer<Expression> consumer,
                   @NonNull FormValidationError.Type type,
-                  Optional<Integer> index);
+                  @Nullable Integer index);
 
 }

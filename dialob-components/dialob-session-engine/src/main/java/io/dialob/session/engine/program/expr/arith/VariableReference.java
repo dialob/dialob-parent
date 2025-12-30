@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
@@ -26,22 +27,41 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
-@Value.Immutable
-public interface VariableReference<T> extends Expression {
-
-  @Value.Parameter(order = 0)
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record VariableReference<T>(
   @NonNull
-  ItemId getItemId();
+  ItemId itemId,
+  ValueType valueType
+) implements Expression {
+
+  public static Expression of(ItemId itemId, ValueType valueType) {
+    return new Builder<>().itemId(itemId).valueType(valueType).build();
+  }
+
+  public static final class Builder<T> extends VariableReferenceBuilder<T> {}
+
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenValueUpdated(getItemId()));
+  public ValueType getValueType() {
+    return valueType;
+  }
+
+  @NonNull
+  @Override
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenValueUpdated(itemId));
   }
 
   @Override
-  default T eval(@NonNull EvalContext evalContext) {
-    return (T) evalContext.getItemValue(getItemId());
+  public T eval(@NonNull EvalContext evalContext) {
+    return (T) evalContext.getItemValue(itemId);
   }
 
 }

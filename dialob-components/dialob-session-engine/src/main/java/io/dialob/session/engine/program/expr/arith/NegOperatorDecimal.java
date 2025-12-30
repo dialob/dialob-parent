@@ -17,19 +17,31 @@ package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
 import java.math.BigDecimal;
 
-@Value.Immutable
-public interface NegOperatorDecimal extends NegOperator {
-  default Object neg(@NonNull Object value) {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record NegOperatorDecimal(
+  Expression expression
+) implements NegOperator {
+
+  public static final class Builder extends NegOperatorDecimalBuilder {}
+
+  public Object neg(@NonNull Object value) {
     return ((BigDecimal)value).negate();
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.DECIMAL;
   }
 }

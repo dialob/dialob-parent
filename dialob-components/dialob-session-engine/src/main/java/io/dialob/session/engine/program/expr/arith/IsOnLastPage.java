@@ -22,7 +22,6 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
 import java.util.List;
 import java.util.Set;
@@ -30,11 +29,16 @@ import java.util.Set;
 import static io.dialob.session.engine.session.command.EventMatchers.whenActivePageUpdated;
 import static io.dialob.session.engine.session.command.EventMatchers.whenAvailableItemsUpdated;
 
-@Value.Immutable
-public interface IsOnLastPage extends Expression {
+public record IsOnLastPage() implements Expression {
+
+  private static final Expression INSTANCE = new IsOnLastPage();
+
+  public static Expression instance() {
+    return INSTANCE;
+  }
 
   @Override
-  default Boolean eval(@NonNull EvalContext context) {
+  public Boolean eval(@NonNull EvalContext context) {
     return context.getItemState(DialobSession.QUESTIONNAIRE_REF).map(questionnaire -> questionnaire.getActivePage().map(activePage -> {
       List<ItemId> availableItems = questionnaire.getAvailableItems();
       if (availableItems.size() <= 1) {
@@ -47,13 +51,13 @@ public interface IsOnLastPage extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return Set.of(whenActivePageUpdated(), whenAvailableItemsUpdated());
   }
 }

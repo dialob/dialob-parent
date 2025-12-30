@@ -17,7 +17,6 @@ package io.dialob.rule.parser;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.api.CompilerErrorCode;
-import io.dialob.rule.parser.api.ImmutableRuleExpressionCompilerError;
 import io.dialob.rule.parser.api.RuleExpressionCompilerError;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.node.*;
@@ -91,12 +90,13 @@ public class Expression implements ErrorLogger {
 
   @Override
   public void logError(String errorCode, Span span) {
-    errors.add(ImmutableRuleExpressionCompilerError.builder().errorCode(errorCode).span(span).build());
+    errors.add(RuleExpressionCompilerError.of(errorCode, span));
   }
 
   @Override
   public void logError(String errorCode, Object[] args, Span span) {
-    errors.add(ImmutableRuleExpressionCompilerError.builder().errorCode(errorCode).args(args).span(span).build());
+    errors.add(RuleExpressionCompilerError
+        .of(errorCode, span, args));
   }
 
   static class StringOper implements Comparable<StringOper> {

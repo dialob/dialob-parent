@@ -15,15 +15,12 @@
  */
 package io.dialob.boot.controller;
 
-import org.immutables.value.Value;
-
 import java.util.Map;
 
-@Value.Immutable
 public interface PageAttributes {
 
-  Map<String,Object> getAttributes();
+  Map<String,Object> attributes();
 
-  String getTemplate();
+  String template();
 
 }

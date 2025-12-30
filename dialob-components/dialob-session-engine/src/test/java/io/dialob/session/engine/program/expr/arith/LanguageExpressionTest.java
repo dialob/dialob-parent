@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.event.SessionLocaleUpdatedEvent;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,7 +39,7 @@ class LanguageExpressionTest {
 
   @Test
   void shouldDependOnLocaleChanges() {
-    LanguageExpression languageExpression = StringOperators.languageOperator();
-    assertTrue(languageExpression.getEvalRequiredConditions().iterator().next().matches(SessionLocaleUpdatedEvent.INSTANCE));
+    Expression languageExpression = StringOperators.languageOperator();
+    assertTrue(languageExpression.getEvalRequiredConditions().iterator().next().matches(SessionLocaleUpdatedEvent.instance()));
   }
 }

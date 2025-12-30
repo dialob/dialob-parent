@@ -24,16 +24,26 @@ import org.immutables.value.Value;
 
 import java.util.Set;
 
-@Value.Immutable
-@Value.Style(of="lowerCaseOf")
-public interface ToLowerCaseOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ToLowerCaseOperator(
+  Expression expression
+) implements Expression {
 
-  @Value.Parameter
-  Expression getExpression();
+  public static class Builder extends ToLowerCaseOperatorBuilder {}
+
+  public static  ToLowerCaseOperator lowerCaseOf(@NonNull Expression expression) {
+    return new ToLowerCaseOperator.Builder().expression(expression).build();
+  }
 
   @Override
-  default String eval(@NonNull EvalContext context) {
-    Object eval = getExpression().eval(context);
+  public String eval(@NonNull EvalContext context) {
+    Object eval = expression().eval(context);
     if (eval == null) {
       return null;
     }
@@ -42,14 +52,14 @@ public interface ToLowerCaseOperator extends Expression {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return getExpression().getEvalRequiredConditions();
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return expression().getEvalRequiredConditions();
   }
 
 }

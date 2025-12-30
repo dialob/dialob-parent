@@ -20,6 +20,8 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
@@ -28,7 +30,7 @@ class SetVariablePendingTest {
 
   @Test
   void updatesItemStateToPending() {
-    SetVariablePending setVariablePending = ImmutableSetVariablePending.builder().targetId(IdUtils.toId("item")).build();
+    SetVariablePending setVariablePending = new SetVariablePending(IdUtils.toId("item"), Collections.emptyList());
     EvalContext context = mock(EvalContext.class);
     ItemState itemState = new ItemState(IdUtils.toId("item"), null, "variable", null, false, null, "answer", "Hello", null, null).update().setLabel("label").get();
 
@@ -40,7 +42,7 @@ class SetVariablePendingTest {
 
   @Test
   void retainsOtherItemStateProperties() {
-    SetVariablePending setVariablePending = ImmutableSetVariablePending.builder().targetId(IdUtils.toId("item")).build();
+    var setVariablePending = CommandFactory.setVariablePending(IdUtils.toId("item"));
     EvalContext context = mock(EvalContext.class);
     ItemState itemState = new ItemState(IdUtils.toId("item"), null, "variable", null, false, null, "answer", "Hello", null, null).update().setLabel("label").get();
 

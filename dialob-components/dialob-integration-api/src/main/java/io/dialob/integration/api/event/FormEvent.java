@@ -20,6 +20,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public interface FormEvent extends TenantScopedEvent {
 
   @NonNull
-  String getFormId();
+  String formId();
 
 }

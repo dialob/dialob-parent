@@ -20,17 +20,26 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface SetVariableValue extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
-
-  @Value.Parameter(order = 1)
-  @Nullable
-  Object getValue();
+record SetVariableValue(
+  ItemId targetId,
+  Object value,
+  java.util.List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new SetVariableValue(targetId, value, triggers);
+  }
+
+  @Nullable
+  public Object getValue() {
+    return value;
+  }
+
+  @NonNull
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     // TODO validate matching type??
     return itemState.update()
       .setValue(getValue())

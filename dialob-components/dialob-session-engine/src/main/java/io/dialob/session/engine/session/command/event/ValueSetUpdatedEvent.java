@@ -15,8 +15,9 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
+import io.dialob.session.engine.session.model.ValueSetId;
 
-@Value.Immutable
-public interface ValueSetUpdatedEvent extends ValueSetEvent {
+public record ValueSetUpdatedEvent(
+  ValueSetId valueSetId
+) implements ValueSetEvent {
 }

@@ -17,18 +17,41 @@ package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface NeOperator<T> extends EqOperator<T> {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record NeOperator<T>(
+  Expression lhs,
+  Expression rhs
+) implements AbstractLogicalOperator {
+
+  public static <T> NeOperator.Builder<T> builder() {
+    return new NeOperator.Builder<T>();
+  }
+
+  public static final class Builder<T> extends NeOperatorBuilder<T> {}
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    Boolean result = EqOperator.super.eval(evalContext);
-    if (result == null) {
-      return null;
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    Object lhsResult = getLhs().eval(evalContext);
+    Object rhsResult = getRhs().eval(evalContext);
+    if (lhsResult == rhsResult) {
+      return false;
     }
-    return !result;
+    if (lhsResult == null) {
+      return true;
+    }
+    if (rhsResult == null) {
+      return true;
+    }
+    return !lhsResult.equals(rhsResult);
   }
 
 }

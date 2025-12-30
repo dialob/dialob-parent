@@ -40,8 +40,8 @@ public class AsyncFunctionInvoker {
   public EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor createVisitor(String sessionId) {
     return asyncFunctionCall ->
       registry.invokeFunctionAsync(new AsyncFunctionCallback(service, sessionId, IdUtils.toString(asyncFunctionCall.getTargetId().get())),
-        asyncFunctionCall.getFunctionName(),
-        asyncFunctionCall.getArgs());
+        asyncFunctionCall.functionName(),
+        asyncFunctionCall.args());
   }
 
 

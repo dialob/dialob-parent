@@ -20,28 +20,33 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemIndex;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Value.Immutable
-public interface DeleteRow extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
+record DeleteRow(
+  ItemId targetId,
+  ItemId toBeRemoved,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
-  @Value.Parameter(order = 1)
-  ItemId getToBeRemoved();
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new DeleteRow(targetId, toBeRemoved, triggers);
+  }
 
   @Override
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     List<BigInteger> rowNumbers = (List<BigInteger>) itemState.getValue();
     if (rowNumbers == null) {
       rowNumbers = Collections.emptyList();
     }
     rowNumbers = new ArrayList<>(rowNumbers);
-    ItemId toBeRemoved = getToBeRemoved();
+    ItemId toBeRemoved = this.toBeRemoved();
 
     var rowToBeRemoved = context.getItemState(toBeRemoved);
     if (rowToBeRemoved.isPresent() && !rowToBeRemoved.get().isRowCanBeRemoved()) {

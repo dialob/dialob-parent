@@ -16,12 +16,12 @@
 package io.dialob.session.engine.session.command;
 
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.arith.ImmutableConstant;
+import io.dialob.session.engine.program.expr.arith.Constant;
 import io.dialob.session.engine.program.expr.arith.NumberOperators;
 import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.command.event.ImmutableItemAddedEvent;
+import io.dialob.session.engine.session.command.event.ItemAddedEvent;
 import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -113,11 +113,11 @@ class CommandFactoryTest {
   void shouldNotTriggerItself() {
     ItemId itemId = IdUtils.toId("q1");
     Expression expression =
-      Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), ImmutableConstant.builder().valueType(ValueType.INTEGER).value(0).build()));
+      Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), Constant.builder().valueType(ValueType.INTEGER).value(0).build()));
     //;
-    UpdateValidationCommand updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
-    Set<EventMatcher> eventMatchers = updateValidationCommand.getEventMatchers();
-    List<Event> eventList = updateValidationCommand.getTriggers().stream().map(Trigger::getAllEvents).flatMap(List::stream).toList();
+    var updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
+    Set<EventMatcher> eventMatchers = updateValidationCommand.eventMatchers();
+    List<Event> eventList = updateValidationCommand.triggers().stream().map(Trigger::allEvents).flatMap(List::stream).toList();
     Iterator<EventMatcher> i = eventMatchers.iterator();
     EventMatcher eventMatcher = i.next();
     assertFalse(eventMatcher.matches(eventList.getFirst()));
@@ -134,19 +134,19 @@ class CommandFactoryTest {
     ItemState itemRow = new ItemState(IdUtils.toId("g1.0"), null, "group", null, true, null, null, null, null, null);
     ItemState itemState2 = itemState1.update().setItems(List.of(IdUtils.toId("g1.0"))).get();
 
-    ItemStates itemStates1 = ImmutableItemStates.builder()
+    ItemStates itemStates1 = new ItemStates.Builder()
       .putItemStates(itemState1.getId(), itemState1)
       .build();
 
-    ItemStates itemStates2 = ImmutableItemStates.builder()
+    ItemStates itemStates2 = new ItemStates.Builder()
       .putItemStates(itemRow.getId(), itemRow)
       .putItemStates(itemState2.getId(), itemState2)
       .build();
 
-    List<Event> events = command.getTriggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
+    List<Event> events = command.triggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();
 
     assertFalse(events.isEmpty());
-    assertEquals(ImmutableItemAddedEvent.of(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.getFirst());
+    assertEquals(new ItemAddedEvent(IdUtils.toId("g1.0"), IdUtils.toId("g1.*")), events.getFirst());
   }
 
   @Test

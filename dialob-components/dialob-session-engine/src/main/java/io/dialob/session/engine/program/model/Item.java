@@ -26,16 +26,16 @@ import java.util.Optional;
 public interface Item extends StructuralNode {
 
   @NonNull
-  ItemId getId();
+  ItemId id();
 
   @NonNull
-  String getType();
+  String type();
 
   @Nullable
-  ValueType getValueType();
+  ValueType valueType();
 
-  Optional<String> getValueSetId();
+  Optional<String> valueSetIdOptional();
 
-  Optional<Object> getDefaultValue();
+  Optional<Object> defaultValueOptional();
 
 }

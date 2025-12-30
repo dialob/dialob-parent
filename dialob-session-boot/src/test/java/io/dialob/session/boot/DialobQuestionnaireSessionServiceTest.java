@@ -95,31 +95,32 @@ class DialobQuestionnaireSessionServiceTest {
       doAnswer(invocationOnMock -> {
         ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(LocalDate.now());
         return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("today"));
+      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("today"), eq(List.of()));
 
       when(functionRegistry.returnTypeOf(eq("isLyt"),eq(ValueType.STRING))).thenReturn(ValueType.BOOLEAN);
       doAnswer(invocationOnMock -> {
         ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(DefaultFunctions.isLyt(invocationOnMock.getArgument(1)));
         return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("isLyt"));
+      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("isLyt"), eq(List.of()));
 
       when(functionRegistry.returnTypeOf(eq("isHetu"),eq(ValueType.STRING))).thenReturn(ValueType.BOOLEAN);
       doAnswer(invocationOnMock -> {
         ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(DefaultFunctions.isHetu(invocationOnMock.getArgument(1)));
         return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("isHetu"));
+      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("isHetu"), eq(List.of()));
 
       when(functionRegistry.returnTypeOf(eq("count"),eq(ValueType.arrayOf(ValueType.INTEGER)))).thenReturn(ValueType.INTEGER);
       doAnswer(invocationOnMock -> {
         ((FunctionRegistry.FunctionCallback) invocationOnMock.getArgument(0)).succeeded(DefaultFunctions.count(invocationOnMock.getArgument(1)));
         return null;
-      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("count"));
+      }).when(functionRegistry).invokeFunction(any(FunctionRegistry.FunctionCallback.class), eq("count"), eq(List.of()));
 
 
       when(functionRegistry.returnTypeOf("lengthOf", ValueType.STRING)).thenReturn(ValueType.INTEGER);
       doAnswer(invocation -> {
         FunctionRegistry.FunctionCallback cb = invocation.getArgument(0);
-        String string = invocation.getArgument(2);
+        List<?> args = invocation.getArgument(2);
+        String string = (String) args.get(0);
         if (string == null) {
           cb.succeeded(BigInteger.ZERO);
         } else {
@@ -2116,10 +2117,13 @@ class DialobQuestionnaireSessionServiceTest {
     Mockito.doAnswer(invocation -> {
       FunctionRegistry.FunctionCallback callback = invocation.getArgument(0);
       Object args = invocation.getArgument(2);
-      assertTrue(args instanceof Map);
-      callback.succeeded(args);
+      assertTrue(args instanceof List);
+      List list = (List) args;
+      assertTrue(list.get(0) instanceof Map<?,?>);
+      Map<?, ?> map = (Map<?, ?>) list.get(0);
+      callback.succeeded(map);
       return null;
-    }).when(functionRegistry).invokeFunction(any(), any(), any());
+    }).when(functionRegistry).invokeFunction(any(), eq("useObjectFunction"), any());
 
     fillForm(new Form.Builder()
       .id("test")

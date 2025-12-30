@@ -19,17 +19,25 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface SetVariablePending extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
+import java.util.List;
+
+record SetVariablePending(
+  ItemId targetId,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setValue(null)
       .setStatus(ItemState.Status.PENDING)
       .get();
   }
 
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new SetVariablePending(targetId, triggers());
+  }
 }

@@ -50,10 +50,10 @@ class QuestionnaireEventPublisherTest {
 
     questionnaireEventPublisher.opened(questionnaireId);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireOpenedEvent.builder()
-      .tenant(tenant)
-      .questionnaireId(questionnaireId)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireOpenedEvent(
+      questionnaireId,
+      tenant
+    ));
   }
 
   @Test
@@ -64,10 +64,10 @@ class QuestionnaireEventPublisherTest {
 
     questionnaireEventPublisher.created(questionnaireId);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireCreatedEvent.builder()
-      .tenant(tenant)
-      .questionnaireId(questionnaireId)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireCreatedEvent(
+      questionnaireId,
+      tenant
+    ));
   }
 
   @Test
@@ -78,10 +78,10 @@ class QuestionnaireEventPublisherTest {
 
     questionnaireEventPublisher.completed(tenantId, questionnaireId);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireCompletedEvent.builder()
-      .tenant(tenant)
-      .questionnaireId(questionnaireId)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireCompletedEvent(
+      tenant,
+      questionnaireId
+    ));
   }
 
   @Test
@@ -90,10 +90,10 @@ class QuestionnaireEventPublisherTest {
 
     questionnaireEventPublisher.completed(null, questionnaireId);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireCompletedEvent.builder()
-      .tenant(ResysSecurityConstants.DEFAULT_TENANT)
-      .questionnaireId(questionnaireId)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireCompletedEvent(
+      ResysSecurityConstants.DEFAULT_TENANT,
+      questionnaireId
+    ));
   }
 
   @Test
@@ -105,27 +105,29 @@ class QuestionnaireEventPublisherTest {
 
     questionnaireEventPublisher.actions(questionnaireId, actions);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireActionsEvent.builder()
-      .tenant(tenant)
-      .questionnaireId(questionnaireId)
-      .actions(actions)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireActionsEvent(
+      tenant,
+      questionnaireId,
+      actions
+    ));
   }
 
   @Test
   void publishesClientConnectedEvent() {
+    String sessionId = "s1";
     String questionnaireId = "q6";
     InetAddress client = mock();
     Tenant tenant = Tenant.of("tenant5");
     when(currentTenant.get()).thenReturn(tenant);
 
-    questionnaireEventPublisher.clientConnected(questionnaireId, client);
+    questionnaireEventPublisher.clientConnected(questionnaireId, client, sessionId);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireClientConnectedEvent.builder()
-      .tenant(tenant)
-      .questionnaireId(questionnaireId)
-      .client(client)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireClientConnectedEvent(
+      tenant,
+      questionnaireId,
+      sessionId,
+      client
+    ));
   }
 
   @Test
@@ -138,11 +140,11 @@ class QuestionnaireEventPublisherTest {
 
     questionnaireEventPublisher.clientDisconnected(questionnaireId, client, closeStatus);
 
-    verify(eventPublisher).publish(ImmutableQuestionnaireClientDisconnectedEvent.builder()
-      .tenant(tenant)
-      .questionnaireId(questionnaireId)
-      .client(client)
-      .closeStatus(closeStatus)
-      .build());
+    verify(eventPublisher).publish(new QuestionnaireClientDisconnectedEvent(
+      questionnaireId,
+      tenant,
+      client,
+      closeStatus
+    ));
   }
 }

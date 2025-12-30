@@ -17,19 +17,30 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
-@Value.Immutable
-public interface UpdateLabelCommand extends AbstractUpdateAttributeCommand<String> {
+record UpdateLabelCommand(
+  ItemId targetId,
+  Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateAttributeCommand<String> {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateLabelCommand(targetId, expression, triggers);
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     // label update will not trigger additional expressions
     return itemState.update()
       .setLabel(evalExpression(context)).get();
@@ -37,10 +48,11 @@ public interface UpdateLabelCommand extends AbstractUpdateAttributeCommand<Strin
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    Set<EventMatcher> parent = AbstractUpdateAttributeCommand.super.getEventMatchers();
+  public Set<EventMatcher> eventMatchers() {
+    Set<EventMatcher> parent = AbstractUpdateAttributeCommand.super.eventMatchers();
     var set = new HashSet<>(parent);
     set.add(EventMatchers.whenSessionLocaleUpdated());
     return Set.copyOf(set);
   }
+
 }

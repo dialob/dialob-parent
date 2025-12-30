@@ -63,10 +63,10 @@ public class QuestionnaireEventPublisher {
    * @param questionnaireId the ID of the opened questionnaire
    */
   public void opened(@NonNull String questionnaireId) {
-    applicationEventPublisher.publish(ImmutableQuestionnaireOpenedEvent.builder()
-      .tenant(currentTenant.get())
-      .questionnaireId(questionnaireId)
-      .build());
+    applicationEventPublisher.publish(new QuestionnaireOpenedEvent(
+      questionnaireId,
+      currentTenant.get()
+    ));
   }
 
   /**
@@ -75,10 +75,10 @@ public class QuestionnaireEventPublisher {
    * @param questionnaireId the ID of the created questionnaire
    */
   public void created(@NonNull String questionnaireId) {
-    applicationEventPublisher.publish(ImmutableQuestionnaireCreatedEvent.builder()
-      .tenant(currentTenant.get())
-      .questionnaireId(questionnaireId)
-      .build());
+    applicationEventPublisher.publish(new QuestionnaireCreatedEvent(
+      questionnaireId,
+      currentTenant.get()
+    ));
   }
 
   /**
@@ -88,10 +88,10 @@ public class QuestionnaireEventPublisher {
    * @param questionnaireId the ID of the completed questionnaire
    */
   public void completed(String tenantId, @NonNull String questionnaireId) {
-    applicationEventPublisher.publish(ImmutableQuestionnaireCompletedEvent.builder()
-      .tenant(getTenant(tenantId))
-      .questionnaireId(questionnaireId)
-      .build());
+    applicationEventPublisher.publish(new QuestionnaireCompletedEvent(
+      getTenant(tenantId),
+      questionnaireId
+    ));
   }
 
   /**
@@ -101,25 +101,27 @@ public class QuestionnaireEventPublisher {
    * @param actions the actions performed
    */
   public void actions(@NonNull String questionnaireId, @NonNull Actions actions) {
-    applicationEventPublisher.publish(ImmutableQuestionnaireActionsEvent.builder()
-      .tenant(currentTenant.get())
-      .questionnaireId(questionnaireId)
-      .actions(actions)
-      .build());
+    applicationEventPublisher.publish(new QuestionnaireActionsEvent(
+      currentTenant.get(),
+      questionnaireId,
+      actions
+    ));
   }
 
   /**
    * Publishes an event indicating that a client has connected to a questionnaire.
    *
    * @param questionnaireId the ID of the questionnaire
-   * @param client the client's IP address
+   * @param client          the client's IP address
+   * @param sessionId
    */
-  public void clientConnected(@NonNull String questionnaireId, InetAddress client) {
-    applicationEventPublisher.publish(ImmutableQuestionnaireClientConnectedEvent.builder()
-      .tenant(currentTenant.get())
-      .questionnaireId(questionnaireId)
-      .client(client)
-      .build());
+  public void clientConnected(@NonNull String questionnaireId, InetAddress client, String sessionId) {
+    applicationEventPublisher.publish(new QuestionnaireClientConnectedEvent(
+      currentTenant.get(),
+      questionnaireId,
+      sessionId,
+      client
+    ));
   }
 
   /**
@@ -130,11 +132,11 @@ public class QuestionnaireEventPublisher {
    * @param closeStatus the status code indicating the reason for disconnection
    */
   public void clientDisconnected(@NonNull String questionnaireId, InetAddress client, int closeStatus) {
-    applicationEventPublisher.publish(ImmutableQuestionnaireClientDisconnectedEvent.builder()
-      .tenant(currentTenant.get())
-      .questionnaireId(questionnaireId)
-      .client(client)
-      .closeStatus(closeStatus)
-      .build());
+    applicationEventPublisher.publish(new QuestionnaireClientDisconnectedEvent(
+      questionnaireId,
+      currentTenant.get(),
+      client,
+      closeStatus
+    ));
   }
 }

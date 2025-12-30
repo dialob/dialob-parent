@@ -16,33 +16,48 @@
 package io.dialob.session.engine.program.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
 import java.util.Objects;
+import java.util.Optional;
 
-@Value.Immutable
+@Value.Builder
 @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface VariableItem extends Item {
+public record VariableItem(
+  @NonNull ItemId id,
+  @NonNull String type,
+  @NonNull Expression valueExpression,
+  @Nullable String valueSetId,
+  @Nullable Object defaultValue,
 
-  class Builder extends ImmutableVariableItem.Builder { }
+  @Value.Default.Boolean(false)
+  boolean isAsync,
 
-  @NonNull
-  Expression getValueExpression();
+  @Value.Default.Boolean(false)
+  boolean isPublished,
 
-  @Value.Default
-  default boolean isAsync() {
-    return false;
-  }
+  @Value.Default.Boolean(false)
+  boolean isPrototype
+) implements Item {
 
-  @Value.Default
-  default boolean isPublished() {
-    return false;
-  }
+  public static final class Builder extends VariableItemBuilder { }
 
   @Override
   @NonNull
-  default ValueType getValueType() {
-    return Objects.requireNonNull(getValueExpression().getValueType());
+  public ValueType valueType() {
+    return Objects.requireNonNull(this.valueExpression().getValueType());
+  }
+
+  @Override
+  public Optional<String> valueSetIdOptional() {
+    return Optional.ofNullable(valueSetId());
+  }
+
+  @Override
+  public Optional<Object> defaultValueOptional() {
+    return Optional.ofNullable(defaultValue());
   }
 }

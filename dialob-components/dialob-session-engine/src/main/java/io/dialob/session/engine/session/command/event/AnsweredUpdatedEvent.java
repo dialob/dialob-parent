@@ -15,8 +15,7 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
-
-@Value.Immutable
-public interface AnsweredUpdatedEvent extends AttributeEvent {
+public record AnsweredUpdatedEvent(
+  TargetEvent target
+) implements AttributeEvent {
 }

@@ -15,24 +15,35 @@
  */
 package io.dialob.rule.parser.api;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.node.Span;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
-@Value.Immutable
-public interface RuleExpressionCompilerError extends Serializable {
+public record RuleExpressionCompilerError(
 
-  @Value.Parameter
-  String getErrorCode();
+  @NonNull
+  String errorCode,
 
-  Optional<Object[]> getArgs();
+  @NonNull
+  List<Object> args,
 
-  @Value.Parameter
-  @Value.Default
-  default Span getSpan() {
-    return Span.undefined();
+  @NonNull
+  Span span
+
+) implements Serializable {
+
+  public static RuleExpressionCompilerError of(@NonNull String errorCode, Span span, Object... args) {
+    return new RuleExpressionCompilerError(errorCode, Arrays.asList(args), span);
+  }
+
+  public RuleExpressionCompilerError {
+    errorCode = Objects.requireNonNull(errorCode, "errorCode may not be null");
+    args = Objects.requireNonNullElseGet(args, List::of);
+    span = Objects.requireNonNullElseGet(span, Span::undefined);
   }
 
 }

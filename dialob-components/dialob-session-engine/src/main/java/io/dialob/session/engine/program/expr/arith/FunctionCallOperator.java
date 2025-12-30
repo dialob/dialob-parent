@@ -20,7 +20,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
-import io.dialob.session.engine.session.ImmutableAsyncFunctionCall;
+import io.dialob.session.engine.session.AsyncFunctionCall;
 import io.dialob.session.engine.session.command.EventMatcher;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.immutables.value.Value;
@@ -29,23 +29,34 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface FunctionCallOperator extends Expression {
-
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record FunctionCallOperator(
   @NonNull
-  ValueType getValueType();
+  ValueType valueType,
 
-  String getFunctionName();
+  String functionName,
 
-  List<Expression> getArgs();
+  List<Expression> args
+
+) implements Expression {
+
+
+  public static final class Builder extends FunctionCallOperatorBuilder {
+  }
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     final FunctionRegistry functionRegistry = evalContext.getFunctionRegistry();
-    final Object[] args = getArgs().stream().map(arg -> arg.eval(evalContext)).toArray();
-    if (functionRegistry.isAsyncFunction(getFunctionName())) {
-      return ImmutableAsyncFunctionCall.builder()
-        .functionName(getFunctionName())
+    final var args = args().stream().map(arg -> arg.eval(evalContext)).toList();
+    if (functionRegistry.isAsyncFunction(functionName())) {
+      return AsyncFunctionCall.builder()
+        .functionName(functionName())
         .args(args)
         .build();
     } else {
@@ -61,18 +72,23 @@ public interface FunctionCallOperator extends Expression {
                                           // TODO Add error handling
                                         }
                                       },
-        getFunctionName(),
+        functionName(),
         args);
-      return holder.getValue();
+      return holder.get();
     }
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     final var deps = new HashSet<EventMatcher>();
-    getArgs().forEach(arg -> deps.addAll(arg.getEvalRequiredConditions()));
+    args().forEach(arg -> deps.addAll(arg.getEvalRequiredConditions()));
     return Set.copyOf(deps);
   }
 
+  @NonNull
+  @Override
+  public ValueType getValueType() {
+    return valueType;
+  }
 }

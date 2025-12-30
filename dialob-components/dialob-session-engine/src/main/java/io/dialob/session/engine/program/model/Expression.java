@@ -20,7 +20,6 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.EventMatcher;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -28,7 +27,6 @@ import java.util.Set;
 
 public interface Expression extends Serializable {
 
-  @Value.Parameter(order = 100)
   @NonNull
   ValueType getValueType();
 

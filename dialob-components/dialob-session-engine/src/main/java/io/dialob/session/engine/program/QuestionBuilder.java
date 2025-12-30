@@ -126,7 +126,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
     Optional<GroupBuilder> hoistingGroup = getHoistingGroup();
     final MutableObject<Expression> disabledExpression = new MutableObject<>(BooleanOperators.TRUE);
-    hoistingGroup.ifPresent(hoistingGroupBuilder -> disabledExpression.setValue(ImmutableIsDisabledOperator.builder().itemId(hoistingGroupBuilder.getId()).build()));
+    hoistingGroup.ifPresent(hoistingGroupBuilder -> disabledExpression.setValue(new IsDisabledOperator.Builder().itemId(hoistingGroupBuilder.getId()).build()));
 
     if (isRequiredDefined()) {
       createRequiredError(this::addError);
@@ -141,9 +141,9 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
     hoistingGroup.ifPresent(hoistingGroupBuilder -> {
       if (activeWhen == BooleanOperators.TRUE) {
-        activeWhen = ImmutableIsActiveOperator.builder().itemId(hoistingGroupBuilder.getId()).build();
+        activeWhen = new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build();
       } else {
-        activeWhen = Operators.and(ImmutableIsActiveOperator.builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
+        activeWhen = Operators.and(new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
       }
     });
     validationBuilders.forEach(validationBuilder -> validationBuilder.setPrototype(prototype));
@@ -156,14 +156,14 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
         .isPrototype(prototype)
         .valueType(Utils.mapQuestionTypeToValueType(type).orElse(null)) // 'note' do not have value
         .activeExpression(activeWhen)
-        .requiredExpression(Optional.ofNullable(requiredWhen))
-        .disabledExpression(disabledExpression.getValue())
-        .className(ImmutableConstant.builder().value(classNames).valueType(ValueType.arrayOf(ValueType.STRING)).build())
+        .requiredExpression(requiredWhen)
+        .disabledExpression(disabledExpression.get())
+        .className(Constant.builder().value(classNames).valueType(ValueType.arrayOf(ValueType.STRING)).build())
         .addAllErrors(errors)
         .labelExpression(labelOperator)
         .descriptionExpression(descriptionOperator)
-        .valueSetId(Optional.ofNullable(this.valueSetId))
-        .defaultValue(Optional.ofNullable(defaultValue))
+        .valueSetId(this.valueSetId)
+        .defaultValue(defaultValue)
         .props(props)
         .build());
   }
@@ -177,10 +177,10 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
           .filter(eventMatcher -> eventMatcher instanceof EventMatchers.TargetIdEventMatcher)
           .map(eventMatcher -> (EventMatchers.TargetIdEventMatcher) eventMatcher)
           .map(itemId -> getProgramBuilder()
-            .findDefaultValueForItem(itemId.getTargetId())
+            .findDefaultValueForItem(itemId.targetId())
             // If item has default (fallback) value, it's always available for expression
             .<Expression>map(defaultValue -> BooleanOperators.FALSE)
-              .orElse(ImmutableIsInactiveOrNullOperator.of(itemId.getTargetId())))
+              .orElse(IsInactiveOrNullOperator.of(itemId.targetId())))
           .filter(expression -> expression != BooleanOperators.FALSE)
         .toArray(Expression[]::new));
   }
@@ -201,8 +201,8 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       .itemId(getId())
       .code(Constants.ERROR_CODE_REQUIRED)
       .isPrototype(getId().isPartial())
-      .validationExpression(Operators.and(ImmutableIsActiveOperator.builder().itemId(getId()).build(), expression))
-      .disabledExpression(ImmutableIsDisabledOperator.builder().itemId(getId()).build())
+      .validationExpression(Operators.and(new IsActiveOperator.Builder().itemId(getId()).build(), expression))
+      .disabledExpression(new IsDisabledOperator.Builder().itemId(getId()).build())
       .label(createLabelOperator(REQUIRED_LABEL)).build());
   }
 
@@ -212,23 +212,23 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     }
     Expression check;
     if (Constants.MULTICHOICE.equals(type)) {
-      check = ImmutableEqOperator.builder()
-        .lhs(ImmutableSizeOperator.builder()
-          .expression(ImmutableIntersectionOperator.builder()
+      check = EqOperator.builder()
+        .lhs(new SizeOperator.Builder()
+          .expression(new IntersectionOperator.Builder()
             .lhs(Operators.var(getId(), ValueType.STRING))
-            .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
+            .rhs(ValueSetToListOperator.of(new ValueSetId(valueSetId)))
             .build()).build())
-        .rhs(ImmutableSizeOperator.builder()
+        .rhs(new SizeOperator.Builder()
           .expression(Operators.var(getId(), ValueType.STRING)).build())
         .build();
     } else {
-      check = ImmutableInOperator.builder()
+      check = new InOperator.Builder()
         .lhs(var(getId(), ValueType.STRING))
-        .rhs(ImmutableValueSetToListOperator.of(new ValueSetId(valueSetId)))
+        .rhs(ValueSetToListOperator.of(new ValueSetId(valueSetId)))
         .build();
     }
     var expression = and(
-      ImmutableIsActiveOperator.builder().itemId(getId()).build(),
+      new IsActiveOperator.Builder().itemId(getId()).build(),
       isAnswered(getId()),
       not(check)
     );
@@ -237,7 +237,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       .code(Constants.ERROR_INVALID_SELECTION)
       .isPrototype(getId().isPartial())
       .validationExpression(expression)
-      .disabledExpression(ImmutableIsDisabledOperator.builder().itemId(getId()).build())
+      .disabledExpression(new IsDisabledOperator.Builder().itemId(getId()).build())
       .label(createLabelOperator(INVALID_SELECTION_LABEL)).build());
   }
 
@@ -247,7 +247,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
                          @NonNull AliasesProvider aliasesProvider,
                          @NonNull Consumer<Expression> expressionConsumer,
                          @NonNull FormValidationError.Type type,
-                         Optional<Integer> index) {
+                         Integer index) {
     return compileExpression(expression, aliasesProvider, expressionConsumer, type, index);
   }
 
@@ -263,7 +263,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
 
   public QuestionBuilder setRequiredWhen(String requiredWhen) {
     if (requiredWhen != null) {
-      compileExpression(requiredWhen, this, this::setRequiredWhen, FormValidationError.Type.REQUIREMENT, Optional.empty());
+      compileExpression(requiredWhen, this, this::setRequiredWhen, FormValidationError.Type.REQUIREMENT, null);
     }
     this.required = null;
     return this;

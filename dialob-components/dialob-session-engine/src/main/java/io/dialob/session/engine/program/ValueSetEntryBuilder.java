@@ -51,18 +51,13 @@ public class ValueSetEntryBuilder extends AbstractItemBuilder<ValueSetEntryBuild
     if (activeWhen != null) {
       entryValue = new ConditionalValue.Builder<ValueSet.Entry>()
         .when(activeWhen)
-        .value(new ValueSet.Entry.Builder()
-          .key(key)
-          .label(createLabelOperator(label))
-          .build())
+        .value(new ValueSet.Entry(key, createLabelOperator(label)))
         .valueType(ValueType.STRING)
         .build();
     } else {
-      entryValue = new ConstantValue.Builder<ValueSet.Entry>().value(
-        new ValueSet.Entry.Builder()
-          .key(key)
-          .label(createLabelOperator(label))
-          .build()).build();
+      entryValue = new ConstantValue.Builder<ValueSet.Entry>()
+        .value(new ValueSet.Entry(key, createLabelOperator(label)))
+        .build();
     }
     getParent().addValueEntry(entryValue);
   }

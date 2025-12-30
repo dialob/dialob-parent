@@ -44,7 +44,7 @@ public class DebugUtil {
   public static String commandToString(Command<?> command) {
     final String commandName = stripImmutablePrefix(command.getClass().getSimpleName());
     if (command instanceof UpdateCommand updateCommand) {
-      return commandName + "(" + IdUtils.toString(updateCommand.getTargetId()) + ")";
+      return commandName + "(" + IdUtils.toString(updateCommand.targetId()) + ")";
     }
     return commandName;
   }
@@ -53,8 +53,8 @@ public class DebugUtil {
   public static void dumpDotFile(final Map<ItemId, List<Command<?>>> itemCommands) {
     Set<Pair<ItemId, Event>> events = itemCommands.entrySet().stream()
       .flatMap(commandEntry -> commandEntry.getValue().stream()
-        .flatMap(command -> command.getTriggers().stream())
-        .flatMap(trigger -> trigger.getAllEvents().stream())
+        .flatMap(command -> command.triggers().stream())
+        .flatMap(trigger -> trigger.allEvents().stream())
         .map(event -> Pair.of(commandEntry.getKey(), event))).collect(toSet());
 
     Map<Pair<ItemId, Event>,List<UpdateCommand<?,?>>> eventToCommands = new HashMap<>();
@@ -65,7 +65,7 @@ public class DebugUtil {
       .filter(c -> c instanceof UpdateCommand)
       .map(c -> (UpdateCommand<?,?>) c)
       .forEach(command ->
-        events.stream().filter(event -> command.getEventMatchers().stream().anyMatch(eventMatcher -> eventMatcher.matches(event.getRight())))
+        events.stream().filter(event -> command.eventMatchers().stream().anyMatch(eventMatcher -> eventMatcher.matches(event.getRight())))
           .forEach(event -> eventToCommands.computeIfAbsent(event, event1 -> new ArrayList<>()).add(command)));
 
     itemCommands.values().stream()
@@ -73,10 +73,10 @@ public class DebugUtil {
       .filter(c -> c instanceof UpdateCommand)
       .map(c -> (UpdateCommand<?,?>) c)
       .forEach(command ->
-        command.getTriggers()
+        command.triggers()
           .forEach(trigger ->
             commandToEvent.computeIfAbsent(command, command1 -> new ArrayList<>())
-            .addAll(trigger.getAllEvents().stream().map(e -> Pair.of((ItemId) command.getTargetId(), e)).toList())));
+            .addAll(trigger.allEvents().stream().map(e -> Pair.of((ItemId) command.targetId(), e)).toList())));
 
     try(OutputStreamWriter writer = new FileWriter("deps.dot")) {
       SortedSet<String> nodes = new TreeSet<>();

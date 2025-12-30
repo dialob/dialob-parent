@@ -75,13 +75,13 @@ class CreateDialobSessionProgramVisitorTest {
         .id(IdUtils.toId("rg"))
         .type("rowgroup")
         .isPrototype(false)
-        .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
+        .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
         .build());
       itemVisitor.visitItem(new Group.Builder()
         .id(IdUtils.toId("rg.*"))
         .type("row")
         .isPrototype(true)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build()).build());
+        .itemsExpression(new RowItemsExpression.Builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build()).build());
     });
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
@@ -143,59 +143,59 @@ class CreateDialobSessionProgramVisitorTest {
 //    ItemId test = context.mapTo(IdUtils.toId("q2"), true);
     Optional<ItemState> test = context.findPrototype(IdUtils.toId("q2"));
 
-    assertEquals(BigDecimal.valueOf(3.0), ImmutableArrayReducerOperator.of(
+    assertEquals(BigDecimal.valueOf(3.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_SUM,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
-    assertEquals(BigInteger.valueOf(3), ImmutableArrayReducerOperator.of(
+    assertEquals(BigInteger.valueOf(3), ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_SUM,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
     ).eval(context));
-    assertNull(ImmutableArrayReducerOperator.of(
+    assertNull(ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_SUM,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
-    assertEquals(BigDecimal.valueOf(1.0), ImmutableArrayReducerOperator.of(
+    assertEquals(BigDecimal.valueOf(1.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_MIN,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
-    assertEquals(BigInteger.valueOf(1), ImmutableArrayReducerOperator.of(
+    assertEquals(BigInteger.valueOf(1), ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MIN,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
     ).eval(context));
-    assertNull(ImmutableArrayReducerOperator.of(
+    assertNull(ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MIN,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
-    assertEquals(BigDecimal.valueOf(2.0), ImmutableArrayReducerOperator.of(
+    assertEquals(BigDecimal.valueOf(2.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_MAX,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q2"),
         ValueType.DECIMAL)
     ).eval(context));
-    assertEquals(BigInteger.valueOf(2), ImmutableArrayReducerOperator.of(
+    assertEquals(BigInteger.valueOf(2), ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MAX,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"),
         ValueType.INTEGER)
     ).eval(context));
-    assertNull(ImmutableArrayReducerOperator.of(
+    assertNull(ArrayReducerOperator.of(
       ArrayReducerOperator.INTEGER_MAX,
-      ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
+      CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"),
         ValueType.INTEGER)
     ).eval(context));
-    assertEquals(BigInteger.valueOf(2), ImmutableArrayReducerOperator.builder()
+    assertEquals(BigInteger.valueOf(2), new ArrayReducerOperator.Builder()
       .reducer(ArrayReducerOperator.ANSWER_COUNT)
-      .arrayExpression(ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"), ValueType.INTEGER))
+      .arrayExpression(CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q1"), ValueType.INTEGER))
       .placeholderValue(BigInteger.ZERO)
       .build().eval(context));
-    assertEquals(BigInteger.valueOf(0), ImmutableArrayReducerOperator.builder()
+    assertEquals(BigInteger.valueOf(0), new ArrayReducerOperator.Builder()
       .reducer(ArrayReducerOperator.ANSWER_COUNT)
-      .arrayExpression(ImmutableCollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"), ValueType.INTEGER))
+      .arrayExpression(CollectRowFieldsOperator.of(IdUtils.toId("rg.*.q3"), ValueType.INTEGER))
       .placeholderValue(BigInteger.ZERO)
       .build().eval(context));
   }
@@ -212,7 +212,7 @@ class CreateDialobSessionProgramVisitorTest {
       .id(itemId)
       .type("rowgroup")
       .isPrototype(false)
-      .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
+      .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Arrays.asList("a", "b")).build())
       .valueType(ValueType.arrayOf(ValueType.INTEGER))
       .build();
 
@@ -220,7 +220,7 @@ class CreateDialobSessionProgramVisitorTest {
       .id(new ItemIdPartial(itemId))
       .type("row")
       .isPrototype(true)
-      .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())
+      .itemsExpression(new RowItemsExpression.Builder().itemIds(List.of(IdUtils.toId("rg.*.q1"))).build())
       .build();
 
 

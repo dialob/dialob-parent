@@ -29,7 +29,7 @@ class GeOperatorTest {
   void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
-    GeOperator operator = ImmutableGeOperator.builder().lhs(lh).rhs(rh).build();
+    GeOperator operator = new GeOperator.Builder().lhs(lh).rhs(rh).build();
     EvalContext context = Mockito.mock(EvalContext.class);
 
     when(lh.eval(context)).thenReturn("1");

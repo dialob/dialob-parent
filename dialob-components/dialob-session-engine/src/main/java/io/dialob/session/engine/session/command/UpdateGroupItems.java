@@ -20,28 +20,33 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.List;
 import java.util.Set;
 
 
-@Value.Immutable
-public interface UpdateGroupItems extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
-
-  @Value.Parameter(order = 1)
-  Expression getExpression();
+record UpdateGroupItems(
+  ItemId targetId,
+  Expression expression,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return getExpression().getEvalRequiredConditions();
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateGroupItems(targetId, expression, triggers);
   }
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    List<ItemId> newItems = (List<ItemId>) getExpression().eval(context);
+  public Set<EventMatcher> eventMatchers() {
+    return this.expression().getEvalRequiredConditions();
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+    List<ItemId> newItems = (List<ItemId>) this.expression().eval(context);
     return itemState.update().setItems(newItems).get();
   }
 

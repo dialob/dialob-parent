@@ -34,7 +34,7 @@ class NextPageTest {
 
   @Test
   void nextShouldNavigateToFirstActivePage() {
-    NextPage nextPage = CommandFactory.nextPage();
+    var nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
 
@@ -68,7 +68,7 @@ class NextPageTest {
 
   @Test
   void nextShouldNotNavigateIfOnLastPage() {
-    NextPage nextPage = CommandFactory.nextPage();
+    var nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
 
@@ -85,7 +85,7 @@ class NextPageTest {
 
   @Test
   void nextShouldNavigateToNextActivePage() {
-    NextPage nextPage = CommandFactory.nextPage();
+    var nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
     enableNext(context);
@@ -107,7 +107,7 @@ class NextPageTest {
 
   @Test
   void nextNotShouldNavigateToNextActivePageWhenNextIsDisabled() {
-    NextPage nextPage = CommandFactory.nextPage();
+    var nextPage = CommandFactory.nextPage();
     EvalContext context = Mockito.mock(EvalContext.class);
     ItemState activePage = Mockito.mock(ItemState.class);
     disableNext(context);

@@ -341,7 +341,7 @@ class DialobQuestionnaireSessionTest {
     QuestionnaireSession.DispatchActionsResult result = session.dispatchActions(List.of());
 
     // expect
-    assertNull(result.getActions().getActions());
+    assertNull(result.actions().getActions());
 
     assertNotNull(session.getDialobSession().getCompleted());
     assertEquals(1L, session.getDialobSession().getOpened().toEpochMilli());

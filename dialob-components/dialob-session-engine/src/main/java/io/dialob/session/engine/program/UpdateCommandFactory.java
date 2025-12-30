@@ -52,51 +52,51 @@ class UpdateCommandFactory {
     return Collections.unmodifiableSet(allCommands);
   }
 
-  public VariableUpdateCommand createUpdateVariable(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateVariable(@NonNull ItemId id, @NonNull Expression expression) {
     return add(variableUpdateCommand(id, expression));
   }
 
-  public UpdateClassNames createUpdateClass(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateClass(@NonNull ItemId id, @NonNull Expression expression) {
     return add(updateClassNames(id, expression));
   }
 
-  public UpdateLabelCommand createUpdateLabel(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateLabel(@NonNull ItemId id, @NonNull Expression expression) {
     return add(labelUpdate(id, expression));
   }
 
-  public UpdateDescriptionCommand createUpdateDescription(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateDescription(@NonNull ItemId id, @NonNull Expression expression) {
     return add(descriptionUpdate(id, expression));
   }
 
-  public UpdateDisabledCommand createUpdateDisabled(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateDisabled(@NonNull ItemId id, @NonNull Expression expression) {
     return add(updateDisabled(id, expression));
   }
 
-  public UpdateActivityCommand createUpdateActivity(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateActivity(@NonNull ItemId id, @NonNull Expression expression) {
     return add(activityUpdate(id, expression));
   }
 
-  public UpdateRowsCanBeAddedCommand createUpdateRowsCanBeAddedCommand(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateRowsCanBeAddedCommand(@NonNull ItemId id, @NonNull Expression expression) {
     return add(rowsCanBeAddedUpdate(id, expression));
   }
 
-  public UpdateRowCanBeRemovedCommand createUpdateRowCanBeRemovedCommand(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateRowCanBeRemovedCommand(@NonNull ItemId id, @NonNull Expression expression) {
     return add(rowCanBeRemovedUpdate(id, expression));
   }
 
-  public UpdateRequiredCommand createUpdateRequired(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateRequired(@NonNull ItemId id, @NonNull Expression expression) {
     return add(requiredUpdate(id, expression));
   }
 
-  public UpdateAllowedActionsCommand createUpdateAllowedActions(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateAllowedActions(@NonNull ItemId id, @NonNull Expression expression) {
     return add(allowedActionsUpdate(id, expression));
   }
 
-  public UpdateIsInvalidAnswersCommand createUpdateIsInvalidAnswersCommand(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateIsInvalidAnswersCommand(@NonNull ItemId id, @NonNull Expression expression) {
     return add(updateIsInvalidAnswers(id, expression));
   }
 
-  public UpdateAvailableItemsCommand createUpdateAvailableItems(@NonNull ItemId id, @NonNull Expression expression) {
+  public ItemUpdateCommand createUpdateAvailableItems(@NonNull ItemId id, @NonNull Expression expression) {
     return add(availableItemsUpdate(id, expression));
   }
 
@@ -104,17 +104,17 @@ class UpdateCommandFactory {
     return add(updateGroupItems(groupId, expression));
   }
 
-  public ValidationDisabledUpdateCommand createUpdateValidationDisabled(@NonNull ErrorId targetId, @NonNull Expression expression) {
+  public ErrorUpdateCommand createUpdateValidationDisabled(@NonNull ErrorId targetId, @NonNull Expression expression) {
     return add(validationDisabledUpdate(targetId, expression));
   }
 
-  public UpdateValidationCommand createUpdateValidationCommand(@NonNull ErrorId targetId, @NonNull Expression expression) {
+  public ErrorUpdateCommand createUpdateValidationCommand(@NonNull ErrorId targetId, @NonNull Expression expression) {
     assert !targetIds.contains(targetId);
     targetIds.add(targetId);
     return add(updateValidationCommand(targetId, expression));
   }
 
-  public ErrorLabelUpdateCommand createErrorLabelUpdateCommand(@NonNull ErrorId targetId, @NonNull Expression expression) {
+  public ErrorUpdateCommand createErrorLabelUpdateCommand(@NonNull ErrorId targetId, @NonNull Expression expression) {
     return add(errorLabelUpdateCommand(targetId, expression));
   }
 
@@ -126,11 +126,11 @@ class UpdateCommandFactory {
     return add(createRowGroupItemsFromPrototypeCommand(rowGroupPrototypeId, itemIds));
   }
 
-  public InitRowGroupItemsCommand initRowGroupItems(ItemId groupId) {
+  public ItemUpdateCommand initRowGroupItems(ItemId groupId) {
     return add(initRowGroupItemsCommand(groupId));
   }
 
-  public UpdateValueSetCommand createUpdateValueSetCommand(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
+  public ValueSetUpdateCommand createUpdateValueSetCommand(ValueSetId valueSetId, List<Value<ValueSet.Entry>> entries) {
     return add(updateValueSet(valueSetId, entries));
   }
 

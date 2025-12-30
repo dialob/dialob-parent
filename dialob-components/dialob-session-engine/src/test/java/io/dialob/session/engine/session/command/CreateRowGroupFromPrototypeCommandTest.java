@@ -16,8 +16,8 @@
 package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.command.event.ImmutableItemsChangedEvent;
-import io.dialob.session.engine.session.command.event.ImmutableTargetEvent;
+import io.dialob.session.engine.session.command.event.ItemsChangedEvent;
+import io.dialob.session.engine.session.command.event.TargetEvent;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
@@ -45,12 +45,12 @@ class CreateRowGroupFromPrototypeCommandTest {
     ItemState groupState2 = Mockito.mock(ItemState.class);
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
     when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.empty());
-    when(states.getItemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*"), Collections.emptyList());
+    when(states.itemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemStates newStates = command.update(context, states);
     Assertions.assertSame(states, newStates);
 
-    verify(states, times(1)).getItemStates();
+    verify(states, times(1)).itemStates();
     verify(context).getOriginalItemState(IdUtils.toId("g1"));
     verify(context).findPrototype(IdUtils.toId("g1.*"));
     verifyNoMoreInteractions(context, states);
@@ -63,9 +63,9 @@ class CreateRowGroupFromPrototypeCommandTest {
     ItemStates states = Mockito.mock(ItemStates.class);
     ItemState groupState1 = Mockito.mock(ItemState.class);
     ItemState groupState2 = Mockito.mock(ItemState.class);
-    when(states.getErrorStates()).thenReturn(Collections.emptyMap());
-    when(states.getItemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
-    when(states.getValueSetStates()).thenReturn(Collections.emptyMap());
+    when(states.errorStates()).thenReturn(Collections.emptyMap());
+    when(states.itemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
+    when(states.valueSetStates()).thenReturn(Collections.emptyMap());
     when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("g1.*"), null, "text", null, true, null, null, null, null, null)));
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
     when(groupState1.getItems()).thenReturn(List.of());
@@ -73,14 +73,14 @@ class CreateRowGroupFromPrototypeCommandTest {
     when(groupState1.getId()).thenReturn(IdUtils.toId("g1"));
     when(groupState2.getId()).thenReturn(IdUtils.toId("g1"));
 
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemStates newStates = command.update(context, states);
     assertNotSame(states, newStates);
-    assertTrue(newStates.getItemStates().containsKey(IdUtils.toId("g1.0")));
+    assertTrue(newStates.itemStates().containsKey(IdUtils.toId("g1.0")));
 
-    verify(states).getErrorStates();
-    verify(states, times(3)).getItemStates();
-    verify(states).getValueSetStates();
+    verify(states).errorStates();
+    verify(states, times(3)).itemStates();
+    verify(states).valueSetStates();
     verify(context).findPrototype(IdUtils.toId("g1.*"));
     verify(context).getOriginalItemState(IdUtils.toId("g1"));
     verifyNoMoreInteractions(context, states);
@@ -90,18 +90,18 @@ class CreateRowGroupFromPrototypeCommandTest {
   @Test
   @Disabled
   void eventMatcherShouldReactOnItemsChangedEvent() {
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*.q1"));
     Assertions.assertTrue(
-      command.getEventMatchers().stream()
-        .anyMatch(eventMatcher -> eventMatcher.matches(ImmutableItemsChangedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("g1.0"))))));
+      command.eventMatchers().stream()
+        .anyMatch(eventMatcher -> eventMatcher.matches(ItemsChangedEvent.of(TargetEvent.of(IdUtils.toId("g1.0"))))));
   }
 
   @Test
   void eventMatcherShouldNotReactOnItemsChangedEventOfDifferentGroup() {
-    CreateRowGroupFromPrototypeCommand command = ImmutableCreateRowGroupFromPrototypeCommand.of(IdUtils.toId("g1.*.q1"), Collections.emptyList());
+    var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*.q1"));
     Assertions.assertFalse(
-      command.getEventMatchers().stream()
-        .anyMatch(eventMatcher -> eventMatcher.matches(ImmutableItemsChangedEvent.of(ImmutableTargetEvent.of(IdUtils.toId("g2"))))));
+      command.eventMatchers().stream()
+        .anyMatch(eventMatcher -> eventMatcher.matches(ItemsChangedEvent.of(TargetEvent.of(IdUtils.toId("g2"))))));
   }
 
 

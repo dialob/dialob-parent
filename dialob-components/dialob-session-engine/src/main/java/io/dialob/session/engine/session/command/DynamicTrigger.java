@@ -17,21 +17,24 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.Event;
-import org.immutables.value.Value;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
-@Value.Immutable
-public interface DynamicTrigger<T> extends Trigger<T> {
+record DynamicTrigger<T>(
+  @NonNull
+  BiPredicate<T, T> when,
 
-  @Value.Parameter
-  @Override
-  BiPredicate<T,T> getWhen();
+  @NonNull
+  Triggers.EventsProvider<T> eventsProvider
+) implements Trigger<T> {
 
-  @Value.Parameter
-  Triggers.EventsProvider<T> getEventsProvider();
+  public DynamicTrigger {
+    when = Objects.requireNonNull(when, "when may not be null");
+    eventsProvider = Objects.requireNonNull(eventsProvider, "eventsProvider may not be null");
+  }
 
   /**
    * Return trigger action when trigger condition matches
@@ -42,12 +45,14 @@ public interface DynamicTrigger<T> extends Trigger<T> {
    */
   @NonNull
   @Override
-  default Stream<Event> apply(@NonNull T originalState, T updateState) {
-    return getWhen().test(originalState, updateState) ? getEventsProvider().createEvents(originalState, updateState) : Stream.empty();
+  public Stream<Event> apply(@NonNull T originalState, T updateState) {
+    return when.test(originalState, updateState) ? eventsProvider().createEvents(originalState, updateState) : Stream.empty();
   }
 
-  default List<Event> getAllEvents() {
-    return getEventsProvider().createEvents(null, null).toList();
+  @NonNull
+  @Override
+  public List<Event> allEvents() {
+    return eventsProvider.createEvents(null, null).toList();
   }
 
 }

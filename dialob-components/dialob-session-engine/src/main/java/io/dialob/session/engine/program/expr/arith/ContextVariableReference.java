@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
@@ -25,23 +26,36 @@ import org.immutables.value.Value;
 import java.util.Collections;
 import java.util.Set;
 
-@Value.Immutable
-public interface ContextVariableReference<T> extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ContextVariableReference<T>(
+  ItemId itemId,
+  ValueType valueType
+) implements Expression {
 
-  @Value.Parameter
+  public static final class Builder<T> extends ContextVariableReferenceBuilder<T> {}
+
   @NonNull
-  ItemId getItemId();
+  @Override
+  public ValueType getValueType() {
+    return valueType;
+  }
 
   // Context variables are assumed to be constant and no updates expected.
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return Collections.emptySet();
   }
 
   @Override
-  default T eval(@NonNull EvalContext evalContext) {
-    return (T) evalContext.getItemValue(getItemId());
+  public T eval(@NonNull EvalContext evalContext) {
+    return (T) evalContext.getItemValue(itemId());
   }
 
 }

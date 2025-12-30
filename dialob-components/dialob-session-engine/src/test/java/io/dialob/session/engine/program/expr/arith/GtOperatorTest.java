@@ -30,7 +30,7 @@ class GtOperatorTest {
   void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
-    GtOperator operator = ImmutableGtOperator.builder().lhs(lh).rhs(rh).build();
+    GtOperator operator = new GtOperator.Builder().lhs(lh).rhs(rh).build();
     EvalContext context = Mockito.mock(EvalContext.class);
 
     when(lh.eval(context)).thenReturn("1");

@@ -16,9 +16,9 @@
 package io.dialob.session.engine.session.command.event;
 
 import io.dialob.session.engine.session.model.ErrorId;
-import org.immutables.value.Value;
 
 public interface ErrorEvent extends Event {
-  @Value.Parameter
-  ErrorId getErrorId();
+
+  ErrorId errorId();
+
 }

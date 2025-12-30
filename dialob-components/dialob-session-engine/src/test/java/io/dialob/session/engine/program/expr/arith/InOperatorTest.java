@@ -36,7 +36,7 @@ class InOperatorTest {
     when(lhs.eval(context)).thenReturn("b");
     when(rhs.eval(context)).thenReturn((List.of("b")));
 
-    ImmutableInOperator op = ImmutableInOperator.builder()
+    var op = new InOperator.Builder()
       .lhs(lhs)
       .rhs(rhs)
       .build();
@@ -58,7 +58,7 @@ class InOperatorTest {
     when(lhs.eval(context)).thenReturn("b");
     when(rhs.eval(context)).thenReturn((List.of("c")));
 
-    ImmutableInOperator op = ImmutableInOperator.builder()
+    InOperator op = new InOperator.Builder()
       .lhs(lhs)
       .rhs(rhs)
       .build();

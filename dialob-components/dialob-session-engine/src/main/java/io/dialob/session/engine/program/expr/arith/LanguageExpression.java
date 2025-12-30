@@ -20,28 +20,34 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
-import org.immutables.value.Value;
 
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenSessionLocaleUpdated;
 
-@Value.Immutable
-public interface LanguageExpression extends Expression {
+public record LanguageExpression() implements Expression {
+
+  private static final Expression INSTANCE = new LanguageExpression();
+
+  public static Expression instance() {
+    return INSTANCE;
+  }
+
+
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     return evalContext.getLanguage();
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return Set.of(whenSessionLocaleUpdated());
   }
 

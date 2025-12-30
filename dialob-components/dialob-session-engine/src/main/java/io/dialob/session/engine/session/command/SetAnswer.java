@@ -16,24 +16,29 @@
 package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
-@Value.Immutable
-public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
+import java.util.List;
 
-  @Value.Parameter(order = 1)
-  @Nullable
-  Object getAnswer();
+public record SetAnswer(
+  ItemId targetId,
+  Object answer,
+  List<Trigger<ItemState>> triggers
+) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
   @NonNull
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new SetAnswer(targetId, this.answer(), triggers);
+  }
+
+  @NonNull
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     if (canUpdate(context, itemState)) {
-      Object answer = getAnswer();
+      Object answer = this.answer();
       return itemState.update()
         .setAnswer(answer)
         .setValue(Utils.parse(itemState.getType(), answer)).get();
@@ -41,7 +46,7 @@ public interface SetAnswer extends AbstractUpdateCommand<ItemId, ItemState>, Ite
     return itemState;
   }
 
-  default boolean canUpdate(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public boolean canUpdate(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return ( context.isActivating() || !itemState.isDisabled() && itemState.isActive() ) && Utils.isQuestionType(itemState);
   }
 

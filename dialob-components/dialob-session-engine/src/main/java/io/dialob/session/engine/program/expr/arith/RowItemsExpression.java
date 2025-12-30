@@ -25,20 +25,27 @@ import org.immutables.value.Value;
 import java.util.Collection;
 import java.util.List;
 
-@Value.Immutable
-public interface RowItemsExpression extends Expression {
-
-  List<ItemId> getItemIds();
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record RowItemsExpression(
+  List<ItemId> itemIds
+) implements Expression {
+  public static final class Builder extends RowItemsExpressionBuilder {}
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.arrayOf(ValueType.STRING);
   }
 
   @Override
-  default Collection<ItemId> eval(@NonNull EvalContext evalContext) {
-    return getItemIds().stream().map(itemId -> evalContext.mapTo(itemId, true)).toList();
+  public Collection<ItemId> eval(@NonNull EvalContext evalContext) {
+    return itemIds().stream().map(itemId -> evalContext.mapTo(itemId, true)).toList();
   }
 
 }

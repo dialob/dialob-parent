@@ -20,7 +20,6 @@ import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemId;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -28,17 +27,16 @@ import java.util.Set;
 
 public interface ErrorUpdateCommand extends UpdateCommand<ErrorId,ErrorState> {
 
-  @Value.Parameter(order = 1)
-  Expression getExpression();
+  Expression expression();
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
-    if (getTargetId().isPartial()) {
+  default Set<EventMatcher> eventMatchers() {
+    Set<EventMatcher> eventMatchers = expression().getEvalRequiredConditions();
+    if (targetId().isPartial()) {
       var builder = new HashSet<>(eventMatchers);
-      builder.add(EventMatchers.whenItemAdded(getTargetId().itemId()));
-      findConcreteItem(getTargetId()).map(EventMatchers::whenItemsChanged).ifPresent(builder::add);
+      builder.add(EventMatchers.whenItemAdded(targetId().itemId()));
+      findConcreteItem(targetId()).map(EventMatchers::whenItemsChanged).ifPresent(builder::add);
       return Set.copyOf(builder);
     }
     return eventMatchers;

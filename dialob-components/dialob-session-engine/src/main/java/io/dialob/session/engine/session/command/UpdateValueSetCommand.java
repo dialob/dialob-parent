@@ -29,19 +29,26 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@org.immutables.value.Value.Immutable
-public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSetState> {
-
-  @org.immutables.value.Value.Parameter(order = 1)
-  List<Value<ValueSet.Entry>> getEntries();
+record UpdateValueSetCommand(
+  ValueSetId targetId,
+  List<Value<ValueSet.Entry>> entries,
+  List<Trigger<ValueSetState>> triggers
+) implements ValueSetUpdateCommand {
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    return getEntries().stream().flatMap(entryValue -> {
+  public UpdateCommand<ValueSetId, ValueSetState> withTargetId(@NonNull ValueSetId targetId) {
+    return new UpdateValueSetCommand(targetId, entries, triggers);
+  }
+
+
+  @NonNull
+  @Override
+  public Set<EventMatcher> eventMatchers() {
+    return entries().stream().flatMap(entryValue -> {
       Stream<EventMatcher> eventMatchers = Stream.empty();
       if (entryValue instanceof ConditionalValue conditionalValue) {
-        eventMatchers = conditionalValue.getWhen().getEvalRequiredConditions().stream();
+        eventMatchers = conditionalValue.when().getEvalRequiredConditions().stream();
       }
       // TODO collect label expressions
       return Stream.concat(Stream.of(EventMatchers.whenSessionLocaleUpdated()), eventMatchers);
@@ -50,13 +57,13 @@ public interface UpdateValueSetCommand extends UpdateCommand<ValueSetId, ValueSe
 
   @NonNull
   @Override
-  default ValueSetState update(@NonNull EvalContext context, @NonNull ValueSetState state) {
+  public ValueSetState update(@NonNull EvalContext context, @NonNull ValueSetState state) {
     final List<ValueSetState.Entry> entries =
       Stream.concat(
-          this.getEntries().stream()
+          this.entries().stream()
             .map(entryValue -> entryValue.eval(context))
             .filter(Objects::nonNull)
-            .map(entry -> ValueSetState.Entry.of(entry.getKey(), (String) entry.getLabel().eval(context))),
+            .map(entry -> ValueSetState.Entry.of(entry.key(), (String) entry.label().eval(context))),
           state.getEntries().stream().filter(ValueSetState.Entry::isProvided))
         .toList();
     return state.update().setEntries(entries).get();

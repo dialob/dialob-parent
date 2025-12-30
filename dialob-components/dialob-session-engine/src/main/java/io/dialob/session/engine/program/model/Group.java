@@ -15,26 +15,110 @@
  */
 package io.dialob.session.engine.program.model;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.session.model.ItemId;
 import org.immutables.value.Value;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-@Value.Immutable
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
-public interface Group extends DisplayItem {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record Group(
+  ItemId id,
+  @Nullable String view,
+  Map<String, @org.checkerframework.checker.nullness.qual.Nullable Object> props,
+  String type,
+  @Nullable ValueType valueType,
+  @Nullable String valueSetId,
+  List<Error> errors,
+  @Nullable Expression className,
+  @Nullable Expression activeExpression,
+  @Nullable Expression requiredExpression,
+  @Nullable Expression labelExpression,
+  @Nullable Expression descriptionExpression,
+  @Nullable Expression disabledExpression,
 
-  class Builder extends ImmutableGroup.Builder { }
+  @Nullable Expression itemsExpression,
+  @Nullable Expression availableItemsExpression,
+  @Nullable Expression isInvalidAnswersExpression,
+  @Nullable Expression allowedActionsExpression,
+  @Nullable Expression canAddRowWhenExpression,
+  @Nullable Expression canRemoveRowWhenExpression,
 
-  Expression getItemsExpression();
+  @Value.Default.Boolean(false)
+  boolean isPrototype
+) implements DisplayItem {
 
-  Optional<Expression> getAvailableItemsExpression();
+  public static final class Builder extends GroupBuilder {
+  }
 
-  Optional<Expression> getIsInvalidAnswersExpression();
 
-  Optional<Expression> getAllowedActionsExpression();
+  @Override
+  public Optional<Expression> classNameOptional() {
+    return Optional.ofNullable(className);
+  }
 
-  Optional<Expression> getCanAddRowWhenExpression();
+  @Override
+  public Optional<Expression> activeExpressionOptional() {
+    return Optional.ofNullable(activeExpression);
+  }
 
-  Optional<Expression> getCanRemoveRowWhenExpression();
+  @Override
+  public Optional<Expression> requiredExpressionOptional() {
+    return Optional.ofNullable(requiredExpression());
+  }
+
+  @Override
+  public Optional<Expression> disabledExpressionOptional() {
+    return Optional.ofNullable(disabledExpression);
+  }
+
+  @Override
+  public Optional<Expression> labelExpressionOptional() {
+    return Optional.ofNullable(labelExpression);
+  }
+
+  @Override
+  public Optional<Expression> descriptionExpressionOptional() {
+    return Optional.ofNullable(descriptionExpression);
+  }
+
+  @Override
+  public Optional<String> valueSetIdOptional() {
+    return Optional.ofNullable(valueSetId);
+  }
+
+  @Override
+  public Optional<Object> defaultValueOptional() {
+    return Optional.empty();
+  }
+
+  public Optional<Expression> availableItemsExpressionOptional() {
+    return Optional.ofNullable(availableItemsExpression());
+  }
+
+  public Optional<Expression> isInvalidAnswersExpressionOptional() {
+    return Optional.ofNullable(isInvalidAnswersExpression());
+  }
+
+  public Optional<Expression> allowedActionsExpressionOptional() {
+    return Optional.ofNullable(allowedActionsExpression());
+  }
+
+  public Optional<Expression> canAddRowWhenExpressionOptional() {
+    return Optional.ofNullable(canAddRowWhenExpression());
+  }
+
+  public Optional<Expression> canRemoveRowWhenExpressionOptional() {
+    return Optional.ofNullable(canRemoveRowWhenExpression());
+  }
 
 }

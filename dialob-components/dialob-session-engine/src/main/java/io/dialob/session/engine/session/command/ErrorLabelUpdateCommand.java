@@ -17,30 +17,41 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ErrorState;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-@Value.Immutable
-public interface ErrorLabelUpdateCommand extends ErrorUpdateCommand {
+record ErrorLabelUpdateCommand(
+  ErrorId targetId,
+  Expression expression,
+  List<Trigger<ErrorState>> triggers
+) implements ErrorUpdateCommand {
 
   @NonNull
   @Override
-  default ErrorState update(@NonNull EvalContext context, @NonNull ErrorState errorState) {
-    // label update will not trigger additional expressions
-    return errorState.update(context)
-      .setLabel((String) getExpression().eval(context)).get();
+  public UpdateCommand<ErrorId, ErrorState> withTargetId(@NonNull ErrorId targetId) {
+    return new ErrorLabelUpdateCommand(targetId, expression(), triggers);
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    var set = new HashSet<>(getExpression().getEvalRequiredConditions());
+  public ErrorState update(@NonNull EvalContext context, @NonNull ErrorState errorState) {
+    // label update will not trigger additional expressions
+    return errorState.update(context)
+      .setLabel((String) expression().eval(context)).get();
+  }
+
+  @NonNull
+  @Override
+  public Set<EventMatcher> eventMatchers() {
+    var set = new HashSet<>(expression().getEvalRequiredConditions());
     set.add(EventMatchers.whenSessionLocaleUpdated());
-    if (getTargetId().isPartial()) {
-      set.add(EventMatchers.whenItemAdded(getTargetId().itemId()));
+    if (targetId().isPartial()) {
+      set.add(EventMatchers.whenItemAdded(targetId().itemId()));
     }
     return Set.copyOf(set);
   }

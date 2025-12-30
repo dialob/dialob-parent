@@ -18,30 +18,28 @@ package io.dialob.session.engine.session.command.event;
 import io.dialob.session.engine.session.command.Triggers;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemStates;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@Value.Immutable
-public interface RowItemsRemovedEventsProvider extends Triggers.EventsProvider<ItemStates> {
+public record RowItemsRemovedEventsProvider(
+  ItemId itemPrototypeId
+) implements Triggers.EventsProvider<ItemStates> {
 
-  @Value.Parameter
-  ItemId getRowProtoTypeId();
-
-  default Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState){
+  @Override
+  public Stream<Event> createEvents(ItemStates originalState, ItemStates updatedState){
     if (originalState == null && updatedState == null) {
-      return Stream.of(ImmutableItemRemovedEvent.of(getRowProtoTypeId()));
+      return Stream.of(new ItemRemovedEvent(this.itemPrototypeId()));
     }
     if (originalState == null) {
       return Stream.empty();
     }
-    Set<ItemId> removedItems = originalState.getItemStates().keySet();
+    Set<ItemId> removedItems = originalState.itemStates().keySet();
     if (updatedState != null) {
       removedItems = new HashSet<>(removedItems);
-      removedItems.removeAll(updatedState.getItemStates().keySet());
+      removedItems.removeAll(updatedState.itemStates().keySet());
     }
-    return removedItems.stream().map(ImmutableItemRemovedEvent::of);
+    return removedItems.stream().map(ItemRemovedEvent::new);
   }
 }

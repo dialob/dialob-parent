@@ -15,9 +15,20 @@
  */
 package io.dialob.session.engine.session.command;
 
-import org.immutables.value.Value;
+import io.dialob.session.engine.session.command.event.Event;
 
-@Value.Immutable
-public interface StaticTrigger<T> extends Trigger<T> {
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+
+record StaticTrigger<T>(
+  BiPredicate<T, T> when,
+  List<Event> allEvents
+) implements Trigger<T> {
+
+  public StaticTrigger {
+    when = Objects.requireNonNull(when, "when may not be null");
+    allEvents = List.copyOf(Objects.requireNonNull(allEvents, "allEvents may not be null"));
+  }
 
 }

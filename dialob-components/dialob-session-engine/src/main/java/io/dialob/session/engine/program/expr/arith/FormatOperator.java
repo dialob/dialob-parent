@@ -25,35 +25,44 @@ import org.immutables.value.Value;
 
 import java.util.Set;
 
-@Value.Immutable
-public interface FormatOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record FormatOperator(
+  Expression expression,
+  String format
+) implements Expression {
 
-  @Value.Parameter
-  Expression getExpression();
+  public static class Builder extends FormatOperatorBuilder {}
 
-  @Value.Parameter
-  String getFormat();
+  public static FormatOperator of(@NonNull Expression expression, String format) {
+    return new FormatOperator.Builder().expression(expression).format(format).build();
+  }
 
   @Override
-  default String eval(@NonNull EvalContext context) {
-    Object eval = getExpression().eval(context);
+  public String eval(@NonNull EvalContext context) {
+    Object eval = expression().eval(context);
     if (eval == null) {
       return null;
     }
-    OutputFormatter outputFormatter = new OutputFormatter(context.getLanguage());
-    return outputFormatter.format(eval, getFormat());
+    var outputFormatter = new OutputFormatter(context.getLanguage());
+    return outputFormatter.format(eval, format());
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return getExpression().getEvalRequiredConditions();
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return expression().getEvalRequiredConditions();
   }
 
 }

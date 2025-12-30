@@ -190,7 +190,7 @@ public abstract class AbstractDialobProgramTest {
 
 
   protected void assertErrorInactive(final DialobSession session, final ItemId itemId, final String errorCode) {
-    final Collection<ErrorState> errorStates = session.getErrorStates().values();
+    final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
       if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && errorState.isActive()) {
         Assertions.fail("Error " + itemId + "." + errorCode + " active");
@@ -199,7 +199,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   protected void assertErrorDisabled(final DialobSession session, final ItemId itemId, final String errorCode) {
-    final Collection<ErrorState> errorStates = session.getErrorStates().values();
+    final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
       if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && !errorState.isDisabled()) {
         Assertions.fail("Error " + itemId + "." + errorCode + " disabled");
@@ -208,7 +208,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   protected void assertErrorEnabled(final DialobSession session, final ItemId itemId, final String errorCode) {
-    final Collection<ErrorState> errorStates = session.getErrorStates().values();
+    final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
       if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && errorState.isDisabled()) {
         Assertions.fail("Error " + itemId + "." + errorCode + " disabled");
@@ -217,7 +217,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   protected void assertErrorActive(final DialobSession session, final ItemId itemId, final String errorCode) {
-    final Collection<ErrorState> errorStates = session.getErrorStates().values();
+    final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
       if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && errorState.isActive()) {
         return;
@@ -238,7 +238,7 @@ public abstract class AbstractDialobProgramTest {
 
 
   protected void assertErrorLabel(final DialobSession session, final ItemId itemId, final String errorCode, String label) {
-    final Collection<ErrorState> errorStates = session.getErrorStates().values();
+    final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
       if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode)) {
         Assertions.assertEquals(label, errorState.getLabel());

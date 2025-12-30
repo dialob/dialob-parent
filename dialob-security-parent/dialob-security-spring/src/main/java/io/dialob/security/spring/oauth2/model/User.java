@@ -20,77 +20,40 @@ import org.immutables.value.Value;
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-@Value.Immutable
-public interface User extends Serializable {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record User(
+  String id,
+  String userName,
+  @Nullable String displayName,
+  @Nullable String firstName,
+  @Nullable String lastName,
+  @Nullable String email,
+  @Nullable Locale locale,
+  @Nullable ZoneId zoneId,
+  boolean anonymous,
+  List<Group> groups,
+  Map<String, String> attributes
+) implements Serializable {
 
-  /**
-   * @return Unique user identifier. "sub" from external systems
-   */
-  String getId();
+  public static final class Builder extends UserBuilder {}
 
-  /**
-   * @return User login id. Eg. email address
-   */
-  String getUserName();
-
-  default String getUserId() {
-    return getUserName();
-  }
-
-  @Value.Default
-  @Nullable
-  default String getDisplayName() {
-    return null;
-  }
-
-  @Value.Default
-  @Nullable
-  default String getFirstName() {
-    return null;
-  }
-
-  @Value.Default
-  @Nullable
-  default String getLastName() {
-    return null;
-  }
-
-  @Value.Default
-  @Nullable
-  default String getEmail() {
-    return null;
-  }
-
-  @Value.Default
-  @Nullable
-  default Locale getLocale() {
-    return Locale.getDefault();
-  }
-
-  @Value.Default
-  @Nullable
-  default ZoneId getZoneId() {
-    return Clock.systemDefaultZone().getZone();
-  }
-
-  @Value.Default
-  default boolean isAnonymous() {
-    return false;
-  }
-
-  @Value.Default
-  default List<Group> getGroups() {
-    return Collections.emptyList();
-  }
-
-  @Value.Default
-  default Map<String,String> getAttributes() {
-    return Collections.emptyMap();
+  public User {
+    if (locale == null) {
+      locale = Locale.getDefault();
+    }
+    if (zoneId == null) {
+      zoneId = Clock.systemDefaultZone().getZone();
+    }
   }
 
 }

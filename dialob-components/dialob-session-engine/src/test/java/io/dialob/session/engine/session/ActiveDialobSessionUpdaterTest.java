@@ -21,8 +21,8 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.expr.arith.ImmutableConstant;
-import io.dialob.session.engine.program.expr.arith.ImmutableContextVariableReference;
+import io.dialob.session.engine.program.expr.arith.Constant;
+import io.dialob.session.engine.program.expr.arith.ContextVariableReference;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.Program;
 import io.dialob.session.engine.program.model.VariableItem;
@@ -51,9 +51,9 @@ class ActiveDialobSessionUpdaterTest {
         .id(IdUtils.toId("c1"))
         .isPrototype(false)
         .type("context")
-        .valueExpression(ImmutableContextVariableReference.builder().itemId(IdUtils.toId("c1")).valueType(ValueType.STRING).build())
+        .valueExpression(new ContextVariableReference.Builder<>().itemId(IdUtils.toId("c1")).valueType(ValueType.STRING).build())
         .build())
-      .rootItem(new Group.Builder().id(IdUtils.QUESTIONNAIRE_ID).type("questionnaire").itemsExpression(ImmutableConstant.builder().valueType(ValueType.STRING).value(emptyList()).build()).build())
+      .rootItem(new Group.Builder().id(IdUtils.QUESTIONNAIRE_ID).type("questionnaire").itemsExpression(Constant.builder().valueType(ValueType.STRING).value(emptyList()).build()).build())
       .build());
 
     //String tenantId, final String sessionId, final String language, String activePage

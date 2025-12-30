@@ -21,32 +21,36 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.command.EventMatcher;
 import io.dialob.session.engine.session.model.ErrorState;
-import org.immutables.value.Value;
 
 import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.anyError;
 import static io.dialob.session.engine.session.command.EventMatchers.errorActivity;
 
-@Value.Immutable
-public interface IsAnyInvalidAnswersOperator extends Expression {
+public record IsAnyInvalidAnswersOperator() implements Expression {
 
-  Set<EventMatcher> ANY_ERROR = Set.of(errorActivity(anyError()));
+  private static final Expression INSTANCE = new IsAnyInvalidAnswersOperator();
+
+  public static Expression instance() {
+    return INSTANCE;
+  }
+
+  public static final Set<EventMatcher> ANY_ERROR = Set.of(errorActivity(anyError()));
 
   @Override
-  default Boolean eval(@NonNull EvalContext context) {
+  public Boolean eval(@NonNull EvalContext context) {
     return context.getErrorStates().stream().anyMatch(ErrorState::isActive);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
+  public Set<EventMatcher> getEvalRequiredConditions() {
     return ANY_ERROR;
   }
 

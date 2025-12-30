@@ -24,15 +24,26 @@ import org.immutables.value.Value;
 
 import java.util.Set;
 
-@Value.Immutable
-public interface ToStringOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ToStringOperator(
+  Expression expression
+) implements Expression {
 
-  @Value.Parameter
-  Expression getExpression();
+  public static class Builder extends ToStringOperatorBuilder {}
+
+  public static ToStringOperator of(@NonNull Expression expression) {
+    return new ToStringOperator.Builder().expression(expression).build();
+  }
 
   @Override
-  default String eval(@NonNull EvalContext context) {
-    Object eval = getExpression().eval(context);
+  public String eval(@NonNull EvalContext context) {
+    Object eval = expression().eval(context);
     if (eval == null) {
       return null;
     }
@@ -41,14 +52,14 @@ public interface ToStringOperator extends Expression {
 
   @Override
   @NonNull
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.STRING;
   }
 
   @Override
   @NonNull
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return getExpression().getEvalRequiredConditions();
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return expression().getEvalRequiredConditions();
   }
 
 }

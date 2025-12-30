@@ -30,99 +30,109 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 
-@Value.Immutable
-public interface ArrayReducerOperator<T> extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record ArrayReducerOperator<T>(
+  BinaryOperator<T> reducer,
 
+  Expression arrayExpression,
 
-  @Value.Parameter
-  BinaryOperator<T> getReducer();
-
-  @Value.Parameter
-  Expression getArrayExpression();
-
-  @Value.Default
   @Nullable
-  default Object getPlaceholderValue() {
-    return null;
+  Object placeholderValue
+
+) implements Expression {
+
+  public static final class Builder<T> extends ArrayReducerOperatorBuilder<T> {}
+
+  public static <OT> Expression of(BinaryOperator<OT> binaryOperator, CollectRowFieldsOperator of) {
+    return new ArrayReducerOperator.Builder<OT>()
+      .reducer(binaryOperator)
+      .arrayExpression(of)
+      .build();
   }
 
   @Nullable
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
-    final List<T> values = (List<T>) getArrayExpression().eval(evalContext);
+  public Object eval(@NonNull EvalContext evalContext) {
+    final List<T> values = (List<T>) arrayExpression().eval(evalContext);
     if (values == null) {
       return null;
     }
     return values
       .stream()
       .filter(Objects::nonNull)
-      .reduce(getReducer())
-      .orElse((T) getPlaceholderValue());
+      .reduce(reducer())
+      .orElse((T) placeholderValue());
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
-    return getArrayExpression().getValueType().getItemValueType();
+  public ValueType getValueType() {
+    return arrayExpression().getValueType().getItemValueType();
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return getArrayExpression().getEvalRequiredConditions();
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return arrayExpression().getEvalRequiredConditions();
   }
 
-  BinaryOperator<Object> ANSWER_COUNT = (result, element) -> {
+  public static final BinaryOperator<Object> ANSWER_COUNT = (result, element) -> {
     if (element != null) {
       return result == null ? 1 : ((BigInteger)result).add(BigInteger.ONE);
     }
     return result;
   };
-  BinaryOperator<BigInteger> INTEGER_SUM = (result, element) -> {
+  public static final BinaryOperator<BigInteger> INTEGER_SUM = (result, element) -> {
     if (element != null) {
       return result == null ? element : result.add(element);
     }
     return result;
   };
-  BinaryOperator<BigDecimal> DECIMAL_SUM = (result, element) -> {
+  public static final BinaryOperator<BigDecimal> DECIMAL_SUM = (result, element) -> {
     if (element != null) {
       return result == null ? element : result.add(element);
     }
     return result;
   };
-  BinaryOperator<BigInteger> INTEGER_MIN = (result, element) -> {
+  public static final BinaryOperator<BigInteger> INTEGER_MIN = (result, element) -> {
     if (element != null) {
       return result == null ? element : result.min(element);
     }
     return result;
   };
-  BinaryOperator<BigDecimal> DECIMAL_MIN = (result, element) -> {
+  public static final BinaryOperator<BigDecimal> DECIMAL_MIN = (result, element) -> {
     if (element != null) {
       return result == null ? element : result.min(element);
     }
     return result;
   };
-  BinaryOperator<BigInteger> INTEGER_MAX = (result, element) -> {
+  public static final BinaryOperator<BigInteger> INTEGER_MAX = (result, element) -> {
     if (element != null) {
       return result == null ? element : result.max(element);
     }
     return result;
   };
-  BinaryOperator<BigDecimal> DECIMAL_MAX = (result, element) -> {
+  public static final BinaryOperator<BigDecimal> DECIMAL_MAX = (result, element) -> {
     if (element != null) {
       return result == null ? element : result.max(element);
     }
     return result;
   };
 
-  BinaryOperator<Boolean> ANY = (result, element) -> {
+  public static final BinaryOperator<Boolean> ANY = (result, element) -> {
     if (element != null) {
       return result == null ? element : result || element;
     }
     return result;
   };
 
-  BinaryOperator<Boolean> ALL = (result, element) -> {
+  public static final BinaryOperator<Boolean> ALL = (result, element) -> {
     if (element != null) {
       return result == null ? element : result && element;
     }
@@ -131,7 +141,7 @@ public interface ArrayReducerOperator<T> extends Expression {
 
 
 
-  static BinaryOperator<? extends Number> sumOp(ValueType valueType) {
+  public static BinaryOperator<? extends Number> sumOp(ValueType valueType) {
     if (valueType == ValueType.INTEGER) {
       return INTEGER_SUM;
     }
@@ -141,7 +151,7 @@ public interface ArrayReducerOperator<T> extends Expression {
     return null;
   }
 
-  static BinaryOperator<? extends Number> minOp(ValueType valueType) {
+  public static BinaryOperator<? extends Number> minOp(ValueType valueType) {
     if (valueType == ValueType.INTEGER) {
       return INTEGER_MIN;
     }
@@ -151,7 +161,7 @@ public interface ArrayReducerOperator<T> extends Expression {
     return null;
   }
 
-  static BinaryOperator<? extends Number> maxOp(ValueType valueType) {
+  public static BinaryOperator<? extends Number> maxOp(ValueType valueType) {
     if (valueType == ValueType.INTEGER) {
       return INTEGER_MAX;
     }
@@ -162,14 +172,14 @@ public interface ArrayReducerOperator<T> extends Expression {
   }
 
 
-  static BinaryOperator<Boolean> allOp(ValueType valueType) {
+  public static BinaryOperator<Boolean> allOp(ValueType valueType) {
     if (valueType == ValueType.BOOLEAN) {
       return ALL;
     }
     return null;
   }
 
-  static BinaryOperator<Boolean> anyOp(ValueType valueType) {
+  public static BinaryOperator<Boolean> anyOp(ValueType valueType) {
     if (valueType == ValueType.BOOLEAN) {
       return ANY;
     }

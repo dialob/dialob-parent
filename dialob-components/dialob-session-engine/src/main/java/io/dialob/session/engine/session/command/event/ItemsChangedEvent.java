@@ -15,8 +15,12 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
+public record ItemsChangedEvent(
+  TargetEvent target
+) implements GroupEvent {
 
-@Value.Immutable
-public interface ItemsChangedEvent extends GroupEvent {
+  public static ItemsChangedEvent of(TargetEvent target) {
+    return new ItemsChangedEvent(target);
+  }
+
 }

@@ -17,16 +17,26 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 
-@Value.Immutable
-public interface UpdateDisabledCommand extends AbstractUpdateBooleanAttributeCommand {
+record UpdateDisabledCommand(
+  ItemId targetId,
+  Expression expression,
+  java.util.List<Trigger<ItemState>> triggers
+) implements AbstractUpdateBooleanAttributeCommand {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return new UpdateDisabledCommand(targetId, expression, triggers);
+  }
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     return itemState.update()
       .setDisabled(evalExpression(context)).get();
   }

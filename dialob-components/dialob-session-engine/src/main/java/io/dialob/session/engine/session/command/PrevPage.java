@@ -19,16 +19,16 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.List;
 
-@Value.Immutable
-public interface PrevPage extends AbstractPageCommand {
+record PrevPage(
+  List<Trigger<ItemState>> triggers
+) implements AbstractPageCommand {
 
   @NonNull
   @Override
-  default ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     List<ItemId> items = itemState.getItems();
     return itemState.getActivePage().map(itemRef -> {
       ItemId page = null;
@@ -41,4 +41,9 @@ public interface PrevPage extends AbstractPageCommand {
   }
 
 
+  @NonNull
+  @Override
+  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+    return this;
+  }
 }

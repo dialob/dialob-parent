@@ -26,7 +26,6 @@ import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.questionnaire.service.api.FormActionsUpdatesCallback;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
-import io.dialob.questionnaire.service.api.session.ImmutableQuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.utils.ConversionUtil;
 import io.dialob.rule.parser.api.ValueType;
@@ -138,7 +137,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         }
         dialobProgram.getItem(id)
           .filter(item -> item instanceof DisplayItem)
-          .map(item -> ((DisplayItem) item).getProps())
+          .map(item -> ((DisplayItem) item).props())
           .ifPresent(builder::props);
       }
       return builder;
@@ -292,7 +291,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public DispatchActionsResult dispatchActions(String revision, @NonNull Collection<Action> actions) {
-    var actionsResultBuilder = ImmutableQuestionnaireSession
+    var actionsResultBuilder = QuestionnaireSession
       .DispatchActionsResult.builder()
       .isDidComplete(false);
     var prevRevision = dialobSession.getRevision();
@@ -409,7 +408,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   }
 
   private Iterable<? extends ValueSet> getProvidedValueSets() {
-    return () -> dialobSession.getValueSetStates().values().stream().map(state ->
+    return () -> dialobSession.valueSetStates().values().stream().map(state ->
       (ValueSet) new ValueSet.Builder()
         .id(state.getId().getValueSetId())
         .entries(() -> state.getEntries().stream()
@@ -578,7 +577,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
             }
 
             dialobProgram.getItem(itemId).ifPresent(item -> {
-              ValueType valueType = item.getValueType();
+              ValueType valueType = item.valueType();
               if (valueType != null) {
                 answerBuilder.type(valueType.getName());
               }
@@ -688,7 +687,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public String getFormId() {
-    return dialobProgram.getProgram().getId();
+    return dialobProgram.getProgram().id();
   }
 
   @Override

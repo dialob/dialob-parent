@@ -30,7 +30,7 @@ class LeOperatorTest {
   void testLogic() {
     Expression lh = Mockito.mock(Expression.class);
     Expression rh = Mockito.mock(Expression.class);
-    LeOperator operator = ImmutableLeOperator.builder().lhs(lh).rhs(rh).build();
+    LeOperator operator = new LeOperator.Builder().lhs(lh).rhs(rh).build();
     EvalContext context = Mockito.mock(EvalContext.class);
 
     when(lh.eval(context)).thenReturn("1");

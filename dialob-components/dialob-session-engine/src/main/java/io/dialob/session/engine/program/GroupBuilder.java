@@ -19,7 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.proto.Action;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.ImmutableNotOnPageExpression;
+import io.dialob.session.engine.program.expr.NotOnPageExpression;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Group;
@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 
 public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilder> implements BuilderParent {
 
-  public static final Expression EMPTY_ARRAY_EXPRESSION = ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Collections.emptyList()).build();
+  public static final Expression EMPTY_ARRAY_EXPRESSION = Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(Collections.emptyList()).build();
   private List<ItemId> itemIds;
 
   private Expression canAddRowWhen = BooleanOperators.TRUE;
@@ -129,7 +129,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   public GroupBuilder setCanAddRowWhen(String canAddRowWhen) {
     if (StringUtils.isNotBlank(canAddRowWhen)) {
-      compileExpression(canAddRowWhen, this::setCanAddRowWhen, FormValidationError.Type.CANADDROW, getIndex());
+      compileExpression(canAddRowWhen, this::setCanAddRowWhen, FormValidationError.Type.CANADDROW, getIndex().orElse(null));
     }
     return this;
   }
@@ -142,7 +142,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
   public GroupBuilder setCanRemoveRowWhen(String canRemoveRowWhen) {
     if (StringUtils.isNotBlank(canRemoveRowWhen)) {
-      compileExpression(canRemoveRowWhen, this::setCanRemoveRowWhen, FormValidationError.Type.CANREMOVEROW, getIndex());
+      compileExpression(canRemoveRowWhen, this::setCanRemoveRowWhen, FormValidationError.Type.CANREMOVEROW, getIndex().orElse(null));
     }
     return this;
   }
@@ -189,9 +189,9 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
 
     getHoistingGroup().ifPresent(hoistingGroupBuilder -> {
       if (activeWhen == BooleanOperators.TRUE) {
-        activeWhen = ImmutableIsActiveOperator.builder().itemId(hoistingGroupBuilder.getId()).build();
+        activeWhen = new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build();
       } else {
-        activeWhen = Operators.and(ImmutableIsActiveOperator.builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
+        activeWhen = Operators.and(new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
       }
     });
 
@@ -204,47 +204,47 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .activeExpression(activeWhen)
       .canAddRowWhenExpression(canAddRowWhen)
       .canRemoveRowWhenExpression(canRemoveRowWhen)
-      .className(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(classNames).build())
+      .className(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(classNames).build())
       .labelExpression(createLabelOperator(label))
       .descriptionExpression(createLabelOperator(description))
       .props(props);
 
     builder = switch (type) {
-      case ROOT -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
-          .addItems(Pair.of(Operators.not(ImmutableIsOnFirstPage.builder().build()), Action.Type.PREVIOUS))
+      case ROOT -> builder.allowedActionsExpression(new ConditionalListOperator.Builder()
+          .addItems(Pair.of(Operators.not(IsOnFirstPage.instance()), Action.Type.PREVIOUS))
           .addItems(Pair.of(
-            Operators.and(Operators.not(ImmutableIsOnLastPage.builder().build()),
-              Operators.not(ImmutableIsInvalidAnswersOnActivePage.builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build()))
+            Operators.and(Operators.not(IsOnLastPage.instance()),
+              Operators.not(new IsInvalidAnswersOnActivePage.Builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build()))
             , Action.Type.NEXT))
-          .addItems(Pair.of(Operators.not(ImmutableIsAnyInvalidAnswersOperator.builder().build()), Action.Type.COMPLETE))
+          .addItems(Pair.of(Operators.not(IsAnyInvalidAnswersOperator.instance()), Action.Type.COMPLETE))
           .addItems(Pair.of(BooleanOperators.TRUE, Action.Type.ANSWER)
         ).build());
       // Disable page when it's not active
-      case PAGE -> builder.disabledExpression(Optional.of(ImmutableNotOnPageExpression.builder().page(id).build()));
-      case ROWGROUP -> builder.allowedActionsExpression(ImmutableConditionalListOperator.builder()
-          .addItems(Pair.of(ImmutableCanAddRowsOperator.of(id), Action.Type.ADD_ROW)
+      case PAGE -> builder.disabledExpression(new NotOnPageExpression.Builder().page(id).build());
+      case ROWGROUP -> builder.allowedActionsExpression(new ConditionalListOperator.Builder()
+          .addItems(Pair.of(CanAddRowsOperator.of(id), Action.Type.ADD_ROW)
           ).build())
-          .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+          .disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())).orElse(null));
       // TODO hoisting page??
       // Disable group when parent group is not active
-      case GROUP, SURVEYGROUP -> builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())));
+      case GROUP, SURVEYGROUP -> builder.disabledExpression(getHoistingGroup().map(hoistingGroup -> Operators.isDisabled(hoistingGroup.getId())).orElse(null));
     };
 
     if (type.haveSubItems()) {
         builder = builder
-          .itemsExpression(ImmutableConstant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(itemIds).build());
+          .itemsExpression(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(itemIds).build());
      }
 
     builder = (switch (type) {
       // nothing here
       case GROUP, PAGE -> builder;
       case SURVEYGROUP -> builder
-          .valueSetId(Optional.ofNullable(this.valueSetId));
+          .valueSetId(this.valueSetId);
       case ROWGROUP -> builder
           .valueType(ValueType.arrayOf(ValueType.INTEGER));
       case ROOT -> builder
-          .availableItemsExpression(ImmutableConditionalListOperator.<ItemId>builder().addAllItems(itemIds.stream().map(item -> Pair.of((Expression) ImmutableIsActiveOperator.of(item), item)).toList()).build())
-          .isInvalidAnswersExpression(ImmutableIsAnyInvalidAnswersOperator.builder().build());
+          .availableItemsExpression(new ConditionalListOperator.Builder<ItemId>().addAllItems(itemIds.stream().map(item -> Pair.of((Expression) IsActiveOperator.of(item), item)).toList()).build())
+          .isInvalidAnswersExpression(IsAnyInvalidAnswersOperator.instance());
     });
 
     getProgramBuilder().addItem(builder.build());
@@ -256,12 +256,12 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
         .type("row")
         .isPrototype(true)
         .valueType(null)
-        .itemsExpression(ImmutableRowItemsExpression.builder().itemIds(this.itemIds.stream().map(itemId -> {
+        .itemsExpression(new RowItemsExpression.Builder().itemIds(this.itemIds.stream().map(itemId -> {
           String id1 = itemId.getValue();
           return new ItemRef(id1, rowGroupPrototypeId);
         }).toList()).build())
-        .allowedActionsExpression(ImmutableConditionalListOperator.builder()
-            .addItems(Pair.of(ImmutableCanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
+        .allowedActionsExpression(new ConditionalListOperator.Builder()
+            .addItems(Pair.of(CanRemoveRowOperator.of(rowGroupPrototypeId), Action.Type.DELETE_ROW)
           ).build())
         .build()
       );

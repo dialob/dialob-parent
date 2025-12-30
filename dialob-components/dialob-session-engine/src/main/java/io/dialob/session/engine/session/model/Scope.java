@@ -16,20 +16,22 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
-@Value.Immutable
-public interface Scope extends Serializable {
-
+public record Scope(
   @NonNull
-  @Value.Parameter(order = -1000)
-  ItemId getScopeId();
+  ItemId scopeId,
 
-  @Value.Parameter
-  Set<ItemId> getScopeItems();
+  Set<ItemId> scopeItems
+
+) implements Serializable {
+
+  public static Scope of(@NonNull ItemId scopeId, Collection<ItemId> scopeItems) {
+    return new Scope(scopeId, Set.copyOf(scopeItems));
+  }
 
   /**
    * Maps item id to current evaluation scope. This is used to map plain row group item to current row.
@@ -38,23 +40,23 @@ public interface Scope extends Serializable {
    * @param ignoreScopeItems if mapped item id is not found from scope,
    * @return item id from this scope
    */
-  default ItemId mapTo(final ItemId itemId, final boolean ignoreScopeItems) {
-    return getScopeId().getParent().map(scopeParent -> {
+  public ItemId mapTo(final ItemId itemId, final boolean ignoreScopeItems) {
+    return this.scopeId().getParent().map(scopeParent -> {
       ItemId scopedId = itemId;
       if (itemId.getParent().isEmpty()){
         String id = itemId.getValue();
-        scopedId = new ItemRef(id, getScopeId());
+        scopedId = new ItemRef(id, this.scopeId());
       } else {
-        if (IdUtils.matches(itemId, getScopeId())) {
-          scopedId = getScopeId();
+        if (IdUtils.matches(itemId, this.scopeId())) {
+          scopedId = this.scopeId();
         } else if (itemId.isPartial() && itemId.getParent().isPresent()) {
           ItemId parentId = itemId.getParent().get();
-          if (IdUtils.matches(parentId, getScopeId())) {
-            scopedId = itemId.withParent(getScopeId());
+          if (IdUtils.matches(parentId, this.scopeId())) {
+            scopedId = itemId.withParent(this.scopeId());
           }
         }
       }
-      if (!ignoreScopeItems && !getScopeItems().contains(scopedId)) {
+      if (!ignoreScopeItems && !scopeItems().contains(scopedId)) {
         scopedId = itemId;
       }
       return scopedId;

@@ -18,9 +18,11 @@ package io.dialob.session.engine.session.command;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.*;
-import org.immutables.value.Value;
+import io.dialob.session.engine.session.model.ItemId;
+import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.engine.session.model.ItemStates;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,18 +30,24 @@ import static io.dialob.session.engine.session.command.EventMatchers.whenItemRem
 import static io.dialob.session.engine.session.command.EventMatchers.whenRowGroupItemsInit;
 import static java.util.stream.Collectors.toMap;
 
-@Value.Immutable
-public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCommand, UpdateCommand<ItemId, ItemStates> {
-
-  @Value.Parameter
-  ItemId getItemPrototypeId();
+record CreateRowGroupItemsFromPrototypeCommand(
+  ItemId targetId,
+  ItemId itemPrototypeId,
+  List<Trigger<ItemStates>> triggers
+) implements SessionUpdateCommand, UpdateCommand<ItemId, ItemStates> {
 
   @NonNull
   @Override
-  default ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
-    final ItemState currentItemState = itemStates.getItemStates().get(getTargetId());
+  public UpdateCommand<ItemId, ItemStates> withTargetId(@NonNull ItemId targetId) {
+    return new CreateRowGroupItemsFromPrototypeCommand(targetId, itemPrototypeId(), triggers);
+  }
+
+  @NonNull
+  @Override
+  public ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
+    final ItemState currentItemState = itemStates.itemStates().get(targetId());
     Set<ItemId> currentItems = currentItemState != null ? Set.copyOf(currentItemState.getItems()) : Set.of();
-    Set<ItemId> originalItems = context.getOriginalItemState(getTargetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
+    Set<ItemId> originalItems = context.getOriginalItemState(targetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
 
     final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
     final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
@@ -47,10 +55,10 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
       return itemStates;
     }
     // remove removed items and errors related to those
-    final ImmutableItemStates.Builder builder = ImmutableItemStates.builder()
+    final ItemStates.Builder builder = new ItemStates.Builder()
       .from(itemStates)
-      .itemStates(itemStates.getItemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
-      .errorStates(itemStates.getErrorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
+      .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
+      .errorStates(itemStates.errorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
 
     // add new items states
     newItems.stream()
@@ -66,10 +74,11 @@ public interface CreateRowGroupItemsFromPrototypeCommand extends SessionUpdateCo
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
+  public Set<EventMatcher> eventMatchers() {
     return Set.of(
-      whenRowGroupItemsInit(getItemPrototypeId()),
-      whenItemRemoved(getItemPrototypeId())
+      whenRowGroupItemsInit(itemPrototypeId()),
+      whenItemRemoved(itemPrototypeId())
     );
   }
+
 }

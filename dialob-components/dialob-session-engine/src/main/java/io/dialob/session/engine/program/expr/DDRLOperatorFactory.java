@@ -85,19 +85,19 @@ public class DDRLOperatorFactory implements OperatorFactory {
     }
     switch(operatorSymbol) {
       case PLUS:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).add()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).add()).build();
       case MINUS:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).sub()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).sub()).build();
       case MULT:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).mult()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).mult()).build();
       case DIV:
-        return ImmutableBinaryOperator.builder().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).div()).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<>().addAllNodes(coerceToType(nodeValueType, arguments)).reducer((Reducer<Object>) Reducers.ofType(nodeValueType).div()).build();
       case NEG:
         if (nodeValueType == ValueType.DECIMAL) {
-          return ImmutableNegOperatorDecimal.builder().expression(unaryArg(arguments)).build();
+          return new NegOperatorDecimal.Builder().expression(unaryArg(arguments)).build();
         }
         if (nodeValueType == ValueType.INTEGER) {
-          return ImmutableNegOperatorNumber.builder().expression(unaryArg(arguments)).build();
+          return new NegOperatorNumber.Builder().expression(unaryArg(arguments)).build();
         }
         throw new CannotNegateTypeException(nodeValueType);
       case NOT:
@@ -106,20 +106,20 @@ public class DDRLOperatorFactory implements OperatorFactory {
         expr = unaryArg(arguments);
         break;
       case AND:
-        return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.AND).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<Boolean>().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.AND).build();
       case OR:
-        return ImmutableBinaryOperator.<Boolean>builder().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.OR).build();
+        return new io.dialob.session.engine.program.expr.arith.BinaryOperator.Builder<Boolean>().addAllNodes(coerceToType(ValueType.BOOLEAN, arguments)).reducer(Reducers.Bool.OR).build();
       case NE, EQ, LT, LE, GE, GT:
         return relationOf(operatorSymbol, lhs(arguments), rhs(arguments));
 
       case NOT_IN, IN:
-        expr = ImmutableInOperator.builder().lhs(first(arguments)).rhs(ImmutableExpressionList.builder().addAllExpressions(rest(arguments)).build()).build();
+        expr = new InOperator.Builder().lhs(first(arguments)).rhs(new ExpressionList.Builder().addAllExpressions(rest(arguments)).build()).build();
         break;
 
       case NOT_MATCHES, MATCHES:
         Expression patternExpr = rhs(arguments);
         validateRegexExpression(patternExpr);
-        expr = ImmutableMatchesOperator.builder().lhs(lhs(arguments)).rhs(patternExpr).build();
+        expr = new MatchesOperator.Builder().lhs(lhs(arguments)).rhs(patternExpr).build();
         break;
 
       case NOT_ANSWERED, ANSWERED:
@@ -135,11 +135,11 @@ public class DDRLOperatorFactory implements OperatorFactory {
         break;
 
       case COUNT:
-        expr = ImmutableCountArrayLengthOperator.builder().itemId(varRef(arguments)).build();
+        expr = new CountArrayLengthOperator.Builder().itemId(varRef(arguments)).build();
         break;
 
       case NOT_VALID, VALID:
-        expr = ImmutableIsValidOperator.of(varRef(arguments));
+        expr = IsValidOperator.of(varRef(arguments));
         break;
       case SUM, MIN, MAX, ALL, ANY:
         expr = createArrayReducingOperator(operatorSymbol, nodeValueType, varRef(arguments));
@@ -148,7 +148,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
         throw new IllegalStateException("Cannot handle operator " + operatorSymbol);
     }
     if (operatorSymbol.isNot()) {
-      return ImmutableNotOperator.builder().expression(expr).build();
+      return new NotOperator.Builder().expression(expr).build();
     }
     return expr;
 
@@ -168,18 +168,18 @@ public class DDRLOperatorFactory implements OperatorFactory {
       throw new CannotReduceTypeWithOperatorException(operatorSymbol.name(), itemValueType);
     }
 
-    return ImmutableArrayReducerOperator.of(
+    return ArrayReducerOperator.of(
       reducer,
-      ImmutableCollectRowFieldsOperator.of(varRef, itemValueType));
+      CollectRowFieldsOperator.of(varRef, itemValueType));
   }
 
   protected Expression validateRegexExpression(Expression patternExpr) {
     if (patternExpr instanceof Constant) {
       Constant<String> constant = (Constant<String>) patternExpr;
       try {
-        Pattern.compile(constant.getValue());
+        Pattern.compile(constant.value());
       } catch (PatternSyntaxException pse) {
-        throw new MatcherRegexErrorException(CompilerErrorCode.MATCHER_REGEX_SYNTAX_ERROR, constant.getValue());
+        throw new MatcherRegexErrorException(CompilerErrorCode.MATCHER_REGEX_SYNTAX_ERROR, constant.value());
       }
     } else {
       // TODO Reject dynamic regex for now.
@@ -190,7 +190,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
 
   @NonNull
   private Expression createFunctionInvocation(@NonNull ValueType nodeValueType, @NonNull String operator, @NonNull List<Expression> arguments) {
-    return ImmutableFunctionCallOperator.builder()
+    return new FunctionCallOperator.Builder()
       .valueType(nodeValueType)
       .addAllArgs(arguments)
       .functionName(operator)
@@ -209,7 +209,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
       return argument;
     }
     if (nodeValueType == ValueType.DECIMAL) {
-      return ImmutableCoerceToDecimalOperator.builder().expression(argument).build();
+      return new CoerceToDecimalOperator.Builder().expression(argument).build();
     }
     throw new CannotCoerceTypeException(argument.getValueType(), nodeValueType);
   }
@@ -268,7 +268,7 @@ public class DDRLOperatorFactory implements OperatorFactory {
     Expression expression = arguments.getFirst();
     assert expression instanceof VariableReference;
     VariableReference variableReference = (VariableReference) expression;
-    return variableReference.getItemId();
+    return variableReference.itemId();
   }
 
   private Expression rhs(List<Expression> arguments) {

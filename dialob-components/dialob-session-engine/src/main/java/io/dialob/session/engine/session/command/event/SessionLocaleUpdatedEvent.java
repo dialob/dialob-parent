@@ -15,11 +15,12 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
+public record SessionLocaleUpdatedEvent() implements SessionUpdatedEvent {
 
-@Value.Immutable
-public interface SessionLocaleUpdatedEvent extends SessionUpdatedEvent {
+  private static final SessionLocaleUpdatedEvent INSTANCE = new SessionLocaleUpdatedEvent();
 
-  SessionLocaleUpdatedEvent INSTANCE = ImmutableSessionLocaleUpdatedEvent.builder().build();
+  public static SessionLocaleUpdatedEvent instance() {
+    return INSTANCE;
+  }
 
 }

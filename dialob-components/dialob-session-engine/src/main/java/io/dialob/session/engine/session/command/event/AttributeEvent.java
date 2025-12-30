@@ -15,9 +15,8 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
-
 public interface AttributeEvent extends Event {
-  @Value.Parameter(order = 1000)
-  TargetEvent getTarget();
+
+  TargetEvent target();
+
 }

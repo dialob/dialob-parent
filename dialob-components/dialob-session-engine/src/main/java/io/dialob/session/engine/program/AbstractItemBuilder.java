@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.arith.BooleanOperators;
@@ -74,11 +75,11 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     return parent;
   }
 
-  boolean compileExpression(@NonNull String expression, @NonNull Consumer<Expression> expressionConsumer, FormValidationError.Type type, Optional<Integer> index) {
+  boolean compileExpression(@NonNull String expression, @NonNull Consumer<Expression> expressionConsumer, FormValidationError.Type type, @Nullable Integer index) {
     return compileExpression(expression, this, expressionConsumer, type, index);
   }
 
-  boolean compileExpression(@NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> expressionConsumer, @NonNull FormValidationError.Type type, Optional<Integer> index) {
+  boolean compileExpression(@NonNull String expression, @NonNull AliasesProvider aliasesProvider, @NonNull Consumer<Expression> expressionConsumer, @NonNull FormValidationError.Type type, @Nullable Integer index) {
     return getParent().compile(getId(), expression, aliasesProvider, expressionConsumer, type, index);
   }
 
@@ -87,7 +88,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   }
 
   public T addClassname(String when, @NonNull String className) {
-    if (!compileExpression(when, expression -> addClassname(new ConditionalValue.Builder<String>().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, Optional.empty())) {
+    if (!compileExpression(when, expression -> addClassname(new ConditionalValue.Builder<String>().when(expression).value(className).valueType(ValueType.STRING).build()), FormValidationError.Type.CLASSNAME, null)) {
       addClassname(className);
     }
     return (T) this;
@@ -120,7 +121,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   public T setActiveWhen(String activeWhen) {
     if (StringUtils.isNotBlank(activeWhen)) {
-      compileExpression(activeWhen, this::setActiveWhen, getActiveWhenExpressionErrorType(), getIndex());
+      compileExpression(activeWhen, this::setActiveWhen, getActiveWhenExpressionErrorType(), getIndex().orElse(null));
     }
     return (T) this;
   }

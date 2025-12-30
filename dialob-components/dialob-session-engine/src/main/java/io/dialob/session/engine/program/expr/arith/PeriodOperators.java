@@ -22,26 +22,26 @@ import java.time.Period;
 public class PeriodOperators implements Operators {
 
   public InfixOperator eq(Expression lhs, Expression rhs) {
-    return ImmutableEqOperator.<Period>builder().lhs(lhs).rhs(rhs).build();
+    return EqOperator.<Period>builder().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator ne(Expression lhs, Expression rhs) {
-    return ImmutableNeOperator.<Period>builder().lhs(lhs).rhs(rhs).build();
+    return NeOperator.<Period>builder().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator le(Expression lhs, Expression rhs) {
-    return ImmutablePeriodLeOperator.builder().lhs(lhs).rhs(rhs).build();
+    return new PeriodLeOperator.Builder().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator lt(Expression lhs, Expression rhs) {
-    return ImmutablePeriodLtOperator.builder().lhs(lhs).rhs(rhs).build();
+    return new PeriodLtOperator.Builder().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator ge(Expression lhs, Expression rhs) {
-    return ImmutablePeriodGeOperator.builder().lhs(lhs).rhs(rhs).build();
+    return new PeriodGeOperator.Builder().lhs(lhs).rhs(rhs).build();
   }
 
   public InfixOperator gt(Expression lhs, Expression rhs) {
-    return ImmutablePeriodGtOperator.builder().lhs(lhs).rhs(rhs).build();
+    return new PeriodGtOperator.Builder().lhs(lhs).rhs(rhs).build();
   }
 }

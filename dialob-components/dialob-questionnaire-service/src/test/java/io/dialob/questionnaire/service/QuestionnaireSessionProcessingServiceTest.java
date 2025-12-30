@@ -18,7 +18,6 @@ package io.dialob.questionnaire.service;
 import io.dialob.api.proto.Actions;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
-import io.dialob.questionnaire.service.api.session.ImmutableQuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -60,7 +59,7 @@ class QuestionnaireSessionProcessingServiceTest {
     when(questionnaireSessionService.findOne("q1")).thenReturn(session);
     when(session.isCompleted()).thenReturn(false);
     when(session.dispatchActions(eq("123"),any(Collection.class))).thenReturn(
-      ImmutableQuestionnaireSession.DispatchActionsResult.builder()
+      QuestionnaireSession.DispatchActionsResult.builder()
         .isDidComplete(false)
         .actions(new Actions.Builder().rev("124").build()).build());
 
@@ -94,7 +93,7 @@ class QuestionnaireSessionProcessingServiceTest {
     when(session.getTenantId()).thenReturn("t1");
     when(session.isCompleted()).thenReturn(false);
     when(session.dispatchActions(eq("123"),any(Collection.class))).thenReturn(
-      ImmutableQuestionnaireSession.DispatchActionsResult.builder()
+      QuestionnaireSession.DispatchActionsResult.builder()
         .isDidComplete(true)
         .actions(new Actions.Builder().rev("124").build()).build());
 
@@ -141,7 +140,7 @@ class QuestionnaireSessionProcessingServiceTest {
     when(session.dispatchActions(eq("123"),any(Collection.class)))
       .thenThrow(DocumentConflictException.class)
       .thenReturn(
-        ImmutableQuestionnaireSession.DispatchActionsResult.builder()
+        QuestionnaireSession.DispatchActionsResult.builder()
           .isDidComplete(true)
           .actions(new Actions.Builder().rev("124").build()).build());
 

@@ -33,7 +33,7 @@ class CountArrayLengthOperatorTest {
   @Test
   void nonExistingObjectIsEmpty() {
     EvalContext context = mock();
-    var op = ImmutableCountArrayLengthOperator.builder()
+    var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
     when(context.getItemState(any())).thenReturn(Optional.empty());
 
@@ -46,7 +46,7 @@ class CountArrayLengthOperatorTest {
   @Test
   void stateHasNullValue() {
     EvalContext context = mock();
-    var op = ImmutableCountArrayLengthOperator.builder()
+    var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
     when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null)));
 
@@ -59,7 +59,7 @@ class CountArrayLengthOperatorTest {
   @Test
   void stateValueIsArray() {
     EvalContext context = mock();
-    var op = ImmutableCountArrayLengthOperator.builder()
+    var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
     when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null).update()
       .setValue(new Object[10]).get()));
@@ -73,7 +73,7 @@ class CountArrayLengthOperatorTest {
   @Test
   void stateValueIsList() {
     EvalContext context = mock();
-    var op = ImmutableCountArrayLengthOperator.builder()
+    var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
     when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null).update()
       .setValue(List.of(1,2,3)).get()));
@@ -87,7 +87,7 @@ class CountArrayLengthOperatorTest {
   @Test
   void stateValueIsString() {
     EvalContext context = mock();
-    var op = ImmutableCountArrayLengthOperator.builder()
+    var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
     when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null).update()
       .setValue("123").get()));

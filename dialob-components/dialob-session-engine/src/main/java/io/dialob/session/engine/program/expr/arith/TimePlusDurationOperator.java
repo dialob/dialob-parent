@@ -19,15 +19,46 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.PeriodUtil;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
 import java.time.Duration;
 import java.time.LocalTime;
 
-@Value.Immutable
-public interface TimePlusDurationOperator extends InfixOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record TimePlusDurationOperator(
+  Expression lhs,
+  Expression rhs
+) implements InfixOperator {
+
+  public static final class Builder extends TimePlusDurationOperatorBuilder {}
+
+  public static Expression of(Expression lhs, Expression rhs) {
+    return new TimePlusDurationOperator.Builder()
+      .lhs(lhs)
+      .rhs(rhs)
+      .build();
+  }
+
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Expression getLhs() {
+    return lhs;
+  }
+
+  @Override
+  public Expression getRhs() {
+    return rhs;
+  }
+
+
+  @Override
+  public Object eval(@NonNull EvalContext evalContext) {
     LocalTime localTime = (LocalTime) getLhs().eval(evalContext);
     Duration duration = (Duration) getRhs().eval(evalContext);
     if (duration == null || localTime == null) {
@@ -38,7 +69,8 @@ public interface TimePlusDurationOperator extends InfixOperator {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.TIME;
   }
+
 }

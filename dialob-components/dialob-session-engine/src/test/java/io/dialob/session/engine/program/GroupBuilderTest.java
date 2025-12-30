@@ -16,7 +16,7 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
-import io.dialob.session.engine.program.expr.arith.ImmutableRowItemsExpression;
+import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
 import io.dialob.session.engine.program.model.Group;
 import io.dialob.session.engine.program.model.Item;
 import io.dialob.session.engine.session.model.IdUtils;
@@ -56,17 +56,17 @@ class GroupBuilderTest {
 
     verify(programBuilder, times(2)).addItem(captor.capture());
     List<Item> addedItems = captor.getAllValues();
-    Assertions.assertEquals(IdUtils.toId("group1"), addedItems.getFirst().getId());
+    Assertions.assertEquals(IdUtils.toId("group1"), addedItems.getFirst().id());
 //    Assertions.assertEquals(IdUtils.toId("group1"), ((Group)addedItems.get(0)).getItemsExpression());
-    Assertions.assertEquals(IdUtils.toId("group1.*"), addedItems.get(1).getId());
+    Assertions.assertEquals(IdUtils.toId("group1.*"), addedItems.get(1).id());
     Assertions.assertEquals(
-      ImmutableRowItemsExpression.builder()
+      new RowItemsExpression.Builder()
         .addItemIds(
           IdUtils.toId("group1.*.q1"),
           IdUtils.toId("group1.*.q2")
         )
         .build(),
-      ((Group)addedItems.get(1)).getItemsExpression());
+      ((Group) addedItems.get(1)).itemsExpression());
 
     verify(qb, times(2)).getId();
     verify(programBuilder).findItemBuilder("q1");

@@ -28,26 +28,34 @@ import java.util.Set;
 
 import static io.dialob.session.engine.session.command.EventMatchers.whenValueUpdated;
 
-@Value.Immutable
-public interface IsNullOperator extends Expression {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record IsNullOperator(
+  ItemId itemId
+) implements Expression {
 
-  ItemId getItemId();
+  public static final class Builder extends IsNullOperatorBuilder {}
 
   @Override
-  default Boolean eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(this.getItemId()).map(ItemState::isNull).orElse(true);
+  public Boolean eval(@NonNull EvalContext evalContext) {
+    return evalContext.getItemState(this.itemId()).map(ItemState::isNull).orElse(true);
   }
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.BOOLEAN;
   }
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEvalRequiredConditions() {
-    return Set.of(whenValueUpdated(getItemId()));
+  public Set<EventMatcher> getEvalRequiredConditions() {
+    return Set.of(whenValueUpdated(itemId()));
   }
 
 }

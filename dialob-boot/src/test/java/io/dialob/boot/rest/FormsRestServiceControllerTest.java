@@ -248,8 +248,8 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<>("matches new-form with rev 1") {
       @Override
       protected boolean matchesSafely(FormUpdatedEvent event) {
-        assertEquals("new-form", event.getFormId());
-        assertEquals("1", event.getRevision());
+        assertEquals("new-form", event.formId());
+        assertEquals("1", event.revision());
         return true;
       }
     })));
@@ -277,8 +277,8 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     verify(listenerMock, times(1)).onFormUpdatedEvent(ArgumentMatchers.argThat(new HamcrestArgumentMatcher<>(new CustomTypeSafeMatcher<>("matches new-form with rev 1") {
       @Override
       protected boolean matchesSafely(FormUpdatedEvent event) {
-        assertEquals("new-form", event.getFormId());
-        assertEquals("1", event.getRevision());
+        assertEquals("new-form", event.formId());
+        assertEquals("1", event.revision());
         return true;
       }
     })));

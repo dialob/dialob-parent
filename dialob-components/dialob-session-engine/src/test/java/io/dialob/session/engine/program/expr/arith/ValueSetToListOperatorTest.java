@@ -32,7 +32,7 @@ class ValueSetToListOperatorTest {
   @Test
   void nonExistingValueSetDoesNotGenerateList() {
     EvalContext context = Mockito.mock(EvalContext.class);
-    ValueSetToListOperator valueSetToListOperator = ImmutableValueSetToListOperator.builder()
+    ValueSetToListOperator valueSetToListOperator = new ValueSetToListOperator.Builder()
       .valueSetId(new ValueSetId("vs1")).build();
     Object result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(
@@ -50,7 +50,7 @@ class ValueSetToListOperatorTest {
     when(context.getValueSetState(new ValueSetId("vs1")))
       .thenReturn(Optional.of(vss));
 
-    ValueSetToListOperator valueSetToListOperator = ImmutableValueSetToListOperator.builder()
+    ValueSetToListOperator valueSetToListOperator = new ValueSetToListOperator.Builder()
       .valueSetId(new ValueSetId("vs1")).build();
     Object result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(

@@ -16,14 +16,11 @@
 package io.dialob.boot.settings;
 
 import io.dialob.boot.controller.PageAttributes;
-import lombok.Getter;
 
 import java.util.Map;
 
 public record SettingsPageAttributes(
-  @Getter
   Map<String, Object> attributes,
-  @Getter
   String template
 ) implements PageAttributes {
   public SettingsPageAttributes {

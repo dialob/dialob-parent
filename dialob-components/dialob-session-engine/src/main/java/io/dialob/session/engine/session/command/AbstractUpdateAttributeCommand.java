@@ -20,30 +20,28 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
-import org.immutables.value.Value;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public interface AbstractUpdateAttributeCommand<T> extends AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
 
-  @Value.Parameter(order = 1)
-  Expression getExpression();
+  Expression expression();
 
   @NonNull
   @Override
-  default Set<EventMatcher> getEventMatchers() {
-    Set<EventMatcher> eventMatchers = getExpression().getEvalRequiredConditions();
-    if (getTargetId().isPartial()) {
+  default Set<EventMatcher> eventMatchers() {
+    Set<EventMatcher> eventMatchers = expression().getEvalRequiredConditions();
+    if (targetId().isPartial()) {
       var set = new HashSet<>(eventMatchers);
-      set.add(EventMatchers.whenItemAdded(getTargetId()));
+      set.add(EventMatchers.whenItemAdded(targetId()));
       return Set.copyOf(set);
     }
     return eventMatchers;
   }
 
   default T evalExpression(EvalContext context) {
-    return (T) getExpression().eval(context);
+    return (T) expression().eval(context);
   }
 
 }

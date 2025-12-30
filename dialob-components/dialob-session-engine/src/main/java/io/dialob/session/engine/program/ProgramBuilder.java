@@ -37,7 +37,6 @@ import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.immutables.value.Value;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -45,7 +44,6 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-@Value.Enclosing
 @Slf4j
 public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builder<Program> {
 
@@ -66,26 +64,20 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   private final List<ValueSet> valueSets = new ArrayList<>();
 
-  @Value.Immutable
-  interface CompilableExpression {
+  record CompilableExpression(
+    ItemId itemId,
 
-    @Value.Parameter
-    ItemId getItemId();
+    String expression,
 
-    @Value.Parameter
-    String getExpression();
+    AliasesProvider aliasesProvider,
 
-    @Value.Parameter
-    AliasesProvider getAliasesProvider();
+    Consumer<Expression> expressionConsumer,
 
-    @Value.Parameter
-    Consumer<Expression> getExpressionConsumer();
+    FormValidationError.Type type,
 
-    @Value.Parameter
-    FormValidationError.Type getType();
+    Integer index
 
-    @Value.Parameter
-    Optional<Integer> getIndex();
+  ) {
 
   }
 
@@ -100,7 +92,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   protected void addItem(Item item) {
     // TODO verify conflicting id
-    if (Constants.QUESTIONNAIRE.equals(item.getType())) {
+    if (Constants.QUESTIONNAIRE.equals(item.type())) {
       assert rootItem == null;
       rootItem = item;
     } else {
@@ -192,11 +184,11 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
                          @NonNull AliasesProvider aliasesProvider,
                          @NonNull Consumer<Expression> expressionConsumer,
                          @NonNull FormValidationError.Type type,
-                         Optional<Integer> index) {
+                         @Nullable Integer index) {
     if (isBlank(expression)) {
       return false;
     }
-    uncompiledExpressions.add(ImmutableProgramBuilder.CompilableExpression.of(itemId, expression, aliasesProvider, expressionConsumer, type, index));
+    uncompiledExpressions.add(new CompilableExpression(itemId, expression, aliasesProvider, expressionConsumer, type, index));
     return true;
   }
 
@@ -212,17 +204,19 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     while (expressionCount > 0) {
       errors.clear();
       uncompiledExpressions.removeIf(compilableExpression ->
-        compileExpression(compilableExpression.getItemId().getParent().map(IdUtils::toString).orElse(null), ddrlExpressionCompiler, compilableExpression, error ->
-          errors.add(new FormValidationError.Builder()
-           .itemId(IdUtils.toString(compilableExpression.getItemId()))
-           .type(compilableExpression.getType())
-           .startIndex(error.getSpan().startIndex())
-           .endIndex(error.getSpan().stopIndex())
-           .message(error.getErrorCode())
-           .index(compilableExpression.getIndex().orElse(null))
-           .build())
+        compileExpression(compilableExpression.itemId().getParent().map(IdUtils::toString).orElse(null), ddrlExpressionCompiler, compilableExpression, error ->
+          {
+            errors.add(new FormValidationError.Builder()
+              .itemId(IdUtils.toString(compilableExpression.itemId()))
+              .type(compilableExpression.type())
+              .startIndex(error.span().startIndex())
+              .endIndex(error.span().stopIndex())
+              .message(error.errorCode())
+              .index(compilableExpression.index())
+              .build());
+          }
         ).map(expr -> {
-          compilableExpression.getExpressionConsumer().accept(expr);
+          compilableExpression.expressionConsumer().accept(expr);
           return true;
         }).orElse(false));
       if (uncompiledExpressions.size() == expressionCount) {
@@ -257,8 +251,8 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
                                                  @NonNull Consumer<RuleExpressionCompilerError> errorConsumer) {
       // TODO maybe compiling 2 phases is more reliable
     try {
-      ProgramVariableFinder variableFinder = new ProgramVariableFinder(compilableExpression.getAliasesProvider().getAliases(), scope);
-      return ddrlExpressionCompiler.compile(variableFinder, compilableExpression.getExpression(), errorConsumer);
+      ProgramVariableFinder variableFinder = new ProgramVariableFinder(compilableExpression.aliasesProvider().getAliases(), scope);
+      return ddrlExpressionCompiler.compile(variableFinder, compilableExpression.expression(), errorConsumer);
     } catch (UnknownValueTypeException e) {
       LOGGER.error("error: {}", e.getMessage());
     }
@@ -372,11 +366,11 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
     @Override
     @NonNull
-    public String mapAlias(String aliasName) {
-      if (aliases.containsKey(aliasName)) {
-        return IdUtils.toString(aliases.get(aliasName));
+    public String mapAlias(String alias) {
+      if (aliases.containsKey(alias)) {
+        return IdUtils.toString(aliases.get(alias));
       }
-      return aliasName;
+      return alias;
     }
 
     @Override

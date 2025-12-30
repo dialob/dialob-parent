@@ -98,7 +98,7 @@ class AdminControllerAwsElbTest extends AbstractUIControllerTest {
   void adminShouldGetPage() throws Exception {
     PageAttributes pageAttributes = mock(PageAttributes.class);
     when(pageSettingsProvider.findPageSettings("admin")).thenReturn(pageAttributes);
-    when(pageAttributes.getTemplate()).thenReturn("admin");
+    when(pageAttributes.template()).thenReturn("admin");
 
     mockMvc.perform(get("/")
         .params(tenantParam)

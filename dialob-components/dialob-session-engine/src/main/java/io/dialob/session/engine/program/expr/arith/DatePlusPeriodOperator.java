@@ -19,16 +19,28 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.rule.parser.PeriodUtil;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import org.immutables.value.Value;
 
 import java.time.LocalDate;
 import java.time.Period;
 
-@Value.Immutable
-public interface DatePlusPeriodOperator extends InfixOperator {
+@Value.Builder
+@Value.Style(
+  jakarta = true,
+  jdkOnly = true,
+  overshadowImplementation = true,
+  visibility = Value.Style.ImplementationVisibility.PACKAGE
+)
+public record DatePlusPeriodOperator(
+  Expression lhs,
+  Expression rhs
+) implements InfixOperator {
+
+  public static final class Builder extends DatePlusPeriodOperatorBuilder {}
 
   @Override
-  default Object eval(@NonNull EvalContext evalContext) {
+  public Object eval(@NonNull EvalContext evalContext) {
     LocalDate localDate = (LocalDate) getLhs().eval(evalContext);
     Period period = (Period) getRhs().eval(evalContext);
     if (period == null || localDate == null) {
@@ -39,7 +51,7 @@ public interface DatePlusPeriodOperator extends InfixOperator {
 
   @NonNull
   @Override
-  default ValueType getValueType() {
+  public ValueType getValueType() {
     return ValueType.DATE;
   }
 }

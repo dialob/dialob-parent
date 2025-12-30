@@ -17,7 +17,6 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -26,11 +25,10 @@ import java.util.Set;
 
 public interface Command<T> extends Serializable {
 
-  @Value.Parameter(order = 1000)
-  List<Trigger<T>> getTriggers();
+  List<Trigger<T>> triggers();
 
   @NonNull
-  default Set<EventMatcher> getEventMatchers() {
+  default Set<EventMatcher> eventMatchers() {
     return Collections.emptySet();
   }
 

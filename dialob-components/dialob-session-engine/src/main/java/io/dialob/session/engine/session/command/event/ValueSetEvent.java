@@ -16,9 +16,13 @@
 package io.dialob.session.engine.session.command.event;
 
 import io.dialob.session.engine.session.model.ValueSetId;
-import org.immutables.value.Value;
 
 public interface ValueSetEvent extends Event {
-  @Value.Parameter
-  ValueSetId getValueSetId();
+  default ValueSetId getValueSetId() {
+    return valueSetId();
+  }
+
+  ValueSetId valueSetId();
+
+
 }

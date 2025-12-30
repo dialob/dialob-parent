@@ -148,9 +148,10 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   }
 
   protected void publishConnectionEvent() {
-    InetAddress remoteAddress = resolveRealIp();
-    LOGGER.info("WebSocket session '{}' from {} trying connect to '{}'", this.session.getId(), remoteAddress, this.questionnaireId);
-    eventPublisher.clientConnected(questionnaireId, remoteAddress);
+    var remoteAddress = resolveRealIp();
+    var sessionId = this.session.getId();
+    LOGGER.info("WebSocket session '{}' from {} trying connect to '{}'", sessionId, remoteAddress, this.questionnaireId);
+    eventPublisher.clientConnected(questionnaireId, remoteAddress, sessionId);
   }
 
   protected void publishDisconnectionEvent(CloseStatus closeStatus) {
@@ -250,7 +251,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   public void onQuestionnaireActionsEvent(QuestionnaireActionsEvent event) {
     if (isForThisHandler(event)) {
       try {
-        Actions actions = event.getActions();
+        Actions actions = event.actions();
         List<Action> filteredActions = actions.getActions().stream()
           .filter(action -> !session.getId().equals(action.getResourceId()))
           .toList();
@@ -286,7 +287,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       sendMessage(new Actions.Builder()
         .addActions(new Action.Builder()
           .type(Action.Type.COMPLETE)
-          .id(event.getQuestionnaireId())
+          .id(event.questionnaireId())
           .serverEvent(true)
           .build())
         .build());
@@ -308,7 +309,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
   }
 
   protected boolean isForThisHandler(QuestionnaireEvent event) {
-    return questionnaireId != null && questionnaireId.equals(event.getQuestionnaireId());
+    return questionnaireId != null && questionnaireId.equals(event.questionnaireId());
   }
 
   protected boolean sessionIsClosed() {

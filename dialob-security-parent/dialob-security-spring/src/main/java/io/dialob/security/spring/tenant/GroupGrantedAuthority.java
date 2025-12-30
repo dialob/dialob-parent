@@ -37,7 +37,6 @@ public record GroupGrantedAuthority(
     return new GroupGrantedAuthority(groupId, authority);
   }
 
-  @Value.Parameter
   public String getGroupId() {
     return groupId;
   }
@@ -48,7 +47,6 @@ public record GroupGrantedAuthority(
    * @return tenant display name
    */
   @Override
-  @Value.Parameter
   public String getAuthority() {
     return authority;
   }

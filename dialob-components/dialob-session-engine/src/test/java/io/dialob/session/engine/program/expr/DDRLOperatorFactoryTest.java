@@ -16,9 +16,9 @@
 package io.dialob.session.engine.program.expr;
 
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.arith.ImmutableVariableReference;
 import io.dialob.session.engine.program.expr.arith.InfixOperator;
 import io.dialob.session.engine.program.expr.arith.NotOperator;
+import io.dialob.session.engine.program.expr.arith.VariableReference;
 import io.dialob.session.engine.session.model.IdUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,8 +30,8 @@ class DDRLOperatorFactoryTest {
   @Test
   void shouldCreateIsValidOperator() {
     DDRLOperatorFactory factory = new DDRLOperatorFactory();
-    var op1 = factory.createOperator(ValueType.STRING, "isValid", List.of(ImmutableVariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
-    var op2 = factory.createOperator(ValueType.STRING, "isNotValid", List.of(ImmutableVariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
+    var op1 = factory.createOperator(ValueType.STRING, "isValid", List.of(VariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
+    var op2 = factory.createOperator(ValueType.STRING, "isNotValid", List.of(VariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
     Assertions.assertNotNull(op1);
     Assertions.assertNotNull(op2);
     Assertions.assertEquals(ValueType.BOOLEAN, op1.getValueType());
@@ -41,15 +41,15 @@ class DDRLOperatorFactoryTest {
   @Test
   void shouldCreateInOperator() {
     DDRLOperatorFactory factory = new DDRLOperatorFactory();
-    var op1 = factory.createOperator(ValueType.STRING, "in", List.of(ImmutableVariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
-    var op2 = factory.createOperator(ValueType.STRING, "notIn", List.of(ImmutableVariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
+    var op1 = factory.createOperator(ValueType.STRING, "in", List.of(VariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
+    var op2 = factory.createOperator(ValueType.STRING, "notIn", List.of(VariableReference.of(IdUtils.toId("var1"), ValueType.STRING)));
     Assertions.assertNotNull(op1);
     Assertions.assertNotNull(op2);
     Assertions.assertEquals(ValueType.BOOLEAN, op1.getValueType());
     Assertions.assertEquals(ValueType.BOOLEAN, op2.getValueType());
     InfixOperator ifop1 = (InfixOperator) op1;
     NotOperator not = (NotOperator) op2;
-    InfixOperator ifop2 = (InfixOperator) not.getExpression();
+    InfixOperator ifop2 = (InfixOperator) not.expression();
 
     Assertions.assertEquals(ValueType.STRING, ifop1.getLhs().getValueType());
     Assertions.assertEquals(ValueType.arrayOf(ValueType.STRING), ifop1.getRhs().getValueType());

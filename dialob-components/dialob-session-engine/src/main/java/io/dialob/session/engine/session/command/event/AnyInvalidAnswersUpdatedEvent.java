@@ -15,8 +15,11 @@
  */
 package io.dialob.session.engine.session.command.event;
 
-import org.immutables.value.Value;
+public record AnyInvalidAnswersUpdatedEvent() implements Event {
 
-@Value.Immutable
-public interface AnyInvalidAnswersUpdatedEvent extends Event {
+  private static final AnyInvalidAnswersUpdatedEvent INSTANCE = new AnyInvalidAnswersUpdatedEvent();
+
+  public static Event instance() {
+    return INSTANCE;
+  }
 }

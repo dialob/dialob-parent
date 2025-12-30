@@ -16,7 +16,8 @@
 package io.dialob.session.engine.session;
 
 import io.dialob.api.proto.Action;
-import io.dialob.session.engine.session.command.*;
+import io.dialob.session.engine.session.command.Command;
+import io.dialob.session.engine.session.command.CommandFactory;
 import io.dialob.session.engine.session.model.IdUtils;
 import org.junit.jupiter.api.Test;
 
@@ -43,10 +44,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(SetAnswer.class, command);
-    SetAnswer setAnswerCommand = (SetAnswer) command;
-    assertEquals(IdUtils.toId("answerId"), setAnswerCommand.getTargetId());
-    assertEquals("testAnswer", setAnswerCommand.getAnswer());
+    assertEquals(CommandFactory.setAnswer(IdUtils.toId("answerId"), "testAnswer"), command);
   }
 
   @Test
@@ -63,10 +61,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(SetVariableValue.class, command);
-    SetVariableValue setVariableValueCommand = (SetVariableValue) command;
-    assertEquals(IdUtils.toId("varId"), setVariableValueCommand.getTargetId());
-    assertEquals("newValue", setVariableValueCommand.getValue());
+    assertEquals(CommandFactory.setVariableValue(IdUtils.toId("varId"), "newValue"), command);
   }
 
   @Test
@@ -82,9 +77,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(SetVariableFailed.class, command);
-    SetVariableFailed setFailedCommand = (SetVariableFailed) command;
-    assertEquals(IdUtils.toId("varId"), setFailedCommand.getTargetId());
+    assertEquals(CommandFactory.setVariableFailed(IdUtils.toId("varId")), command);
   }
 
   @Test
@@ -99,7 +92,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(NextPage.class, command);
+    assertEquals("io.dialob.session.engine.session.command.NextPage", command.getClass().getCanonicalName());
   }
 
   @Test
@@ -114,7 +107,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(PrevPage.class, command);
+    assertEquals("io.dialob.session.engine.session.command.PrevPage", command.getClass().getCanonicalName());
   }
 
   @Test
@@ -130,10 +123,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(GotoPage.class, command);
-    GotoPage gotoPageCommand = (GotoPage) command;
-    assertEquals(IdUtils.toId("questionnaire"), gotoPageCommand.getTargetId());
-    assertEquals(IdUtils.toId("pageId"), gotoPageCommand.getPage());
+    assertEquals(CommandFactory.gotoPage(IdUtils.toId("pageId")), command);
   }
 
   @Test
@@ -148,7 +138,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(Complete.class, command);
+    assertEquals("io.dialob.session.engine.session.command.Complete", command.getClass().getCanonicalName());
   }
 
   @Test
@@ -164,9 +154,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(AddRow.class, command);
-    AddRow addRowCommand = (AddRow) command;
-    assertEquals(IdUtils.toId("rowId"), addRowCommand.getTargetId());
+    assertEquals(CommandFactory.addRow(IdUtils.toId("rowId")), command);
   }
 
   @Test
@@ -182,9 +170,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(DeleteRow.class, command);
-    DeleteRow deleteRowCommand = (DeleteRow) command;
-    assertEquals(IdUtils.toId("rowId"), deleteRowCommand.getTargetId());
+    assertEquals(CommandFactory.deleteRow(IdUtils.toId("rowId.0")), command);
   }
 
   @Test
@@ -200,9 +186,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(NopCommand.class, command);
-    NopCommand nopCommand = (NopCommand) command;
-    assertEquals(IdUtils.toId("rowId"), nopCommand.getTargetId());
+    assertEquals(CommandFactory.nop(IdUtils.toId("rowId")), command);
   }
 
   @Test
@@ -218,9 +202,7 @@ class ActionToCommandMapperTest {
 
     // Assert
     assertNotNull(command);
-    assertInstanceOf(SetLocale.class, command);
-    SetLocale setLocaleCommand = (SetLocale) command;
-    assertEquals("en-US", setLocaleCommand.getLocale());
+    assertEquals(CommandFactory.setLocale("en-US"), command);
   }
 
   @Test

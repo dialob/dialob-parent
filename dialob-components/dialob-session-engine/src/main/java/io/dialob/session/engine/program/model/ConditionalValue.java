@@ -19,28 +19,23 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 
-@org.immutables.value.Value.Immutable
+@org.immutables.value.Value.Builder
 @org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
-public interface ConditionalValue<T> extends ProgramNode, Value<T> {
+public record ConditionalValue<T>(
+  Expression when,
+  @Nullable T value,
+  @Nullable T fallbackValue,
+  ValueType valueType
+) implements ProgramNode, Value<T> {
 
-  class Builder<T> extends ImmutableConditionalValue.Builder<T> { }
-
-  Expression getWhen();
-
-  @Nullable
-  T getValue();
-
-  @Nullable
-  T getFallbackValue();
-
-  ValueType getValueType();
+  public static final class Builder<T> extends ConditionalValueBuilder<T> { }
 
   @Override
-  default T eval(EvalContext evalContext) {
-    Boolean result = (Boolean) getWhen().eval(evalContext);
+  public T eval(EvalContext evalContext) {
+    Boolean result = (Boolean) this.when().eval(evalContext);
     if (result == null || !result) {
-      return getFallbackValue();
+      return this.fallbackValue();
     }
-    return getValue();
+    return this.value();
   }
 }

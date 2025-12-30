@@ -32,20 +32,5 @@ public record FormDeletedEvent(
   @NonNull String formId
 ) implements FormEvent, DistributedEvent {
 
-  @Override
-  public String getSource() {
-    return source;
-  }
 
-  @NonNull
-  @Override
-  public String getFormId() {
-    return formId;
-  }
-
-  @NonNull
-  @Override
-  public Tenant getTenant() {
-    return tenant;
-  }
 }

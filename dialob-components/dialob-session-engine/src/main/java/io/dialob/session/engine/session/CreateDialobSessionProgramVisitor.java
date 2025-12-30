@@ -120,12 +120,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
       @Override
       public void visitVariableItem(@NonNull VariableItem item) {
-        items.add(createItemState(item.getId(), item, item.isPublished()));
+        items.add(createItemState(item.id(), item, item.isPublished()));
       }
 
       @Override
       public void visitDisplayItem(@NonNull DisplayItem displayItem) {
-        ItemState itemState = createItemState(displayItem.getId(), displayItem, true);
+        ItemState itemState = createItemState(displayItem.id(), displayItem, true);
         if (displayItem.isPrototype()) {
           prototypeItems.add(itemState);
         } else {
@@ -135,11 +135,11 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
       @Override
       public void visitGroup(@NonNull Group group) {
-        ItemState itemState = createItemState(group.getId(), group, true);
+        ItemState itemState = createItemState(group.id(), group, true);
         if (group.isPrototype()) {
           prototypeItems.add(itemState);
         } else {
-          if (isRowgroup(group.getType())) {
+          if (isRowgroup(group.type())) {
             rowGroups.add(itemState);
           } else {
             items.add(itemState);
@@ -153,7 +153,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   @Override
   public Optional<ErrorVisitor> visitErrors() {
     return Optional.of(error -> {
-      final ErrorId targetId = new ErrorId(error.getItemId(), error.getCode());
+      final ErrorId targetId = new ErrorId(error.itemId(), error.code());
       ErrorState errorState = new ErrorState(targetId, (String) null);
       if (error.isPrototype()) {
         errorPrototypes.add(errorState);
@@ -169,8 +169,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   @Override
   public Optional<ValueSetVisitor> visitValueSets() {
     return Optional.of(valueSet -> {
-      updates.add(CommandFactory.updateValueSet(new ValueSetId(valueSet.getId()), valueSet.getEntries()));
-      ValueSetState valueSetState = new ValueSetState(valueSet.getId());
+      updates.add(CommandFactory.updateValueSet(new ValueSetId(valueSet.id()), valueSet.entries()));
+      ValueSetState valueSetState = new ValueSetState(valueSet.id());
       valueSetState = valueSetState.update().setEntries(findProvidedValueSetEntries.apply(valueSetState.getId())).get();
       valueSets.add(valueSetState);
     });
@@ -182,18 +182,18 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     Object answer = null;
     Object value = null;
     ItemId activePage = null;
-    if (!isNote(item.getType())) {
-      defaultValue = item.getDefaultValue().map(o -> Utils.parse(item.getValueType(), o)).orElse(null);
+    if (!isNote(item.type())) {
+      defaultValue = item.defaultValueOptional().map(o -> Utils.parse(item.valueType(), o)).orElse(null);
       if (!item.isPrototype()) {
-        answer = initialValueResolver.apply(item.getId(), item).orElse(null);
+        answer = initialValueResolver.apply(item.id(), item).orElse(null);
       }
-      if (item.getValueType() != null) {
-        value = Utils.parse(item.getValueType(), answer);
+      if (item.valueType() != null) {
+        value = Utils.parse(item.valueType(), answer);
       }
-      if (isVariable(item.getType())) {
+      if (isVariable(item.type())) {
         answer = null;
       }
-      if (DialobSession.QUESTIONNAIRE_REF.equals(item.getId())) {
+      if (DialobSession.QUESTIONNAIRE_REF.equals(item.id())) {
         activePage = this.activePage;
       }
     }
@@ -201,15 +201,15 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
     final boolean displayItem = item instanceof DisplayItem;
 
-    final String view = displayItem ? ((DisplayItem) item).getView():null;
-    final boolean hasCustomProps = displayItem && ((DisplayItem) item).getProps() != null;
+    final String view = displayItem ? ((DisplayItem) item).view():null;
+    final boolean hasCustomProps = displayItem && ((DisplayItem) item).props() != null;
 
     final ItemState itemState = new ItemState(
       itemId,
       item.isPrototype() ? itemId : null,
-      item.getType(), view,
+      item.type(), view,
       published,
-      item.getValueSetId().orElse(null),
+      item.valueSetIdOptional().orElse(null),
       answer,
       value,
       defaultValue,
@@ -228,7 +228,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
       .map(Map.Entry::getValue)
       .flatMap(List::stream)
       .map(command -> {
-        if (command instanceof UpdateCommand updateCommand && updateCommand.getTargetId().isPartial()) {
+        if (command instanceof UpdateCommand updateCommand && updateCommand.targetId().isPartial()) {
           command = updateCommand.withTargetId(targetId);
         }
         return command;
@@ -251,12 +251,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
-            program.getItems().stream()
+            program.items().stream()
               .filter(itemPrototype -> itemPrototype.isPrototype() &&
-                IdUtils.matches(rowId, itemPrototype.getId()))
+                IdUtils.matches(rowId, itemPrototype.id()))
               .map(itemPrototype -> (Group) itemPrototype)
-              .map(groupPrototype -> (RowItemsExpression) groupPrototype.getItemsExpression())
-              .flatMap(rowItemsExpression -> rowItemsExpression.getItemIds().stream())
+              .map(groupPrototype -> (RowItemsExpression) groupPrototype.itemsExpression())
+              .flatMap(rowItemsExpression -> rowItemsExpression.itemIds().stream())
               .map(ItemId::getValue)
               .map(name -> new ItemRef(name, rowId)));
         });
@@ -269,10 +269,10 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         newItem = program.findItemsBy(id -> IdUtils.matches(id, itemIdToCreate)).findFirst().map(item -> {
           List<ItemId> rowItems = List.of();
           if (item instanceof Group group) {
-            Expression expression = group.getItemsExpression();
+            Expression expression = group.itemsExpression();
             if (expression instanceof RowItemsExpression rowItemsExpression) {
-              final Scope scope = ImmutableScope.of(itemIdToCreate, Set.of());
-              rowItems = rowItemsExpression.getItemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
+              final Scope scope = Scope.of(itemIdToCreate, Set.of());
+              rowItems = rowItemsExpression.itemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
             }
           }
           final Object newAnswer = initialValueResolver.apply(itemIdToCreate, item).orElse(null);
