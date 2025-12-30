@@ -153,14 +153,14 @@ class LocalizedLabelOperatorTest {
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
-    when(valueSet.getEntries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
+    when(valueSet.entries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
     when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
     assertEquals("Otsikko Choice 1", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
     verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
-    verify(valueSet).getEntries();
+    verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
   @Test
@@ -171,14 +171,14 @@ class LocalizedLabelOperatorTest {
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
-    when(valueSet.getEntries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
+    when(valueSet.entries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
     when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
     assertEquals("Otsikko choice 1", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
     verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
-    verify(valueSet).getEntries();
+    verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
 
@@ -190,14 +190,14 @@ class LocalizedLabelOperatorTest {
     when(context.getLanguage()).thenReturn("fi");
     when(context.getItemValue(ref("var1"))).thenReturn("x1");
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
-    when(valueSet.getEntries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
+    when(valueSet.entries()).thenReturn(List.of(ValueSetState.Entry.of("x1","Choice 1")));
     when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
     assertEquals("Otsikko CHOICE 1", operator.eval(context));
     verify(context, atLeastOnce()).getLanguage();
     verify(context).getItemValue(ref("var1"));
     verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
-    verify(valueSet).getEntries();
+    verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
   @Test
@@ -221,7 +221,7 @@ class LocalizedLabelOperatorTest {
     when(context.getItemValue(ref("var1"))).thenReturn(Arrays.asList("x1", "x2"));
 
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
-    when(valueSet.getEntries()).thenReturn(List.of(
+    when(valueSet.entries()).thenReturn(List.of(
         ValueSetState.Entry.of("x1","Choice 1"),
         ValueSetState.Entry.of("x2","Choice 2")
       )
@@ -233,7 +233,7 @@ class LocalizedLabelOperatorTest {
     verify(context).getItemValue(ref("var1"));
     verify(context).getValueSetState(new ValueSetId("vs1"));
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
-    verify(valueSet).getEntries();
+    verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
 

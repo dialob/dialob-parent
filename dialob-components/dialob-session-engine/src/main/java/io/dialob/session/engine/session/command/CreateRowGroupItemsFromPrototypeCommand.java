@@ -57,18 +57,18 @@ record CreateRowGroupItemsFromPrototypeCommand(
     // remove removed items and errors related to those
     final ItemStates.Builder builder = new ItemStates.Builder()
       .from(itemStates)
-      .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
-      .errorStates(itemStates.errorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.getId().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.getId()), errorState -> errorState)));
+      .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.id())).collect(toMap(itemState -> Objects.requireNonNull(itemState.id()), item -> item)))
+      .errorStates(itemStates.errorStates().values().stream().filter(errorState -> !removedItems.contains(errorState.id().itemId())).collect(toMap(errorState -> Objects.requireNonNull(errorState.id()), errorState -> errorState)));
 
     // add new items states
     newItems.stream()
       .flatMap(itemId -> context.findPrototype(itemId).map(prototype -> prototype.withId(itemId)).stream())
-      .forEach(itemState -> builder.putItemStates(itemState.getId(), itemState));
+      .forEach(itemState -> builder.putItemStates(itemState.id(), itemState));
 
     // add error states
     newItems.stream()
-      .flatMap(itemId -> context.findErrorPrototypes(itemId).map(prototype -> prototype.withErrorId(prototype.getId().withItemId(itemId))))
-      .forEach(errorState -> builder.putErrorStates(errorState.getId(), errorState));
+      .flatMap(itemId -> context.findErrorPrototypes(itemId).map(prototype -> prototype.withErrorId(prototype.id().withItemId(itemId))))
+      .forEach(errorState -> builder.putErrorStates(errorState.id(), errorState));
     return builder.build();
   }
 

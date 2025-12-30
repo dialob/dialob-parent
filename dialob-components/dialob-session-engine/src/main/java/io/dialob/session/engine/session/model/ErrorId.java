@@ -23,6 +23,9 @@ public record ErrorId(
   @Nullable String code
 ) implements ItemId {
 
+  public static ErrorId of(@NonNull ItemId itemId, @Nullable String code) {
+    return new ErrorId(itemId, code);
+  }
 
   @Override
   public String getValue() {

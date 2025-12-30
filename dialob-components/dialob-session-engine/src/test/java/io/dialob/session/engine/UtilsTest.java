@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
@@ -24,6 +22,8 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetState;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -84,110 +84,110 @@ class UtilsTest {
   @Test
   void shouldWriteAndReadBigIntegers() throws IOException {
     var buffer = new ByteArrayOutputStream();
-    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, null);
+    var outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
     buffer = new ByteArrayOutputStream();
-    outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, BigInteger.ZERO);
-    Utils.writeObjectValue(outputStream, BigInteger.ONE);
-    Utils.writeObjectValue(outputStream, new BigInteger("98765432109876543210"));
-    Utils.writeObjectValue(outputStream, List.of(BigInteger.ZERO, BigInteger.ONE));
+    outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) BigInteger.ZERO);
+    outputStream.writeNullableObjectValue((Object) BigInteger.ONE);
+    outputStream.writeNullableObjectValue((Object) new BigInteger("98765432109876543210"));
+    outputStream.writeNullableObjectValue(List.of(BigInteger.ZERO, BigInteger.ONE));
     assertEquals(27, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
-    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
-    assertEquals(BigInteger.ZERO, Utils.readObjectValue(inputStream));
-    assertEquals(BigInteger.ONE, Utils.readObjectValue(inputStream));
-    assertEquals(new BigInteger("98765432109876543210"), Utils.readObjectValue(inputStream));
-    assertEquals(List.of(BigInteger.ZERO, BigInteger.ONE), Utils.readObjectValue(inputStream));
+    var inputStream = StateReader.newInstance(buffer.toByteArray());
+    assertEquals(BigInteger.ZERO, inputStream.readNullableObjectValue());
+    assertEquals(BigInteger.ONE, inputStream.readNullableObjectValue());
+    assertEquals(new BigInteger("98765432109876543210"), inputStream.readNullableObjectValue());
+    assertEquals(List.of(BigInteger.ZERO, BigInteger.ONE), inputStream.readNullableObjectValue());
   }
 
   @Test
   void shouldWriteAndReadBigDoubles() throws IOException {
     var buffer = new ByteArrayOutputStream();
-    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, null);
+    var outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
     buffer = new ByteArrayOutputStream();
-    outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, 1.0);
-    Utils.writeObjectValue(outputStream, -1.0);
+    outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue(1.0);
+    outputStream.writeNullableObjectValue(-1.0);
     assertEquals(20, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
-    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
-    assertEquals(1.0, Utils.readObjectValue(inputStream));
-    assertEquals(-1.0, Utils.readObjectValue(inputStream));
+    var inputStream = StateReader.newInstance(buffer.toByteArray());
+    assertEquals(1.0, inputStream.readNullableObjectValue());
+    assertEquals(-1.0, inputStream.readNullableObjectValue());
   }
 
   @Test
   void shouldWriteAndReadBooleans() throws IOException {
     var buffer = new ByteArrayOutputStream();
-    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, null);
+    var outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
     buffer = new ByteArrayOutputStream();
-    outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, Boolean.TRUE);
-    Utils.writeObjectValue(outputStream, Boolean.FALSE);
-    Utils.writeObjectValue(outputStream, null);
+    outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) Boolean.TRUE);
+    outputStream.writeNullableObjectValue((Object) Boolean.FALSE);
+    outputStream.writeNullableObjectValue((Object) null);
     assertEquals(7, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
-    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
-    assertEquals(Boolean.TRUE, Utils.readObjectValue(inputStream));
-    assertEquals(Boolean.FALSE, Utils.readObjectValue(inputStream));
-    assertNull(Utils.readObjectValue(inputStream));
+    var inputStream = StateReader.newInstance(buffer.toByteArray());
+    assertEquals(Boolean.TRUE, inputStream.readNullableObjectValue());
+    assertEquals(Boolean.FALSE, inputStream.readNullableObjectValue());
+    assertNull(inputStream.readNullableObjectValue());
   }
 
   @Test
   void shouldWriteAndReadStrings() throws IOException {
     var buffer = new ByteArrayOutputStream();
-    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, null);
+    var outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
     buffer = new ByteArrayOutputStream();
-    outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeNullableString(outputStream, "null");
-    Utils.writeNullableString(outputStream, null);
-    Utils.writeObjectValue(outputStream, "BigInteger.ZERO");
-    Utils.writeObjectValue(outputStream, List.of("BigInteger.ONE"));
-    Utils.writeObjectValue(outputStream, List.of());
+    outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableString("null");
+    outputStream.writeNullableString((String) null);
+    outputStream.writeNullableObjectValue((Object) "BigInteger.ZERO");
+    outputStream.writeNullableObjectValue(List.of("BigInteger.ONE"));
+    outputStream.writeNullableObjectValue(List.of());
     assertEquals(45, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
-    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
-    assertEquals("null", Utils.readNullableString(inputStream));
-    assertNull(Utils.readNullableString(inputStream));
-    assertEquals("BigInteger.ZERO", Utils.readObjectValue(inputStream));
-    assertEquals(List.of("BigInteger.ONE"), Utils.readObjectValue(inputStream));
-    assertEquals(List.of(), Utils.readObjectValue(inputStream));
+    var inputStream = StateReader.newInstance(buffer.toByteArray());
+    assertEquals("null", inputStream.readNullableString());
+    assertNull(inputStream.readNullableString());
+    assertEquals("BigInteger.ZERO", inputStream.readNullableObjectValue());
+    assertEquals(List.of("BigInteger.ONE"), inputStream.readNullableObjectValue());
+    assertEquals(List.of(), inputStream.readNullableObjectValue());
   }
 
   @Test
   void shouldWriteAndReadDates() throws IOException {
     var buffer = new ByteArrayOutputStream();
-    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeObjectValue(outputStream, null);
+    var outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableObjectValue((Object) null);
     assertEquals(1, outputStream.getTotalBytesWritten());
 
     var d = Instant.ofEpochMilli(12345672889123L);
 
     buffer = new ByteArrayOutputStream();
-    outputStream = CodedOutputStream.newInstance(buffer);
-    Utils.writeNullableDate(outputStream, d);
-    Utils.writeNullableDate(outputStream, null);
+    outputStream = StateWriter.newInstance(buffer);
+    outputStream.writeNullableDate(d);
+    outputStream.writeNullableDate((Instant) null);
     assertEquals(11, outputStream.getTotalBytesWritten());
     outputStream.flush();
 
-    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
-    assertEquals(d, Utils.readNullableDate(inputStream));
-    assertNull(Utils.readNullableDate(inputStream));
+    var inputStream = StateReader.newInstance(buffer.toByteArray());
+    assertEquals(d, inputStream.readNullableDate());
+    assertNull(inputStream.readNullableDate());
   }
 
 
@@ -278,7 +278,7 @@ class UtilsTest {
 
   @Test
   void testToValueSet() {
-    ValueSetState state = new ValueSetState("vs1");
+    ValueSetState state = new ValueSetState("vs1", null);
     state = state.update().setEntries(List.of(new ValueSetState.Entry("v1", "l1", false))).get();
     var s = Utils.toValueSet(state);
     assertEquals(1, s.getEntries().size());

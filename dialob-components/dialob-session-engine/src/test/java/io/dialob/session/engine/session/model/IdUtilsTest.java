@@ -15,8 +15,8 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -83,16 +83,19 @@ class IdUtilsTest {
   @Test
   void readId() throws IOException {
     ByteArrayOutputStream bo = new ByteArrayOutputStream();
-    CodedOutputStream output = CodedOutputStream.newInstance(bo);
-    IdUtils.writeIdTo(IdUtils.toId("l1"), output);
-    IdUtils.writeIdTo(IdUtils.toId("l1.*.p2"), output);
-    IdUtils.writeIdTo(IdUtils.toId("l1.2"), output);
+    var output = StateWriter.newInstance(bo);
+    ItemId id2 = IdUtils.toId("l1");
+    output.writeNullableId(id2);
+    ItemId id1 = IdUtils.toId("l1.*.p2");
+    output.writeNullableId(id1);
+    ItemId id = IdUtils.toId("l1.2");
+    output.writeNullableId(id);
     output.flush();
 
-    CodedInputStream stream = CodedInputStream.newInstance(new ByteArrayInputStream(bo.toByteArray()));
-    Assertions.assertEquals(IdUtils.toId("l1"), IdUtils.readIdFrom(stream));
-    Assertions.assertEquals(IdUtils.toId("l1.*.p2"), IdUtils.readIdFrom(stream));
-    Assertions.assertEquals(IdUtils.toId("l1.2"), IdUtils.readIdFrom(stream));
+    var stream = StateReader.newInstance(new ByteArrayInputStream(bo.toByteArray()));
+    Assertions.assertEquals(IdUtils.toId("l1"), stream.readNullableId());
+    Assertions.assertEquals(IdUtils.toId("l1.*.p2"), stream.readNullableId());
+    Assertions.assertEquals(IdUtils.toId("l1.2"), stream.readNullableId());
   }
 
   @Test

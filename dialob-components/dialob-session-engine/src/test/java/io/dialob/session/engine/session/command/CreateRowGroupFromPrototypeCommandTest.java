@@ -70,8 +70,8 @@ class CreateRowGroupFromPrototypeCommandTest {
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
     when(groupState1.getItems()).thenReturn(List.of());
     when(groupState2.getItems()).thenReturn(List.of(IdUtils.toId("g1.0")));
-    when(groupState1.getId()).thenReturn(IdUtils.toId("g1"));
-    when(groupState2.getId()).thenReturn(IdUtils.toId("g1"));
+    when(groupState1.id()).thenReturn(IdUtils.toId("g1"));
+    when(groupState2.id()).thenReturn(IdUtils.toId("g1"));
 
     var command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
     ItemStates newStates = command.update(context, states);

@@ -15,14 +15,12 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
-import io.dialob.rule.parser.api.PrimitiveValueType;
-import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -32,13 +30,10 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.*;
 
-import static io.dialob.session.engine.Utils.readNullableString;
-import static io.dialob.session.engine.Utils.writeNullableString;
-
 
 @EqualsAndHashCode
 @ToString
-public final class ItemState implements SessionObject {
+public final class ItemState implements SessionObject<ItemId> {
 
   @Serial
   private static final long serialVersionUID = -3974128908954128671L;
@@ -121,14 +116,14 @@ public final class ItemState implements SessionObject {
 
   private ItemId activePage;
 
-  private void setBits(boolean toValue, int bit) {
+  private void updateBit(boolean toValue, int bit) {
     if (toValue) {
-      setBits(bit);
+      setBit(bit);
     } else {
       resetBits(bit);
     }
   }
-  private void setBits(int bit) {
+  private void setBit(int bit) {
     bits = bits | bit;
   }
 
@@ -136,37 +131,37 @@ public final class ItemState implements SessionObject {
     bits = bits & (~bit);
   }
 
-  private boolean isBit(int bit) {
+  private boolean testBit(int bit) {
     return (bits & bit) != 0;
   }
 
-  public static ItemState readFrom(CodedInputStream input) throws IOException {
-    final ItemId id = IdUtils.readIdFrom(input);
-    final ItemId prototypeId = IdUtils.readIdFrom(input);
+  public static ItemState readFrom(StateReader input) throws IOException {
+    final ItemId id = input.readNullableId();
+    final ItemId prototypeId = input.readNullableId();
     final String type = input.readString();
-    final String view = readNullableString(input);
-    final String valueSetId = readNullableString(input);
+    final String view = input.readNullableString();
+    final String valueSetId = input.readNullableString();
 
     ItemState state = new ItemState(id, prototypeId, type, view, valueSetId);
-    state.activePage = IdUtils.readIdFrom(input);
+    state.activePage = input.readNullableId();
     state.status = Status.values()[input.readRawByte()];
-    state.bits = input.readInt32();
-    state.label = readNullableString(input);
-    state.description = readNullableString(input);
+    state.bits = input.readInt();
+    state.label = input.readNullableString();
+    state.description = input.readNullableString();
 
-    state.answer = Utils.readObjectValue(input);
-    state.value = readValue(input);
-    state.defaultValue = readValue(input);
+    state.answer = input.readNullableObjectValue();
+    state.value = input.readNullableValue();
+    state.defaultValue = input.readNullableValue();
 
-    state.classNames = readStringList(input);
-    state.items = readIdList(input);
-    state.availableItems = readIdList(input);
+    state.classNames = input.readStringList();
+    state.items = input.readIdList();
+    state.availableItems = input.readIdList();
 
-    int count = input.readInt32();
+    int count = input.readInt();
     if ( count >  0) {
       Action.Type[] types = new Action.Type[count];
       for (int i = 0; i < count; i++ ){
-        types[i] = Action.Type.values()[input.readInt32()];
+        types[i] = Action.Type.values()[input.readInt()];
       }
       state.allowedActions = Set.of(types);
     } else {
@@ -176,99 +171,33 @@ public final class ItemState implements SessionObject {
   }
 
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    IdUtils.writeIdTo(id, output);
-    IdUtils.writeIdTo(prototypeId, output);
-    output.writeStringNoTag(type);
-    writeNullableString(output, view);
-    writeNullableString(output, valueSetId);
+  @Override
+  public void writeTo(StateWriter output) throws IOException {
+    output.writeNullableId(id);
+    output.writeNullableId(prototypeId);
+    output.writeString(type);
+    output.writeNullableString(view);
+    output.writeNullableString(valueSetId);
 
-    IdUtils.writeIdTo(activePage, output);
+    output.writeNullableId(activePage);
     output.writeRawByte(status.ordinal());
-    output.writeInt32NoTag(bits);
-    writeNullableString(output, label);
-    writeNullableString(output, description);
+    output.writeInt(bits);
+    output.writeNullableString(label);
+    output.writeNullableString(description);
 
-    Utils.writeObjectValue(output, answer);
-    writeValue(output, Utils.mapQuestionTypeToValueType(type).orElse(null), value);
-    writeValue(output, Utils.mapQuestionTypeToValueType(type).orElse(null), defaultValue);
+    output.writeNullableObjectValue(answer);
+    output.writeValue(Utils.mapQuestionTypeToValueType(type).orElse(null), value);
+    output.writeValue(Utils.mapQuestionTypeToValueType(type).orElse(null), defaultValue);
 
-    writeStringList(output, classNames);
-    writeIdList(output, items);
-    writeIdList(output, availableItems);
+    output.writeStringList(classNames);
+    output.writeIdList(items);
+    output.writeIdList(availableItems);
 
-    output.writeInt32NoTag(allowedActions.size());
+    output.writeInt(allowedActions.size());
     for (Action.Type actionType: allowedActions) {
-      output.writeInt32NoTag(actionType.ordinal());
+      output.writeInt(actionType.ordinal());
     }
   }
-
-
-
-  private void writeValue(CodedOutputStream output, ValueType type, Object value) throws IOException {
-    final boolean present = value != null && type != null;
-    output.writeBoolNoTag(present);
-    if (present) {
-      output.writeRawByte(type.getTypeCode());
-      type.writeTo(output, value);
-    }
-  }
-
-  private static Object readValue(CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      byte typeCode = input.readRawByte();
-      ValueType valueType;
-      if ((0x80 & typeCode) != 0) {
-        typeCode = (byte) (typeCode & 0x7f);
-        valueType = ValueType.arrayOf(PrimitiveValueType.values()[typeCode]);
-      } else {
-        valueType = PrimitiveValueType.values()[typeCode];
-      }
-      return valueType.readFrom(input);
-    }
-    return null;
-  }
-
-
-  private void writeIdList(CodedOutputStream output, List<ItemId> itemIds) throws IOException {
-    output.writeInt32NoTag(itemIds.size());
-    for (ItemId s : itemIds) {
-      IdUtils.writeIdTo(s, output);
-    }
-  }
-
-  private void writeStringList(CodedOutputStream output, List<String> stringList) throws IOException {
-    output.writeInt32NoTag(stringList.size());
-    for (String s : stringList) {
-      output.writeStringNoTag(s);
-    }
-  }
-
-
-  private static List<ItemId> readIdList(CodedInputStream input) throws IOException {
-    int count = input.readInt32();
-    if (count > 0) {
-      ItemId[] ids = new ItemId[count];
-      for (int i = 0; i < count; i++) {
-        ids[i] = IdUtils.readIdFrom(input);
-      }
-      return List.of(ids);
-    }
-    return List.of();
-  }
-
-  private static List<String> readStringList(CodedInputStream input) throws IOException {
-    int count = input.readInt32();
-    if (count > 0) {
-      String[] ids = new String[count];
-      for (int i = 0; i < count; i++) {
-        ids[i] = input.readString();
-      }
-      return List.of(ids);
-    }
-    return List.of();
-  }
-
 
 
   public ItemState(@NonNull ItemId id, ItemId prototypeId, @NonNull String type, String view, String valueSetId) {
@@ -286,7 +215,7 @@ public final class ItemState implements SessionObject {
     this.prototypeId = prototypeId;
     this.type = type;
     this.view = view;
-    this.setBits(displayItem, DISPLAY_ITEM_BIT);
+    this.updateBit(displayItem, DISPLAY_ITEM_BIT);
     this.answer = answer;
     this.value = value;
     this.defaultValue = defaultValue;
@@ -294,7 +223,7 @@ public final class ItemState implements SessionObject {
   }
 
   ItemState(@NonNull ItemState itemState) {
-    this(itemState.getId(), itemState);
+    this(itemState.id(), itemState);
   }
 
   ItemState(@NonNull ItemId id, @NonNull ItemState itemState) {
@@ -319,7 +248,7 @@ public final class ItemState implements SessionObject {
   }
 
   @NonNull
-  public ItemId getId() {
+  public ItemId id() {
     return id;
   }
 
@@ -353,7 +282,7 @@ public final class ItemState implements SessionObject {
 
   @Override
   public boolean isActive() {
-    return isBit(ACTIVE_BIT);
+    return testBit(ACTIVE_BIT);
   }
 
   public boolean isAnswered() {
@@ -369,7 +298,7 @@ public final class ItemState implements SessionObject {
   }
 
   public boolean isInvalidAnswers() {
-    return isBit(INVALID_ANSWERS_BIT);
+    return testBit(INVALID_ANSWERS_BIT);
   }
 
   public boolean isInvalid() {
@@ -432,6 +361,13 @@ public final class ItemState implements SessionObject {
       return this.itemState != null;
     }
 
+    private UpdateBuilder updateBits(boolean toValue, int bit) {
+      if (testBit(bit) != toValue) {
+        state().updateBit(toValue, bit);
+      }
+      return this;
+    }
+
     public UpdateBuilder setStatus(Status newStatus) {
       if (status != newStatus) {
         state().status = newStatus;
@@ -454,48 +390,34 @@ public final class ItemState implements SessionObject {
     }
 
     public UpdateBuilder setActive(boolean newActive) {
-      if (isBit(ACTIVE_BIT) != newActive) {
-        state().setBits(newActive, ACTIVE_BIT);
-      }
-      return this;
+      return updateBits(newActive, ACTIVE_BIT);
     }
 
     public UpdateBuilder setDisabled(Boolean newDisabled) {
       if (newDisabled == null) {
         return this;
       }
-      if (isBit(DISABLED_BIT) != newDisabled) {
-        state().setBits(newDisabled, DISABLED_BIT);
-      }
-      return this;
+      return updateBits(newDisabled, DISABLED_BIT);
     }
 
     public UpdateBuilder setRequired(boolean newRequired) {
-      if (isBit(REQUIRED_BIT) != newRequired) {
-        state().setBits(newRequired, REQUIRED_BIT);
-      }
-      return this;
+      return updateBits(newRequired, REQUIRED_BIT);
     }
 
     public UpdateBuilder setRowsCanBeAdded(boolean newRowsCanBeAdded) {
-      if (isBit(ROWS_CAN_BE_ADDED_BIT) != newRowsCanBeAdded) {
-        state().setBits(newRowsCanBeAdded, ROWS_CAN_BE_ADDED_BIT);
-      }
-      return this;
+      return updateBits(newRowsCanBeAdded, ROWS_CAN_BE_ADDED_BIT);
     }
 
     public UpdateBuilder setRowCanBeRemoved(boolean newRowsCanBeRemoved) {
-      if (isBit(ROW_CAN_BE_REMOVED_BIT) != newRowsCanBeRemoved) {
-        state().setBits(newRowsCanBeRemoved, ROW_CAN_BE_REMOVED_BIT);
-      }
-      return this;
+      return updateBits(newRowsCanBeRemoved, ROW_CAN_BE_REMOVED_BIT);
     }
 
     public UpdateBuilder setHasCustomProps(boolean newHasCustomProps) {
-      if (isBit(HAS_CUSTOM_PROPS_BIT) != newHasCustomProps) {
-        state().setBits(newHasCustomProps, HAS_CUSTOM_PROPS_BIT);
-      }
-      return this;
+      return updateBits(newHasCustomProps, HAS_CUSTOM_PROPS_BIT);
+    }
+
+    public UpdateBuilder setInvalidAnswers(boolean newIsInvalidAnswers) {
+      return updateBits(newIsInvalidAnswers, INVALID_ANSWERS_BIT);
     }
 
     public UpdateBuilder setLabel(String newLabel) {
@@ -552,13 +474,6 @@ public final class ItemState implements SessionObject {
       if ((hasNewState() && state().items.contains(newActivePage) || items.contains(newActivePage)) && !Objects.equals(activePage, newActivePage)) {
         // TODO matches is active item "available"
         state().activePage = newActivePage;
-      }
-      return this;
-    }
-
-    public UpdateBuilder setInvalidAnswers(boolean newIsInvalidAnswers) {
-      if (isBit(INVALID_ANSWERS_BIT) != newIsInvalidAnswers) {
-        state().setBits(newIsInvalidAnswers, INVALID_ANSWERS_BIT);
       }
       return this;
     }

@@ -135,7 +135,7 @@ public class Triggers {
     public Stream<Event> createEvents(ItemState originalState, ItemState updatedState) {
       return originalState == null && updatedState == null ?
         Stream.of(new RowGroupItemsInitEvent(prototypeId(), prototypeId(), onTarget(prototypeId()))) :
-        Stream.of(new RowGroupItemsInitEvent(updatedState.getId(), prototypeId(), onTarget(prototypeId())));
+        Stream.of(new RowGroupItemsInitEvent(updatedState.id(), prototypeId(), onTarget(prototypeId())));
     }
   }
 
@@ -175,7 +175,7 @@ public class Triggers {
     public Stream<Event> createEvents(ItemState originalState, ItemState updatedState) {
       return originalState == null && updatedState == null ?
         Stream.of(itemsChangedEvent(onTarget(prototypeId()))) :
-        Stream.of(itemsChangedEvent(onTarget(updatedState.getId())));
+        Stream.of(itemsChangedEvent(onTarget(updatedState.id())));
     }
   }
 

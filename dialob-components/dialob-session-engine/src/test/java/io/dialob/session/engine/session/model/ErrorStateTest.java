@@ -15,9 +15,9 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import io.dialob.session.engine.Utils;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.assertj.core.api.Assertions;
@@ -38,7 +38,7 @@ class ErrorStateTest {
 
   @Test
   void testUtils() {
-    ErrorState errorState = new ErrorState(IdUtils.toId("id"), "code", "message");
+    ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("id"), "code"), "message");
 
     var error = Utils.toError(errorState);
     org.junit.jupiter.api.Assertions.assertNotNull(error);
@@ -49,14 +49,14 @@ class ErrorStateTest {
 
   @Test
   void shouldNotCreateNewStateWhenNoChanges() {
-    ErrorState errorState = new ErrorState(IdUtils.toId("id"), "code", "message");
+    ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("id"), "code"), "message");
     ErrorState updated = errorState
-      .update(null)
+      .update()
       .setActive(false)
       .get();
     Assertions.assertThat(updated).isSameAs(errorState);
     updated = errorState
-      .update(null)
+      .update()
       .setActive(true)
       .get();
     Assertions.assertThat(updated).isNotSameAs(errorState);
@@ -64,8 +64,8 @@ class ErrorStateTest {
 
   static Stream<ErrorState> errorStates() {
     return Stream.of(
-      new ErrorState(IdUtils.toId("id"), "code", "message"),
-      new ErrorState(IdUtils.toId("id"), null, "message")
+      new ErrorState(new ErrorId(IdUtils.toId("id"), "code"), "message"),
+      new ErrorState(new ErrorId(IdUtils.toId("id"), null), "message")
     );
   }
 
@@ -74,12 +74,12 @@ class ErrorStateTest {
   void shouldSerialize(ErrorState errorState) throws Exception {
     byte[] bytes;
     try (var output = new java.io.ByteArrayOutputStream()) {
-      CodedOutputStream output1 = CodedOutputStream.newInstance(output);
+      var output1 = StateWriter.newInstance(output);
       errorState.writeTo(output1);
       output1.flush();
       bytes = output.toByteArray();
     }
-    ErrorState parsed = ErrorState.readFrom(CodedInputStream.newInstance(bytes));
+    ErrorState parsed = ErrorState.readFrom(StateReader.newInstance(bytes));
     Assertions.assertThat(parsed).isEqualTo(errorState);
   }
 

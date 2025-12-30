@@ -135,12 +135,12 @@ class CommandFactoryTest {
     ItemState itemState2 = itemState1.update().setItems(List.of(IdUtils.toId("g1.0"))).get();
 
     ItemStates itemStates1 = new ItemStates.Builder()
-      .putItemStates(itemState1.getId(), itemState1)
+      .putItemStates(itemState1.id(), itemState1)
       .build();
 
     ItemStates itemStates2 = new ItemStates.Builder()
-      .putItemStates(itemRow.getId(), itemRow)
-      .putItemStates(itemState2.getId(), itemState2)
+      .putItemStates(itemRow.id(), itemRow)
+      .putItemStates(itemState2.id(), itemState2)
       .build();
 
     List<Event> events = command.triggers().stream().flatMap(itemStatesTrigger -> itemStatesTrigger.apply(itemStates1, itemStates2)).toList();

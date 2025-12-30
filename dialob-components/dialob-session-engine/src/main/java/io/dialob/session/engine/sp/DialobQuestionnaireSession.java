@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.sp;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.*;
@@ -38,6 +36,8 @@ import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -55,7 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static io.dialob.session.engine.Utils.*;
+import static io.dialob.session.engine.Utils.isQuestionType;
 
 @Slf4j
 @EqualsAndHashCode(exclude = {"eventPublisher", "state"})
@@ -133,7 +133,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       if (itemState.hasCustomProps()) {
         ItemId id = itemState.getPrototypeId();
         if (id == null) {
-          id = itemState.getId();
+          id = itemState.id();
         }
         dialobProgram.getItem(id)
           .filter(item -> item instanceof DisplayItem)
@@ -152,27 +152,27 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     return new Builder();
   }
 
-  public void writeTo(@NonNull CodedOutputStream output) throws IOException {
-    writeNullableString(output, rev);
-    output.writeInt32NoTag(questionClientVisibility.ordinal());
-    output.writeInt32NoTag(state.get().ordinal());
+  public void writeTo(@NonNull StateWriter output) throws IOException {
+    output.writeNullableString(rev);
+    output.writeInt(questionClientVisibility.ordinal());
+    output.writeInt(state.get().ordinal());
 
-    output.writeStringNoTag(metadata.getStatus().name());
-    output.writeStringNoTag(metadata.getFormId());
-    writeNullableString(output, metadata.getFormRev());
-    writeNullableString(output, metadata.getLanguage());
-    writeNullableString(output, metadata.getLabel());
-    writeNullableDate(output, metadata.getCreated());
-    writeNullableDate(output, metadata.getLastAnswer());
-    writeNullableString(output, metadata.getCreator());
-    writeNullableString(output, metadata.getOwner());
-    writeNullableString(output, metadata.getTenantId());
-    writeNullableString(output, metadata.getSubmitUrl());
+    output.writeString(metadata.getStatus().name());
+    output.writeString(metadata.getFormId());
+    output.writeNullableString(metadata.getFormRev());
+    output.writeNullableString(metadata.getLanguage());
+    output.writeNullableString(metadata.getLabel());
+    output.writeNullableDate(metadata.getCreated());
+    output.writeNullableDate(metadata.getLastAnswer());
+    output.writeNullableString(metadata.getCreator());
+    output.writeNullableString(metadata.getOwner());
+    output.writeNullableString(metadata.getTenantId());
+    output.writeNullableString(metadata.getSubmitUrl());
 
-    output.writeInt32NoTag(metadata.getAdditionalProperties().size());
+    output.writeInt(metadata.getAdditionalProperties().size());
     for (Map.Entry<String, Object> entry : metadata.getAdditionalProperties().entrySet()) {
-      output.writeStringNoTag(entry.getKey());
-      Utils.writeObjectValue(output, entry.getValue());
+      output.writeString(entry.getKey());
+      output.writeNullableObjectValue(entry.getValue());
     }
     dialobSession.writeTo(output);
   }
@@ -198,28 +198,28 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     @Getter
     private Questionnaire.Metadata metadata;
 
-    public Builder readFrom(@NonNull CodedInputStream input) throws IOException {
-      rev = readNullableString(input);
-      questionClientVisibility = QuestionClientVisibility.values()[input.readInt32()];
-      state = State.values()[input.readInt32()];
+    public Builder readFrom(@NonNull StateReader input) throws IOException {
+      rev = input.readNullableString();
+      questionClientVisibility = QuestionClientVisibility.values()[input.readInt()];
+      state = State.values()[input.readInt()];
 
       Questionnaire.Metadata.Builder metadataBuilder = new Questionnaire.Metadata.Builder()
         .status(Questionnaire.Metadata.Status.valueOf(input.readString()))
         .formId(input.readString())
-        .formRev(readNullableString(input))
-        .language(readNullableString(input))
-        .label(readNullableString(input))
-        .created(readNullableDate(input))
-        .lastAnswer(readNullableDate(input))
-        .creator(readNullableString(input))
-        .owner(readNullableString(input))
-        .tenantId(readNullableString(input))
-        .submitUrl(readNullableString(input));
+        .formRev(input.readNullableString())
+        .language(input.readNullableString())
+        .label(input.readNullableString())
+        .created(input.readNullableDate())
+        .lastAnswer(input.readNullableDate())
+        .creator(input.readNullableString())
+        .owner(input.readNullableString())
+        .tenantId(input.readNullableString())
+        .submitUrl(input.readNullableString());
 
-      int additionalPropertiesCount = input.readInt32();
+      int additionalPropertiesCount = input.readInt();
       for (int i = 0; i < additionalPropertiesCount; ++i) {
         String key = input.readString();
-        Object value = Utils.readObjectValue(input);
+        Object value = input.readNullableObjectValue();
         metadataBuilder.putAdditionalProperties(key, value);
       }
 
@@ -410,13 +410,13 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   private Iterable<? extends ValueSet> getProvidedValueSets() {
     return () -> dialobSession.valueSetStates().values().stream().map(state ->
       (ValueSet) new ValueSet.Builder()
-        .id(state.getId().getValueSetId())
-        .entries(() -> state.getEntries().stream()
-          .filter(ValueSetState.Entry::isProvided)
+        .id(state.id().getValueSetId())
+        .entries(() -> state.entries().stream()
+          .filter(ValueSetState.Entry::provided)
           .map(entry ->
             (ValueSetEntry) new ValueSetEntry.Builder()
-              .key(entry.getId())
-              .value(entry.getLabel())
+              .key(entry.id())
+              .value(entry.label())
               .build()).iterator()
         ).build()).iterator();
   }
@@ -429,7 +429,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         return Optional.of(itemState -> {
           if (Utils.isContextVariable(itemState.getType())) {
             Object value = ConversionUtil.toJSON(itemState.getValue());
-            answers.add(new ContextValue.Builder().id(IdUtils.toString(itemState.getId())).value(value == null ? null : value.toString()).build());
+            answers.add(new ContextValue.Builder().id(IdUtils.toString(itemState.id())).value(value == null ? null : value.toString()).build());
           }
         });
       }
@@ -477,8 +477,8 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     dialobSession.accept(new DialobSessionVisitor() {
       @Override
       public Optional<ValueSetVisitor> visitValueSetStates() {
-        return Optional.of(valueSetState -> valueSets.add(new ValueSet.Builder().id(IdUtils.toString(valueSetState.getId())).entries(
-          valueSetState.getEntries().stream().map(entry -> new ValueSetEntry.Builder().key(entry.getId()).value(entry.getLabel()).build()).toList()
+        return Optional.of(valueSetState -> valueSets.add(new ValueSet.Builder().id(IdUtils.toString(valueSetState.id())).entries(
+          valueSetState.entries().stream().map(entry -> new ValueSetEntry.Builder().key(entry.id()).value(entry.label()).build()).toList()
         ).build()));
       }
     });
@@ -495,9 +495,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         return Optional.of(errorState -> {
           if (errorState.isActive()) {
             errors.add(new Error.Builder()
-              .code(errorState.getCode())
-              .id(IdUtils.toString(errorState.getItemId()))
-              .description(errorState.getLabel()).build()
+              .code(errorState.code())
+              .id(IdUtils.toString(errorState.itemId()))
+              .description(errorState.label()).build()
             );
           }
         });
@@ -551,7 +551,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       public Optional<ItemVisitor> visitItemStates() {
         return Optional.of(itemState -> {
           if (itemState.isActive()) {
-            activeSet.add(IdUtils.toString(itemState.getId()));
+            activeSet.add(IdUtils.toString(itemState.id()));
           }
         });
       }
@@ -569,11 +569,11 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         return Optional.of(itemState -> {
           if (itemState.isActive() && isQuestionType(itemState)) {
             final Answer.Builder answerBuilder = new Answer.Builder()
-              .id(IdUtils.toString(itemState.getId()))
+              .id(IdUtils.toString(itemState.id()))
               .value(itemState.getAnswer());
             ItemId itemId = itemState.getPrototypeId();
             if (itemId == null) {
-              itemId = itemState.getId();
+              itemId = itemState.id();
             }
 
             dialobProgram.getItem(itemId).ifPresent(item -> {
@@ -600,7 +600,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
         return Optional.of(itemState -> {
           if (Utils.isProgramVariable(itemState.getType())) {
             Object value = ConversionUtil.toJSON(itemState.getValue());
-            answers.add(new VariableValue.Builder().id(IdUtils.toString(itemState.getId())).value(value == null ? null : value.toString()).build());
+            answers.add(new VariableValue.Builder().id(IdUtils.toString(itemState.id())).value(value == null ? null : value.toString()).build());
           }
         });
       }

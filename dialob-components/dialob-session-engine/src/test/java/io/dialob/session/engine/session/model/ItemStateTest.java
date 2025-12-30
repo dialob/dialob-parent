@@ -15,10 +15,10 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Assertions;
@@ -73,7 +73,7 @@ class ItemStateTest {
   @Test
   void shouldSerializeAndDeserialize() throws IOException {
     var buffer = new ByteArrayOutputStream();
-    CodedOutputStream outputStream = CodedOutputStream.newInstance(buffer);
+    var outputStream = StateWriter.newInstance(buffer);
 
     var itemState1 = new ItemState(IdUtils.toId("questionnaire"), null, "questionnaire", null, true, null, null, null, null, null);
     itemState1.writeTo(outputStream);
@@ -86,7 +86,7 @@ class ItemStateTest {
 
     outputStream.flush();
 
-    var inputStream = CodedInputStream.newInstance(buffer.toByteArray());
+    var inputStream = StateReader.newInstance(buffer.toByteArray());
     Assertions.assertEquals(itemState1, ItemState.readFrom(inputStream));
     Assertions.assertEquals(itemState2, ItemState.readFrom(inputStream));
     Assertions.assertEquals(itemState3, ItemState.readFrom(inputStream));

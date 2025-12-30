@@ -170,8 +170,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
   public Optional<ValueSetVisitor> visitValueSets() {
     return Optional.of(valueSet -> {
       updates.add(CommandFactory.updateValueSet(new ValueSetId(valueSet.id()), valueSet.entries()));
-      ValueSetState valueSetState = new ValueSetState(valueSet.id());
-      valueSetState = valueSetState.update().setEntries(findProvidedValueSetEntries.apply(valueSetState.getId())).get();
+      ValueSetState valueSetState = new ValueSetState(valueSet.id(), null);
+      valueSetState = valueSetState.update().setEntries(findProvidedValueSetEntries.apply(valueSetState.id())).get();
       valueSets.add(valueSetState);
     });
   }
@@ -247,7 +247,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           return Stream.empty();
         }
         return rowNumbers.stream().flatMap(rowNumber -> {
-          final ItemId rowId = new ItemIndex(rowNumber.intValue(), rowGroup.getId());
+          final ItemId rowId = new ItemIndex(rowNumber.intValue(), rowGroup.id());
           // Create stream of all new item ids
           return Stream.concat(
             Stream.of(rowId),
@@ -262,7 +262,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         });
       }).flatMap(itemIdToCreate -> prototypeItems
       .stream()
-      .filter(prototype -> IdUtils.matches(prototype.getId(), itemIdToCreate))
+      .filter(prototype -> IdUtils.matches(prototype.id(), itemIdToCreate))
       .map(prototype -> {
         // Find prototype for each id and instantiate itemstate from it
         ItemState newItem = prototype.withId(itemIdToCreate);
@@ -281,8 +281,8 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
         collectItemUpdateCommands(itemIdToCreate);
         // create error states for each created state
         errorPrototypes.stream()
-          .filter(errorPrototype -> IdUtils.matches(itemIdToCreate, errorPrototype.getItemId())).map(errorPrototype -> errorPrototype.withErrorId(errorPrototype.getId().withItemId(itemIdToCreate)))
-          .peek(errorPrototype -> collectItemUpdateCommands(errorPrototype.getId()))
+          .filter(errorPrototype -> IdUtils.matches(itemIdToCreate, errorPrototype.itemId())).map(errorPrototype -> errorPrototype.withErrorId(errorPrototype.id().withItemId(itemIdToCreate)))
+          .peek(errorPrototype -> collectItemUpdateCommands(errorPrototype.id()))
           .forEach(errors::add);
         return newItem;
       }))
@@ -295,7 +295,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             .update().setItems(
               ((List<BigInteger>) rowGroup.getValue())
                 .stream()
-                .map(rowNumber -> (ItemId) new ItemIndex(rowNumber.intValue(), rowGroup.getId())).toList()
+                .map(rowNumber -> (ItemId) new ItemIndex(rowNumber.intValue(), rowGroup.id())).toList()
             ).get();
         }
         return rowGroup;

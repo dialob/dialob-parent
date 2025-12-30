@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
@@ -32,12 +30,13 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetState;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -130,16 +129,16 @@ public final class Utils {
   @NonNull
   public static ValueSet toValueSet(@NonNull ValueSetState valueSetState) {
     return new ValueSet.Builder()
-      .id(IdUtils.toString(valueSetState.getId()))
-      .entries(valueSetState.getEntries().stream().map(entry -> new ValueSetEntry.Builder().key(entry.getId()).value(entry.getLabel()).build()).toList()).build();
+      .id(IdUtils.toString(valueSetState.id()))
+      .entries(valueSetState.entries().stream().map(entry -> new ValueSetEntry.Builder().key(entry.id()).value(entry.label()).build()).toList()).build();
   }
 
   @NonNull
   public static Error toError(@NonNull ErrorState updated) {
     return new Error.Builder()
-      .id(IdUtils.toString(updated.getItemId()))
-      .code(updated.getCode())
-      .description(updated.getLabel()).build();
+      .id(IdUtils.toString(updated.itemId()))
+      .code(updated.code())
+      .description(updated.label()).build();
   }
 
   @NonNull
@@ -156,7 +155,7 @@ public final class Utils {
       .activeItem(itemState.getActivePage().map(IdUtils::toString).orElse(null))
       .answered(itemState.isAnswered())
       .view(itemState.getView())
-      .id(IdUtils.toString(itemState.getId()))
+      .id(IdUtils.toString(itemState.id()))
       .type(itemState.getType())
       .value(value);
     if (itemState.isRequired()) {
@@ -184,130 +183,6 @@ public final class Utils {
     return actionItemBuilder.build();
   }
 
-  public static void writeNullableString(@NonNull CodedOutputStream output, String string) throws IOException {
-    if (string == null) {
-      output.writeBoolNoTag(false);
-    } else {
-      output.writeBoolNoTag(true);
-      output.writeStringNoTag(string);
-    }
-  }
-
-  @Nullable
-  public static String readNullableString(@NonNull CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      return input.readString();
-    }
-    return null;
-  }
-
-
-  public static void writeNullableDate(@NonNull CodedOutputStream output, Instant date) throws IOException {
-    if (date == null) {
-      output.writeBoolNoTag(false);
-    } else {
-      output.writeBoolNoTag(true);
-      output.writeInt64NoTag(date.getEpochSecond());
-      output.writeInt32NoTag(date.getNano());
-    }
-  }
-
-  public static Instant readNullableDate(@NonNull CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      long epoch = input.readInt64();
-      long nano = input.readInt32();
-      return Instant.ofEpochSecond(epoch, nano);
-    }
-    return null;
-  }
-
-
-  public static void writeObjectValue(@NonNull CodedOutputStream output, Object value) throws IOException {
-    final boolean present = value != null;
-    output.writeBoolNoTag(present);
-    if (present) {
-      if (value instanceof String string) {
-        output.write((byte) 1);
-        output.writeStringNoTag(string);
-      } else if (value instanceof BigInteger bigInteger) {
-        output.write((byte) 2);
-        writeBigInteger(output, bigInteger);
-      } else if (value instanceof Boolean boolean1) {
-        output.write((byte) 3);
-        output.writeBoolNoTag(boolean1);
-      } else if (value instanceof Double double1) {
-        output.write((byte) 4);
-        output.writeDoubleNoTag(double1);
-      } else if (value instanceof List listValue) {
-        final int size = listValue.size();
-        if (size == 0) {
-          output.write((byte) 0x80); // empty list
-          return;
-        }
-        if (listValue.getFirst() instanceof String) {
-          output.write((byte) 0x81);
-          output.writeInt32NoTag(size);
-          for (String s : (List<String>)listValue) {
-            output.writeStringNoTag(s);
-          }
-        } else if (listValue.getFirst() instanceof BigInteger) {
-          output.write((byte) 0x82);
-          output.writeInt32NoTag(size);
-          for (BigInteger i : (List<BigInteger>)listValue) {
-            writeBigInteger(output, i);
-          }
-        }
-      } else {
-        throw new RuntimeException("Unknown answer value: " + value.getClass());
-      }
-    }
-  }
-
-  public static void writeBigInteger(@NonNull CodedOutputStream output, @NonNull BigInteger value) throws IOException {
-    var bytes = value.toByteArray();
-    output.writeInt32NoTag(bytes.length);
-    output.writeRawBytes(bytes);
-  }
-
-  public static Object readObjectValue(@NonNull CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      byte answerType = input.readRawByte();
-      int count;
-      switch(answerType) {
-        case 1:
-          return input.readString();
-        case 2:
-          return readBigInteger(input);
-        case 3:
-          return input.readBool();
-        case 4:
-          return input.readDouble();
-        case (byte) 0x80:
-          return List.of();
-        case (byte) 0x81:
-          count = input.readInt32();
-          String[] strings = new String[count];
-          for (int i = 0; i < count; ++i) {
-            strings[i] = input.readString();
-          }
-          return List.of(strings);
-        case (byte) 0x82:
-          count = input.readInt32();
-          BigInteger[] integers = new BigInteger[count];
-          for (int i = 0; i < count; ++i) {
-            integers[i] = readBigInteger(input);
-          }
-          return List.of(integers);
-      }
-    }
-    return null;
-  }
-
-  public static BigInteger readBigInteger(@NonNull CodedInputStream input) throws IOException {
-    var size = input.readInt32();
-    var bytes = input.readRawBytes(size);
-    return new BigInteger(bytes);
-  }
 
   public static Object validateDefaultValue(String id, ValueType valueType, Object value, Consumer<FormValidationError> errorListener) {
     if (value == null) {

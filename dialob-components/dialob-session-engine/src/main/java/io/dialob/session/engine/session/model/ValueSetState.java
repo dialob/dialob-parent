@@ -15,52 +15,48 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@EqualsAndHashCode
-@ToString
-public class ValueSetState implements SessionObject {
+public record ValueSetState(
+  ValueSetId id,
+  List<Entry> entries
+) implements SessionObject<ValueSetId> {
 
   @Serial
   private static final long serialVersionUID = 6040009682715910439L;
 
-  private final ValueSetId id;
+  public ValueSetState {
+    Objects.requireNonNull(id, "id is null");
+    entries = entries != null ? List.copyOf(entries) : null;
+  }
 
-  private List<ValueSetState.Entry> entries;
+  public ValueSetState(@NonNull String id, List<Entry> entries) {
+    this(new ValueSetId(id), entries);
+  }
 
 
-  @Getter
-  @EqualsAndHashCode
-  @ToString
-  public static class Entry implements Serializable {
+  /**
+   * @param id
+   * @param label
+   * @param provided Is label provided by external service or defined on form.
+   */
+  public record Entry(
+    String id,
+    String label,
+    boolean provided
+  ) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -4632044242844529912L;
-
-    private final String id;
-
-    private final String label;
-
-    /**
-     * -- GETTER --
-     *  Is label provided by external service or defined on form.
-     *
-     * @return true when label is from external source
-     */
-    private final boolean provided;
 
     public static Entry of(String id, String label) {
       return of(id, label, false);
@@ -70,99 +66,75 @@ public class ValueSetState implements SessionObject {
       return new Entry(id, label, provided);
     }
 
-    public Entry(String id, String label, boolean provided) {
-      this.id = id;
-      this.label = label;
-      this.provided = provided;
-    }
-
   }
 
   public class UpdateBuilder {
 
-    private ValueSetState itemState;
+    private List<Entry> entries;
 
-    private ValueSetState state() {
-      if (itemState == null) {
-        this.itemState = new ValueSetState(ValueSetState.this);
-      }
-      return itemState;
-    }
+    private boolean updated = false;
 
-    public ValueSetState.UpdateBuilder setEntries(List<ValueSetState.Entry> newEntries) {
+    public UpdateBuilder setEntries(List<Entry> newEntries) {
       if (!Objects.equals(entries, newEntries)) {
+        updated = true;
         if (newEntries != null) {
-          state().entries = List.copyOf(newEntries);
+          entries = List.copyOf(newEntries);
         } else {
-          state().entries = null;
+          entries = null;
         }
       }
       return this;
     }
 
     public ValueSetState get() {
-      if (itemState == null) {
+      if (!updated) {
         return ValueSetState.this;
       }
-      return itemState;
+      return new ValueSetState(ValueSetState.this.id, this.entries);
     }
   }
 
-  public ValueSetState.UpdateBuilder update() {
-    return new ValueSetState.UpdateBuilder();
+  public UpdateBuilder update() {
+    return new UpdateBuilder();
   }
 
-  public ValueSetState(@NonNull ValueSetId id) {
-    this.id = id;
-  }
-
-  public ValueSetState(@NonNull String id) {
-    this.id = new ValueSetId(id);
-  }
-
-  public ValueSetState(@NonNull ValueSetState valueSetState) {
-    this.id = valueSetState.id;
-    if (valueSetState.entries != null) {
-      this.entries = new ArrayList<>(valueSetState.entries);
-    }
-  }
-
+  @Override
   @NonNull
-  public ValueSetId getId() {
+  public ValueSetId id() {
     return id;
   }
 
+  @Override
   @NonNull
-  public List<Entry> getEntries() {
+  public List<Entry> entries() {
     if (entries == null) {
       return Collections.emptyList();
     }
     return entries;
   }
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    output.writeStringNoTag(getId().getValueSetId());
-    output.writeInt32NoTag(entries.size());
-    for (Entry entry :  entries) {
-      output.writeStringNoTag(entry.getId());
-      output.writeStringNoTag(entry.getLabel());
-      output.writeBoolNoTag(entry.isProvided());
+  @Override
+  public void writeTo(StateWriter output) throws IOException {
+    output.writeString(id().getValueSetId());
+    output.writeInt(entries.size());
+    for (Entry entry : entries) {
+      output.writeString(entry.id());
+      output.writeString(entry.label());
+      output.writeBool(entry.provided());
     }
   }
 
-  public static ValueSetState readFrom(CodedInputStream input) throws IOException {
+  public static ValueSetState readFrom(StateReader input) throws IOException {
     String id = input.readString();
-    ValueSetState state = new ValueSetState(id);
-    int count = input.readInt32();
+    int count = input.readInt();
     Entry[] entries = new Entry[count];
-    for ( int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       String key = input.readString();
       String label = input.readString();
       boolean provided = input.readBool();
       entries[i] = new Entry(key, label, provided);
     }
-    state.entries = List.of(entries);
-    return state;
+    return new ValueSetState(new ValueSetId(id), List.of(entries));
   }
 
 

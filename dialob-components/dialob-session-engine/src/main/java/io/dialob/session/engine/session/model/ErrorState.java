@@ -15,114 +15,114 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.session.engine.program.EvalContext;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
+import org.immutables.value.Value;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
+import java.util.function.Consumer;
 
-@EqualsAndHashCode
-@ToString
-public final class ErrorState implements SessionObject {
+@lombok.Builder(toBuilder = true)
+public record ErrorState(
+  ErrorId targetId,
+  @Nullable String label,
+  @Value.Default.Boolean(false)
+  boolean active,
+  @Value.Default.Boolean(false)
+  boolean disabled
+) implements SessionObject<ErrorId> {
 
   @Serial
   private static final long serialVersionUID = -6652593868401573582L;
 
-  private final ErrorId targetId;
+  public ErrorState(@NonNull ErrorId targetId, String label) {
+    this(targetId, label, false, false);
+  }
 
-  @Getter
-  private String label;
-
-  private boolean active;
-
-  private boolean disabled;
+  public ErrorState withErrorId(@NonNull ErrorId targetId) {
+    return new ErrorState(targetId, this.label, this.active, this.disabled);
+  }
 
   public class UpdateBuilder {
 
-    private ErrorState itemState;
+    private Consumer<ErrorState.ErrorStateBuilder> updateLabel = null;
 
-    private ErrorState state() {
-      if (itemState == null) {
-        this.itemState = new ErrorState(ErrorState.this);
-      }
-      return itemState;
-    }
+    private Consumer<ErrorState.ErrorStateBuilder> updateActive = null;
+
+    private Consumer<ErrorState.ErrorStateBuilder> updateDisabled = null;
 
     public ErrorState.UpdateBuilder setActive(boolean newActive) {
-      if (active != newActive) {
-        state().active = newActive;
+      if (ErrorState.this.active() != newActive) {
+        this.updateActive = builder -> builder.active(newActive);
+      } else {
+        this.updateActive = null;
       }
       return this;
     }
 
     public ErrorState.UpdateBuilder setDisabled(boolean newDisabled) {
-      if (disabled != newDisabled) {
-        state().disabled = newDisabled;
+      if (ErrorState.this.disabled() != newDisabled) {
+        this.updateDisabled = builder -> builder.disabled(newDisabled);
+      } else {
+        this.updateDisabled = null;
       }
       return this;
     }
 
     public ErrorState.UpdateBuilder setLabel(String newLabel) {
-      if (!Objects.equals(newLabel, label)) {
-        state().label = newLabel;
+      if (!Objects.equals(ErrorState.this.label(), newLabel)) {
+        this.updateLabel = builder -> builder.label(newLabel);
+      } else {
+        this.updateLabel = null;
       }
       return this;
     }
 
     public ErrorState get() {
-      if (itemState == null) {
-        return ErrorState.this;
+      boolean updated = false;
+      var builder = toBuilder();
+      if (updateLabel != null) {
+        this.updateLabel.accept(builder);
+        updated = true;
       }
-      return itemState;
+      if (updateActive != null) {
+        this.updateActive.accept(builder);
+        updated = true;
+      }
+      if (updateDisabled != null) {
+        this.updateDisabled.accept(builder);
+        updated = true;
+      }
+      if (updated) {
+        return builder.build();
+      }
+      return ErrorState.this;
     }
-
   }
 
-  public ErrorState.UpdateBuilder update(EvalContext context) {
+  public ErrorState.UpdateBuilder update() {
     return new ErrorState.UpdateBuilder();
   }
 
-  public ErrorState(@NonNull ItemId itemId, String code, String label) {
-    this(new ErrorId(itemId, code), label);
-  }
-
-  public ErrorState(@NonNull ErrorId targetId, String label) {
-    this.targetId = targetId;
-    this.label = label;
-  }
-
-  public ErrorState(@NonNull ErrorState errorState) {
-    this(errorState.targetId, errorState);
-  }
-
-  public ErrorState(@NonNull ErrorId targetId, @NonNull ErrorState errorState) {
-    this.targetId = targetId;
-    this.label = errorState.label;
-    this.active = errorState.active;
-    this.disabled = errorState.disabled;
-  }
-
-  public ErrorState withErrorId(@NonNull ErrorId targetId) {
-    return new ErrorState(targetId, this);
-  }
-
   @Override
-  public ErrorId getId() {
+  public ErrorId id() {
     return targetId;
   }
 
-  public ItemId getItemId() {
+  public ItemId itemId() {
     return targetId.itemId();
   }
 
-  public String getCode() {
+  public String code() {
     return targetId.code();
+  }
+
+  public String label() {
+    return label;
   }
 
   @Override
@@ -140,30 +140,21 @@ public final class ErrorState implements SessionObject {
     return true;
   }
 
-  public void writeTo(CodedOutputStream output) throws IOException {
-    IdUtils.writeIdTo(targetId.itemId(), output);
-    if (targetId.code() == null) {
-      output.writeBoolNoTag(false);
-    } else {
-      output.writeBoolNoTag(true);
-      output.writeStringNoTag(targetId.code());
-    }
-    output.writeStringNoTag(label);
-    output.writeBoolNoTag(active);
-    output.writeBoolNoTag(disabled);
-
+  @Override
+  public void writeTo(StateWriter output) throws IOException {
+    output.writeNullableId(targetId.itemId());
+    output.writeNullableString(targetId.code());
+    output.writeString(label);
+    output.writeBool(active);
+    output.writeBool(disabled);
   }
 
-  public static ErrorState readFrom(CodedInputStream input) throws IOException {
-    ItemId itemId  = Objects.requireNonNull(IdUtils.readIdFrom(input));
-    String code = null;
-    if (input.readBool()) {
-      code = input.readString();
-    }
-    String label = input.readString();
-    ErrorState state = new ErrorState(itemId, code, label);
-    state.active = input.readBool();
-    state.disabled = input.readBool();
-    return state;
+  public static ErrorState readFrom(StateReader input) throws IOException {
+    var itemId  = Objects.requireNonNull(input.readNullableId());
+    var code = input.readNullableString();
+    var label = input.readString();
+    var active = input.readBool();
+    var disabled = input.readBool();
+    return new ErrorState(new ErrorId(itemId, code), label, active, disabled);
   }
 }

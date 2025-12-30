@@ -15,13 +15,13 @@
  */
 package io.dialob.spring.boot.redis;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -77,7 +77,7 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
     }
     return serializationTimer.record(() -> {
       final ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
-      CodedOutputStream output = CodedOutputStream.newInstance(byteBuffer);
+      var output = StateWriter.newInstance(byteBuffer);
       try {
         dialobQuestionnaireSession.writeTo(output);
         output.flush();
@@ -97,7 +97,7 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
     }
     LOGGER.trace("deserialize from redis {} bytes", bytes.length);
     return deserializationTimer.record(() -> {
-      CodedInputStream input = CodedInputStream.newInstance(bytes);
+      var input = StateReader.newInstance(bytes);
       try {
         return restoreSessionFrom(input);
       } catch (IOException e) {
@@ -107,7 +107,7 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
   }
 
   @NonNull
-  protected DialobQuestionnaireSession restoreSessionFrom(@NonNull CodedInputStream input) throws IOException {
+  protected DialobQuestionnaireSession restoreSessionFrom(@NonNull StateReader input) throws IOException {
     DialobQuestionnaireSession.Builder builder = DialobQuestionnaireSession.builder()
       .eventPublisher(eventPublisher)
       .sessionContextFactory(sessionContextFactory)

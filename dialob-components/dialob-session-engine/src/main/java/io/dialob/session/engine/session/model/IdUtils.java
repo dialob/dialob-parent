@@ -15,14 +15,11 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
@@ -126,38 +123,4 @@ public class IdUtils {
     return false;
   }
 
-  public static void writeIdTo(@Nullable ItemId id, CodedOutputStream output) throws IOException {
-    if (id == null) {
-      output.writeBoolNoTag(false);
-      return;
-    }
-    output.writeBoolNoTag(true);
-    switch (id) {
-      case ItemRef itemRef -> {
-        output.write((byte) 1);
-        output.writeStringNoTag(itemRef.getValue());
-      }
-      case ItemIdPartial ignored -> output.write((byte) 2);
-      case ItemIndex itemRef -> {
-        output.write((byte) 3);
-        output.writeInt32NoTag(itemRef.getIndex());
-      }
-      default -> throw new RuntimeException("unknown id type " + id);
-    }
-    writeIdTo(id.getParent().orElse(null), output);
-  }
-
-  @Nullable
-  public static ItemId readIdFrom(CodedInputStream input) throws IOException {
-    if (input.readBool()) {
-      var type = input.readRawByte();
-      return switch (type) {
-        case 1 -> new ItemRef(input.readString(), readIdFrom(input));
-        case 2 -> new ItemIdPartial(readIdFrom(input));
-        case 3 -> new ItemIndex(input.readInt32(), readIdFrom(input));
-        default -> throw new RuntimeException("unknown id type " + type);
-      };
-    }
-    return null;
-  }
 }
