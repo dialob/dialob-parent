@@ -33,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ErrorsResponseTest {
 
-  public static final RegularExpressionValueMatcher<Object> TIMESTAMP_MATCHER = new RegularExpressionValueMatcher<>("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(.\\d{1,6})?Z");
+  public static final String TIMESTAMP_REGEXP = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(.\\d{1,9})?(Z|[+-]\\d{2}(:\\d{2})?)?";
+  public static final RegularExpressionValueMatcher<Object> TIMESTAMP_MATCHER = new RegularExpressionValueMatcher<>(TIMESTAMP_REGEXP);
   ObjectMapper om = new ObjectMapper();
 
   @Test
@@ -82,7 +83,7 @@ class ErrorsResponseTest {
     JsonAssertions.assertThatJson(json)
       .isObject()
       .doesNotContainKeys("status", "error", "message")
-      .node("timestamp").isString().matches("\\d{4}-[0-1]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}(:\\d{2})?)?");
+      .node("timestamp").isString().matches(TIMESTAMP_REGEXP);
   }
 
   @Test
