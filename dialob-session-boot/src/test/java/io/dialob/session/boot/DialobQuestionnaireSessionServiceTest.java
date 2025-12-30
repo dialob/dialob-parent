@@ -19,8 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Maps;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
 import io.dialob.api.proto.Action;
@@ -45,6 +43,8 @@ import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.session.model.DialobSession;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionSaveService;
@@ -858,7 +858,7 @@ class DialobQuestionnaireSessionServiceTest {
 
         try {
           final ByteBuffer byteBuffer = ByteBuffer.allocate(65536);
-          CodedOutputStream codedOutputStream = CodedOutputStream.newInstance(byteBuffer);
+          var codedOutputStream = StateWriter.newInstance(byteBuffer);
           timeStart = System.nanoTime();
           dialobSession.writeTo(codedOutputStream);
           codedOutputStream.flush();
@@ -866,7 +866,7 @@ class DialobQuestionnaireSessionServiceTest {
           sessionData = byteBuffer.array();
 
 
-          CodedInputStream input = CodedInputStream.newInstance(sessionData);
+          var input = StateReader.newInstance(sessionData);
           timeStart = System.nanoTime();
           DialobSession readSession = DialobSession.readFrom(input);
           System.out.println("protobuf session deserialize time " + (System.nanoTime() - timeStart) / 1e6);

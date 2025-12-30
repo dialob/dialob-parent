@@ -46,7 +46,7 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
     DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
 
-    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
+    var dialobProgram = compiler.compileForm(new Form.Builder()
       .id("123")
       .name("123")
       .putData("questionnaire", new FormItem.Builder()
@@ -290,7 +290,6 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
-
 
   @Test
   void shouldInactivateNestedGroups() {

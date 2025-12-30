@@ -41,7 +41,7 @@ record ErrorLabelUpdateCommand(
   @Override
   public ErrorState update(@NonNull EvalContext context, @NonNull ErrorState errorState) {
     // label update will not trigger additional expressions
-    return errorState.update(context)
+    return errorState.update()
       .setLabel((String) expression().eval(context)).get();
   }
 

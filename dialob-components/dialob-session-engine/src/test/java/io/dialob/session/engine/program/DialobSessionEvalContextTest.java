@@ -41,7 +41,7 @@ class DialobSessionEvalContextTest {
 
     ItemState originalState = Mockito.mock(ItemState.class);
     ItemState updatedState = Mockito.mock(ItemState.class);
-    when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
+    when(originalState.id()).thenReturn(IdUtils.toId("is1"));
 
     final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
@@ -60,7 +60,7 @@ class DialobSessionEvalContextTest {
 
 
 
-    verify(originalState).getId();
+    verify(originalState).id();
 
     InOrder order = inOrder(visitor, updatedItemStateVisitor);
 
@@ -92,7 +92,7 @@ class DialobSessionEvalContextTest {
     ItemState updatedState = Mockito.mock(ItemState.class);
 
     //when(originalState.getId()).thenReturn("is1");
-    when(updatedState.getId()).thenReturn(IdUtils.toId("is1"));
+    when(updatedState.id()).thenReturn(IdUtils.toId("is1"));
     when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
@@ -104,7 +104,7 @@ class DialobSessionEvalContextTest {
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
     context.accept(visitor);
 
-    verify(updatedState).getId();
+    verify(updatedState).id();
 
     InOrder order = inOrder(visitor, updatedItemStateVisitor);
 
@@ -138,7 +138,7 @@ class DialobSessionEvalContextTest {
     final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
     itemStateHashMap.put(IdUtils.toId("is1"), originalState);
     when(dialobSession.itemStates()).thenReturn(itemStateHashMap);
-    when(originalState.getId()).thenReturn(IdUtils.toId("is1"));
+    when(originalState.id()).thenReturn(IdUtils.toId("is1"));
 
     when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.empty());
 
@@ -153,7 +153,7 @@ class DialobSessionEvalContextTest {
 
 
 
-    verify(originalState).getId();
+    verify(originalState).id();
 
     InOrder order = inOrder(visitor, updatedItemStateVisitor);
 

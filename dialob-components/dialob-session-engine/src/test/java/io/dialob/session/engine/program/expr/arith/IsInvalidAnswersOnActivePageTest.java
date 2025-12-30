@@ -61,7 +61,7 @@ class IsInvalidAnswersOnActivePageTest {
     when(context.getItemState(page1Id)).thenReturn(Optional.of(page1));
     when(page1.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(q1));
-    when(q1.getId()).thenReturn(IdUtils.toId("q1"));
+    when(q1.id()).thenReturn(IdUtils.toId("q1"));
     when(q1.getType()).thenReturn("text");
 
 
@@ -97,9 +97,9 @@ class IsInvalidAnswersOnActivePageTest {
     when(group1.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(q1));
     when(context.getItemState(group1Id)).thenReturn(Optional.of(group1));
-    when(q1.getId()).thenReturn(IdUtils.toId("q1"));
+    when(q1.id()).thenReturn(IdUtils.toId("q1"));
     when(q1.getType()).thenReturn("text");
-    when(group1.getId()).thenReturn(group1Id);
+    when(group1.id()).thenReturn(group1Id);
     when(group1.getType()).thenReturn("group");
 
 
@@ -118,7 +118,7 @@ class IsInvalidAnswersOnActivePageTest {
   private ErrorState errorState(String itemId, boolean active) {
     ErrorState errorState = mock(ErrorState.class);
     when(errorState.isActive()).thenReturn(active);
-    when(errorState.getItemId()).thenReturn(IdUtils.toId(itemId));
+    when(errorState.itemId()).thenReturn(IdUtils.toId(itemId));
     return errorState;
   }
 

@@ -44,8 +44,8 @@ record CreateRowGroupFromPrototypeCommand(
       final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);
       return context.findPrototype(this.itemPrototypeId()).map(prototypeState -> new ItemStates.Builder()
         .from(itemStates)
-        .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.getId())).collect(toMap(itemState -> Objects.requireNonNull(itemState.getId()), item -> item)))
-        .putAllItemStates(newItems.stream().map(prototypeState::withId).collect(toMap(ItemState::getId, item -> item)))
+        .itemStates(itemStates.itemStates().values().stream().filter(item -> !removedItems.contains(item.id())).collect(toMap(itemState -> Objects.requireNonNull(itemState.id()), item -> item)))
+        .putAllItemStates(newItems.stream().map(prototypeState::withId).collect(toMap(ItemState::id, item -> item)))
         .build());
     }).orElse(itemStates);
   }

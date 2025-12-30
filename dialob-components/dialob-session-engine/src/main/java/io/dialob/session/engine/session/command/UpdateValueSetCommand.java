@@ -64,7 +64,7 @@ record UpdateValueSetCommand(
             .map(entryValue -> entryValue.eval(context))
             .filter(Objects::nonNull)
             .map(entry -> ValueSetState.Entry.of(entry.key(), (String) entry.label().eval(context))),
-          state.getEntries().stream().filter(ValueSetState.Entry::isProvided))
+          state.entries().stream().filter(ValueSetState.Entry::provided))
         .toList();
     return state.update().setEntries(entries).get();
   }

@@ -15,11 +15,14 @@
  */
 package io.dialob.session.engine.session.model;
 
+import io.dialob.session.engine.session.protobuf.StateWriter;
+
+import java.io.IOException;
 import java.io.Serializable;
 
-public interface SessionObject extends Serializable {
+public interface SessionObject<I extends ItemId> extends Serializable {
 
-  <I extends ItemId> I getId();
+  I id();
 
   /**
    * @return true when item is relevant to questionnaire.
@@ -41,5 +44,7 @@ public interface SessionObject extends Serializable {
   default boolean isDisplayItem() {
     return false;
   }
+
+  void writeTo(StateWriter output) throws IOException;
 
 }

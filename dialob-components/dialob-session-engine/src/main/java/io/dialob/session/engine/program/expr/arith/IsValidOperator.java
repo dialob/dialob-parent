@@ -49,7 +49,7 @@ public record IsValidOperator(ItemId itemId) implements Expression {
       if (Utils.isQuestionType(itemState)) {
         return context.getErrorStates().stream()
           .filter(ErrorState::isActive)
-          .map(ErrorState::getItemId)
+          .map(ErrorState::itemId)
           .noneMatch(itemId::equals);
       }
       return !itemState.isInvalidAnswers();

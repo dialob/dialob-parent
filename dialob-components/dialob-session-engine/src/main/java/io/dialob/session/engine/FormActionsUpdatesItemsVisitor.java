@@ -50,7 +50,7 @@ public class FormActionsUpdatesItemsVisitor extends AbstractFormActionsUpdatesIt
   }
 
   protected void inactivated(@NonNull ErrorState updated) {
-    formActions.removeError(new io.dialob.api.questionnaire.Error.Builder().id(IdUtils.toString(updated.getItemId())).code(updated.getCode()).build());
+    formActions.removeError(new io.dialob.api.questionnaire.Error.Builder().id(IdUtils.toString(updated.itemId())).code(updated.code()).build());
   }
 
   protected void disabled(@NonNull ItemState updated) {
@@ -66,7 +66,7 @@ public class FormActionsUpdatesItemsVisitor extends AbstractFormActionsUpdatesIt
   }
 
   protected void inactivated(@NonNull ItemState updated) {
-    formActions.removeQuestion(IdUtils.toString(updated.getId()));
+    formActions.removeQuestion(IdUtils.toString(updated.id()));
   }
 
   protected void updated(@NonNull ItemState updated) {

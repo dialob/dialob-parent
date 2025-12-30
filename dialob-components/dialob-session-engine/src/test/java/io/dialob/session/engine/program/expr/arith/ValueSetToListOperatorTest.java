@@ -42,7 +42,7 @@ class ValueSetToListOperatorTest {
   @Test
   void shouldMapValueSetStateIdsAsAList() {
     EvalContext context = Mockito.mock(EvalContext.class);
-    var vss = new ValueSetState("vs1").update().setEntries(List.of(
+    var vss = new ValueSetState("vs1", null).update().setEntries(List.of(
       ValueSetState.Entry.of("a", "Label A"),
       ValueSetState.Entry.of("b", "Label B"),
       ValueSetState.Entry.of("c", "Label C")

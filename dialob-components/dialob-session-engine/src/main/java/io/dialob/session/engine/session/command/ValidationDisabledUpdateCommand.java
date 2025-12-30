@@ -39,7 +39,7 @@ record ValidationDisabledUpdateCommand(
   @Override
   public ErrorState update(@NonNull EvalContext context, @NonNull ErrorState state) {
     final Object eval = expression().eval(context);
-    ErrorState.UpdateBuilder updateBuilder = state.update(context).setDisabled(eval != null ? (Boolean) eval : false);
+    ErrorState.UpdateBuilder updateBuilder = state.update().setDisabled(eval != null ? (Boolean) eval : false);
     return updateBuilder.get();
   }
 

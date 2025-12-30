@@ -55,9 +55,9 @@ public record ValueSetToListOperator(
   @Nullable
   public Object eval(@NonNull EvalContext context) {
     return context.getValueSetState(getValueSetId()).map(valueSetState -> valueSetState
-      .getEntries()
+      .entries()
       .stream()
-      .map(ValueSetState.Entry::getId)
+      .map(ValueSetState.Entry::id)
       .toList()
     ).orElseGet(Collections::emptyList);
   }

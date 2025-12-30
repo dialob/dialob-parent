@@ -37,7 +37,7 @@ class IntersectionOperatorTest {
     Expression rhs = Mockito.mock();
     Object result;
 
-    var vss = new ValueSetState("vs1").update().setEntries(List.of(
+    var vss = new ValueSetState("vs1", null).update().setEntries(List.of(
       ValueSetState.Entry.of("a", "Label A"),
       ValueSetState.Entry.of("b", "Label B"),
       ValueSetState.Entry.of("c", "Label C")

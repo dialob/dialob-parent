@@ -111,14 +111,14 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ItemState> activeItem(String id) {
-    return isItem("activeItem(%s)".formatted(id), itemState -> itemState.getId().equals(IdUtils.toId(id)) && itemState.isActive());
+    return isItem("activeItem(%s)".formatted(id), itemState -> itemState.id().equals(IdUtils.toId(id)) && itemState.isActive());
   }
 
   public ArgumentMatcher<ItemState> inactiveItem() {
     return isItem("inactiveItem", item -> !item.isActive());
   }
   public ArgumentMatcher<ItemState> inactiveItem(String id) {
-    return isItem("inactiveItem(%s)".formatted(id), item -> item.getId().equals(IdUtils.toId(id)) && !item.isActive());
+    return isItem("inactiveItem(%s)".formatted(id), item -> item.id().equals(IdUtils.toId(id)) && !item.isActive());
   }
 
   public ArgumentMatcher<ErrorState> inactiveError() {
@@ -130,12 +130,12 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ItemState> answeredItem(String itemId) {
-    return isItem("answeredItem", itemState -> itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.getId())));
+    return isItem("answeredItem", itemState -> itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.id())));
   }
 
   public ArgumentMatcher<ItemState> unansweredItem(String itemId) {
     return isItem("answeredItem", itemState -> {
-      return !itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.getId()));
+      return !itemState.isAnswered() && (itemId == null || IdUtils.toId(itemId).equals(itemState.id()));
     });
   }
 
@@ -192,7 +192,7 @@ public abstract class AbstractDialobProgramTest {
   protected void assertErrorInactive(final DialobSession session, final ItemId itemId, final String errorCode) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
-      if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && errorState.isActive()) {
+      if (errorState.itemId().equals(itemId) && errorState.code().equals(errorCode) && errorState.isActive()) {
         Assertions.fail("Error " + itemId + "." + errorCode + " active");
       }
     }
@@ -201,7 +201,7 @@ public abstract class AbstractDialobProgramTest {
   protected void assertErrorDisabled(final DialobSession session, final ItemId itemId, final String errorCode) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
-      if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && !errorState.isDisabled()) {
+      if (errorState.itemId().equals(itemId) && errorState.code().equals(errorCode) && !errorState.isDisabled()) {
         Assertions.fail("Error " + itemId + "." + errorCode + " disabled");
       }
     }
@@ -210,7 +210,7 @@ public abstract class AbstractDialobProgramTest {
   protected void assertErrorEnabled(final DialobSession session, final ItemId itemId, final String errorCode) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
-      if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && errorState.isDisabled()) {
+      if (errorState.itemId().equals(itemId) && errorState.code().equals(errorCode) && errorState.isDisabled()) {
         Assertions.fail("Error " + itemId + "." + errorCode + " disabled");
       }
     }
@@ -219,7 +219,7 @@ public abstract class AbstractDialobProgramTest {
   protected void assertErrorActive(final DialobSession session, final ItemId itemId, final String errorCode) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
-      if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode) && errorState.isActive()) {
+      if (errorState.itemId().equals(itemId) && errorState.code().equals(errorCode) && errorState.isActive()) {
         return;
       }
     }
@@ -240,8 +240,8 @@ public abstract class AbstractDialobProgramTest {
   protected void assertErrorLabel(final DialobSession session, final ItemId itemId, final String errorCode, String label) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {
-      if (errorState.getItemId().equals(itemId) && errorState.getCode().equals(errorCode)) {
-        Assertions.assertEquals(label, errorState.getLabel());
+      if (errorState.itemId().equals(itemId) && errorState.code().equals(errorCode)) {
+        Assertions.assertEquals(label, errorState.label());
         return;
       }
     }

@@ -64,14 +64,14 @@ public record ValueSetEntryToStringOperator(
     Optional<ValueSetState> valueSetState = context.getValueSetState(valueSetId());
     return valueSetState.map(valueSetState1 -> {
       if (eval instanceof String string) { // For choice (answer is a scalar)
-        for (ValueSetState.Entry entry : valueSetState1.getEntries()) {
-          if (entry.getId().equals(eval)) {
-            return entry.getLabel();
+        for (ValueSetState.Entry entry : valueSetState1.entries()) {
+          if (entry.id().equals(eval)) {
+            return entry.label();
           }
         }
         return string;
       } else if (eval instanceof List<?> list) { // For multichoice (answer is a list)
-        return valueSetState1.getEntries().stream().filter(entry -> list.contains(entry.getId())).map(ValueSetState.Entry::getLabel).collect(Collectors.joining(", "));
+        return valueSetState1.entries().stream().filter(entry -> list.contains(entry.id())).map(ValueSetState.Entry::label).collect(Collectors.joining(", "));
       }
       return null;
     }).orElse(null);

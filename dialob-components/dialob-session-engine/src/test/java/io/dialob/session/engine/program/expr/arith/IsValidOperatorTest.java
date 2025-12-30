@@ -16,10 +16,7 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.model.ErrorState;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
@@ -53,8 +50,8 @@ class IsValidOperatorTest {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
-    ErrorState errorState = new ErrorState(IdUtils.toId("q1"), "error1", "error");
-    errorState = errorState.update(context).setActive(true).get();
+    ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("q1"), "error1"), "error");
+    errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertFalse(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
@@ -69,8 +66,8 @@ class IsValidOperatorTest {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
-    ErrorState errorState = new ErrorState(IdUtils.toId("q2"), "error1", "error");
-    errorState = errorState.update(context).setActive(true).get();
+    ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("q2"), "error1"), "error");
+    errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertTrue(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
@@ -114,8 +111,8 @@ class IsValidOperatorTest {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenReturn(IdUtils.toId("rg.1.q1"));
     when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("rg.1.q1"), null, "text", null, null)));
-    ErrorState errorState = new ErrorState(IdUtils.toId("rg.1.q1"), "error1", "error");
-    errorState = errorState.update(context).setActive(true).get();
+    ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("rg.1.q1"), "error1"), "error");
+    errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertFalse(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("rg.*.q1")),anyBoolean());
@@ -130,8 +127,8 @@ class IsValidOperatorTest {
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenReturn(IdUtils.toId("rg.1.q1"));
     when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("rg.1.q1"), null, "text", null, null)));
-    ErrorState errorState = new ErrorState(IdUtils.toId("rg.2.q1"), "error1", "error");
-    errorState = errorState.update(context).setActive(true).get();
+    ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("rg.2.q1"), "error1"), "error");
+    errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
     assertTrue(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("rg.*.q1")),anyBoolean());

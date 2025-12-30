@@ -54,7 +54,7 @@ public record IsInvalidAnswersOnActivePage(
   public Boolean eval(@NonNull EvalContext context) {
     final Set<ItemId> questionsWithErrors = context.getErrorStates().stream()
       .filter(ErrorState::isActive)
-      .map(ErrorState::getItemId)
+      .map(ErrorState::itemId)
       .collect(Collectors.toSet());
     if (questionsWithErrors.isEmpty()) {
       return false;
@@ -68,7 +68,7 @@ public record IsInvalidAnswersOnActivePage(
       .flatMap(Collection::stream);
 
     return findQuestionItems(context, pageItemIds)
-      .map(ItemState::getId)
+      .map(ItemState::id)
       .anyMatch(questionsWithErrors::contains);
   }
 
