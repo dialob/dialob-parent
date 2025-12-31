@@ -17,6 +17,7 @@ package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,7 +31,13 @@ class SetVariableValueTest {
     var setVariableValue = CommandFactory.setVariableValue(IdUtils.toId("c1"), "new value");
 
     EvalContext context = Mockito.mock(EvalContext.class);
-    ItemState itemState = new ItemState(IdUtils.toId("c1"), null, "context", null, null);
+    ItemId id = IdUtils.toId("c1");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .type("context")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     assertEquals("new value", setVariableValue.update(context, itemState).getValue());
   }
 }

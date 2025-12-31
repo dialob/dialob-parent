@@ -137,10 +137,10 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
-    assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
+    assertNull(dialobSession.getItemState(toRef("question2")).get().answer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question2"), "vastee")));
-    assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
+    assertNull(dialobSession.getItemState(toRef("question2")).get().answer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
   }
 
@@ -152,13 +152,13 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
-    assertNull(dialobSession.getItemState(toRef("question2")).get().getAnswer());
+    assertNull(dialobSession.getItemState(toRef("question2")).get().answer());
     assertNull(dialobSession.getItemState(toRef("question2")).get().getValue());
     // activates question2
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "true")));
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question2"), "vastee")));
     assertEquals("vastee", dialobSession.getItemState(toRef("question2")).get().getValue());
-    assertEquals("vastee", dialobSession.getItemState(toRef("question2")).get().getAnswer());
+    assertEquals("vastee", dialobSession.getItemState(toRef("question2")).get().answer());
   }
 
   @Test
@@ -169,36 +169,36 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
-    assertNull(dialobSession.getItemState(toRef("question1")).get().getAnswer());
+    assertNull(dialobSession.getItemState(toRef("question1")).get().answer());
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
 
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "false")));
     assertEquals(Boolean.FALSE, dialobSession.getItemState(toRef("question1")).get().getValue());
-    assertEquals("false", dialobSession.getItemState(toRef("question1")).get().getAnswer());
+    assertEquals("false", dialobSession.getItemState(toRef("question1")).get().answer());
     assertInactive(dialobSession, toRef("question2"));
     assertActive(dialobSession, toRef("question3"));
 
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "true")));
     assertEquals(Boolean.TRUE, dialobSession.getItemState(toRef("question1")).get().getValue());
-    assertEquals("true", dialobSession.getItemState(toRef("question1")).get().getAnswer());
+    assertEquals("true", dialobSession.getItemState(toRef("question1")).get().answer());
     assertActive(dialobSession, toRef("question2"));
     assertActive(dialobSession, toRef("question3"));
 
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), null)));
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
-    assertNull(dialobSession.getItemState(toRef("question1")).get().getAnswer());
+    assertNull(dialobSession.getItemState(toRef("question1")).get().answer());
     assertInactive(dialobSession, toRef("question2"));
     assertInactive(dialobSession, toRef("question3"));
 
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "")));
     assertNull(dialobSession.getItemState(toRef("question1")).get().getValue());
-    assertEquals("", dialobSession.getItemState(toRef("question1")).get().getAnswer());
+    assertEquals("", dialobSession.getItemState(toRef("question1")).get().answer());
     assertInactive(dialobSession, toRef("question2"));
     assertInactive(dialobSession, toRef("question3"));
 
     dialobSessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "crap")));
     assertEquals(Boolean.FALSE, dialobSession.getItemState(toRef("question1")).get().getValue());
-    assertEquals("crap", dialobSession.getItemState(toRef("question1")).get().getAnswer());
+    assertEquals("crap", dialobSession.getItemState(toRef("question1")).get().answer());
     assertInactive(dialobSession, toRef("question2"));
     assertActive(dialobSession, toRef("question3"));
   }

@@ -131,7 +131,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     this.state = new AtomicReference<>(state);
     this.toActionItemFunction = itemState -> Utils.toActionItem(itemState, builder -> {
       if (itemState.hasCustomProps()) {
-        ItemId id = itemState.getPrototypeId();
+        ItemId id = itemState.prototypeId();
         if (id == null) {
           id = itemState.id();
         }
@@ -427,7 +427,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       @Override
       public Optional<ItemVisitor> visitItemStates() {
         return Optional.of(itemState -> {
-          if (Utils.isContextVariable(itemState.getType())) {
+          if (Utils.isContextVariable(itemState.type())) {
             Object value = ConversionUtil.toJSON(itemState.getValue());
             answers.add(new ContextValue.Builder().id(IdUtils.toString(itemState.id())).value(value == null ? null : value.toString()).build());
           }
@@ -467,7 +467,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   @Override
   public Optional<String> getActiveItem() {
-    return dialobSession.getRootItem().getActivePage().map(IdUtils::toString);
+    return dialobSession.getRootItem().activePageOptional().map(IdUtils::toString);
   }
 
   @NonNull
@@ -570,8 +570,8 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
           if (itemState.isActive() && isQuestionType(itemState)) {
             final Answer.Builder answerBuilder = new Answer.Builder()
               .id(IdUtils.toString(itemState.id()))
-              .value(itemState.getAnswer());
-            ItemId itemId = itemState.getPrototypeId();
+              .value(itemState.answer());
+            ItemId itemId = itemState.prototypeId();
             if (itemId == null) {
               itemId = itemState.id();
             }
@@ -598,7 +598,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       @Override
       public Optional<ItemVisitor> visitItemStates() {
         return Optional.of(itemState -> {
-          if (Utils.isProgramVariable(itemState.getType())) {
+          if (Utils.isProgramVariable(itemState.type())) {
             Object value = ConversionUtil.toJSON(itemState.getValue());
             answers.add(new VariableValue.Builder().id(IdUtils.toString(itemState.id())).value(value == null ? null : value.toString()).build());
           }

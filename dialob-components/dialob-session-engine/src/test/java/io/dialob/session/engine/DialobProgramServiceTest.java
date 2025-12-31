@@ -47,7 +47,7 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
     DialobProgram dialobProgram = programFromFormCompiler.compileForm(formDocument);
     DialobSession dialobSession = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
-    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
+    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().activePageOptional());
 
     DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
@@ -61,9 +61,9 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
     when(visitor.visitUpdatedValueSets()).thenReturn(Optional.of(valueSetVisitor));
 
 
-    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
+    assertEquals(IdUtils.toId("page1"), dialobSession.getRootItem().activePage());
     sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(nextPage()));
-    assertEquals(Optional.of((ItemRef) IdUtils.toId("page1")), dialobSession.getRootItem().getActivePage());
+    assertEquals(IdUtils.toId("page1"), dialobSession.getRootItem().activePage());
 
     sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(answer(toRef("question1"), "35")));
     assertValueEquals(dialobSession,toRef("question1"), BigInteger.valueOf(35));

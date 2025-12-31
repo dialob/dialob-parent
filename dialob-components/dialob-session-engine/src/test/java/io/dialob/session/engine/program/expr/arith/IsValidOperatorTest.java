@@ -35,7 +35,13 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-    when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
+    ItemId id = IdUtils.toId("q1");
+    when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()));
     when(context.getErrorStates()).thenReturn(Collections.emptyList());
     assertTrue(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
@@ -49,7 +55,13 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-    when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
+    ItemId id = IdUtils.toId("q1");
+    when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()));
     ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("q1"), "error1"), "error");
     errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
@@ -65,7 +77,13 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-    when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("q1"), null, "text", null, null)));
+    ItemId id = IdUtils.toId("q1");
+    when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()));
     ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("q2"), "error1"), "error");
     errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
@@ -81,8 +99,14 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+    ItemId id = IdUtils.toId("q1");
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(
-      new ItemState(IdUtils.toId("q1"), null, "group", null, null).update().setInvalidAnswers(false).get()
+      ItemState.builder()
+        .id(id)
+        .type("group")
+        .status(ItemState.Status.NEW)
+        .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+        .build().update().setInvalidAnswers(false).get()
     ));
     assertTrue(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
@@ -95,8 +119,14 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+    ItemId id = IdUtils.toId("q1");
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(
-      new ItemState(IdUtils.toId("q1"), null, "group", null, null).update().setInvalidAnswers(true).get()
+      ItemState.builder()
+        .id(id)
+        .type("group")
+        .status(ItemState.Status.NEW)
+        .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+        .build().update().setInvalidAnswers(true).get()
     ));
     assertFalse(operator.eval(context));
     verify(context).mapTo(eq(IdUtils.toId("q1")),anyBoolean());
@@ -110,7 +140,13 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("rg.*.q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenReturn(IdUtils.toId("rg.1.q1"));
-    when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("rg.1.q1"), null, "text", null, null)));
+    ItemId id = IdUtils.toId("rg.1.q1");
+    when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()));
     ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("rg.1.q1"), "error1"), "error");
     errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));
@@ -126,7 +162,13 @@ class IsValidOperatorTest {
     IsValidOperator operator = IsValidOperator.of(IdUtils.toId("rg.*.q1"));
     EvalContext context = Mockito.mock(EvalContext.class);
     when(context.mapTo(any(ItemId.class),anyBoolean())).thenReturn(IdUtils.toId("rg.1.q1"));
-    when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("rg.1.q1"), null, "text", null, null)));
+    ItemId id = IdUtils.toId("rg.1.q1");
+    when(context.getItemState(IdUtils.toId("rg.1.q1"))).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()));
     ErrorState errorState = new ErrorState(new ErrorId(IdUtils.toId("rg.2.q1"), "error1"), "error");
     errorState = errorState.update().setActive(true).get();
     when(context.getErrorStates()).thenReturn(Collections.singletonList(errorState));

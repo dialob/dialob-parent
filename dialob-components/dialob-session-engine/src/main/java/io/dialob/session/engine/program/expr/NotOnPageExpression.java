@@ -49,7 +49,7 @@ public record NotOnPageExpression(
 
   @Override
   public Object eval(@NonNull EvalContext evalContext) {
-    return evalContext.getItemState(DialobSession.QUESTIONNAIRE_REF).map(itemState -> !itemState.getActivePage().map(activePage -> activePage.equals(this.page())).orElse(false)).orElse(false);
+    return evalContext.getItemState(DialobSession.QUESTIONNAIRE_REF).map(itemState -> !itemState.activePageOptional().map(activePage -> activePage.equals(this.page())).orElse(false)).orElse(false);
   }
 
   @NonNull

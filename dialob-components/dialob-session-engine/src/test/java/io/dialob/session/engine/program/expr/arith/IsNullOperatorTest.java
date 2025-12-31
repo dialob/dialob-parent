@@ -17,6 +17,7 @@ package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,7 +35,16 @@ class IsNullOperatorTest {
 
     IsNullOperator operator = new IsNullOperator.Builder().itemId(IdUtils.toId("itemi")).build();
     EvalContext context = Mockito.mock(EvalContext.class);
-    ItemState item = new ItemState(IdUtils.toId("itemi"), null, "text", null, null);
+    ItemId id = IdUtils.toId("itemi");
+    ItemState item = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("text")
+      .view(null)
+      .valueSetId(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
 
     when(context.getItemState(IdUtils.toId("itemi"))).thenReturn(Optional.of(item));
 

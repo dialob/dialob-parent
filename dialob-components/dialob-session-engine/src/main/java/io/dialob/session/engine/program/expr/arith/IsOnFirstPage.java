@@ -39,8 +39,8 @@ public record IsOnFirstPage() implements Expression {
 
   @Override
   public Boolean eval(@NonNull EvalContext context) {
-    return context.getItemState(DialobSession.QUESTIONNAIRE_REF).map(questionnaire -> questionnaire.getActivePage().map(itemRef -> {
-      List<ItemId> availableItems = questionnaire.getAvailableItems();
+    return context.getItemState(DialobSession.QUESTIONNAIRE_REF).map(questionnaire -> questionnaire.activePageOptional().map(itemRef -> {
+      List<ItemId> availableItems = questionnaire.availableItems();
       if (availableItems.size() <= 1) {
         return true;
       }

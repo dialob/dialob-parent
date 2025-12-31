@@ -17,6 +17,7 @@ package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,7 +36,13 @@ class AddRowTest {
 
     EvalContext context = Mockito.mock(EvalContext.class);
 
-    ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("rows");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     assertNull(itemState.getValue());
 
     itemState = addRow.update(context, itemState);
@@ -56,11 +63,17 @@ class AddRowTest {
     var addRow = CommandFactory.addRow(IdUtils.toId("rows"));
     EvalContext context = Mockito.mock(EvalContext.class);
 
-    ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("rows");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     itemState = itemState.update().setRowsCanBeAdded(false).get();
 
-    assertEquals(0, itemState.getItems().size());
+    assertEquals(0, itemState.items().size());
     itemState = addRow.update(context, itemState);
-    assertEquals(0, itemState.getItems().size());
+    assertEquals(0, itemState.items().size());
   }
 }

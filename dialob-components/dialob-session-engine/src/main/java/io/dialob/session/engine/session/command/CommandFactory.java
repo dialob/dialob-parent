@@ -70,7 +70,7 @@ public final class CommandFactory {
     GROUP_ITEMS_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !itemState.getItems().equals(updateState.getItems()));
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !itemState.items().equals(updateState.items()));
       }
     },
     ITEM_ACTIVITY_CHANGED {
@@ -94,14 +94,14 @@ public final class CommandFactory {
     ITEM_LABEL_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.getLabel(), itemState.getLabel()));
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.label(), itemState.label()));
       }
     },
 
     ITEM_DESCRIPTION_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.getDescription(), itemState.getDescription()));
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.description(), itemState.description()));
       }
     },
 
@@ -114,7 +114,7 @@ public final class CommandFactory {
     ITEM_STATUS_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.getStatus() != itemState.getStatus());
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.status() != itemState.status());
       }
     },
     ITEM_INVALIDITY_CHANGED {

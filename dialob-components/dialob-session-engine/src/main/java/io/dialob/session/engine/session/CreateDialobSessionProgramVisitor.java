@@ -207,16 +207,25 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     final ItemState itemState = new ItemState(
       itemId,
       item.isPrototype() ? itemId : null,
-      item.type(), view,
-      published,
+      item.type(),
+      view,
       item.valueSetIdOptional().orElse(null),
+      ItemState.Status.NEW,
       answer,
       value,
       defaultValue,
-      activePage)
-      .update()
-      .setHasCustomProps(hasCustomProps)
-      .get();
+      (published ? ItemState.DISPLAY_ITEM_BIT : 0)
+        | (hasCustomProps ? ItemState.HAS_CUSTOM_PROPS_BIT : 0)
+        | ItemState.ACTIVE_BIT
+        | ItemState.ROWS_CAN_BE_ADDED_BIT,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      activePage);
     if (!item.isPrototype()) {
       collectItemUpdateCommands(itemId);
     }
@@ -276,7 +285,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
             }
           }
           final Object newAnswer = initialValueResolver.apply(itemIdToCreate, item).orElse(null);
-          return prototype.withId(itemIdToCreate).update().setAnswer(newAnswer).setValue(Utils.parse(prototype.getType(), newAnswer)).setItems(rowItems).get();
+          return prototype.withId(itemIdToCreate).update().setAnswer(newAnswer).setValue(Utils.parse(prototype.type(), newAnswer)).setItems(rowItems).get();
         }).orElse(newItem);
         collectItemUpdateCommands(itemIdToCreate);
         // create error states for each created state

@@ -19,6 +19,7 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.event.ItemsChangedEvent;
 import io.dialob.session.engine.session.command.event.TargetEvent;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ItemStates;
 import org.junit.jupiter.api.Assertions;
@@ -66,10 +67,23 @@ class CreateRowGroupFromPrototypeCommandTest {
     when(states.errorStates()).thenReturn(Collections.emptyMap());
     when(states.itemStates()).thenReturn(Map.of(IdUtils.toId("g1"), groupState2));
     when(states.valueSetStates()).thenReturn(Collections.emptyMap());
-    when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.of(new ItemState(IdUtils.toId("g1.*"), null, "text", null, true, null, null, null, null, null)));
+    ItemId id = IdUtils.toId("g1.*");
+    when(context.findPrototype(IdUtils.toId("g1.*"))).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("text")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build()));
     when(context.getOriginalItemState(IdUtils.toId("g1"))).thenReturn(Optional.of(groupState1));
-    when(groupState1.getItems()).thenReturn(List.of());
-    when(groupState2.getItems()).thenReturn(List.of(IdUtils.toId("g1.0")));
+    when(groupState1.items()).thenReturn(List.of());
+    when(groupState2.items()).thenReturn(List.of(IdUtils.toId("g1.0")));
     when(groupState1.id()).thenReturn(IdUtils.toId("g1"));
     when(groupState2.id()).thenReturn(IdUtils.toId("g1"));
 
