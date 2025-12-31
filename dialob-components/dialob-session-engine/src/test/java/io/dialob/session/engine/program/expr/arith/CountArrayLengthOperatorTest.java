@@ -17,6 +17,7 @@ package io.dialob.session.engine.program.expr.arith;
 
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -48,7 +49,16 @@ class CountArrayLengthOperatorTest {
     EvalContext context = mock();
     var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
-    when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null)));
+    ItemId id = IdUtils.toId("test");
+    when(context.getItemState(any())).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("note")
+      .view(null)
+      .valueSetId(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()));
 
     assertThat(op.eval(context)).isEqualTo(BigInteger.ZERO);
 
@@ -61,7 +71,13 @@ class CountArrayLengthOperatorTest {
     EvalContext context = mock();
     var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
-    when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null).update()
+    ItemId id = IdUtils.toId("test");
+    when(context.getItemState(any())).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("note")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build().update()
       .setValue(new Object[10]).get()));
 
     assertThat(op.eval(context)).isEqualTo(BigInteger.TEN);
@@ -75,7 +91,13 @@ class CountArrayLengthOperatorTest {
     EvalContext context = mock();
     var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
-    when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null).update()
+    ItemId id = IdUtils.toId("test");
+    when(context.getItemState(any())).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("note")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build().update()
       .setValue(List.of(1,2,3)).get()));
 
     assertThat(op.eval(context)).isEqualTo(BigInteger.valueOf(3));
@@ -89,7 +111,13 @@ class CountArrayLengthOperatorTest {
     EvalContext context = mock();
     var op = new CountArrayLengthOperator.Builder()
       .itemId(IdUtils.toId("test")).build();
-    when(context.getItemState(any())).thenReturn(Optional.of(new ItemState(IdUtils.toId("test"), null, "note", null, null).update()
+    ItemId id = IdUtils.toId("test");
+    when(context.getItemState(any())).thenReturn(Optional.of(ItemState.builder()
+      .id(id)
+      .type("note")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build().update()
       .setValue("123").get()));
 
     assertThat(op.eval(context)).isEqualTo(BigInteger.ZERO);

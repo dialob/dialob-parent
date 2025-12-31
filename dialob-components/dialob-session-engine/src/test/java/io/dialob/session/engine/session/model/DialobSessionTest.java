@@ -33,12 +33,24 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 class DialobSessionTest {
 
-  public static final ItemState ITEM_STATE = new ItemState(
-    IdUtils.toId("q1"),
-    null, "text", null,
-    true, null, null, null,
+  public static final ItemState ITEM_STATE;
 
-    null, null);
+  static {
+    ItemId id = IdUtils.toId("q1");
+    ITEM_STATE = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("text")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
+  }
 
   @Test
   void noopCommandShouldNotTriggerAnyChanges() {
@@ -138,12 +150,19 @@ class DialobSessionTest {
       @NonNull
       @Override
       public ItemStates update(@NonNull EvalContext context, @NonNull ItemStates target) {
-        return new ItemStates.Builder().putItemStates(ITEM_STATE.id(), new ItemState(
-          ITEM_STATE.id(),
-          null, "text", null,
-          true, null, "hello", null,
-
-          null, null)).build();
+        return new ItemStates.Builder().putItemStates(ITEM_STATE.id(), ItemState.builder()
+          .id(ITEM_STATE.id())
+          .prototypeId(null)
+          .type("text")
+          .view(null)
+          .status(ItemState.Status.NEW)
+          .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+          .valueSetId(null)
+          .answer("hello")
+          .value(null)
+          .defaultValue(null)
+          .activePage(null)
+          .build()).build();
       }
     };
     session.applyUpdate(context, command);

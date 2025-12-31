@@ -29,8 +29,8 @@ record PrevPage(
   @NonNull
   @Override
   public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    List<ItemId> items = itemState.getItems();
-    return itemState.getActivePage().map(itemRef -> {
+    List<ItemId> items = itemState.items();
+    return itemState.activePageOptional().map(itemRef -> {
       ItemId page = null;
       int i = items.indexOf(itemRef);
       while (i > 0 && i < items.size() && pageIsInactive(context, page)) {

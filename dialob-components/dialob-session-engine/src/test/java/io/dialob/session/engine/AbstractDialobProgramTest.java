@@ -228,12 +228,12 @@ public abstract class AbstractDialobProgramTest {
 
   protected void assertAllowedAction(final DialobSession session, Action.Type action) {
     final Optional<ItemState> questionnaireState = session.getItemState(toRef("questionnaire"));
-    Assertions.assertTrue(questionnaireState.get().getAllowedActions().contains(action));
+    Assertions.assertTrue(questionnaireState.get().allowedActions().contains(action));
   }
 
   protected void assertDisallowedAction(final DialobSession session, Action.Type action) {
     final Optional<ItemState> questionnaireState = session.getItemState(toRef("questionnaire"));
-    Assertions.assertFalse(questionnaireState.get().getAllowedActions().contains(action));
+    Assertions.assertFalse(questionnaireState.get().allowedActions().contains(action));
   }
 
 

@@ -46,8 +46,9 @@ record CreateRowGroupItemsFromPrototypeCommand(
   @Override
   public ItemStates update(@NonNull final EvalContext context, @NonNull final ItemStates itemStates) {
     final ItemState currentItemState = itemStates.itemStates().get(targetId());
-    Set<ItemId> currentItems = currentItemState != null ? Set.copyOf(currentItemState.getItems()) : Set.of();
-    Set<ItemId> originalItems = context.getOriginalItemState(targetId()).map(state -> Set.copyOf(state.getItems())).orElse(Set.of());
+    Set<ItemId> currentItems;
+    currentItems = currentItemState != null ? Set.copyOf(currentItemState.items()) : Set.of();
+    Set<ItemId> originalItems = context.getOriginalItemState(targetId()).map(state -> Set.copyOf(state.items())).orElse(Set.of());
 
     final Sets.SetView<ItemId> newItems = Sets.difference(currentItems, originalItems);
     final Sets.SetView<ItemId> removedItems = Sets.difference(originalItems, currentItems);

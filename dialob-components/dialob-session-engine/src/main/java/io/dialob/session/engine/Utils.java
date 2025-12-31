@@ -85,10 +85,10 @@ public final class Utils {
 
 
   public static boolean isQuestionType(@NonNull ItemState itemState) {
-    return switch (itemState.getType()) {
+    return switch (itemState.type()) {
       case Constants.QUESTIONNAIRE, Constants.GROUP, Constants.NOTE, Constants.VARIABLE, Constants.CONTEXT, Constants.SURVEYGROUP -> false;
         // rows are not questions, but row containers answer holds row order on answer.
-      case Constants.ROWGROUP -> itemState.getPrototypeId() == null;
+      case Constants.ROWGROUP -> itemState.prototypeId() == null;
       default -> true;
     };
   }
@@ -144,39 +144,39 @@ public final class Utils {
   @NonNull
   public static ActionItem toActionItem(@NonNull ItemState itemState, UnaryOperator<ActionItem.Builder> post) {
     Object value;
-    if (isVariable(itemState.getType())) {
+    if (isVariable(itemState.type())) {
       value = itemState.getValue();
     } else {
-      value = itemState.getAnswer();
+      value = itemState.answer();
     }
     final ActionItem.Builder actionItemBuilder = new ActionItem.Builder()
       .disabled(itemState.isDisabled() ? true : null)
       .inactive(!itemState.isActive() ? true : null)
-      .activeItem(itemState.getActivePage().map(IdUtils::toString).orElse(null))
+      .activeItem(IdUtils.toString(itemState.activePage()))
       .answered(itemState.isAnswered())
-      .view(itemState.getView())
+      .view(itemState.view())
       .id(IdUtils.toString(itemState.id()))
-      .type(itemState.getType())
+      .type(itemState.type())
       .value(value);
     if (itemState.isRequired()) {
       actionItemBuilder.required(true);
     }
-    if (!itemState.getClassNames().isEmpty()) {
-      actionItemBuilder.className(itemState.getClassNames());
+    if (!itemState.classNames().isEmpty()) {
+      actionItemBuilder.className(itemState.classNames());
     }
-    if (!itemState.getItems().isEmpty()) {
+    if (!itemState.items().isEmpty()) {
       // TODO handled indexed references
-      actionItemBuilder.items(itemState.getItems().stream().map(IdUtils::toString).toList());
+      actionItemBuilder.items(itemState.items().stream().map(IdUtils::toString).toList());
     }
-    actionItemBuilder.label(itemState.getLabel());
-    actionItemBuilder.description(itemState.getDescription());
-    if (!itemState.getAllowedActions().isEmpty()) {
-      actionItemBuilder.allowedActions(itemState.getAllowedActions());
+    actionItemBuilder.label(itemState.label());
+    actionItemBuilder.description(itemState.description());
+    if (!itemState.allowedActions().isEmpty()) {
+      actionItemBuilder.allowedActions(itemState.allowedActions());
     }
-    if (!itemState.getAvailableItems().isEmpty()) {
-      actionItemBuilder.availableItems(itemState.getAvailableItems().stream().map(IdUtils::toString).toList());
+    if (!itemState.availableItems().isEmpty()) {
+      actionItemBuilder.availableItems(itemState.availableItems().stream().map(IdUtils::toString).toList());
     }
-    itemState.getValueSetId().ifPresent(actionItemBuilder::valueSetId);
+    itemState.valueSetIdOptional().ifPresent(actionItemBuilder::valueSetId);
     if (post != null) {
       post.apply(actionItemBuilder);
     }

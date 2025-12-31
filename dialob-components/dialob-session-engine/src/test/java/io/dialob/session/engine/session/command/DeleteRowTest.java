@@ -17,6 +17,7 @@ package io.dialob.session.engine.session.command;
 
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,7 +36,20 @@ class DeleteRowTest {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
-    ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("rows");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
@@ -51,7 +65,20 @@ class DeleteRowTest {
     final ItemUpdateCommand deleteRow = CommandFactory.deleteRow(IdUtils.toId("rows.1"));
     final EvalContext context = Mockito.mock(EvalContext.class);
 
-    ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("rows");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
     itemState = itemState.update()
       .setStatus(ItemState.Status.OK)
       .setRowCanBeRemoved(true)
@@ -70,8 +97,14 @@ class DeleteRowTest {
     Mockito.when(toBeRemoved.isRowCanBeRemoved()).thenReturn(false);
     Mockito.when(context.getItemState(Mockito.any())).thenReturn(Optional.of(toBeRemoved));
 
-    ItemState itemState = new ItemState(IdUtils.toId("rows"), null, "rowgroup", null, true, null, null, null, null, null);
-    itemState = itemState.update()
+    ItemId id = IdUtils.toId("rows");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build()
+      .update()
       .setStatus(ItemState.Status.OK)
       .setValue(List.of(1))
       .setRowCanBeRemoved(false)
@@ -79,6 +112,6 @@ class DeleteRowTest {
 
     itemState = deleteRow.update(context, itemState);
     assertEquals(List.of(1), itemState.getValue());
-    assertEquals(ItemState.Status.OK, itemState.getStatus());
+    assertEquals(ItemState.Status.OK, itemState.status());
   }
 }

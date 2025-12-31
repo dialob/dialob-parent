@@ -18,6 +18,7 @@ package io.dialob.session.engine.session.command;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -46,23 +47,36 @@ class NextPageTest {
     when(activePage.isActive()).thenReturn(false).thenReturn(true);
     when(context.getEventsConsumer()).thenReturn(event -> {});
 
-    ItemState itemState = new ItemState(toId("q"), null, "questionnaire", null, true, null, null, null, null, null);
+    ItemId id = toId("q");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("questionnaire")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
     itemState = itemState.update().setItems(Arrays.asList(toId("p1"), toId("p2"), toId("p3"))).get();
     itemState = nextPage.update(context, itemState);
-    assertEquals(toId("p2"), itemState.getActivePage().get());
+    assertEquals(toId("p2"), itemState.activePageOptional().get());
     verify(activePage, times(2)).isActive();
     verifyNoMoreInteractions(activePage);
   }
 
   private void enableNext(EvalContext context) {
     ItemState questionnaire = Mockito.mock(ItemState.class);
-    when(questionnaire.getAllowedActions()).thenReturn(Set.of(Action.Type.NEXT));
+    when(questionnaire.allowedActions()).thenReturn(Set.of(Action.Type.NEXT));
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
   }
 
   private void disableNext(EvalContext context) {
     ItemState questionnaire = Mockito.mock(ItemState.class);
-    when(questionnaire.getAllowedActions()).thenReturn(Set.of());
+    when(questionnaire.allowedActions()).thenReturn(Set.of());
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
   }
 
@@ -74,12 +88,25 @@ class NextPageTest {
 
     enableNext(context);
     when(context.getEventsConsumer()).thenReturn(event -> {});
-    ItemState itemState = new ItemState(toId("q"), null, "questionnaire", null, true, null, null, null, null, null);
+    ItemId id = toId("q");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("questionnaire")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
     itemState = itemState.update()
       .setItems(Arrays.asList(toId("p1"), toId("p2"), toId("p3")))
       .setActivePage(toId("p3")).get();
     itemState = nextPage.update(context, itemState);
-    assertEquals(toId("p3"), itemState.getActivePage().get());
+    assertEquals(toId("p3"), itemState.activePageOptional().get());
     verifyNoMoreInteractions(activePage);
   }
 
@@ -94,12 +121,25 @@ class NextPageTest {
     when(activePage.isActive()).thenReturn(true);
 
     when(context.getEventsConsumer()).thenReturn(event -> {});
-    ItemState itemState = new ItemState(toId("q"), null, "questionnaire", null, true, null, null, null, null, null);
+    ItemId id = toId("q");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("questionnaire")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
     itemState = itemState.update()
       .setItems(Arrays.asList(toId("p1"), toId("p2"), toId("p3")))
       .setActivePage(toId("p2")).get();
     itemState = nextPage.update(context, itemState);
-    assertEquals(toId("p3"), itemState.getActivePage().get());
+    assertEquals(toId("p3"), itemState.activePageOptional().get());
     verify(activePage, times(1)).isActive();
     verifyNoMoreInteractions(activePage);
   }
@@ -116,12 +156,25 @@ class NextPageTest {
     when(activePage.isActive()).thenReturn(true);
 
     when(context.getEventsConsumer()).thenReturn(event -> {});
-    ItemState itemState = new ItemState(toId("q"), null, "questionnaire", null, true, null, null, null, null, null);
+    ItemId id = toId("q");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("questionnaire")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
     itemState = itemState.update()
       .setItems(Arrays.asList(toId("p1"), toId("p2"), toId("p3")))
       .setActivePage(toId("p2")).get();
     itemState = nextPage.update(context, itemState);
-    assertEquals(toId("p2"), itemState.getActivePage().get());
+    assertEquals(toId("p2"), itemState.activePageOptional().get());
     verifyNoMoreInteractions(activePage);
   }
 

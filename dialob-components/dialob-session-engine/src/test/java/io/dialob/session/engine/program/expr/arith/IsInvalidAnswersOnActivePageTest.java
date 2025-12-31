@@ -57,12 +57,12 @@ class IsInvalidAnswersOnActivePageTest {
     final List<ErrorState> errorStates = List.of(errorState("q1", true));
     when(context.getErrorStates()).thenReturn(errorStates);
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
-    when(questionnaire.getActivePage()).thenReturn(Optional.of(page1Id));
+    when(questionnaire.activePageOptional()).thenReturn(Optional.of(page1Id));
     when(context.getItemState(page1Id)).thenReturn(Optional.of(page1));
-    when(page1.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
+    when(page1.items()).thenReturn(List.of(IdUtils.toId("q1")));
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(q1));
     when(q1.id()).thenReturn(IdUtils.toId("q1"));
-    when(q1.getType()).thenReturn("text");
+    when(q1.type()).thenReturn("text");
 
 
     final var isInvalidAnswersOnActivePage = new IsInvalidAnswersOnActivePage.Builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
@@ -72,7 +72,7 @@ class IsInvalidAnswersOnActivePageTest {
     verify(context).getItemState(IdUtils.QUESTIONNAIRE_ID);
     verify(context).getItemState(IdUtils.toId("q1"));
     verify(context).getItemState(page1Id);
-    verify(questionnaire).getActivePage();
+    verify(questionnaire).activePageOptional();
     verifyNoMoreInteractions(context, questionnaire);
   }
 
@@ -90,17 +90,17 @@ class IsInvalidAnswersOnActivePageTest {
     final List<ErrorState> errorStates = List.of(errorState("q1", true));
     when(context.getErrorStates()).thenReturn(errorStates);
     when(context.getItemState(IdUtils.QUESTIONNAIRE_ID)).thenReturn(Optional.of(questionnaire));
-    when(questionnaire.getActivePage()).thenReturn(Optional.of(page1Id));
+    when(questionnaire.activePageOptional()).thenReturn(Optional.of(page1Id));
     when(context.getItemState(page1Id)).thenReturn(Optional.of(page1));
     when(context.getItemState(group1Id)).thenReturn(Optional.of(group1));
-    when(page1.getItems()).thenReturn(List.of(group1Id));
-    when(group1.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
+    when(page1.items()).thenReturn(List.of(group1Id));
+    when(group1.items()).thenReturn(List.of(IdUtils.toId("q1")));
     when(context.getItemState(IdUtils.toId("q1"))).thenReturn(Optional.of(q1));
     when(context.getItemState(group1Id)).thenReturn(Optional.of(group1));
     when(q1.id()).thenReturn(IdUtils.toId("q1"));
-    when(q1.getType()).thenReturn("text");
+    when(q1.type()).thenReturn("text");
     when(group1.id()).thenReturn(group1Id);
-    when(group1.getType()).thenReturn("group");
+    when(group1.type()).thenReturn("group");
 
 
     final IsInvalidAnswersOnActivePage isInvalidAnswersOnActivePage = new IsInvalidAnswersOnActivePage.Builder().pageContainerId(IdUtils.QUESTIONNAIRE_ID).build();
@@ -111,7 +111,7 @@ class IsInvalidAnswersOnActivePageTest {
     verify(context).getItemState(IdUtils.toId("q1"));
     verify(context).getItemState(group1Id);
     verify(context).getItemState(page1Id);
-    verify(questionnaire).getActivePage();
+    verify(questionnaire).activePageOptional();
     verifyNoMoreInteractions(context, questionnaire);
   }
 

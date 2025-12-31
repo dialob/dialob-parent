@@ -22,10 +22,7 @@ import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemState;
-import io.dialob.session.engine.session.model.SessionObject;
+import io.dialob.session.engine.session.model.*;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -248,9 +245,49 @@ class DialobQuestionnaireSessionTest {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
 
-    ItemState rowItemState = new ItemState(IdUtils.toId("rowg"), null, "rowgroup", null, true, null, null, null, null, null);
-    ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
-    ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
+    ItemId id2 = IdUtils.toId("rowg");
+    ItemState rowItemState = ItemState.builder()
+      .id(id2)
+      .prototypeId(null)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
+    ItemId id1 = IdUtils.toId("rowg2");
+    ItemState rowItemState2 = ItemState.builder()
+      .id(id1)
+      .prototypeId(null)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(Arrays.asList(1, 2, 3))
+      .value(Arrays.asList(1, 2, 3))
+      .defaultValue(null)
+      .activePage(null)
+      .build();
+    ItemId id = IdUtils.toId("rowg3.1");
+    ItemId prototypeId = IdUtils.toId("rowg3");
+    ItemState rowItemState3 = ItemState.builder()
+      .id(id)
+      .prototypeId(prototypeId)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(Arrays.asList(1, 2, 3))
+      .value(Arrays.asList(1, 2, 3))
+      .defaultValue(null)
+      .activePage(null)
+      .build();
 
     DialobSession dialobSession = new DialobSession(
       "tenant",
@@ -301,9 +338,49 @@ class DialobQuestionnaireSessionTest {
     QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
 
-    ItemState rowItemState = new ItemState(IdUtils.toId("rowg"), null, "rowgroup", null, true, null, null, null, null, null);
-    ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
-    ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
+    ItemId id2 = IdUtils.toId("rowg");
+    ItemState rowItemState = ItemState.builder()
+      .id(id2)
+      .prototypeId(null)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(null)
+      .value(null)
+      .defaultValue(null)
+      .activePage(null)
+      .build();
+    ItemId id1 = IdUtils.toId("rowg2");
+    ItemState rowItemState2 = ItemState.builder()
+      .id(id1)
+      .prototypeId(null)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(Arrays.asList(1, 2, 3))
+      .value(Arrays.asList(1, 2, 3))
+      .defaultValue(null)
+      .activePage(null)
+      .build();
+    ItemId id = IdUtils.toId("rowg3.1");
+    ItemId prototypeId = IdUtils.toId("rowg3");
+    ItemState rowItemState3 = ItemState.builder()
+      .id(id)
+      .prototypeId(prototypeId)
+      .type("rowgroup")
+      .view(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .valueSetId(null)
+      .answer(Arrays.asList(1, 2, 3))
+      .value(Arrays.asList(1, 2, 3))
+      .defaultValue(null)
+      .activePage(null)
+      .build();
 
     var opened = Instant.ofEpochMilli(1L);
     var lastAnswer = Instant.ofEpochMilli(2L);

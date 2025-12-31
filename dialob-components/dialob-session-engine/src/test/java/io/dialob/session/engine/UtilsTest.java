@@ -20,6 +20,7 @@ import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetState;
 import io.dialob.session.engine.session.protobuf.StateReader;
@@ -54,13 +55,16 @@ class UtilsTest {
 
   @Test
   void shouldNotSerializeFalseInactiveState() {
-    ItemState itemState = new ItemState(
-      IdUtils.toId("id"),
-      null,
-      "text",
-      null,
-      null
-    );
+    ItemId id = IdUtils.toId("id");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("text")
+      .view(null)
+      .valueSetId(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     Assertions.assertNull(Utils.toActionItem(itemState.update()
       .setActive(true).get(), null).getInactive());
     Assertions.assertTrue(Utils.toActionItem(itemState.update()
@@ -289,7 +293,16 @@ class UtilsTest {
   @Test
   void testToActionItem() {
     UnaryOperator<ActionItem.Builder> post = mock();
-    var itemState = new ItemState(IdUtils.toId("item"), null, "list", null, null);
+    ItemId id = IdUtils.toId("item");
+    var itemState = ItemState.builder()
+      .id(id)
+      .prototypeId(null)
+      .type("list")
+      .view(null)
+      .valueSetId(null)
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     itemState = itemState.update()
       .setItems(List.of(IdUtils.toId("id1")))
       .setAvailableItems(List.of(IdUtils.toId("id2")))

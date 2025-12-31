@@ -41,7 +41,7 @@ public record SetAnswer(
       Object answer = this.answer();
       return itemState.update()
         .setAnswer(answer)
-        .setValue(Utils.parse(itemState.getType(), answer)).get();
+        .setValue(Utils.parse(itemState.type(), answer)).get();
     }
     return itemState;
   }

@@ -38,12 +38,12 @@ record NextPage(
   @NonNull
   public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
     ItemId page = null;
-    if (!context.getItemState(IdUtils.QUESTIONNAIRE_ID).map(questionnaire -> questionnaire.getAllowedActions().contains(Action.Type.NEXT)).orElse(false)) {
+    if (!context.getItemState(IdUtils.QUESTIONNAIRE_ID).map(questionnaire -> questionnaire.allowedActions().contains(Action.Type.NEXT)).orElse(false)) {
       return itemState;
     }
-    List<ItemId> items = itemState.getItems();
+    List<ItemId> items = itemState.items();
     if (!items.isEmpty()) {
-      int i = itemState.getActivePage().map(items::indexOf).orElse(-1);
+      int i = itemState.activePageOptional().map(items::indexOf).orElse(-1);
       while (i >= -1 && i < items.size() - 1 && page == null) {
         page = items.get(++i);
         if (pageIsInactive(context, page)) {

@@ -20,7 +20,6 @@ import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.protobuf.StateReader;
 import io.dialob.session.engine.session.protobuf.StateWriter;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,17 +36,14 @@ class ItemStateTest {
 
 
   @Test
-  void shouldClone() {
-    ItemState itemState = new ItemState(IdUtils.toId("question1"), null, "text", null, true, null, null, null, null, null);
-    ItemState itemState2 = new ItemState(itemState);
-    assertNotSame(itemState, itemState2);
-    assertEquals(itemState, itemState2);
-    assertEquals(itemState.hashCode(), itemState2.hashCode());
-  }
-
-  @Test
   void shouldNotCreateNewIfUpdateHaveNotEffect() {
-    ItemState itemState = new ItemState(IdUtils.toId("question1"), null, "text", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("question1");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     EvalContext context = mock(EvalContext.class);
     assertSame(itemState,
       itemState.update()
@@ -59,14 +55,20 @@ class ItemStateTest {
 
   @Test
   void shouldCreateNewIfUpdateHaveNotEffect() {
-    ItemState itemState = new ItemState(IdUtils.toId("question1"), null, "text", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("question1");
+    ItemState itemState = ItemState.builder()
+      .id(id)
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     EvalContext context = mock(EvalContext.class);
     ItemState itemState1 = itemState.update()
       .setStatus(ItemState.Status.OK)
       .get();
     assertNotSame(itemState,
       itemState1);
-    assertEquals(ItemState.Status.OK, itemState1.getStatus());
+    assertEquals(ItemState.Status.OK, itemState1.status());
     verifyNoMoreInteractions(context);
   }
 
@@ -75,12 +77,30 @@ class ItemStateTest {
     var buffer = new ByteArrayOutputStream();
     var outputStream = StateWriter.newInstance(buffer);
 
-    var itemState1 = new ItemState(IdUtils.toId("questionnaire"), null, "questionnaire", null, true, null, null, null, null, null);
+    ItemId id2 = IdUtils.toId("questionnaire");
+    var itemState1 = ItemState.builder()
+      .id(id2)
+      .type("questionnaire")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     itemState1.writeTo(outputStream);
-    var itemState2 = new ItemState(IdUtils.toId("questionnaire"), null, "questionnaire", null, true, null, null, null, null, null);
+    ItemId id1 = IdUtils.toId("questionnaire");
+    var itemState2 = ItemState.builder()
+      .id(id1)
+      .type("questionnaire")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     itemState2 = itemState2.update().setAllowedActions(Set.of(Action.Type.ANSWER)).get();
     itemState2.writeTo(outputStream);
-    var itemState3 = new ItemState(IdUtils.toId("group"), null, "group", null, true, null, null, null, null, null);
+    ItemId id = IdUtils.toId("group");
+    var itemState3 = ItemState.builder()
+      .id(id)
+      .type("group")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     itemState3 = itemState3.update().setItems(List.of(IdUtils.toId("q1"))).setClassNames(List.of("class1")).get();
     itemState3.writeTo(outputStream);
 
@@ -95,8 +115,6 @@ class ItemStateTest {
   @Test
   void shouldEqualsAndHashCode() {
     EqualsVerifier.forClass(ItemState.class)
-      .suppress(Warning.NONFINAL_FIELDS)
-      .withIgnoredFields("value")
       .verify();
   }
 

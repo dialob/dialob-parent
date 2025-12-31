@@ -321,7 +321,7 @@ public class DialobSession implements Serializable {
   public EvalContext createScope(@NonNull EvalContext evalContext, ItemId itemId) {
     var scopeItems = new ArrayList<>(evalContext
       .getItemState(itemId)
-      .map(ItemState::getItems).orElseGet(Collections::emptyList));
+      .map(itemState -> itemState.items()).orElseGet(Collections::emptyList));
     scopeItems.add(itemId);
     return evalContext.withScope(Scope.of(itemId, scopeItems));
   }

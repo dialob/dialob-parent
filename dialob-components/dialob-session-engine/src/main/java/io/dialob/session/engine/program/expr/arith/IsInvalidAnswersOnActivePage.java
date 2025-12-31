@@ -61,9 +61,9 @@ public record IsInvalidAnswersOnActivePage(
     }
 
     var pageItemIds = context.getItemState(pageContainerId())
-      .flatMap(ItemState::getActivePage)
+      .flatMap(ItemState::activePageOptional)
       .flatMap(context::getItemState)
-      .map(ItemState::getItems)
+      .map(itemState -> itemState.items())
       .stream()
       .flatMap(Collection::stream);
 
@@ -77,10 +77,10 @@ public record IsInvalidAnswersOnActivePage(
       .map(context::getItemState)
       .flatMap(Optional::stream)
       .flatMap(item -> {
-        if (item.getItems().isEmpty()) {
+        if (item.items().isEmpty()) {
           return Stream.of(item);
         }
-        return Stream.concat(Stream.of(item), findQuestionItems(context, item.getItems().stream()));
+        return Stream.concat(Stream.of(item), findQuestionItems(context, item.items().stream()));
       });
   }
 

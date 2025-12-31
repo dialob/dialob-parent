@@ -16,24 +16,50 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.proto.Action;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.session.protobuf.StateReader;
 import io.dialob.session.engine.session.protobuf.StateWriter;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.With;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.util.*;
 
+@lombok.Builder(toBuilder = true)
+public record ItemState(
+  @With @NonNull ItemId id,
+  ItemId prototypeId,
+  @NonNull String type,
+  String view,
+  String valueSetId,
+  @NonNull Status status,
+  Object answer,
+  Object value,
+  Object defaultValue,
+  int bits,
+  String label,
+  String description,
+  List<String> classNames,
+  List<ItemId> items,
+  List<ItemId> availableItems,
+  Map<String, Object> props,
+  Set<Action.Type> allowedActions,
+  ItemId activePage
+) implements SessionObject<ItemId> {
 
-@EqualsAndHashCode
-@ToString
-public final class ItemState implements SessionObject<ItemId> {
+  public ItemState {
+    Objects.requireNonNull(id, "id is null");
+    Objects.requireNonNull(type, "type is null");
+    Objects.requireNonNull(status, "status is null");
+
+    classNames = List.copyOf(Objects.requireNonNullElseGet(classNames, List::of));
+    items = List.copyOf(Objects.requireNonNullElseGet(items, List::of));
+    availableItems = List.copyOf(Objects.requireNonNullElseGet(availableItems, List::of));
+    props = Map.copyOf(Objects.requireNonNullElseGet(props, Map::of));
+    allowedActions = Set.copyOf(Objects.requireNonNullElseGet(allowedActions, Set::of));
+  }
 
   @Serial
   private static final long serialVersionUID = -3974128908954128671L;
@@ -61,75 +87,14 @@ public final class ItemState implements SessionObject<ItemId> {
     PENDING
   }
 
-  private static final int DISPLAY_ITEM_BIT = 1;
-  private static final int ACTIVE_BIT = 1 << 1;
-  private static final int DISABLED_BIT = 1 << 2;
-  private static final int REQUIRED_BIT = 1 << 3;
-  private static final int ROWS_CAN_BE_ADDED_BIT = 1 << 4;
-  private static final int ROW_CAN_BE_REMOVED_BIT = 1 << 5;
-  private static final int INVALID_ANSWERS_BIT = 1 << 6;
-  private static final int HAS_CUSTOM_PROPS_BIT = 1 << 7;
-
-
-  private final ItemId id;
-
-  private final ItemId prototypeId;
-
-  private final String type;
-
-  private final String view;
-
-  private final String valueSetId;
-
-  @Getter
-  private Status status = Status.NEW;
-
-  @Getter
-  private Object answer;
-
-  private Object value;
-
-  private Object defaultValue;
-
-  private int bits = (ACTIVE_BIT | ROWS_CAN_BE_ADDED_BIT);
-
-  @Getter
-  private String label;
-
-  @Getter
-  private String description;
-
-  // indicates whether questionnaire is completed
-
-  @Getter
-  private List<String> classNames = List.of();
-
-  private List<ItemId> items = List.of();
-
-  @Getter
-  private List<ItemId> availableItems = List.of();
-
-  private Map<String, Object> props = new HashMap<>();
-
-  @Getter
-  private Set<Action.Type> allowedActions = Set.of();
-
-  private ItemId activePage;
-
-  private void updateBit(boolean toValue, int bit) {
-    if (toValue) {
-      setBit(bit);
-    } else {
-      resetBits(bit);
-    }
-  }
-  private void setBit(int bit) {
-    bits = bits | bit;
-  }
-
-  private void resetBits(int bit) {
-    bits = bits & (~bit);
-  }
+  public static final int DISPLAY_ITEM_BIT = 1;
+  public static final int ACTIVE_BIT = 1 << 1;
+  public static final int DISABLED_BIT = 1 << 2;
+  public static final int REQUIRED_BIT = 1 << 3;
+  public static final int ROWS_CAN_BE_ADDED_BIT = 1 << 4;
+  public static final int ROW_CAN_BE_REMOVED_BIT = 1 << 5;
+  public static final int INVALID_ANSWERS_BIT = 1 << 6;
+  public static final int HAS_CUSTOM_PROPS_BIT = 1 << 7;
 
   private boolean testBit(int bit) {
     return (bits & bit) != 0;
@@ -142,32 +107,50 @@ public final class ItemState implements SessionObject<ItemId> {
     final String view = input.readNullableString();
     final String valueSetId = input.readNullableString();
 
-    ItemState state = new ItemState(id, prototypeId, type, view, valueSetId);
-    state.activePage = input.readNullableId();
-    state.status = Status.values()[input.readRawByte()];
-    state.bits = input.readInt();
-    state.label = input.readNullableString();
-    state.description = input.readNullableString();
+    var activePage = input.readNullableId();
+    var status = Status.values()[input.readRawByte()];
+    var bits = input.readInt();
+    var label = input.readNullableString();
+    var description = input.readNullableString();
 
-    state.answer = input.readNullableObjectValue();
-    state.value = input.readNullableValue();
-    state.defaultValue = input.readNullableValue();
+    var answer = input.readNullableObjectValue();
+    var value = input.readNullableValue();
+    var defaultValue = input.readNullableValue();
 
-    state.classNames = input.readStringList();
-    state.items = input.readIdList();
-    state.availableItems = input.readIdList();
+    var classNames = input.readStringList();
+    var items = input.readIdList();
+    var availableItems = input.readIdList();
 
+    Map<String, Object> props = Map.of();
+
+    var allowedActions = Set.<Action.Type>of();
     int count = input.readInt();
     if ( count >  0) {
       Action.Type[] types = new Action.Type[count];
       for (int i = 0; i < count; i++ ){
         types[i] = Action.Type.values()[input.readInt()];
       }
-      state.allowedActions = Set.of(types);
-    } else {
-      state.allowedActions = Set.of();
+      allowedActions = Set.of(types);
     }
-    return state;
+    return new ItemState(
+      id,
+      prototypeId,
+      type,
+      view,
+      valueSetId,
+      status,
+      answer,
+      value,
+      defaultValue,
+      bits,
+      label,
+      description,
+      classNames,
+      items,
+      availableItems,
+      props,
+      allowedActions,
+      activePage);
   }
 
 
@@ -200,79 +183,16 @@ public final class ItemState implements SessionObject<ItemId> {
   }
 
 
-  public ItemState(@NonNull ItemId id, ItemId prototypeId, @NonNull String type, String view, String valueSetId) {
-    this.id = id;
-    this.prototypeId = prototypeId;
-    this.type = type;
-    this.view = view;
-    this.valueSetId = valueSetId;
-    resetBits(DISPLAY_ITEM_BIT);
-  }
+  // Used only in tests
 
-  public ItemState(@NonNull ItemId id, ItemId prototypeId, @NonNull String type, String view, boolean displayItem, String valueSetId, Object answer, Object value, Object defaultValue, ItemId activePage) {
-    this.valueSetId = valueSetId;
-    this.id = id;
-    this.prototypeId = prototypeId;
-    this.type = type;
-    this.view = view;
-    this.updateBit(displayItem, DISPLAY_ITEM_BIT);
-    this.answer = answer;
-    this.value = value;
-    this.defaultValue = defaultValue;
-    this.activePage = activePage;
-  }
-
-  ItemState(@NonNull ItemState itemState) {
-    this(itemState.id(), itemState);
-  }
-
-  ItemState(@NonNull ItemId id, @NonNull ItemState itemState) {
-    this.id = id;
-    this.prototypeId = itemState.prototypeId;
-    this.type = itemState.type;
-    this.view = itemState.view;
-    this.valueSetId = itemState.valueSetId;
-    this.status = itemState.status;
-    this.answer = itemState.answer;
-    this.value = itemState.value;
-    this.defaultValue = itemState.defaultValue;
-    this.bits = itemState.bits;
-    this.label = itemState.label;
-    this.description = itemState.description;
-    this.classNames = itemState.classNames;
-    this.items = itemState.items;
-    this.availableItems = itemState.availableItems;
-    this.props = itemState.props;
-    this.allowedActions = itemState.allowedActions;
-    this.activePage = itemState.activePage;
-  }
-
-  @NonNull
-  public ItemId id() {
-    return id;
-  }
-
-  @Nullable
-  public ItemId getPrototypeId() {
-    return prototypeId;
-  }
-
-  @NonNull
-  public String getType() {
-    return type;
-  }
-
-  @Nullable
-  public String getView() {
-    return view;
-  }
+  // Used only in tests
 
   @Override
   public boolean isDisplayItem() {
     return (bits & DISPLAY_ITEM_BIT) != 0;
   }
 
-  public Optional<String> getValueSetId() {
+  public Optional<String> valueSetIdOptional() {
     return Optional.ofNullable(valueSetId);
   }
 
@@ -329,62 +249,68 @@ public final class ItemState implements SessionObject<ItemId> {
     return (bits & HAS_CUSTOM_PROPS_BIT) != 0;
   }
 
-  @NonNull
-  public List<ItemId> getItems() {
-    return items;
-  }
-
-  public Optional<ItemId> getActivePage() {
+  public Optional<ItemId> activePageOptional() {
     return Optional.ofNullable(activePage);
-  }
-
-  @NonNull
-  public ItemState withId(@NonNull ItemId newId) {
-    return new ItemState(newId, this);
   }
 
   public class UpdateBuilder {
 
-    private ItemState itemState;
+    private ItemState.ItemStateBuilder builder;
 
-    UpdateBuilder() {
+    int bits;
+
+    private void updateBit(boolean toValue, int bit) {
+      if (toValue) {
+        setBit(bit);
+      } else {
+        resetBits(bit);
+      }
+    }
+    private void setBit(int bit) {
+      bits = bits | bit;
     }
 
-    private ItemState state() {
-      if (itemState == null) {
-        this.itemState = new ItemState(ItemState.this);
+    private void resetBits(int bit) {
+      bits = bits & (~bit);
+    }
+
+    UpdateBuilder() {
+      this.bits = ItemState.this.bits();
+    }
+
+    private ItemState.ItemStateBuilder state() {
+      if (builder == null) {
+        this.builder = toBuilder();
       }
-      return itemState;
+      return builder;
     }
 
     private boolean hasNewState() {
-      return this.itemState != null;
+      return this.builder != null;
     }
 
     private UpdateBuilder updateBits(boolean toValue, int bit) {
-      if (testBit(bit) != toValue) {
-        state().updateBit(toValue, bit);
-      }
+      updateBit(toValue, bit);
       return this;
     }
 
     public UpdateBuilder setStatus(Status newStatus) {
       if (status != newStatus) {
-        state().status = newStatus;
+        state().status(newStatus);
       }
       return this;
     }
 
     public UpdateBuilder setAnswer(Object newAnswer) {
       if (!Objects.equals(answer, newAnswer)) {
-        state().answer = newAnswer;
+        state().answer(newAnswer);
       }
       return this;
     }
 
     public UpdateBuilder setValue(Object newValue) {
       if (!Objects.equals(value, newValue)) {
-        state().value = newValue;
+        state().value(newValue);
       }
       return this;
     }
@@ -422,14 +348,14 @@ public final class ItemState implements SessionObject<ItemId> {
 
     public UpdateBuilder setLabel(String newLabel) {
       if (!Objects.equals(label, newLabel)) {
-        state().label = newLabel;
+        state().label(newLabel);
       }
       return this;
     }
 
     public UpdateBuilder setDescription(String newDescription) {
       if (!Objects.equals(description, newDescription)) {
-        state().description = newDescription;
+        state().description(newDescription);
       }
       return this;
     }
@@ -444,28 +370,28 @@ public final class ItemState implements SessionObject<ItemId> {
 
     public UpdateBuilder setClassNames(List<String> newClassNames) {
       if (!Objects.equals(classNames, newClassNames)) {
-        state().classNames = List.copyOf(newClassNames);
+        state().classNames(List.copyOf(newClassNames));
       }
       return this;
     }
 
     public UpdateBuilder setItems(List<ItemId> newItems) {
       if (!Objects.equals(items, newItems)) {
-        state().items = List.copyOf(newItems);
+        state().items(List.copyOf(newItems));
       }
       return this;
     }
 
     public UpdateBuilder setAvailableItems(List<ItemId> newAvailableItems) {
       if (!Objects.equals(availableItems, newAvailableItems)) {
-        state().availableItems = List.copyOf(newAvailableItems);
+        state().availableItems(List.copyOf(newAvailableItems));
       }
       return this;
     }
 
     public UpdateBuilder setAllowedActions(Set<Action.Type> newAllowedActions) {
       if (!Objects.equals(allowedActions, newAllowedActions)) {
-        state().allowedActions = Set.copyOf(newAllowedActions);
+        state().allowedActions(Set.copyOf(newAllowedActions));
       }
       return this;
     }
@@ -473,16 +399,19 @@ public final class ItemState implements SessionObject<ItemId> {
     public UpdateBuilder setActivePage(ItemId newActivePage) {
       if ((hasNewState() && state().items.contains(newActivePage) || items.contains(newActivePage)) && !Objects.equals(activePage, newActivePage)) {
         // TODO matches is active item "available"
-        state().activePage = newActivePage;
+        state().activePage(newActivePage);
       }
       return this;
     }
 
     public ItemState get() {
-      if (itemState == null) {
+      if (ItemState.this.bits() != this.bits) {
+        state().bits(this.bits);
+      }
+      if (builder == null) {
         return ItemState.this;
       }
-      return itemState;
+      return builder.build();
     }
   }
 

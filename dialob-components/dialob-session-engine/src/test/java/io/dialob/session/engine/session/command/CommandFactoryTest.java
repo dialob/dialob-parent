@@ -36,25 +36,21 @@ class CommandFactoryTest {
 
   @Test
   void emptyItemsListDoNotTriggerChange() {
-    ItemState itemState = new ItemState(
-      new ItemRef("i1", null),
-      null, "rowgroup",
-      null,
-      true,
-      null,
-      null,
-      null,
-      null, null);
+    ItemId id1 = new ItemRef("i1", null);
+    ItemState itemState = ItemState.builder()
+      .id(id1)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
 
-    ItemState itemState2 = new ItemState(
-      new ItemRef("i1", null),
-      null, "rowgroup",
-      null,
-      true,
-      null,
-      null,
-      null,
-      null, null);
+    ItemId id = new ItemRef("i1", null);
+    ItemState itemState2 = ItemState.builder()
+      .id(id)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
 
     assertFalse(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
 
@@ -72,25 +68,21 @@ class CommandFactoryTest {
 
   @Test
   void differenceOnItemsShouldTriggerChanges() {
-    ItemState itemState = new ItemState(
-      new ItemRef("i1", null),
-      null, "rowgroup",
-      null,
-      true,
-      null,
-      null,
-      null,
-      null, null);
+    ItemId id1 = new ItemRef("i1", null);
+    ItemState itemState = ItemState.builder()
+      .id(id1)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
 
-    ItemState itemState2 = new ItemState(
-      new ItemRef("i1", null),
-      null, "rowgroup",
-      null,
-      true,
-      null,
-      null,
-      null,
-      null, null);
+    ItemId id = new ItemRef("i1", null);
+    ItemState itemState2 = ItemState.builder()
+      .id(id)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     itemState = itemState.update().setItems(List.of(new ItemRef("i1", null))).get();
     itemState2 = itemState2.update().setItems(List.of()).get();
     assertTrue(GROUP_ITEMS_CHANGED.test(itemState, itemState2));
@@ -130,8 +122,20 @@ class CommandFactoryTest {
   @Test
   void shouldTriggerRowInstantiationWhenItemsChange() {
     SessionUpdateCommand command = CommandFactory.createRowGroupFromPrototypeCommand(IdUtils.toId("g1.*"));
-    ItemState itemState1 = new ItemState(IdUtils.toId("g1"), null, "rowgroup", null, true, null, null, null, null, null);
-    ItemState itemRow = new ItemState(IdUtils.toId("g1.0"), null, "group", null, true, null, null, null, null, null);
+    ItemId id1 = IdUtils.toId("g1");
+    ItemState itemState1 = ItemState.builder()
+      .id(id1)
+      .type("rowgroup")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
+    ItemId id = IdUtils.toId("g1.0");
+    ItemState itemRow = ItemState.builder()
+      .id(id)
+      .type("group")
+      .status(ItemState.Status.NEW)
+      .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
+      .build();
     ItemState itemState2 = itemState1.update().setItems(List.of(IdUtils.toId("g1.0"))).get();
 
     ItemStates itemStates1 = new ItemStates.Builder()
@@ -153,13 +157,13 @@ class CommandFactoryTest {
   void testGroupItemsChange() {
 
     ItemState original = Mockito.mock(ItemState.class);
-    when(original.getItems()).thenReturn(Collections.emptyList());
+    when(original.items()).thenReturn(Collections.emptyList());
     ItemState updated = Mockito.mock(ItemState.class);
-    when(updated.getItems()).thenReturn(Collections.emptyList());
+    when(updated.items()).thenReturn(Collections.emptyList());
     ItemState original2 = Mockito.mock(ItemState.class);
-    when(original2.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
+    when(original2.items()).thenReturn(List.of(IdUtils.toId("q1")));
     ItemState updated2 = Mockito.mock(ItemState.class);
-    when(updated2.getItems()).thenReturn(List.of(IdUtils.toId("q1")));
+    when(updated2.items()).thenReturn(List.of(IdUtils.toId("q1")));
 
 
     assertFalse(GROUP_ITEMS_CHANGED.test(null, null));
