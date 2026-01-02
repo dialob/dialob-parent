@@ -94,6 +94,7 @@
 
     <!-- docker image -->
     <image.base.name>amazoncorretto:${java.version}</image.base.name>
+    <jdbi3.version>3.51.0</jdbi3.version>
   </properties>
 
 
@@ -253,7 +254,13 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-
+      <dependency>
+        <groupId>org.jdbi</groupId>
+        <artifactId>jdbi3-bom</artifactId>
+        <type>pom</type>
+        <version>${jdbi3.version}</version>
+        <scope>import</scope>
+      </dependency>
 
 
       <dependency>

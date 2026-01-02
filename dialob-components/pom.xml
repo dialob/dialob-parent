@@ -39,6 +39,7 @@
     <module>dialob-db-azure-blob-storage</module>
     <module>dialob-db-file</module>
     <module>dialob-db-jdbc</module>
+    <module>dialob-db-jdbi</module>
     <module>dialob-db-s3</module>
     <module>dialob-db-sp-spring</module>
     <module>dialob-db-spi-spring</module>

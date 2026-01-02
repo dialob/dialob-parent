@@ -15,7 +15,25 @@
  */
 package io.dialob.db.jdbc;
 
+import java.util.Set;
+
 public interface JdbcDatabase {
+
+  String TABLE_FORM_DOCUMENT = "form_document";
+  String TABLE_QUESTIONNAIRE = "questionnaire";
+  String TABLE_FORM = "form";
+  String TABLE_FORM_REV = "form_rev";
+  String TABLE_FORM_ARCHIVE = "form_archive";
+  String TABLE_FORM_REV_ARCHIVE = "form_rev_archive";
+
+  Set<String> TABLES = Set.of(
+    TABLE_FORM_DOCUMENT,
+    TABLE_QUESTIONNAIRE,
+    TABLE_FORM_REV_ARCHIVE,
+    TABLE_FORM,
+    TABLE_FORM_REV,
+    TABLE_FORM_ARCHIVE
+  );
 
   DatabaseHelper getDatabaseHelper();
 

@@ -16,24 +16,31 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>dialob-components</artifactId>
     <groupId>io.dialob</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <properties>
-  </properties>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>dialob-db-jdbc</artifactId>
-  <name>dialob-db-jdbc</name>
+
+  <artifactId>dialob-db-jdbi</artifactId>
+
 
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.18.4</version>
+    </dependency>
+    <dependency>
+      <groupId>io.dialob</groupId>
+      <artifactId>dialob-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dialob</groupId>
+      <artifactId>dialob-db-jdbc</artifactId>
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
@@ -59,7 +66,19 @@
       <groupId>org.jdbi</groupId>
       <artifactId>jdbi3-spring</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-postgres</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-json</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-jackson2</artifactId>
+    </dependency>
+
     <!-- To use jdbc backend add this and jdbc driver to classpath -->
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -129,5 +148,9 @@
       <artifactId>dialob-security-spring</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies>
-</project>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies></project>
