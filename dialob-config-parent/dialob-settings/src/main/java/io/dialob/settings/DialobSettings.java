@@ -99,7 +99,7 @@ public class DialobSettings {
     public static class JdbcSettings {
       private String schema;
 
-      private Map<String,String> remap;
+      private Map<String,String> remap = Map.of();
 
     }
 
