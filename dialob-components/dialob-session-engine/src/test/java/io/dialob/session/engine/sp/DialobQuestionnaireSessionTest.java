@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.sp;
 
+import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -31,8 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -250,19 +249,19 @@ class DialobQuestionnaireSessionTest {
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
 
     ItemState rowItemState = new ItemState(IdUtils.toId("rowg"), null, "rowgroup", null, true, null, null, null, null, null);
-    ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, Arrays.asList(1,2,3), Arrays.asList(1,2,3), null, null);
-    ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, Arrays.asList(1,2,3), Arrays.asList(1,2,3), null, null);
+    ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
+    ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
 
     DialobSession dialobSession = new DialobSession(
       "tenant",
       "id",
       "rev",
       "fi",
-      Arrays.asList(rowItemState, rowItemState2, rowItemState3),
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>(), null, null, null);
+      List.of(rowItemState, rowItemState2, rowItemState3),
+      List.of(),
+      List.of(),
+      List.of(),
+      List.of(), null, null, null);
     DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
@@ -286,7 +285,7 @@ class DialobQuestionnaireSessionTest {
     assertThat(answers).extracting("id", "value", "type")
       .containsExactlyInAnyOrder(
         Tuple.tuple("rowg", null, null),
-        Tuple.tuple("rowg2", Arrays.asList(1,2,3), null)
+        Tuple.tuple("rowg2", List.of(1,2,3), null)
       );
 
     assertThat(session.getActiveItems()).containsOnlyOnce("rowg3.1", "rowg", "rowg2");
@@ -303,8 +302,8 @@ class DialobQuestionnaireSessionTest {
     DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
 
     ItemState rowItemState = new ItemState(IdUtils.toId("rowg"), null, "rowgroup", null, true, null, null, null, null, null);
-    ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, Arrays.asList(1,2,3), Arrays.asList(1,2,3), null, null);
-    ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, Arrays.asList(1,2,3), Arrays.asList(1,2,3), null, null);
+    ItemState rowItemState2 = new ItemState(IdUtils.toId("rowg2"), null, "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
+    ItemState rowItemState3 = new ItemState(IdUtils.toId("rowg3.1"), IdUtils.toId("rowg3"), "rowgroup", null, true, null, List.of(1,2,3), List.of(1,2,3), null, null);
 
     var opened = Instant.ofEpochMilli(1L);
     var lastAnswer = Instant.ofEpochMilli(2L);
@@ -314,11 +313,11 @@ class DialobQuestionnaireSessionTest {
       "id",
       "rev",
       "fi",
-      Arrays.asList(rowItemState, rowItemState2, rowItemState3),
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>(), null, opened, lastAnswer);
+      List.of(rowItemState, rowItemState2, rowItemState3),
+      List.of(),
+      List.of(),
+      List.of(),
+      List.of(), null, opened, lastAnswer);
     dialobSession.complete();
 
     DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
@@ -344,12 +343,158 @@ class DialobQuestionnaireSessionTest {
     assertNull(result.actions().getActions());
 
     assertNotNull(session.getDialobSession().getCompleted());
-    assertEquals(1L, session.getDialobSession().getOpened().toEpochMilli());
-    assertEquals(2L, session.getDialobSession().getLastAnswer().toEpochMilli());
+    assertEquals(Instant.ofEpochMilli(1L), session.getDialobSession().getOpened());
+    assertEquals(Instant.ofEpochMilli(2L), session.getDialobSession().getLastAnswer());
 
     verifyNoMoreInteractions(eventPublisher, dialobProgram);
   }
 
+  @Test
+  void shouldReturnVisibleItems() {
+    // given
+    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
+    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
+    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
+    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
 
+    ItemState item1 = Mockito.mock(ItemState.class);
+    when(item1.getId()).thenReturn(IdUtils.toId("item1"));
+    when(item1.getType()).thenReturn("text");
+    when(item1.isActive()).thenReturn(true);
+    when(item1.isDisplayItem()).thenReturn(true);
+    when(item1.isDisabled()).thenReturn(false);
+
+    ItemState item2 = Mockito.mock(ItemState.class);
+    when(item2.getId()).thenReturn(IdUtils.toId("item2"));
+    when(item2.getType()).thenReturn("text");
+    when(item2.isActive()).thenReturn(false);
+    when(item2.isDisplayItem()).thenReturn(true);
+    when(item2.isDisabled()).thenReturn(false);
+
+    ItemState item3 = Mockito.mock(ItemState.class);
+    when(item3.getId()).thenReturn(IdUtils.toId("item3"));
+    when(item3.getType()).thenReturn("note");
+    when(item3.isActive()).thenReturn(true);
+    when(item3.isDisplayItem()).thenReturn(true);
+    when(item3.isDisabled()).thenReturn(false);
+
+    DialobSession dialobSession = new DialobSession(
+      "tenant",
+      "id",
+      "rev",
+      "fi",
+      List.of(item1, item2, item3),
+      List.of(),
+      List.of(),
+      List.of(),
+      List.of(), null, null, null);
+
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
+    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+      .eventPublisher(eventPublisher)
+      .sessionContextFactory(sessionContextFactory)
+      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev(questionnaire.getRev())
+      .metadata(questionnaire.getMetadata())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    // when
+    List<ActionItem> visibleItems = session.getVisibleItems();
+
+    // then
+    assertThat(visibleItems).extracting("id")
+      .containsExactly("item1", "item3");
+  }
+
+  @Test
+  void shouldReturnVisibleItemsWithDifferentVisibilities() {
+    // given
+    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
+    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
+    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
+    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+
+    ItemState activeItem = Mockito.mock(ItemState.class);
+    when(activeItem.getId()).thenReturn(IdUtils.toId("active"));
+    when(activeItem.getType()).thenReturn("text");
+    when(activeItem.isActive()).thenReturn(true);
+    when(activeItem.isDisplayItem()).thenReturn(true);
+    when(activeItem.isDisabled()).thenReturn(false);
+
+    ItemState inactiveItem = Mockito.mock(ItemState.class);
+    when(inactiveItem.getId()).thenReturn(IdUtils.toId("inactive"));
+    when(inactiveItem.getType()).thenReturn("text");
+    when(inactiveItem.isActive()).thenReturn(false);
+    when(inactiveItem.isDisplayItem()).thenReturn(true);
+    when(inactiveItem.isDisabled()).thenReturn(false);
+
+    ItemState disabledItem = Mockito.mock(ItemState.class);
+    when(disabledItem.getId()).thenReturn(IdUtils.toId("disabled"));
+    when(disabledItem.getType()).thenReturn("text");
+    when(disabledItem.isActive()).thenReturn(true);
+    when(disabledItem.isDisplayItem()).thenReturn(true);
+    when(disabledItem.isDisabled()).thenReturn(true);
+
+    DialobSession dialobSession = new DialobSession(
+      "tenant",
+      "id",
+      "rev",
+      "fi",
+      List.of(activeItem, inactiveItem, disabledItem),
+      List.of(),
+      List.of(),
+      List.of(),
+      List.of(), null, null, null);
+
+    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
+
+    // Case 1: ONLY_ENABLED
+    DialobQuestionnaireSession sessionOnlyEnabled = DialobQuestionnaireSession.builder()
+      .eventPublisher(eventPublisher)
+      .sessionContextFactory(sessionContextFactory)
+      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev(questionnaire.getRev())
+      .metadata(questionnaire.getMetadata())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    assertThat(sessionOnlyEnabled.getVisibleItems()).extracting("id")
+      .containsExactly("active");
+
+    // Case 2: SHOW_DISABLED
+    DialobQuestionnaireSession sessionShowDisabled = DialobQuestionnaireSession.builder()
+      .eventPublisher(eventPublisher)
+      .sessionContextFactory(sessionContextFactory)
+      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev(questionnaire.getRev())
+      .metadata(questionnaire.getMetadata())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.SHOW_DISABLED)
+      .build();
+
+    assertThat(sessionShowDisabled.getVisibleItems()).extracting("id")
+      .containsExactlyInAnyOrder("active", "disabled");
+
+    // Case 3: ALL
+    DialobQuestionnaireSession sessionAll = DialobQuestionnaireSession.builder()
+      .eventPublisher(eventPublisher)
+      .sessionContextFactory(sessionContextFactory)
+      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev(questionnaire.getRev())
+      .metadata(questionnaire.getMetadata())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ALL)
+      .build();
+
+    assertThat(sessionAll.getVisibleItems()).extracting("id")
+      .containsExactlyInAnyOrder("active", "inactive", "disabled");
+  }
 
 }
