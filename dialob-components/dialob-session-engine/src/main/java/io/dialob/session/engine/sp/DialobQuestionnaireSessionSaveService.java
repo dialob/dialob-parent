@@ -16,15 +16,28 @@
 package io.dialob.session.engine.sp;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
-import io.dialob.questionnaire.service.api.session.AbstractQuestionnaireSessionSaveService;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
+import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.security.tenant.CurrentTenant;
 
-public class DialobQuestionnaireSessionSaveService extends AbstractQuestionnaireSessionSaveService {
+public class DialobQuestionnaireSessionSaveService implements QuestionnaireSessionSaveService {
 
-  public DialobQuestionnaireSessionSaveService(@NonNull QuestionnaireDatabase questionnaireDatabase, CurrentTenant currentTenant)
-  {
-    super(questionnaireDatabase, currentTenant);
+  private final QuestionnaireDatabase questionnaireDatabase;
+
+  private final CurrentTenant currentTenant;
+
+  public DialobQuestionnaireSessionSaveService(@NonNull QuestionnaireDatabase questionnaireDatabase, @NonNull CurrentTenant currentTenant) {
+    this.questionnaireDatabase = questionnaireDatabase;
+    this.currentTenant = currentTenant;
+  }
+
+  @Override
+  @NonNull
+  public QuestionnaireSession save(@NonNull QuestionnaireSession questionnaireSession) {
+    final Questionnaire questionnaire = questionnaireDatabase.save(currentTenant.getId(), questionnaireSession.getQuestionnaire());
+    return questionnaireSession.withIdAndRev(questionnaire.getId(), questionnaire.getRev());
   }
 
 }

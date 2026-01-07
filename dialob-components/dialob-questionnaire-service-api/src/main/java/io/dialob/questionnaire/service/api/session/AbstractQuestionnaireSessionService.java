@@ -47,14 +47,6 @@ public abstract class AbstractQuestionnaireSessionService implements Questionnai
       .build();
   }
 
-  /**
-   * This implementation returns a session from cache if it's present and adds a new session to cache if requested.
-   * Requires cache configuration.
-   *
-   * @param questionnaireId
-   * @param openIfClosed create a new session if not present
-   * @return a new session or nothing
-   */
   @Override
   public QuestionnaireSession findOne(@NonNull String questionnaireId, boolean openIfClosed) {
     if (openIfClosed) {

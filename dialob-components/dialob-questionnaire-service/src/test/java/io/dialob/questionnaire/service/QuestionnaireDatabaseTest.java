@@ -16,55 +16,25 @@
 package io.dialob.questionnaire.service;
 
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.db.spi.exceptions.DocumentConflictException;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {AbstractCacheTest.TestConfiguration.class})
 @EnableCaching
-class QuestionnaireDatabaseTest {
-
-  static QuestionnaireDatabase questionnaireDatabaseMock = mock(QuestionnaireDatabase.class);
+class QuestionnaireDatabaseTest extends AbstractCacheTest {
 
   private final String tenantId = "t-123";
-
-  @Inject
-  public CacheManager cacheManager;
-
-  @Configuration(proxyBeanMethods = false)
-  @ImportResource("classpath:dialob-questionnaire-service-cache-context.xml")
-  public static class TestConfiguration {
-
-    @Bean
-    public QuestionnaireDatabase questionnaireDatabase() {
-      return questionnaireDatabaseMock;
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-      return Mockito.mock(CacheManager.class);
-    }
-
-  }
-
-  @BeforeEach
-  public void setup() {
-    Mockito.reset(questionnaireDatabaseMock);
-  }
 
   @Inject
   public QuestionnaireDatabase questionnaireDatabase;
@@ -72,17 +42,20 @@ class QuestionnaireDatabaseTest {
   @Test
   void shouldStoreQuestionnaireIntoCacheIfIsNotThereAlready() {
     final Cache cache = setupCache("questionnaireCache");
+    assertTrue(AopUtils.isAopProxy(questionnaireDatabase));
+    QuestionnaireDatabase targetService = unwrap(questionnaireDatabase);
+
     Questionnaire questionnaire = mock(Questionnaire.class);
-    doReturn(questionnaire).when(questionnaireDatabaseMock).findOne(tenantId, "123");
+    doReturn(questionnaire).when(targetService).findOne(tenantId, "123");
     when(cache.get(Arrays.asList("q","t-123", "123",null))).thenReturn(null);
 
     questionnaireDatabase.findOne(tenantId, "123");
 
     verify(cache).getName();
     verify(cache).get(Arrays.asList("q","t-123", "123",null));
-    verify(questionnaireDatabaseMock).findOne(tenantId, "123");
+    verify(targetService).findOne(tenantId, "123");
     verify(cache).put(Arrays.asList("q","t-123", "123",null), questionnaire);
-    verifyNoMoreInteractions(cache, questionnaireDatabaseMock);
+    verifyNoMoreInteractions(cache, targetService);
   }
 
   @Test
@@ -95,62 +68,119 @@ class QuestionnaireDatabaseTest {
 
     verify(cache).getName();
     verify(cache).get(Arrays.asList("q","t-123", "123",null));
-    verifyNoMoreInteractions(cache, questionnaireDatabaseMock);
+    verifyNoMoreInteractions(cache, unwrap(questionnaireDatabase));
   }
 
   @Test
   void shouldCheckQuestionnaireFromCache() {
     final Cache cache = setupCache("questionnaireCache");
-    doReturn(true).when(questionnaireDatabaseMock).exists("t-123", "123");
+
+    assertTrue(AopUtils.isAopProxy(questionnaireDatabase));
+    QuestionnaireDatabase targetService = unwrap(questionnaireDatabase);
+
+    doReturn(true).when(targetService).exists("t-123", "123");
 
     questionnaireDatabase.exists(tenantId, "123");
 
     verify(cache).getName();
     verify(cache).get(Arrays.asList("e","t-123", "123",null));
     verify(cache).put(Arrays.asList("e","t-123", "123",null), true);
-    verify(questionnaireDatabaseMock).exists("t-123", "123");
-    verifyNoMoreInteractions(cache, questionnaireDatabaseMock);
+    verify(targetService).exists("t-123", "123");
+    verifyNoMoreInteractions(cache, targetService);
   }
-
-
 
   @Test
   void saveShouldUpdateObjectInCacheWithReturnValue() {
     final Cache cache = setupCache("questionnaireCache");
     final Questionnaire questionnaireIn = mock(Questionnaire.class);
     final Questionnaire questionnaireOut = mock(Questionnaire.class);
+    when(questionnaireIn.getId()).thenReturn("123");
+    when(questionnaireIn.getRev()).thenReturn("r-122");
     when(questionnaireOut.getId()).thenReturn("123");
     when(questionnaireOut.getRev()).thenReturn("r-123");
-    doReturn(questionnaireOut).when(questionnaireDatabaseMock).save(tenantId, questionnaireIn);
+
+    assertTrue(AopUtils.isAopProxy(questionnaireDatabase));
+    QuestionnaireDatabase targetService = unwrap(questionnaireDatabase);
+    when(targetService.save(tenantId, questionnaireIn))
+      .thenReturn(questionnaireOut);
 
     questionnaireDatabase.save(tenantId, questionnaireIn);
 
-    verify(cache, times(3)).getName();
+    verify(cache, times(4)).getName();
+    verify(cache).evictIfPresent(Arrays.asList("q","t-123", "123",null));
+
     verify(cache).put(Arrays.asList("q","t-123", "123",null), questionnaireOut);
     verify(cache).put(Arrays.asList("q","t-123", "123","r-123"), questionnaireOut);
     verify(cache).evict(Arrays.asList("e","t-123", "123",null));
     verify(questionnaireOut, times(3)).getId();
-    verify(questionnaireDatabaseMock).save(tenantId, questionnaireIn);
-    verifyNoMoreInteractions(cache, questionnaireDatabaseMock);
+    verify(targetService).save(tenantId, questionnaireIn);
+    verifyNoMoreInteractions(cache, targetService);
+  }
+
+  @Test
+  void saveShouldReloadCacheIfSaveEndsInConflict() {
+    final Cache cache = setupCache("questionnaireCache");
+    final Questionnaire questionnaireIn = mock(Questionnaire.class, "q1");
+    final Questionnaire questionnaireOut = mock(Questionnaire.class, "q2");
+    when(questionnaireIn.getId()).thenReturn("123");
+    when(questionnaireIn.getRev()).thenReturn("r-122");
+    when(questionnaireOut.getId()).thenReturn("123");
+    when(questionnaireOut.getRev()).thenReturn("r-123");
+
+    QuestionnaireDatabase targetService = unwrap(questionnaireDatabase);
+    when(targetService.save(tenantId, questionnaireIn))
+      .thenAnswer(i -> questionnaireOut);
+    when(targetService.save(tenantId, questionnaireOut))
+      .thenThrow(DocumentConflictException.class);
+
+    assertSame(questionnaireOut, questionnaireDatabase.save(tenantId, questionnaireIn));
+    assertThrows(DocumentConflictException.class, () -> questionnaireDatabase.save(tenantId, questionnaireOut));
+
+    var order = inOrder(cache, targetService);
+    order.verify(cache, times(4)).getName();
+    order.verify(cache).evictIfPresent(Arrays.asList("q","t-123", "123",null));
+    order.verify(targetService).save(tenantId, questionnaireIn);
+    order.verify(cache).put(Arrays.asList("q","t-123", "123",null), questionnaireOut);
+    order.verify(cache).put(Arrays.asList("q","t-123", "123","r-123"), questionnaireOut);
+    order.verify(cache).evict(Arrays.asList("e","t-123", "123",null));
+    order.verify(cache, times(4)).getName();
+    order.verify(cache).evictIfPresent(Arrays.asList("q","t-123", "123",null));
+    order.verify(targetService).save(tenantId, questionnaireOut);
+    order.verifyNoMoreInteractions();
+
+    // Do not remove this! Verification above does not cover all interactions.
+    verifyNoMoreInteractions(cache, targetService);
   }
 
   @Test
   void deleteShouldEvictQuestionnaireFromCache() {
     final Cache cache = setupCache("questionnaireCache");
+    assertTrue(AopUtils.isAopProxy(questionnaireDatabase));
+    QuestionnaireDatabase targetService = unwrap(questionnaireDatabase);
+    when(targetService.exists(tenantId, "123")).thenReturn(true).thenReturn(false);
+    when(targetService.delete(tenantId, "123")).thenReturn(true);
 
-    questionnaireDatabase.delete(tenantId, "123");
+    assertTrue(questionnaireDatabase.exists(tenantId, "123"));
+    assertTrue(questionnaireDatabase.delete(tenantId, "123"));
+    assertFalse(questionnaireDatabase.exists(tenantId, "123"));
 
-    verify(cache).getName();
-    verify(cache).clear();
-    verify(questionnaireDatabaseMock).delete(tenantId, "123");
-    verifyNoMoreInteractions(cache, questionnaireDatabaseMock);
-  }
+    var order = inOrder(cache, targetService);
 
-  private Cache setupCache(String cacheName) {
-    final Cache cache = mock(Cache.class);
-    when(cache.getName()).thenReturn(cacheName);
-    when(cacheManager.getCache(cacheName)).thenReturn(cache);
-    return cache;
+    order.verify(cache).getName();
+    order.verify(cache).get(Arrays.asList("e","t-123", "123",null));
+    order.verify(targetService).exists(tenantId, "123");
+    order.verify(cache).put(eq(Arrays.asList("e","t-123", "123",null)), eq(true));
+    order.verify(cache).getName();
+    order.verify(targetService).delete(tenantId, "123");
+    order.verify(cache).clear();
+    order.verify(cache).getName();
+    order.verify(cache).get(Arrays.asList("e","t-123", "123",null));
+    order.verify(targetService).exists(tenantId, "123");
+    order.verify(cache).put(eq(Arrays.asList("e","t-123", "123",null)), eq(false));
+    order.verifyNoMoreInteractions();
+
+    // Do not remove this! Verification above does not cover all interactions.
+    verifyNoMoreInteractions(cache, targetService);
   }
 
 }

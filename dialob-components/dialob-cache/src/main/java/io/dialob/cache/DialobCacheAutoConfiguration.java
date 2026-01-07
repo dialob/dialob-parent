@@ -53,10 +53,10 @@ public class DialobCacheAutoConfiguration {
 
     @Bean(name = Constants.SESSION_CACHE_MANAGER_BEAN)
     public CacheManager sessionCacheManager() {
-      SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
-      simpleCacheManager.setCaches(Collections.singletonList(questionnaireSessionCache));
-      simpleCacheManager.afterPropertiesSet();
-      return simpleCacheManager;
+      var sessionCacheManager = new SimpleCacheManager();
+      sessionCacheManager.setCaches(Collections.singletonList(questionnaireSessionCache));
+      sessionCacheManager.afterPropertiesSet();
+      return sessionCacheManager;
     }
 
     @Bean
@@ -99,12 +99,12 @@ public class DialobCacheAutoConfiguration {
 
   @Bean(name = Constants.SESSION_ACCESS_CACHE_MANAGER_BEAN)
   public CacheManager sessionAccessCacheManager() {
-    CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager(Constants.SESSION_ACCESS_CACHE_MANAGER_BEAN);
-    caffeineCacheManager.setCaffeine(Caffeine.newBuilder()
+    var sessionAccessCacheManager = new CaffeineCacheManager(Constants.SESSION_ACCESS_CACHE_MANAGER_BEAN);
+    sessionAccessCacheManager.setCaffeine(Caffeine.newBuilder()
       .maximumSize(100)
     );
-    caffeineCacheManager.setAllowNullValues(false);
-    return caffeineCacheManager;
+    sessionAccessCacheManager.setAllowNullValues(false);
+    return sessionAccessCacheManager;
   }
 
 

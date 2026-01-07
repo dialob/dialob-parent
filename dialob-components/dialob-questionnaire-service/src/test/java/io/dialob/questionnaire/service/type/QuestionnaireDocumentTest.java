@@ -34,7 +34,6 @@ class QuestionnaireDocumentTest {
     public void setup() {
       objectMapper = new ObjectMapper();
       objectMapper.registerModule(new JavaTimeModule());
-//      objectMapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true);
       objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
       objectMapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
       objectMapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);

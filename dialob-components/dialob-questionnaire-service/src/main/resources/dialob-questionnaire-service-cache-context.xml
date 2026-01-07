@@ -13,9 +13,13 @@
       <cache:cacheable method="findOne" key="{'q',#a0,#a1,#a2}"/>
       <cache:cacheable method="exists" key="{'e',#a0,#a1,null}"/>
       <cache:cache-evict method="delete" all-entries="true"/>
+
+      <!-- If "save" throws an exception, cache won't evict document. -->
+      <cache:cache-evict method="save" before-invocation="true" key="{'q',#a0,#a1.id,null}" condition="#a1.id != null"/>
       <cache:cache-put method="save" key="{'q',#a0,#result.id,null}"/>
       <cache:cache-put method="save" key="{'q',#a0,#result.id,#result.rev}"/>
       <cache:cache-evict method="save" key="{'e',#a0,#result.id,null}"/>
+
       <cache:cacheable method="findMetadata" key="{'md',#a0,#a1}"/>
     </cache:caching>
   </cache:advice>
@@ -23,6 +27,8 @@
 
   <cache:advice id="questionnaireSessionSaveServiceCacheAdvice">
     <cache:caching cache="sessionCache">
+      <!-- LocalQuestionnaireSessionCache is not compatible with this behavior -->
+      <!-- <cache:cache-evict method="save" before-invocation="true" key="#a0.sessionId" condition="#a0.sessionId != null"/>-->
       <cache:cache-put method="save" key="#result.sessionId"/>
     </cache:caching>
   </cache:advice>

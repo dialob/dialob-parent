@@ -22,8 +22,8 @@ public interface QuestionnaireSessionSaveService {
 
   /**
    * Note! Return value is put into cache
-   * @param questionnaireSession
-   * @return
+   * @param questionnaireSession The questionnaire session to save.
+   * @return The saved questionnaire session.
    */
   @NonNull
   QuestionnaireSession save(@NonNull QuestionnaireSession questionnaireSession);

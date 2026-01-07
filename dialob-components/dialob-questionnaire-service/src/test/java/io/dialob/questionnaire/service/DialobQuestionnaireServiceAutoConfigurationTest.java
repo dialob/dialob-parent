@@ -33,7 +33,6 @@ import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfigurati
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -45,38 +44,17 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   @EnableScheduling
   @EnableConfigurationProperties(DialobSettings.class)
   public static class TestConfiguration {
-
-    @Bean
-    public QuestionnaireSessionService questionnaireSessionService() {
-      return Mockito.mock(QuestionnaireSessionService.class);
-    }
-
-    @Bean
-    public MeterRegistry meterRegistry() {
-      return new SimpleMeterRegistry();
-    }
-
-    @Bean
-    public CurrentTenant currentTenant() {
-      return Mockito.mock(CurrentTenant.class);
-    }
-
-    @Bean
-    public QuestionnaireSessionSaveService questionnaireSessionSaveService() {
-      return Mockito.mock(QuestionnaireSessionSaveService.class);
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-      return Mockito.mock(CacheManager.class);
-    }
-
   }
 
   @Test
   void testDialobQuestionnaireServiceAutoConfiguration() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
+      .withBean(CacheManager.class, Mockito::mock)
+      .withBean(QuestionnaireSessionSaveService.class, Mockito::mock)
+      .withBean(CurrentTenant.class, Mockito::mock)
+      .withBean(MeterRegistry.class, SimpleMeterRegistry::new)
+      .withBean(QuestionnaireSessionService.class, Mockito::mock)
       .withConfiguration(AutoConfigurations.of(
         TaskSchedulingAutoConfiguration.class,
         TaskExecutionAutoConfiguration.class,
@@ -95,6 +73,11 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   void testDialobQuestionnaireServiceAutoConfiguration1() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
+      .withBean(CacheManager.class, Mockito::mock)
+      .withBean(QuestionnaireSessionSaveService.class, Mockito::mock)
+      .withBean(CurrentTenant.class, Mockito::mock)
+      .withBean(MeterRegistry.class, SimpleMeterRegistry::new)
+      .withBean(QuestionnaireSessionService.class, Mockito::mock)
       .withConfiguration(AutoConfigurations.of(
         TaskSchedulingAutoConfiguration.class,
         TaskExecutionAutoConfiguration.class,
@@ -113,6 +96,11 @@ class DialobQuestionnaireServiceAutoConfigurationTest {
   void testDialobQuestionnaireServiceAutoConfigurationWithAutoSave() {
     new ApplicationContextRunner()
       .withUserConfiguration(TestConfiguration.class)
+      .withBean(CacheManager.class, Mockito::mock)
+      .withBean(QuestionnaireSessionSaveService.class, Mockito::mock)
+      .withBean(CurrentTenant.class, Mockito::mock)
+      .withBean(MeterRegistry.class, SimpleMeterRegistry::new)
+      .withBean(QuestionnaireSessionService.class, Mockito::mock)
       .withConfiguration(AutoConfigurations.of(
         TaskSchedulingAutoConfiguration.class,
         TaskExecutionAutoConfiguration.class,

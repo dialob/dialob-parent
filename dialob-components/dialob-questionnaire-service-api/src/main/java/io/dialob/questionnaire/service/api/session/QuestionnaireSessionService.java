@@ -22,11 +22,26 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 
 public interface QuestionnaireSessionService {
 
+  /**
+   * This method returns a session from cache if it's present and adds a new session to cache.
+   * Requires cache configuration.
+   *
+   * @param questionnaireId id of the questionnaire
+   * @return cached or a new session
+   */
   @Nullable
   default QuestionnaireSession findOne(@NonNull String questionnaireId) {
     return findOne(questionnaireId, true);
   }
 
+  /**
+   * This method returns a session from cache if it's present and adds a new session to cache if requested.
+   * Requires cache configuration.
+   *
+   * @param questionnaireId id of the questionnaire
+   * @param openIfClosed load session if not present in cache
+   * @return session or null if session is not present in cache
+   */
   @Nullable
   QuestionnaireSession findOne(@NonNull String questionnaireId, boolean openIfClosed);
 

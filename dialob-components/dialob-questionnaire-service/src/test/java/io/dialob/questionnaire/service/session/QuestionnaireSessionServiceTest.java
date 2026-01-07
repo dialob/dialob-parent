@@ -15,138 +15,132 @@
  */
 package io.dialob.questionnaire.service.session;
 
+import io.dialob.db.spi.exceptions.DocumentConflictException;
+import io.dialob.questionnaire.service.AbstractCacheTest;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {AbstractCacheTest.TestConfiguration.class})
 @EnableCaching
-class QuestionnaireSessionServiceTest {
-
-  static QuestionnaireSessionService questionnaireSessionServiceMock = mock(QuestionnaireSessionService.class);
-
-  static QuestionnaireSessionSaveService questionnaireSessionSaveServiceMock = mock(QuestionnaireSessionSaveService.class);
-
-  @Inject
-  public CacheManager cacheManager;
-
-  @Configuration(proxyBeanMethods = false)
-  @ImportResource("classpath:dialob-questionnaire-service-cache-context.xml")
-  public static class TestConfiguration {
-    @Bean
-    public QuestionnaireSessionService questionnaireSessionService() {
-      return questionnaireSessionServiceMock;
-    }
-    @Bean
-    public QuestionnaireSessionSaveService questionnaireSessionSaveService() {
-      return questionnaireSessionSaveServiceMock;
-    }
-
-
-    @Bean
-    public CacheManager cacheManager() {
-      return Mockito.mock(CacheManager.class);
-    }
-
-  }
-
-  @BeforeEach
-  public void setup() {
-    Mockito.reset(questionnaireSessionServiceMock);
-  }
+class QuestionnaireSessionServiceTest extends AbstractCacheTest {
 
   @Inject
   public QuestionnaireSessionService questionnaireSessionService;
+
   @Inject
   public QuestionnaireSessionSaveService questionnaireSessionSaveService;
 
+
   @Test
   void findOneShouldCacheNonNullResult() {
-    Cache cache = setupCache();
+    var cache = setupCache("sessionCache");
+    var targetService = unwrap(questionnaireSessionService);
 
-    when(cache.get("123")).thenReturn(null);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    when(questionnaireSessionServiceMock.findOne("123")).thenReturn(session);
+    when(cache.get("findOneShouldCacheNonNullResult")).thenReturn(null);
+    QuestionnaireSession session = mock();
+    when(targetService.findOne("findOneShouldCacheNonNullResult")).thenReturn(session);
 
-    questionnaireSessionService.findOne("123");
+    questionnaireSessionService.findOne("findOneShouldCacheNonNullResult");
 
     verify(cache).getName();
-    verify(cache).get("123");
-    verify(cache).put("123", session);
-    verify(questionnaireSessionServiceMock).findOne("123");
-    verifyNoMoreInteractions(cache, questionnaireSessionServiceMock);
+    verify(cache).get("findOneShouldCacheNonNullResult");
+    verify(cache).put("findOneShouldCacheNonNullResult", session);
+    verify(targetService).findOne("findOneShouldCacheNonNullResult");
+    verifyNoMoreInteractions(cache, targetService);
   }
 
   @Test
   void findOneShouldNotCacheNullResult() {
-    Cache cache = setupCache();
+    var cache = setupCache("sessionCache");
+    var targetService = unwrap(questionnaireSessionService);
+    Mockito.reset(targetService);
 
-    when(cache.get("123")).thenReturn(null);
-    when(questionnaireSessionServiceMock.findOne("123")).thenReturn(null);
+    when(cache.get("findOneShouldNotCacheNullResult")).thenReturn(null);
+    when(targetService.findOne("findOneShouldNotCacheNullResult")).thenReturn(null);
 
-    questionnaireSessionService.findOne("123");
+    assertNull(questionnaireSessionService.findOne("findOneShouldNotCacheNullResult"));
 
     verify(cache).getName();
-    verify(cache).get("123");
-    verify(questionnaireSessionServiceMock).findOne("123");
-    verifyNoMoreInteractions(cache, questionnaireSessionServiceMock);
+    verify(cache).get("findOneShouldNotCacheNullResult");
+    verify(targetService).findOne("findOneShouldNotCacheNullResult");
+    verifyNoMoreInteractions(cache, targetService);
   }
 
   @Test
   void findOneWithOpenFalseShouldReturnNullIfItemNotInCache() {
-    Cache cache = setupCache();
+    Cache cache = setupCache("sessionCache");
+    QuestionnaireSessionService targetService = unwrap(questionnaireSessionService);
 
-    when(cache.get("123")).thenReturn(null);
-    assertNull(questionnaireSessionService.findOne("123", false));
+    when(cache.get("findOneWithOpenFalseShouldReturnNullIfItemNotInCache")).thenReturn(null);
+    assertNull(questionnaireSessionService.findOne("findOneWithOpenFalseShouldReturnNullIfItemNotInCache", false));
 
     verify(cache).getName();
-    verify(cache).get("123");
-    verify(questionnaireSessionServiceMock).findOne("123", false);
-    verifyNoMoreInteractions(cache, questionnaireSessionServiceMock);
+    verify(cache).get("findOneWithOpenFalseShouldReturnNullIfItemNotInCache");
+    verify(targetService).findOne("findOneWithOpenFalseShouldReturnNullIfItemNotInCache", false);
+    verifyNoMoreInteractions(cache, targetService);
   }
 
   @Test
   void saveShouldCacheResult() {
-    Cache cache = setupCache();
+    var cache = setupCache("sessionCache");
+    QuestionnaireSessionSaveService targetService = unwrap(questionnaireSessionSaveService);
 
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
-    QuestionnaireSession sessionOut = mock(QuestionnaireSession.class);
-    when(sessionOut.getSessionId()).thenReturn(Optional.of("321"));
-    when(questionnaireSessionSaveServiceMock.save(session)).thenReturn(sessionOut);
+    QuestionnaireSession session = mock();
+    QuestionnaireSession sessionOut = mock();
+    when(sessionOut.getSessionId()).thenReturn(Optional.of("saveShouldCacheResult"));
+    when(targetService.save(session)).thenReturn(sessionOut);
 
     assertSame(sessionOut, questionnaireSessionSaveService.save(session));
 
-    verify(cache).getName();
-    verify(cache).put(Optional.of("321"), sessionOut);
-    verify(questionnaireSessionSaveServiceMock).save(session);
-    verifyNoMoreInteractions(cache, questionnaireSessionServiceMock, session);
+    var inOrder = Mockito.inOrder(cache, targetService, session);
+    System.out.println(mockingDetails(session).printInvocations());
+
+    inOrder.verify(cache, times(1)).getName();
+//    inOrder.verify(cache).evictIfPresent(Optional.empty());
+    inOrder.verify(targetService).save(session);
+    inOrder.verify(cache).put(Optional.of("saveShouldCacheResult"), sessionOut);
+    inOrder.verifyNoMoreInteractions();
+
+//    verify(session, atLeastOnce()).getSessionId();
+    verifyNoMoreInteractions(cache, targetService, session);
   }
 
 
-  private Cache setupCache() {
-    final Cache cache = mock(Cache.class);
-    when(cache.getName()).thenReturn("sessionCache");
-    when(cacheManager.getCache("sessionCache")).thenReturn(cache);
-    return cache;
-  }
+  @Test
+  void saveShouldEvictSessionWhenSaveFails() {
+    var cache = setupCache("sessionCache");
+    QuestionnaireSessionSaveService targetService = unwrap(questionnaireSessionSaveService);
 
+    QuestionnaireSession session = mock();
+    QuestionnaireSession sessionOut = mock();
+    when(session.getSessionId()).thenReturn(Optional.of("saveShouldCacheResult"));
+    when(sessionOut.getSessionId()).thenReturn(Optional.of("saveShouldCacheResult"));
+
+    when(targetService.save(session)).thenThrow(DocumentConflictException.class);
+
+    assertThrows(DocumentConflictException.class, () -> questionnaireSessionSaveService.save(session));
+
+    var inOrder = Mockito.inOrder(cache, targetService, session);
+
+    inOrder.verify(cache, times(1)).getName();
+//    inOrder.verify(cache).evictIfPresent(Optional.of("saveShouldCacheResult"));
+    inOrder.verify(targetService).save(session);
+    inOrder.verifyNoMoreInteractions();
+
+//    verify(session, atLeastOnce()).getSessionId();
+    verifyNoMoreInteractions(cache, targetService, session);
+  }
 
 }
