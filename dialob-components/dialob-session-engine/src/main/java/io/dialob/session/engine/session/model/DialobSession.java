@@ -73,21 +73,21 @@ public class DialobSession implements Serializable {
   private String language;
 
   @NonNull
-  private Map<ItemId,ItemState> itemStates = new HashMap<>();
+  private final Map<ItemId,ItemState> itemStates;
 
   // TODO move this to DialobProgram
   @NonNull
-  private Map<ItemId,ItemState> itemPrototypes = new HashMap<>();
+  private final Map<ItemId,ItemState> itemPrototypes;
 
   @NonNull
-  private Map<ValueSetId,ValueSetState> valueSetStates = new HashMap<>();
+  private final Map<ValueSetId,ValueSetState> valueSetStates;
 
   @NonNull
-  private Map<ErrorId,ErrorState> errorStates = new HashMap<>();
+  private final Map<ErrorId,ErrorState> errorStates;
 
   // TODO move this to DialobProgram
   @NonNull
-  private Map<ErrorId,ErrorState> errorPrototypes = new HashMap<>();
+  private final Map<ErrorId,ErrorState> errorPrototypes;
 
   public void writeTo(StateWriter output) throws IOException {
     output.writeString(tenantId);
@@ -167,6 +167,11 @@ public class DialobSession implements Serializable {
 
   private DialobSession(String tenantId, @Nullable final String id) {
     this.tenantId = Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id);
+    this.itemStates = new HashMap<>();
+    this.itemPrototypes = new HashMap<>();
+    this.valueSetStates = new HashMap<>();
+    this.errorStates = new HashMap<>();
+    this.errorPrototypes = new HashMap<>();
     this.id = id;
   }
 

@@ -268,8 +268,8 @@ class DialobQuestionnaireSessionTest {
       .status(ItemState.Status.NEW)
       .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
       .valueSetId(null)
-      .answer(Arrays.asList(1, 2, 3))
-      .value(Arrays.asList(1, 2, 3))
+      .answer(List.of(1, 2, 3))
+      .value(List.of(1, 2, 3))
       .defaultValue(null)
       .activePage(null)
       .build();
@@ -283,8 +283,8 @@ class DialobQuestionnaireSessionTest {
       .status(ItemState.Status.NEW)
       .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
       .valueSetId(null)
-      .answer(Arrays.asList(1, 2, 3))
-      .value(Arrays.asList(1, 2, 3))
+      .answer(List.of(1, 2, 3))
+      .value(List.of(1, 2, 3))
       .defaultValue(null)
       .activePage(null)
       .build();
@@ -361,8 +361,8 @@ class DialobQuestionnaireSessionTest {
       .status(ItemState.Status.NEW)
       .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
       .valueSetId(null)
-      .answer(Arrays.asList(1, 2, 3))
-      .value(Arrays.asList(1, 2, 3))
+      .answer(List.of(1, 2, 3))
+      .value(List.of(1, 2, 3))
       .defaultValue(null)
       .activePage(null)
       .build();
@@ -376,8 +376,8 @@ class DialobQuestionnaireSessionTest {
       .status(ItemState.Status.NEW)
       .bits(ItemState.DISPLAY_ITEM_BIT | ItemState.ACTIVE_BIT | ItemState.ROWS_CAN_BE_ADDED_BIT)
       .valueSetId(null)
-      .answer(Arrays.asList(1, 2, 3))
-      .value(Arrays.asList(1, 2, 3))
+      .answer(List.of(1, 2, 3))
+      .value(List.of(1, 2, 3))
       .defaultValue(null)
       .activePage(null)
       .build();
@@ -435,22 +435,22 @@ class DialobQuestionnaireSessionTest {
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
 
     ItemState item1 = Mockito.mock(ItemState.class);
-    when(item1.getId()).thenReturn(IdUtils.toId("item1"));
-    when(item1.getType()).thenReturn("text");
+    when(item1.id()).thenReturn(IdUtils.toId("item1"));
+    when(item1.type()).thenReturn("text");
     when(item1.isActive()).thenReturn(true);
     when(item1.isDisplayItem()).thenReturn(true);
     when(item1.isDisabled()).thenReturn(false);
 
     ItemState item2 = Mockito.mock(ItemState.class);
-    when(item2.getId()).thenReturn(IdUtils.toId("item2"));
-    when(item2.getType()).thenReturn("text");
+    when(item2.id()).thenReturn(IdUtils.toId("item2"));
+    when(item2.type()).thenReturn("text");
     when(item2.isActive()).thenReturn(false);
     when(item2.isDisplayItem()).thenReturn(true);
     when(item2.isDisabled()).thenReturn(false);
 
     ItemState item3 = Mockito.mock(ItemState.class);
-    when(item3.getId()).thenReturn(IdUtils.toId("item3"));
-    when(item3.getType()).thenReturn("note");
+    when(item3.id()).thenReturn(IdUtils.toId("item3"));
+    when(item3.type()).thenReturn("note");
     when(item3.isActive()).thenReturn(true);
     when(item3.isDisplayItem()).thenReturn(true);
     when(item3.isDisabled()).thenReturn(false);
@@ -495,22 +495,22 @@ class DialobQuestionnaireSessionTest {
     AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
 
     ItemState activeItem = Mockito.mock(ItemState.class);
-    when(activeItem.getId()).thenReturn(IdUtils.toId("active"));
-    when(activeItem.getType()).thenReturn("text");
+    when(activeItem.id()).thenReturn(IdUtils.toId("active"));
+    when(activeItem.type()).thenReturn("text");
     when(activeItem.isActive()).thenReturn(true);
     when(activeItem.isDisplayItem()).thenReturn(true);
     when(activeItem.isDisabled()).thenReturn(false);
 
     ItemState inactiveItem = Mockito.mock(ItemState.class);
-    when(inactiveItem.getId()).thenReturn(IdUtils.toId("inactive"));
-    when(inactiveItem.getType()).thenReturn("text");
+    when(inactiveItem.id()).thenReturn(IdUtils.toId("inactive"));
+    when(inactiveItem.type()).thenReturn("text");
     when(inactiveItem.isActive()).thenReturn(false);
     when(inactiveItem.isDisplayItem()).thenReturn(true);
     when(inactiveItem.isDisabled()).thenReturn(false);
 
     ItemState disabledItem = Mockito.mock(ItemState.class);
-    when(disabledItem.getId()).thenReturn(IdUtils.toId("disabled"));
-    when(disabledItem.getType()).thenReturn("text");
+    when(disabledItem.id()).thenReturn(IdUtils.toId("disabled"));
+    when(disabledItem.type()).thenReturn("text");
     when(disabledItem.isActive()).thenReturn(true);
     when(disabledItem.isDisplayItem()).thenReturn(true);
     when(disabledItem.isDisabled()).thenReturn(true);

@@ -228,12 +228,12 @@ class DependencyResolverVisitor implements ProgramVisitor {
 
   @NonNull
   public Map<EventMatcher, List<Command<?>>> getInputUpdates() {
-    return inputUpdates;
+    return Collections.unmodifiableMap(inputUpdates);
   }
 
   @NonNull
   public Map<ItemId, List<Command<?>>> getItemCommands() {
-    return itemCommands;
+    return Collections.unmodifiableMap(itemCommands);
   }
 
   @NonNull
