@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,8 +94,6 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   private final transient AsyncFunctionInvoker asyncFunctionInvoker;
 
-  private final transient Function<ItemState, ActionItem> toActionItemFunction;
-
   private DialobQuestionnaireSession(String rev, @NonNull DialobSession dialobSession, @NonNull DialobQuestionnaireSession dialobQuestionnaireSession) {
     this(
       dialobQuestionnaireSession.eventPublisher,
@@ -129,7 +126,10 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     this.dialobProgram = dialobProgram;
     this.questionClientVisibility = questionClientVisibility;
     this.state = new AtomicReference<>(state);
-    this.toActionItemFunction = itemState -> Utils.toActionItem(itemState, builder -> {
+  }
+
+  ActionItem toActionItem(ItemState itemState) {
+    return Utils.toActionItem(itemState, builder -> {
       if (itemState.hasCustomProps()) {
         ItemId id = itemState.prototypeId();
         if (id == null) {
@@ -312,7 +312,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       final var commands = ActionToCommandMapper.toCommands(actions);
       sessionUpdater
         .applyCommands(commands)
-        .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this.toActionItemFunction)) {
+        .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this::toActionItem)) {
           @Override
           public void visitCompleted() {
             super.visitCompleted();
@@ -513,7 +513,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     dialobSession.accept(new DialobSessionVisitor() {
       @Override
       public Optional<ItemVisitor> visitItemStates() {
-        return Optional.of(itemState -> formItems.add(toActionItemFunction.apply(itemState)));
+        return Optional.of(itemState -> formItems.add(toActionItem(itemState)));
       }
     });
     return formItems;
@@ -521,7 +521,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   @Override
   public Optional<ActionItem> getItemById(@NonNull String itemId) {
-    return dialobSession.getItemState(IdUtils.toId(itemId)).map(toActionItemFunction);
+    return dialobSession.getItemState(IdUtils.toId(itemId)).map(this::toActionItem);
   }
 
   @NonNull
@@ -534,7 +534,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       public Optional<ItemVisitor> visitItemStates() {
         return Optional.of(itemState -> {
           if (isVisiblePredicate.test(itemState)) {
-            formItems.add(toActionItemFunction.apply(itemState));
+            formItems.add(toActionItem(itemState));
           }
         });
       }
@@ -687,7 +687,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   @NonNull
   @Override
   public String getFormId() {
-    return dialobProgram.getProgram().id();
+    return dialobProgram.program().id();
   }
 
   @Override

@@ -38,6 +38,10 @@ public record Program(
 
   public static final class Builder extends ProgramBuilder { }
 
+  public Program {
+    items = List.copyOf(items);
+    valueSets = List.copyOf(valueSets);
+  }
 
   public void accept(ProgramVisitor visitor) {
     final List<io.dialob.session.engine.program.model.Error> errors = new ArrayList<>();

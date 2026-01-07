@@ -24,8 +24,6 @@ import io.dialob.session.engine.session.command.event.*;
 import io.dialob.session.engine.session.model.DialobSession;
 import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ItemId;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -34,37 +32,37 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-@EqualsAndHashCode()
 @Slf4j
-public class DialobProgram implements Serializable {
+public record DialobProgram(
+  Program program,
+  Map<EventMatcher, List<Command<?>>> inputUpdates,
+  Map<ItemId, List<Command<?>>> itemCommands,
+  Map<Command<?>, Set<Command<?>>> commandsToCommands
+) implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 2922819825920407874L;
 
-  @Getter
-  private final Program program;
+  public DialobProgram {
+    inputUpdates = inputUpdates.entrySet().stream().map(
+      entry -> Map.entry(entry.getKey(), List.copyOf(entry.getValue()))
+    ).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-  private final Map<EventMatcher, List<Command<?>>> inputUpdates;
+    itemCommands = itemCommands.entrySet().stream().map(
+      entry -> Map.entry(entry.getKey(), List.copyOf(entry.getValue()))
+    ).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-  private final Map<ItemId, List<Command<?>>> itemCommands;
-
-  private final Map<Command<?>, Set<Command<?>>> commandsToCommands;
-
-  private DialobProgram(@NonNull Program program,
-                        @NonNull Map<EventMatcher, List<Command<?>>> inputUpdates,
-                        @NonNull Map<ItemId, List<Command<?>>> itemCommands,
-                        @NonNull Map<Command<?>, Set<Command<?>>> commandsToCommands) {
-    this.program = Objects.requireNonNull(program);
-    this.inputUpdates = Objects.requireNonNull(inputUpdates);
-    this.itemCommands = Objects.requireNonNull(itemCommands);
-    this.commandsToCommands = Objects.requireNonNull(commandsToCommands);
+    commandsToCommands = commandsToCommands.entrySet().stream().map(
+      entry -> Map.entry(entry.getKey(), Set.copyOf(entry.getValue()))
+    ).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @NonNull
   public static DialobProgram createDialobProgram(@NonNull Program program) {
-    DependencyResolverVisitor visitor = new DependencyResolverVisitor();
+    var visitor = new DependencyResolverVisitor();
     program.accept(visitor);
     return new DialobProgram(program,
       visitor.getInputUpdates(),
@@ -148,11 +146,6 @@ public class DialobProgram implements Serializable {
     var updater = sessionContextFactory.createSessionUpdater(this, dialobSession, true);
     updater.applyCommands(createDialobSessionProgramVisitor.getUpdates());
     return dialobSession;
-  }
-
-  @Override
-  public String toString() {
-    return program.toString();
   }
 
   public Optional<Item> getItem(ItemId id) {
