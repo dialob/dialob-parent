@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
 import io.dialob.session.engine.program.model.*;
@@ -314,7 +315,31 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     if (activePage == null) {
       updates.add(CommandFactory.nextPage());
     }
-    this.dialobSession = DialobSession.of(tenantId, sessionId, 0, null, lastAnswer, completed, opened, language, items, prototypeItems, valueSets, errors, errorPrototypes);
+    var itemStatesMap = new HashMap<ItemId, ItemState>();
+    var itemPrototypesMap = new HashMap<ItemId, ItemState>();
+    var valueSetStatesMap = new HashMap<ValueSetId, ValueSetState>();
+    var errorStatesMap = new HashMap<ErrorId, ErrorState>();
+    var errorPrototypesMap = new HashMap<ErrorId, ErrorState>();
+    items.forEach(item -> itemStatesMap.put(item.id(), item));
+    valueSets.forEach(item -> valueSetStatesMap.put(item.id(), item));
+    errors.forEach(item -> errorStatesMap.put(new ErrorId(item.itemId(), item.code()), item));
+    errorPrototypes.forEach(item -> errorPrototypesMap.put(new ErrorId(item.itemId(), item.code()), item));
+    prototypeItems.forEach(prototype -> itemPrototypesMap.put(prototype.id(), prototype));
+    this.dialobSession = new DialobSession(
+      Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id),
+      sessionId,
+      0,
+      null,
+      lastAnswer,
+      completed,
+      opened,
+      language,
+      itemStatesMap,
+      itemPrototypesMap,
+      valueSetStatesMap,
+      errorStatesMap,
+      errorPrototypesMap
+    );
   }
 
 }
