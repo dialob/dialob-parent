@@ -42,7 +42,17 @@ import java.util.stream.Stream;
 @ToString
 @Slf4j
 @AllArgsConstructor
+//@Value.Builder
+//@Value.Style(
+//  isSetOnBuilder = true,
+//  jakarta = true,
+//  jdkOnly = true,
+//  overshadowImplementation = true,
+//  visibility = Value.Style.ImplementationVisibility.PACKAGE
+//)
 public class DialobSession implements Serializable {
+
+//  public static final class Builder extends DialobSessionBuilder {}
 
   @Serial
   private static final long serialVersionUID = 1180110179877247767L;
@@ -61,8 +71,8 @@ public class DialobSession implements Serializable {
   @Getter
   private String revision;
 
-  @NonNull
-  private Instant lastUpdate = Instant.now();
+//  @NonNull
+  private Instant lastUpdate;
 
   private Instant completed;
 
@@ -92,9 +102,9 @@ public class DialobSession implements Serializable {
   public void writeTo(StateWriter output) throws IOException {
     output.writeString(tenantId);
     output.writeNullableString(id);
-    output.writeString(revision);
+    output.writeNullableString(revision);
     output.writeString(language);
-    output.writeNullableDate(lastUpdate);
+    output.writeDate(lastUpdate);
     output.writeNullableDate(completed);
     output.writeNullableDate(opened);
     output.writeInt(asyncUpdateCount);
@@ -126,101 +136,116 @@ public class DialobSession implements Serializable {
   }
 
   public static DialobSession readFrom(StateReader input) throws IOException {
-    String tenantId = input.readString();
-    String id = input.readNullableString();
-    DialobSession session = new DialobSession(tenantId, id);
-    session.revision = input.readString();
-    session.language = input.readString();
-    session.lastUpdate = input.readNullableDate();
-    session.completed = input.readNullableDate();
-    session.opened = input.readNullableDate();
-    session.asyncUpdateCount = input.readInt();
+    var tenantId = input.readString();
+    var id = input.readNullableString();
+    var revision = input.readNullableString();
+    var language = input.readString();
+    var lastUpdate = input.readDate();
+    var completed = input.readNullableDate();
+    var opened = input.readNullableDate();
+    var asyncUpdateCount = input.readInt();
+    var itemStates = new HashMap<ItemId,ItemState>();
+    var itemPrototypes = new HashMap<ItemId,ItemState>();
+    var valueSetStates = new HashMap<ValueSetId,ValueSetState>();
+    var errorStates = new HashMap<ErrorId,ErrorState>();
+    var errorPrototypes = new HashMap<ErrorId,ErrorState>();
+
 
     int count = input.readInt();
     for (int i = 0; i < count; ++i) {
       final var state = ItemState.readFrom(input);
-      session.itemStates.put(state.id(), state);
+      itemStates.put(state.id(), state);
     }
     count = input.readInt();
     for (int i = 0; i < count; ++i) {
       final var state = ItemState.readFrom(input);
-      session.itemPrototypes.put(state.id(), state);
+      itemPrototypes.put(state.id(), state);
     }
     count = input.readInt();
     for (int i = 0; i < count; ++i) {
       final var state = ValueSetState.readFrom(input);
-      session.valueSetStates.put(state.id(), state);
+      valueSetStates.put(state.id(), state);
     }
     count = input.readInt();
     for (int i = 0; i < count; ++i) {
       final var state = ErrorState.readFrom(input);
-      session.errorStates.put(state.id(), state);
+      errorStates.put(state.id(), state);
     }
     count = input.readInt();
     for (int i = 0; i < count; ++i) {
       final var state = ErrorState.readFrom(input);
-      session.errorPrototypes.put(state.id(), state);
+      errorPrototypes.put(state.id(), state);
     }
-    return session;
+    return new DialobSession(
+      tenantId,
+      id,
+      asyncUpdateCount,
+      revision,
+      lastUpdate,
+      completed,
+      opened,
+      language,
+      itemStates,
+      itemPrototypes,
+      valueSetStates,
+      errorStates,
+      errorPrototypes
+    );
   }
 
-
-  private DialobSession(String tenantId, @Nullable final String id) {
-    this.tenantId = Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id);
-    this.itemStates = new HashMap<>();
-    this.itemPrototypes = new HashMap<>();
-    this.valueSetStates = new HashMap<>();
-    this.errorStates = new HashMap<>();
-    this.errorPrototypes = new HashMap<>();
-    this.id = id;
-  }
-
-  public DialobSession(
+  public static DialobSession of(
     String tenantId,
     String id,
+    int asyncUpdateCount,
     String revision,
-    String language,
-    List<ItemState> items,
-    List<ItemState> prototypes,
-    List<ValueSetState> valueSets,
-    List<ErrorState> errors,
-    List<ErrorState> errorPrototypes,
+    Instant lastUpdate,
     Instant completed,
     Instant opened,
-    Instant lastAnswer)
+    String language,
+    List<ItemState> itemStates,
+    List<ItemState> itemPrototypes,
+    List<ValueSetState> valueSetStates,
+    List<ErrorState> errorStates,
+    List<ErrorState> errorPrototypes)
   {
-    this(tenantId, id);
-    this.revision = revision;
-    this.language = language;
-    if (completed != null) {
-      this.completed = completed;
+    var itemStatesMap = new HashMap<ItemId,ItemState>();
+    var itemPrototypesMap = new HashMap<ItemId,ItemState>();
+    var valueSetStatesMap = new HashMap<ValueSetId,ValueSetState>();
+    var errorStatesMap = new HashMap<ErrorId,ErrorState>();
+    var errorPrototypesMap = new HashMap<ErrorId,ErrorState>();
+    if (itemStates != null && !itemStates.isEmpty()) {
+      itemStates.forEach(item -> itemStatesMap.put(item.id(), item));
     }
-    if (opened != null) {
-      this.opened = opened;
+    if (valueSetStates != null && !valueSetStates.isEmpty()) {
+      valueSetStates.forEach(item -> valueSetStatesMap.put(item.id(), item));
     }
-    if (items != null) {
-      items.forEach(item -> itemStates.put(item.id(), item));
+    if (errorStates != null && !errorStates.isEmpty()) {
+      errorStates.forEach(item -> errorStatesMap.put(new ErrorId(item.itemId(), item.code()), item));
     }
-    if (valueSets != null) {
-      valueSets.forEach(item -> this.valueSetStates.put(item.id(), item));
+    if (errorPrototypes != null && !errorPrototypes.isEmpty()) {
+      errorPrototypes.forEach(item -> errorPrototypesMap.put(new ErrorId(item.itemId(), item.code()), item));
     }
-    if (errors != null) {
-      errors.forEach(item -> this.errorStates.put(new ErrorId(item.itemId(), item.code()), item));
+    if (itemPrototypes != null && !itemPrototypes.isEmpty()) {
+      itemPrototypes.forEach(prototype -> itemPrototypesMap.put(prototype.id(), prototype));
     }
-    if (errorPrototypes != null) {
-      errorPrototypes.forEach(item -> this.errorPrototypes.put(new ErrorId(item.itemId(), item.code()), item));
-    }
-    if (prototypes != null) {
-      prototypes.forEach(prototype -> this.itemPrototypes.put(prototype.id(), prototype));
-    }
-    updated();
-    if (lastAnswer != null) {
-      // updated() updates lastUpdate. To retain persistent value
-      this.lastUpdate = lastAnswer;
-    }
+    return new DialobSession(
+      Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id),
+      id,
+      asyncUpdateCount,
+      revision,
+      lastUpdate,
+      completed,
+      opened,
+      language,
+      itemStatesMap,
+      itemPrototypesMap,
+      valueSetStatesMap,
+      errorStatesMap,
+      errorPrototypesMap
+    );
   }
 
-  public DialobSession withId(String id) {
+  public DialobSession withId(@NonNull String id) {
     if (Objects.equals(this.id, id)) {
       return this;
     }
@@ -281,35 +306,38 @@ public class DialobSession implements Serializable {
    * @param evalContext execution context
    * @param command object to execute within context
    */
-  public void applyUpdate(@NonNull EvalContext evalContext, @NonNull Command<?> command) {
+  public DialobSession applyUpdate(@NonNull EvalContext evalContext, @NonNull Command<?> command) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
 
-    switch (command) {
+    return switch (command) {
       case ItemUpdateCommand itemUpdateCommand -> {
         ItemId itemId = itemUpdateCommand.targetId();
         // TODO scope?
         EvalContext context = createScopedEvalContext(evalContext, itemId);
 
         applyItemUpdateCommand(context, itemUpdateCommand);
-        updated();
+        yield updated();
       }
       case ErrorUpdateCommand errorUpdateCommand -> {
         EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.targetId().itemId());
         applyErrorUpdateCommand(context, errorUpdateCommand);
-        updated();
+        yield updated();
       }
       case ValueSetUpdateCommand valueSetCommand -> {
         applyUpdateValueSetCommand(evalContext, valueSetCommand);
-        updated();
+        yield updated();
       }
       case SessionUpdateCommand updateCommand -> {
         applySessionUpdateCommand(evalContext, updateCommand);
-        updated();
+        yield updated();
       }
-      default -> LOGGER.warn("Do not know how to apply command: {}", command);
-    }
+      default -> {
+        LOGGER.warn("Do not know how to apply command: {}", command);
+        yield this;
+      }
+    };
   }
 
   public EvalContext createScopedEvalContext(@NonNull EvalContext evalContext, ItemId itemId) {
@@ -418,13 +446,14 @@ public class DialobSession implements Serializable {
     });
   }
 
-  protected void updated() {
+  protected DialobSession updated() {
     lastUpdate = Instant.now();
     if (opened == null) {
       opened = lastUpdate;
     }
     revision = Integer.toString(ThreadLocalRandom.current().nextInt());
     LOGGER.trace("{} updated to rev {}", getId(), revision);
+    return this;
   }
 
   public Optional<ErrorState> getErrorState(ItemId itemId, String code) {

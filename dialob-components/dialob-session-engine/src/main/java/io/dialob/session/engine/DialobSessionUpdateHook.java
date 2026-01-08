@@ -19,7 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.model.DialobSession;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface DialobSessionUpdateHook {
 
@@ -31,7 +31,7 @@ public interface DialobSessionUpdateHook {
    * @param update update to check
    * @param delegate delegates update for actual evaluation
    */
-  void hookAction(@NonNull DialobSession dialobSession,
+  DialobSession hookAction(@NonNull DialobSession dialobSession,
                   @NonNull Command<?> update,
-                  Consumer<Command<?>> delegate);
+                  Function<Command<?>, DialobSession> delegate);
 }

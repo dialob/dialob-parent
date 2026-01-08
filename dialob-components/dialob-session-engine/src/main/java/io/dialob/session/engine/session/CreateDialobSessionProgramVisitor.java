@@ -314,7 +314,7 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     if (activePage == null) {
       updates.add(CommandFactory.nextPage());
     }
-    this.dialobSession = new DialobSession(tenantId, sessionId, null, language, items, prototypeItems, valueSets, errors, errorPrototypes, completed, opened, lastAnswer);
+    this.dialobSession = DialobSession.of(tenantId, sessionId, 0, null, lastAnswer, completed, opened, language, items, prototypeItems, valueSets, errors, errorPrototypes);
   }
 
 }

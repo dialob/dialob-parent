@@ -86,12 +86,16 @@ public class StateReader {
     return null;
   }
 
+  public Instant readDate() throws IOException {
+    long epoch = readLong();
+    long nano = readInt();
+    return Instant.ofEpochSecond(epoch, nano);
+  }
+
   @Nullable
   public Instant readNullableDate() throws IOException {
     if (readBool()) {
-      long epoch = readLong();
-      long nano = readInt();
-      return Instant.ofEpochSecond(epoch, nano);
+      return readDate();
     }
     return null;
   }

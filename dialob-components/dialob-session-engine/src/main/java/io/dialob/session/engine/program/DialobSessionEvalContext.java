@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 public class DialobSessionEvalContext implements EvalContext {
 
-  private static final DialobSessionUpdateHook DEFAULT_DIALOB_SESSION_EVAL_HOOKS = (dialobSession, update, delegate) -> delegate.accept(update);
+  private static final DialobSessionUpdateHook DEFAULT_DIALOB_SESSION_EVAL_HOOKS = (dialobSession, update, delegate) -> delegate.apply(update);
 
   private final DialobSessionEvalContext parent;
 
@@ -120,7 +120,10 @@ public class DialobSessionEvalContext implements EvalContext {
 
   public void applyCommand(@NonNull Command<?> applyCommand) {
     matchPartialCommands(applyCommand)
-      .forEach(command -> dialobSessionUpdateHook.hookAction(dialobSession, command, c -> this.dialobSession.applyUpdate(this, c)));
+      .reduce(this.dialobSession,
+        (DialobSession session, Command<?> command) -> dialobSessionUpdateHook.hookAction(session, command, c -> session.applyUpdate(this, c)),
+        (session1, session2) -> session2
+      );
   }
 
   @Override
