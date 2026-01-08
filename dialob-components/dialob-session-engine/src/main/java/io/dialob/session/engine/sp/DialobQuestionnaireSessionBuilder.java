@@ -45,7 +45,6 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionBuilder {
 
-  private final QuestionnaireEventPublisher eventPublisher;
 
   private final DialobProgramService dialobProgramService;
 
@@ -53,7 +52,7 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
 
   private final DialobSessionEvalContextFactory sessionContextFactory;
 
-  private final AsyncFunctionInvoker asyncFunctionInvoker;
+  private final DialobQuestionnaireSessionServiceFacade serviceFacade;
 
   public DialobQuestionnaireSessionBuilder(@NonNull QuestionnaireEventPublisher eventPublisher,
                                            @NonNull DialobProgramService dialobProgramService,
@@ -62,11 +61,10 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
                                            @NonNull DialobSessionEvalContextFactory sessionContextFactory,
                                            @NonNull AsyncFunctionInvoker asyncFunctionInvoker) {
     super(formFinder);
-    this.eventPublisher = requireNonNull(eventPublisher);
+    this.serviceFacade = new DialobQuestionnaireSessionServiceFacade(eventPublisher, sessionContextFactory, asyncFunctionInvoker);
     this.dialobProgramService = requireNonNull(dialobProgramService);
     this.questionnaireSessionSaveService = requireNonNull(questionnaireSessionSaveService);
     this.sessionContextFactory = requireNonNull(sessionContextFactory);
-    this.asyncFunctionInvoker = requireNonNull(asyncFunctionInvoker);
   }
 
   @NonNull
@@ -116,9 +114,7 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
     try {
       dialobQuestionnaireSession = applyFormSettings(
         DialobQuestionnaireSession.builder()
-          .eventPublisher(eventPublisher)
-          .sessionContextFactory(sessionContextFactory)
-          .asyncFunctionInvoker(asyncFunctionInvoker)
+          .serviceFacade(serviceFacade)
           .dialobSession(dialobSession)
           .dialobProgram(dialobProgram)
           .rev(questionnaire.getRev())

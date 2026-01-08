@@ -21,12 +21,10 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.session.model.*;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.Instant;
 import java.util.List;
@@ -41,16 +39,12 @@ class DialobQuestionnaireSessionTest {
 
   @Test
   void testObjectVisibilityWhenShowInactiveIsFalse() {
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock();
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock();
-    DialobSession dialobSession = Mockito.mock();
-    DialobProgram dialobProgram = Mockito.mock();
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock();
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobSession dialobSession = mock();
+    DialobProgram dialobProgram = mock();
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -60,7 +54,7 @@ class DialobQuestionnaireSessionTest {
 
     Predicate<SessionObject> predicate = dialobQuestionnaireSession.getIsVisiblePredicate();
 
-    SessionObject sessionObject = Mockito.mock();
+    SessionObject sessionObject = mock();
 
     when(sessionObject.isActive()).thenReturn(false);
     when(sessionObject.isDisplayItem()).thenReturn(false);
@@ -106,16 +100,12 @@ class DialobQuestionnaireSessionTest {
 
   @Test
   void testObjectVisibilityWhenShowInactiveIsTrue() {
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobSession dialobSession = mock(DialobSession.class);
+    DialobProgram dialobProgram = mock(DialobProgram.class);
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -125,7 +115,7 @@ class DialobQuestionnaireSessionTest {
 
     Predicate<SessionObject> predicate = dialobQuestionnaireSession.getIsVisiblePredicate();
 
-    SessionObject sessionObject = Mockito.mock(SessionObject.class);
+    SessionObject sessionObject = mock(SessionObject.class);
 
     when(sessionObject.isActive()).thenReturn(false);
     when(sessionObject.isDisplayItem()).thenReturn(false);
@@ -170,16 +160,12 @@ class DialobQuestionnaireSessionTest {
 
   @Test
   void testObjectVisibilityWhenQuestionClientVisiblityIsAll() {
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobSession dialobSession = mock();
+    DialobProgram dialobProgram = mock();
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession dialobQuestionnaireSession = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -189,7 +175,7 @@ class DialobQuestionnaireSessionTest {
 
     Predicate<SessionObject> predicate = dialobQuestionnaireSession.getIsVisiblePredicate();
 
-    SessionObject sessionObject = Mockito.mock(SessionObject.class);
+    SessionObject sessionObject = mock(SessionObject.class);
 
     when(sessionObject.isActive()).thenReturn(false);
     when(sessionObject.isDisplayItem()).thenReturn(false);
@@ -242,8 +228,7 @@ class DialobQuestionnaireSessionTest {
   @Test
   void shouldPersistRowGroupContainerIntoAnswers() {
     // given
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
+    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
 
     ItemId id2 = IdUtils.toId("rowg");
     ItemState rowItemState = ItemState.builder()
@@ -299,13 +284,11 @@ class DialobQuestionnaireSessionTest {
       List.of(),
       List.of(),
       List.of(), List.of());
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    DialobProgram dialobProgram = mock(DialobProgram.class);
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -335,8 +318,7 @@ class DialobQuestionnaireSessionTest {
   @Test
   void shouldNotHandleAnswersOnCompletedQuestionnaires() {
     // given
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
+    QuestionnaireEventPublisher eventPublisher = mock(QuestionnaireEventPublisher.class);
 
     ItemId id2 = IdUtils.toId("rowg");
     ItemState rowItemState = ItemState.builder()
@@ -398,13 +380,11 @@ class DialobQuestionnaireSessionTest {
       List.of());
     dialobSession.complete();
 
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    DialobProgram dialobProgram = mock(DialobProgram.class);
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -430,26 +410,24 @@ class DialobQuestionnaireSessionTest {
   @Test
   void shouldReturnVisibleItems() {
     // given
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock(DialobProgram.class);
 
-    ItemState item1 = Mockito.mock(ItemState.class);
+    ItemState item1 = mock(ItemState.class);
     when(item1.id()).thenReturn(IdUtils.toId("item1"));
     when(item1.type()).thenReturn("text");
     when(item1.isActive()).thenReturn(true);
     when(item1.isDisplayItem()).thenReturn(true);
     when(item1.isDisabled()).thenReturn(false);
 
-    ItemState item2 = Mockito.mock(ItemState.class);
+    ItemState item2 = mock(ItemState.class);
     when(item2.id()).thenReturn(IdUtils.toId("item2"));
     when(item2.type()).thenReturn("text");
     when(item2.isActive()).thenReturn(false);
     when(item2.isDisplayItem()).thenReturn(true);
     when(item2.isDisabled()).thenReturn(false);
 
-    ItemState item3 = Mockito.mock(ItemState.class);
+    ItemState item3 = mock(ItemState.class);
     when(item3.id()).thenReturn(IdUtils.toId("item3"));
     when(item3.type()).thenReturn("note");
     when(item3.isActive()).thenReturn(true);
@@ -469,9 +447,7 @@ class DialobQuestionnaireSessionTest {
 
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -490,26 +466,24 @@ class DialobQuestionnaireSessionTest {
   @Test
   void shouldReturnVisibleItemsWithDifferentVisibilities() {
     // given
-    QuestionnaireEventPublisher eventPublisher = Mockito.mock(QuestionnaireEventPublisher.class);
-    DialobSessionEvalContextFactory sessionContextFactory = Mockito.mock(DialobSessionEvalContextFactory.class);
-    DialobProgram dialobProgram = Mockito.mock(DialobProgram.class);
-    AsyncFunctionInvoker asyncFunctionInvoker = Mockito.mock(AsyncFunctionInvoker.class);
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock(DialobProgram.class);
 
-    ItemState activeItem = Mockito.mock(ItemState.class);
+    ItemState activeItem = mock(ItemState.class);
     when(activeItem.id()).thenReturn(IdUtils.toId("active"));
     when(activeItem.type()).thenReturn("text");
     when(activeItem.isActive()).thenReturn(true);
     when(activeItem.isDisplayItem()).thenReturn(true);
     when(activeItem.isDisabled()).thenReturn(false);
 
-    ItemState inactiveItem = Mockito.mock(ItemState.class);
+    ItemState inactiveItem = mock(ItemState.class);
     when(inactiveItem.id()).thenReturn(IdUtils.toId("inactive"));
     when(inactiveItem.type()).thenReturn("text");
     when(inactiveItem.isActive()).thenReturn(false);
     when(inactiveItem.isDisplayItem()).thenReturn(true);
     when(inactiveItem.isDisabled()).thenReturn(false);
 
-    ItemState disabledItem = Mockito.mock(ItemState.class);
+    ItemState disabledItem = mock(ItemState.class);
     when(disabledItem.id()).thenReturn(IdUtils.toId("disabled"));
     when(disabledItem.type()).thenReturn("text");
     when(disabledItem.isActive()).thenReturn(true);
@@ -531,9 +505,7 @@ class DialobQuestionnaireSessionTest {
 
     // Case 1: ONLY_ENABLED
     DialobQuestionnaireSession sessionOnlyEnabled = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -546,9 +518,7 @@ class DialobQuestionnaireSessionTest {
 
     // Case 2: SHOW_DISABLED
     DialobQuestionnaireSession sessionShowDisabled = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
@@ -561,9 +531,7 @@ class DialobQuestionnaireSessionTest {
 
     // Case 3: ALL
     DialobQuestionnaireSession sessionAll = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
       .rev(questionnaire.getRev())
