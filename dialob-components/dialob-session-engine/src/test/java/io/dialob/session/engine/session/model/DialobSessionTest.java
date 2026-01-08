@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.SessionUpdateCommand;
@@ -23,8 +24,9 @@ import io.dialob.session.engine.session.command.Trigger;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -33,6 +35,27 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 class DialobSessionTest {
 
+  static DialobSession dialobSessionOf(
+    List<ItemState> itemStates)
+  {
+    var itemStatesMap = new HashMap<ItemId, ItemState>();
+    itemStates.forEach(item -> itemStatesMap.put(item.id(), item));
+    return new DialobSession(
+      Objects.requireNonNullElseGet("tenant", ResysSecurityConstants.DEFAULT_TENANT::id),
+      "1",
+      0,
+      "2",
+      null,
+      null,
+      null,
+      "fi",
+      itemStatesMap,
+      new HashMap<>(),
+      new HashMap<>(),
+      new HashMap<>(),
+      new HashMap<>()
+    );
+  }
   public static final ItemState ITEM_STATE;
 
   static {
@@ -54,7 +77,7 @@ class DialobSessionTest {
 
   @Test
   void noopCommandShouldNotTriggerAnyChanges() {
-    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(), List.of(), List.of(), List.of(), Collections.emptyList());
+    DialobSession session = dialobSessionOf(List.of());
     EvalContext context = Mockito.mock(EvalContext.class);
     Command<?> command = new SessionUpdateCommand() {
 
@@ -76,7 +99,7 @@ class DialobSessionTest {
 
   @Test
   void newItemsShouldTriggerUpdate() {
-    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(), List.of(), List.of(), List.of(), Collections.emptyList());
+    DialobSession session = dialobSessionOf(List.of());
     EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
@@ -99,7 +122,7 @@ class DialobSessionTest {
 
   @Test
   void removedItemsShouldTriggerUpdate() {
-    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(ITEM_STATE), List.of(), List.of(), List.of(), Collections.emptyList());
+    DialobSession session = dialobSessionOf(List.of(ITEM_STATE));
     EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
@@ -122,7 +145,7 @@ class DialobSessionTest {
 
   @Test
   void itemUpdateShouldTriggerUpdate() {
-    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(ITEM_STATE), List.of(), List.of(), List.of(), Collections.emptyList());
+    DialobSession session = dialobSessionOf(List.of(ITEM_STATE));
     EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 

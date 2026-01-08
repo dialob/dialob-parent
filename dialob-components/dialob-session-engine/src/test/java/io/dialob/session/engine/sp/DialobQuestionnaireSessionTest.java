@@ -20,6 +20,7 @@ import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
+import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.session.model.*;
 import org.assertj.core.groups.Tuple;
@@ -27,7 +28,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -36,6 +39,33 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class DialobQuestionnaireSessionTest {
+
+  static DialobSession dialobSessionOf(
+    Instant lastUpdate,
+    Instant opened,
+    List<ItemState> itemStates) {
+    var itemStatesMap = new HashMap<ItemId, ItemState>();
+    var itemPrototypesMap = new HashMap<ItemId, ItemState>();
+    var valueSetStatesMap = new HashMap<ValueSetId, ValueSetState>();
+    var errorStatesMap = new HashMap<ErrorId, ErrorState>();
+    var errorPrototypesMap = new HashMap<ErrorId, ErrorState>();
+    itemStates.forEach(item -> itemStatesMap.put(item.id(), item));
+    return new DialobSession(
+      "tenant",
+      "id",
+      0,
+      "rev",
+      lastUpdate,
+      null,
+      opened,
+      "fi",
+      itemStatesMap,
+      itemPrototypesMap,
+      valueSetStatesMap,
+      errorStatesMap,
+      errorPrototypesMap
+    );
+  }
 
   @Test
   void testObjectVisibilityWhenShowInactiveIsFalse() {
@@ -274,16 +304,10 @@ class DialobQuestionnaireSessionTest {
       .activePage(null)
       .build();
 
-    DialobSession dialobSession = DialobSession.of(
-      "tenant",
-      "id",
-      0,
-      "rev", null, null, null,
-      "fi",
-      List.of(rowItemState, rowItemState2, rowItemState3),
-      List.of(),
-      List.of(),
-      List.of(), List.of());
+    DialobSession dialobSession = dialobSessionOf(
+      null, null,
+      List.of(rowItemState, rowItemState2, rowItemState3)
+    );
     DialobProgram dialobProgram = mock(DialobProgram.class);
     var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
@@ -367,17 +391,10 @@ class DialobQuestionnaireSessionTest {
     var opened = Instant.ofEpochMilli(1L);
     var lastAnswer = Instant.ofEpochMilli(2L);
 
-    DialobSession dialobSession = DialobSession.of(
-      "tenant",
-      "id",
-      0,
-      "rev", lastAnswer, null, opened,
-      "fi",
-      List.of(rowItemState, rowItemState2, rowItemState3),
-      List.of(),
-      List.of(),
-      List.of(),
-      List.of());
+    DialobSession dialobSession = dialobSessionOf(
+      lastAnswer, opened,
+      List.of(rowItemState, rowItemState2, rowItemState3)
+    );
     dialobSession.complete();
 
     DialobProgram dialobProgram = mock(DialobProgram.class);
@@ -434,16 +451,10 @@ class DialobQuestionnaireSessionTest {
     when(item3.isDisplayItem()).thenReturn(true);
     when(item3.isDisabled()).thenReturn(false);
 
-    DialobSession dialobSession = DialobSession.of(
-      "tenant",
-      "id",
-      0,
-      "rev", null, null, null,
-      "fi",
-      List.of(item1, item2, item3),
-      List.of(),
-      List.of(),
-      List.of(), List.of());
+    DialobSession dialobSession = dialobSessionOf(
+      null, null,
+      List.of(item1, item2, item3)
+    );
 
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
     DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
@@ -490,16 +501,10 @@ class DialobQuestionnaireSessionTest {
     when(disabledItem.isDisplayItem()).thenReturn(true);
     when(disabledItem.isDisabled()).thenReturn(true);
 
-    DialobSession dialobSession = DialobSession.of(
-      "tenant",
-      "id",
-      0,
-      "rev", null, null, null,
-      "fi",
-      List.of(activeItem, inactiveItem, disabledItem),
-      List.of(),
-      List.of(),
-      List.of(), List.of());
+    DialobSession dialobSession = dialobSessionOf(
+      null, null,
+      List.of(activeItem, inactiveItem, disabledItem)
+    );
 
     Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
 

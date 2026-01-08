@@ -20,7 +20,6 @@ import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
-import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.*;
@@ -190,58 +189,6 @@ public class DialobSession implements Serializable {
       valueSetStates,
       errorStates,
       errorPrototypes
-    );
-  }
-
-  public static DialobSession of(
-    String tenantId,
-    String id,
-    int asyncUpdateCount,
-    String revision,
-    Instant lastUpdate,
-    Instant completed,
-    Instant opened,
-    String language,
-    List<ItemState> itemStates,
-    List<ItemState> itemPrototypes,
-    List<ValueSetState> valueSetStates,
-    List<ErrorState> errorStates,
-    List<ErrorState> errorPrototypes)
-  {
-    var itemStatesMap = new HashMap<ItemId,ItemState>();
-    var itemPrototypesMap = new HashMap<ItemId,ItemState>();
-    var valueSetStatesMap = new HashMap<ValueSetId,ValueSetState>();
-    var errorStatesMap = new HashMap<ErrorId,ErrorState>();
-    var errorPrototypesMap = new HashMap<ErrorId,ErrorState>();
-    if (itemStates != null && !itemStates.isEmpty()) {
-      itemStates.forEach(item -> itemStatesMap.put(item.id(), item));
-    }
-    if (valueSetStates != null && !valueSetStates.isEmpty()) {
-      valueSetStates.forEach(item -> valueSetStatesMap.put(item.id(), item));
-    }
-    if (errorStates != null && !errorStates.isEmpty()) {
-      errorStates.forEach(item -> errorStatesMap.put(new ErrorId(item.itemId(), item.code()), item));
-    }
-    if (errorPrototypes != null && !errorPrototypes.isEmpty()) {
-      errorPrototypes.forEach(item -> errorPrototypesMap.put(new ErrorId(item.itemId(), item.code()), item));
-    }
-    if (itemPrototypes != null && !itemPrototypes.isEmpty()) {
-      itemPrototypes.forEach(prototype -> itemPrototypesMap.put(prototype.id(), prototype));
-    }
-    return new DialobSession(
-      Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id),
-      id,
-      asyncUpdateCount,
-      revision,
-      lastUpdate,
-      completed,
-      opened,
-      language,
-      itemStatesMap,
-      itemPrototypesMap,
-      valueSetStatesMap,
-      errorStatesMap,
-      errorPrototypesMap
     );
   }
 
