@@ -24,6 +24,7 @@ import io.dialob.session.engine.session.protobuf.StateReader;
 import io.dialob.session.engine.session.protobuf.StateWriter;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
+import io.dialob.session.engine.sp.DialobQuestionnaireSessionServiceFacade;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.noop.NoopTimer;
@@ -40,13 +41,9 @@ import java.util.Optional;
 @Slf4j
 public class QuestionnaireDialobSessionRedisSerializer implements RedisSerializer<DialobQuestionnaireSession> {
 
-  private final QuestionnaireEventPublisher eventPublisher;
+  private final DialobQuestionnaireSession.ServiceFacade serviceFacade;
 
   private final DialobProgramService dialobProgramService;
-
-  private final DialobSessionEvalContextFactory sessionContextFactory;
-
-  private final AsyncFunctionInvoker asyncFunctionInvoker;
 
   private final Timer serializationTimer;
 
@@ -60,10 +57,8 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
                                                    AsyncFunctionInvoker asyncFunctionInvoker,
                                                    @NonNull Optional<MeterRegistry> meterRegistry,
                                                    int bufferSize) {
-    this.eventPublisher = eventPublisher;
+    this.serviceFacade = new DialobQuestionnaireSessionServiceFacade(eventPublisher, sessionContextFactory, asyncFunctionInvoker);
     this.dialobProgramService = dialobProgramService;
-    this.sessionContextFactory = sessionContextFactory;
-    this.asyncFunctionInvoker = asyncFunctionInvoker;
     final NoopTimer noopTimer = new NoopTimer(null);
     this.serializationTimer = meterRegistry.map(registry -> Timer.builder("session.serialization.time").register(registry)).orElse(noopTimer);
     this.deserializationTimer = meterRegistry.map(registry -> Timer.builder("session.deserialization.time").register(registry)).orElse(noopTimer);
@@ -109,9 +104,7 @@ public class QuestionnaireDialobSessionRedisSerializer implements RedisSerialize
   @NonNull
   protected DialobQuestionnaireSession restoreSessionFrom(@NonNull StateReader input) throws IOException {
     DialobQuestionnaireSession.Builder builder = DialobQuestionnaireSession.builder()
-      .eventPublisher(eventPublisher)
-      .sessionContextFactory(sessionContextFactory)
-      .asyncFunctionInvoker(asyncFunctionInvoker)
+      .serviceFacade(serviceFacade)
       .readFrom(input);
     Questionnaire.Metadata metadata = builder.getMetadata();
     return builder

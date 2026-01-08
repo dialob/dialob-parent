@@ -23,14 +23,12 @@ import io.dialob.api.questionnaire.Error;
 import io.dialob.common.Constants;
 import io.dialob.questionnaire.service.api.FormActions;
 import io.dialob.questionnaire.service.api.FormActionsUpdatesCallback;
-import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.utils.ConversionUtil;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.FormActionsUpdatesItemsVisitor;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.ActionToCommandMapper;
@@ -57,9 +55,24 @@ import java.util.stream.Stream;
 import static io.dialob.session.engine.Utils.isQuestionType;
 
 @Slf4j
-@EqualsAndHashCode(exclude = {"eventPublisher", "state"})
+@EqualsAndHashCode(exclude = {"serviceFacade", "state"})
 @ToString
 public class DialobQuestionnaireSession implements QuestionnaireSession {
+
+  public interface ServiceFacade {
+    DialobSessionUpdater createDialobSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession, boolean activating);
+
+    EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor createAsyncFunctionCallVisitor(String sessionId);
+
+    void created(@NonNull String questionnaireId);
+
+    void opened(@NonNull String questionnaireId);
+
+    void completed(String tenantId, @NonNull String questionnaireId);
+
+    void actions(@NonNull String questionnaireId, @NonNull Actions actions);
+
+  }
 
   public enum State {
     NEW(false),
@@ -75,7 +88,6 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     }
   }
 
-
   private final String rev;
 
   private final DialobSession dialobSession;
@@ -88,17 +100,11 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   private final Questionnaire.Metadata metadata;
 
-  private final transient QuestionnaireEventPublisher eventPublisher;
-
-  private final transient DialobSessionEvalContextFactory sessionContextFactory;
-
-  private final transient AsyncFunctionInvoker asyncFunctionInvoker;
+  private final transient ServiceFacade serviceFacade;
 
   private DialobQuestionnaireSession(String rev, @NonNull DialobSession dialobSession, @NonNull DialobQuestionnaireSession dialobQuestionnaireSession) {
     this(
-      dialobQuestionnaireSession.eventPublisher,
-      dialobQuestionnaireSession.sessionContextFactory,
-      dialobQuestionnaireSession.asyncFunctionInvoker,
+      dialobQuestionnaireSession.serviceFacade,
       dialobSession,
       dialobQuestionnaireSession.dialobProgram,
       rev,
@@ -108,9 +114,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     );
   }
 
-  private DialobQuestionnaireSession(@NonNull QuestionnaireEventPublisher eventPublisher,
-                                     @NonNull DialobSessionEvalContextFactory sessionContextFactory,
-                                     @NonNull AsyncFunctionInvoker asyncFunctionInvoker,
+  private DialobQuestionnaireSession(@NonNull ServiceFacade serviceFacade,
                                      @NonNull DialobSession dialobSession,
                                      @NonNull DialobProgram dialobProgram,
                                      String rev,
@@ -119,9 +123,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
                                      @NonNull QuestionClientVisibility questionClientVisibility) {
     this.rev = rev;
     this.metadata = metadata;
-    this.eventPublisher = eventPublisher;
-    this.sessionContextFactory = sessionContextFactory;
-    this.asyncFunctionInvoker = asyncFunctionInvoker;
+    this.serviceFacade = serviceFacade;
     this.dialobSession = Objects.requireNonNull(dialobSession, "dialobSession may not be null");
     this.dialobProgram = dialobProgram;
     this.questionClientVisibility = questionClientVisibility;
@@ -179,11 +181,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   public static class Builder {
 
-    private QuestionnaireEventPublisher eventPublisher;
+    private Builder() {}
 
-    private DialobSessionEvalContextFactory sessionContextFactory;
-
-    private AsyncFunctionInvoker asyncFunctionInvoker;
+    private ServiceFacade serviceFacade;
 
     private String rev;
 
@@ -228,18 +228,8 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       return this;
     }
 
-    public Builder eventPublisher(QuestionnaireEventPublisher eventPublisher) {
-      this.eventPublisher = eventPublisher;
-      return this;
-    }
-
-    public Builder sessionContextFactory(DialobSessionEvalContextFactory sessionContextFactory) {
-      this.sessionContextFactory = sessionContextFactory;
-      return this;
-    }
-
-    public Builder asyncFunctionInvoker(AsyncFunctionInvoker asyncFunctionInvoker) {
-      this.asyncFunctionInvoker = asyncFunctionInvoker;
+    public Builder serviceFacade(ServiceFacade serviceFacade) {
+      this.serviceFacade = serviceFacade;
       return this;
     }
 
@@ -275,9 +265,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
     public DialobQuestionnaireSession build() {
       return new DialobQuestionnaireSession(
-        Objects.requireNonNull(eventPublisher, "eventPublisher is null"),
-        Objects.requireNonNull(sessionContextFactory, "sessionContextFactory is null"),
-        Objects.requireNonNull(asyncFunctionInvoker, "asyncFunctionInvoker is null"),
+        Objects.requireNonNull(serviceFacade, "serviceFacade is null"),
         dialobSession,
         dialobProgram,
         rev,
@@ -306,7 +294,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       MDC.put(Constants.QUESTIONNAIRE, getSessionId().orElse("new-session"));
       boolean revisionMatch = revision != null && revision.equals(prevRevision);
       LOGGER.debug("revision comparison: {} vs. {} == {}", revision,prevRevision, revisionMatch);
-      DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, state.get() == DialobQuestionnaireSession.State.ACTIVATING);
+      DialobSessionUpdater sessionUpdater = serviceFacade.createDialobSessionUpdater(dialobProgram, dialobSession, state.get() == DialobQuestionnaireSession.State.ACTIVATING);
       final FormActions formActions = new FormActions();
 
       final var commands = ActionToCommandMapper.toCommands(actions);
@@ -321,7 +309,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
           @Override
           public Optional<AsyncFunctionCallVisitor> visitAsyncFunctionCalls() {
-            return getSessionId().map(asyncFunctionInvoker::createVisitor);
+            return getSessionId().map(serviceFacade::createAsyncFunctionCallVisitor);
           }
         });
       // broadcast user actions to other nodes, but do not return user actions back to original client
@@ -353,7 +341,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
           .build())
         .build();
       if (actionsResult.isDidComplete()) {
-        getSessionId().ifPresent(sessionId -> eventPublisher.completed(getDialobSession().getTenantId(), sessionId));
+        getSessionId().ifPresent(sessionId -> serviceFacade.completed(getDialobSession().getTenantId(), sessionId));
       }
       return actionsResult;
     } finally {
@@ -632,7 +620,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
   protected void initialize() {
     // run initialization rules
-    getSessionId().ifPresent(eventPublisher::created);
+    getSessionId().ifPresent(serviceFacade::created);
   }
 
   public boolean activate() {
@@ -648,7 +636,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     // run activation rules
     dispatchActions(restoreActions);
     state.set(State.ACTIVE);
-    getSessionId().ifPresent(eventPublisher::opened);
+    getSessionId().ifPresent(serviceFacade::opened);
     return true;
   }
 
@@ -729,10 +717,10 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
 
 
   private void publishQuestionnaireActions(String nextRevision, List<Action> actionQueue) {
-    if (!actionQueue.isEmpty() && eventPublisher != null) {
+    if (!actionQueue.isEmpty()) {
       final Actions.Builder builder = new Actions.Builder().rev(nextRevision);
       actionQueue.stream().map(action -> new Action.Builder().from(action).serverEvent(true).build()).forEach(builder::addActions);
-      getSessionId().ifPresent(sessionId -> eventPublisher.actions(sessionId, builder.build()));
+      getSessionId().ifPresent(sessionId -> serviceFacade.actions(sessionId, builder.build()));
     }
   }
 
