@@ -114,6 +114,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
     TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () -> {
       publishConnectionEvent();
       sendFullForm();
+      return this;
     });
   }
 
@@ -196,7 +197,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
         List<Action> actions1 = actions.getActions();
         if (actions1 == null || actions1.isEmpty()) {
           LOGGER.info("Resource '{}' sent empty message.", id);
-          return;
+          return this;
         }
         LOGGER.info("Resource '{}' sent {} action(s)", id, actions1.size());
         for (final Action action : actions1) {
@@ -209,7 +210,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       } catch (IOException e) {
         LOGGER.info("unparseable message from client {} due error {}", id, e.getMessage());
         LOGGER.debug("message payload: {}", message.getPayload());
-        return;
+        return this;
       } catch (Exception e) {
         LOGGER.debug("Server side error,", e);
         actionList.add(createNotifyServerErrorAction(e));
@@ -224,13 +225,16 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
           .build();
         sendMessage(returnActions);
       }
+      return this;
     });
   }
 
   @Override
   public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) {
-    TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () ->
-      LOGGER.error("WebSocket transport error. {}", this.session.getId(), exception));
+    TenantContextHolderCurrentTenant.runInTenantContext(this.tenant, () -> {
+      LOGGER.error("WebSocket transport error. {}", this.session.getId(), exception);
+      return this;
+    });
   }
 
   @Override
@@ -239,6 +243,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
       LOGGER.debug("WebSocket connection closed {} status {}", this.session.getId(), closeStatus);
       publishDisconnectionEvent(closeStatus);
       this.session = null;
+      return this;
     });
   }
 

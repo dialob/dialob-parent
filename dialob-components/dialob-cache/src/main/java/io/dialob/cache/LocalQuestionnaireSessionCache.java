@@ -93,6 +93,7 @@ public class LocalQuestionnaireSessionCache implements QuestionnaireSessionCache
       if(!sessionCache.remove(sessionId, questionnaireSessionToEvict)) {
         LOGGER.warn("Could not evict session {}. New session appeared. rev = {}, revAfterCallback = {}", sessionId, rev, revAfterCallback);
       }
+      return questionnaireSessionToEvict;
     });
   }
 

@@ -19,6 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import org.slf4j.MDC;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class TenantContextHolderCurrentTenant implements CurrentTenant {
 
@@ -28,12 +29,12 @@ public class TenantContextHolderCurrentTenant implements CurrentTenant {
 
   protected TenantContextHolderCurrentTenant() {}
 
-  public static void runInTenantContext(@NonNull Tenant tenant, @NonNull Runnable runnable) {
+  public static <T> T runInTenantContext(@NonNull Tenant tenant, @NonNull Supplier<T> supplier) {
     Tenant originalTenant = TENANT_THREAD_LOCAL.get();
     TENANT_THREAD_LOCAL.set(Objects.requireNonNull(tenant));
     MDC.put(LoggingContextKeys.MDC_TENANT_ID_KEY, tenant.id());
     try {
-      runnable.run();
+      return supplier.get();
     } finally {
       if (originalTenant == null) {
         MDC.remove(LoggingContextKeys.MDC_TENANT_ID_KEY);
