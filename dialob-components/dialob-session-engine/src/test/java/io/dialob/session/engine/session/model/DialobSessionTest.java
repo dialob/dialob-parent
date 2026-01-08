@@ -54,11 +54,7 @@ class DialobSessionTest {
 
   @Test
   void noopCommandShouldNotTriggerAnyChanges() {
-    List<ItemState> items = List.of();
-    List<ItemState> prototypes = List.of();
-    List<ValueSetState> valueSets = List.of();
-    List<ErrorState> errors = List.of();
-    DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
+    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(), List.of(), List.of(), List.of(), Collections.emptyList());
     EvalContext context = Mockito.mock(EvalContext.class);
     Command<?> command = new SessionUpdateCommand() {
 
@@ -73,18 +69,14 @@ class DialobSessionTest {
         return target;
       }
     };
-    session.applyUpdate(context, command);
+    session = session.applyUpdate(context, command);
 
     verifyNoMoreInteractions(context);
   }
 
   @Test
   void newItemsShouldTriggerUpdate() {
-    List<ItemState> items = List.of();
-    List<ItemState> prototypes = List.of();
-    List<ValueSetState> valueSets = List.of();
-    List<ErrorState> errors = List.of();
-    DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
+    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(), List.of(), List.of(), List.of(), Collections.emptyList());
     EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
@@ -99,7 +91,7 @@ class DialobSessionTest {
         return new ItemStates.Builder().from(target).putItemStates(ITEM_STATE.id(), ITEM_STATE).build();
       }
     };
-    session.applyUpdate(context, command);
+    session = session.applyUpdate(context, command);
 
     verify(context).registerUpdate(any(ItemState.class), isNull());
     verifyNoMoreInteractions(context);
@@ -107,11 +99,7 @@ class DialobSessionTest {
 
   @Test
   void removedItemsShouldTriggerUpdate() {
-    List<ItemState> items = List.of(ITEM_STATE);
-    List<ItemState> prototypes = List.of();
-    List<ValueSetState> valueSets = List.of();
-    List<ErrorState> errors = List.of();
-    DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
+    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(ITEM_STATE), List.of(), List.of(), List.of(), Collections.emptyList());
     EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
@@ -126,7 +114,7 @@ class DialobSessionTest {
         return new ItemStates.Builder().build();
       }
     };
-    session.applyUpdate(context, command);
+    session = session.applyUpdate(context, command);
 
     verify(context).registerUpdate(isNull(), any(ItemState.class));
     verifyNoMoreInteractions(context);
@@ -134,11 +122,7 @@ class DialobSessionTest {
 
   @Test
   void itemUpdateShouldTriggerUpdate() {
-    List<ItemState> items = List.of(ITEM_STATE);
-    List<ItemState> prototypes = List.of();
-    List<ValueSetState> valueSets = List.of();
-    List<ErrorState> errors = List.of();
-    DialobSession session = new DialobSession("tenant", "1", "2", "fi", items, prototypes, valueSets, errors, Collections.emptyList(), null, null, null);
+    DialobSession session = DialobSession.of("tenant", "1", 0, "2", null, null, null, "fi", List.of(ITEM_STATE), List.of(), List.of(), List.of(), Collections.emptyList());
     EvalContext context = Mockito.mock();
     Command<?> command = new SessionUpdateCommand() {
 
@@ -165,7 +149,7 @@ class DialobSessionTest {
           .build()).build();
       }
     };
-    session.applyUpdate(context, command);
+    session = session.applyUpdate(context, command);
 
     verify(context).registerUpdate(any(ItemState.class), any(ItemState.class));
     verifyNoMoreInteractions(context);

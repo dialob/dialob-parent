@@ -47,6 +47,21 @@ public class StateWriter {
     return new StateWriter(CodedOutputStream.newInstance(bb));
   }
 
+  interface Writer<T> {
+    void write(@NonNull T value) throws IOException;
+  }
+
+  <T> StateWriter nullable(@Nullable T value, Writer<T> writer) throws IOException {
+    if (value == null) {
+      writeBool(false);
+    } else {
+      writeBool(true);
+      writer.write(value);
+    }
+    return this;
+  }
+
+
   public void writeString(String string) throws IOException {
     output.writeStringNoTag(string);
   }
@@ -90,41 +105,41 @@ public class StateWriter {
   }
 
   public void writeNullableString(@Nullable String string) throws IOException {
-    if (string == null) {
-      writeBool(false);
-    } else {
-      writeBool(true);
-      writeString(string);
-    }
+    nullable(string, this::writeString);
   }
 
   public void writeNullableDate(Instant date) throws IOException {
-    if (date == null) {
-      writeBool(false);
-    } else {
-      writeBool(true);
-      writeLong(date.getEpochSecond());
-      writeInt(date.getNano());
-    }
+    nullable(date, this::writeDate);
   }
 
-  public void writeNullableObjectValue(Object value) throws IOException {
-    final boolean present = value != null;
-    writeBool(present);
-    if (present) {
-      if (value instanceof String string) {
+  public void writeDate(Instant date) throws IOException {
+    writeLong(date.getEpochSecond());
+    writeInt(date.getNano());
+  }
+
+  public void writeNullableObjectValue(@Nullable Object value) throws IOException {
+    nullable(value, this::writeObjectValue);
+  }
+
+  public void writeObjectValue(Object value) throws IOException {
+    switch (value) {
+      case String string -> {
         write((byte) 1);
         writeString(string);
-      } else if (value instanceof BigInteger bigInteger) {
+      }
+      case BigInteger bigInteger -> {
         write((byte) 2);
         writeBigInteger(bigInteger);
-      } else if (value instanceof Boolean boolean1) {
+      }
+      case Boolean boolean1 -> {
         write((byte) 3);
         writeBool(boolean1);
-      } else if (value instanceof Double double1) {
+      }
+      case Double double1 -> {
         write((byte) 4);
         writeDouble(double1);
-      } else if (value instanceof List listValue) {
+      }
+      case List listValue -> {
         final int size = listValue.size();
         if (size == 0) {
           write((byte) 0x80); // empty list
@@ -143,9 +158,8 @@ public class StateWriter {
             writeBigInteger(i);
           }
         }
-      } else {
-        throw new RuntimeException(String.format("Unknown answer value: %s", value.getClass()));
       }
+      default -> throw new RuntimeException(String.format("Unknown answer value: %s", value.getClass()));
     }
   }
 
@@ -156,11 +170,10 @@ public class StateWriter {
   }
 
   public void writeNullableId(@Nullable ItemId id) throws IOException {
-    if (id == null) {
-      writeBool(false);
-      return;
-    }
-    writeBool(true);
+    nullable(id, this::writeId);
+  }
+
+  public void writeId(ItemId id) throws IOException {
     switch (id) {
       case ItemRef itemRef -> {
         write((byte) 1);
