@@ -47,6 +47,7 @@ public record DialobProgram(
   private static final long serialVersionUID = 2922819825920407874L;
 
   public DialobProgram {
+    // Make sure nested collections are immutable
     inputUpdates = inputUpdates.entrySet().stream().map(
       entry -> Map.entry(entry.getKey(), List.copyOf(entry.getValue()))
     ).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
