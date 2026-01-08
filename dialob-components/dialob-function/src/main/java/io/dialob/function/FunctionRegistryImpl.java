@@ -193,7 +193,10 @@ class FunctionRegistryImpl implements FunctionRegistry {
     final Tenant tenant = currentTenant.get();
     try {
       taskExecutor.execute(() -> {
-        TenantContextHolderCurrentTenant.runInTenantContext(tenant, () -> invokeFunction(callback, functionName, args));
+        TenantContextHolderCurrentTenant.runInTenantContext(tenant, () -> {
+          invokeFunction(callback, functionName, args);
+          return this;
+        });
       });
     } catch (TaskRejectedException taskRejectedException) {
       LOGGER.warn("Function evaluation failed: {}", taskRejectedException.getMessage());

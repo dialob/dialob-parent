@@ -50,6 +50,7 @@ public class UpdateQuestionnaireInCacheOnActionsEventHandler {
         questionnaireCache.put(questionnaireId, questionnaire);
         LOGGER.debug("Updated questionnaire {} in cache", questionnaireId);
       }
+      return this;
     });
   }
 

@@ -41,24 +41,26 @@ class LocalQuestionnaireSessionCacheTest {
   @Test
   void shouldReturnNullWhenQuestionnaireIsNotFound() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
-    Assertions.assertNull(cache.get("q1"));
-    Assertions.assertNull(cache.get("q1", Questionnaire.class));
-    Assertions.assertNotNull(cache.get("q1", () -> "1"));
+    assertNull(cache.get("q1"));
+    assertNull(cache.get("q1", Questionnaire.class));
+    assertNotNull(cache.get("q1", () -> "1"));
   }
 
   @Test
   void shouldEvictSessionWhenThereIsPersistenceConflict() {
     LocalQuestionnaireSessionCache cache = new LocalQuestionnaireSessionCache(Constants.SESSION_CACHE_NAME);
-    Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback = mock(Function.class);
+    Function<QuestionnaireSession,QuestionnaireSession> beforeCloseCallback = mock();
     when(beforeCloseCallback.apply(any())).thenThrow(DocumentConflictException.class);
     var q = mock(QuestionnaireSession.class);
     when(q.getSessionId()).thenReturn(Optional.of("123"));
     when(q.getTenantId()).thenReturn("T12");
     when(q.isActive()).thenReturn(true);
+
     cache.put(q);
-    Assertions.assertNotNull(cache.get("123"));
+    assertNotNull(cache.get("123"));
     cache.evict("123", beforeCloseCallback);
-    Assertions.assertNull(cache.get("123"));
+
+    assertNull(cache.get("123"));
   }
 
   @Test
