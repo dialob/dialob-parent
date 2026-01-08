@@ -257,29 +257,17 @@ public class DialobSession implements Serializable {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
-
     return switch (command) {
       case ItemUpdateCommand itemUpdateCommand -> {
-        ItemId itemId = itemUpdateCommand.targetId();
-        // TODO scope?
-        EvalContext context = createScopedEvalContext(evalContext, itemId);
-
-        applyItemUpdateCommand(context, itemUpdateCommand);
-        yield updated();
+        EvalContext context = createScopedEvalContext(evalContext, itemUpdateCommand.targetId());
+        yield applyItemUpdateCommand(context, itemUpdateCommand).updated();
       }
       case ErrorUpdateCommand errorUpdateCommand -> {
         EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.targetId().itemId());
-        applyErrorUpdateCommand(context, errorUpdateCommand);
-        yield updated();
+        yield applyErrorUpdateCommand(context, errorUpdateCommand).updated();
       }
-      case ValueSetUpdateCommand valueSetCommand -> {
-        applyUpdateValueSetCommand(evalContext, valueSetCommand);
-        yield updated();
-      }
-      case SessionUpdateCommand updateCommand -> {
-        applySessionUpdateCommand(evalContext, updateCommand);
-        yield updated();
-      }
+      case ValueSetUpdateCommand valueSetCommand -> applyUpdateValueSetCommand(evalContext, valueSetCommand).updated();
+      case SessionUpdateCommand updateCommand -> applySessionUpdateCommand(evalContext, updateCommand).updated();
       default -> {
         LOGGER.warn("Do not know how to apply command: {}", command);
         yield this;
@@ -301,12 +289,13 @@ public class DialobSession implements Serializable {
   public EvalContext createScope(@NonNull EvalContext evalContext, ItemId itemId) {
     var scopeItems = new ArrayList<>(evalContext
       .getItemState(itemId)
-      .map(itemState -> itemState.items()).orElseGet(Collections::emptyList));
+      .map(ItemState::items)
+      .orElseGet(Collections::emptyList));
     scopeItems.add(itemId);
     return evalContext.withScope(Scope.of(itemId, scopeItems));
   }
 
-  private void applySessionUpdateCommand(EvalContext evalContext, SessionUpdateCommand command) {
+  private DialobSession applySessionUpdateCommand(EvalContext evalContext, SessionUpdateCommand command) {
     final var oldStates = new ItemStates.Builder()
       .putAllItemStates(itemStates())
       .putAllErrorStates(errorStates())
@@ -347,9 +336,10 @@ public class DialobSession implements Serializable {
       evalContext.registerUpdate(errorState.leftValue(), errorState.rightValue());
       errorStates.put(errorId, errorState.leftValue());
     }));
+    return this;
   }
 
-  private void applyUpdateValueSetCommand(EvalContext evalContext, ValueSetUpdateCommand updateCommand) {
+  private DialobSession applyUpdateValueSetCommand(EvalContext evalContext, ValueSetUpdateCommand updateCommand) {
     // alias 'answer' to error's target item.
     // TODO should be bound to command in more generic way
     valueSetStates.computeIfPresent(updateCommand.targetId(), (key, state) -> {
@@ -360,9 +350,10 @@ public class DialobSession implements Serializable {
       evalContext.registerUpdate(updatedState, state);
       return updatedState;
     });
+    return this;
   }
 
-  private void applyErrorUpdateCommand(EvalContext evalContext, ErrorUpdateCommand updateCommand) {
+  private DialobSession applyErrorUpdateCommand(EvalContext evalContext, ErrorUpdateCommand updateCommand) {
     // alias 'answer' to error's target item.
     // TODO should be bound to command in more generic way
     errorStates.computeIfPresent(updateCommand.targetId(), (key, state) -> {
@@ -373,11 +364,11 @@ public class DialobSession implements Serializable {
       evalContext.registerUpdate(updatedState, state);
       return updatedState;
     });
+    return this;
   }
 
-  private void applyItemUpdateCommand(EvalContext evalContext, ItemUpdateCommand updateCommand) {
+  private DialobSession applyItemUpdateCommand(EvalContext evalContext, ItemUpdateCommand updateCommand) {
     itemStates.computeIfPresent(updateCommand.targetId(), (key, state) -> {
-//      LOGGER.debug("Execute command: {}", updateCommand);
       final ItemState updatedState = updateCommand.update(evalContext, state);
       updateCommand.triggers().stream()
         .flatMap(trigger -> trigger.apply(state, updatedState))
@@ -391,6 +382,7 @@ public class DialobSession implements Serializable {
       }
       return updatedState;
     });
+    return this;
   }
 
   protected DialobSession updated() {
