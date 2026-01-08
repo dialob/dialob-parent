@@ -21,7 +21,6 @@ import io.dialob.session.engine.session.model.ErrorId;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.ValueSetId;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-@Value.Enclosing
 public class Triggers {
 
   public static final Event ACTIVE_PAGE_UPDATED_EVENT = ActivePageUpdatedEvent.instance();
