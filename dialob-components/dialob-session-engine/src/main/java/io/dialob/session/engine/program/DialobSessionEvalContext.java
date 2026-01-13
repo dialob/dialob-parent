@@ -43,7 +43,7 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private final FunctionRegistry functionRegistry;
 
-  private final SessionFacade dialobSession;
+  private SessionFacade dialobSession;
 
   private final Consumer<Event> updatesConsumer;
 
@@ -66,6 +66,8 @@ public class DialobSessionEvalContext implements EvalContext {
   private final DialobSessionUpdateHook<SessionFacade> dialobSessionUpdateHook;
 
   private String originalLanguage;
+
+  private final List<PostProcessor> postProcessors = new ArrayList<>();
 
   DialobSessionEvalContext(
     @NonNull FunctionRegistry functionRegistry,
@@ -119,12 +121,14 @@ public class DialobSessionEvalContext implements EvalContext {
     return Stream.of(command);
   }
 
-  public SessionFacade applyCommand(@NonNull Command<?> applyCommand) {
-    return matchPartialCommands(applyCommand)
+  public EvalContext applyCommand(@NonNull Command<?> applyCommand) {
+    this.dialobSession = matchPartialCommands(applyCommand)
       .reduce(this.dialobSession,
         (SessionFacade session, Command<?> command) -> dialobSessionUpdateHook.hookAction(session, command, c -> (SessionFacade) session.applyCommand(this, c)),
         (session1, session2) -> session2
       );
+    postProcessors.forEach(postProcessor -> postProcessor.postProcess(this));
+    return this;
   }
 
   @Override
@@ -332,12 +336,21 @@ public class DialobSessionEvalContext implements EvalContext {
   }
 
   @Override
+  public void pushPostProcessor(PostProcessor postProcessor) {
+    this.postProcessors.add(postProcessor);
+  }
+
+  @Override
   public String queueAsyncFunctionCall(AsyncFunctionCall asyncFunctionCall) {
     return asyncFunctionCall.getTargetId().map(itemId -> {
       pendingUpdates.put(itemId, asyncFunctionCall
-        .withId(dialobSession.generateUpdateId()));
+        .withId(generateUpdateId()));
       return IdUtils.toString(itemId);
     }).orElse(null);
+  }
+
+  private String generateUpdateId() {
+    return UUID.randomUUID().toString();
   }
 
   @Override

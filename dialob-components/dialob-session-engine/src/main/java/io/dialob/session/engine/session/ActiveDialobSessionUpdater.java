@@ -18,7 +18,6 @@ package io.dialob.session.engine.session;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.DialobSessionEvalContext;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
@@ -37,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
 
   public interface ContextProvider {
-    DialobSessionEvalContext createDialobSessionEvalContext(@NonNull Consumer<Event> updatesConsumer);
+    EvalContext createEvalContext(@NonNull Consumer<Event> updatesConsumer);
   }
 
   private final ContextProvider contextProvider;
@@ -57,22 +56,22 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
 
   @Override
   public Consumer<EvalContext.UpdatedItemsVisitor> applyCommands(@NonNull Iterable<Command<?>> commands) {
-    var evalContext = createEvalContext();
+    var context = createEvalContext();
     commands.forEach(this::queueCommand);
 
     // Execute commands in the evaluation queue
     while (!evalQueue.isEmpty()) {
       var command = evalQueue.removeFirst(); // FIFO queue processing
       updatedCommands.add(command);
-      evalContext.applyCommand(command);
+      context = context.applyCommand(command);
     }
     updatedCommands.clear();
     LOGGER.debug("Update completed.");
-    return evalContext::accept;
+    return context::accept;
   }
 
-  protected DialobSessionEvalContext createEvalContext() {
-    return contextProvider.createDialobSessionEvalContext(this::queueUpdate);
+  protected EvalContext createEvalContext() {
+    return contextProvider.createEvalContext(this::queueUpdate);
   }
 
   private void queueUpdate(@NonNull Event event) {

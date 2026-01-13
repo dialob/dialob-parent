@@ -20,7 +20,6 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.FormItem;
@@ -133,15 +132,10 @@ class CreateDialobSessionProgramVisitorTest {
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
     assertTrue(dialobSession.prototypes().itemStates().containsKey(IdUtils.toId("rg.*")));
 
-
-
     assertEquals(BigInteger.ONE, dialobSession.getItemState(IdUtils.toId("rg.0.q1")).get().getValue());
     assertEquals(BigDecimal.valueOf(1.0), dialobSession.getItemState(IdUtils.toId("rg.0.q2")).get().getValue());
 
-    EvalContext context = sessionUpdater.createEvalContext();
-
-//    ItemId test = context.mapTo(IdUtils.toId("q2"), true);
-    Optional<ItemState> test = context.findPrototype(IdUtils.toId("q2"));
+    var context = sessionUpdater.createEvalContext();
 
     assertEquals(BigDecimal.valueOf(3.0), ArrayReducerOperator.of(
       ArrayReducerOperator.DECIMAL_SUM,

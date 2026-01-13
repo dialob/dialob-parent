@@ -25,13 +25,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @Slf4j
-public class GenericCommandExecutor implements CommandExecutor {
-
-  private final DialobSession session;
-
-  public GenericCommandExecutor(DialobSession session) {
-    this.session = session;
-  }
+public record GenericCommandExecutor(
+  DialobSession session
+) implements CommandExecutor {
 
   /**
    * @param evalContext execution context
@@ -56,12 +52,9 @@ public class GenericCommandExecutor implements CommandExecutor {
         new SessionUpdateCommandExecutor().applyCommand(evalContext, updateCommand);
       default -> LOGGER.warn("Do not know how to apply command: {}", command);
     }
-    session().updated();
-    return session().withItemStates(evalContext.mutableItemStates().toItemStates());
-  }
-
-  private DialobSession session() {
-    return session;
+    return session()
+      .updated()
+      .withItemStates(evalContext.mutableItemStates().toItemStates());
   }
 
   private EvalContext createScopedEvalContext(@NonNull EvalContext evalContext, ItemId itemId) {
