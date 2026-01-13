@@ -20,7 +20,6 @@ import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
-import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.session.model.*;
 import org.assertj.core.groups.Tuple;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -59,11 +57,15 @@ class DialobQuestionnaireSessionTest {
       null,
       opened,
       "fi",
-      itemStatesMap,
-      itemPrototypesMap,
-      valueSetStatesMap,
-      errorStatesMap,
-      errorPrototypesMap
+      new MutableItemStates(new ItemStates.Builder()
+        .itemStates(itemStatesMap)
+        .errorStates(errorStatesMap)
+        .valueSetStates(valueSetStatesMap)
+        .build()),
+      new ItemStates.Builder()
+        .itemStates(itemPrototypesMap)
+        .errorStates(errorPrototypesMap)
+        .build()
     );
   }
 

@@ -49,11 +49,10 @@ class DialobSessionTest {
       null,
       null,
       "fi",
-      itemStatesMap,
-      new HashMap<>(),
-      new HashMap<>(),
-      new HashMap<>(),
-      new HashMap<>()
+      new MutableItemStates(new ItemStates.Builder()
+        .itemStates(itemStatesMap)
+        .build()),
+      ItemStates.EMPTY
     );
   }
   public static final ItemState ITEM_STATE;
