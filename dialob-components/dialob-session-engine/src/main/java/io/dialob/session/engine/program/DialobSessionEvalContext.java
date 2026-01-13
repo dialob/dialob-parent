@@ -330,4 +330,9 @@ public class DialobSessionEvalContext implements EvalContext {
       return IdUtils.toString(itemId);
     }).orElse(null);
   }
+
+  @Override
+  public MutableItemStates mutableItemStates() {
+    return dialobSession.mutableItemStates();
+  }
 }

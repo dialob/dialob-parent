@@ -15,8 +15,6 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
@@ -211,7 +209,7 @@ public class DialobSession implements Serializable {
   }
 
   public Optional<ItemState> getItemState(@NonNull ItemId id) {
-    return Optional.ofNullable(itemStates.itemStates().get(id));
+    return Optional.ofNullable(itemStates().get(id));
   }
 
   public void accept(DialobSessionVisitor visitor) {
@@ -219,13 +217,13 @@ public class DialobSession implements Serializable {
 
     // --
     visitor.visitItemStates().ifPresent(itemVisitor -> {
-      itemStates.itemStates().values().forEach(itemVisitor::visitItemState);
+      itemStates().values().forEach(itemVisitor::visitItemState);
       itemVisitor.end();
     });
 
     // --
     visitor.visitValueSetStates().ifPresent(valueSetVisitor -> {
-      itemStates.valueSetStates().values().forEach(valueSetVisitor::visitValueSetState);
+      valueSetStates().values().forEach(valueSetVisitor::visitValueSetState);
       valueSetVisitor.end();
 
     });
@@ -248,22 +246,23 @@ public class DialobSession implements Serializable {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
     }
-    return switch (command) {
+    switch (command) {
       case ItemUpdateCommand itemUpdateCommand -> {
         EvalContext context = createScopedEvalContext(evalContext, itemUpdateCommand.targetId());
-        yield applyItemUpdateCommand(context, itemUpdateCommand).updated();
+        new ItemUpdateCommandExecutor().applyCommand(context, itemUpdateCommand);
       }
       case ErrorUpdateCommand errorUpdateCommand -> {
         EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.targetId().itemId());
-        yield applyErrorUpdateCommand(context, errorUpdateCommand).updated();
+        new ErrorUpdateCommandExecutor().applyCommand(context, errorUpdateCommand);
       }
-      case ValueSetUpdateCommand valueSetCommand -> applyUpdateValueSetCommand(evalContext, valueSetCommand).updated();
-      case SessionUpdateCommand updateCommand -> applySessionUpdateCommand(evalContext, updateCommand).updated();
-      default -> {
-        LOGGER.warn("Do not know how to apply command: {}", command);
-        yield this;
-      }
-    };
+      case ValueSetUpdateCommand valueSetCommand ->
+        new ValueSetUpdateCommandExecutor().applyCommand(evalContext, valueSetCommand);
+      case SessionUpdateCommand updateCommand ->
+        new SessionUpdateCommandExecutor().applyCommand(evalContext, updateCommand);
+      default -> LOGGER.warn("Do not know how to apply command: {}", command);
+    }
+    updated();
+    return this;
   }
 
   public EvalContext createScopedEvalContext(@NonNull EvalContext evalContext, ItemId itemId) {
@@ -286,96 +285,6 @@ public class DialobSession implements Serializable {
     return evalContext.withScope(Scope.of(itemId, scopeItems));
   }
 
-  private DialobSession applySessionUpdateCommand(EvalContext evalContext, SessionUpdateCommand command) {
-    final var oldStates = new ItemStates.Builder()
-      .putAllItemStates(itemStates())
-      .putAllErrorStates(errorStates())
-      .putAllValueSetStates(valueSetStates())
-      .build();
-    final var newStates = command.update(evalContext, oldStates);
-    command.triggers().stream()
-      .flatMap(trigger -> trigger.apply(oldStates, newStates))
-      .forEach(event -> evalContext.getEventsConsumer().accept(event));
-
-    MapDifference<ErrorId,ErrorState> errorDiffs = Maps.difference(newStates.errorStates(), oldStates.errorStates());
-    MapDifference<ItemId,ItemState> itemStatesDiffs = Maps.difference(newStates.itemStates(), oldStates.itemStates());
-
-    // Removed
-    itemStatesDiffs.entriesOnlyOnRight().forEach((itemId, itemState) -> {
-      evalContext.registerUpdate(null, itemState);
-      itemStates.itemStates().remove(itemId);
-    });
-    errorDiffs.entriesOnlyOnRight().forEach(((errorId, errorState) -> {
-      evalContext.registerUpdate(null, errorState);
-      itemStates.errorStates().remove(errorId);
-    }));
-    // New ones
-    itemStatesDiffs.entriesOnlyOnLeft().forEach((itemId, itemState) -> {
-      evalContext.registerUpdate(itemState, null);
-      itemStates.itemStates().put(itemId, itemState);
-    });
-    errorDiffs.entriesOnlyOnLeft().forEach(((errorId, errorState) -> {
-      evalContext.registerUpdate(errorState, null);
-      itemStates.errorStates().put(errorId, errorState);
-    }));
-    // Updated
-    itemStatesDiffs.entriesDiffering().forEach((itemId, itemStateDiff) -> {
-      evalContext.registerUpdate(itemStateDiff.leftValue(), itemStateDiff.rightValue());
-      itemStates.itemStates().put(itemId, itemStateDiff.leftValue());
-    });
-    errorDiffs.entriesDiffering().forEach(((errorId, errorState) -> {
-      evalContext.registerUpdate(errorState.leftValue(), errorState.rightValue());
-      itemStates.errorStates().put(errorId, errorState.leftValue());
-    }));
-    return this;
-  }
-
-  private DialobSession applyUpdateValueSetCommand(EvalContext evalContext, ValueSetUpdateCommand updateCommand) {
-    // alias 'answer' to error's target item.
-    // TODO should be bound to command in more generic way
-    itemStates.valueSetStates().computeIfPresent(updateCommand.targetId(), (key, state) -> {
-      ValueSetState updatedState = updateCommand.update(evalContext, state);
-      updateCommand.triggers().stream()
-        .flatMap(trigger -> trigger.apply(state, updatedState))
-        .forEach(event -> evalContext.getEventsConsumer().accept(event));
-      evalContext.registerUpdate(updatedState, state);
-      return updatedState;
-    });
-    return this;
-  }
-
-  private DialobSession applyErrorUpdateCommand(EvalContext evalContext, ErrorUpdateCommand updateCommand) {
-    // alias 'answer' to error's target item.
-    // TODO should be bound to command in more generic way
-    itemStates.errorStates().computeIfPresent(updateCommand.targetId(), (key, state) -> {
-      ErrorState updatedState = updateCommand.update(evalContext, state);
-      updateCommand.triggers().stream()
-        .flatMap(trigger -> trigger.apply(state, updatedState))
-        .forEach(event -> evalContext.getEventsConsumer().accept(event));
-      evalContext.registerUpdate(updatedState, state);
-      return updatedState;
-    });
-    return this;
-  }
-
-  private DialobSession applyItemUpdateCommand(EvalContext evalContext, ItemUpdateCommand updateCommand) {
-    itemStates.itemStates().computeIfPresent(updateCommand.targetId(), (key, state) -> {
-      final ItemState updatedState = updateCommand.update(evalContext, state);
-      updateCommand.triggers().stream()
-        .flatMap(trigger -> trigger.apply(state, updatedState))
-        .forEach(event -> evalContext.getEventsConsumer().accept(event));
-
-      if (state.isDisplayItem()) {
-        // If update command is SetAnswer, skip update feedback to ui.
-        if (!(updateCommand instanceof SetAnswer)) {
-          evalContext.registerUpdate(updatedState, state);
-        }
-      }
-      return updatedState;
-    });
-    return this;
-  }
-
   protected DialobSession updated() {
     lastUpdate = Instant.now();
     if (opened == null) {
@@ -387,7 +296,7 @@ public class DialobSession implements Serializable {
   }
 
   public Optional<ErrorState> getErrorState(ItemId itemId, String code) {
-    return Optional.ofNullable(itemStates.errorStates().get(new ErrorId(itemId, code)));
+    return Optional.ofNullable(errorStates().get(new ErrorId(itemId, code)));
   }
 
   @NonNull
@@ -423,23 +332,23 @@ public class DialobSession implements Serializable {
   }
 
   @NonNull
-  public Map<ItemId, ItemState> itemStates() {
+  private Map<ItemId, ItemState> itemStates() {
     return Collections.unmodifiableMap(itemStates.itemStates());
   }
 
   @NonNull
-  public Map<ValueSetId, ValueSetState> valueSetStates() {
+  private Map<ValueSetId, ValueSetState> valueSetStates() {
     return Collections.unmodifiableMap(itemStates.valueSetStates());
   }
 
   @NonNull
-  public Map<ErrorId, ErrorState> errorStates() {
+  private Map<ErrorId, ErrorState> errorStates() {
     return Collections.unmodifiableMap(itemStates.errorStates());
   }
 
   @NonNull
   public Optional<ValueSetState> getValueSetState(ValueSetId id) {
-    return Optional.of(itemStates.valueSetStates().get(id));
+    return Optional.of(valueSetStates().get(id));
   }
 
   public Optional<ItemState> findPrototype(ItemId itemId) {
@@ -453,7 +362,7 @@ public class DialobSession implements Serializable {
 
   @NonNull
   private Stream<Map.Entry<ItemId,ItemState>> findMatchingItemsEntries(ItemId partialItemId) {
-    return itemStates.itemStates()
+    return itemStates()
       .entrySet()
       .stream()
       .filter(item -> IdUtils.matches(partialItemId, item.getKey()));
@@ -461,7 +370,7 @@ public class DialobSession implements Serializable {
 
   @NonNull
   private Stream<Map.Entry<ErrorId,ErrorState>> findMatchingErrorEntries(ErrorId partialErrorId) {
-    return itemStates.errorStates()
+    return errorStates()
       .entrySet()
       .stream()
       .filter(item -> IdUtils.matches(partialErrorId, item.getKey()));
@@ -496,5 +405,9 @@ public class DialobSession implements Serializable {
 
   public String generateUpdateId() {
     return Integer.toString(asyncUpdateCount++);
+  }
+
+  public MutableItemStates mutableItemStates() {
+    return itemStates;
   }
 }
