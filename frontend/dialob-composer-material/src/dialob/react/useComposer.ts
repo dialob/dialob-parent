@@ -6,6 +6,7 @@ import {
 } from "../../types";
 import { SavingState } from "../../dialogs/contexts/saving/SavingContext";
 import { FlattenedItem } from "../../components/tree/types";
+import { TranslationResult } from "../../backend/types";
 
 export const useComposer = () => {
   const { state, dispatch } = useContext(ComposerContext);
@@ -173,6 +174,14 @@ export const useComposer = () => {
     dispatch({ type: 'applyFormChanges', newState });
   }
 
+  const applyTranslations = (translations: TranslationResult[], sourceLanguage: string, targetLanguage: string) => {
+    dispatch({ type: 'applyTranslations', translations, sourceLanguage, targetLanguage });
+  }
+
+  const removeAITranslation = (entryId: string) => {
+    dispatch({ type: 'removeAITranslation', entryId });
+  }
+
   return {
     addItem,
     updateItem,
@@ -214,6 +223,8 @@ export const useComposer = () => {
     applyListChanges,
     applyVariableChanges,
     applyFormChanges,
+    applyTranslations,
+    removeAITranslation,
     form: state
   };
 

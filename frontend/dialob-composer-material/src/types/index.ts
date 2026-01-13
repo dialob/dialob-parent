@@ -86,6 +86,13 @@ export type ComposerTag = {
   creator?: string;
 }
 
+export type TranslationMetadata = {
+  entryId: string;           // Format: "i:itemId:l" or "i:itemId:d" or "v:valueSetId:index:entryId"
+  sourceLanguage: string;
+  targetLanguage: string;
+  timestamp: string;
+};
+
 export type ComposerMetadata = {
   globalValueSets?: {
     label?: string;
@@ -93,7 +100,8 @@ export type ComposerMetadata = {
   }[];
   contextValues?: {
     [name: string]: string;
-  }
+  };
+  aiTranslations?: TranslationMetadata[];
 }
 
 export type ComposerState = {

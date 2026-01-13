@@ -29,6 +29,7 @@ const renderDialobComposer = (targetElement: HTMLElement, appConfig: AppConfig) 
     backendVersion: appConfig.version,
     documentationUrl: 'https://github.com/dialob/dialob-parent/wiki/',
     closeHandler: () => window.location.href = appConfig.adminAppUrl,
+    translationServiceUrl: appConfig.translationServiceUrl || undefined,
   };
 
   ReactDOM.createRoot(targetElement!).render(

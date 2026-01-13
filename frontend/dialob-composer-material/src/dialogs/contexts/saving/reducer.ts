@@ -403,6 +403,38 @@ const setMetadataValue = (state: SavingState, attr: string, value: any): void =>
   state.formMetadata[attr] = value;
 }
 
+const addAITranslation = (state: SavingState, entryId: string, sourceLanguage: string, targetLanguage: string): void => {
+  if (!state.composerMetadata) {
+    state.composerMetadata = {};
+  }
+  if (!state.composerMetadata.aiTranslations) {
+    state.composerMetadata.aiTranslations = [];
+  }
+  
+  // Remove existing translation for this entry+target language if any
+  state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
+    t => !(t.entryId === entryId && t.targetLanguage === targetLanguage)
+  );
+  
+  // Add new translation metadata
+  state.composerMetadata.aiTranslations.push({
+    entryId,
+    sourceLanguage,
+    targetLanguage,
+    timestamp: new Date().toISOString()
+  });
+}
+
+const removeAITranslation = (state: SavingState, entryId: string): void => {
+  if (!state.composerMetadata?.aiTranslations) {
+    return;
+  }
+  
+  state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
+    t => t.entryId !== entryId
+  );
+}
+
 
 export const itemReducer = (state: SavingState, action: SavingAction): SavingState => {
 
@@ -465,6 +497,10 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       changeVariableId(state, action.variables);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
+    } else if (action.type === 'addAITranslation') {
+      addAITranslation(state, action.entryId, action.sourceLanguage, action.targetLanguage);
+    } else if (action.type === 'removeAITranslation') {
+      removeAITranslation(state, action.entryId);
     }
   });
 

@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { ComposerState, ComposerTag, INIT_STATE } from "../types";
-import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext } from "./types";
+import { ApiResponse, BackendState, CreateTagRequest, DialobComposerConfig, PreviewSessionContext, TranslationRequest } from "./types";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const INITIAL_BACKEND: BackendState = {
@@ -44,6 +44,9 @@ const INITIAL_BACKEND: BackendState = {
     return Promise.resolve({ success: true });
   },
   createPreviewSession: (_formId: string, _language: string, _context?: PreviewSessionContext): Promise<ApiResponse> => {
+    return Promise.resolve({ success: true });
+  },
+  translateEntries: (_request: TranslationRequest): Promise<ApiResponse> => {
     return Promise.resolve({ success: true });
   },
 };

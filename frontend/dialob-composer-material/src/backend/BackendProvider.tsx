@@ -32,6 +32,7 @@ export const BackendProvider: React.FC<PropsWithChildren<BackendProviderProps>> 
       getTags: backendService.current.getTags.bind(backendService.current),
       changeItemId: backendService.current.changeItemId.bind(backendService.current),
       createPreviewSession: backendService.current.createPreviewSession.bind(backendService.current),
+      translateEntries: backendService.current.translateEntries.bind(backendService.current),
     }}>
       {children}
     </BackendContext.Provider>
