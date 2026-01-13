@@ -17,7 +17,7 @@ package io.dialob.session.engine;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.questionnaire.service.api.FormActions;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.model.ErrorState;
 import io.dialob.session.engine.session.model.ItemState;
 import io.dialob.session.engine.session.model.SessionObject;
@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public abstract class AbstractFormActionsUpdatesItemsVisitor extends AbstractFormActionsVisitor implements EvalContext.UpdatedItemsVisitor {
+public abstract class AbstractFormActionsUpdatesItemsVisitor extends AbstractFormActionsVisitor implements EvalResult.UpdatedItemsVisitor {
 
   private final Predicate<SessionObject> isVisiblePredicate;
 

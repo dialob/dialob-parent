@@ -20,7 +20,7 @@ import io.dialob.api.proto.Actions;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 
@@ -39,7 +39,7 @@ public record DialobQuestionnaireSessionServiceFacade(
   }
 
   @Override
-  public EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor createAsyncFunctionCallVisitor(String sessionId) {
+  public EvalResult.UpdatedItemsVisitor.AsyncFunctionCallVisitor createAsyncFunctionCallVisitor(String sessionId) {
     return asyncFunctionInvoker.createVisitor(sessionId);
   }
 

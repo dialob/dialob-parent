@@ -26,10 +26,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.session.engine.DialobProgramService;
-import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.program.ProgramBuilder;
+import io.dialob.session.engine.program.*;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
@@ -126,6 +123,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
   void shouldSerializeSimpleSession() {
     final EvalContext evalContext = Mockito.mock();
     when(evalContext.applyCommand(any(Command.class))).thenReturn(evalContext);
+    when(evalContext.toResult()).thenReturn(EvalResult.NO_UPDATES);
 
 
     final var serializer = getQuestionnaireDialobSessionRedisSerializer(65536);

@@ -19,6 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
   }
 
   @Override
-  public Consumer<EvalContext.UpdatedItemsVisitor> applyCommands(@NonNull Iterable<Command<?>> commands) {
+  public EvalResult applyCommands(@NonNull Iterable<Command<?>> commands) {
     var context = createEvalContext();
     commands.forEach(this::queueCommand);
 
@@ -67,7 +68,7 @@ public class ActiveDialobSessionUpdater implements DialobSessionUpdater {
     }
     updatedCommands.clear();
     LOGGER.debug("Update completed.");
-    return context::accept;
+    return context.toResult();
   }
 
   protected EvalContext createEvalContext() {
