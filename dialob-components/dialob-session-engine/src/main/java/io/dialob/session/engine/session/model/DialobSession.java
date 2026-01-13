@@ -32,8 +32,6 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 @EqualsAndHashCode
 @ToString
@@ -47,7 +45,7 @@ import java.util.stream.Stream;
 //  overshadowImplementation = true,
 //  visibility = Value.Style.ImplementationVisibility.PACKAGE
 //)
-public class DialobSession implements Serializable {
+public class DialobSession implements EvalContext.SessionFacade, Serializable {
 
 //  public static final class Builder extends DialobSessionBuilder {}
 
@@ -332,17 +330,22 @@ public class DialobSession implements Serializable {
   }
 
   @NonNull
-  private Map<ItemId, ItemState> itemStates() {
+  public Map<ItemId, ItemState> itemStates() {
     return Collections.unmodifiableMap(itemStates.itemStates());
   }
 
+  @Override
+  public ItemStates prototypes() {
+    return prototypes;
+  }
+
   @NonNull
-  private Map<ValueSetId, ValueSetState> valueSetStates() {
+  public Map<ValueSetId, ValueSetState> valueSetStates() {
     return Collections.unmodifiableMap(itemStates.valueSetStates());
   }
 
   @NonNull
-  private Map<ErrorId, ErrorState> errorStates() {
+  public Map<ErrorId, ErrorState> errorStates() {
     return Collections.unmodifiableMap(itemStates.errorStates());
   }
 
@@ -360,48 +363,8 @@ public class DialobSession implements Serializable {
       .findFirst();
   }
 
-  @NonNull
-  private Stream<Map.Entry<ItemId,ItemState>> findMatchingItemsEntries(ItemId partialItemId) {
-    return itemStates()
-      .entrySet()
-      .stream()
-      .filter(item -> IdUtils.matches(partialItemId, item.getKey()));
-  }
 
-  @NonNull
-  private Stream<Map.Entry<ErrorId,ErrorState>> findMatchingErrorEntries(ErrorId partialErrorId) {
-    return errorStates()
-      .entrySet()
-      .stream()
-      .filter(item -> IdUtils.matches(partialErrorId, item.getKey()));
-  }
 
-  @NonNull
-  public Stream<ItemId> findMatchingItemIds(ItemId partialItemId) {
-    final UnaryOperator<Map.Entry<? extends ItemId, ?>> logger = LOGGER.isDebugEnabled() ?
-      itemEntry -> {
-        LOGGER.debug("Matched {} -> {}", partialItemId, itemEntry.getKey());
-        return itemEntry;
-      } :
-      UnaryOperator.identity();
-
-    if (partialItemId instanceof ErrorId errorId) {
-      return findMatchingErrorEntries(errorId)
-        .map(logger)
-        .map(Map.Entry::getKey);
-    }
-    return findMatchingItemsEntries(partialItemId)
-      .map(logger)
-      .map(Map.Entry::getKey);
-  }
-
-  @NonNull
-  public Stream<ErrorState> findErrorPrototypes(ItemId itemId) {
-    if (itemId.isPartial()) {
-      return prototypes.errorStates().values().stream().filter(errorPrototype -> errorPrototype.itemId().equals(itemId));
-    }
-    return prototypes.errorStates().values().stream().filter(errorPrototype -> IdUtils.matches(errorPrototype.itemId(), itemId));
-  }
 
   public String generateUpdateId() {
     return Integer.toString(asyncUpdateCount++);

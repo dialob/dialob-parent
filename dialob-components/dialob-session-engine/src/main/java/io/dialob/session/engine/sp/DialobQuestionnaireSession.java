@@ -396,7 +396,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   }
 
   private Iterable<? extends ValueSet> getProvidedValueSets() {
-    return () -> dialobSession.valueSetStates().values().stream().map(state ->
+    return () -> dialobSession.mutableItemStates().valueSetStates().values().stream().map(state ->
       (ValueSet) new ValueSet.Builder()
         .id(state.id().getValueSetId())
         .entries(() -> state.entries().stream()
