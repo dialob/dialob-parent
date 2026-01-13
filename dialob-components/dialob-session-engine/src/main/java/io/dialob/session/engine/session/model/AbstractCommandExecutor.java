@@ -30,8 +30,8 @@ abstract class AbstractCommandExecutor<I extends ItemId, T, C extends UpdateComm
   }
 
   @Override
-  public void applyCommand(@NonNull EvalContext context, @NonNull C command) {
-    mutableItems(context).computeIfPresent(command.targetId(), (key, state) -> {
+  public T applyCommand(@NonNull EvalContext context, @NonNull C command) {
+    return mutableItems(context).computeIfPresent(command.targetId(), (key, state) -> {
       var updatedState = command.update(context, state);
       // TODO SetLocale does not update item's state. Locale attribute should be moved to item state.
 //      if (state != updatedState) {

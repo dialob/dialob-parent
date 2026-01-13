@@ -18,9 +18,8 @@ package io.dialob.session.engine.session.model;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.common.Constants;
-import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.program.EvalContext;
-import io.dialob.session.engine.session.command.*;
+import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.protobuf.StateReader;
 import io.dialob.session.engine.session.protobuf.StateWriter;
 import lombok.*;
@@ -30,7 +29,10 @@ import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @EqualsAndHashCode
@@ -77,8 +79,9 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
   @Setter
   private String language;
 
+  @Getter
   @NonNull
-  private final MutableItemStates itemStates;
+  private ItemStates itemStates;
 
   // TODO move this to DialobProgram
   @NonNull
@@ -170,11 +173,11 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
       completed,
       opened,
       language,
-      new MutableItemStates(new ItemStates.Builder()
+      new ItemStates.Builder()
         .itemStates(itemStates)
         .errorStates(errorStates)
         .valueSetStates(valueSetStates)
-        .build()),
+        .build(),
       new ItemStates.Builder()
         .itemStates(itemPrototypes)
         .errorStates(errorPrototypes)
@@ -200,6 +203,12 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     );
   }
 
+  public DialobSession withItemStates(@NonNull ItemStates itemStates) {
+    this.itemStates = itemStates;
+    return this;
+  }
+
+
   @NonNull
   public ItemState getRootItem() {
     return getItemState(QUESTIONNAIRE_REF)
@@ -210,7 +219,7 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     return Optional.ofNullable(itemStates().get(id));
   }
 
-  public void accept(DialobSessionVisitor visitor) {
+  public void accept(@NonNull DialobSessionVisitor visitor) {
     visitor.start();
 
     // --
@@ -240,47 +249,8 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
    * @param evalContext execution context
    * @param command object to execute within context
    */
-  public DialobSession applyUpdate(@NonNull EvalContext evalContext, @NonNull Command<?> command) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("applyUpdate({})", DebugUtil.commandToString(command));
-    }
-    switch (command) {
-      case ItemUpdateCommand itemUpdateCommand -> {
-        EvalContext context = createScopedEvalContext(evalContext, itemUpdateCommand.targetId());
-        new ItemUpdateCommandExecutor().applyCommand(context, itemUpdateCommand);
-      }
-      case ErrorUpdateCommand errorUpdateCommand -> {
-        EvalContext context = createScopedEvalContext(evalContext, errorUpdateCommand.targetId().itemId());
-        new ErrorUpdateCommandExecutor().applyCommand(context, errorUpdateCommand);
-      }
-      case ValueSetUpdateCommand valueSetCommand ->
-        new ValueSetUpdateCommandExecutor().applyCommand(evalContext, valueSetCommand);
-      case SessionUpdateCommand updateCommand ->
-        new SessionUpdateCommandExecutor().applyCommand(evalContext, updateCommand);
-      default -> LOGGER.warn("Do not know how to apply command: {}", command);
-    }
-    updated();
-    return this;
-  }
-
-  public EvalContext createScopedEvalContext(@NonNull EvalContext evalContext, ItemId itemId) {
-    return itemId instanceof ItemIndex ?
-      createScope(evalContext, itemId) :
-      itemId.getParent().map(parentId -> {
-        if (parentId instanceof ItemIndex) {
-          return createScope(evalContext, parentId);
-        }
-        return evalContext;
-      }).orElse(evalContext);
-  }
-
-  public EvalContext createScope(@NonNull EvalContext evalContext, ItemId itemId) {
-    var scopeItems = new ArrayList<>(evalContext
-      .getItemState(itemId)
-      .map(ItemState::items)
-      .orElseGet(Collections::emptyList));
-    scopeItems.add(itemId);
-    return evalContext.withScope(Scope.of(itemId, scopeItems));
+  public DialobSession applyCommand(@NonNull EvalContext evalContext, @NonNull Command command) {
+    return new GenericCommandExecutor(this).applyCommand(evalContext, command);
   }
 
   protected DialobSession updated() {
@@ -291,10 +261,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     revision = Integer.toString(ThreadLocalRandom.current().nextInt());
     LOGGER.trace("{} updated to rev {}", getId(), revision);
     return this;
-  }
-
-  public Optional<ErrorState> getErrorState(ItemId itemId, String code) {
-    return Optional.ofNullable(errorStates().get(new ErrorId(itemId, code)));
   }
 
   @NonNull
@@ -331,7 +297,7 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
 
   @NonNull
   public Map<ItemId, ItemState> itemStates() {
-    return Collections.unmodifiableMap(itemStates.itemStates());
+    return itemStates.itemStates();
   }
 
   @Override
@@ -341,36 +307,16 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
 
   @NonNull
   public Map<ValueSetId, ValueSetState> valueSetStates() {
-    return Collections.unmodifiableMap(itemStates.valueSetStates());
+    return itemStates.valueSetStates();
   }
 
   @NonNull
   public Map<ErrorId, ErrorState> errorStates() {
-    return Collections.unmodifiableMap(itemStates.errorStates());
+    return itemStates.errorStates();
   }
-
-  @NonNull
-  public Optional<ValueSetState> getValueSetState(ValueSetId id) {
-    return Optional.of(valueSetStates().get(id));
-  }
-
-  public Optional<ItemState> findPrototype(ItemId itemId) {
-    if (itemId.isPartial()) {
-      return Optional.ofNullable(prototypes.itemStates().get(itemId));
-    }
-    return prototypes.itemStates().values().stream()
-      .filter(itemState -> IdUtils.matches(itemState.id(), itemId))
-      .findFirst();
-  }
-
-
-
 
   public String generateUpdateId() {
     return Integer.toString(asyncUpdateCount++);
   }
 
-  public MutableItemStates mutableItemStates() {
-    return itemStates;
-  }
 }
