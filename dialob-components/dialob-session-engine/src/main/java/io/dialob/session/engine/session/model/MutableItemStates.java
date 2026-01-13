@@ -17,14 +17,19 @@ package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static io.dialob.session.engine.session.model.DialobSession.QUESTIONNAIRE_REF;
 
 @EqualsAndHashCode
+@Slf4j
 public class MutableItemStates implements Serializable {
 
   @Serial
@@ -70,4 +75,47 @@ public class MutableItemStates implements Serializable {
   public Map<ErrorId, ErrorState> errorStates() {
     return errorStates;
   }
+
+  @NonNull
+  private Stream<Map.Entry<ErrorId, ErrorState>> findMatchingErrorEntries(ErrorId partialErrorId) {
+    return errorStates()
+      .entrySet()
+      .stream()
+      .filter(item -> IdUtils.matches(partialErrorId, item.getKey()));
+  }
+
+  @NonNull
+  private Stream<Map.Entry<ItemId, ItemState>> findMatchingItemsEntries(ItemId partialItemId) {
+    return itemStates()
+      .entrySet()
+      .stream()
+      .filter(item -> IdUtils.matches(partialItemId, item.getKey()));
+  }
+
+
+  public Stream<? extends ItemId> findMatchingItemIds(ItemId partialItemId) {
+    if (partialItemId instanceof ErrorId errorId) {
+      return findMatchingErrorEntries(errorId).map(Map.Entry::getKey);
+    } else {
+      return findMatchingItemsEntries(partialItemId).map(Map.Entry::getKey);
+    }
+  }
+
+  public Optional<ValueSetState> getValueSetState(ValueSetId id) {
+    return Optional.of(valueSetStates().get(id));
+  }
+
+  public Optional<ItemState> getItemState(ItemId id) {
+    return Optional.ofNullable(itemStates().get(id));
+  }
+
+  public Optional<ErrorState> getErrorState(ItemId itemId, String code) {
+    return Optional.ofNullable(errorStates().get(new ErrorId(itemId, code)));
+  }
+
+  public ItemState getRootItem() {
+    return getItemState(QUESTIONNAIRE_REF)
+      .orElseThrow(() -> new IllegalStateException("Could not find questionnaire "));
+  }
+
 }

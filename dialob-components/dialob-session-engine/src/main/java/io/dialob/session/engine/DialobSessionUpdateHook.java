@@ -17,11 +17,10 @@ package io.dialob.session.engine;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.Command;
-import io.dialob.session.engine.session.model.DialobSession;
 
 import java.util.function.Function;
 
-public interface DialobSessionUpdateHook {
+public interface DialobSessionUpdateHook<S> {
 
   /**
    * All actions to session are passed through this hook. Implementation can filter, replace or add updates to be
@@ -31,7 +30,7 @@ public interface DialobSessionUpdateHook {
    * @param update update to check
    * @param delegate delegates update for actual evaluation
    */
-  DialobSession hookAction(@NonNull DialobSession dialobSession,
+  S hookAction(@NonNull S dialobSession,
                   @NonNull Command<?> update,
-                  Function<Command<?>, DialobSession> delegate);
+                  Function<Command<?>, S> delegate);
 }

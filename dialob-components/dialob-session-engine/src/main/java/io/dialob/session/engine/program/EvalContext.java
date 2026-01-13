@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.expr.OutputFormatter;
 import io.dialob.session.engine.session.AsyncFunctionCall;
+import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
@@ -31,6 +32,30 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public interface EvalContext {
+
+  interface SessionFacade {
+
+    String getId();
+
+//    ItemStates itemStates();
+
+    ItemStates prototypes();
+
+    boolean isCompleted();
+
+    String getLanguage();
+
+    // These methods modify the session's state.
+    void setLanguage(String language);
+
+    boolean complete();
+
+    String generateUpdateId();
+
+    MutableItemStates mutableItemStates();
+
+    DialobSession applyUpdate(EvalContext evalContext, Command<?> c);
+  }
 
   @NonNull
   Optional<ItemState> getItemState(@NonNull ItemId itemId);

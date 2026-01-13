@@ -17,15 +17,10 @@ package io.dialob.session.engine.program;
 
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.model.DialobSession;
-import io.dialob.session.engine.session.model.IdUtils;
-import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -35,25 +30,26 @@ class DialobSessionEvalContextTest {
 
   @Test
   void shouldVisitUpdatedItems() {
-    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    Consumer<Event> updatesConsumer = Mockito.mock();
+    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
+    EvalContext.SessionFacade dialobSession = mock();
+    Consumer<Event> updatesConsumer = mock();
 
-    ItemState originalState = Mockito.mock(ItemState.class);
-    ItemState updatedState = Mockito.mock(ItemState.class);
+    ItemState originalState = mock(ItemState.class);
+    ItemState updatedState = mock(ItemState.class);
     when(originalState.id()).thenReturn(IdUtils.toId("is1"));
 
-    final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
-    itemStateHashMap.put(IdUtils.toId("is1"), originalState);
-    when(dialobSession.itemStates()).thenReturn(itemStateHashMap);
-
-    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
+    when(dialobSession.mutableItemStates()).thenReturn(new MutableItemStates(new ItemStates.Builder()
+        .putItemStates(IdUtils.toId("is1"), originalState)
+        .build()),
+      new MutableItemStates(new ItemStates.Builder()
+        .putItemStates(IdUtils.toId("is1"), updatedState)
+        .build()));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
 
-    EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
-    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
+    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
     context.accept(visitor);
@@ -73,10 +69,7 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession).itemStates();
-    verify(dialobSession).errorStates();
-    verify(dialobSession).valueSetStates();
-    verify(dialobSession).getItemState(any());
+    verify(dialobSession, times(2)).mutableItemStates();
 
     verifyNoMoreInteractions(originalState, dialobSession);
 
@@ -84,22 +77,25 @@ class DialobSessionEvalContextTest {
 
   @Test
   void shouldVisitCreatedItems() {
-    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
+    FunctionRegistry functionRegistry = mock();
+    EvalContext.SessionFacade dialobSession = mock();
+    Consumer<Event> updatesConsumer = mock();
 
     ItemState originalState = null;
-    ItemState updatedState = Mockito.mock(ItemState.class);
+    ItemState updatedState = mock();
 
-    //when(originalState.getId()).thenReturn("is1");
     when(updatedState.id()).thenReturn(IdUtils.toId("is1"));
-    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.of(updatedState));
+    when(dialobSession.mutableItemStates()).thenReturn(new MutableItemStates(new ItemStates.Builder()
+        .build()),
+      new MutableItemStates(new ItemStates.Builder()
+        .putItemStates(IdUtils.toId("is1"), updatedState)
+        .build()));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,null);
 
-    EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
-    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
+    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
     context.accept(visitor);
@@ -117,10 +113,7 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession).itemStates();
-    verify(dialobSession).errorStates();
-    verify(dialobSession).valueSetStates();
-    verify(dialobSession).getItemState(any());
+    verify(dialobSession, times(2)).mutableItemStates();
 
     verifyNoMoreInteractions(dialobSession);
 
@@ -128,25 +121,26 @@ class DialobSessionEvalContextTest {
 
   @Test
   void shouldVisitRemovedItems() {
-    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
-    DialobSession dialobSession = Mockito.mock(DialobSession.class);
-    Consumer<Event> updatesConsumer = Mockito.mock(Consumer.class);
+    FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
+    EvalContext.SessionFacade dialobSession = mock(DialobSession.class);
+    Consumer<Event> updatesConsumer = mock(Consumer.class);
 
-    ItemState originalState = Mockito.mock(ItemState.class);
+    ItemState originalState = mock();
     ItemState updatedState = null;
 
-    final HashMap<ItemId, ItemState> itemStateHashMap = new HashMap<>();
-    itemStateHashMap.put(IdUtils.toId("is1"), originalState);
-    when(dialobSession.itemStates()).thenReturn(itemStateHashMap);
     when(originalState.id()).thenReturn(IdUtils.toId("is1"));
 
-    when(dialobSession.getItemState(IdUtils.toId("is1"))).thenReturn(Optional.empty());
+    when(dialobSession.mutableItemStates()).thenReturn(new MutableItemStates(new ItemStates.Builder()
+        .putItemStates(IdUtils.toId("is1"), originalState)
+        .build()),
+      new MutableItemStates(new ItemStates.Builder()
+        .build()));
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
 
-    EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
-    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    EvalContext.UpdatedItemsVisitor visitor = mock();
+    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock();
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
     context.accept(visitor);
@@ -166,10 +160,7 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession).itemStates();
-    verify(dialobSession).errorStates();
-    verify(dialobSession).valueSetStates();
-    verify(dialobSession).getItemState(any());
+    verify(dialobSession, times(2)).mutableItemStates();
 
     verifyNoMoreInteractions(originalState, dialobSession);
 

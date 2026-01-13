@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 public class DialobSessionEvalContext implements EvalContext {
 
-  private static final DialobSessionUpdateHook DEFAULT_DIALOB_SESSION_EVAL_HOOKS = (dialobSession, update, delegate) -> delegate.apply(update);
+  private static final DialobSessionUpdateHook<SessionFacade> DEFAULT_DIALOB_SESSION_EVAL_HOOKS = (SessionFacade dialobSession, Command<?> update, Function<Command<?>, SessionFacade> delegate) -> delegate.apply(update);
 
   private final DialobSessionEvalContext parent;
 
@@ -43,7 +43,7 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private final FunctionRegistry functionRegistry;
 
-  private final DialobSession dialobSession;
+  private final SessionFacade dialobSession;
 
   private final Consumer<Event> updatesConsumer;
 
@@ -61,13 +61,13 @@ public class DialobSessionEvalContext implements EvalContext {
 
   private boolean didComplete;
 
-  private final DialobSessionUpdateHook dialobSessionUpdateHook;
+  private final DialobSessionUpdateHook<SessionFacade> dialobSessionUpdateHook;
 
   private String originalLanguage;
 
   DialobSessionEvalContext(
     @NonNull FunctionRegistry functionRegistry,
-    @NonNull DialobSession dialobSession,
+    @NonNull SessionFacade dialobSession,
     @NonNull Consumer<Event> updatesConsumer,
     boolean activating,
     @Nullable DialobSessionUpdateHook dialobSessionUpdateHook)
@@ -78,10 +78,11 @@ public class DialobSessionEvalContext implements EvalContext {
     this.dialobSession = dialobSession;
     this.updatesConsumer = updatesConsumer;
     this.activating = activating;
+    MutableItemStates mutableItemStates = dialobSession.mutableItemStates();
     this.originalStates = new ItemStates.Builder()
-      .putAllItemStates(dialobSession.itemStates())
-      .putAllErrorStates(dialobSession.errorStates())
-      .putAllValueSetStates(dialobSession.valueSetStates())
+      .itemStates(mutableItemStates.itemStates())
+      .errorStates(mutableItemStates.errorStates())
+      .valueSetStates(mutableItemStates.valueSetStates())
       .build();
     this.pendingUpdates = new HashMap<>();
     this.updatedItemIds = new HashSet<>();
@@ -112,7 +113,7 @@ public class DialobSessionEvalContext implements EvalContext {
     if (command instanceof UpdateCommand updateCommand) {
       final ItemId targetId = updateCommand.targetId();
       if (targetId.isPartial()) {
-        return dialobSession.findMatchingItemIds(targetId).map((Function<? super ItemId, ? extends Command<?>>) updateCommand::withTargetId);
+        return dialobSession.mutableItemStates().findMatchingItemIds(targetId).map((Function<? super ItemId, ? extends Command<?>>) updateCommand::withTargetId);
       }
     }
     return Stream.of(command);
@@ -121,7 +122,7 @@ public class DialobSessionEvalContext implements EvalContext {
   public void applyCommand(@NonNull Command<?> applyCommand) {
     matchPartialCommands(applyCommand)
       .reduce(this.dialobSession,
-        (DialobSession session, Command<?> command) -> dialobSessionUpdateHook.hookAction(session, command, c -> session.applyUpdate(this, c)),
+        (SessionFacade session, Command<?> command) -> dialobSessionUpdateHook.hookAction(session, command, c -> session.applyUpdate(this, c)),
         (session1, session2) -> session2
       );
   }
@@ -140,9 +141,9 @@ public class DialobSessionEvalContext implements EvalContext {
   @Override
   public Optional<ItemState> getItemState(@NonNull ItemId itemId) {
     if (IdUtils.QUESTIONNAIRE_ID.equals(itemId)) {
-      return Optional.of(this.dialobSession.getRootItem());
+      return Optional.of(this.dialobSession.mutableItemStates().getRootItem());
     }
-    return this.dialobSession.getItemState(scope(itemId, false));
+    return this.dialobSession.mutableItemStates().getItemState(scope(itemId, false));
   }
 
   @NonNull
@@ -159,19 +160,27 @@ public class DialobSessionEvalContext implements EvalContext {
   @NonNull
   @Override
   public Optional<ItemState> findPrototype(@NonNull ItemId itemId) {
-    return dialobSession.findPrototype(itemId);
+    if (itemId.isPartial()) {
+      return Optional.ofNullable(dialobSession.prototypes().itemStates().get(itemId));
+    }
+    return dialobSession.prototypes().itemStates().values().stream()
+      .filter(itemState -> IdUtils.matches(itemState.id(), itemId))
+      .findFirst();
   }
 
   @NonNull
   @Override
   public Stream<ErrorState> findErrorPrototypes(@NonNull ItemId itemId) {
-    return dialobSession.findErrorPrototypes(itemId);
+    if (itemId.isPartial()) {
+      return dialobSession.prototypes().errorStates().values().stream().filter(errorPrototype -> errorPrototype.itemId().equals(itemId));
+    }
+    return dialobSession.prototypes().errorStates().values().stream().filter(errorPrototype -> IdUtils.matches(errorPrototype.itemId(), itemId));
   }
 
   @Override
   @NonNull
   public Optional<ValueSetState> getValueSetState(@NonNull ValueSetId valueSetId) {
-    return this.dialobSession.getValueSetState(valueSetId);
+    return this.dialobSession.mutableItemStates().getValueSetState(valueSetId);
   }
 
   public Object getItemValue(ItemId itemId) {
@@ -224,9 +233,9 @@ public class DialobSessionEvalContext implements EvalContext {
     visitor.visitUpdatedItems().ifPresent(updatedItemStateVisitor -> {
       for (ItemId updateItemId : this.updatedItemIds) {
         ItemState originalState = originalStates.itemStates().get(updateItemId);
-        Optional<ItemState> itemState1 = dialobSession.getItemState(updateItemId);
-        if (itemState1.map(itemState -> itemState != originalState).orElse(originalState != null)) {
-          updatedItemStateVisitor.visitUpdatedItemState(originalState, itemState1.orElse(null));
+        ItemState itemState = dialobSession.mutableItemStates().itemStates().get(updateItemId);
+        if (itemState != originalState) {
+          updatedItemStateVisitor.visitUpdatedItemState(originalState, itemState);
         }
       }
       updatedItemStateVisitor.end();
@@ -235,7 +244,7 @@ public class DialobSessionEvalContext implements EvalContext {
     visitor.visitUpdatedErrorStates().ifPresent(updatedErrorStateVisitor -> {
       for (final ErrorId errorId : this.updatedErrorIds) {
         ErrorState originalState = originalStates.errorStates().get(errorId);
-        Optional<ErrorState> itemState1 = dialobSession.getErrorState(errorId.itemId(), errorId.code());
+        Optional<ErrorState> itemState1 = dialobSession.mutableItemStates().getErrorState(errorId.itemId(), errorId.code());
         if (itemState1.map(itemState -> itemState != originalState).orElse(originalState != null)) {
           updatedErrorStateVisitor.visitUpdatedErrorState(originalState, itemState1.orElse(null));
         }
@@ -246,7 +255,7 @@ public class DialobSessionEvalContext implements EvalContext {
     visitor.visitUpdatedValueSets().ifPresent(updatedValueSetVisitor -> {
       for (final ValueSetId valueSetId : this.updatedValueSetIds) {
         ValueSetState originalState = originalStates.valueSetStates().get(valueSetId);
-        Optional<ValueSetState> valueSetState = dialobSession.getValueSetState(valueSetId);
+        Optional<ValueSetState> valueSetState = dialobSession.mutableItemStates().getValueSetState(valueSetId);
         if (valueSetState.map(itemState -> itemState != originalState).orElse(originalState != null)) {
           updatedValueSetVisitor.visitUpdatedValueSet(originalState, valueSetState.orElse(null));
         }
@@ -286,7 +295,7 @@ public class DialobSessionEvalContext implements EvalContext {
 
   @Override
   public Collection<ErrorState> getErrorStates() {
-    return this.dialobSession.errorStates().values();
+    return this.dialobSession.mutableItemStates().errorStates().values();
   }
 
   @NonNull
