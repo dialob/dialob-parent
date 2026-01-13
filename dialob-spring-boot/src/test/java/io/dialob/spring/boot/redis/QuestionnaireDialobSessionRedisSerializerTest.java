@@ -20,7 +20,6 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
-import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
@@ -28,10 +27,11 @@ import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.session.engine.DialobProgramService;
 import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.DialobSessionEvalContext;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
+import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
 import io.dialob.session.engine.session.ActiveDialobSessionUpdater;
+import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.sp.AsyncFunctionInvoker;
 import io.dialob.session.engine.sp.DialobQuestionnaireSession;
 import io.dialob.session.engine.sp.DialobQuestionnaireSessionBuilder;
@@ -124,11 +124,13 @@ class QuestionnaireDialobSessionRedisSerializerTest {
 
   @Test
   void shouldSerializeSimpleSession() {
-    final DialobSessionEvalContext evalContext = Mockito.mock(DialobSessionEvalContext.class);
+    final EvalContext evalContext = Mockito.mock();
+    when(evalContext.applyCommand(any(Command.class))).thenReturn(evalContext);
 
-    final QuestionnaireDialobSessionRedisSerializer serializer = getQuestionnaireDialobSessionRedisSerializer(65536);
+
+    final var serializer = getQuestionnaireDialobSessionRedisSerializer(65536);
     ProgramBuilder programBuilder = new ProgramBuilder(functionRegistry);
-    final DialobProgram dialobProgram = DialobProgram.createDialobProgram(
+    final var dialobProgram = DialobProgram.createDialobProgram(
       programBuilder
         .setId("test-form")
         .addRoot()
@@ -136,7 +138,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
         .build()
         .build());
 
-    final Form form = new Form.Builder()
+    final var form = new Form.Builder()
       .id("test-form")
       .metadata(new Form.Metadata.Builder()
         .label("test form")
@@ -148,8 +150,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
     when(sessionContextFactory.createSessionUpdater(same(dialobProgram), any(), anyBoolean()))
       .thenAnswer(invocation -> new ActiveDialobSessionUpdater((e) -> evalContext, dialobProgram));
 
-    //     return ;
-    final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
+    final var session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
       .formId("test-form")
       .questionnaire(new Questionnaire.Builder()
         .id("questionnaire-12")
@@ -164,7 +165,7 @@ class QuestionnaireDialobSessionRedisSerializerTest {
           .build())
         .build())
       .build();
-    final byte[] bytes = serializer.serialize((DialobQuestionnaireSession) session);
+    final var bytes = serializer.serialize((DialobQuestionnaireSession) session);
     DialobQuestionnaireSession session2 = serializer.deserialize(bytes);
     assertNotNull(session2);
     assertNotSame(session, session2);

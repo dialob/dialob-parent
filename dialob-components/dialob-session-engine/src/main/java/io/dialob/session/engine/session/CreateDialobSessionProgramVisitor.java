@@ -328,7 +328,6 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
     this.dialobSession = new DialobSession(
       Objects.requireNonNullElseGet(tenantId, ResysSecurityConstants.DEFAULT_TENANT::id),
       sessionId,
-      0,
       null,
       lastAnswer,
       completed,

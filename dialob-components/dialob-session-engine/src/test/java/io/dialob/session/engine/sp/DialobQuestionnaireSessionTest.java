@@ -51,7 +51,6 @@ class DialobQuestionnaireSessionTest {
     return new DialobSession(
       "tenant",
       "id",
-      0,
       "rev",
       lastUpdate,
       null,

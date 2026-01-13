@@ -63,8 +63,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
   @Getter
   private final String id;
 
-  private int asyncUpdateCount;
-
   @Getter
   private String revision;
 
@@ -95,7 +93,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     output.writeDate(lastUpdate);
     output.writeNullableDate(completed);
     output.writeNullableDate(opened);
-    output.writeInt(asyncUpdateCount);
 
     output.writeInt(itemStates.itemStates().size());
     for (var state : itemStates.itemStates().values()) {
@@ -131,7 +128,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     var lastUpdate = input.readDate();
     var completed = input.readNullableDate();
     var opened = input.readNullableDate();
-    var asyncUpdateCount = input.readInt();
     var itemStates = new HashMap<ItemId,ItemState>();
     var itemPrototypes = new HashMap<ItemId,ItemState>();
     var valueSetStates = new HashMap<ValueSetId,ValueSetState>();
@@ -167,7 +163,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     return new DialobSession(
       tenantId,
       id,
-      asyncUpdateCount,
       revision,
       lastUpdate,
       completed,
@@ -192,7 +187,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     return new DialobSession(
       this.tenantId,
       id,
-      this.asyncUpdateCount,
       this.revision,
       this.lastUpdate,
       this.completed,
@@ -313,10 +307,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
   @NonNull
   public Map<ErrorId, ErrorState> errorStates() {
     return itemStates.errorStates();
-  }
-
-  public String generateUpdateId() {
-    return Integer.toString(asyncUpdateCount++);
   }
 
 }

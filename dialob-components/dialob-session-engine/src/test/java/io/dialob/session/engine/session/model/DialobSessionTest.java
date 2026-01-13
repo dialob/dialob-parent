@@ -42,7 +42,6 @@ class DialobSessionTest {
     return new DialobSession(
       Objects.requireNonNullElseGet("tenant", ResysSecurityConstants.DEFAULT_TENANT::id),
       "1",
-      0,
       "2",
       null,
       null,

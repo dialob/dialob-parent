@@ -141,9 +141,9 @@ public record DialobProgram(
                                      Instant completed,
                                      Instant opened,
                                      Instant lastAnswer) {
-    final CreateDialobSessionProgramVisitor createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, completed, opened, lastAnswer);
+    final var createDialobSessionProgramVisitor = new CreateDialobSessionProgramVisitor(tenantId, sessionId, language, activePage, initialValueResolver, findProvidedValueSetEntries, this.itemCommands, completed, opened, lastAnswer);
     program.accept(createDialobSessionProgramVisitor);
-    DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
+    var dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     var updater = sessionContextFactory.createSessionUpdater(this, dialobSession, true);
     updater.applyCommands(createDialobSessionProgramVisitor.getUpdates());
     return dialobSession;
