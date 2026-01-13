@@ -334,11 +334,15 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
       completed,
       opened,
       language,
-      itemStatesMap,
-      itemPrototypesMap,
-      valueSetStatesMap,
-      errorStatesMap,
-      errorPrototypesMap
+      new MutableItemStates(new ItemStates.Builder()
+        .itemStates(itemStatesMap)
+        .errorStates(errorStatesMap)
+        .valueSetStates(valueSetStatesMap)
+        .build()),
+      new ItemStates.Builder()
+        .itemStates(itemPrototypesMap)
+        .errorStates(errorPrototypesMap)
+        .build()
     );
   }
 

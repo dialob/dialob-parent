@@ -18,6 +18,8 @@ package io.dialob.session.engine.session.model;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.immutables.value.Value;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Map;
 
 @Value.Builder
@@ -37,10 +39,14 @@ public record ItemStates(
 
   @NonNull
   Map<ErrorId, ErrorState> errorStates
-) {
+) implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 7344194323565473252L;
 
   public static final class Builder extends ItemStatesBuilder {
   }
 
+  public static final ItemStates EMPTY = new ItemStates(Map.of(), Map.of(), Map.of());
 
 }
