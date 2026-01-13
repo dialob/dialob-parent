@@ -20,7 +20,7 @@ import io.dialob.api.proto.ActionsFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.rule.parser.function.FunctionRegistry;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.model.IdUtils;
 
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class AsyncFunctionInvoker {
     this.service = service;
   }
 
-  public EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor createVisitor(String sessionId) {
+  public EvalResult.UpdatedItemsVisitor.AsyncFunctionCallVisitor createVisitor(String sessionId) {
     return asyncFunctionCall ->
       registry.invokeFunctionAsync(new AsyncFunctionCallback(service, sessionId, IdUtils.toString(asyncFunctionCall.getTargetId().get())),
         asyncFunctionCall.functionName(),

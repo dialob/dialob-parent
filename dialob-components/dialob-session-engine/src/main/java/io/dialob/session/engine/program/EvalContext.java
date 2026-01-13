@@ -84,7 +84,7 @@ public interface EvalContext {
 
   void registerUpdate(@NonNull ValueSetState newState, ValueSetState oldState);
 
-  void accept(@NonNull UpdatedItemsVisitor visitor);
+  EvalResult toResult();
 
   String getLanguage();
 
@@ -122,120 +122,11 @@ public interface EvalContext {
   EvalContext applyCommand(@NonNull Command<?> applyCommand);
 
   /**
-   *
    * @param asyncFunctionCall
    * @return id of update
    */
   String queueAsyncFunctionCall(AsyncFunctionCall asyncFunctionCall);
 
   MutableItemStates mutableItemStates();
-
-  interface UpdatedItemsVisitor {
-
-    @FunctionalInterface
-    interface UpdatedSessionStateVisitor {
-      void visitLanguageChange(@NonNull String original, @NonNull String updated);
-      default void end() {}
-    }
-
-    Optional<UpdatedSessionStateVisitor> visitSession();
-
-    @FunctionalInterface
-    interface UpdatedItemStateVisitor {
-      void visitUpdatedItemState(@Nullable ItemState original, @Nullable ItemState updated);
-      default void end() {}
-    }
-
-    @FunctionalInterface
-    interface UpdatedErrorStateVisitor {
-      void visitUpdatedErrorState(@Nullable ErrorState original, @Nullable ErrorState updated);
-      default void end() {}
-    }
-
-    @FunctionalInterface
-    interface UpdatedValueSetVisitor {
-      void visitUpdatedValueSet(@Nullable ValueSetState original, @Nullable ValueSetState updated);
-      default void end() {}
-    }
-
-    @FunctionalInterface
-    interface AsyncFunctionCallVisitor {
-      void visitAsyncFunctionCall(@NonNull AsyncFunctionCall asyncFunctionCall);
-      default void end() {}
-    }
-
-    default void start() {}
-
-    default Optional<UpdatedItemStateVisitor> visitUpdatedItems() {
-      return Optional.empty();
-    }
-
-    default Optional<UpdatedErrorStateVisitor> visitUpdatedErrorStates() {
-      return Optional.empty();
-    }
-
-    default Optional<UpdatedValueSetVisitor> visitUpdatedValueSets() {
-      return Optional.empty();
-    }
-
-    default Optional<AsyncFunctionCallVisitor> visitAsyncFunctionCalls() {
-      return Optional.empty();
-    }
-
-    default void visitCompleted() {}
-
-    default void end() {}
-  }
-
-  abstract class AbstractDelegateUpdatedItemsVisitor implements UpdatedItemsVisitor {
-
-    private final UpdatedItemsVisitor delegate;
-
-    public AbstractDelegateUpdatedItemsVisitor(UpdatedItemsVisitor delegate) {
-      this.delegate = delegate;
-    }
-
-    @Override
-    public void start() {
-      delegate.start();
-    }
-
-    @Override
-    public Optional<UpdatedItemStateVisitor> visitUpdatedItems() {
-      return delegate.visitUpdatedItems();
-    }
-
-    @Override
-    public Optional<UpdatedErrorStateVisitor> visitUpdatedErrorStates() {
-      return delegate.visitUpdatedErrorStates();
-    }
-
-    @Override
-    public Optional<UpdatedValueSetVisitor> visitUpdatedValueSets() {
-      return delegate.visitUpdatedValueSets();
-    }
-
-    @Override
-    public Optional<AsyncFunctionCallVisitor> visitAsyncFunctionCalls() {
-      return delegate.visitAsyncFunctionCalls();
-    }
-
-    @Override
-    public void visitCompleted() {
-      delegate.visitCompleted();
-    }
-
-    @Override
-    public Optional<UpdatedSessionStateVisitor> visitSession() {
-      return delegate.visitSession();
-    }
-
-    @Override
-    public void end() {
-      delegate.end();
-    }
-
-
-  }
 
 }

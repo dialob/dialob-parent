@@ -27,7 +27,7 @@ import io.dialob.session.engine.DialobProgramFromFormCompiler;
 import io.dialob.session.engine.QuestionnaireDialobProgramService;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
 import org.junit.jupiter.api.Assertions;
@@ -71,7 +71,7 @@ class DialobQuestionnaireSessionBuilderTest {
   DialobSessionUpdater dialobSessionUpdater;
 
   @Mock
-  Consumer<EvalContext.UpdatedItemsVisitor> consumer;
+  Consumer<EvalResult.UpdatedItemsVisitor> consumer;
 
   @Mock
   AsyncFunctionInvoker asyncFunctionInvoker;

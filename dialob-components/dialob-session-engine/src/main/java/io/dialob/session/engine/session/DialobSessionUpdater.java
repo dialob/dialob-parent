@@ -16,15 +16,13 @@
 package io.dialob.session.engine.session;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.command.Command;
-
-import java.util.function.Consumer;
 
 public interface DialobSessionUpdater {
 
-  DialobSessionUpdater NOOP_UPDATER = commands -> visitor -> {};
+  DialobSessionUpdater NOOP_UPDATER = commands -> EvalResult.NO_UPDATES;
 
-  Consumer<EvalContext.UpdatedItemsVisitor> applyCommands(@NonNull Iterable<Command<?>> commands);
+  EvalResult applyCommands(@NonNull Iterable<Command<?>> commands);
 
 }

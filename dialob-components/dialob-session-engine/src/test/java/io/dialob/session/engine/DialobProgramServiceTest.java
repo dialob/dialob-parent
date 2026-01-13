@@ -19,7 +19,7 @@ import io.dialob.api.form.Form;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.program.DialobSessionEvalContextFactory;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
 import io.dialob.session.engine.session.model.DialobSession;
@@ -51,10 +51,10 @@ class DialobProgramServiceTest extends AbstractDialobProgramTest {
 
     DialobSessionUpdater sessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, dialobSession, false);
 
-    final EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
+    final EvalResult.UpdatedItemsVisitor visitor = mock(EvalResult.UpdatedItemsVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(itemVisitor));
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));

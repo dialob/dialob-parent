@@ -29,7 +29,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.FormActionsUpdatesItemsVisitor;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.DialobProgram;
-import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.ActionToCommandMapper;
 import io.dialob.session.engine.session.DialobSessionUpdater;
@@ -62,7 +62,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
   public interface ServiceFacade {
     DialobSessionUpdater createDialobSessionUpdater(@NonNull DialobProgram dialobProgram, @NonNull DialobSession dialobSession, boolean activating);
 
-    EvalContext.UpdatedItemsVisitor.AsyncFunctionCallVisitor createAsyncFunctionCallVisitor(String sessionId);
+    EvalResult.UpdatedItemsVisitor.AsyncFunctionCallVisitor createAsyncFunctionCallVisitor(String sessionId);
 
     void created(@NonNull String questionnaireId);
 
@@ -297,10 +297,9 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       DialobSessionUpdater sessionUpdater = serviceFacade.createDialobSessionUpdater(dialobProgram, dialobSession, state.get() == DialobQuestionnaireSession.State.ACTIVATING);
       final FormActions formActions = new FormActions();
 
-      final var commands = ActionToCommandMapper.toCommands(actions);
-      sessionUpdater
-        .applyCommands(commands)
-        .accept(new EvalContext.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this::toActionItem)) {
+      final var evalResult = sessionUpdater.applyCommands(ActionToCommandMapper.toCommands(actions));
+      evalResult
+        .accept(new EvalResult.AbstractDelegateUpdatedItemsVisitor(new FormActionsUpdatesItemsVisitor(formActions, getIsVisiblePredicate(), this::toActionItem)) {
           @Override
           public void visitCompleted() {
             super.visitCompleted();

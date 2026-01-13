@@ -51,11 +51,11 @@ class DialobSessionEvalContextTest {
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
 
-    EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
-    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    EvalResult.UpdatedItemsVisitor visitor = mock(EvalResult.UpdatedItemsVisitor.class);
+    EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
-    context.accept(visitor);
+    context.toResult().accept(visitor);
 
 
 
@@ -73,6 +73,7 @@ class DialobSessionEvalContextTest {
     order.verifyNoMoreInteractions();
 
     verify(dialobSession, times(2)).getItemStates();
+    verify(dialobSession).getLanguage();
 
     verifyNoMoreInteractions(originalState, dialobSession);
 
@@ -88,7 +89,8 @@ class DialobSessionEvalContextTest {
     ItemState updatedState = mock();
 
     when(updatedState.id()).thenReturn(IdUtils.toId("is1"));
-    when(dialobSession.getItemStates()).thenReturn(new ItemStates.Builder()
+    when(dialobSession.getItemStates()).thenReturn(
+      new ItemStates.Builder()
         .build(),
       new ItemStates.Builder()
         .putItemStates(IdUtils.toId("is1"), updatedState)
@@ -97,11 +99,11 @@ class DialobSessionEvalContextTest {
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,null);
 
-    EvalContext.UpdatedItemsVisitor visitor = mock(EvalContext.UpdatedItemsVisitor.class);
-    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    EvalResult.UpdatedItemsVisitor visitor = mock();
+    EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock();
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
-    context.accept(visitor);
+    context.toResult().accept(visitor);
 
     verify(updatedState).id();
 
@@ -117,6 +119,7 @@ class DialobSessionEvalContextTest {
     order.verifyNoMoreInteractions();
 
     verify(dialobSession, times(2)).getItemStates();
+    verify(dialobSession).getLanguage();
 
     verifyNoMoreInteractions(dialobSession);
 
@@ -142,11 +145,11 @@ class DialobSessionEvalContextTest {
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
 
-    EvalContext.UpdatedItemsVisitor visitor = mock();
-    EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock();
+    EvalResult.UpdatedItemsVisitor visitor = mock();
+    EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor updatedItemStateVisitor = mock();
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(updatedItemStateVisitor));
-    context.accept(visitor);
+    context.toResult().accept(visitor);
 
 
 
@@ -164,6 +167,7 @@ class DialobSessionEvalContextTest {
     order.verifyNoMoreInteractions();
 
     verify(dialobSession, times(2)).getItemStates();
+    verify(dialobSession).getLanguage();
 
     verifyNoMoreInteractions(originalState, dialobSession);
 

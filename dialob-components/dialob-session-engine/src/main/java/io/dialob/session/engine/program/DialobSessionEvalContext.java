@@ -76,15 +76,14 @@ public class DialobSessionEvalContext implements EvalContext {
     boolean activating,
     @Nullable DialobSessionUpdateHook dialobSessionUpdateHook)
   {
-    ItemStates itemStates = dialobSession.getItemStates();
     this.parent = null;
     this.scope = null;
     this.functionRegistry = functionRegistry;
     this.dialobSession = dialobSession;
     this.updatesConsumer = updatesConsumer;
     this.activating = activating;
-    this.mutableItemStates = new MutableItemStates(itemStates);
-    this.originalStates = itemStates;
+    this.originalStates = dialobSession.getItemStates();
+    this.mutableItemStates = new MutableItemStates(dialobSession.getItemStates());
     this.pendingUpdates = new HashMap<>();
     this.updatedItemIds = new HashSet<>();
     this.updatedErrorIds = new HashSet<>();
@@ -139,6 +138,21 @@ public class DialobSessionEvalContext implements EvalContext {
   @Override
   public EvalContext getParent() {
     return parent;
+  }
+
+  @Override
+  public EvalResult toResult() {
+    return new EvalResult.Builder()
+      .didComplete(didComplete)
+      .language(dialobSession.getLanguage())
+      .originalLanguage(originalLanguage)
+      .originalStates(originalStates)
+      .updatedStates(mutableItemStates.toItemStates())
+      .updatedValueSetIds(updatedValueSetIds)
+      .updatedItemIds(updatedItemIds)
+      .updatedErrorIds(updatedErrorIds)
+      .pendingUpdates(pendingUpdates)
+      .build();
   }
 
   @NonNull
@@ -226,57 +240,6 @@ public class DialobSessionEvalContext implements EvalContext {
     }
   }
 
-  public void accept(@NonNull UpdatedItemsVisitor visitor) {
-    visitor.start();
-    if (originalLanguage != null) {
-      visitor.visitSession().ifPresent(sessionUpdatesVisitor -> {
-        sessionUpdatesVisitor.visitLanguageChange(originalLanguage, dialobSession.getLanguage());
-        sessionUpdatesVisitor.end();
-      });
-    }
-    visitor.visitUpdatedItems().ifPresent(updatedItemStateVisitor -> {
-      for (ItemId updateItemId : this.updatedItemIds) {
-        ItemState originalState = originalStates.itemStates().get(updateItemId);
-        ItemState itemState = dialobSession.getItemStates().itemStates().get(updateItemId);
-        if (itemState != originalState) {
-          updatedItemStateVisitor.visitUpdatedItemState(originalState, itemState);
-        }
-      }
-      updatedItemStateVisitor.end();
-    });
-
-    visitor.visitUpdatedErrorStates().ifPresent(updatedErrorStateVisitor -> {
-      for (final ErrorId errorId : this.updatedErrorIds) {
-        ErrorState originalState = originalStates.errorStates().get(errorId);
-        Optional<ErrorState> itemState1 = mutableItemStates().getErrorState(errorId.itemId(), errorId.code());
-        if (itemState1.map(itemState -> itemState != originalState).orElse(originalState != null)) {
-          updatedErrorStateVisitor.visitUpdatedErrorState(originalState, itemState1.orElse(null));
-        }
-      }
-      updatedErrorStateVisitor.end();
-    });
-
-    visitor.visitUpdatedValueSets().ifPresent(updatedValueSetVisitor -> {
-      for (final ValueSetId valueSetId : this.updatedValueSetIds) {
-        ValueSetState originalState = originalStates.valueSetStates().get(valueSetId);
-        Optional<ValueSetState> valueSetState = mutableItemStates().getValueSetState(valueSetId);
-        if (valueSetState.map(itemState -> itemState != originalState).orElse(originalState != null)) {
-          updatedValueSetVisitor.visitUpdatedValueSet(originalState, valueSetState.orElse(null));
-        }
-      }
-      updatedValueSetVisitor.end();
-    });
-
-    visitor.visitAsyncFunctionCalls().ifPresent(asyncFunctionCallVisitor -> {
-      pendingUpdates.values().forEach(asyncFunctionCallVisitor::visitAsyncFunctionCall);
-      asyncFunctionCallVisitor.end();
-    });
-
-    if (didComplete) {
-      visitor.visitCompleted();
-    }
-    visitor.end();
-  }
 
   @Override
   public String getLanguage() {

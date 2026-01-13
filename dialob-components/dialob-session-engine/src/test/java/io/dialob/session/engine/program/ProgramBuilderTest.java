@@ -426,10 +426,10 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
-    final EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
+    final EvalResult.UpdatedItemsVisitor visitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(itemVisitor));
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
@@ -478,10 +478,10 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
-    final EvalContext.UpdatedItemsVisitor visitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
-    final EvalContext.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = Mockito.mock(EvalContext.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
+    final EvalResult.UpdatedItemsVisitor visitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(itemVisitor));
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
