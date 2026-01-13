@@ -17,7 +17,10 @@ package io.dialob.session.engine.program;
 
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.session.command.event.Event;
-import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.model.DialobSession;
+import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemState;
+import io.dialob.session.engine.session.model.ItemStates;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -38,12 +41,12 @@ class DialobSessionEvalContextTest {
     ItemState updatedState = mock(ItemState.class);
     when(originalState.id()).thenReturn(IdUtils.toId("is1"));
 
-    when(dialobSession.mutableItemStates()).thenReturn(new MutableItemStates(new ItemStates.Builder()
+    when(dialobSession.getItemStates()).thenReturn(new ItemStates.Builder()
         .putItemStates(IdUtils.toId("is1"), originalState)
-        .build()),
-      new MutableItemStates(new ItemStates.Builder()
+        .build(),
+      new ItemStates.Builder()
         .putItemStates(IdUtils.toId("is1"), updatedState)
-        .build()));
+        .build());
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
@@ -69,7 +72,7 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession, times(2)).mutableItemStates();
+    verify(dialobSession, times(2)).getItemStates();
 
     verifyNoMoreInteractions(originalState, dialobSession);
 
@@ -85,11 +88,11 @@ class DialobSessionEvalContextTest {
     ItemState updatedState = mock();
 
     when(updatedState.id()).thenReturn(IdUtils.toId("is1"));
-    when(dialobSession.mutableItemStates()).thenReturn(new MutableItemStates(new ItemStates.Builder()
-        .build()),
-      new MutableItemStates(new ItemStates.Builder()
+    when(dialobSession.getItemStates()).thenReturn(new ItemStates.Builder()
+        .build(),
+      new ItemStates.Builder()
         .putItemStates(IdUtils.toId("is1"), updatedState)
-        .build()));
+        .build());
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,null);
@@ -113,7 +116,7 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession, times(2)).mutableItemStates();
+    verify(dialobSession, times(2)).getItemStates();
 
     verifyNoMoreInteractions(dialobSession);
 
@@ -130,11 +133,11 @@ class DialobSessionEvalContextTest {
 
     when(originalState.id()).thenReturn(IdUtils.toId("is1"));
 
-    when(dialobSession.mutableItemStates()).thenReturn(new MutableItemStates(new ItemStates.Builder()
+    when(dialobSession.getItemStates()).thenReturn(new ItemStates.Builder()
         .putItemStates(IdUtils.toId("is1"), originalState)
-        .build()),
-      new MutableItemStates(new ItemStates.Builder()
-        .build()));
+        .build(),
+      new ItemStates.Builder()
+        .build());
 
     DialobSessionEvalContext context = new DialobSessionEvalContext(functionRegistry, dialobSession, updatesConsumer, false, null);
     context.registerUpdate(updatedState,originalState);
@@ -160,7 +163,7 @@ class DialobSessionEvalContextTest {
     order.verify(visitor).end();
     order.verifyNoMoreInteractions();
 
-    verify(dialobSession, times(2)).mutableItemStates();
+    verify(dialobSession, times(2)).getItemStates();
 
     verifyNoMoreInteractions(originalState, dialobSession);
 

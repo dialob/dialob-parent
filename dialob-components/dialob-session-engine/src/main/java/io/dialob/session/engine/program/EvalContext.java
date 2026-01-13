@@ -20,7 +20,6 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.expr.OutputFormatter;
 import io.dialob.session.engine.session.AsyncFunctionCall;
-import io.dialob.session.engine.session.command.Command;
 import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.model.*;
 
@@ -33,11 +32,11 @@ import java.util.stream.Stream;
 
 public interface EvalContext {
 
-  interface SessionFacade {
+  interface SessionFacade extends CommandExecutor {
 
     String getId();
 
-//    ItemStates itemStates();
+    ItemStates getItemStates();
 
     ItemStates prototypes();
 
@@ -52,9 +51,6 @@ public interface EvalContext {
 
     String generateUpdateId();
 
-    MutableItemStates mutableItemStates();
-
-    DialobSession applyUpdate(EvalContext evalContext, Command<?> c);
   }
 
   @NonNull

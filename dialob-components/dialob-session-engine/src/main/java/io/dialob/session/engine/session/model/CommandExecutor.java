@@ -21,6 +21,6 @@ import io.dialob.session.engine.session.command.Command;
 
 public interface CommandExecutor<T, C extends Command<T>> {
 
-  void applyCommand(@NonNull EvalContext context, @NonNull C command);
+  T applyCommand(@NonNull EvalContext context, @NonNull C command);
 
 }

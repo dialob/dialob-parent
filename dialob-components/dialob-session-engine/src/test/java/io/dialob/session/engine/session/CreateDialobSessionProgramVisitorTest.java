@@ -57,7 +57,7 @@ class CreateDialobSessionProgramVisitorTest {
     });
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
-    assertTrue(dialobSession.findPrototype(IdUtils.toId("proto")).isPresent());
+    assertTrue(dialobSession.prototypes().itemStates().containsKey(IdUtils.toId("proto")));
 
   }
 
@@ -86,7 +86,7 @@ class CreateDialobSessionProgramVisitorTest {
     createDialobSessionProgramVisitor.end();
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
-    assertTrue(dialobSession.findPrototype(IdUtils.toId("rg.*")).isPresent());
+    assertTrue(dialobSession.prototypes().itemStates().containsKey(IdUtils.toId("rg.*")));
   }
 
   @Test
@@ -131,7 +131,7 @@ class CreateDialobSessionProgramVisitorTest {
 
     assertTrue(dialobSession.getItemState(Operators.ref("rg.0")).isPresent());
     assertTrue(dialobSession.getItemState(Operators.ref("rg")).isPresent());
-    assertTrue(dialobSession.findPrototype(IdUtils.toId("rg.*")).isPresent());
+    assertTrue(dialobSession.prototypes().itemStates().containsKey(IdUtils.toId("rg.*")));
 
 
 
@@ -243,7 +243,7 @@ class CreateDialobSessionProgramVisitorTest {
     DialobSession dialobSession = createDialobSessionProgramVisitor.getDialobSession();
     final ItemState rg = dialobSession.getItemState(Operators.ref("rg")).get();
     assertEquals(Arrays.asList(BigInteger.ONE,BigInteger.TWO,BigInteger.valueOf(3)), rg.getValue());
-    assertTrue(dialobSession.findPrototype(IdUtils.toId("rg.*")).isPresent());
+    assertTrue(dialobSession.prototypes().itemStates().containsKey(IdUtils.toId("rg.*")));
 
     verify(initialValueResolver).apply(itemId, rowgroup);
     verifyNoMoreInteractions(initialValueResolver);

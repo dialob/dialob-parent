@@ -15,19 +15,15 @@
  */
 package io.dialob.session.engine.session.model;
 
-import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.command.SessionUpdateCommand;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SessionUpdateCommandExecutor implements CommandExecutor<ItemStates, SessionUpdateCommand> {
 
   @Override
-  public void applyCommand(@NonNull EvalContext context, @NonNull SessionUpdateCommand command) {
+  public ItemStates applyCommand(@NonNull EvalContext context, @NonNull SessionUpdateCommand command) {
     var itemStates = context.mutableItemStates().toItemStates();
 
     final var newStates = command.update(context, itemStates);
@@ -64,6 +60,7 @@ public class SessionUpdateCommandExecutor implements CommandExecutor<ItemStates,
       context.registerUpdate(errorState.leftValue(), errorState.rightValue());
       context.mutableItemStates().errorStates().put(errorId, errorState.leftValue());
     }));
+    return context.mutableItemStates().toItemStates();
   }
 
   protected void triggerEvents(EvalContext context, SessionUpdateCommand command, ItemStates state, ItemStates updatedState) {
