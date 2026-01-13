@@ -30,8 +30,7 @@ import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 class DialobSessionTest {
 
@@ -77,7 +76,8 @@ class DialobSessionTest {
   @Test
   void noopCommandShouldNotTriggerAnyChanges() {
     DialobSession session = dialobSessionOf(List.of());
-    EvalContext context = Mockito.mock(EvalContext.class);
+    EvalContext context = Mockito.mock();
+    when(context.mutableItemStates()).thenReturn(session.mutableItemStates());
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
@@ -93,6 +93,7 @@ class DialobSessionTest {
     };
     session = session.applyUpdate(context, command);
 
+    verify(context, times(1)).mutableItemStates();
     verifyNoMoreInteractions(context);
   }
 
@@ -100,6 +101,7 @@ class DialobSessionTest {
   void newItemsShouldTriggerUpdate() {
     DialobSession session = dialobSessionOf(List.of());
     EvalContext context = Mockito.mock();
+    when(context.mutableItemStates()).thenReturn(session.mutableItemStates());
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
@@ -115,6 +117,7 @@ class DialobSessionTest {
     };
     session = session.applyUpdate(context, command);
 
+    verify(context, times(2)).mutableItemStates();
     verify(context).registerUpdate(any(ItemState.class), isNull());
     verifyNoMoreInteractions(context);
   }
@@ -123,6 +126,7 @@ class DialobSessionTest {
   void removedItemsShouldTriggerUpdate() {
     DialobSession session = dialobSessionOf(List.of(ITEM_STATE));
     EvalContext context = Mockito.mock();
+    when(context.mutableItemStates()).thenReturn(session.mutableItemStates());
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
@@ -138,6 +142,7 @@ class DialobSessionTest {
     };
     session = session.applyUpdate(context, command);
 
+    verify(context, times(2)).mutableItemStates();
     verify(context).registerUpdate(isNull(), any(ItemState.class));
     verifyNoMoreInteractions(context);
   }
@@ -146,6 +151,7 @@ class DialobSessionTest {
   void itemUpdateShouldTriggerUpdate() {
     DialobSession session = dialobSessionOf(List.of(ITEM_STATE));
     EvalContext context = Mockito.mock();
+    when(context.mutableItemStates()).thenReturn(session.mutableItemStates());
     Command<?> command = new SessionUpdateCommand() {
 
       @Override
@@ -173,6 +179,7 @@ class DialobSessionTest {
     };
     session = session.applyUpdate(context, command);
 
+    verify(context, times(2)).mutableItemStates();
     verify(context).registerUpdate(any(ItemState.class), any(ItemState.class));
     verifyNoMoreInteractions(context);
   }

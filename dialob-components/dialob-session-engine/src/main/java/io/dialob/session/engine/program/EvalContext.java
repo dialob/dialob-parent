@@ -100,6 +100,8 @@ public interface EvalContext {
    */
   String queueAsyncFunctionCall(AsyncFunctionCall asyncFunctionCall);
 
+  MutableItemStates mutableItemStates();
+
   interface UpdatedItemsVisitor {
 
     @FunctionalInterface
