@@ -36,7 +36,7 @@ export interface CreateSessionResult {
 
 export interface ApiResponse {
   success: boolean;
-  result?: SaveResult | DuplicateResult | CreateTagResult | ChangeIdResult | CreateSessionResult;
+  result?: SaveResult | DuplicateResult | CreateTagResult | ChangeIdResult | CreateSessionResult | TranslationResponse;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apiError?: any;
 }
@@ -81,6 +81,7 @@ export interface DialobComposerConfig {
   itemTypes: ItemTypeConfig;
   backendVersion: string;
   closeHandler: () => void;
+  translationServiceUrl?: string;
 }
 
 export interface AppConfig {
@@ -93,6 +94,29 @@ export interface AppConfig {
   tenantId: string;
   credentialMode: RequestCredentials;
   version: string;
+  translationServiceUrl?: string;
+}
+
+// Translation API types
+export interface TranslationEntry {
+  id: string;
+  text: string;
+}
+
+export interface TranslationRequest {
+  sourceLanguage: string;
+  targetLanguage: string;
+  entries: TranslationEntry[];
+}
+
+export interface TranslationResult {
+  id: string;
+  translatedText: string;
+}
+
+export interface TranslationResponse {
+  translations: TranslationResult[];
+  targetLanguage: string;
 }
 
 export interface BackendState {
@@ -108,4 +132,5 @@ export interface BackendState {
   getTags(formName: string): Promise<ComposerTag[]>;
   changeItemId(form: ComposerState, oldId: string, newId: string): Promise<ApiResponse>;
   createPreviewSession(formId: string, language: string, context?: PreviewSessionContext): Promise<ApiResponse>;
+  translateEntries(request: TranslationRequest): Promise<ApiResponse>;
 }

@@ -10,6 +10,7 @@ export type SavingAction =
   | { type: 'updateItemId', itemId: string }
   | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setItemProp', itemId: string, key: string, value: any }
   | { type: 'deleteItemProp', itemId: string, key: string }
 
@@ -40,4 +41,6 @@ export type SavingAction =
   | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setMetadataValue', attr: string, value: any }
+  | { type: 'addAITranslation', entryId: string, sourceLanguage: string, targetLanguage: string }
+  | { type: 'removeAITranslation', entryId: string }
 

@@ -3,12 +3,13 @@ import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
 import {
   ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable,
-  ValidationRule, LocalizedString
+  ValidationRule, LocalizedString, TranslationMetadata
 } from '../types';
 import { isContextVariable } from '../utils/ItemUtils';
 import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
 import { SavingState } from '../dialogs/contexts/saving/SavingContext';
 import { FlattenedItem } from '../components/tree/types';
+import { TranslationResult } from '../backend/types';
 
 export const generateItemIdWithPrefix = (state: ComposerState, prefix: string): string => {
   const idList = Object.keys(state.data).concat(state.variables?.map(v => v.name) || []);
@@ -629,13 +630,85 @@ const applyVariableChanges = (state: ComposerState, newState: SavingState): void
   state.variables = newState.variables;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const applyFormChanges = (state: ComposerState, newState: SavingState): void => {
   // Apply changes from the SavingContext - used to apply changes made in the FormOptionsDialog
   if (!newState.formMetadata) {
     return;
   }
   state.metadata = newState.formMetadata;
+}
+
+const applyTranslations = (state: ComposerState, translations: TranslationResult[], sourceLanguage: string, targetLanguage: string): void => {
+  // Apply translations to the form and add AI translation metadata
+  if (!state.metadata.composer) {
+    state.metadata.composer = {};
+  }
+  if (!state.metadata.composer.aiTranslations) {
+    state.metadata.composer.aiTranslations = [];
+  }
+
+  const timestamp = new Date().toISOString();
+
+  translations.forEach(translation => {
+    const parts = translation.id.split(':');
+    
+    if (parts[0] === 'i') {
+      // Item translation: i:itemId:type or i:itemId:v:index
+      const itemId = parts[1];
+      const item = state.data[itemId];
+      if (!item) return;
+
+      if (parts[2] === 'l') {
+        // Label
+        if (!item.label) item.label = {};
+        item.label[targetLanguage] = translation.translatedText;
+      } else if (parts[2] === 'd') {
+        // Description
+        if (!item.description) item.description = {};
+        item.description[targetLanguage] = translation.translatedText;
+      } else if (parts[2] === 'v') {
+        // Validation message
+        const validationIndex = parseInt(parts[3], 10);
+        if (item.validations && item.validations[validationIndex]) {
+          if (!item.validations[validationIndex].message) {
+            item.validations[validationIndex].message = {};
+          }
+          item.validations[validationIndex].message![targetLanguage] = translation.translatedText;
+        }
+      }
+    } else if (parts[0] === 'v') {
+      // ValueSet translation: v:valueSetId:index:entryId
+      const valueSetId = parts[1];
+      const entryIndex = parseInt(parts[2], 10);
+      const valueSet = state.valueSets?.find(vs => vs.id === valueSetId);
+      if (valueSet?.entries?.[entryIndex]) {
+        if (!valueSet.entries[entryIndex].label) {
+          valueSet.entries[entryIndex].label = {};
+        }
+        valueSet.entries[entryIndex].label[targetLanguage] = translation.translatedText;
+      }
+    }
+
+    // Add metadata
+    const metadata: TranslationMetadata = {
+      entryId: translation.id,
+      sourceLanguage,
+      targetLanguage,
+      timestamp
+    };
+    state.metadata.composer!.aiTranslations!.push(metadata);
+  });
+}
+
+const removeAITranslation = (state: ComposerState, entryId: string): void => {
+  // Remove AI translation metadata when user manually edits a field
+  if (!state.metadata.composer?.aiTranslations) {
+    return;
+  }
+  
+  state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
+    t => t.entryId !== entryId
+  );
 }
 
 export const formReducer = (state: ComposerState, action: ComposerAction, callbacks?: ComposerCallbacks): ComposerState => {
@@ -726,6 +799,10 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       applyVariableChanges(state, action.newState);
     } else if (action.type === 'applyFormChanges') {
       applyFormChanges(state, action.newState);
+    } else if (action.type === 'applyTranslations') {
+      applyTranslations(state, action.translations, action.sourceLanguage, action.targetLanguage);
+    } else if (action.type === 'removeAITranslation') {
+      removeAITranslation(state, action.entryId);
     }
   });
 

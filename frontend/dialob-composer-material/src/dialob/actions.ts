@@ -5,6 +5,7 @@ import {
   Variable, ComposerState,
   ComposerCallbacks
 } from "../types";
+import { TranslationResult } from "../backend/types";
 
 export type ComposerAction =
   | { type: 'addItem', config: DialobItemTemplate, parentItemId: string, afterItemId?: string, callbacks?: ComposerCallbacks }
@@ -57,3 +58,6 @@ export type ComposerAction =
   | { type: 'applyListChanges', newState: SavingState }
   | { type: 'applyVariableChanges', newState: SavingState }
   | { type: 'applyFormChanges', newState: SavingState }
+
+  | { type: 'applyTranslations', translations: TranslationResult[], sourceLanguage: string, targetLanguage: string }
+  | { type: 'removeAITranslation', entryId: string }

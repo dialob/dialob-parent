@@ -124,6 +124,14 @@ export const useSave = () => {
     dispatch({ type: 'setMetadataValue', attr, value });
   }
 
+  const addAITranslation = (entryId: string, sourceLanguage: string, targetLanguage: string) => {
+    dispatch({ type: 'addAITranslation', entryId, sourceLanguage, targetLanguage });
+  }
+
+  const removeAITranslation = (entryId: string) => {
+    dispatch({ type: 'removeAITranslation', entryId });
+  }
+
   return {
     updateItem,
     updateItemId,
@@ -154,6 +162,8 @@ export const useSave = () => {
     moveVariable,
     changeVariableId,
     setMetadataValue,
+    addAITranslation,
+    removeAITranslation,
     savingState: state
   }
 }

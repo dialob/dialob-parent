@@ -1,7 +1,7 @@
 import { ComposerState, ComposerTag } from "../types";
 import {
   SaveResult, DuplicateResult, ApiResponse, CreateTagRequest, CreateTagResult, ChangeIdResult, PreviewSessionData,
-  PreviewSessionContext, CreateSessionResult, DialobComposerConfig,
+  PreviewSessionContext, CreateSessionResult, DialobComposerConfig, TranslationRequest, TranslationResponse,
 } from "./types";
 
 interface UrlParams {
@@ -218,6 +218,49 @@ export class BackendService {
         success: false,
         apiError: err
       }
+    }
+  }
+
+  public async translateEntries(request: TranslationRequest): Promise<ApiResponse> {
+    if (!this.config.translationServiceUrl) {
+      return {
+        success: false,
+        apiError: new Error('Translation service URL is not configured')
+      };
+    }
+
+    try {
+      const headers: Record<string, string> = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+
+      const url = this.config.translationServiceUrl;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(request)
+      });
+
+      if (!response.ok) {
+        // Backend returns ProblemDetail on errors
+        const errorDetail = await response.json().catch(() => null);
+        const errorMessage = errorDetail?.detail || `Translation service error: ${response.status}`;
+        console.error("Translation service error", response.status, errorDetail);
+        throw new Error(errorMessage);
+      }
+
+      const result = await response.json() as TranslationResponse;
+      
+      return {
+        result,
+        success: true
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        apiError: err
+      };
     }
   }
 }
