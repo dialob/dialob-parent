@@ -22,7 +22,6 @@ import io.dialob.session.engine.session.protobuf.StateWriter;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +35,7 @@ public record ValueSetState(
 
   public ValueSetState {
     Objects.requireNonNull(id, "id is null");
-    entries = entries != null ? List.copyOf(entries) : null;
+    entries = List.copyOf(Objects.requireNonNullElseGet(entries, List::of));
   }
 
   public ValueSetState(@NonNull String id, List<Entry> entries) {
@@ -96,21 +95,6 @@ public record ValueSetState(
 
   public UpdateBuilder update() {
     return new UpdateBuilder();
-  }
-
-  @Override
-  @NonNull
-  public ValueSetId id() {
-    return id;
-  }
-
-  @Override
-  @NonNull
-  public List<Entry> entries() {
-    if (entries == null) {
-      return Collections.emptyList();
-    }
-    return entries;
   }
 
   @Override

@@ -20,13 +20,14 @@ import io.dialob.session.engine.session.protobuf.StateWriter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Mode;
 import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ValueSetStateTest {
 
@@ -36,6 +37,22 @@ class ValueSetStateTest {
       .set(Mode.skipMockito())
       .suppress(Warning.NULL_FIELDS)
       .verify();
+  }
+
+  @Test
+  void shouldNotCreateANewInstanceIfNothingChanges() {
+    ValueSetState original = new ValueSetState(new ValueSetId("vs1"), List.of(
+      new ValueSetState.Entry("k1", "v1", true),
+      new ValueSetState.Entry("k2", "v2", false)
+    ));
+    assertSame(original, original.update()
+      .get());
+    assertNotSame(original, original.update()
+      .setEntries(List.of(
+        new ValueSetState.Entry("k3", "v1", true),
+        new ValueSetState.Entry("k4", "v2", false)
+      ))
+      .get());
   }
 
   @Test
