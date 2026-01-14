@@ -169,8 +169,8 @@ public record ItemState(
     output.writeNullableString(description);
 
     output.writeNullableObjectValue(answer);
-    output.writeValue(Utils.mapQuestionTypeToValueType(type).orElse(null), value);
-    output.writeValue(Utils.mapQuestionTypeToValueType(type).orElse(null), defaultValue);
+    output.writeNullableValue(Utils.mapQuestionTypeToValueType(type).orElse(null), value);
+    output.writeNullableValue(Utils.mapQuestionTypeToValueType(type).orElse(null), defaultValue);
 
     output.writeStringList(classNames);
     output.writeIdList(items);

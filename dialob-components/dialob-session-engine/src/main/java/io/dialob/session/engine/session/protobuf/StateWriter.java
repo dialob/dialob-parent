@@ -204,15 +204,13 @@ public class StateWriter {
   }
 
   public void writeValue(ValueType type, Object value) throws IOException {
-    final boolean present = value != null && type != null;
-    writeBool(present);
-    if (present) {
-      writeRawByte(type.getTypeCode());
-      writeValueType(type, value);
-    }
+    writeRawByte(type.getTypeCode());
+    writeValueType(type, value);
   }
 
-
+  public void writeNullableValue(ValueType type, Object value) throws IOException {
+    nullable(value, v -> writeValue(type, v));
+  }
 
   public int getTotalBytesWritten() {
     return output.getTotalBytesWritten();

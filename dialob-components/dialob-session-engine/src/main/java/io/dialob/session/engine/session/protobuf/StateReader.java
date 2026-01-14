@@ -16,6 +16,7 @@
 package io.dialob.session.engine.session.protobuf;
 
 import com.google.protobuf.CodedInputStream;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.rule.parser.api.PrimitiveValueType;
 import io.dialob.rule.parser.api.ValueType;
@@ -44,6 +45,19 @@ public class StateReader {
 
   public static StateReader newInstance(ByteArrayInputStream byteArrayInputStream) {
     return new StateReader(CodedInputStream.newInstance(byteArrayInputStream));
+  }
+
+  interface Reader<T> {
+    @NonNull
+    T read() throws IOException;
+  }
+
+  @Nullable
+  <T> T nullable(StateReader.Reader<T> reader) throws IOException {
+    if (readBool()) {
+      return reader.read();
+    }
+    return null;
   }
 
   public String readString() throws IOException {
@@ -179,20 +193,20 @@ public class StateReader {
     return List.of();
   }
 
-  public Object readNullableValue() throws IOException {
-    if (readBool()) {
-      byte typeCode = readRawByte();
-      ValueType valueType;
-      if ((0x80 & typeCode) != 0) {
-        typeCode = (byte) (typeCode & 0x7f);
-        valueType = ValueType.arrayOf(PrimitiveValueType.values()[typeCode]);
-      } else {
-        valueType = PrimitiveValueType.values()[typeCode];
-      }
-      return readValueType(valueType);
+  public Object readValue() throws IOException {
+    byte typeCode = readRawByte();
+    ValueType valueType;
+    if ((0x80 & typeCode) != 0) {
+      typeCode = (byte) (typeCode & 0x7f);
+      valueType = ValueType.arrayOf(PrimitiveValueType.values()[typeCode]);
+    } else {
+      valueType = PrimitiveValueType.values()[typeCode];
     }
-    return null;
+    return readValueType(valueType);
   }
 
+  public Object readNullableValue() throws IOException {
+    return nullable(this::readValue);
+  }
 
 }
