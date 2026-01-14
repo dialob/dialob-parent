@@ -706,16 +706,6 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
     };
   }
 
-  Predicate<SessionObject> getIsActivePredicate() {
-    return switch (questionClientVisibility) {
-      case ALL -> itemState -> itemState != null && itemState.isDisplayItem();
-      case SHOW_DISABLED -> itemState -> itemState != null && itemState.isActive();
-      default ->
-        itemState -> itemState != null && itemState.isDisplayItem() && itemState.isActive() && !itemState.isDisabled();
-    };
-  }
-
-
   private void publishQuestionnaireActions(String nextRevision, List<Action> actionQueue) {
     if (!actionQueue.isEmpty()) {
       final Actions.Builder builder = new Actions.Builder().rev(nextRevision);
