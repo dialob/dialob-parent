@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,31 +92,8 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     output.writeDate(lastUpdate);
     output.writeNullableDate(completed);
     output.writeNullableDate(opened);
-
-    output.writeInt(itemStates.itemStates().size());
-    for (var state : itemStates.itemStates().values()) {
-      state.writeTo(output);
-    }
-
-    output.writeInt(prototypes.itemStates().size());
-    for (var state : prototypes.itemStates().values()) {
-      state.writeTo(output);
-    }
-
-    output.writeInt(itemStates.valueSetStates().size());
-    for (var state : itemStates.valueSetStates().values()) {
-      state.writeTo(output);
-    }
-
-    output.writeInt(itemStates.errorStates().size());
-    for (var state : itemStates.errorStates().values()) {
-      state.writeTo(output);
-    }
-
-    output.writeInt(prototypes.errorStates().size());
-    for (var state : prototypes.errorStates().values()) {
-      state.writeTo(output);
-    }
+    itemStates.writeTo(output);
+    prototypes.writeTo(output);
   }
 
   public static DialobSession readFrom(StateReader input) throws IOException {
@@ -128,38 +104,8 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     var lastUpdate = input.readDate();
     var completed = input.readNullableDate();
     var opened = input.readNullableDate();
-    var itemStates = new HashMap<ItemId,ItemState>();
-    var itemPrototypes = new HashMap<ItemId,ItemState>();
-    var valueSetStates = new HashMap<ValueSetId,ValueSetState>();
-    var errorStates = new HashMap<ErrorId,ErrorState>();
-    var errorPrototypes = new HashMap<ErrorId,ErrorState>();
-
-
-    int count = input.readInt();
-    for (int i = 0; i < count; ++i) {
-      final var state = ItemState.readFrom(input);
-      itemStates.put(state.id(), state);
-    }
-    count = input.readInt();
-    for (int i = 0; i < count; ++i) {
-      final var state = ItemState.readFrom(input);
-      itemPrototypes.put(state.id(), state);
-    }
-    count = input.readInt();
-    for (int i = 0; i < count; ++i) {
-      final var state = ValueSetState.readFrom(input);
-      valueSetStates.put(state.id(), state);
-    }
-    count = input.readInt();
-    for (int i = 0; i < count; ++i) {
-      final var state = ErrorState.readFrom(input);
-      errorStates.put(state.id(), state);
-    }
-    count = input.readInt();
-    for (int i = 0; i < count; ++i) {
-      final var state = ErrorState.readFrom(input);
-      errorPrototypes.put(state.id(), state);
-    }
+    var itemStates = ItemStates.readFrom(input);
+    var prototypes = ItemStates.readFrom(input);
     return new DialobSession(
       tenantId,
       id,
@@ -168,15 +114,8 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
       completed,
       opened,
       language,
-      new ItemStates.Builder()
-        .itemStates(itemStates)
-        .errorStates(errorStates)
-        .valueSetStates(valueSetStates)
-        .build(),
-      new ItemStates.Builder()
-        .itemStates(itemPrototypes)
-        .errorStates(errorPrototypes)
-        .build()
+      itemStates,
+      prototypes
     );
   }
 
@@ -197,7 +136,13 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
     );
   }
 
-  public DialobSession withItemStates(@NonNull ItemStates itemStates) {
+  public DialobSession updateItemStatesTo(@NonNull ItemStates itemStates) {
+    lastUpdate = Instant.now();
+    if (opened == null) {
+      opened = lastUpdate;
+    }
+    revision = Integer.toString(ThreadLocalRandom.current().nextInt());
+    LOGGER.trace("{} updated to rev {}", getId(), revision);
     this.itemStates = itemStates;
     return this;
   }
@@ -245,16 +190,6 @@ public class DialobSession implements EvalContext.SessionFacade, Serializable {
    */
   public DialobSession applyCommand(@NonNull EvalContext evalContext, @NonNull Command command) {
     return new GenericCommandExecutor(this).applyCommand(evalContext, command);
-  }
-
-  protected DialobSession updated() {
-    lastUpdate = Instant.now();
-    if (opened == null) {
-      opened = lastUpdate;
-    }
-    revision = Integer.toString(ThreadLocalRandom.current().nextInt());
-    LOGGER.trace("{} updated to rev {}", getId(), revision);
-    return this;
   }
 
   @NonNull

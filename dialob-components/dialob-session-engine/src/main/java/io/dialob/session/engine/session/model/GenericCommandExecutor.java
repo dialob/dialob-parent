@@ -53,8 +53,7 @@ public record GenericCommandExecutor(
       default -> LOGGER.warn("Do not know how to apply command: {}", command);
     }
     return session()
-      .updated()
-      .withItemStates(evalContext.mutableItemStates().toItemStates());
+      .updateItemStatesTo(evalContext.mutableItemStates().toItemStates());
   }
 
   private EvalContext createScopedEvalContext(@NonNull EvalContext evalContext, ItemId itemId) {
