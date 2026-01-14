@@ -16,6 +16,7 @@
 package io.dialob.session.engine.sp;
 
 import io.dialob.api.proto.ActionItem;
+import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
@@ -33,6 +34,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static io.dialob.session.engine.session.model.DialobSession.QUESTIONNAIRE_REF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -603,6 +605,70 @@ class DialobQuestionnaireSessionTest {
     assertEquals(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED, readSession.getQuestionClientVisibility());
     assertEquals(Questionnaire.Metadata.Status.NEW, readSession.getQuestionnaireMetadata().getStatus());
     assertEquals("form1", readSession.getQuestionnaireMetadata().getFormId());
+  }
+
+  @Test
+  void shouldReturnProvidedValueSets() {
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock(DialobProgram.class);
+
+    ItemState questionnaire = mock();
+
+    ValueSetState valueSetState1 = new ValueSetState(new ValueSetId("vs1"), List.of(
+      new ValueSetState.Entry("k1", "v1", true),
+      new ValueSetState.Entry("k2", "v2", false)
+    ));
+
+    ValueSetState valueSetState2 = new ValueSetState(new ValueSetId("vs2"), List.of(
+      new ValueSetState.Entry("k3", "v3", true)
+    ));
+
+    DialobSession dialobSession = new DialobSession(
+      "tenant",
+      "id",
+      "rev",
+      Instant.now(),
+      null,
+      Instant.now(),
+      "en",
+      new ItemStates.Builder()
+        .itemStates(Map.of(
+          QUESTIONNAIRE_REF, questionnaire
+        ))
+        .valueSetStates(Map.of(
+          valueSetState1.id(), valueSetState1,
+          valueSetState2.id(), valueSetState2
+        ))
+        .build(),
+      ItemStates.EMPTY
+    );
+
+    Questionnaire.Metadata metadata = new Questionnaire.Metadata.Builder()
+      .formId("form1")
+      .status(Questionnaire.Metadata.Status.OPEN)
+      .build();
+
+    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+      .serviceFacade(serviceFacade)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev("rev1")
+      .metadata(metadata)
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    List<ValueSet> providedValueSets = new ArrayList<>(session.getQuestionnaire().getValueSets());
+
+    assertThat(providedValueSets).hasSize(2);
+    assertThat(providedValueSets).extracting("id").containsExactlyInAnyOrder("vs1", "vs2");
+
+    ValueSet vs1 = providedValueSets.stream().filter(vs -> vs.getId().equals("vs1")).findFirst().orElseThrow();
+    assertThat(vs1.getEntries()).hasSize(1);
+    assertThat(vs1.getEntries().getFirst().getKey()).isEqualTo("k1");
+
+    ValueSet vs2 = providedValueSets.stream().filter(vs -> vs.getId().equals("vs2")).findFirst().orElseThrow();
+    assertThat(vs2.getEntries()).hasSize(1);
+    assertThat(vs2.getEntries().getFirst().getKey()).isEqualTo("k3");
   }
 
 }

@@ -64,7 +64,7 @@ public final class CommandFactory {
     ITEM_STATE_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNew(itemState, updateState) || updateState != itemState) && notRemoved(itemState, updateState);
+        return notSame(itemState, updateState) && notRemoved(itemState, updateState);
       }
     },
     GROUP_ITEMS_CHANGED {
@@ -150,7 +150,7 @@ public final class CommandFactory {
     ERROR_ACTIVITY_CHANGED {
       @Override
       public boolean test(ErrorState itemState, ErrorState updateState) {
-        return isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive();
+        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive());
       }
     }
   }
