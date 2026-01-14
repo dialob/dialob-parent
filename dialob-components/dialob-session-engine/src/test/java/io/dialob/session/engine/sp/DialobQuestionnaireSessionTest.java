@@ -22,14 +22,15 @@ import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.session.engine.program.DialobProgram;
 import io.dialob.session.engine.session.model.*;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -547,6 +548,61 @@ class DialobQuestionnaireSessionTest {
 
     assertThat(sessionAll.getVisibleItems()).extracting("id")
       .containsExactlyInAnyOrder("active", "inactive", "disabled");
+  }
+
+  @Test
+  void shouldWriteAndReadDialobQuestionnaireSession() throws IOException {
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock(DialobProgram.class);
+    DialobSession dialobSession = dialobSessionOf(Instant.now(), Instant.now(), List.of());
+
+    Questionnaire.Metadata metadata = new Questionnaire.Metadata.Builder()
+      .formId("form1")
+      .status(Questionnaire.Metadata.Status.OPEN)
+      .build();
+
+    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+      .serviceFacade(serviceFacade)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev("rev1")
+      .metadata(metadata)
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    StateWriter writer = mock(StateWriter.class);
+    session.writeTo(writer);
+
+    verify(writer).writeNullableString("rev1");
+    verify(writer).writeInt(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED.ordinal());
+    verify(writer, times(8)).writeInt(DialobQuestionnaireSession.State.NEW.ordinal());
+    verify(writer).writeString("OPEN");
+    verify(writer).writeString("form1");
+    // ... verify other metadata writes
+
+    StateReader reader = mock(StateReader.class);
+    when(reader.readNullableString()).thenReturn("rev1", "rev2", null, "fi", "label", "creator", "owner", "tenant", "submitUrl", "id", "rev");
+    when(reader.readInt()).thenReturn(
+      QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED.ordinal(),
+      DialobQuestionnaireSession.State.NEW.ordinal(),
+      0, // additional properties count
+      0, // item states count
+      0  // prototypes count
+    );
+    when(reader.readString()).thenReturn("OPEN", "form1", "tenant", "fi");
+    when(reader.readDate()).thenReturn(Instant.now());
+
+    DialobQuestionnaireSession.Builder builder = DialobQuestionnaireSession.builder();
+    builder.readFrom(reader);
+    DialobQuestionnaireSession readSession = builder
+      .serviceFacade(serviceFacade)
+      .dialobProgram(dialobProgram)
+      .build();
+
+    assertEquals("rev1", readSession.getRev());
+    assertEquals(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED, readSession.getQuestionClientVisibility());
+    assertEquals(Questionnaire.Metadata.Status.NEW, readSession.getQuestionnaireMetadata().getStatus());
+    assertEquals("form1", readSession.getQuestionnaireMetadata().getFormId());
   }
 
 }
