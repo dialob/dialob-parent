@@ -24,12 +24,14 @@ import io.dialob.session.engine.session.command.event.Event;
 import io.dialob.session.engine.session.command.event.ItemAddedEvent;
 import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.*;
 
-import static io.dialob.session.engine.session.command.CommandFactory.ItemStatePredicates.GROUP_ITEMS_CHANGED;
+import static io.dialob.session.engine.session.command.CommandFactory.ErrorStateMatcher.ERROR_ACTIVITY_CHANGED;
+import static io.dialob.session.engine.session.command.CommandFactory.ItemStatePredicates.*;
+import static io.dialob.session.engine.session.command.CommandFactory.ValueStatePredicates.VALUE_SET_STATE_CHANGED;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CommandFactoryTest {
@@ -154,24 +156,300 @@ class CommandFactoryTest {
   }
 
   @Test
+  void testItemStatesChange() {
+    ItemState original = mock();
+    ItemState updated = mock();
+
+    var predicates = ITEM_STATE_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updated));
+    assertFalse(predicates.test(original, null));
+    assertTrue(predicates.test(original, updated));
+    assertFalse(predicates.test(original, original));
+  }
+
+  @Test
+  void testValueSetStatesChange() {
+    ValueSetState original = mock();
+    ValueSetState updated = mock();
+
+    var predicates = VALUE_SET_STATE_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updated));
+    assertFalse(predicates.test(original, null));
+    assertTrue(predicates.test(original, updated));
+    assertFalse(predicates.test(original, original));
+  }
+
+  @Test
+  void testErrorStatesChange() {
+    ErrorState originalTrue = mock();
+    when(originalTrue.isActive()).thenReturn(true);
+    ErrorState originalFalse = mock();
+    when(originalFalse.isActive()).thenReturn(false);
+
+    ErrorState updatedTrue = mock();
+    when(updatedTrue.isActive()).thenReturn(true);
+    ErrorState updatedFalse = mock();
+    when(updatedFalse.isActive()).thenReturn(false);
+
+    var predicates = ERROR_ACTIVITY_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
   void testGroupItemsChange() {
 
-    ItemState original = Mockito.mock(ItemState.class);
+    ItemState original = mock();
     when(original.items()).thenReturn(Collections.emptyList());
-    ItemState updated = Mockito.mock(ItemState.class);
+    ItemState updated = mock();
     when(updated.items()).thenReturn(Collections.emptyList());
-    ItemState original2 = Mockito.mock(ItemState.class);
+    ItemState original2 = mock();
     when(original2.items()).thenReturn(List.of(IdUtils.toId("q1")));
-    ItemState updated2 = Mockito.mock(ItemState.class);
+    ItemState updated2 = mock();
     when(updated2.items()).thenReturn(List.of(IdUtils.toId("q1")));
 
 
-    assertFalse(GROUP_ITEMS_CHANGED.test(null, null));
-    assertTrue(GROUP_ITEMS_CHANGED.test(null, updated));
-    assertTrue(GROUP_ITEMS_CHANGED.test(original, null));
-    assertFalse(GROUP_ITEMS_CHANGED.test(original, updated));
-    assertTrue(GROUP_ITEMS_CHANGED.test(original, updated2));
-    assertFalse(GROUP_ITEMS_CHANGED.test(original2, updated2));
+    var predicates = GROUP_ITEMS_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updated));
+    assertTrue(predicates.test(original, null));
+    assertFalse(predicates.test(original, updated));
+    assertTrue(predicates.test(original, updated2));
+    assertFalse(predicates.test(original2, updated2));
+  }
+
+  @Test
+  void testRowsCanBeAddedChanged() {
+
+    ItemState originalTrue = mock();
+    when(originalTrue.isRowsCanBeAdded()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isRowsCanBeAdded()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isRowsCanBeAdded()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isRowsCanBeAdded()).thenReturn(false);
+
+
+    var predicates = ROWS_CAN_BE_ADDED_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+
+  }
+
+  @Test
+  void testRowsCanBeRemovedChanged() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isRowCanBeRemoved()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isRowCanBeRemoved()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isRowCanBeRemoved()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isRowCanBeRemoved()).thenReturn(false);
+
+    var predicates = ROWS_CAN_BE_REMOVED_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
+  void testItemLabelChanged() {
+
+    ItemState original = mock();
+    when(original.label()).thenReturn("original");
+
+    ItemState updated = mock();
+    when(updated.label()).thenReturn("updated");
+    ItemState updatedSame = mock();
+    when(updated.label()).thenReturn("original");
+
+    var pred = ITEM_LABEL_CHANGED;
+
+    assertFalse(pred.test(null, null));
+    assertTrue(pred.test(null, updated));
+    assertFalse(pred.test(original, original));
+    assertFalse(pred.test(original, updated));
+    assertTrue(pred.test(original, updatedSame));
+    assertTrue(pred.test(original, null));
+  }
+  @Test
+  void testItemDescriptionChanged() {
+
+    ItemState original = mock();
+    when(original.description()).thenReturn("original");
+
+    ItemState updated = mock();
+    when(updated.description()).thenReturn("updated");
+    ItemState updatedSame = mock();
+    when(updated.description()).thenReturn("original");
+
+    var pred = ITEM_DESCRIPTION_CHANGED;
+
+    assertFalse(pred.test(null, null));
+    assertTrue(pred.test(null, updated));
+    assertFalse(pred.test(original, original));
+    assertFalse(pred.test(original, updated));
+    assertTrue(pred.test(original, updatedSame));
+    assertTrue(pred.test(original, null));
+  }
+
+
+  @Test
+  void testIsRequiredChanged() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isRequired()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isRequired()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isRequired()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isRequired()).thenReturn(false);
+
+    var predicates = ITEM_REQUIRED_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
+  void testItemValidityChanged() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isInvalid()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isInvalid()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isInvalid()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isInvalid()).thenReturn(false);
+
+    var predicates = ITEM_INVALIDITY_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
+  void testInvalidAnswersChanged() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isInvalidAnswers()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isInvalidAnswers()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isInvalidAnswers()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isInvalidAnswers()).thenReturn(false);
+
+    var predicates = ITEM_INVALID_ANSWERS_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
+  void testAnsweredStateChanged() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isAnswered()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isAnswered()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isAnswered()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isAnswered()).thenReturn(false);
+
+    var predicates = ITEM_ANSWERED_STATE_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
+  void testItemStatusChanged() {
+    ItemState originalNew = mock();
+    when(originalNew.status()).thenReturn(ItemState.Status.NEW);
+    ItemState originalError = mock();
+    when(originalError.status()).thenReturn(ItemState.Status.ERROR);
+
+    ItemState updatedNew = mock();
+    when(updatedNew.status()).thenReturn(ItemState.Status.NEW);
+    ItemState updatedError = mock();
+    when(updatedError.status()).thenReturn(ItemState.Status.ERROR);
+
+    var predicates = ITEM_STATUS_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, originalNew));
+    assertTrue(predicates.test(null, originalError));
+    assertFalse(predicates.test(originalNew, originalNew));
+    assertFalse(predicates.test(originalNew, updatedNew));
+    assertFalse(predicates.test(originalError, updatedError));
+    assertTrue(predicates.test(originalNew, updatedError));
+    assertTrue(predicates.test(originalError, updatedNew));
+    assertTrue(predicates.test(originalNew, null));
+    assertTrue(predicates.test(originalError, null));
   }
 
 }

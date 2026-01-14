@@ -394,14 +394,15 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       .build();
   }
 
+  @NonNull
   private Iterable<? extends ValueSet> getProvidedValueSets() {
     return () -> dialobSession.getItemStates().valueSetStates().values().stream().map(state ->
-      (ValueSet) new ValueSet.Builder()
+      new ValueSet.Builder()
         .id(state.id().getValueSetId())
         .entries(() -> state.entries().stream()
           .filter(ValueSetState.Entry::provided)
           .map(entry ->
-            (ValueSetEntry) new ValueSetEntry.Builder()
+            new ValueSetEntry.Builder()
               .key(entry.id())
               .value(entry.label())
               .build()).iterator()
