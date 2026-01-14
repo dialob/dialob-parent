@@ -203,6 +203,32 @@ class CommandFactoryTest {
     assertTrue(predicates.test(original, updated));
     assertFalse(predicates.test(original, original));
   }
+  @Test
+  void testItemActivityChange() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isActive()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isActive()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isActive()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isActive()).thenReturn(false);
+
+    var predicates = ITEM_ACTIVITY_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+
 
   @Test
   void testErrorStatesChange() {
