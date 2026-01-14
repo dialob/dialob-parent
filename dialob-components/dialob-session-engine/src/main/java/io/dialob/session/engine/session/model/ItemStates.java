@@ -16,10 +16,14 @@
 package io.dialob.session.engine.session.model;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import org.immutables.value.Value;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Value.Builder
@@ -49,4 +53,46 @@ public record ItemStates(
 
   public static final ItemStates EMPTY = new ItemStates(Map.of(), Map.of(), Map.of());
 
+
+  public void writeTo(StateWriter output) throws IOException {
+    output.writeInt(itemStates.size());
+    for (var state : itemStates.values()) {
+      state.writeTo(output);
+    }
+    output.writeInt(valueSetStates.size());
+    for (var state : valueSetStates.values()) {
+      state.writeTo(output);
+    }
+    output.writeInt(errorStates.size());
+    for (var state : errorStates.values()) {
+      state.writeTo(output);
+    }
+  }
+
+  public static ItemStates readFrom(StateReader input) throws IOException {
+    var itemStates = new HashMap<ItemId,ItemState>();
+    var valueSetStates = new HashMap<ValueSetId,ValueSetState>();
+    var errorStates = new HashMap<ErrorId,ErrorState>();
+
+    int count = input.readInt();
+    for (int i = 0; i < count; ++i) {
+      final var state = ItemState.readFrom(input);
+      itemStates.put(state.id(), state);
+    }
+    count = input.readInt();
+    for (int i = 0; i < count; ++i) {
+      final var state = ValueSetState.readFrom(input);
+      valueSetStates.put(state.id(), state);
+    }
+    count = input.readInt();
+    for (int i = 0; i < count; ++i) {
+      final var state = ErrorState.readFrom(input);
+      errorStates.put(state.id(), state);
+    }
+    return new ItemStates(
+        itemStates,
+        valueSetStates,
+        errorStates
+    );
+  }
 }

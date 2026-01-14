@@ -88,7 +88,7 @@ public class DialobSessionEvalContext implements EvalContext {
     this.updatedItemIds = new HashSet<>();
     this.updatedErrorIds = new HashSet<>();
     this.updatedValueSetIds = new HashSet<>();
-    this.dialobSessionUpdateHook = dialobSessionUpdateHook != null ? dialobSessionUpdateHook : DEFAULT_DIALOB_SESSION_EVAL_HOOKS;
+    this.dialobSessionUpdateHook = Objects.requireNonNullElse(dialobSessionUpdateHook, DEFAULT_DIALOB_SESSION_EVAL_HOOKS);
 
   }
 
