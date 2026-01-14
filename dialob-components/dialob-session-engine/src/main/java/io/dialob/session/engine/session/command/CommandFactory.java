@@ -43,15 +43,15 @@ public final class CommandFactory {
   }
 
   private static boolean isNewOrRemoved(Object itemState, Object updateState) {
-    return itemState != updateState && (itemState == null || updateState == null);
+    return notSame(itemState, updateState) && (itemState == null || updateState == null);
   }
 
   private static boolean notSame(Object itemState, Object updateState) {
     return itemState != updateState;
   }
 
-  private static boolean notRemoved(Object itemState, Object updateState) {
-    return itemState == null || updateState != null;
+  private static boolean notNulls(Object itemState, Object updateState) {
+    return itemState != null || updateState != null;
   }
 
   enum ItemStatePredicates implements BiPredicate<ItemState, ItemState> {
@@ -70,69 +70,69 @@ public final class CommandFactory {
     GROUP_ITEMS_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !itemState.items().equals(updateState.items()));
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !itemState.items().equals(updateState.items()));
       }
     },
     ITEM_ACTIVITY_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive());
       }
     },
     ROWS_CAN_BE_ADDED_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRowsCanBeAdded() != itemState.isRowsCanBeAdded());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRowsCanBeAdded() != itemState.isRowsCanBeAdded());
       }
     },
     ROWS_CAN_BE_REMOVED_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRowCanBeRemoved() != itemState.isRowCanBeRemoved());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRowCanBeRemoved() != itemState.isRowCanBeRemoved());
       }
     },
     ITEM_LABEL_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.label(), itemState.label()));
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.label(), itemState.label()));
       }
     },
 
     ITEM_DESCRIPTION_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.description(), itemState.description()));
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || !Objects.equals(updateState.description(), itemState.description()));
       }
     },
 
     ITEM_REQUIRED_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRequired() != itemState.isRequired());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRequired() != itemState.isRequired());
       }
     },
     ITEM_STATUS_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.status() != itemState.status());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.status() != itemState.status());
       }
     },
     ITEM_INVALIDITY_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isInvalid() != itemState.isInvalid());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isInvalid() != itemState.isInvalid());
       }
     },
     ITEM_INVALID_ANSWERS_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isInvalidAnswers() != itemState.isInvalidAnswers());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isInvalidAnswers() != itemState.isInvalidAnswers());
       }
     },
     ITEM_ANSWERED_STATE_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isAnswered() != itemState.isAnswered());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isAnswered() != itemState.isAnswered());
       }
     }
   }
@@ -140,8 +140,8 @@ public final class CommandFactory {
   enum ItemStatesPredicates implements BiPredicate<ItemStates, ItemStates> {
     ITEM_STATES_CHANGED {
       @Override
-      public boolean test(ItemStates itemState, ItemStates itemState2) {
-        return itemState.itemStates() != itemState2.itemStates();
+      public boolean test(ItemStates itemState, ItemStates updateState) {
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || itemState.itemStates() != updateState.itemStates());
       }
     }
   }
@@ -150,7 +150,7 @@ public final class CommandFactory {
     ERROR_ACTIVITY_CHANGED {
       @Override
       public boolean test(ErrorState itemState, ErrorState updateState) {
-        return notSame(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive());
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isActive() != itemState.isActive());
       }
     }
   }

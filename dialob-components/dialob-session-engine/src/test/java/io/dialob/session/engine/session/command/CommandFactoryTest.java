@@ -29,6 +29,7 @@ import java.util.*;
 
 import static io.dialob.session.engine.session.command.CommandFactory.ErrorStateMatcher.ERROR_ACTIVITY_CHANGED;
 import static io.dialob.session.engine.session.command.CommandFactory.ItemStatePredicates.*;
+import static io.dialob.session.engine.session.command.CommandFactory.ItemStatesPredicates.ITEM_STATES_CHANGED;
 import static io.dialob.session.engine.session.command.CommandFactory.ValueStatePredicates.VALUE_SET_STATE_CHANGED;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -167,6 +168,28 @@ class CommandFactoryTest {
     assertTrue(predicates.test(original, updated));
     assertFalse(predicates.test(original, original));
   }
+
+  @Test
+  void testItemStatesChange2() {
+    ItemStates original = mock();
+    ItemStates original2 = mock();
+    Map<ItemId, ItemState> stateMap = Map.of(IdUtils.toId("id1"), mock(ItemState.class));
+    when(original.itemStates()).thenReturn(stateMap);
+    when(original2.itemStates()).thenReturn(stateMap);
+    ItemStates updated = mock();
+    when(updated.itemStates()).thenReturn(Map.of(IdUtils.toId("id2"),mock(ItemState.class)));
+
+    var predicates = ITEM_STATES_CHANGED;
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updated));
+    assertTrue(predicates.test(original, null));
+    assertTrue(predicates.test(original, updated));
+    assertFalse(predicates.test(original, original));
+    assertFalse(predicates.test(original, original2));
+  }
+
+
+
 
   @Test
   void testValueSetStatesChange() {
