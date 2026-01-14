@@ -38,10 +38,6 @@ import static java.util.Collections.emptyList;
 
 public final class CommandFactory {
 
-  private static boolean isNew(Object itemState, Object updateState) {
-    return itemState == null && updateState != null;
-  }
-
   private static boolean isNewOrRemoved(Object itemState, Object updateState) {
     return notSame(itemState, updateState) && (itemState == null || updateState == null);
   }
