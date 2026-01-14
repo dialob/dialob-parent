@@ -163,7 +163,7 @@ class CommandFactoryTest {
     var predicates = ITEM_STATE_CHANGED;
     assertFalse(predicates.test(null, null));
     assertTrue(predicates.test(null, updated));
-    assertFalse(predicates.test(original, null));
+    assertTrue(predicates.test(original, null)); // ??
     assertTrue(predicates.test(original, updated));
     assertFalse(predicates.test(original, original));
   }
@@ -176,7 +176,7 @@ class CommandFactoryTest {
     var predicates = VALUE_SET_STATE_CHANGED;
     assertFalse(predicates.test(null, null));
     assertTrue(predicates.test(null, updated));
-    assertFalse(predicates.test(original, null));
+    assertTrue(predicates.test(original, null));
     assertTrue(predicates.test(original, updated));
     assertFalse(predicates.test(original, original));
   }

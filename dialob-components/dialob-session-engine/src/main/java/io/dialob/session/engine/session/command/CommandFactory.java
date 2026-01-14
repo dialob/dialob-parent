@@ -64,7 +64,7 @@ public final class CommandFactory {
     ITEM_STATE_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
-        return notSame(itemState, updateState) && notRemoved(itemState, updateState);
+        return notSame(itemState, updateState);
       }
     },
     GROUP_ITEMS_CHANGED {
@@ -159,7 +159,7 @@ public final class CommandFactory {
     VALUE_SET_STATE_CHANGED {
       @Override
       public boolean test(ValueSetState state, ValueSetState updateState) {
-        return notSame(state, updateState) && (isNew(state, updateState) || state != updateState) && notRemoved(state, updateState);
+        return notSame(state, updateState);
       }
     }
   }
