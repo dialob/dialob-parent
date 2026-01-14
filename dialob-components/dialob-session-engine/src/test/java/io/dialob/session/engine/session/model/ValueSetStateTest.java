@@ -15,10 +15,18 @@ package io.dialob.session.engine.session.model;
  * limitations under the License.
  */
 
+import io.dialob.session.engine.session.protobuf.StateReader;
+import io.dialob.session.engine.session.protobuf.StateWriter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Mode;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ValueSetStateTest {
 
@@ -28,6 +36,39 @@ class ValueSetStateTest {
       .set(Mode.skipMockito())
       .suppress(Warning.NULL_FIELDS)
       .verify();
+  }
+
+  @Test
+  void shouldWriteAndReadValueSetState() throws IOException {
+    ValueSetState original = new ValueSetState(new ValueSetId("vs1"), List.of(
+      new ValueSetState.Entry("k1", "v1", true),
+      new ValueSetState.Entry("k2", "v2", false)
+    ));
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    StateWriter writer = StateWriter.newInstance(bos);
+    original.writeTo(writer);
+    writer.flush();
+
+    StateReader reader = StateReader.newInstance(bos.toByteArray());
+    ValueSetState read = ValueSetState.readFrom(reader);
+
+    assertEquals(original, read);
+  }
+
+  @Test
+  void shouldWriteAndReadEmptyValueSetState() throws IOException {
+    ValueSetState original = new ValueSetState(new ValueSetId("vs1"), List.of());
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    StateWriter writer = StateWriter.newInstance(bos);
+    original.writeTo(writer);
+    writer.flush();
+
+    StateReader reader = StateReader.newInstance(bos.toByteArray());
+    ValueSetState read = ValueSetState.readFrom(reader);
+
+    assertEquals(original, read);
   }
 
 }
