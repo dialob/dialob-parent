@@ -24,6 +24,7 @@ import io.dialob.api.questionnaire.VariableValue;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.session.engine.program.DialobProgram;
+import io.dialob.session.engine.program.model.DisplayItem;
 import io.dialob.session.engine.session.model.*;
 import io.dialob.session.engine.session.protobuf.StateReader;
 import io.dialob.session.engine.session.protobuf.StateWriter;
@@ -874,6 +875,138 @@ class DialobQuestionnaireSessionTest {
     ValueSet vs2 = valueSets.stream().filter(vs -> vs.getId().equals("vs2")).findFirst().orElseThrow();
     assertThat(vs2.getEntries()).hasSize(1);
     assertThat(vs2.getEntries().getFirst().getKey()).isEqualTo("k3");
+  }
+
+  @Test
+  void shouldToActionItem() {
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock();
+    DialobSession dialobSession = mock();
+
+    var itemState = ItemState.builder()
+      .id(IdUtils.toId("item1"))
+      .type("text")
+      .value("value")
+      .answer("answer")
+      .bits(ItemState.ACTIVE_BIT)
+      .status(ItemState.Status.NEW)
+      .build();
+
+    var session = DialobQuestionnaireSession.builder()
+      .serviceFacade(serviceFacade)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev("rev1")
+      .metadata(new Questionnaire.Metadata.Builder()
+        .formId("form1")
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .build())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    var actionItem = session.toActionItem(itemState);
+
+    assertEquals("item1", actionItem.getId());
+    assertEquals("text", actionItem.getType());
+    assertEquals("answer", actionItem.getValue());
+  }
+
+  @Test
+  void shouldToActionItemWithProps() {
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock();
+    DialobSession dialobSession = mock();
+
+    var itemState = ItemState.builder()
+      .id(IdUtils.toId("item1"))
+      .type("text")
+      .answer("value")
+      .bits(ItemState.HAS_CUSTOM_PROPS_BIT)
+      .status(ItemState.Status.NEW)
+      .build();
+
+    DisplayItem displayItem = mock(DisplayItem.class);
+    when(displayItem.props()).thenReturn(Map.of("prop1", "value1"));
+    when(dialobProgram.getItem(IdUtils.toId("item1"))).thenReturn(Optional.of(displayItem));
+
+    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+      .serviceFacade(serviceFacade)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev("rev1")
+      .metadata(new Questionnaire.Metadata.Builder()
+        .formId("form1")
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .build())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    ActionItem actionItem = session.toActionItem(itemState);
+
+    assertEquals("item1", actionItem.getId());
+    assertEquals("text", actionItem.getType());
+    assertEquals("value", actionItem.getValue());
+    assertEquals(Map.of("prop1", "value1"), actionItem.getProps());
+  }
+
+  @Test
+  void shouldReturnItems() {
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
+    DialobProgram dialobProgram = mock();
+
+    var item1 = ItemState.builder()
+      .id(IdUtils.toId("item1"))
+      .type("text")
+      .value("value1")
+      .status(ItemState.Status.NEW)
+      .build();
+
+    var item2 = ItemState.builder()
+      .id(IdUtils.toId("item2"))
+      .type("note")
+      .value("value2")
+      .status(ItemState.Status.NEW)
+      .build();
+
+    var dialobSession = new DialobSession(
+      "tenant",
+      "id",
+      "rev",
+      Instant.now(),
+      null,
+      Instant.now(),
+      "en",
+      new ItemStates.Builder()
+        .itemStates(Map.of(
+          QUESTIONNAIRE_REF, ItemState.builder()
+            .id(IdUtils.QUESTIONNAIRE_ID)
+            .type("questionnaire")
+            .status(ItemState.Status.NEW)
+            .build(),
+          item1.id(), item1,
+          item2.id(), item2
+        ))
+        .build(),
+      ItemStates.EMPTY
+    );
+
+    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+      .serviceFacade(serviceFacade)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev("rev1")
+      .metadata(new Questionnaire.Metadata.Builder()
+        .formId("form1")
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .build())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    var items = session.getItems();
+
+    assertThat(items).hasSize(3); // questionnaire + 2 items
+    assertThat(items).extracting("id")
+      .containsExactlyInAnyOrder("questionnaire", "item1", "item2");
   }
 
 }

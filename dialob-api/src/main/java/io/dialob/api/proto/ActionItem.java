@@ -29,6 +29,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * ActionItem represents a single item in a form, such as a question, a group, or a page.
+ *
+ * @param id unique identifier of the item.
+ * @param type type of the item.
+ * @param view
+ * @param label label to display
+ * @param description description to display
+ * @param inactive
+ * @param disabled
+ * @param required
+ * @param className
+ * @param value value to display. When item is question this is {@link io.dialob.session.engine.session.model.ItemState#answer()}
+ *             and for the variables this is {@link io.dialob.session.engine.session.model.ItemState#value()}.
+ * @param items list of subitems in group
+ * @param activeItem current active item in group eg. current page.
+ * @param availableItems
+ * @param allowedActions active actions for item. eg. page navigation or row addition/removal.
+ * @param answered
+ * @param valueSetId
+ */
 @Value.Builder
 @JsonDeserialize(builder = ActionItem.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)

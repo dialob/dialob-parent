@@ -51,6 +51,7 @@ public class IdUtils {
         case ItemIdPartial ignored -> idChain.add("*");
         default -> {
           // should not happen
+          throw  new IllegalStateException("Unknown item id " + itemId);
         }
       }
       itemId = itemId.parent();
