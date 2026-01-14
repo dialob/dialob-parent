@@ -21,6 +21,8 @@ import io.dialob.rule.parser.function.DefaultFunctions;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.rule.parser.function.FunctionRegistryException;
 import io.dialob.security.tenant.CurrentTenant;
+import io.dialob.security.tenant.Tenant;
+import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,6 +35,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class FunctionRegistryImplTest {
 
@@ -62,6 +65,11 @@ class FunctionRegistryImplTest {
 
   public static Boolean isThisOk(String thisone) {
     return false;
+  }
+
+  public static String iRequireCorrectRequest(String arg) {
+    Assertions.assertEquals("correct", arg);
+    return "ImHappy";
   }
 
 
@@ -120,7 +128,7 @@ class FunctionRegistryImplTest {
     FunctionRegistry functionRegistry = new FunctionRegistryImpl(taskExecutor, currentTenant);
     Mockito.doThrow(new TaskRejectedException("error")).when(taskExecutor).execute(any(Runnable.class));
     functionRegistry.invokeFunctionAsync(callback, "mock", List.of());
-    Mockito.verify(callback).failed("error");
+    verify(callback).failed("error");
   }
 
   @Test
@@ -137,6 +145,41 @@ class FunctionRegistryImplTest {
     assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("count", ValueType.arrayOf(ValueType.STRING)));
 
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> functionRegistry.returnTypeOf("lengthOf")).isInstanceOf(VariableNotDefinedException.class);
+  }
+
+  @Test
+  void shouldInvokeFunction() throws Exception {
+    CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
+    FunctionRegistry functionRegistry = new FunctionRegistryImpl(Mockito.mock(TaskExecutor.class), currentTenant);
+    functionRegistry.configureFunction("iRequireCorrectRequest", FunctionRegistryImplTest.class, false);
+
+    FunctionRegistry.FunctionCallback callback = Mockito.mock(FunctionRegistry.FunctionCallback.class);
+    functionRegistry.invokeFunction(callback, "iRequireCorrectRequest", List.of("correct"));
+
+    verify(callback).succeeded("ImHappy");
+  }
+
+  @Test
+  void shouldInvokeFunctionAsync() throws Exception {
+    TaskExecutor taskExecutor = Mockito.mock(TaskExecutor.class);
+    CurrentTenant currentTenant = Mockito.mock(CurrentTenant.class);
+    Tenant tenant = new Tenant("test", "Test");
+    when(currentTenant.get()).thenReturn(tenant);
+    TenantContextHolderCurrentTenant.setTenant(tenant);
+
+    FunctionRegistry functionRegistry = new FunctionRegistryImpl(taskExecutor, currentTenant);
+    functionRegistry.configureFunction("isThisOk", FunctionRegistryImplTest.class, true);
+
+    doAnswer(invocation -> {
+      Runnable runnable = invocation.getArgument(0);
+      runnable.run();
+      return null;
+    }).when(taskExecutor).execute(any(Runnable.class));
+
+    FunctionRegistry.FunctionCallback callback = Mockito.mock(FunctionRegistry.FunctionCallback.class);
+    functionRegistry.invokeFunctionAsync(callback, "isThisOk", List.of("test"));
+
+    verify(callback).succeeded(false);
   }
 
 }
