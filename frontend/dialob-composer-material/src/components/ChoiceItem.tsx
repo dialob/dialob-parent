@@ -9,6 +9,12 @@ import { useEditor } from "../editor";
 import CodeMirror from "./code/CodeMirror";
 import { LocalizedString, ValueSetEntry } from "../types";
 import { useSave } from "../dialogs/contexts/saving/useSave";
+import { useBackend } from "../backend/useBackend";
+import { TranslationEntry, TranslationResponse } from "../backend/types";
+import AITranslationIndicator from "./translations/AITranslationIndicator";
+import TranslateButton from "./translations/TranslateButton";
+import { useAITranslation } from "./translations";
+import { buildValueSetEntryId } from "../utils/TranslationUtils";
 
 
 export interface ChoiceItemProps {
@@ -70,7 +76,8 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const { entry, index, valueSetId, isGlobal, onRuleEdit, onTextEdit, onDelete, onUpdateId, onMove } = props;
   const { form } = useComposer();
   const { editor } = useEditor();
-  const { savingState, moveValueSetEntry } = useSave();
+  const { savingState, moveValueSetEntry, applyTranslations } = useSave();
+  const { translateEntries, config } = useBackend();
   const theme = useTheme();
   const formLanguages = form.metadata.languages;
   const languageNo = formLanguages?.length || 0;
@@ -82,8 +89,15 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const [localId, setLocalId] = React.useState(entry.id);
   const [localizedString, setLocalizedString] = React.useState(entry.label || {});
   const [localRule, setLocalRule] = React.useState(entry.when ?? '');
+  const [translatingLanguage, setTranslatingLanguage] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const length = savingState.valueSets?.find(v => v.id === valueSetId)?.entries?.length || 0;
+
+  const getEntryId = (): string => {
+    return buildValueSetEntryId(valueSetId!, index, entry.id);
+  };
+
+  const { isAITranslated, getMetadata: getAITranslationMetadata, removeFlag } = useAITranslation(getEntryId());
 
   const handleUpdate = (value: string, language: string) => {
     setLocalizedString(prev => ({ ...prev, [language]: value }));
@@ -94,6 +108,11 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     const originalValue = entry.label?.[language] || '';
     if (currentValue !== originalValue) {
       onTextEdit(entry, localizedString);
+      
+      // Remove AI translation flag if user manually edits
+      if (isAITranslated(language)) {
+        removeFlag(language);
+      }
     }
   }
 
@@ -133,9 +152,50 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     if (valueSetId) {
       const newIndex = direction === 'up' ? index - 1 : index + 1;
       moveValueSetEntry(valueSetId, index, newIndex);
-      onMove && onMove(entry, direction);
+      onMove?.(entry, direction);
     }
   }
+
+  const handleTranslate = async (targetLanguage: string) => {
+    const sourceLanguage = editor.activeFormLanguage;
+    const sourceText = localizedString[sourceLanguage];
+
+    if (!sourceText) {
+      return;
+    }
+
+    setTranslatingLanguage(targetLanguage);
+
+    try {
+      const entryId = getEntryId();
+      const translationEntry: TranslationEntry = {
+        id: entryId,
+        text: sourceText
+      };
+
+      const response = await translateEntries({
+        sourceLanguage,
+        targetLanguage,
+        entries: [translationEntry]
+      });
+
+      if (response.success && response.result) {
+        const translationResponse = response.result as TranslationResponse;
+        if (translationResponse.translations && translationResponse.translations.length > 0) {
+          applyTranslations(translationResponse.translations, sourceLanguage, targetLanguage);
+          
+          const translation = translationResponse.translations[0];
+          setLocalizedString(prev => ({ ...prev, [targetLanguage]: translation.translatedText }));
+        }
+      } else if (response.apiError) {
+        console.error('Translation failed:', response.apiError.message);
+      }
+    } catch (error) {
+      console.error('Translation error:', error);
+    } finally {
+      setTranslatingLanguage(null);
+    }
+  };
 
 
   return (
@@ -161,18 +221,43 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                   disableUnderline: true
                 }} />
             </TableCell>
-            {formLanguages?.map(lang => (
-              <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
-                <OverflowTooltipTextField 
-                  value={localizedString ? localizedString[lang] : ''} 
-                  variant="standard" 
-                  fullWidth 
-                  InputProps={{ disableUnderline: true }} 
-                  onChange={(e) => handleUpdate(e.target.value, lang)}
-                  onBlur={() => handleBlurText(lang)}
-                />
-              </TableCell>
-            ))}
+            {formLanguages?.map(lang => {
+              const hasValue = localizedString && localizedString[lang];
+              const sourceLanguage = editor.activeFormLanguage;
+              const hasSourceValue = localizedString && localizedString[sourceLanguage];
+              const canTranslate = !hasValue && hasSourceValue && lang !== sourceLanguage && config.translationServiceUrl;
+              const isTranslating = translatingLanguage === lang;
+              const aiMetadata = isAITranslated(lang) ? getAITranslationMetadata(lang) : null;
+
+              return (
+                <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <OverflowTooltipTextField 
+                      value={localizedString ? localizedString[lang] : ''} 
+                      variant="standard" 
+                      fullWidth 
+                      InputProps={{ disableUnderline: true }} 
+                      onChange={(e) => handleUpdate(e.target.value, lang)}
+                      onBlur={() => handleBlurText(lang)}
+                    />
+                    {canTranslate && (
+                      <TranslateButton
+                        sourceLanguage={sourceLanguage}
+                        targetLanguage={lang}
+                        isTranslating={isTranslating}
+                        onClick={() => handleTranslate(lang)}
+                      />
+                    )}
+                    {aiMetadata && (
+                      <AITranslationIndicator 
+                        metadata={aiMetadata} 
+                        onClick={() => removeFlag(lang)}
+                      />
+                    )}
+                  </Box>
+                </TableCell>
+              );
+            })}
           </TableRow>
           {entryExpanded && !isGlobal && <TableRow>
             <TableCell colSpan={2 + languageNo}>

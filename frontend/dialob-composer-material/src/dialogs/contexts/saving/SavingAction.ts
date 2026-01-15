@@ -4,6 +4,7 @@ import {
   ContextVariable,
   Variable
 } from "../../../types";
+import { TranslationResult } from "../../../backend/types";
 
 export type SavingAction =
   { type: 'updateItem', itemId: string, attribute: string, value: string, language?: string }
@@ -41,6 +42,7 @@ export type SavingAction =
   | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setMetadataValue', attr: string, value: any }
+  | { type: 'applyTranslations', translations: TranslationResult[], sourceLanguage: string, targetLanguage: string }
   | { type: 'addAITranslation', entryId: string, sourceLanguage: string, targetLanguage: string }
-  | { type: 'removeAITranslation', entryId: string }
+  | { type: 'removeAITranslation', entryId: string, targetLanguage: string }
 

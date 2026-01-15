@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Add, Check, Close, Delete, Download, Help, Upload, Visibility, Warning } from '@mui/icons-material';
+import { Add, Check, Close, Delete, Download, Help, Translate, Upload, Visibility, Warning } from '@mui/icons-material';
 import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List,
   ListItemButton, Popover, Stack, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
@@ -19,6 +19,11 @@ import { BoldedMessage } from '../intl/BoldedMessage';
 import { useDocs } from '../utils/DocsUtils';
 import { useSave } from './contexts/saving/useSave';
 import { generateValueSetId } from './contexts/saving/reducer';
+import TranslateChoicesConfirmDialog from '../components/translations/TranslateChoicesConfirmDialog';
+import TranslationProgressDialog from '../components/translations/TranslationProgressDialog';
+import { useHasTranslatableContent, useBulkTranslateValueSet } from '../components/translations';
+import { SavingProvider } from './contexts/saving/SavingProvider';
+import { useBackend } from '../backend/useBackend';
 
 interface GlobalValueSet {
   id: string;
@@ -33,8 +38,10 @@ const SaveButton: React.FC = () => {
   const hasChanges = React.useMemo(() => {
     return (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
       (savingState.composerMetadata?.globalValueSets && 
-        (JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets)));
-  }, [savingState, form.valueSets, form.metadata.composer?.globalValueSets]);
+        (JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets))) ||
+      (savingState.composerMetadata?.aiTranslations && 
+        (JSON.stringify(savingState.composerMetadata?.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations)));
+  }, [savingState, form.valueSets, form.metadata.composer?.globalValueSets, form.metadata.composer?.aiTranslations]);
   
   const handleSave = () => {
     if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
@@ -55,20 +62,32 @@ const SaveButton: React.FC = () => {
   );
 }
 
-const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
+const GlobalListsDialogContent: React.FC = () => {
   const { savingState, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet } = useSave();
   const { form } = useComposer();
   const { editor, setActiveList, setActivePage, setHighlightedItem } = useEditor();
+  const { config } = useBackend();
   const docsUrl = useDocs('lists');
-  const dialogOpen = open || editor.activeList !== undefined;
+  const dialogOpen = editor.activeList !== undefined;
   const formLanguages = form.metadata.languages;
   const [globalValueSets, setGlobalValueSets] = React.useState<GlobalValueSet[] | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [name, setName] = React.useState<string | undefined>(undefined);
+  const [translateDialogOpen, setTranslateDialogOpen] = React.useState(false);
+  const lastActiveList = React.useRef<string | undefined>(undefined);
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
   const itemErrors = editor.errors?.filter(e => e.itemId === currentValueSet?.id);
+  
+  const sourceLanguage = editor.activeFormLanguage;
+  const targetLanguages = formLanguages?.filter(lang => lang !== sourceLanguage) || [];
+  const hasTranslatableContent = useHasTranslatableContent(currentValueSet, sourceLanguage, targetLanguages);
+  const { translateAll, isTranslating, progress: translationProgress } = useBulkTranslateValueSet(
+    currentValueSet,
+    sourceLanguage,
+    targetLanguages
+  );
 
   const getMappedGvs = () => {
     const gvs = savingState.composerMetadata?.globalValueSets;
@@ -80,23 +99,69 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     });
   }
 
-  React.useEffect(() => {
-    const activeList = savingState.valueSets?.find(vs => vs.id === editor.activeList);
-    if (activeList) {
-      setCurrentValueSet(activeList);
-    }
-  }, [editor.activeList, savingState.valueSets]);
-
+  // Update globalValueSets when savingState changes
   React.useEffect(() => {
     if (dialogOpen) {
       const mappedGvs = getMappedGvs();
       setGlobalValueSets(mappedGvs);
-      if (!currentValueSet) {
-        setCurrentValueSet(mappedGvs?.[0]);
-      }
-      setName(mappedGvs?.find(gvs => gvs.id === (currentValueSet ?? mappedGvs?.[0]).id)?.label || '');
     }
-  }, [savingState, dialogOpen, currentValueSet]);
+  }, [savingState, dialogOpen]);
+  
+  // Set currentValueSet only when dialog opens or when activeList changes
+  React.useEffect(() => {
+    // Check if activeList has changed or this is first render
+    const activeListChanged = lastActiveList.current !== editor.activeList;
+    
+    if (dialogOpen && activeListChanged && savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
+      const mappedGvs = getMappedGvs();
+      
+      if (mappedGvs && mappedGvs.length > 0) {
+        if (editor.activeList && editor.activeList !== 'global') {
+          // Specific list ID requested
+          let activeList = savingState.valueSets.find(vs => vs.id === editor.activeList);
+          
+          // If not found directly, check if editor.activeList is a label - look it up in global valuesets metadata
+          if (!activeList) {
+            const globalRef = savingState.composerMetadata?.globalValueSets?.find(gvs => gvs.label === editor.activeList);
+            if (globalRef) {
+              activeList = savingState.valueSets.find(vs => vs.id === globalRef.valueSetId);
+            }
+          }
+          
+          if (activeList) {
+            setCurrentValueSet(activeList);
+            lastActiveList.current = editor.activeList;
+            return;
+          }
+        }
+        // No specific list requested or not found - default to first
+        setCurrentValueSet(mappedGvs[0]);
+        lastActiveList.current = editor.activeList;
+      }
+    }
+    
+    // Reset tracking when dialog closes
+    if (!dialogOpen) {
+      lastActiveList.current = undefined;
+    }
+  }, [dialogOpen, editor.activeList, savingState.valueSets, savingState.composerMetadata?.globalValueSets]);
+
+  // Set name when currentValueSet changes
+  React.useEffect(() => {
+    if (currentValueSet && globalValueSets) {
+      setName(globalValueSets.find(gvs => gvs.id === currentValueSet.id)?.label || '');
+    }
+  }, [currentValueSet, globalValueSets]);
+
+  // Sync currentValueSet with the latest version from savingState when it changes
+  React.useEffect(() => {
+    if (currentValueSet && savingState.valueSets) {
+      const updatedValueSet = savingState.valueSets.find(vs => vs.id === currentValueSet.id);
+      if (updatedValueSet && JSON.stringify(updatedValueSet) !== JSON.stringify(currentValueSet)) {
+        setCurrentValueSet(updatedValueSet);
+      }
+    }
+  }, [savingState.valueSets]);
 
   React.useEffect(() => {
     if (currentValueSet && name && name !== '') {
@@ -111,7 +176,6 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
   const handleClose = () => {
     setActiveList(undefined);
     setCurrentValueSet(undefined);
-    onClose();
   }
 
   const addEntry = () => {
@@ -168,10 +232,28 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
     scrollToItem(item.id, Object.values(form.data), editor.activePage, setActivePage);
   }
 
+  const handleTranslateAllChoices = async () => {
+    setTranslateDialogOpen(false);
+    await translateAll();
+  };
+
   return (
     <>
       <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
         currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
+      
+      <TranslateChoicesConfirmDialog
+        open={translateDialogOpen}
+        onConfirm={handleTranslateAllChoices}
+        onCancel={() => setTranslateDialogOpen(false)}
+      />
+
+      <TranslationProgressDialog
+        open={isTranslating}
+        current={translationProgress.current}
+        total={translationProgress.total}
+      />
+
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='xl' PaperProps={{ sx: { maxHeight: '60vh' } }}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.lists.global.title' />
@@ -232,6 +314,11 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
                           <IconButton sx={{ p: 0.25 }} onClick={addEntry}><Add color='success' /></IconButton>
                           <IconButton sx={{ p: 0.25 }} onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
                           <IconButton sx={{ p: 0.25 }} onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
+                          {config.translationServiceUrl && (
+                            <IconButton sx={{ p: 0.25 }} onClick={() => setTranslateDialogOpen(true)} disabled={isTranslating || !hasTranslatableContent}>
+                              <Translate color={hasTranslatableContent ? 'primary' : 'inherit'} />
+                            </IconButton>
+                          )}
                         </TableCell>
                         <TableCell width='20%' sx={{ p: 0.5 }}><Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography></TableCell>
                         {formLanguages?.map(lang => (
@@ -259,6 +346,25 @@ const GlobalListsDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
         </DialogActions>
       </Dialog>
     </>
+  );
+}
+
+const GlobalListsDialog: React.FC = () => {
+  const { form } = useComposer();
+  const { editor } = useEditor();
+  const dialogOpen = editor.activeList !== undefined;
+
+  if (!dialogOpen) {
+    return null;
+  }
+
+  return (
+    <SavingProvider savingState={{
+      composerMetadata: structuredClone(form.metadata.composer),
+      valueSets: structuredClone(form.valueSets)
+    }}>
+      <GlobalListsDialogContent />
+    </SavingProvider>
   );
 }
 

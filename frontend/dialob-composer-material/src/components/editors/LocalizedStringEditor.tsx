@@ -1,7 +1,7 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Button, Typography, Box, IconButton, Tooltip, CircularProgress, Chip } from '@mui/material';
-import { Visibility, Translate, SmartToy } from '@mui/icons-material';
+import { Button, Typography, Box } from '@mui/material';
+import { Visibility } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { useComposer } from '../../dialob';
 import { markdownComponents } from '../../defaults/markdown';
@@ -14,6 +14,10 @@ import remarkGfm from 'remark-gfm';
 import { useEditor } from '../../editor';
 import { useBackend } from '../../backend/useBackend';
 import { TranslationEntry, TranslationResponse } from '../../backend/types';
+import AITranslationIndicator from '../translations/AITranslationIndicator';
+import TranslateButton from '../translations/TranslateButton';
+import { useAITranslation } from '../translations';
+import { buildItemLabelId, buildItemDescriptionId, buildValidationId } from '../../utils/TranslationUtils';
 
 
 const LocalizedStringEditor: React.FC<{
@@ -22,7 +26,7 @@ const LocalizedStringEditor: React.FC<{
   setRule?: React.Dispatch<React.SetStateAction<IndexedRule | undefined>>
 }> = ({ type, rule, setRule }) => {
   const { form } = useComposer();
-  const { savingState, updateLocalizedString, addAITranslation, removeAITranslation } = useSave();
+  const { savingState, updateLocalizedString, applyTranslations } = useSave();
   const { editor } = useEditor();
   const { translateEntries, config } = useBackend();
   const item = savingState.item;
@@ -38,23 +42,16 @@ const LocalizedStringEditor: React.FC<{
 
   const getEntryId = (): string => {
     if (type === 'label') {
-      return `i:${item.id}:l`;
+      return buildItemLabelId(item.id);
     } else if (type === 'description') {
-      return `i:${item.id}:d`;
+      return buildItemDescriptionId(item.id);
     } else if (type === 'validations' && rule) {
-      return `i:${item.id}:v:${rule.index}`;
+      return buildValidationId(item.id, rule.index);
     }
     return '';
   };
 
-  const isAITranslated = (language: string): boolean => {
-    const entryId = getEntryId();
-    // Check in saving context first, fall back to form metadata
-    const aiTranslations = savingState.composerMetadata?.aiTranslations || form.metadata.composer?.aiTranslations || [];
-    return !!aiTranslations.some(
-      t => t.entryId === entryId && t.targetLanguage === language
-    );
-  };
+  const { isAITranslated, getMetadata: getAITranslationMetadata, removeFlag } = useAITranslation(getEntryId());
 
   const handleUpdate = (value: string, language: string) => {
     const updatedLocalizedString: LocalizedString = {
@@ -62,10 +59,8 @@ const LocalizedStringEditor: React.FC<{
       [language]: value
     };
     
-    // Remove AI translation flag if user manually edits
-    const entryId = getEntryId();
     if (isAITranslated(language)) {
-      removeAITranslation(entryId);
+      removeFlag(language);
     }
 
     if (type === 'validations' && rule && setRule) {
@@ -106,9 +101,9 @@ const LocalizedStringEditor: React.FC<{
       if (response.success && response.result) {
         const translationResponse = response.result as TranslationResponse;
         if (translationResponse.translations && translationResponse.translations.length > 0) {
-          const translation = translationResponse.translations[0];
+          applyTranslations(translationResponse.translations, activeFormLanguage, targetLanguage);
           
-          // Update the localized string in saving context
+          const translation = translationResponse.translations[0];
           const updatedLocalizedString: LocalizedString = {
             ...localizedString,
             [targetLanguage]: translation.translatedText
@@ -117,13 +112,7 @@ const LocalizedStringEditor: React.FC<{
           if (type === 'validations' && rule && setRule) {
             const newRule = { ...rule, validationRule: { ...rule.validationRule, message: updatedLocalizedString } };
             setRule(newRule);
-            updateLocalizedString(item.id, type, updatedLocalizedString, rule.index);
-          } else {
-            updateLocalizedString(item.id, type, updatedLocalizedString);
           }
-          
-          // Add AI translation metadata in saving context
-          addAITranslation(entryId, activeFormLanguage, targetLanguage);
         }
       } else if (response.apiError) {
         console.error('Translation failed:', response.apiError.message || response.apiError);
@@ -150,35 +139,25 @@ const LocalizedStringEditor: React.FC<{
                             !localizedText && 
                             localizedString?.[activeFormLanguage] &&
                             config.translationServiceUrl;
-        const showAIIndicator = isAITranslated(language);
+        const aiMetadata = isAITranslated(language) ? getAITranslationMetadata(language) : null;
         
         return (
           <Box key={language}>
             <Box display='flex' alignItems='center' gap={1}>
               <Typography color='text.hint'>{getLanguageName(language)}</Typography>
-              {showAIIndicator && (
-                <Tooltip title="AI Translated">
-                  <Chip 
-                    icon={<SmartToy fontSize="small" />} 
-                    label="AI" 
-                    size="small" 
-                    variant="outlined"
-                    sx={{ height: 20 }}
-                  />
-                </Tooltip>
+              {aiMetadata && (
+                <AITranslationIndicator 
+                  metadata={aiMetadata} 
+                  onClick={() => removeFlag(language)}
+                />
               )}
               {canTranslate && (
-                <Tooltip title={`Translate from ${getLanguageName(activeFormLanguage)}`}>
-                  <span>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => handleTranslate(language)}
-                      disabled={isTranslating}
-                    >
-                      {isTranslating ? <CircularProgress size={20} /> : <Translate fontSize="small" />}
-                    </IconButton>
-                  </span>
-                </Tooltip>
+                <TranslateButton
+                  sourceLanguage={activeFormLanguage}
+                  targetLanguage={language}
+                  isTranslating={isTranslating}
+                  onClick={() => handleTranslate(language)}
+                />
               )}
             </Box>
             <Box sx={{ border: 1, borderRadius: 1, borderColor: 'divider', my: 1 }}>

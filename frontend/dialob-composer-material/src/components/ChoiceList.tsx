@@ -20,7 +20,7 @@ const ChoiceList: React.FC<{
       const newEntry = { ...entry, id };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
-      updateValueSet && updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }
 
@@ -29,7 +29,7 @@ const ChoiceList: React.FC<{
       const newEntry = { ...entry, label };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
-      updateValueSet && updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }
 
@@ -41,7 +41,7 @@ const ChoiceList: React.FC<{
       }
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
-      updateValueSet && updateValueSet({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }
 
@@ -49,7 +49,7 @@ const ChoiceList: React.FC<{
     if (valueSet && valueSet.entries) {
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       deleteValueSetEntry(valueSet.id, idx);
-      updateValueSet && updateValueSet({ ...valueSet, entries: valueSet.entries.filter(e => e.id !== entry.id) });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.filter(e => e.id !== entry.id) });
     }
   }
 
@@ -63,7 +63,7 @@ const ChoiceList: React.FC<{
       const swapIndex = direction === 'up' ? idx - 1 : idx + 1;
       newEntries[idx] = valueSet.entries[swapIndex];
       newEntries[swapIndex] = entry;
-      updateValueSet && updateValueSet({ ...valueSet, entries: newEntries });
+      updateValueSet?.({ ...valueSet, entries: newEntries });
     }
   }
 

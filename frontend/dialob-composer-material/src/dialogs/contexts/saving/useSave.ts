@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { SavingContext } from './SavingContext';
 import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
+import { TranslationResult } from '../../../backend/types';
 
 export const useSave = () => {
   const { state, dispatch } = useContext(SavingContext);
@@ -124,12 +125,16 @@ export const useSave = () => {
     dispatch({ type: 'setMetadataValue', attr, value });
   }
 
+  const applyTranslations = (translations: TranslationResult[], sourceLanguage: string, targetLanguage: string) => {
+    dispatch({ type: 'applyTranslations', translations, sourceLanguage, targetLanguage });
+  }
+
   const addAITranslation = (entryId: string, sourceLanguage: string, targetLanguage: string) => {
     dispatch({ type: 'addAITranslation', entryId, sourceLanguage, targetLanguage });
   }
 
-  const removeAITranslation = (entryId: string) => {
-    dispatch({ type: 'removeAITranslation', entryId });
+  const removeAITranslation = (entryId: string, targetLanguage: string) => {
+    dispatch({ type: 'removeAITranslation', entryId, targetLanguage });
   }
 
   return {
@@ -162,6 +167,7 @@ export const useSave = () => {
     moveVariable,
     changeVariableId,
     setMetadataValue,
+    applyTranslations,
     addAITranslation,
     removeAITranslation,
     savingState: state

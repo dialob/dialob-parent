@@ -1,9 +1,10 @@
 import { produce } from "immer";
-import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from "../../../types";
+import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
 import { isContextVariable } from "../../../utils/ItemUtils";
+import { TranslationResult } from "../../../backend/types";
 
 
 export const generateItemIdWithPrefix = (state: SavingState, prefix: string): string => {
@@ -190,6 +191,26 @@ const deleteValidation = (state: SavingState, index: number): void => {
       return;
     }
     validations.splice(index, 1);
+
+    // Clean up AI translation metadata for deleted validation
+    if (state.composerMetadata?.aiTranslations) {
+      const itemId = state.item.id;
+      const entryIdToDelete = `i:${itemId}:v:${index}`;
+      state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
+        t => t.entryId !== entryIdToDelete
+      );
+
+      // Update indices for validations that come after the deleted one
+      state.composerMetadata.aiTranslations.forEach(t => {
+        if (t.entryId.startsWith(`i:${itemId}:v:`)) {
+          const parts = t.entryId.split(':');
+          const validationIndex = parseInt(parts[3], 10);
+          if (validationIndex > index) {
+            t.entryId = `i:${itemId}:v:${validationIndex - 1}`;
+          }
+        }
+      });
+    }
   }
 }
 
@@ -274,7 +295,28 @@ const deleteValueSetEntry = (state: SavingState, valueSetId: string, index: numb
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
+      const deletedEntry = state.valueSets[vsIdx].entries![index];
       state.valueSets[vsIdx].entries!.splice(index, 1);
+
+      // Clean up AI translation metadata for deleted valueset entry
+      if (state.composerMetadata?.aiTranslations && deletedEntry) {
+        const entryIdToDelete = `v:${valueSetId}:${index}:${deletedEntry.id}`;
+        state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
+          t => t.entryId !== entryIdToDelete
+        );
+
+        // Update indices for entries that come after the deleted one
+        state.composerMetadata.aiTranslations.forEach(t => {
+          if (t.entryId.startsWith(`v:${valueSetId}:`)) {
+            const parts = t.entryId.split(':');
+            const entryIndex = parseInt(parts[2], 10);
+            if (entryIndex > index) {
+              // Reconstruct entry ID with decremented index
+              t.entryId = `v:${valueSetId}:${entryIndex - 1}:${parts[3]}`;
+            }
+          }
+        });
+      }
     }
   }
 }
@@ -301,6 +343,13 @@ const setGlobalValueSetName = (state: SavingState, valueSetId: string, name: str
 const deleteLocalValueSet = (state: SavingState, valueSetId: string): void => {
   if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined) {
     state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
+
+    // Clean up AI translation metadata for deleted valueset
+    if (state.composerMetadata?.aiTranslations) {
+      state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
+        t => !t.entryId.startsWith(`v:${valueSetId}:`)
+      );
+    }
   }
 }
 
@@ -308,6 +357,13 @@ const deleteGlobalValueSet = (state: SavingState, valueSetId: string): void => {
   if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined && state.composerMetadata?.globalValueSets !== undefined) {
     state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
     state.composerMetadata.globalValueSets = state.composerMetadata.globalValueSets.filter(gvs => gvs.valueSetId !== valueSetId);
+
+    // Clean up AI translation metadata for deleted valueset
+    if (state.composerMetadata?.aiTranslations) {
+      state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
+        t => !t.entryId.startsWith(`v:${valueSetId}:`)
+      );
+    }
   }
 }
 
@@ -403,6 +459,72 @@ const setMetadataValue = (state: SavingState, attr: string, value: any): void =>
   state.formMetadata[attr] = value;
 }
 
+const applyTranslations = (state: SavingState, translations: TranslationResult[], sourceLanguage: string, targetLanguage: string): void => {
+  // Initialize composer metadata if needed
+  if (!state.composerMetadata) {
+    state.composerMetadata = {};
+  }
+  if (!state.composerMetadata.aiTranslations) {
+    state.composerMetadata.aiTranslations = [];
+  }
+
+  const timestamp = new Date().toISOString();
+
+  translations.forEach(translation => {
+    const parts = translation.id.split(':');
+    
+    if (parts[0] === 'i' && state.item) {
+      // Item translations: labels, descriptions, validations
+      const itemId = parts[1];
+      if (state.item.id !== itemId) return;
+
+      if (parts[2] === 'l') {
+        // Label
+        state.item.label = {
+          ...(state.item.label || {}),
+          [targetLanguage]: translation.translatedText
+        };
+      } else if (parts[2] === 'd') {
+        // Description
+        state.item.description = {
+          ...(state.item.description || {}),
+          [targetLanguage]: translation.translatedText
+        };
+      } else if (parts[2] === 'v') {
+        // Validation message
+        const validationIndex = parseInt(parts[3], 10);
+        if (state.item.validations?.[validationIndex]) {
+          state.item.validations[validationIndex].message = {
+            ...(state.item.validations[validationIndex].message || {}),
+            [targetLanguage]: translation.translatedText
+          };
+        }
+      }
+    } else if (parts[0] === 'v' && state.valueSets) {
+      // ValueSet translations
+      const valueSetId = parts[1];
+      const entryIndex = parseInt(parts[2], 10);
+      const valueSet = state.valueSets.find(vs => vs.id === valueSetId);
+      
+      if (valueSet?.entries?.[entryIndex]) {
+        valueSet.entries[entryIndex].label = {
+          ...(valueSet.entries[entryIndex].label || {}),
+          [targetLanguage]: translation.translatedText
+        };
+      }
+    }
+
+    // Add AI metadata
+    const metadata: TranslationMetadata = {
+      entryId: translation.id,
+      sourceLanguage,
+      targetLanguage,
+      timestamp
+    };
+    state.composerMetadata!.aiTranslations!.push(metadata);
+  });
+}
+
 const addAITranslation = (state: SavingState, entryId: string, sourceLanguage: string, targetLanguage: string): void => {
   if (!state.composerMetadata) {
     state.composerMetadata = {};
@@ -425,13 +547,13 @@ const addAITranslation = (state: SavingState, entryId: string, sourceLanguage: s
   });
 }
 
-const removeAITranslation = (state: SavingState, entryId: string): void => {
+const removeAITranslation = (state: SavingState, entryId: string, targetLanguage: string): void => {
   if (!state.composerMetadata?.aiTranslations) {
     return;
   }
   
   state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
-    t => t.entryId !== entryId
+    t => !(t.entryId === entryId && t.targetLanguage === targetLanguage)
   );
 }
 
@@ -497,10 +619,12 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       changeVariableId(state, action.variables);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
+    } else if (action.type === 'applyTranslations') {
+      applyTranslations(state, action.translations, action.sourceLanguage, action.targetLanguage);
     } else if (action.type === 'addAITranslation') {
       addAITranslation(state, action.entryId, action.sourceLanguage, action.targetLanguage);
     } else if (action.type === 'removeAITranslation') {
-      removeAITranslation(state, action.entryId);
+      removeAITranslation(state, action.entryId, action.targetLanguage);
     }
   });
 

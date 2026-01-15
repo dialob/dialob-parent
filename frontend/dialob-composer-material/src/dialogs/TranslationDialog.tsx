@@ -1,15 +1,18 @@
 import React from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs, Tooltip } from "@mui/material";
-import { Close, Help, Translate, UploadFile, Warning } from "@mui/icons-material";
+import { Close, Help, Translate, UploadFile, Warning, AutoFixHigh } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import Translations from "../components/translations";
 import { useDocs } from "../utils/DocsUtils";
+import { useBackend } from "../backend/useBackend";
 
-type TranslationTabType = 'files' | 'languages' | 'missing';
+type TranslationTabType = 'files' | 'languages' | 'missing' | 'ai';
 
 const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ open, onClose }) => {
   const [activeTab, setActiveTab] = React.useState<TranslationTabType>('files');
   const docsUrl = useDocs('translations');
+  const { config } = useBackend();
+  const isTranslationServiceEnabled = !!config.translationServiceUrl;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '60vh' } }}>
@@ -25,11 +28,13 @@ const TranslationDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ o
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.files.title' />}><UploadFile /></Tooltip>} value='files' />
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.languages.title' />}><Translate /></Tooltip>} value='languages' />
           <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.missing.title' />}><Warning /></Tooltip>} value='missing' />
+          {isTranslationServiceEnabled && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='dialogs.translations.ai.title' />}><AutoFixHigh /></Tooltip>} value='ai' />}
         </Tabs>
         <Box sx={{ p: 3, width: 1 }}>
-          {activeTab === 'files' && <Translations.Files />}
-          {activeTab === 'languages' && <Translations.Languages />}
-          {activeTab === 'missing' && <Translations.Missing />}
+        {activeTab === 'files' && <Translations.Files />}
+        {activeTab === 'languages' && <Translations.Languages />}
+        {activeTab === 'missing' && <Translations.Missing />}
+        {isTranslationServiceEnabled && activeTab === 'ai' && <Translations.AI />}
         </Box>
       </DialogContent>
       <DialogActions>
