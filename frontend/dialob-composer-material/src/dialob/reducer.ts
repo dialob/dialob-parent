@@ -159,6 +159,24 @@ const deleteItem = (state: ComposerState, itemId: string): void => {
     }
   });
 
+  // Clean up AI translation metadata for deleted items
+  if (state.metadata.composer?.aiTranslations) {
+    toDelete.forEach(deletedItemId => {
+      state.metadata.composer!.aiTranslations = state.metadata.composer!.aiTranslations?.filter(
+        t => !t.entryId.startsWith(`i:${deletedItemId}:`)
+      );
+    });
+  }
+
+  // Clean up AI translation metadata for deleted valuesets
+  if (state.metadata.composer?.aiTranslations && valueSets.length > 0) {
+    valueSets.forEach(vsId => {
+      state.metadata.composer!.aiTranslations = state.metadata.composer!.aiTranslations?.filter(
+        t => !t.entryId.startsWith(`v:${vsId}:`)
+      );
+    });
+  }
+
   // Delete parent ref
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [parentItemId, item] of Object.entries(state.data)) {
@@ -253,6 +271,25 @@ const deleteValidation = (state: ComposerState, itemId: string, index: number): 
       return;
     }
     validations.splice(index, 1);
+
+    // Clean up AI translation metadata for deleted validation
+    if (state.metadata.composer?.aiTranslations) {
+      const entryIdToDelete = `i:${itemId}:v:${index}`;
+      state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
+        t => t.entryId !== entryIdToDelete
+      );
+
+      // Update indices for validations that come after the deleted one
+      state.metadata.composer.aiTranslations.forEach(t => {
+        if (t.entryId.startsWith(`i:${itemId}:v:`)) {
+          const parts = t.entryId.split(':');
+          const validationIndex = parseInt(parts[3], 10);
+          if (validationIndex > index) {
+            t.entryId = `i:${itemId}:v:${validationIndex - 1}`;
+          }
+        }
+      });
+    }
   }
 }
 
@@ -379,7 +416,28 @@ const deleteValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
+      const deletedEntry = state.valueSets[vsIdx].entries![index];
       state.valueSets[vsIdx].entries!.splice(index, 1);
+
+      // Clean up AI translation metadata for deleted valueset entry
+      if (state.metadata.composer?.aiTranslations && deletedEntry) {
+        const entryIdToDelete = `v:${valueSetId}:${index}:${deletedEntry.id}`;
+        state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
+          t => t.entryId !== entryIdToDelete
+        );
+
+        // Update indices for entries that come after the deleted one
+        state.metadata.composer.aiTranslations.forEach(t => {
+          if (t.entryId.startsWith(`v:${valueSetId}:`)) {
+            const parts = t.entryId.split(':');
+            const entryIndex = parseInt(parts[2], 10);
+            if (entryIndex > index) {
+              // Reconstruct entry ID with decremented index
+              t.entryId = `v:${valueSetId}:${entryIndex - 1}:${parts[3]}`;
+            }
+          }
+        });
+      }
     }
   }
 }
@@ -407,12 +465,26 @@ const deleteGlobalValueSet = (state: ComposerState, valueSetId: string): void =>
   if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined && state.metadata?.composer?.globalValueSets !== undefined) {
     state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
     state.metadata.composer.globalValueSets = state.metadata.composer.globalValueSets.filter(gvs => gvs.valueSetId !== valueSetId);
+
+    // Clean up AI translation metadata for deleted valueset
+    if (state.metadata.composer?.aiTranslations) {
+      state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
+        t => !t.entryId.startsWith(`v:${valueSetId}:`)
+      );
+    }
   }
 }
 
 const deleteLocalValueSet = (state: ComposerState, valueSetId: string): void => {
   if (state.valueSets && state.valueSets?.find(vs => vs.id === valueSetId) !== undefined) {
     state.valueSets = state.valueSets.filter(vs => vs.id !== valueSetId);
+
+    // Clean up AI translation metadata for deleted valueset
+    if (state.metadata?.composer?.aiTranslations) {
+      state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
+        t => !t.entryId.startsWith(`v:${valueSetId}:`)
+      );
+    }
   }
 }
 
@@ -659,33 +731,37 @@ const applyTranslations = (state: ComposerState, translations: TranslationResult
       if (!item) return;
 
       if (parts[2] === 'l') {
-        // Label
-        if (!item.label) item.label = {};
-        item.label[targetLanguage] = translation.translatedText;
+        // Label - preserve existing translations
+        item.label = {
+          ...(item.label || {}),
+          [targetLanguage]: translation.translatedText
+        };
       } else if (parts[2] === 'd') {
-        // Description
-        if (!item.description) item.description = {};
-        item.description[targetLanguage] = translation.translatedText;
+        // Description - preserve existing translations
+        item.description = {
+          ...(item.description || {}),
+          [targetLanguage]: translation.translatedText
+        };
       } else if (parts[2] === 'v') {
-        // Validation message
+        // Validation message - preserve existing translations
         const validationIndex = parseInt(parts[3], 10);
         if (item.validations && item.validations[validationIndex]) {
-          if (!item.validations[validationIndex].message) {
-            item.validations[validationIndex].message = {};
-          }
-          item.validations[validationIndex].message![targetLanguage] = translation.translatedText;
+          item.validations[validationIndex].message = {
+            ...(item.validations[validationIndex].message || {}),
+            [targetLanguage]: translation.translatedText
+          };
         }
       }
     } else if (parts[0] === 'v') {
-      // ValueSet translation: v:valueSetId:index:entryId
+      // ValueSet translation: v:valueSetId:index:entryId - preserve existing translations
       const valueSetId = parts[1];
       const entryIndex = parseInt(parts[2], 10);
       const valueSet = state.valueSets?.find(vs => vs.id === valueSetId);
       if (valueSet?.entries?.[entryIndex]) {
-        if (!valueSet.entries[entryIndex].label) {
-          valueSet.entries[entryIndex].label = {};
-        }
-        valueSet.entries[entryIndex].label[targetLanguage] = translation.translatedText;
+        valueSet.entries[entryIndex].label = {
+          ...(valueSet.entries[entryIndex].label || {}),
+          [targetLanguage]: translation.translatedText
+        };
       }
     }
 
@@ -700,14 +776,14 @@ const applyTranslations = (state: ComposerState, translations: TranslationResult
   });
 }
 
-const removeAITranslation = (state: ComposerState, entryId: string): void => {
+const removeAITranslation = (state: ComposerState, entryId: string, targetLanguage: string): void => {
   // Remove AI translation metadata when user manually edits a field
   if (!state.metadata.composer?.aiTranslations) {
     return;
   }
   
   state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
-    t => t.entryId !== entryId
+    t => !(t.entryId === entryId && t.targetLanguage === targetLanguage)
   );
 }
 
@@ -802,7 +878,7 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     } else if (action.type === 'applyTranslations') {
       applyTranslations(state, action.translations, action.sourceLanguage, action.targetLanguage);
     } else if (action.type === 'removeAITranslation') {
-      removeAITranslation(state, action.entryId);
+      removeAITranslation(state, action.entryId, action.targetLanguage);
     }
   });
 

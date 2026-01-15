@@ -36,8 +36,10 @@ const SaveItemButton: React.FC = () => {
     return (savingState.item && (JSON.stringify(savingState.item) !== JSON.stringify(form.data[savingState.item.id]))) ||
       (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
       (savingState.composerMetadata?.globalValueSets && 
-        (JSON.stringify(savingState.composerMetadata.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets)));
-  }, [savingState, form.data, form.valueSets, form.metadata.composer?.globalValueSets]);
+        (JSON.stringify(savingState.composerMetadata.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets))) ||
+      (savingState.composerMetadata?.aiTranslations && 
+        (JSON.stringify(savingState.composerMetadata.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations)));
+  }, [savingState, form.data, form.valueSets, form.metadata.composer?.globalValueSets, form.metadata.composer?.aiTranslations]);
 
   const handleSave = () => {
     if (editor.activeItem && savingState.item && editor.activeItem.id !== savingState.item.id) {
@@ -102,7 +104,7 @@ const SaveIdButton: React.FC<{
 }
 
 const ItemOptionsDialog: React.FC = () => {
-  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setMarkdownHelpDialogOpen } = useEditor();
+  const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setConfirmationActiveItem, setMarkdownHelpDialogOpen } = useEditor();
   const { form } = useComposer();
   const { config } = useBackend();
   const item = editor.activeItem;
@@ -140,8 +142,11 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   const handleDelete = () => {
-    setItemOptionsActiveTab(undefined);
-    setConfirmationDialogType('delete');
+    if (item) {
+      setConfirmationActiveItem(item);
+      setConfirmationDialogType('delete');
+      setItemOptionsActiveTab(undefined);
+    }
   }
 
   const handleCloseChange = () => {

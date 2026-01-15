@@ -60,4 +60,4 @@ export type ComposerAction =
   | { type: 'applyFormChanges', newState: SavingState }
 
   | { type: 'applyTranslations', translations: TranslationResult[], sourceLanguage: string, targetLanguage: string }
-  | { type: 'removeAITranslation', entryId: string }
+  | { type: 'removeAITranslation', entryId: string, targetLanguage: string }

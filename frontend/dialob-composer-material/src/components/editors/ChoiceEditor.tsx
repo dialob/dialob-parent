@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Add, Download, Edit, KeyboardArrowDown, Refresh, Upload, Warning } from '@mui/icons-material';
+import { Add, Download, KeyboardArrowDown, Refresh, Translate, Upload, Warning } from '@mui/icons-material';
 import {
   Alert, Box, Button, Divider, IconButton, List, ListItemButton, MenuItem,
   Popover, Select, TableCell, TableContainer, TableHead, TableRow, Typography
@@ -19,12 +19,17 @@ import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 import { ValueSet } from '../../types';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import TranslateChoicesConfirmDialog from '../translations/TranslateChoicesConfirmDialog';
+import TranslationProgressDialog from '../translations/TranslationProgressDialog';
+import { useHasTranslatableContent, useBulkTranslateValueSet } from '../translations';
+import { useBackend } from '../../backend/useBackend';
 
 
 const ChoiceEditor: React.FC = () => {
   const { form } = useComposer();
   const { savingState, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteLocalValueSet } = useSave();
   const { editor } = useEditor();
+  const { config } = useBackend();
   const item = savingState.item;
   const globalValueSets = savingState.composerMetadata?.globalValueSets;
   const formLanguages = form.metadata.languages;
@@ -34,6 +39,16 @@ const ChoiceEditor: React.FC = () => {
   const [dialogType, setDialogType] = React.useState<'global' | 'local' | undefined>(undefined);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [translateDialogOpen, setTranslateDialogOpen] = React.useState(false);
+  
+  const sourceLanguage = editor.activeFormLanguage;
+  const targetLanguages = formLanguages?.filter(lang => lang !== sourceLanguage) || [];
+  const hasTranslatableContent = useHasTranslatableContent(currentValueSet, sourceLanguage, targetLanguages);
+  const { translateAll, isTranslating, progress: translationProgress } = useBulkTranslateValueSet(
+    currentValueSet,
+    sourceLanguage,
+    targetLanguages
+  );
 
   React.useEffect(() => {
     const hasValueSet = item?.valueSetId !== undefined;
@@ -109,6 +124,11 @@ const ChoiceEditor: React.FC = () => {
     }
   }
 
+  const handleTranslateAllChoices = async () => {
+    setTranslateDialogOpen(false);
+    await translateAll();
+  };
+
   if (!item) {
     return null;
   }
@@ -121,6 +141,18 @@ const ChoiceEditor: React.FC = () => {
         type={dialogType}
         onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
         onClose={() => setDialogType(undefined)} />
+      
+      <TranslateChoicesConfirmDialog
+        open={translateDialogOpen}
+        onConfirm={handleTranslateAllChoices}
+        onCancel={() => setTranslateDialogOpen(false)}
+      />
+
+      <TranslationProgressDialog
+        open={isTranslating}
+        current={translationProgress.current}
+        total={translationProgress.total}
+      />
       {choiceType === 'local' ? <>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', mb: 2 }}>
           <Button onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ mt: 2, mr: 2 }} endIcon={<KeyboardArrowDown />}>
@@ -159,6 +191,11 @@ const ChoiceEditor: React.FC = () => {
                   <IconButton sx={{ p: 0.5 }} onClick={handleAddValueSetEntry}><Add color='success' /></IconButton>
                   <IconButton sx={{ p: 0.5 }} onClick={() => setUploadDialogOpen(true)}><Upload /></IconButton>
                   <IconButton sx={{ p: 0.5 }} onClick={() => downloadValueSet(currentValueSet)}><Download /></IconButton>
+                  {config.translationServiceUrl && (
+                    <IconButton sx={{ p: 0.5 }} onClick={() => setTranslateDialogOpen(true)} disabled={isTranslating || !hasTranslatableContent}>
+                      <Translate color={hasTranslatableContent ? 'primary' : 'inherit'} />
+                    </IconButton>
+                  )}
                 </TableCell>
                 <TableCell width='20%' sx={{ p: 1 }}>
                   <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography>

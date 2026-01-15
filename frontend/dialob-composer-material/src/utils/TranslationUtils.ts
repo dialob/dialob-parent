@@ -1,5 +1,5 @@
 import Papa from "papaparse";
-import { ComposerState, DialobItem, LocalizedString, ValueSet } from "../types";
+import { ComposerState, DialobItem, LocalizedString, TranslationMetadata, ValueSet } from "../types";
 import FileSaver from "file-saver";
 import { ISO_LANGUAGES, MOST_USED_LANGUAGES } from "../defaults";
 
@@ -44,6 +44,17 @@ export interface MissingTranslation {
 
 export type MissingTranslations = {
   [type in TranslationType]?: MissingTranslation[];
+}
+
+export interface AITranslation {
+  id: string;
+  languages: string[];
+  index?: number;
+  global?: boolean;
+}
+
+export type AITranslations = {
+  [type in TranslationType]?: AITranslation[];
 }
 
 export function findValueset(data: ComposerState, id: string) {
@@ -115,19 +126,25 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
     vs.entries?.forEach((vse, idx) => {
       languages.forEach(lang => {
         if (vse.label === undefined || (vse.label[lang] === undefined || vse.label[lang] === '')) {
-          if (!missing.valueset?.find(m => m.id === vse.id)) {
-            missing.valueset?.push({ id: `${vs.id}-${vse.id} (${vs.id}:${idx})`, missingIn: [lang], index: idx });
+          const entryId = `${vs.id}-${vse.id} (v:${vs.id}:${idx}:${vse.id})`;
+          const existingEntry = missing.valueset?.find(m => m.id === entryId);
+          if (!existingEntry) {
+            missing.valueset?.push({ id: entryId, missingIn: [lang], index: idx });
           } else {
-            missing.valueset?.find(m => m.id === vse.id)!.missingIn.push(lang);
+            existingEntry.missingIn.push(lang);
           }
         }
       })
     })
   });
 
-  // match valuesets with names
+  // match valuesets with names and set global flag
+  const processedValueSets = new Set<string>();
+  
+  // local valuesets
   Object.values(form.data).forEach(item => {
-    if (item.valueSetId) {
+    if (item.valueSetId && !processedValueSets.has(item.valueSetId)) {
+      processedValueSets.add(item.valueSetId);
       const vs = form.valueSets?.find(v => v.id === item.valueSetId);
       const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === item.valueSetId);
       if (vs) {
@@ -141,6 +158,21 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
       }
     }
   });
+  
+  // global valuesets
+  form.valueSets?.forEach(vs => {
+    if (!processedValueSets.has(vs.id)) {
+      const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === vs.id);
+      missing.valueset?.forEach(m => {
+        if (m.id.startsWith(vs.id + '-') && m.global === undefined) {
+          const id = m.id.split('-');
+          m.id = `${gvs ? (gvs.label ?? id[0]) : id[0]}-${id[1]}`;
+          m.global = !!gvs;
+        }
+      });
+    }
+  });
+  
   missing.valueset?.sort((a, b) => a.global === b.global ? 0 : a.global ? -1 : 1);
 
   // check if values are empty
@@ -162,6 +194,148 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
   }
 
   return missing;
+}
+
+export const getAITranslations = (form: ComposerState): AITranslations | undefined => {
+  const aiTranslated: AITranslations = {
+    label: [],
+    description: [],
+    valueset: [],
+    validation: []
+  };
+
+  const aiTranslations = form.metadata.composer?.aiTranslations || [];
+  if (aiTranslations.length === 0) {
+    return undefined;
+  }
+
+  // Group AI translations by entry ID (normalize valueset entries to ignore stored index)
+  const translationsByEntry: Map<string, Set<string>> = new Map();
+  aiTranslations.forEach(t => {
+    let key = t.entryId;
+    
+    // For valueset entries, normalize the key to ignore the stored index
+    // e.g., v:vs1:0:choice1 and v:vs1:1:choice1 should map to the same key
+    if (t.entryId.startsWith('v:')) {
+      const parts = t.entryId.split(':');
+      if (parts.length >= 4) {
+        // Normalize to v:valueSetId:entryId
+        key = `v:${parts[1]}:${parts[3]}`;
+      }
+    }
+    
+    if (!translationsByEntry.has(key)) {
+      translationsByEntry.set(key, new Set());
+    }
+    translationsByEntry.get(key)!.add(t.targetLanguage);
+  });
+
+  // Process each entry ID
+  translationsByEntry.forEach((languages, entryId) => {
+    const parts = entryId.split(':');
+    
+    if (parts[0] === 'i') {
+      // Item translation: i:itemId:type or i:itemId:v:index
+      const itemId = parts[1];
+      const item = form.data[itemId];
+      if (!item) return;
+
+      if (parts[2] === 'l') {
+        // Label
+        aiTranslated.label?.push({ 
+          id: itemId, 
+          languages: Array.from(languages)
+        });
+      } else if (parts[2] === 'd') {
+        // Description
+        aiTranslated.description?.push({ 
+          id: itemId, 
+          languages: Array.from(languages)
+        });
+      } else if (parts[2] === 'v') {
+        // Validation message
+        const validationIndex = parseInt(parts[3], 10);
+        aiTranslated.validation?.push({ 
+          id: `${itemId}-rule${validationIndex + 1} (v:${validationIndex})`,
+          languages: Array.from(languages),
+          index: validationIndex
+        });
+      }
+    } else if (parts[0] === 'v') {
+      // ValueSet translation: normalized format v:valueSetId:entryId
+      const valueSetId = parts[1];
+      const entryIdPart = parts[2];
+      const valueSet = form.valueSets?.find(vs => vs.id === valueSetId);
+      
+      // Find the current index of the entry by its ID
+      const currentIndex = valueSet?.entries?.findIndex(e => e.id === entryIdPart);
+      
+      if (currentIndex !== undefined && currentIndex >= 0) {
+        aiTranslated.valueset?.push({ 
+          id: `${valueSetId}-${entryIdPart} (v:${valueSetId}:${currentIndex}:${entryIdPart})`,
+          languages: Array.from(languages),
+          index: currentIndex
+        });
+      }
+    }
+  });
+
+  // Match valuesets with names and set global flag
+  const processedValueSets = new Set<string>();
+  
+  // First, process valuesets that are referenced by items
+  Object.values(form.data).forEach(item => {
+    if (item.valueSetId && !processedValueSets.has(item.valueSetId)) {
+      processedValueSets.add(item.valueSetId);
+      const vs = form.valueSets?.find(v => v.id === item.valueSetId);
+      const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === item.valueSetId);
+      if (vs) {
+        aiTranslated.valueset?.forEach(ai => {
+          if (ai.id.startsWith(vs.id + '-')) {
+            const id = ai.id.split('-');
+            ai.id = `${gvs ? (gvs.label ?? id[0]) : item.id}-${id[1]}`;
+            ai.global = !!gvs;
+          }
+        });
+      }
+    }
+  });
+  
+  // Then, process any remaining valuesets that weren't referenced by items (pure global valuesets)
+  form.valueSets?.forEach(vs => {
+    if (!processedValueSets.has(vs.id)) {
+      const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === vs.id);
+      aiTranslated.valueset?.forEach(ai => {
+        if (ai.id.startsWith(vs.id + '-') && ai.global === undefined) {
+          const id = ai.id.split('-');
+          ai.id = `${gvs ? (gvs.label ?? id[0]) : id[0]}-${id[1]}`;
+          ai.global = !!gvs;
+        }
+      });
+    }
+  });
+  
+  aiTranslated.valueset?.sort((a, b) => a.global === b.global ? 0 : a.global ? -1 : 1);
+
+  // Remove empty categories
+  if (aiTranslated.label?.length === 0) {
+    delete aiTranslated.label;
+  }
+  if (aiTranslated.description?.length === 0) {
+    delete aiTranslated.description;
+  }
+  if (aiTranslated.valueset?.length === 0) {
+    delete aiTranslated.valueset;
+  }
+  if (aiTranslated.validation?.length === 0) {
+    delete aiTranslated.validation;
+  }
+
+  if (Object.keys(aiTranslated).length === 0) {
+    return undefined;
+  }
+
+  return aiTranslated;
 }
 
 export const getAllItemTranslations = (form: ComposerState): ItemTranslations => {
@@ -425,3 +599,35 @@ export const overwiewTextFormatter = (key: string) => {
 export const getLanguageName = (language: string) => {
   return MOST_USED_LANGUAGES[language]?.name || ISO_LANGUAGES[language]?.name || language;
 }
+
+export const buildItemLabelId = (itemId: string): string => {
+  return `i:${itemId}:l`;
+};
+
+export const buildItemDescriptionId = (itemId: string): string => {
+  return `i:${itemId}:d`;
+};
+
+export const buildValidationId = (itemId: string, index: number): string => {
+  return `i:${itemId}:v:${index}`;
+};
+
+export const buildValueSetEntryId = (valueSetId: string, index: number, entryId: string): string => {
+  return `v:${valueSetId}:${index}:${entryId}`;
+};
+
+export const isAITranslated = (
+  entryId: string,
+  language: string,
+  aiTranslations: TranslationMetadata[]
+): boolean => {
+  return aiTranslations.some(t => t.entryId === entryId && t.targetLanguage === language);
+};
+
+export const getAITranslationMetadata = (
+  entryId: string,
+  language: string,
+  aiTranslations: TranslationMetadata[]
+): TranslationMetadata | undefined => {
+  return aiTranslations.find(t => t.entryId === entryId && t.targetLanguage === language);
+};

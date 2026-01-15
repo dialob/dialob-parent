@@ -8,6 +8,7 @@ import { useEditor } from '../editor';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 import { MENU_HEIGHT, SCROLL_SX } from '../theme/siteTheme';
 import ItemOptionsDialog from '../dialogs/ItemOptionsDialog';
+import GlobalListsDialog from '../dialogs/GlobalListsDialog';
 import { useBackend } from '../backend/useBackend';
 import { useComposer } from '../dialob';
 import { SaveResult } from '../backend/types';
@@ -49,6 +50,7 @@ const ComposerLayoutView: React.FC = () => {
     <>
       <ConfirmationDialog />
       <ItemOptionsDialog />
+      <GlobalListsDialog />
       <Box display='flex'>
         <MenuBar />
         <Drawer variant="permanent">

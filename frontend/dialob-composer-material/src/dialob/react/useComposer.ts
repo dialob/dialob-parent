@@ -178,8 +178,8 @@ export const useComposer = () => {
     dispatch({ type: 'applyTranslations', translations, sourceLanguage, targetLanguage });
   }
 
-  const removeAITranslation = (entryId: string) => {
-    dispatch({ type: 'removeAITranslation', entryId });
+  const removeAITranslation = (entryId: string, targetLanguage: string) => {
+    dispatch({ type: 'removeAITranslation', entryId, targetLanguage });
   }
 
   return {

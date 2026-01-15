@@ -6,7 +6,6 @@ import { useComposer } from '../../dialob';
 import { getStatus, getStatusIcon } from '../../utils/ErrorUtils';
 import { useEditor } from '../../editor';
 import { SCROLLBAR_WIDTH, SCROLL_SX } from '../../theme/siteTheme';
-import GlobalListsDialog from '../../dialogs/GlobalListsDialog';
 import TranslationDialog from '../../dialogs/TranslationDialog';
 import FormOptionsDialog from '../../dialogs/FormOptionsDialog';
 import VariablesDialog from '../../dialogs/VariablesDialog';
@@ -21,7 +20,6 @@ import { CreateSessionResult } from '../../backend/types';
 import { isContextVariable } from '../../utils/ItemUtils';
 import { useDocs } from '../../utils/DocsUtils';
 import { getLanguageName } from '../../utils/TranslationUtils';
-import { SavingProvider } from '../../dialogs/contexts/saving/SavingProvider';
 import MarkdownHelpDialog from '../../dialogs/MarkdownHelpDialog';
 
 
@@ -57,14 +55,13 @@ const MenuBar: React.FC = () => {
   const theme = useTheme();
   const intl = useIntl();
   const { form } = useComposer();
-  const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab, setErrors } = useEditor();
+  const { editor, setActiveFormLanguage, setActivePage, setHighlightedItem, setActiveVariableTab, setActiveList, setErrors } = useEditor();
   const { config, createPreviewSession } = useBackend();
   const docsUrl = useDocs('general');
   const headerPaddingSx = { px: theme.spacing(1) };
   const formLanguages = form.metadata.languages || ['en'];
   const currentTag = form._tag ?? 'LATEST';
   const status = getStatus(editor.errors);
-  const [listsDialogOpen, setListsDialogOpen] = React.useState(false);
   const [translationsDialogOpen, setTranslationsDialogOpen] = React.useState(false);
   const [optionsDialogOpen, setOptionsDialogOpen] = React.useState(false);
   const [variablesDialogOpen, setVariablesDialogOpen] = React.useState(false);
@@ -162,12 +159,6 @@ const MenuBar: React.FC = () => {
 
   return (
     <>
-      {listsDialogOpen && <SavingProvider savingState={{
-        composerMetadata: form.metadata.composer,
-        valueSets: form.valueSets
-      }}>
-        <GlobalListsDialog open={listsDialogOpen} onClose={() => setListsDialogOpen(false)} />
-      </SavingProvider>}
       <MarkdownHelpDialog />
       <TranslationDialog open={translationsDialogOpen} onClose={() => setTranslationsDialogOpen(false)} />
       <FormOptionsDialog open={optionsDialogOpen} onClose={() => setOptionsDialogOpen(false)} />
@@ -185,7 +176,7 @@ const MenuBar: React.FC = () => {
           </Box>
           <HeaderButton label='header.translations' onClick={() => setTranslationsDialogOpen(true)} />
           <HeaderButton label='header.variables' onClick={() => setVariablesDialogOpen(true)} />
-          <HeaderButton label='header.lists' onClick={() => setListsDialogOpen(true)} />
+          <HeaderButton label='header.lists' onClick={() => setActiveList('global')} />
           <HeaderButton label='header.options' onClick={() => setOptionsDialogOpen(true)} />
           <HeaderButton endIcon={<ArrowDropDown />}
             label={intl.formatMessage({ id: 'header.version' }) + ": " + currentTag}
