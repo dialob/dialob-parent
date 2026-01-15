@@ -81,6 +81,10 @@ public record FormValidationError(
 
 
   public static class Builder extends FormValidationErrorBuilder {
+    public Builder() {
+      super();
+      level(Level.ERROR);
+    }
   }
 
   public enum Level {

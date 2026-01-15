@@ -71,6 +71,10 @@ public record FormTag(
   }
 
   public static class Builder extends FormTagBuilder {
+    public Builder() {
+      super();
+      type(Type.NORMAL);
+    }
   }
 
   public enum Type {

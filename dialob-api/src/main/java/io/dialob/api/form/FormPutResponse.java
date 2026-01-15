@@ -41,6 +41,7 @@ public record FormPutResponse(
   @Getter
   List<FormValidationError> errors,
 
+  @Nullable
   @Getter
   Form form,
 
