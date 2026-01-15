@@ -26,6 +26,7 @@ class FormPutResponseTest {
     FormPutResponse formPutResponse = new FormPutResponse.Builder()
       .id("form1")
       .rev("rev1")
+      .ok(true)
       .build();
     assertNotNull(formPutResponse);
     assertEquals("form1", formPutResponse.getId());

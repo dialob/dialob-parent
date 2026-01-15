@@ -66,7 +66,7 @@ class QuestionnaireS3DatabaseTest {
         .build()
     ));
 
-    database.findAllMetadata("t1", null, null, null, null, null, consumer);
+    database.findAllMetadata("t1", null, "form-id", null, null, null, consumer);
 
     verify(s3Client, times(1)).listObjectsV2(any(ListObjectsV2Request.class));
     verify(listObjectsV2Response, times(1)).contents();
@@ -76,6 +76,7 @@ class QuestionnaireS3DatabaseTest {
         .value(new Questionnaire.Metadata.Builder()
           .status(Questionnaire.Metadata.Status.NEW)
           .lastAnswer(now)
+          .formId("form-id")
           .build())
       .build())));
     verifyNoMoreInteractions(s3Client, listObjectsV2Response, consumer);

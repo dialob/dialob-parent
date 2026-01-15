@@ -26,6 +26,7 @@ class FormValidationErrorTest {
     FormValidationError formValidationError = new FormValidationError.Builder()
       .itemId("item1")
       .message("Invalid value")
+      .type(FormValidationError.Type.VALIDATION)
       .build();
     assertNotNull(formValidationError);
     assertEquals("item1", formValidationError.getItemId());

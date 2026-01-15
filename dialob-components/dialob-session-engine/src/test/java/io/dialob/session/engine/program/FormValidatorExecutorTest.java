@@ -34,14 +34,14 @@ class FormValidatorExecutorTest {
   void shouldCombineErrors() {
     FormValidator valA = mock(FormValidator.class);
     when(valA.validate(any(Form.class))).thenReturn(Arrays.asList(
-      new FormValidationError.Builder().message("a").build(),
-      new FormValidationError.Builder().message("b").build()
+      new FormValidationError.Builder().message("a").type(FormValidationError.Type.VALIDATION).itemId("id1").build(),
+      new FormValidationError.Builder().message("b").type(FormValidationError.Type.VALIDATION).itemId("id2").build()
     ));
 
     FormValidator valB = mock(FormValidator.class);
     when(valB.validate(any(Form.class))).thenReturn(Arrays.asList(
-      new FormValidationError.Builder().message("c").build(),
-      new FormValidationError.Builder().message("d").build()
+      new FormValidationError.Builder().message("c").type(FormValidationError.Type.VALIDATION).itemId("id1").build(),
+      new FormValidationError.Builder().message("d").type(FormValidationError.Type.VALIDATION).itemId("id2").build()
     ));
 
     List<FormValidator> validators = Arrays.asList(valA, valB);

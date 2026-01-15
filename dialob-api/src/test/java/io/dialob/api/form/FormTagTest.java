@@ -27,6 +27,7 @@ class FormTagTest {
       .formId("tag1")
       .formName("value1")
       .refName("ref")
+      .name("name")
       .build();
     assertNotNull(formTag);
     assertEquals("tag1", formTag.getFormId());
