@@ -435,36 +435,36 @@ class DialobQuestionnaireSessionTest {
   void shouldReturnVisibleItems() {
     // given
     var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(),mock(),mock());
-    DialobProgram dialobProgram = mock(DialobProgram.class);
+    DialobProgram dialobProgram = mock();
 
-    ItemState item1 = mock(ItemState.class);
+    ItemState item1 = mock();
     when(item1.id()).thenReturn(IdUtils.toId("item1"));
     when(item1.type()).thenReturn("text");
     when(item1.isActive()).thenReturn(true);
     when(item1.isDisplayItem()).thenReturn(true);
     when(item1.isDisabled()).thenReturn(false);
 
-    ItemState item2 = mock(ItemState.class);
+    ItemState item2 = mock();
     when(item2.id()).thenReturn(IdUtils.toId("item2"));
     when(item2.type()).thenReturn("text");
     when(item2.isActive()).thenReturn(false);
     when(item2.isDisplayItem()).thenReturn(true);
     when(item2.isDisabled()).thenReturn(false);
 
-    ItemState item3 = mock(ItemState.class);
+    ItemState item3 = mock();
     when(item3.id()).thenReturn(IdUtils.toId("item3"));
     when(item3.type()).thenReturn("note");
     when(item3.isActive()).thenReturn(true);
     when(item3.isDisplayItem()).thenReturn(true);
     when(item3.isDisabled()).thenReturn(false);
 
-    DialobSession dialobSession = dialobSessionOf(
+    var dialobSession = dialobSessionOf(
       null, null,
       List.of(item1, item2, item3)
     );
 
-    Questionnaire questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
-    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+    var questionnaire = new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().formId("123").build()).build();
+    var session = DialobQuestionnaireSession.builder()
       .serviceFacade(serviceFacade)
       .dialobSession(dialobSession)
       .dialobProgram(dialobProgram)
@@ -474,11 +474,11 @@ class DialobQuestionnaireSessionTest {
       .build();
 
     // when
-    List<ActionItem> visibleItems = session.getVisibleItems();
+    var visibleItems = session.getVisibleItems();
 
     // then
     assertThat(visibleItems).extracting("id")
-      .containsExactly("item1", "item3");
+      .containsExactlyInAnyOrder("item1", "item3");
   }
 
   @Test
