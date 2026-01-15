@@ -20,7 +20,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 
 @org.immutables.value.Value.Builder
-@org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
+@org.immutables.value.Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
 public record ValueSet(
 
   @NonNull

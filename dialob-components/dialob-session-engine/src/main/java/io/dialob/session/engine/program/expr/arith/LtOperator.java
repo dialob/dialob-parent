@@ -22,6 +22,7 @@ import org.immutables.value.Value;
 @Value.Style(
   jakarta = true,
   jdkOnly = true,
+  jdk9Collections = true,
   overshadowImplementation = true,
   visibility = Value.Style.ImplementationVisibility.PACKAGE
 )
