@@ -104,7 +104,7 @@ public interface QuestionnaireDatabase {
    * holds the actual metadata details represented by {@link Questionnaire.Metadata}.
    */
   @Value.Builder
-  @Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+  @Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
   record MetadataRow(
     String id,
     Questionnaire.Metadata value

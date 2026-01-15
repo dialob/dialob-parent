@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Value.Builder
-@Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
+@Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 public record VariableItem(
   @NonNull ItemId id,
   @NonNull String type,

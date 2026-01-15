@@ -38,6 +38,7 @@ import static io.dialob.session.engine.session.command.EventMatchers.errorActivi
 @Value.Style(
   jakarta = true,
   jdkOnly = true,
+  jdk9Collections = true,
   overshadowImplementation = true,
   visibility = Value.Style.ImplementationVisibility.PACKAGE
 )

@@ -200,6 +200,12 @@ public record Questionnaire(
     }
 
     public static class Builder extends MetadataBuilder {
+
+      public Builder() {
+        super();
+        status(Status.NEW);
+      }
+
     }
 
     public enum Status {

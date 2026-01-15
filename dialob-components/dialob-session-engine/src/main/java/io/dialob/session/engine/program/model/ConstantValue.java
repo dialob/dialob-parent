@@ -20,7 +20,7 @@ import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 
 @org.immutables.value.Value.Builder
-@org.immutables.value.Value.Style(jdkOnly = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
+@org.immutables.value.Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE)
 public record ConstantValue<T>(
   T value,
   @Nullable ValueType valueType
