@@ -29,7 +29,6 @@ import java.io.Serializable;
 @JsonDeserialize(builder = Variable.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiType
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record Variable(
 
   @NotNull

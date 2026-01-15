@@ -33,7 +33,6 @@ import java.util.Map;
 @JsonDeserialize(builder = FormValueSet.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @ApiType
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record FormValueSet(
   @NotNull
   String id,

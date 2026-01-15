@@ -57,7 +57,6 @@ import java.util.Set;
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
 @ApiType
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record Form(
   @JsonProperty("_id")
   @Id
@@ -126,7 +125,6 @@ public record Form(
 
   @Value.Builder
   @ApiType
-  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
   @JsonDeserialize(builder = Form.Metadata.Builder.class)
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)

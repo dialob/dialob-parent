@@ -53,7 +53,6 @@ import java.util.Set;
  */
 @Value.Builder
 @ApiType
-@Value.Style(validationMethod = Value.Style.ValidationMethod.VALIDATION_API)
 @JsonDeserialize(builder = Questionnaire.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record Questionnaire(
@@ -148,7 +147,6 @@ public record Questionnaire(
    */
   @Value.Builder
   @ApiType
-  @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
   @JsonDeserialize(builder = Questionnaire.Metadata.Builder.class)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   public record Metadata(
@@ -163,6 +161,7 @@ public record Questionnaire(
 
     @NotNull
     @Getter
+    @Value.Default
     Status status,
 
     @Nullable
