@@ -146,7 +146,7 @@ class FormS3DatabaseTest {
     FormS3Database database = new FormS3Database(s3Client, objectMapper, "should-find-all-metadata", "forms");
 
     Consumer<FormS3Database.FormMetadataRow> consumer = Mockito.mock(Consumer.class);
-    database.findAllMetadata("00000000-0000-0000-0000-000000000000", new Form.Metadata.Builder().build(), consumer);
+    database.findAllMetadata("00000000-0000-0000-0000-000000000000", new Form.Metadata.Builder().label("").build(), consumer);
     Mockito.verifyNoMoreInteractions(consumer);
 
     Form saved = database.save("00000000-0000-0000-0000-000000000000", new Form.Builder()
@@ -155,7 +155,7 @@ class FormS3DatabaseTest {
         .label("test")
         .build())
       .build());
-    database.findAllMetadata("00000000-0000-0000-0000-000000000000", new Form.Metadata.Builder().build(), consumer);
+    database.findAllMetadata("00000000-0000-0000-0000-000000000000", new Form.Metadata.Builder().label("").build(), consumer);
     Mockito.verify(consumer).accept(argThat(row -> row.getId().equals(saved.getId())
       && row.getValue().getTenantId().equals("00000000-0000-0000-0000-000000000000")));
     Mockito.verifyNoMoreInteractions(consumer);

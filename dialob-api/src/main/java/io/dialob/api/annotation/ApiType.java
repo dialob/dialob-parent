@@ -25,6 +25,7 @@ import java.lang.annotation.Target;
 
 @JsonSerialize
 @Value.Style(
+  validationMethod = Value.Style.ValidationMethod.SIMPLE,
   jakarta = true,
   jdkOnly = true,
   jdk9Collections = true,

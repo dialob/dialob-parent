@@ -14,4 +14,20 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms100m -Xlog:disable",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.compile.nullAnalysis.nullable": [
+    "javax.annotation.Nullable",
+    "org.eclipse.jdt.annotation.Nullable",
+    "org.springframework.lang.Nullable",
+    "org.jspecify.annotations.Nullable",
+    "edu.umd.cs.findbugs.annotations.Nullable"
+  ],
+  "java.compile.nullAnalysis.nonnullbydefault": [
+    "javax.annotation.ParametersAreNonnullByDefault",
+    "org.eclipse.jdt.annotation.NonNullByDefault",
+    "org.springframework.lang.NonNullApi",
+    "org.jspecify.annotations.NullMarked",
+    "edu.umd.cs.findbugs.annotations.NonNull"
+  ]
 }

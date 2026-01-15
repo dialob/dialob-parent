@@ -49,22 +49,16 @@ class QuestionnaireTest {
 
   @Test
   void shouldThrowConstraintExceptionOnMissingMetadata() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().build());
-    assertEquals(1, exception.getConstraintViolations().size());
-    ConstraintViolation<?> constraintViolation = exception.getConstraintViolations().iterator().next();
+    var exception = Assertions.assertThrows(IllegalStateException.class, () -> new Questionnaire.Builder().build());
 
-    assertEquals("must not be null", constraintViolation.getMessage());
-    assertEquals("metadata", constraintViolation.getPropertyPath().toString());
+    assertEquals("Cannot build Questionnaire, some of required attributes are not set [metadata]", exception.getMessage());
   }
 
   @Test
   void shouldThrowConstraintExceptionOnPartialMetadata() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().build()).build());
-    assertEquals(1, exception.getConstraintViolations().size());
-    ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
+    var exception = Assertions.assertThrows(IllegalStateException.class, () -> new Questionnaire.Builder().metadata(new Questionnaire.Metadata.Builder().build()).build());
 
-    assertEquals("must not be null", constraintViolation.getMessage());
-    assertEquals("metadata.formId", constraintViolation.getPropertyPath().toString());
+    assertEquals("Cannot build Metadata, some of required attributes are not set [formId]", exception.getMessage());
   }
 
   @Test
