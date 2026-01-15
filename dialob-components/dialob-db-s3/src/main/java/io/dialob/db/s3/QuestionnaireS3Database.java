@@ -38,6 +38,7 @@ public class QuestionnaireS3Database extends AbstractS3Database<Questionnaire> i
         id,
         new Questionnaire.Metadata.Builder()
           .lastAnswer(object.lastModified())
+          .formId(formId)
           .build()
       ));
     });

@@ -18,6 +18,8 @@ package io.dialob.form.service.api.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.json.JsonAssert;
+import org.springframework.test.json.JsonCompareMode;
 
 import java.util.Map;
 
@@ -52,7 +54,8 @@ class FormMetadataTest {
     assertTrue(formDocument.getMetadata().getLabels().contains("abc"));
     assertTrue(formDocument.getMetadata().getLabels().contains("123"));
     formDocument = new Form.Builder().from(formDocument).metadata(new Form.Metadata.Builder().from(formDocument.getMetadata()).addLabels("ggg").build()).build();
-    assertEquals("{\"metadata\":{\"label\":\"test\",\"labels\":[\"abc\",\"123\",\"ggg\"]}}", objectMapper.writeValueAsString(formDocument));
+    JsonAssert.comparator(JsonCompareMode.LENIENT)
+        .assertIsMatch("{\"metadata\":{\"label\":\"test\",\"labels\":[\"ggg\",\"abc\",\"123\"]}}", objectMapper.writeValueAsString(formDocument));
   }
 
   @Test

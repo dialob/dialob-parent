@@ -18,6 +18,7 @@ package io.dialob.form.service.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormTag;
+import io.dialob.api.form.FormValidationError;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.DialobCsvToFormParser;
 import io.dialob.form.service.api.FormDatabase;
@@ -526,6 +527,7 @@ class FormsRestServiceControllerTest {
     io.dialob.api.form.FormValidationError error = new io.dialob.api.form.FormValidationError.Builder()
       .itemId("q1")
       .message("Validation error")
+      .type(FormValidationError.Type.VALIDATION)
       .build();
 
     Form updatedForm = new Form.Builder()

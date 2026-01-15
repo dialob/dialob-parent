@@ -71,6 +71,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.skyscreamer</groupId>
+      <artifactId>jsonassert</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-api</artifactId>
       <type>test-jar</type>

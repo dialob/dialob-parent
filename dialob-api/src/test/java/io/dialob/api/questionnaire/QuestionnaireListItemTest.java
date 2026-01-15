@@ -25,7 +25,7 @@ class QuestionnaireListItemTest {
   void hasBuilder() {
     QuestionnaireListItem questionnaireListItem = new QuestionnaireListItem.Builder()
       .id("12")
-      .metadata(new Questionnaire.Metadata.Builder().build())
+      .metadata(new Questionnaire.Metadata.Builder().formId("f1").build())
       .build();
     assertNotNull(questionnaireListItem);
     assertEquals("12", questionnaireListItem.getId());
@@ -33,7 +33,7 @@ class QuestionnaireListItemTest {
 
   @Test
   void copyOfReturnsSameInstance() {
-    var element = new QuestionnaireListItem.Builder().id("k").metadata(new Questionnaire.Metadata.Builder().build()).build();
+    var element = new QuestionnaireListItem.Builder().id("k").metadata(new Questionnaire.Metadata.Builder().formId("f1").build()).build();
     assertSame(element, QuestionnaireListItem.copyOf(element));
   }
 

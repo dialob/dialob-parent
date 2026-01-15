@@ -128,7 +128,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldReturnQuestionnaireStatus() throws Exception {
-    final QuestionnaireSession questionnaireSession = mock(QuestionnaireSession.class);
+    final QuestionnaireSession questionnaireSession = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(questionnaireSession);
     when(questionnaireSession.getStatus()).thenReturn(Questionnaire.Metadata.Status.OPEN);
@@ -146,7 +146,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldUpdateQuestionnaireStatus() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(session);
     when(session.getStatus()).thenReturn(Questionnaire.Metadata.Status.OPEN).thenReturn(Questionnaire.Metadata.Status.COMPLETED);
@@ -170,7 +170,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionAnswers() throws Exception {
-    final QuestionnaireSession questionnaireSession = mock(QuestionnaireSession.class);
+    final QuestionnaireSession questionnaireSession = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(questionnaireSession);
     when(questionnaireSession.getAnswers()).thenReturn(
@@ -198,7 +198,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldUpdateQuestionAnswer() throws Exception {
-    final QuestionnaireSession questionnaireSession = mock(QuestionnaireSession.class);
+    final QuestionnaireSession questionnaireSession = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(questionnaireSession);
     when(questionnaireSession.getErrors()).thenReturn(Collections.emptyList());
@@ -223,7 +223,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldRemoveQuestionAnswer() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(session);
     when(session.getErrors()).thenReturn(Collections.emptyList());
@@ -246,7 +246,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldUpdateMultiValueQuestionAnswerAsArrayOfStrings() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(session);
     when(session.getErrors()).thenReturn(Collections.emptyList());
@@ -271,7 +271,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldRejectObjectAnswers() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(session);
     when(session.getErrors()).thenReturn(Collections.emptyList());
@@ -289,7 +289,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldUpdateQuestionAnswers() throws Exception {
-    final QuestionnaireSession questionnaireSession = mock(QuestionnaireSession.class);
+    final QuestionnaireSession questionnaireSession = mock();
 
     when(questionnaireSessionService.findOne("1234")).thenReturn(questionnaireSession);
     when(questionnaireSession.getErrors()).thenReturn(Collections.emptyList());
@@ -339,12 +339,11 @@ class QuestionnairesRestServiceControllerTest {
     verifyNoMoreInteractions(formDatabase);
   }
 
-
   @Test
   void shouldPostNewQuestionnaire() throws Exception {
     when(formDatabase.exists("t-123", "new-form")).thenReturn(true);
-    QuestionnaireSessionBuilder builder = mock(QuestionnaireSessionBuilder.class);
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSessionBuilder builder = mock();
+    QuestionnaireSession session = mock();
     Questionnaire questionnaire = new Questionnaire.Builder()
       .id("new-questionnaire")
       .rev("1-new-questionnaire")
@@ -392,12 +391,43 @@ class QuestionnairesRestServiceControllerTest {
     verify(builder).additionalProperties(any());
     verify(builder).build();
     verifyNoMoreInteractions(formDatabase, builder);
+  }
 
+  @Test
+  void shouldRejectPartialPostNewQuestionnaire() throws Exception {
+    when(formDatabase.exists("t-123", "new-form")).thenReturn(true);
+    QuestionnaireSessionBuilder builder = mock();
+
+    mockMvc.perform(post("/questionnaires")
+        .content("{\"metadata\":{}}").contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isUnprocessableEntity())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+      .andExpect(jsonPath("$.message", equalTo("metadata.formId: must not be null")))
+      .andExpect(jsonPath("$.errors[0].context", equalTo("metadata.formId")))
+      .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
+
+    mockMvc.perform(post("/questionnaires")
+        .content("{}").contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isUnprocessableEntity())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+      .andExpect(jsonPath("$.message", equalTo("metadata: must not be null")))
+      .andExpect(jsonPath("$.errors[0].context", equalTo("metadata")))
+      .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
+
+    mockMvc.perform(post("/questionnaires")
+        .content("[]").contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().string(""))
+    ;
+
+    verifyNoMoreInteractions(formDatabase, builder);
   }
 
   @Test
   void shouldUpdateQuestionnaire() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("123")).thenReturn(session);
     when(questionnaireSessionSaveService.save(session)).thenReturn(session);
 
@@ -425,7 +455,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldIgnoreNonCompleteStatusChanges() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("123")).thenReturn(session);
 
     Questionnaire questionnaire = questionnaire(null, "shouldIgnoreNonCompleteStatusChanges");
@@ -447,7 +477,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldNotTryCompleteAlreadyCompletedForm() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("123")).thenReturn(session);
     when(session.getStatus()).thenReturn(Questionnaire.Metadata.Status.COMPLETED);
     when(questionnaireSessionSaveService.save(session)).thenReturn(session);
@@ -541,7 +571,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionnairePages() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     ActionItem questionnaireItem = new ActionItem.Builder()
@@ -563,7 +593,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void pagesUpdateShouldTryNavigateToPages() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
     ActionItem questionnaireItem = new ActionItem.Builder()
       .id("questionnaire")
       .type("questionnaire")
@@ -596,7 +626,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionnaireErrors() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     when(session.getErrors()).thenReturn(Arrays.asList(
@@ -616,7 +646,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldDeleteQuestionnaire() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
 
     doReturn(true).when(questionnaireDatabase).delete("t-123", "abc123");
 
@@ -630,7 +660,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGet404ForNonExistingQuestionnaireOnDelete() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
 
     doThrow(DocumentNotFoundException.class).when(questionnaireDatabase).delete("t-123", "abc123");
 
@@ -643,7 +673,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetItems() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     ActionItem question1 = new ActionItem.Builder().id("question1").type("text").build();
     ActionItem question2 = new ActionItem.Builder().id("question2").type("text").build();
@@ -661,7 +691,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetItemById() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     final ActionItem question1 = new ActionItem.Builder()
       .id("question1").type("text").build();
@@ -679,7 +709,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetItemByIdAndGet404ForUnknownItem() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
 
     when(session.getItemById("question1")).thenReturn(Optional.empty());
@@ -693,7 +723,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionRows() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     final ActionItem question1 = new ActionItem.Builder()
       .id("question1")
@@ -713,7 +743,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGet404IfQuestionIsNotRowgroup() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     final ActionItem question1 = new ActionItem.Builder()
       .id("question1")
@@ -731,7 +761,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void postShouldAddNewRow() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     final ActionItem question1 = new ActionItem.Builder()
@@ -757,7 +787,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void deleteShouldRemoveRow() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
 
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     final ActionItem question1 = new ActionItem.Builder()
@@ -783,7 +813,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionValueSets() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     when(session.getValueSets()).thenReturn(Arrays.asList(
       new ValueSet.Builder().id("vs1").entries(Arrays.asList(new ValueSetEntry.Builder().key("vs1-key1").value("vs1-value1").build(), new ValueSetEntry.Builder().key("vs1-key2").value("vs1-value2").build())).build(),
@@ -802,7 +832,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldGetQuestionValueSet() throws Exception {
-    final QuestionnaireSession session = mock(QuestionnaireSession.class);
+    final QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("abc123")).thenReturn(session);
     when(session.getValueSets()).thenReturn(Arrays.asList(
       new ValueSet.Builder().id("vs1").entries(Arrays.asList(new ValueSetEntry.Builder().key("vs1-key1").value("vs1-value1").build(), new ValueSetEntry.Builder().key("vs1-key2").value("vs1-value2").build())).build(),
@@ -821,7 +851,7 @@ class QuestionnairesRestServiceControllerTest {
 
   @Test
   void shouldPutQuestionnaire() throws Exception {
-    QuestionnaireSession session = mock(QuestionnaireSession.class);
+    QuestionnaireSession session = mock();
     when(questionnaireSessionService.findOne("123")).thenReturn(session);
     when(questionnaireSessionSaveService.save(session)).thenReturn(session);
 
