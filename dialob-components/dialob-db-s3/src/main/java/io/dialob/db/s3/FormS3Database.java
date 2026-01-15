@@ -38,6 +38,7 @@ public class FormS3Database extends AbstractS3Database<Form> implements FormData
         new Form.Metadata.Builder()
           .lastSaved(object.lastModified())
           .tenantId(tenantId)
+          .label(id)
           .build()
       ));
     });

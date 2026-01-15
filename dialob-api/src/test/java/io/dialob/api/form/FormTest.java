@@ -17,13 +17,10 @@ package io.dialob.api.form;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FormTest {
 
@@ -52,24 +49,16 @@ class FormTest {
 
   @Test
   void metadataIsRequired() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> new Form.Builder().build());
-    assertEquals(1, exception.getConstraintViolations().size());
-    ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
-
-    assertEquals("must not be null", constraintViolation.getMessage());
-    assertEquals("metadata", constraintViolation.getPropertyPath().toString());
+    var exception = assertThrows(IllegalStateException.class, () -> new Form.Builder().build());
+    assertEquals("Cannot build Form, some of required attributes are not set [metadata]", exception.getMessage());
   }
 
 
   @Test
   void metadataLabelIsRequired() {
-    ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () ->
-      new Form.Builder().metadata(new Form.Metadata.Builder().build()).build());
-    assertEquals(1, exception.getConstraintViolations().size());
-    ConstraintViolation constraintViolation = exception.getConstraintViolations().iterator().next();
-
-    assertEquals("must not be null", constraintViolation.getMessage());
-    assertEquals("metadata.label", constraintViolation.getPropertyPath().toString());
+    var exception = assertThrows(IllegalStateException.class, () ->
+      new Form.Metadata.Builder().build());
+    assertEquals("Cannot build Metadata, some of required attributes are not set [label]", exception.getMessage());
   }
 
   @Test
