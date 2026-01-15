@@ -457,18 +457,18 @@ class QuestionnairesRestServiceControllerTest {
 
     mockMvc.perform(post("/questionnaires")
         .content("{\"metadata\":{}}").contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isUnprocessableEntity())
+      .andExpect(status().isUnprocessableContent())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+      .andExpect(jsonPath("$.error", equalTo("Unprocessable Content")))
       .andExpect(jsonPath("$.message", equalTo("metadata.formId: must not be null")))
       .andExpect(jsonPath("$.errors[0].context", equalTo("metadata.formId")))
       .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
 
     mockMvc.perform(post("/questionnaires")
         .content("{}").contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isUnprocessableEntity())
+      .andExpect(status().isUnprocessableContent())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+      .andExpect(jsonPath("$.error", equalTo("Unprocessable Content")))
       .andExpect(jsonPath("$.message", equalTo("metadata: must not be null")))
       .andExpect(jsonPath("$.errors[0].context", equalTo("metadata")))
       .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
