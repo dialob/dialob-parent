@@ -30,7 +30,6 @@ import java.util.Optional;
 @JsonDeserialize(builder = FormValidationError.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @ApiType
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record FormValidationError(
 
   @Getter

@@ -30,7 +30,6 @@ import java.io.Serializable;
 @JsonDeserialize(builder = ContextValue.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiType
-@Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
 public record ContextValue(
   @NotNull
   String id,
