@@ -30,6 +30,8 @@ class VariableValueTest {
     assertNotNull(variableValue);
     assertEquals("var1", variableValue.getId());
     assertEquals("42", variableValue.getValue());
+
+    assertEquals(variableValue, VariableValue.copyOf(variableValue));
   }
 
 }

@@ -15,6 +15,7 @@
  */
 package io.dialob.session.engine.program.expr.arith;
 
+import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
@@ -55,6 +56,7 @@ class ValueSetToListOperatorTest {
     Object result = valueSetToListOperator.eval(context);
     Assertions.assertIterableEquals(
       List.of("a","b","c"), (Iterable<?>) result);
+    Assertions.assertEquals(ValueType.arrayOf(ValueType.STRING), valueSetToListOperator.getValueType());
   }
 
 }

@@ -69,7 +69,7 @@ public record ValueSetState(
 
   public class UpdateBuilder {
 
-    private List<Entry> entries;
+    private List<Entry> entries = List.of();
 
     private boolean updated = false;
 
@@ -79,7 +79,7 @@ public record ValueSetState(
         if (newEntries != null) {
           entries = List.copyOf(newEntries);
         } else {
-          entries = null;
+          entries = List.of();
         }
       }
       return this;

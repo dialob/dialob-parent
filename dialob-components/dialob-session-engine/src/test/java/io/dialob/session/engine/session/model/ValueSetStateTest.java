@@ -56,6 +56,18 @@ class ValueSetStateTest {
   }
 
   @Test
+  void shouldMapNullToEmptyEntries() {
+    ValueSetState original = new ValueSetState(new ValueSetId("vs1"), List.of(
+      new ValueSetState.Entry("k1", "v1", true),
+      new ValueSetState.Entry("k2", "v2", false)
+    ));
+    assertSame(original, original.update().get());
+    assertEquals(List.of(), original.update()
+      .setEntries(null)
+      .get().entries());
+  }
+
+  @Test
   void shouldWriteAndReadValueSetState() throws IOException {
     ValueSetState original = new ValueSetState(new ValueSetId("vs1"), List.of(
       new ValueSetState.Entry("k1", "v1", true),

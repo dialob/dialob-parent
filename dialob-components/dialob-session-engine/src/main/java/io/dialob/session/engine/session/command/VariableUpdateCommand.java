@@ -33,7 +33,7 @@ record VariableUpdateCommand(
 
   @NonNull
   @Override
-  public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
+  public VariableUpdateCommand withTargetId(@NonNull ItemId targetId) {
     return new VariableUpdateCommand(targetId, expression, triggers);
   }
 
