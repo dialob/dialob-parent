@@ -16,9 +16,12 @@
 package io.dialob.questionnaire.service.sockjs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionItem;
+import io.dialob.api.proto.Actions;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.questionnaire.service.api.ActionProcessingService;
+import io.dialob.questionnaire.service.api.event.QuestionnaireActionsEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireCompletedEvent;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -38,6 +41,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -333,6 +337,139 @@ class QuestionnaireWebSocketHandlerTest {
     questionnaireWebSocketHandler.onQuestionnaireCompletedEvent(event);
 
     // Verify that NO message was sent because session is closed
+    verify(webSocketSession, never()).sendMessage(any(TextMessage.class));
+  }
+
+  // ========== Tests for onQuestionnaireActionsEvent ==========
+
+  @Test
+  void shouldSendActionsWhenQuestionnaireActionsEventIsForThisHandler() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Create an actions event
+    Actions actions = new Actions.Builder()
+      .addActions(new Action.Builder().type(Action.Type.ANSWER).id("q1").answer("a1").build())
+      .build();
+    QuestionnaireActionsEvent event = new QuestionnaireActionsEvent(
+      Tenant.of("test-tenant"),
+      "questionnaire-123",
+      actions
+    );
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireActionsEvent(event);
+
+    // Verify that the actions were sent
+    ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+    verify(webSocketSession, atLeastOnce()).sendMessage(messageCaptor.capture());
+
+    boolean foundActionsMessage = false;
+    for (TextMessage msg : messageCaptor.getAllValues()) {
+      String message = new String(msg.asBytes());
+      if (message.contains("\"type\":\"ANSWER\"") && message.contains("\"id\":\"q1\"") && message.contains("\"answer\":\"a1\"")) {
+        foundActionsMessage = true;
+        break;
+      }
+    }
+    assertEquals(true, foundActionsMessage, "Expected actions to be sent");
+  }
+
+  @Test
+  void shouldFilterActionsFromSameSession() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Create an actions event with one action from this session and one from another
+    Actions actions = new Actions.Builder()
+      .addActions(new Action.Builder().type(Action.Type.ANSWER).id("q1").answer("a1").resourceId("session-abc").build()) // From this session
+      .addActions(new Action.Builder().type(Action.Type.ANSWER).id("q2").answer("a2").resourceId("other-session").build()) // From other session
+      .build();
+    QuestionnaireActionsEvent event = new QuestionnaireActionsEvent(
+      Tenant.of("test-tenant"),
+      "questionnaire-123",
+      actions
+    );
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireActionsEvent(event);
+
+    // Verify that only the action from the other session was sent
+    ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
+    verify(webSocketSession, atLeastOnce()).sendMessage(messageCaptor.capture());
+
+    boolean foundFilteredMessage = false;
+    for (TextMessage msg : messageCaptor.getAllValues()) {
+      String message = new String(msg.asBytes());
+      if (message.contains("\"id\":\"q2\"") && !message.contains("\"id\":\"q1\"")) {
+        foundFilteredMessage = true;
+        break;
+      }
+    }
+    assertEquals(true, foundFilteredMessage, "Expected only actions from other sessions to be sent");
+  }
+
+  @Test
+  void shouldNotSendActionsWhenQuestionnaireActionsEventIsNotForThisHandler() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Clear invocations
+    Mockito.clearInvocations(webSocketSession);
+
+    // Create an actions event for a DIFFERENT questionnaire
+    Actions actions = new Actions.Builder()
+      .addActions(new Action.Builder().type(Action.Type.ANSWER).id("q1").answer("a1").build())
+      .build();
+    QuestionnaireActionsEvent event = new QuestionnaireActionsEvent(
+      Tenant.of("test-tenant"),
+      "other-questionnaire",
+      actions
+    );
+
+    // Call the method under test
+    questionnaireWebSocketHandler.onQuestionnaireActionsEvent(event);
+
+    // Verify that NO message was sent
     verify(webSocketSession, never()).sendMessage(any(TextMessage.class));
   }
 
