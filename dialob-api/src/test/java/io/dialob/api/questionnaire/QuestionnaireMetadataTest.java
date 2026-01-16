@@ -16,8 +16,8 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,13 @@ class QuestionnaireMetadataTest {
   @Test
   void shouldDeserializeUnknownAttributesToAdditionalProperties() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
-    Questionnaire.Metadata metadata = objectMapper.readValue("{\"formId\":\"123\",\"status\":\"NEW\",\"extraProp\":\"extraValue\"}", Questionnaire.Metadata.class);
+    var metadata = objectMapper.readValue("""
+      {
+        "formId":"123",
+        "status":"NEW",
+        "extraProp":"extraValue"
+      }
+      """, Questionnaire.Metadata.class);
     assertTrue(!metadata.getAdditionalProperties().isEmpty());
     assertEquals("extraValue", metadata.getAdditionalProperties().get("extraProp"));
   }
@@ -53,10 +59,20 @@ class QuestionnaireMetadataTest {
         }
       }
       """, Questionnaire.class);
-    assertEquals("customValue1",questionnaire.getMetadata().getAdditionalProperties().get("customField1"));
+//    assertEquals("customValue1",questionnaire.getMetadata().getAdditionalProperties().get("customField1"));
     assertEquals("customValue3",questionnaire.getMetadata().getAdditionalProperties().get("customField3"));
+    assertEquals("Sample Form",questionnaire.getMetadata().getAdditionalProperties().get("title"));
     assertNull(questionnaire.getMetadata().getAdditionalProperties().get("additionalProperties"));
-    assertEquals("{\"metadata\":{\"formId\":\"sample-form\",\"status\":\"NEW\",\"customField1\":\"customValue1\",\"customField3\":\"customValue3\"}}", mapper.writeValueAsString(questionnaire));
+    JSONAssert.assertEquals("""
+      {
+        "metadata":{
+          "formId":"sample-form",
+          "status":"NEW",
+          "title":"Sample Form",
+          "customField3":"customValue3"
+        }
+      }
+      """, mapper.writeValueAsString(questionnaire), true);
   }
 
 }

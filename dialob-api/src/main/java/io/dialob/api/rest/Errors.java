@@ -16,7 +16,6 @@
 package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Value.Builder
-@JsonDeserialize(builder = Errors.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @ApiType
 public record Errors(
@@ -51,6 +49,10 @@ public record Errors(
   @Getter
   String message,
 
+  @Nullable
+  @Getter
+  String reason,
+
   @Schema(description = "Java stacktrace, if server is configured to send one.")
   @Nullable
   @Getter
@@ -63,12 +65,16 @@ public record Errors(
   @Schema(description = "List of identified errors in entity")
   @Nullable
   @Getter
-  List<Error> errors
+  List<Error> errors,
 
+  // This is always false
+  @Value.Default.Boolean(false)
+  boolean ok
 ) implements Serializable {
 
   public Errors {
     timestamp = Objects.requireNonNullElseGet(timestamp, Instant::now);
+    ok = false;
   }
 
   public static class Builder extends ErrorsBuilder {
@@ -77,7 +83,6 @@ public record Errors(
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Value.Builder
 
-  @JsonDeserialize(builder = Errors.Error.Builder.class)
   @ApiType
   public record Error(
 

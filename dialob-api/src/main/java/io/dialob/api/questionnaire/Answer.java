@@ -16,7 +16,6 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
@@ -37,7 +36,6 @@ import java.time.Instant;
  * @param userId
  */
 @Value.Builder
-@JsonDeserialize(builder = Answer.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiType
 public record Answer(

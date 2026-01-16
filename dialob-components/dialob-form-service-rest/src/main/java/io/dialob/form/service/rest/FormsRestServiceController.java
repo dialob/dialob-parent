@@ -21,10 +21,10 @@ import io.dialob.api.form.Form;
 import io.dialob.api.form.FormPutResponse;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.form.FormValidationError;
+import io.dialob.api.rest.Errors;
 import io.dialob.api.rest.Response;
 import io.dialob.common.ErrorCodes;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
-import io.dialob.form.service.CsvParsingException;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.form.service.api.repository.FormListItem;
@@ -35,6 +35,7 @@ import io.dialob.integration.api.NodeId;
 import io.dialob.integration.api.event.FormDeletedEvent;
 import io.dialob.integration.api.event.FormTaggedEvent;
 import io.dialob.integration.api.event.FormUpdatedEvent;
+import io.dialob.rest.type.ApiException;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
@@ -164,7 +165,6 @@ public class FormsRestServiceController implements FormsRestService {
 
   @Override
   public ResponseEntity<FormPutResponse> postFormFromCsv(String formCsv) {
-    try {
     Form formDocument = csvToFormParser.parseCsv(formCsv);
     Form form = updateMetadata(formDocument);
     form = new Form.Builder().from(form).id(null).rev(null).build();
@@ -182,15 +182,6 @@ public class FormsRestServiceController implements FormsRestService {
       .rev(savedForm.getRev())
       .form(savedForm)
       .build());
-    } catch (CsvParsingException e) {
-      // Bad Request Response
-      return ResponseEntity.badRequest()
-        .body(new FormPutResponse.Builder()
-        .ok(false)
-        .error(ErrorCodes.CSV_PARSING_ERROR)
-        .reason(e.getMessage())
-        .build());
-    }
   }
 
   @Override
@@ -224,9 +215,14 @@ public class FormsRestServiceController implements FormsRestService {
         .rev(existingForm.getRev())
         .build();
     } else if (!formId.equals(formBody.getId())) {
-      return ResponseEntity
-        .badRequest()
-        .body(new FormPutResponse.Builder().ok(false).error("INCONSISTENT_ID").reason("_id does not match with resource " + formId).build());
+      throw new ApiException(new Errors.Builder()
+        .status(HttpStatus.BAD_REQUEST.value())
+        .error("INCONSISTENT_ID")
+        .reason("_id does not match with resource " + formId)
+        .build());
+//      return ResponseEntity
+//        .badRequest()
+//        .body(new FormPutResponse.Builder().ok(false).error("INCONSISTENT_ID").reason("_id does not match with resource " + formId).build());
     }
 
     boolean includeForm = false;

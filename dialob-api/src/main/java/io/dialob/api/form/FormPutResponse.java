@@ -16,7 +16,6 @@
 package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.rest.HasId;
@@ -27,7 +26,6 @@ import org.immutables.value.Value;
 import java.util.List;
 
 @Value.Builder
-@JsonDeserialize(builder = FormPutResponse.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @ApiType
 public record FormPutResponse(

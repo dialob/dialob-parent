@@ -53,7 +53,7 @@ import java.util.Set;
  */
 @Value.Builder
 @ApiType
-@JsonDeserialize(builder = Questionnaire.Builder.class)
+@JsonDeserialize
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record Questionnaire(
   @JsonProperty("_id")
@@ -147,7 +147,6 @@ public record Questionnaire(
    */
   @Value.Builder
   @ApiType
-  @JsonDeserialize(builder = Questionnaire.Metadata.Builder.class)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   public record Metadata(
 
@@ -213,6 +212,7 @@ public record Questionnaire(
     String creator,
 
     @JsonInclude
+    @JsonAnySetter
     @JsonAnyGetter
     @AllowNulls
     @Getter

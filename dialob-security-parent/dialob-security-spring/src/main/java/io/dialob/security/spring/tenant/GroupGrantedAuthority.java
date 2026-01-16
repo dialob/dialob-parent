@@ -16,14 +16,11 @@
 package io.dialob.security.spring.tenant;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 import org.springframework.security.core.GrantedAuthority;
 
 @Value.Builder
-@JsonSerialize(as = GroupGrantedAuthority.class)
-@JsonDeserialize(builder = GroupGrantedAuthority.Builder.class)
+@Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GroupGrantedAuthority(
   String groupId,

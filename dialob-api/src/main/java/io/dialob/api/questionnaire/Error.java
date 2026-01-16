@@ -16,7 +16,6 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.rest.HasId;
@@ -32,7 +31,6 @@ import java.io.Serializable;
  * @param description error description as plain text
  */
 @Value.Builder
-@JsonDeserialize(builder = Error.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiType
 public record Error(
