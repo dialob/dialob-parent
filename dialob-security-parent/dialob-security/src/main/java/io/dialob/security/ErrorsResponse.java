@@ -16,8 +16,6 @@
 package io.dialob.security;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.immutables.value.Value;
 
@@ -26,8 +24,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Value.Builder
-@JsonSerialize(as = ErrorsResponse.class)
-@JsonDeserialize(builder = ErrorsResponse.Builder.class)
+@Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record ErrorsResponse(
   @Nullable Instant timestamp,

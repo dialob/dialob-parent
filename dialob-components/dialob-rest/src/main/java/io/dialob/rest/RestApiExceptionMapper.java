@@ -30,6 +30,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 public class RestApiExceptionMapper {
 
   @ExceptionHandler
-  public ResponseEntity handleMethodArgumentNotValidException(@NonNull MethodArgumentNotValidException exception) {
+  public ResponseEntity<?> handleMethodArgumentNotValidException(@NonNull MethodArgumentNotValidException exception) {
     BindingResult bindingResult = exception.getBindingResult();
     Errors.Builder errorsBuilder = new Errors.Builder()
       .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
@@ -61,18 +62,18 @@ public class RestApiExceptionMapper {
   }
 
   @ExceptionHandler
-  public ResponseEntity valueInstantiationExceptionHandler(@NonNull com.fasterxml.jackson.databind.exc.ValueInstantiationException exception) {
+  public ResponseEntity<?> valueInstantiationExceptionHandler(@NonNull com.fasterxml.jackson.databind.exc.ValueInstantiationException exception) {
     Errors.Builder builder = new Errors.Builder();
     Throwable cause = exception.getCause();
     String message = exception.getMessage();
     if (cause instanceof ConstraintViolationException cve) {
-      cve.getConstraintViolations().forEach(constraintViolation -> {
+      cve.getConstraintViolations().forEach(constraintViolation ->
         builder.addErrors(new Errors.Error.Builder()
           .error(constraintViolation.getMessage())
           .rejectedValue(constraintViolation.getInvalidValue())
           .context(constraintViolation.getPropertyPath().toString())
-          .build()).build();
-      });
+            .build())
+          .build());
       message = cve.getConstraintViolations().stream().map(cv -> cv.getPropertyPath() + ": " + cv.getMessage()).collect(Collectors.joining("\n"));
     }
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(builder
@@ -82,28 +83,19 @@ public class RestApiExceptionMapper {
   }
 
   @ExceptionHandler
-  public ResponseEntity apiExceptionHandler(@NonNull ApiException exception) {
-    Errors errors = exception.getErrors();
-    HttpStatus httpStatus = resolveHttpStatus(errors);
-    errors = new Errors.Builder().from(errors).error(httpStatus.getReasonPhrase()).build();
+  public ResponseEntity<Errors> apiExceptionHandler(@NonNull ApiException exception) {
+    var errors = exception.getErrors();
+    var httpStatus = resolveHttpStatus(errors);
+    var builder = new Errors.Builder().from(errors);
+    if (errors.error() == null) {
+      builder = builder.error(httpStatus.getReasonPhrase());
+    }
     LOGGER.error("API Error ({}): {}", httpStatus, exception.getMessage(), exception);
-    return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(errors);
+    return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(builder.build());
   }
 
   private HttpStatus resolveHttpStatus(Errors errors) {
-    Integer status = errors.getStatus();
-    if (status == null) {
-      LOGGER.error("No error status defined {}", errors);
-      // Status should be defined on Errors
-      status = HttpStatus.INTERNAL_SERVER_ERROR.value();
-    }
-    HttpStatus httpStatus;
-    try {
-      httpStatus = HttpStatus.valueOf(status);
-    } catch (IllegalArgumentException e) {
-      LOGGER.error("Unknown error status defined {}", errors);
-      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-    return httpStatus;
+    var status = Objects.requireNonNullElse(errors.status(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+    return Objects.requireNonNullElse(HttpStatus.resolve(status), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

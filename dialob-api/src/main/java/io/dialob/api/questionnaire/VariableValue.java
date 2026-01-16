@@ -16,7 +16,6 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.rest.HasId;
@@ -27,7 +26,6 @@ import org.immutables.value.Value;
 import java.io.Serializable;
 
 @Value.Builder
-@JsonDeserialize(builder = VariableValue.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiType
 public record VariableValue(

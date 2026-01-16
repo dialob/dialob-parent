@@ -16,6 +16,7 @@
 package io.dialob.form.service.rest;
 
 import io.dialob.api.rest.Errors;
+import io.dialob.form.service.CsvParsingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,22 @@ public class FormApiExceptionHandlers {
     return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
+  @ExceptionHandler
+  public ResponseEntity<?> handleCsvParsingException(CsvParsingException exception) {
+    return buildResponse(HttpStatus.BAD_REQUEST, "CSV_PARSING_ERROR", exception.getMessage());
+  }
+
   protected ResponseEntity<Errors> buildResponse(HttpStatus httpStatus, String reason) {
+    return buildResponse(httpStatus, httpStatus.getReasonPhrase(), reason);
+  }
+
+  protected ResponseEntity<Errors> buildResponse(HttpStatus httpStatus, String error, String reason) {
     return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(
-      new Errors.Builder().error(httpStatus.getReasonPhrase())
+      new Errors.Builder().error(error)
         .status(httpStatus.value())
         .message(reason)
         .build()
     );
   }
+
 }

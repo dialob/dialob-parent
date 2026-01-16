@@ -16,7 +16,6 @@
 package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
@@ -53,7 +52,6 @@ import java.util.Set;
  *
  */
 @Value.Builder
-@JsonDeserialize(builder = Form.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties({"saving","rules","updated","failed", "serviceCalls"})
 @ApiType
@@ -125,7 +123,6 @@ public record Form(
 
   @Value.Builder
   @ApiType
-  @JsonDeserialize(builder = Form.Metadata.Builder.class)
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
   public record Metadata(
@@ -166,6 +163,7 @@ public record Form(
 
     @JsonInclude
     @JsonAnyGetter
+    @JsonAnySetter
     @AllowNulls
     @Getter
     Map<String, Object> additionalProperties

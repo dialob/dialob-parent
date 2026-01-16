@@ -16,8 +16,8 @@
 package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
@@ -31,7 +31,6 @@ import java.util.Map;
 
 @Value.Builder
 @ApiType
-@JsonDeserialize(builder = FormValueSetEntry.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_NULL)
 public record FormValueSetEntry(
 
@@ -47,6 +46,7 @@ public record FormValueSetEntry(
 
   @JsonInclude
   @JsonAnyGetter
+  @JsonAnySetter
   @AllowNulls
   @Getter
   Map<String, Object> additionalProperties

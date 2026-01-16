@@ -15,7 +15,6 @@
  */
 package io.dialob.api.questionnaire;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.rest.HasId;
@@ -25,7 +24,6 @@ import org.immutables.value.Value;
 import java.io.Serializable;
 
 @Value.Builder
-@JsonDeserialize(builder = QuestionnaireListItem.Builder.class)
 @ApiType
 public record QuestionnaireListItem(
   @NonNull String id,

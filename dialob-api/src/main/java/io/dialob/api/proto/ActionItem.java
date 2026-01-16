@@ -16,7 +16,6 @@
 package io.dialob.api.proto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
@@ -51,7 +50,6 @@ import java.util.Set;
  * @param valueSetId
  */
 @Value.Builder
-@JsonDeserialize(builder = ActionItem.Builder.class)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 @ApiType
 public record ActionItem(

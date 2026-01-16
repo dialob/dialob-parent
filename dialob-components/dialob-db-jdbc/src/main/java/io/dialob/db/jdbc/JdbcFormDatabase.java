@@ -176,7 +176,8 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         Form.Metadata.Builder metadataBuilder = new Form.Metadata.Builder()
           .tenantId(tId)
           .created(created.toInstant())
-          .lastSaved(updated.toInstant());
+          .lastSaved(updated.toInstant())
+          .label("");
 
         if (labels != null) {
           try {
