@@ -20,6 +20,7 @@ class ASTBuilderWalkerTest {
   void shouldLogUnknownVariableAndIdWhenVariableIsNotFound() throws Exception {
     VariableFinder variableFinder = mock();
     ErrorLogger errorLogger = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.IdExprRuleContext ctx = mock();
     ctx.var = mock();
@@ -30,7 +31,7 @@ class ASTBuilderWalkerTest {
     when(variableFinder.mapAlias("x")).thenReturn("x");
     when(variableFinder.typeOf("x")).thenThrow(new VariableNotDefinedException("x"));
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.setErrorLogger(errorLogger);
     astBuilderWalker.enterIdExprRule(ctx);
 
@@ -40,14 +41,17 @@ class ASTBuilderWalkerTest {
     verify(ctx.var, atLeastOnce()).getStopIndex();
     verify(ctx.var).getText();
     verify(errorLogger).logError(CompilerErrorCode.UNKNOWN_VARIABLE, new Object[]{"x"}, Span.of(0, 1));
+    verify(builder).idExprNode(isNull(), eq("x"), isNull(), any(Span.class));
+    verify(builder).idExprNode(isNull(), isNull(), eq("x"), isNull(), any(Span.class));
 
-    verifyNoMoreInteractions(variableFinder, ctx, ctx.var, errorLogger);
+    verifyNoMoreInteractions(variableFinder, ctx, ctx.var, errorLogger, builder);
   }
 
   @Test
   void enterIdExprRule_shouldCreateIdExprNodeWithValueType() throws Exception {
     VariableFinder variableFinder = mock();
     ErrorLogger errorLogger = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.IdExprRuleContext ctx = mock();
     ctx.var = mock();
@@ -59,7 +63,7 @@ class ASTBuilderWalkerTest {
     when(variableFinder.typeOf("myVar")).thenReturn(ValueType.STRING);
     when(variableFinder.findVariableScope("myVar")).thenReturn(Optional.empty());
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.setErrorLogger(errorLogger);
 
     assertNull(astBuilderWalker.getBuilder().getTopNode());
@@ -74,13 +78,18 @@ class ASTBuilderWalkerTest {
     verify(variableFinder).mapAlias("myVar");
     verify(variableFinder).typeOf("myVar");
     verify(variableFinder).findVariableScope("myVar");
+    verify(builder).idExprNode(isNull(), eq("myVar"), eq(ValueType.STRING), any(Span.class));
+    verify(builder).idExprNode(isNull(), isNull(), eq("myVar"), eq(ValueType.STRING), any(Span.class));
+    verify(builder, times(4)).getTopNode();
     verifyNoInteractions(errorLogger);
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterIdExprRule_shouldCreateIdExprNodeWithScopeWhenScopeExists() throws Exception {
     VariableFinder variableFinder = mock();
     ErrorLogger errorLogger = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.IdExprRuleContext ctx = mock();
     ctx.var = mock();
@@ -92,20 +101,23 @@ class ASTBuilderWalkerTest {
     when(variableFinder.typeOf("scopedVar")).thenReturn(ValueType.INTEGER);
     when(variableFinder.findVariableScope("scopedVar")).thenReturn(Optional.of("myScope"));
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.setErrorLogger(errorLogger);
     astBuilderWalker.enterIdExprRule(ctx);
 
     verify(variableFinder).mapAlias("scopedVar");
     verify(variableFinder).typeOf("scopedVar");
     verify(variableFinder).findVariableScope("scopedVar");
+    verify(builder).idExprNode(isNull(), eq("myScope"), eq("scopedVar"), eq(ValueType.INTEGER), any(Span.class));
     verifyNoInteractions(errorLogger);
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterIdExprRule_shouldMapAliasToVariableId() throws Exception {
     VariableFinder variableFinder = mock();
     ErrorLogger errorLogger = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.IdExprRuleContext ctx = mock();
     ctx.var = mock();
@@ -117,22 +129,26 @@ class ASTBuilderWalkerTest {
     when(variableFinder.typeOf("actualVariableName")).thenReturn(ValueType.BOOLEAN);
     when(variableFinder.findVariableScope("actualVariableName")).thenReturn(Optional.empty());
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.setErrorLogger(errorLogger);
     astBuilderWalker.enterIdExprRule(ctx);
 
     verify(variableFinder).mapAlias("aliasName");
     verify(variableFinder).typeOf("actualVariableName");
     verify(variableFinder).findVariableScope("actualVariableName");
+    verify(builder).idExprNode(isNull(), eq("actualVariableName"), eq(ValueType.BOOLEAN), any(Span.class));
+    verify(builder).idExprNode(isNull(), isNull(), eq("actualVariableName"), eq(ValueType.BOOLEAN), any(Span.class));
     verifyNoInteractions(errorLogger);
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void exitIdExprRule_shouldPopBuilder() {
     VariableFinder variableFinder = mock();
     DialobRuleParser.IdExprRuleContext ctx = mock();
+    var builder = spy(new ASTBuilder());
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
 
     // First enter to create a node
     astBuilderWalker.getBuilder().constExprNode("test", null, ValueType.STRING, Span.of(0, 4));
@@ -145,11 +161,16 @@ class ASTBuilderWalkerTest {
 
     // The top node should be null after popping the only node
     assertNull(nodeAfterExit);
+    verify(builder).constExprNode(eq("test"), isNull(), eq(ValueType.STRING), any(Span.class));
+    verify(builder, times(2)).getTopNode();
+    verify(builder).closeExpr();
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldCreateConstExprNodeWithStringValue() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -162,7 +183,7 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(6);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
 
     assertNull(astBuilderWalker.getBuilder().getTopNode());
     astBuilderWalker.enterConstExprRule(ctx);
@@ -172,11 +193,16 @@ class ASTBuilderWalkerTest {
     ConstExprNode node = (ConstExprNode) astBuilderWalker.getBuilder().getTopNode();
     assertEquals("hello", node.getValue()); // Quotes should be removed
     assertEquals(ValueType.STRING, node.getValueType());
+
+    verify(builder).constExprNode(eq("hello"), isNull(), eq(ValueType.STRING), any(Span.class));
+    verify(builder, times(4)).getTopNode();
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldCreateConstExprNodeWithDoubleQuotedString() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -189,15 +215,18 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(6);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.enterConstExprRule(ctx);
 
     assertNotNull(astBuilderWalker.getBuilder());
+    verify(builder).constExprNode(eq("world"), isNull(), eq(ValueType.STRING), any(Span.class));
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldCreateConstExprNodeWithIntegerValue() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -210,15 +239,18 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(1);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.enterConstExprRule(ctx);
 
     assertNotNull(astBuilderWalker.getBuilder());
+    verify(builder).constExprNode(eq("42"), isNull(), eq(ValueType.INTEGER), any(Span.class));
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldCreateConstExprNodeWithDecimalValue() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -231,15 +263,18 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(3);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.enterConstExprRule(ctx);
 
     assertNotNull(astBuilderWalker.getBuilder());
+    verify(builder).constExprNode(eq("3.14"), isNull(), eq(ValueType.DECIMAL), any(Span.class));
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldCreateConstExprNodeWithBooleanValue() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -252,15 +287,18 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(3);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.enterConstExprRule(ctx);
 
     assertNotNull(astBuilderWalker.getBuilder());
+    verify(builder).constExprNode(eq("true"), isNull(), eq(ValueType.BOOLEAN), any(Span.class));
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldCreateConstExprNodeWithUnit() {
     VariableFinder variableFinder = mock();
+    ASTBuilder builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -274,15 +312,18 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.unit.getStopIndex()).thenReturn(5);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.enterConstExprRule(ctx);
 
     assertNotNull(astBuilderWalker.getBuilder());
+    verify(builder).constExprNode(eq("5"), eq("days"), eq(ValueType.DURATION), any(Span.class));
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldRemoveQuotesFromStringValue() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -295,7 +336,7 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(11);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
 
     astBuilderWalker.enterConstExprRule(ctx);
 
@@ -303,11 +344,16 @@ class ASTBuilderWalkerTest {
     assertTrue(astBuilderWalker.getBuilder().getTopNode() instanceof ConstExprNode);
     ConstExprNode node = (ConstExprNode) astBuilderWalker.getBuilder().getTopNode();
     assertEquals("test value", node.getValue()); // Quotes should be removed
+
+    verify(builder).constExprNode(eq("test value"), isNull(), eq(ValueType.STRING), any(Span.class));
+    verify(builder, times(3)).getTopNode();
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void enterConstExprRule_shouldNotRemoveQuotesFromNonStringValue() {
     VariableFinder variableFinder = mock();
+    var builder = spy(new ASTBuilder());
 
     DialobRuleParser.ConstExprRuleContext ctx = mock();
     ctx.value = mock(Token.class);
@@ -320,18 +366,21 @@ class ASTBuilderWalkerTest {
     when(ctx.value.getStartIndex()).thenReturn(0);
     when(ctx.value.getStopIndex()).thenReturn(2);
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
     astBuilderWalker.enterConstExprRule(ctx);
 
     assertNotNull(astBuilderWalker.getBuilder());
+    verify(builder).constExprNode(eq("100"), isNull(), eq(ValueType.INTEGER), any(Span.class));
+    verifyNoMoreInteractions(builder);
   }
 
   @Test
   void exitConstExprRule_shouldPopBuilder() {
     VariableFinder variableFinder = mock();
     DialobRuleParser.ConstExprRuleContext ctx = mock();
+    var builder = spy(new ASTBuilder());
 
-    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(variableFinder, new HashMap<>());
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
 
     // First enter to create a node
     astBuilderWalker.getBuilder().constExprNode("123", null, ValueType.INTEGER, Span.of(0, 2));
@@ -344,6 +393,11 @@ class ASTBuilderWalkerTest {
 
     // The top node should be null after popping the only node
     assertNull(nodeAfterExit);
+
+    verify(builder).constExprNode(eq("123"), isNull(), eq(ValueType.INTEGER), any(Span.class));
+    verify(builder, times(2)).getTopNode();
+    verify(builder).closeExpr();
+    verifyNoMoreInteractions(builder);
   }
 
 }

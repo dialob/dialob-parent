@@ -19,7 +19,7 @@ public class ASTBuilder {
     this(null);
   }
 
-  public ASTBuilder(ASTBuilder parentScopeBuilder) {
+  ASTBuilder(ASTBuilder parentScopeBuilder) {
     this.parentScopeBuilder = parentScopeBuilder;
   }
 
