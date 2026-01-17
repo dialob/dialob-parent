@@ -46,6 +46,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class QuestionnaireWebSocketHandlerTest {
 
@@ -471,6 +472,102 @@ class QuestionnaireWebSocketHandlerTest {
 
     // Verify that NO message was sent
     verify(webSocketSession, never()).sendMessage(any(TextMessage.class));
+  }
+
+  @Test
+  void shouldHandleTextMessage() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Prepare incoming message
+    String payload = "{\"actions\":[{\"type\":\"ANSWER\",\"id\":\"q1\",\"answer\":\"a1\"}],\"rev\":\"rev1\"}";
+    TextMessage message = new TextMessage(payload);
+
+    // Mock action processing
+    Actions resultActions = new Actions.Builder()
+      .rev("rev2")
+      .addActions(new Action.Builder().type(Action.Type.ITEM).id("q2").build())
+      .build();
+    when(actionProcessingService.answerQuestion(eq("questionnaire-123"), eq("rev1"), anyList())).thenReturn(resultActions);
+
+    // Call the method under test
+    questionnaireWebSocketHandler.handleTextMessage(webSocketSession, message);
+
+    // Verify that actionProcessingService was called
+    verify(actionProcessingService).answerQuestion(eq("questionnaire-123"), eq("rev1"), anyList());
+  }
+
+  @Test
+  void shouldHandleTextMessageEmptyActions() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Prepare incoming message
+    String payload = "{\"actions\":[],\"rev\":\"rev1\"}";
+    TextMessage message = new TextMessage(payload);
+
+
+    // Call the method under test
+    questionnaireWebSocketHandler.handleTextMessage(webSocketSession, message);
+
+    // Verify that actionProcessingService was called
+    verifyNoMoreInteractions(actionProcessingService);
+  }
+
+  @Test
+  void shouldHandleTextMessageSkipServerActionsFromClient() throws Exception {
+    // Setup the handler with a questionnaire ID
+    final WebSocketSession webSocketSession = mockWebSocketSessionFrom("localhost", 9999);
+    final Map<String, Object> attributes = new HashMap<>();
+    attributes.put("sessionId", "questionnaire-123");
+    when(webSocketSession.getAttributes()).thenReturn(attributes);
+    when(webSocketSession.getId()).thenReturn("session-abc");
+    final HttpHeaders httpHeaders = Mockito.mock(HttpHeaders.class);
+    when(webSocketSession.getHandshakeHeaders()).thenReturn(httpHeaders);
+
+    // Initialize the handler
+    doAnswer(invocation -> {
+      return null;
+    }).when(taskExecutor).execute(any());
+
+    questionnaireWebSocketHandler.afterConnectionEstablished(webSocketSession);
+
+    // Prepare incoming message
+    String payload = "{\"actions\":[{\"type\":\"RESET\"}],\"rev\":\"rev1\"}";
+    TextMessage message = new TextMessage(payload);
+
+
+    // Call the method under test
+    questionnaireWebSocketHandler.handleTextMessage(webSocketSession, message);
+
+    // Verify that actionProcessingService was called
+    verifyNoMoreInteractions(actionProcessingService);
   }
 
 }
