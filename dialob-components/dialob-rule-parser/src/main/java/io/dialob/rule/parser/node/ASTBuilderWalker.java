@@ -70,13 +70,13 @@ public class ASTBuilderWalker extends DialobRuleBaseListener {
   };
 
   public ASTBuilderWalker(@NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
-    this(null, variableFinder, asyncFunctionVariables);
+    this(null, new ASTBuilder(), variableFinder, asyncFunctionVariables);
   }
 
-  ASTBuilderWalker(String namespace, @NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
+  ASTBuilderWalker(String namespace, ASTBuilder builder, @NonNull VariableFinder variableFinder, Map<NodeBase, String> asyncFunctionVariables) {
     this.namespace = namespace;
     this.variableFinder = variableFinder;
-    this.builder = new ASTBuilder();
+    this.builder = builder;
     this.asyncFunctionVariables = asyncFunctionVariables;
   }
 

@@ -18,7 +18,7 @@ public class ParseTestBase {
 
   protected String lispExpression(ParseTree parseTree) {
     ParseTreeWalker walker = new ParseTreeWalker();
-    ASTBuilderWalker builder = new ASTBuilderWalker(null, ASTBuilderWalker.DUMMY_VARIABLE_FINDER, new HashMap<>());
+    ASTBuilderWalker builder = new ASTBuilderWalker(null, new ASTBuilder(), ASTBuilderWalker.DUMMY_VARIABLE_FINDER, new HashMap<>());
     walker.walk(builder, parseTree);
     NodeBase nodeBase = builder.getBuilder().build();
     if (nodeBase == null) {
