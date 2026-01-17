@@ -400,4 +400,195 @@ class ASTBuilderWalkerTest {
     verifyNoMoreInteractions(builder);
   }
 
+  @Test
+  void exitInfixExprRule_shouldPopBuilder() {
+    VariableFinder variableFinder = mock();
+    DialobRuleParser.InfixExprContext ctx = mock();
+    ctx.op = mock(Token.class);
+    ctx.start = mock(Token.class);
+    ctx.stop = mock(Token.class);
+
+    when(ctx.op.getText()).thenReturn("+");
+    when(ctx.getStart()).thenReturn(ctx.start);
+    when(ctx.getStop()).thenReturn(ctx.stop);
+    when(ctx.start.getStartIndex()).thenReturn(0);
+    when(ctx.stop.getStopIndex()).thenReturn(10);
+
+    var builder = spy(new ASTBuilder());
+
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
+
+    // First enter to create a node
+    astBuilderWalker.enterInfixExpr(ctx);
+
+    astBuilderWalker.getBuilder().constExprNode("123", null, ValueType.INTEGER, Span.of(0, 2)).closeExpr();
+    astBuilderWalker.getBuilder().constExprNode("123", null, ValueType.INTEGER, Span.of(0, 2)).closeExpr();;
+    NodeBase nodeBeforeExit = astBuilderWalker.getBuilder().getTopNode();
+    assertNotNull(nodeBeforeExit);
+
+    // Exit should pop the builder
+    astBuilderWalker.exitInfixExpr(ctx);
+    NodeBase nodeAfterExit = astBuilderWalker.getBuilder().getTopNode();
+
+    // The top node should be null after popping the only node
+    assertNull(nodeAfterExit);
+
+    var root = astBuilderWalker.getBuilder().build();
+    assertEquals(ValueType.INTEGER, root.getValueType());
+
+    verify(builder, times(2)).constExprNode(eq("123"), isNull(), eq(ValueType.INTEGER), any(Span.class));
+    verify(builder).callExprNode(eq(new NodeOperator("+", NodeOperator.Category.INFIX)), isNull(), any(Span.class));
+    verify(builder).infixExprNode(eq("+"), any(Span.class));
+
+    verify(builder, atLeastOnce()).getTopNode();
+    verify(builder, atLeastOnce()).closeExpr();
+    verify(builder, atLeastOnce()).setValueType(any());
+    verify(builder).build();
+    verifyNoMoreInteractions(builder);
+  }
+
+  @Test
+  void exitInfixExprRule_substractTime() {
+    VariableFinder variableFinder = mock();
+    DialobRuleParser.InfixExprContext ctx = mock();
+    ctx.op = mock(Token.class);
+    ctx.start = mock(Token.class);
+    ctx.stop = mock(Token.class);
+
+    when(ctx.op.getText()).thenReturn("-");
+    when(ctx.getStart()).thenReturn(ctx.start);
+    when(ctx.getStop()).thenReturn(ctx.stop);
+    when(ctx.start.getStartIndex()).thenReturn(0);
+    when(ctx.stop.getStopIndex()).thenReturn(10);
+
+    var builder = spy(new ASTBuilder());
+
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
+
+    // First enter to create a node
+    astBuilderWalker.enterInfixExpr(ctx);
+
+    astBuilderWalker.getBuilder().constExprNode("01:00:00", null, ValueType.STRING, Span.of(0, 2)).closeExpr();
+    astBuilderWalker.getBuilder().constExprNode("12:00:00", null, ValueType.TIME, Span.of(0, 2)).closeExpr();;
+    NodeBase nodeBeforeExit = astBuilderWalker.getBuilder().getTopNode();
+    assertNotNull(nodeBeforeExit);
+
+    // Exit should pop the builder
+    astBuilderWalker.exitInfixExpr(ctx);
+    NodeBase nodeAfterExit = astBuilderWalker.getBuilder().getTopNode();
+
+    // The top node should be null after popping the only node
+    assertNull(nodeAfterExit);
+
+    var root = astBuilderWalker.getBuilder().build();
+    assertEquals(ValueType.DURATION, root.getValueType());
+
+    verify(builder).constExprNode(eq("01:00:00"), isNull(), eq(ValueType.STRING), any(Span.class));
+    verify(builder).constExprNode(eq("12:00:00"), isNull(), eq(ValueType.TIME), any(Span.class));
+    verify(builder).callExprNode(eq(new NodeOperator("-", NodeOperator.Category.INFIX)), isNull(), any(Span.class));
+    verify(builder).infixExprNode(eq("-"), any(Span.class));
+
+    verify(builder, atLeastOnce()).getTopNode();
+    verify(builder, atLeastOnce()).closeExpr();
+    verify(builder, atLeastOnce()).setValueType(any());
+    verify(builder).build();
+    verifyNoMoreInteractions(builder);
+  }
+
+  @Test
+  void exitInfixExprRule_substractTimeNoMatch() {
+    VariableFinder variableFinder = mock();
+    DialobRuleParser.InfixExprContext ctx = mock();
+    ErrorLogger errorLogger = mock();
+    ctx.op = mock(Token.class);
+    ctx.start = mock(Token.class);
+    ctx.stop = mock(Token.class);
+
+    when(ctx.op.getText()).thenReturn("-");
+    when(ctx.getStart()).thenReturn(ctx.start);
+    when(ctx.getStop()).thenReturn(ctx.stop);
+    when(ctx.start.getStartIndex()).thenReturn(0);
+    when(ctx.stop.getStopIndex()).thenReturn(10);
+
+    var builder = spy(new ASTBuilder());
+
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
+    astBuilderWalker.setErrorLogger(errorLogger);
+
+    // First enter to create a node
+    astBuilderWalker.enterInfixExpr(ctx);
+
+    astBuilderWalker.getBuilder().constExprNode("AAA", null, ValueType.STRING, Span.of(0, 2)).closeExpr();
+    astBuilderWalker.getBuilder().constExprNode("12:00:00", null, ValueType.TIME, Span.of(0, 2)).closeExpr();;
+    NodeBase nodeBeforeExit = astBuilderWalker.getBuilder().getTopNode();
+    assertNotNull(nodeBeforeExit);
+
+    // Exit should pop the builder
+    astBuilderWalker.exitInfixExpr(ctx);
+    NodeBase nodeAfterExit = astBuilderWalker.getBuilder().getTopNode();
+
+    // The top node should be null after popping the only node
+    assertNull(nodeAfterExit);
+
+    var root = astBuilderWalker.getBuilder().build();
+    assertNull(root.getValueType());
+
+    verify(builder).constExprNode(eq("AAA"), isNull(), eq(ValueType.STRING), any(Span.class));
+    verify(builder).constExprNode(eq("12:00:00"), isNull(), eq(ValueType.TIME), any(Span.class));
+    verify(builder).callExprNode(eq(new NodeOperator("-", NodeOperator.Category.INFIX)), isNull(), any(Span.class));
+    verify(builder).infixExprNode(eq("-"), any(Span.class));
+
+    verify(builder, atLeastOnce()).getTopNode();
+    verify(builder, atLeastOnce()).closeExpr();
+    verify(builder).build();
+    verify(errorLogger).logError(CompilerErrorCode.CANNOT_SUBTRACT_TYPES, new Object[]{ValueType.STRING, ValueType.TIME}, Span.of(0, 10));
+
+    verifyNoMoreInteractions(builder, errorLogger);
+  }
+
+
+  @Test
+  void exitInfixExprRule_shouldWarnLackOfArguments() {
+    VariableFinder variableFinder = mock();
+    DialobRuleParser.InfixExprContext ctx = mock();
+    ErrorLogger errorLogger = mock();
+    ctx.op = mock(Token.class);
+    ctx.start = mock(Token.class);
+    ctx.stop = mock(Token.class);
+
+    when(ctx.op.getText()).thenReturn("+");
+    when(ctx.getStart()).thenReturn(ctx.start);
+    when(ctx.getStop()).thenReturn(ctx.stop);
+    when(ctx.start.getStartIndex()).thenReturn(0);
+    when(ctx.stop.getStopIndex()).thenReturn(10);
+
+    var builder = spy(new ASTBuilder());
+
+    ASTBuilderWalker astBuilderWalker = new ASTBuilderWalker(builder, variableFinder, new HashMap<>());
+    astBuilderWalker.setErrorLogger(errorLogger);
+
+    // First enter to create a node
+    astBuilderWalker.enterInfixExpr(ctx);
+
+    NodeBase nodeBeforeExit = astBuilderWalker.getBuilder().getTopNode();
+    assertNotNull(nodeBeforeExit);
+
+    // Exit should pop the builder
+    astBuilderWalker.exitInfixExpr(ctx);
+    NodeBase nodeAfterExit = astBuilderWalker.getBuilder().getTopNode();
+
+    // The top node should be null after popping the only node
+    assertNull(nodeAfterExit);
+
+    verify(builder).callExprNode(eq(new NodeOperator("+", NodeOperator.Category.INFIX)), isNull(), any(Span.class));
+    verify(builder).infixExprNode(eq("+"), any(Span.class));
+
+    verify(builder, atLeastOnce()).getTopNode();
+    verify(builder, atLeastOnce()).closeExpr();
+    verify(errorLogger).logError(CompilerErrorCode.OPERATOR_REQUIRES_2_OPERANDS, new Object[]{"+"}, Span.of(0, 10));
+
+    verifyNoMoreInteractions(errorLogger, builder);
+  }
+
+
 }
