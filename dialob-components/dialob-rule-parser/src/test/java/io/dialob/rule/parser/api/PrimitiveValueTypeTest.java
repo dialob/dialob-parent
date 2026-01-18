@@ -35,14 +35,66 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class PrimitiveValueTypeTest {
 
+  static {
+    // Make sure PrimitiveValueType is initialized
+    Assertions.assertNotNull(ValueType.DECIMAL);
+  }
+
+  @Test
+  void testStringSum() {
+    var bil10 = PrimitiveValueType.STRING.parseFromString("ABC");
+    BinaryOperator<Object> operator = PrimitiveValueType.STRING.sumOp();
+    assertEquals(bil10, operator.apply(null, bil10));
+    assertEquals(bil10, operator.apply(bil10, null));
+    assertEquals("ABCABC", operator.apply(bil10, bil10));
+    assertEquals("ABCX", operator.apply(bil10, "X"));
+    assertEquals("XABC", operator.apply("X", bil10));
+    assertEquals("XY", operator.apply("X", "Y"));
+  }
+
   @Test
   void testIntegerSum() {
     var bil10 = PrimitiveValueType.INTEGER.parseFromString("10000000000");
     BinaryOperator<Object> operator = PrimitiveValueType.INTEGER.sumOp();
+    assertEquals(bil10, operator.apply(null, bil10));
+    assertEquals(bil10, operator.apply(bil10, null));
     assertEquals(new BigInteger("20000000000"), operator.apply(bil10, bil10));
     assertEquals(new BigInteger("10000000001"), operator.apply(bil10, BigInteger.valueOf(1)));
     assertEquals(new BigInteger("10000000001"), operator.apply(BigInteger.valueOf(1), bil10));
     assertEquals(BigInteger.valueOf(2), operator.apply(BigInteger.valueOf(1), BigInteger.valueOf(1)));
+  }
+
+  @Test
+  void testDecimalSum() {
+    var bil10 = PrimitiveValueType.DECIMAL.parseFromString("100000.00001");
+    BinaryOperator<Object> operator = PrimitiveValueType.DECIMAL.sumOp();
+    assertEquals(bil10, operator.apply(null, bil10));
+    assertEquals(bil10, operator.apply(bil10, null));
+    assertEquals(new BigDecimal("200000.00002"), operator.apply(bil10, bil10));
+    assertEquals(new BigDecimal("100001.00001"), operator.apply(bil10, BigDecimal.valueOf(1)));
+    assertEquals(new BigDecimal("100001.00001"), operator.apply(BigDecimal.valueOf(1), bil10));
+    assertEquals(BigDecimal.valueOf(2), operator.apply(BigDecimal.valueOf(1), BigDecimal.valueOf(1)));
+  }
+
+  @Test
+  void testDecimalMult() {
+    var bil10 = PrimitiveValueType.DECIMAL.parseFromString("100000.00001");
+    BinaryOperator<Object> operator = PrimitiveValueType.DECIMAL.multOp();
+    assertEquals(bil10, operator.apply(null, bil10));
+    assertEquals(bil10, operator.apply(bil10, null));
+    assertEquals(new BigDecimal("10000000002.0000000001"), operator.apply(bil10, bil10));
+    assertEquals(new BigDecimal("100000.00001"), operator.apply(bil10, BigDecimal.valueOf(1)));
+    assertEquals(new BigDecimal("100000.00001"), operator.apply(BigDecimal.valueOf(1), bil10));
+    assertEquals(BigDecimal.valueOf(1), operator.apply(BigDecimal.valueOf(1), BigDecimal.valueOf(1)));
+  }
+
+  @Test
+  void testPeriod() {
+    var p = PrimitiveValueType.PERIOD.parseFromStringWithUnit("1", "days");
+    BinaryOperator<Object> operator = PrimitiveValueType.PERIOD.sumOp();
+    assertEquals(p, operator.apply(null, p));
+    assertEquals(p, operator.apply(p, null));
+    assertEquals(Period.ofDays(2), operator.apply(p, p));
   }
 
   @Test
@@ -59,6 +111,8 @@ class PrimitiveValueTypeTest {
   void testIntegerMult() {
     var bil10 = PrimitiveValueType.INTEGER.parseFromString("10000000000");
     BinaryOperator<Object> operator = PrimitiveValueType.INTEGER.multOp();
+    assertEquals(bil10, operator.apply(null, bil10));
+    assertEquals(bil10, operator.apply(bil10, null));
     assertEquals(new BigInteger("100000000000000000000"), operator.apply(bil10, bil10));
     assertEquals(new BigInteger("20000000000"), operator.apply(bil10, BigInteger.valueOf(2)));
     assertEquals(new BigInteger("20000000000"), operator.apply(BigInteger.valueOf(2), bil10));

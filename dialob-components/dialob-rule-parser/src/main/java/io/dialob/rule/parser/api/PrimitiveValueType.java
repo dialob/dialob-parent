@@ -653,6 +653,9 @@ public enum PrimitiveValueType implements ValueType {
         if (identity == null) {
           return element;
         }
+        if (element == null) {
+          return identity;
+        }
         return identity + element;
       };
     }
