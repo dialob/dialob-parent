@@ -15,15 +15,16 @@
  */
 package io.dialob.cloud.aws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.MapperBuilder;
 
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
 class S3NormalizingPostSubmitHandlerTest {
 
   @Test
-  void shouldSendDocumentToS3() throws JsonProcessingException {
+  void shouldSendDocumentToS3() {
     S3Client s3Client = mock(S3Client.class);
     ObjectMapper objectMapper = new ObjectMapper();
     S3NormalizingPostSubmitHandler handler = new S3NormalizingPostSubmitHandler(s3Client, objectMapper);
@@ -63,12 +64,14 @@ class S3NormalizingPostSubmitHandlerTest {
   }
 
   @Test
-  void shouldHandleJsonProcessingException() throws JsonProcessingException {
+  void shouldHandleJsonProcessingException() {
     S3Client s3Client = mock(S3Client.class);
-    ObjectMapper objectMapper = mock(ObjectMapper.class);
-    when(objectMapper.copy()).thenReturn(objectMapper);
-    when(objectMapper.configure(any(SerializationFeature.class), anyBoolean())).thenReturn(objectMapper);
-    when(objectMapper.writeValueAsBytes(any())).thenThrow(new JsonProcessingException("Error") {});
+    final ObjectMapper objectMapper = mock(ObjectMapper.class);
+    MapperBuilder mapperBuilder = mock();
+    when(objectMapper.rebuild()).thenReturn(mapperBuilder);
+    when(mapperBuilder.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)).thenReturn(mapperBuilder);
+    when(mapperBuilder.build()).thenReturn(objectMapper);
+    when(objectMapper.writeValueAsBytes(any())).thenThrow(new JacksonException("Error") {});
 
     S3NormalizingPostSubmitHandler handler = new S3NormalizingPostSubmitHandler(s3Client, objectMapper);
 
