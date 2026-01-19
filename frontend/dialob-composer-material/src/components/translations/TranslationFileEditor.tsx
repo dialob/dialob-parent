@@ -4,7 +4,7 @@ import { useComposer } from '../../dialob';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { FormattedMessage } from 'react-intl';
-import { ParsedImportData, downloadFormData, overwiewTextFormatter, parse, validateParsedFileData, validateParsedFileHeaders } from '../../utils/TranslationUtils';
+import { ParsedImportData, downloadFormData, overwiewTextFormatter, parse, parseEntryId, validateParsedFileData, validateParsedFileHeaders } from '../../utils/TranslationUtils';
 
 interface OverviewSectionProps {
   content?: string[];
@@ -51,20 +51,19 @@ const TranslationFileEditor: React.FC = () => {
   }, [form.metadata.languages])
 
   const updateTranslation = useCallback((key: string, language: string, text: string) => {
-    const keyTokens = key.split(':');
-    const id = keyTokens[1];
-    if (keyTokens[0] === 'i') {
-      // Item
-      if (keyTokens[2] === 'l') {
-        updateItem(id, 'label', text, language);
-      } else if (keyTokens[2] === 'd') {
-        updateItem(id, 'description', text, language);
-      } else if (keyTokens[2] === 'v') {
-        setValidationMessage(id, parseInt(keyTokens[3]), language, text);
+    const parsed = parseEntryId(key);
+    if (!parsed) return;
+
+    if (parsed.type === 'item') {
+      if (parsed.subType === 'label') {
+        updateItem(parsed.itemId, 'label', text, language);
+      } else if (parsed.subType === 'description') {
+        updateItem(parsed.itemId, 'description', text, language);
+      } else if (parsed.subType === 'validation' && parsed.validationIndex !== undefined) {
+        setValidationMessage(parsed.itemId, parsed.validationIndex, language, text);
       }
-    } else if (keyTokens[0] === 'v') {
-      // ValueSet
-      updateValueSetEntryLabel(id, parseInt(keyTokens[2]), text, language);
+    } else if (parsed.type === 'valueset') {
+      updateValueSetEntryLabel(parsed.valueSetId, parsed.entryIndex, text, language);
     }
   }, [setValidationMessage, updateItem, updateValueSetEntryLabel])
 

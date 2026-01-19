@@ -17,7 +17,8 @@ import {
 import { Close, Check } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { TranslationResult } from '../../backend/types';
-import { getLanguageName } from '../../utils/TranslationUtils';
+import { getLanguageName, buildDisplayId } from '../../utils/TranslationUtils';
+import { useComposer } from '../../dialob';
 
 interface TranslationPreviewDialogProps {
   open: boolean;
@@ -38,6 +39,8 @@ const TranslationPreviewDialog: React.FC<TranslationPreviewDialogProps> = ({
   onCancel,
   onSave
 }) => {
+  const { form } = useComposer();
+
   // Group translations by entry ID
   const groupedTranslations = React.useMemo(() => {
     const grouped = new Map<string, GroupedTranslation>();
@@ -110,21 +113,24 @@ const TranslationPreviewDialog: React.FC<TranslationPreviewDialogProps> = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {groupedTranslations.map((grouped, idx) => (
-                <TableRow key={idx} hover>
-                  <TableCell sx={{ color: 'text.secondary', p: 1 }}>
-                    {grouped.entryId}
-                  </TableCell>
-                  <TableCell sx={{ wordBreak: 'break-word', p: 1 }}>
-                    {grouped.sourceText}
-                  </TableCell>
-                  {targetLanguages.map(lang => (
-                    <TableCell key={lang} sx={{ wordBreak: 'break-word', fontWeight: 500, p: 1 }}>
-                      {grouped.translationsByLanguage.get(lang) || '-'}
+              {groupedTranslations.map((grouped, idx) => {
+                const displayId = buildDisplayId(grouped.entryId, form);
+                return (
+                  <TableRow key={idx} hover>
+                    <TableCell sx={{ color: 'text.secondary', p: 1 }}>
+                      {displayId}
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                    <TableCell sx={{ wordBreak: 'break-word', p: 1 }}>
+                      {grouped.sourceText}
+                    </TableCell>
+                    {targetLanguages.map(lang => (
+                      <TableCell key={lang} sx={{ wordBreak: 'break-word', fontWeight: 500, p: 1 }}>
+                        {grouped.translationsByLanguage.get(lang) || '-'}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
