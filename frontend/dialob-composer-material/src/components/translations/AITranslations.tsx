@@ -1,118 +1,65 @@
 import React from 'react';
 import { Alert, Box, Button, IconButton, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { LanguagesTable } from './LanguageEditor';
-import { AITranslation, TranslationType, getAITranslations, getLanguageName } from '../../utils/TranslationUtils';
+import { 
+  AITranslation, 
+  TranslationType, 
+  getAITranslations, 
+  getLanguageName,
+  parseEntryId,
+  getEntryText,
+  buildDisplayId,
+  getAITranslationMetadata as getAITranslationMetadataUtil
+} from '../../utils/TranslationUtils';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 import { useEditor } from '../../editor';
 import AITranslationIndicator from './AITranslationIndicator';
-import { TranslationMetadata } from '../../types';
 
 const AITranslationsCategory: React.FC<{ type: TranslationType, translations: AITranslation[] }> = ({ type, translations }) => {
   const { form, removeAITranslation } = useComposer();
   const { setActiveItem, setItemOptionsActiveTab, setActiveList } = useEditor();
   const languages = form.metadata.languages || [];
   const [expanded, setExpanded] = React.useState(false);
+  const aiTranslations = form.metadata.composer?.aiTranslations || [];
 
-  const getAITranslationMetadata = (entryId: string, language: string): TranslationMetadata | undefined => {
-    const aiTranslations = form.metadata.composer?.aiTranslations || [];
-    return aiTranslations.find(t => t.entryId === entryId && t.targetLanguage === language);
-  };
+  const navigateToItem = (entryId: string) => {
+    const parsed = parseEntryId(entryId);
+    if (!parsed) return;
 
-  const getTranslatedText = (entryId: string, language: string): string | undefined => {
-    const parts = entryId.split(':');
-    
-    if (parts[0] === 'i') {
-      const itemId = parts[1];
-      const item = form.data[itemId];
-      if (!item) return undefined;
-
-      if (parts[2] === 'l') {
-        return item.label?.[language];
-      } else if (parts[2] === 'd') {
-        return item.description?.[language];
-      } else if (parts[2] === 'v') {
-        const validationIndex = parseInt(parts[3], 10);
-        return item.validations?.[validationIndex]?.message?.[language];
+    if (parsed.type === 'valueset') {
+      // Check if it's a global valueset
+      const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === parsed.valueSetId);
+      if (gvs) {
+        setActiveList(parsed.valueSetId);
+        return;
       }
-    } else if (parts[0] === 'v') {
-      const valueSetId = parts[1];
-      const entryIndex = parseInt(parts[2], 10);
-      const valueSet = form.valueSets?.find(vs => vs.id === valueSetId);
-      return valueSet?.entries?.[entryIndex]?.label?.[language];
     }
-    
-    return undefined;
-  };
 
-  const handleRemoveAIFlag = (entryId: string, language: string) => {
-    removeAITranslation(entryId, language);
-  };
-
-  const getEntryIdFromAITranslation = (ai: AITranslation, translationType: TranslationType): string => {
-    // Extract the actual entry ID from the display ID
-    const parts = ai.id.split(' ');
-    
-    // For validations and valuesets, the actual ID is in parentheses
-    if (parts.length > 1 && parts[1].startsWith('(') && parts[1].endsWith(')')) {
-      const idInParens = parts[1].slice(1, -1); // Remove parentheses
-      
-      // For valuesets, need to add 'v:' prefix and reconstruct full ID
-      if (translationType === 'valueset') {
-        // idInParens format is "valueSetId:index", need "v:valueSetId:index:entryId"
-        const [valueSetId, indexStr] = idInParens.split(':');
-        const index = parseInt(indexStr, 10);
-        const valueSet = form.valueSets?.find(vs => vs.id === valueSetId);
-        const entry = valueSet?.entries?.[index];
-        if (entry) {
-          return `v:${valueSetId}:${index}:${entry.id}`;
-        }
-        return idInParens; // Fallback
-      }
-      
-      // For validations, format is "v:index", need "i:itemId:v:index"
-      if (translationType === 'validation') {
-        const itemId = parts[0].split('-')[0]; // Extract item ID from "itemId-ruleN"
-        return `i:${itemId}:${idInParens}`;
-      }
-      
-      return idInParens;
-    }
-    
-    // For labels and descriptions, reconstruct the entry ID
-    const itemId = ai.id;
-    if (translationType === 'label') {
-      return `i:${itemId}:l`;
-    } else if (translationType === 'description') {
-      return `i:${itemId}:d`;
-    }
-    
-    return ai.id;
-  };
-
-  const navigateToItem = (ai: AITranslation) => {
-    if (ai.global) {
-      const valueSetId = ai.id.split('-')[0];
-      setActiveList(valueSetId);
-    } else {
-      const found = Object.values(form.data).find(item => item.id === ai.id.split('-')[0]);
-      if (found) {
-        setActiveItem(found);
-        switch (type) {
+    // Navigate to item
+    if (parsed.type === 'item') {
+      const item = form.data[parsed.itemId];
+      if (item) {
+        setActiveItem(item);
+        switch (parsed.subType) {
           case 'label':
             setItemOptionsActiveTab('label');
             break;
           case 'description':
             setItemOptionsActiveTab('description');
             break;
-          case 'valueset':
-            setItemOptionsActiveTab('choices');
-            break;
           case 'validation':
             setItemOptionsActiveTab('validations');
             break;
         }
+      }
+    } else if (parsed.type === 'valueset') {
+      // Find the item that uses this valueset
+      const item = Object.values(form.data).find(i => i.valueSetId === parsed.valueSetId);
+      if (item) {
+        setActiveItem(item);
+        setItemOptionsActiveTab('choices');
       }
     }
   };
@@ -137,18 +84,20 @@ const AITranslationsCategory: React.FC<{ type: TranslationType, translations: AI
           </TableHead>
           <TableBody>
             {translations.map((ai, idx) => {
-              const entryId = getEntryIdFromAITranslation(ai, type);
+              const entryId = ai.id; // Now it's already in the correct format
+              const displayId = buildDisplayId(entryId, form);
+              
               return (
                 <TableRow key={idx}>
                   <TableCell width='70%'>
-                    <Button variant='text' onClick={() => navigateToItem(ai)} sx={{ color: 'inherit', m: 0, justifyContent: 'flex-start', textTransform: 'none' }}>
-                      {ai.id}
+                    <Button variant='text' onClick={() => navigateToItem(entryId)} sx={{ color: 'inherit', m: 0, justifyContent: 'flex-start', textTransform: 'none' }}>
+                      {displayId}
                     </Button>
                   </TableCell>
                   {languages.map(lang => {
                     const hasAITranslation = ai.languages.includes(lang);
-                    const aiMetadata = hasAITranslation ? getAITranslationMetadata(entryId, lang) : null;
-                    const translatedText = hasAITranslation ? getTranslatedText(entryId, lang) : undefined;
+                    const aiMetadata = hasAITranslation ? getAITranslationMetadataUtil(entryId, lang, aiTranslations) : null;
+                    const translatedText = hasAITranslation ? getEntryText(entryId, lang, form) : undefined;
 
                     return (
                       <TableCell key={lang} align='center'>
@@ -159,7 +108,7 @@ const AITranslationsCategory: React.FC<{ type: TranslationType, translations: AI
                                 <AITranslationIndicator 
                                   metadata={aiMetadata} 
                                   translatedText={translatedText}
-                                  onClick={() => handleRemoveAIFlag(entryId, lang)}
+                                  onClick={() => removeAITranslation(entryId, lang)}
                                 />
                               )}
                             </>

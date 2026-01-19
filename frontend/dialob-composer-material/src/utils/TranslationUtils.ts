@@ -57,6 +57,24 @@ export type AITranslations = {
   [type in TranslationType]?: AITranslation[];
 }
 
+export interface ParsedItemId {
+  type: 'item';
+  itemId: string;
+  subType: 'label' | 'description' | 'validation';
+  validationIndex?: number;
+}
+
+export interface ParsedValueSetId {
+  type: 'valueset';
+  valueSetId: string;
+  entryIndex: number;
+  entryId: string;
+}
+
+export type ParsedEntryId = ParsedItemId | ParsedValueSetId;
+
+
+
 export function findValueset(data: ComposerState, id: string) {
   if (!data || !data.valueSets || !id) {
     return undefined;
@@ -91,18 +109,20 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
     languages.forEach(lang => {
       // check item labels
       if (item.label === undefined || (item.label[lang] === undefined || item.label[lang] === '')) {
-        if (!missing.label?.find(m => m.id === item.id)) {
-          missing.label?.push({ id: item.id, missingIn: [lang] });
+        const entryId = buildItemLabelId(item.id);
+        if (!missing.label?.find(m => m.id === entryId)) {
+          missing.label?.push({ id: entryId, missingIn: [lang] });
         } else {
-          missing.label?.find(m => m.id === item.id)!.missingIn.push(lang);
+          missing.label?.find(m => m.id === entryId)!.missingIn.push(lang);
         }
       }
       // check item descriptions
       if (item.description && (item.description[lang] === undefined || item.description[lang] === '')) {
-        if (!missing.description?.find(m => m.id === item.id)) {
-          missing.description?.push({ id: item.id, missingIn: [lang] });
+        const entryId = buildItemDescriptionId(item.id);
+        if (!missing.description?.find(m => m.id === entryId)) {
+          missing.description?.push({ id: entryId, missingIn: [lang] });
         } else {
-          missing.description?.find(m => m.id === item.id)!.missingIn.push(lang);
+          missing.description?.find(m => m.id === entryId)!.missingIn.push(lang);
         }
       }
       // check item validations
@@ -110,10 +130,11 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
         // iterate validations and check messages
         item.validations.forEach((v, idx) => {
           if (v.message && (v.message[lang] === undefined || v.message[lang] === '')) {
-            if (!missing.validation?.find(m => m.id === item.id)) {
-              missing.validation?.push({ id: `${item.id}-rule${idx + 1} (v:${idx})`, missingIn: [lang], index: idx });
+            const entryId = buildValidationId(item.id, idx);
+            if (!missing.validation?.find(m => m.id === entryId)) {
+              missing.validation?.push({ id: entryId, missingIn: [lang], index: idx });
             } else {
-              missing.validation?.find(m => m.id === item.id)!.missingIn.push(lang);
+              missing.validation?.find(m => m.id === entryId)!.missingIn.push(lang);
             }
           }
         })
@@ -126,7 +147,7 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
     vs.entries?.forEach((vse, idx) => {
       languages.forEach(lang => {
         if (vse.label === undefined || (vse.label[lang] === undefined || vse.label[lang] === '')) {
-          const entryId = `${vs.id}-${vse.id} (v:${vs.id}:${idx}:${vse.id})`;
+          const entryId = buildValueSetEntryId(vs.id, idx, vse.id);
           const existingEntry = missing.valueset?.find(m => m.id === entryId);
           if (!existingEntry) {
             missing.valueset?.push({ id: entryId, missingIn: [lang], index: idx });
@@ -138,35 +159,30 @@ export const getMissingTranslations = (form: ComposerState): MissingTranslations
     })
   });
 
-  // match valuesets with names and set global flag
+  // Determine if valuesets are global
   const processedValueSets = new Set<string>();
   
-  // local valuesets
+  // Mark referenced valuesets (local or global)
   Object.values(form.data).forEach(item => {
     if (item.valueSetId && !processedValueSets.has(item.valueSetId)) {
       processedValueSets.add(item.valueSetId);
-      const vs = form.valueSets?.find(v => v.id === item.valueSetId);
       const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === item.valueSetId);
-      if (vs) {
-        missing.valueset?.forEach(m => {
-          if (m.id.startsWith(vs.id + '-')) {
-            const id = m.id.split('-');
-            m.id = `${gvs ? (gvs.label ?? id[0]) : item.id}-${id[1]}`;
-            m.global = !!gvs;
-          }
-        });
-      }
+      missing.valueset?.forEach(m => {
+        const parsed = parseEntryId(m.id);
+        if (parsed && parsed.type === 'valueset' && parsed.valueSetId === item.valueSetId) {
+          m.global = !!gvs;
+        }
+      });
     }
   });
   
-  // global valuesets
+  // Mark unreferenced valuesets as global if they're in globalValueSets
   form.valueSets?.forEach(vs => {
     if (!processedValueSets.has(vs.id)) {
       const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === vs.id);
       missing.valueset?.forEach(m => {
-        if (m.id.startsWith(vs.id + '-') && m.global === undefined) {
-          const id = m.id.split('-');
-          m.id = `${gvs ? (gvs.label ?? id[0]) : id[0]}-${id[1]}`;
+        const parsed = parseEntryId(m.id);
+        if (parsed && parsed.type === 'valueset' && parsed.valueSetId === vs.id && m.global === undefined) {
           m.global = !!gvs;
         }
       });
@@ -242,21 +258,24 @@ export const getAITranslations = (form: ComposerState): AITranslations | undefin
 
       if (parts[2] === 'l') {
         // Label
+        const fullEntryId = buildItemLabelId(itemId);
         aiTranslated.label?.push({ 
-          id: itemId, 
+          id: fullEntryId, 
           languages: Array.from(languages)
         });
       } else if (parts[2] === 'd') {
         // Description
+        const fullEntryId = buildItemDescriptionId(itemId);
         aiTranslated.description?.push({ 
-          id: itemId, 
+          id: fullEntryId, 
           languages: Array.from(languages)
         });
       } else if (parts[2] === 'v') {
         // Validation message
         const validationIndex = parseInt(parts[3], 10);
+        const fullEntryId = buildValidationId(itemId, validationIndex);
         aiTranslated.validation?.push({ 
-          id: `${itemId}-rule${validationIndex + 1} (v:${validationIndex})`,
+          id: fullEntryId,
           languages: Array.from(languages),
           index: validationIndex
         });
@@ -271,8 +290,9 @@ export const getAITranslations = (form: ComposerState): AITranslations | undefin
       const currentIndex = valueSet?.entries?.findIndex(e => e.id === entryIdPart);
       
       if (currentIndex !== undefined && currentIndex >= 0) {
+        const fullEntryId = buildValueSetEntryId(valueSetId, currentIndex, entryIdPart);
         aiTranslated.valueset?.push({ 
-          id: `${valueSetId}-${entryIdPart} (v:${valueSetId}:${currentIndex}:${entryIdPart})`,
+          id: fullEntryId,
           languages: Array.from(languages),
           index: currentIndex
         });
@@ -280,35 +300,30 @@ export const getAITranslations = (form: ComposerState): AITranslations | undefin
     }
   });
 
-  // Match valuesets with names and set global flag
+  // Determine if valuesets are global
   const processedValueSets = new Set<string>();
   
-  // First, process valuesets that are referenced by items
+  // Mark referenced valuesets (local or global)
   Object.values(form.data).forEach(item => {
     if (item.valueSetId && !processedValueSets.has(item.valueSetId)) {
       processedValueSets.add(item.valueSetId);
-      const vs = form.valueSets?.find(v => v.id === item.valueSetId);
       const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === item.valueSetId);
-      if (vs) {
-        aiTranslated.valueset?.forEach(ai => {
-          if (ai.id.startsWith(vs.id + '-')) {
-            const id = ai.id.split('-');
-            ai.id = `${gvs ? (gvs.label ?? id[0]) : item.id}-${id[1]}`;
-            ai.global = !!gvs;
-          }
-        });
-      }
+      aiTranslated.valueset?.forEach(ai => {
+        const parsed = parseEntryId(ai.id);
+        if (parsed && parsed.type === 'valueset' && parsed.valueSetId === item.valueSetId) {
+          ai.global = !!gvs;
+        }
+      });
     }
   });
   
-  // Then, process any remaining valuesets that weren't referenced by items (pure global valuesets)
+  // Mark unreferenced valuesets as global if they're in globalValueSets
   form.valueSets?.forEach(vs => {
     if (!processedValueSets.has(vs.id)) {
       const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === vs.id);
       aiTranslated.valueset?.forEach(ai => {
-        if (ai.id.startsWith(vs.id + '-') && ai.global === undefined) {
-          const id = ai.id.split('-');
-          ai.id = `${gvs ? (gvs.label ?? id[0]) : id[0]}-${id[1]}`;
+        const parsed = parseEntryId(ai.id);
+        if (parsed && parsed.type === 'valueset' && parsed.valueSetId === vs.id && ai.global === undefined) {
           ai.global = !!gvs;
         }
       });
@@ -600,6 +615,8 @@ export const getLanguageName = (language: string) => {
   return MOST_USED_LANGUAGES[language]?.name || ISO_LANGUAGES[language]?.name || language;
 }
 
+
+
 export const buildItemLabelId = (itemId: string): string => {
   return `i:${itemId}:l`;
 };
@@ -615,6 +632,102 @@ export const buildValidationId = (itemId: string, index: number): string => {
 export const buildValueSetEntryId = (valueSetId: string, index: number, entryId: string): string => {
   return `v:${valueSetId}:${index}:${entryId}`;
 };
+
+
+
+export const parseEntryId = (entryId: string): ParsedEntryId | null => {
+  const parts = entryId.split(':');
+  
+  if (parts[0] === 'i') {
+    // Item entry
+    if (parts.length < 3) return null;
+    
+    const itemId = parts[1];
+    
+    if (parts[2] === 'l') {
+      return { type: 'item', itemId, subType: 'label' };
+    } else if (parts[2] === 'd') {
+      return { type: 'item', itemId, subType: 'description' };
+    } else if (parts[2] === 'v' && parts.length >= 4) {
+      const validationIndex = parseInt(parts[3], 10);
+      return { type: 'item', itemId, subType: 'validation', validationIndex };
+    }
+  } else if (parts[0] === 'v' && parts.length >= 4) {
+    // ValueSet entry
+    const valueSetId = parts[1];
+    const entryIndex = parseInt(parts[2], 10);
+    const entryId = parts[3];
+    
+    return { type: 'valueset', valueSetId, entryIndex, entryId };
+  }
+  
+  return null;
+};
+
+
+export const getTranslationType = (entryId: string): TranslationType | null => {
+  const parsed = parseEntryId(entryId);
+  if (!parsed) return null;
+  
+  if (parsed.type === 'item') {
+    if (parsed.subType === 'label') return 'label';
+    if (parsed.subType === 'description') return 'description';
+    if (parsed.subType === 'validation') return 'validation';
+  } else if (parsed.type === 'valueset') {
+    return 'valueset';
+  }
+  
+  return null;
+};
+
+export const getEntryText = (
+  entryId: string,
+  language: string,
+  form: ComposerState
+): string | undefined => {
+  const parsed = parseEntryId(entryId);
+  if (!parsed) return undefined;
+  
+  if (parsed.type === 'item') {
+    const item = form.data[parsed.itemId];
+    if (!item) return undefined;
+    
+    if (parsed.subType === 'label') {
+      return item.label?.[language];
+    } else if (parsed.subType === 'description') {
+      return item.description?.[language];
+    } else if (parsed.subType === 'validation' && parsed.validationIndex !== undefined) {
+      return item.validations?.[parsed.validationIndex]?.message?.[language];
+    }
+  } else if (parsed.type === 'valueset') {
+    const valueSet = form.valueSets?.find(vs => vs.id === parsed.valueSetId);
+    return valueSet?.entries?.[parsed.entryIndex]?.label?.[language];
+  }
+  
+  return undefined;
+};
+
+
+export const buildDisplayId = (entryId: string, form: ComposerState): string => {
+  const parsed = parseEntryId(entryId);
+  if (!parsed) return entryId;
+  
+  if (parsed.type === 'item') {
+    if (parsed.subType === 'validation' && parsed.validationIndex !== undefined) {
+      return `${parsed.itemId}-rule${parsed.validationIndex + 1}`;
+    }
+    return parsed.itemId;
+  } else if (parsed.type === 'valueset') {
+    // Check if it's a global valueset and use label if available
+    const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === parsed.valueSetId);
+    const valueSetDisplay = gvs?.label || parsed.valueSetId;
+    return `${valueSetDisplay}-${parsed.entryId}`;
+  }
+  
+  return entryId;
+};
+
+
 
 export const isAITranslated = (
   entryId: string,

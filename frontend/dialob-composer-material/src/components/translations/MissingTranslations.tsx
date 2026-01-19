@@ -1,60 +1,24 @@
 import React from 'react';
 import { Alert, Box, Button, IconButton, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { LanguagesTable } from './LanguageEditor';
-import { MissingTranslation, TranslationType, getLanguageName, getMissingTranslations } from '../../utils/TranslationUtils';
+import { 
+  MissingTranslation, 
+  TranslationType, 
+  getLanguageName, 
+  getMissingTranslations,
+  parseEntryId,
+  getEntryText,
+  buildDisplayId
+} from '../../utils/TranslationUtils';
 import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import { CheckCircle, Error, KeyboardArrowDown, KeyboardArrowRight, Translate } from '@mui/icons-material';
 import { useEditor } from '../../editor';
 import { useBackend } from '../../backend/useBackend';
 import { TranslationEntry, TranslationResponse, TranslationResult } from '../../backend/types';
-import { ComposerState, ValueSet } from '../../types';
 import TranslateButton from './TranslateButton';
 import TranslationProgressDialog from './TranslationProgressDialog';
 import TranslationPreviewDialog from './TranslationPreviewDialog';
-
-// Helper function to reconstruct proper entry ID from MissingTranslation
-const getEntryIdFromMissingTranslation = (missing: MissingTranslation, translationType: TranslationType, form: ComposerState): string => {
-  // Extract the actual entry ID from the display ID
-  const parts = missing.id.split(' ');
-  
-  // For validations and valuesets, the actual ID is in parentheses
-  if (parts.length > 1 && parts[1].startsWith('(') && parts[1].endsWith(')')) {
-    const idInParens = parts[1].slice(1, -1); // Remove parentheses
-    
-    // For valuesets, need to add 'v:' prefix and reconstruct full ID
-    if (translationType === 'valueset') {
-      // idInParens format is "valueSetId:index"
-      // We need "v:valueSetId:index:entryId"
-      const [valueSetId, indexStr] = idInParens.split(':');
-      const index = parseInt(indexStr, 10);
-      const valueSet = form.valueSets?.find((vs: ValueSet) => vs.id === valueSetId);
-      const entry = valueSet?.entries?.[index];
-      if (entry) {
-        return `v:${valueSetId}:${index}:${entry.id}`;
-      }
-      return idInParens; // Fallback
-    }
-    
-    // For validations, format is "v:index", need "i:itemId:v:index"
-    if (translationType === 'validation') {
-      const itemId = parts[0].split('-')[0]; // Extract item ID from "itemId-ruleN"
-      return `i:${itemId}:${idInParens}`;
-    }
-    
-    return idInParens;
-  }
-  
-  // For labels and descriptions, reconstruct the proper entry ID
-  const itemId = missing.id;
-  if (translationType === 'label') {
-    return `i:${itemId}:l`;
-  } else if (translationType === 'description') {
-    return `i:${itemId}:d`;
-  }
-  
-  return missing.id;
-};
 
 const MissingTranslationsCategory: React.FC<{ type: TranslationType, translations: MissingTranslation[] }> = ({ type, translations }) => {
   const { form, applyTranslations } = useComposer();
@@ -64,92 +28,55 @@ const MissingTranslationsCategory: React.FC<{ type: TranslationType, translation
   const [expanded, setExpanded] = React.useState(false);
   const [translatingKey, setTranslatingKey] = React.useState<string | null>(null);
 
-  const hasSourceText = (missing: MissingTranslation, translationType: TranslationType): boolean => {
+  const hasSourceText = (entryId: string): boolean => {
     const sourceLanguage = editor.activeFormLanguage;
-    const entryId = getEntryIdFromMissingTranslation(missing, translationType, form);
-    const parts = entryId.split(':');
-    
-    if (parts[0] === 'i') {
-      const itemId = parts[1];
-      const item = form.data[itemId];
-      if (!item) return false;
-
-      if (parts[2] === 'l') {
-        return !!item.label?.[sourceLanguage];
-      } else if (parts[2] === 'd') {
-        return !!item.description?.[sourceLanguage];
-      } else if (parts[2] === 'v') {
-        const validationIndex = parseInt(parts[3], 10);
-        return !!item.validations?.[validationIndex]?.message?.[sourceLanguage];
-      }
-    } else if (parts[0] === 'v') {
-      const valueSetId = parts[1];
-      const entryIndex = parseInt(parts[2], 10);
-      const valueSet = form.valueSets?.find(vs => vs.id === valueSetId);
-      return !!valueSet?.entries?.[entryIndex]?.label?.[sourceLanguage];
-    }
-    
-    return false;
+    const sourceText = getEntryText(entryId, sourceLanguage, form);
+    return !!sourceText;
   };
 
-  const navigateToItem = (missing: MissingTranslation) => {
-    if (missing.global) {
-      const valueSetId = missing.id.split('-')[0];
-      setActiveList(valueSetId);
-    } else {
-      const found = Object.values(form.data).find(item => item.id === missing.id.split('-')[0]);
-      if (found) {
-        setActiveItem(found);
-        switch (type) {
+  const navigateToItem = (entryId: string) => {
+    const parsed = parseEntryId(entryId);
+    if (!parsed) return;
+
+    if (parsed.type === 'valueset') {
+      // Check if it's a global valueset
+      const gvs = form.metadata.composer?.globalValueSets?.find(v => v.valueSetId === parsed.valueSetId);
+      if (gvs) {
+        setActiveList(parsed.valueSetId);
+        return;
+      }
+    }
+
+    // Navigate to item
+    if (parsed.type === 'item') {
+      const item = form.data[parsed.itemId];
+      if (item) {
+        setActiveItem(item);
+        switch (parsed.subType) {
           case 'label':
             setItemOptionsActiveTab('label');
             break;
           case 'description':
             setItemOptionsActiveTab('description');
             break;
-          case 'valueset':
-            setItemOptionsActiveTab('choices');
-            break;
           case 'validation':
             setItemOptionsActiveTab('validations');
             break;
         }
       }
+    } else if (parsed.type === 'valueset') {
+      // Find the item that uses this valueset
+      const item = Object.values(form.data).find(i => i.valueSetId === parsed.valueSetId);
+      if (item) {
+        setActiveItem(item);
+        setItemOptionsActiveTab('choices');
+      }
     }
-  }
+  };
 
-  const handleTranslate = async (missing: MissingTranslation, targetLanguage: string) => {
+  const handleTranslate = async (entryId: string, targetLanguage: string) => {
     const sourceLanguage = editor.activeFormLanguage;
-    const entryId = getEntryIdFromMissingTranslation(missing, type, form);
-    
-    // Get source text based on entry type
-    let sourceText: string | undefined;
-    const parts = entryId.split(':');
-    
-    if (parts[0] === 'i') {
-      // Item entry
-      const itemId = parts[1];
-      const item = form.data[itemId];
-      if (!item) {
-        console.error('Item not found:', itemId);
-        return;
-      }
-
-      if (parts[2] === 'l') {
-        sourceText = item.label?.[sourceLanguage];
-      } else if (parts[2] === 'd') {
-        sourceText = item.description?.[sourceLanguage];
-      } else if (parts[2] === 'v') {
-        const validationIndex = parseInt(parts[3], 10);
-        sourceText = item.validations?.[validationIndex]?.message?.[sourceLanguage];
-      }
-    } else if (parts[0] === 'v') {
-      // ValueSet entry
-      const valueSetId = parts[1];
-      const entryIndex = parseInt(parts[2], 10);
-      const valueSet = form.valueSets?.find(vs => vs.id === valueSetId);
-      sourceText = valueSet?.entries?.[entryIndex]?.label?.[sourceLanguage];
-    }
+    const sourceText = getEntryText(entryId, sourceLanguage, form);
 
     if (!sourceText) {
       console.error('Source text not found for entry:', entryId, 'in language:', sourceLanguage);
@@ -205,18 +132,20 @@ const MissingTranslationsCategory: React.FC<{ type: TranslationType, translation
           </TableHead>
           <TableBody>
             {translations.map((missing, idx) => {
-              const entryId = getEntryIdFromMissingTranslation(missing, type, form);
+              const entryId = missing.id; // Now it's already in the correct format
+              const displayId = buildDisplayId(entryId, form);
+              
               return (
                 <TableRow key={idx}>
                   <TableCell width='70%'>
-                    <Button variant='text' onClick={() => navigateToItem(missing)} sx={{ color: 'inherit', m: 0, justifyContent: 'flex-start', textTransform: 'none' }}>
-                      {missing.id}
+                    <Button variant='text' onClick={() => navigateToItem(entryId)} sx={{ color: 'inherit', m: 0, justifyContent: 'flex-start', textTransform: 'none' }}>
+                      {displayId}
                     </Button>
                   </TableCell>
                   {languages.map(lang => {
                     const isMissing = missing.missingIn.includes(lang);
                     const isTranslating = translatingKey === `${entryId}:${lang}`;
-                    const sourceTextExists = hasSourceText(missing, type);
+                    const sourceTextExists = hasSourceText(entryId);
                     const canTranslate = isMissing && lang !== editor.activeFormLanguage && sourceTextExists;
 
                     return (
@@ -227,7 +156,7 @@ const MissingTranslationsCategory: React.FC<{ type: TranslationType, translation
                               sourceLanguage={editor.activeFormLanguage}
                               targetLanguage={lang}
                               isTranslating={isTranslating}
-                              onClick={() => handleTranslate(missing, lang)}
+                              onClick={() => handleTranslate(entryId, lang)}
                               color='error'
                             /> : <Error color='error' />
                           ) : <CheckCircle color='success' />}
@@ -276,39 +205,14 @@ const MissingTranslations: React.FC = () => {
         const entriesToTranslate: TranslationEntry[] = [];
 
         // Collect all missing entries for this target language
-        Object.entries(missingTranslations).forEach(([categoryType, categoryTranslations]) => {
-          const translationType = categoryType as TranslationType;
+        Object.values(missingTranslations).forEach(categoryTranslations => {
           categoryTranslations?.forEach(missing => {
             if (!missing.missingIn.includes(targetLanguage)) {
               return; // Already has translation
             }
 
-            // Reconstruct proper entry ID
-            const entryId = getEntryIdFromMissingTranslation(missing, translationType, form);
-            const idParts = entryId.split(':');
-            let sourceText: string | undefined;
-
-            if (idParts[0] === 'i') {
-              // Item entry
-              const itemId = idParts[1];
-              const item = form.data[itemId];
-              if (!item) return;
-
-              if (idParts[2] === 'l') {
-                sourceText = item.label?.[sourceLanguage];
-              } else if (idParts[2] === 'd') {
-                sourceText = item.description?.[sourceLanguage];
-              } else if (idParts[2] === 'v') {
-                const validationIndex = parseInt(idParts[3], 10);
-                sourceText = item.validations?.[validationIndex]?.message?.[sourceLanguage];
-              }
-            } else if (idParts[0] === 'v') {
-              // ValueSet entry
-              const valueSetId = idParts[1];
-              const entryIndex = parseInt(idParts[2], 10);
-              const valueSet = form.valueSets?.find(vs => vs.id === valueSetId);
-              sourceText = valueSet?.entries?.[entryIndex]?.label?.[sourceLanguage];
-            }
+            const entryId = missing.id;
+            const sourceText = getEntryText(entryId, sourceLanguage, form);
 
             if (sourceText) {
               entriesToTranslate.push({
