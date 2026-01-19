@@ -16,14 +16,11 @@
 package io.dialob.integration.api.event;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.dialob.security.tenant.Tenant;
 import org.immutables.value.Value;
 
 @Value.Builder
-@JsonSerialize(as = FormUpdatedEvent.class)
-@JsonDeserialize(builder = FormUpdatedEventBuilder.class)
+@Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record FormUpdatedEvent(
   Tenant tenant,
@@ -31,5 +28,8 @@ public record FormUpdatedEvent(
   String source,
   String revision
 ) implements FormEvent, DistributedEvent {
+
+  public static class Builder extends FormUpdatedEventBuilder {
+  }
 
 }

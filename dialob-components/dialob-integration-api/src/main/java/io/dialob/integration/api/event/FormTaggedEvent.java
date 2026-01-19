@@ -16,8 +16,6 @@
 package io.dialob.integration.api.event;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.security.tenant.Tenant;
@@ -25,8 +23,7 @@ import org.immutables.value.Value;
 
 
 @Value.Builder
-@JsonSerialize(as = FormTaggedEvent.class)
-@JsonDeserialize(builder = FormTaggedEventBuilder.class)
+@Value.Style(jdkOnly = true, jdk9Collections = true, overshadowImplementation = true, visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @JsonInclude(content = JsonInclude.Include.NON_NULL, value = JsonInclude.Include.NON_EMPTY)
 public record FormTaggedEvent(
   @NonNull Tenant tenant,
@@ -36,5 +33,8 @@ public record FormTaggedEvent(
   @Nullable String refName,
   @NonNull String tagName
 ) implements FormEvent, DistributedEvent {
+
+  public static class Builder extends FormTaggedEventBuilder {
+  }
 
 }

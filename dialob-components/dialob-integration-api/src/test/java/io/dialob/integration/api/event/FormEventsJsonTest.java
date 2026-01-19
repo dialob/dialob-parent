@@ -29,7 +29,7 @@ class FormEventsJsonTest {
 
   @Test
   void shouldSerializeFormUpdatedIntoJsonAndBack() throws Exception {
-    final FormUpdatedEvent event = new FormUpdatedEventBuilder()
+    final FormUpdatedEvent event = new FormUpdatedEvent.Builder()
       .source("node1")
       .tenant(Tenant.of("tent1"))
       .formId("formi")
@@ -53,7 +53,7 @@ class FormEventsJsonTest {
 
   @Test
   void shouldSerializeFormDeletedIntoJsonAndBack() throws Exception {
-    final var event = new FormDeletedEventBuilder()
+    final var event = new FormDeletedEvent.Builder()
       .source("node1")
       .tenant(Tenant.of("tent1"))
       .formId("formi")
@@ -75,7 +75,7 @@ class FormEventsJsonTest {
 
   @Test
   void shouldSerializeFormTaggedIntoJsonAndBack() throws Exception {
-    final var event = new FormTaggedEventBuilder()
+    final var event = new FormTaggedEvent.Builder()
       .source("node1")
       .tenant(Tenant.of("tent1"))
       .formId("formi")

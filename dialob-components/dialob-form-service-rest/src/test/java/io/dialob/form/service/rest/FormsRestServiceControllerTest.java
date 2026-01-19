@@ -300,7 +300,7 @@ class FormsRestServiceControllerTest {
   @Test
   void shouldTryUpdateTag() throws Exception {
 
-    FormTag newTag = new FormTag.Builder().refName("tagi").build();
+    FormTag newTag = new FormTag.Builder().refName("tagi").formName("form").name("formii").build();
     String formJson = objectMapper.writerFor(FormTag.class).writeValueAsString(newTag);
 
     when(currentTenant.getId()).thenReturn("t-123");

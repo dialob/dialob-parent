@@ -289,7 +289,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
   @WithMockUser(username = "testUser", authorities = {"itest", "forms.put", "tenant.all"})
   void shouldRejectUpdateByNameWhenNotForced() throws Exception {
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
-      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(Instant.now()).build()));
+      .thenReturn(Optional.of(new FormTag.Builder().name("name").formName("form-name").formId("123-123").created(Instant.now()).build()));
     Form formDocument = new Form.Builder()
       .name("form-name")
       .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
@@ -321,7 +321,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
     when(formDatabase.findOne(tenantId, "123-123")).thenReturn(new Form.Builder().from(formDocument).id("123-123").rev("321").build());
 
     when(formVersionControlDatabase.findTag(tenantId, "form-name","LATEST"))
-      .thenReturn(Optional.of(new FormTag.Builder().formName("form-name").formId("123-123").created(Instant.now()).build()));
+      .thenReturn(Optional.of(new FormTag.Builder().name("name").formName("form-name").formId("123-123").created(Instant.now()).build()));
     when(formDatabase.save(anyString(), any())).thenAnswer(invocation -> {
       Form arg = (Form) invocation.getArguments()[1];
       return arg.withRev("124");

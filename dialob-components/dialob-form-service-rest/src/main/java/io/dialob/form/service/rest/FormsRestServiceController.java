@@ -31,9 +31,9 @@ import io.dialob.form.service.api.validation.CsvToFormParser;
 import io.dialob.form.service.api.validation.FormIdRenamer;
 import io.dialob.form.service.api.validation.FormItemCopier;
 import io.dialob.integration.api.NodeId;
-import io.dialob.integration.api.event.FormDeletedEventBuilder;
-import io.dialob.integration.api.event.FormTaggedEventBuilder;
-import io.dialob.integration.api.event.FormUpdatedEventBuilder;
+import io.dialob.integration.api.event.FormDeletedEvent;
+import io.dialob.integration.api.event.FormTaggedEvent;
+import io.dialob.integration.api.event.FormUpdatedEvent;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.user.CurrentUserProvider;
@@ -48,7 +48,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -165,23 +164,23 @@ public class FormsRestServiceController implements FormsRestService {
   @Override
   public ResponseEntity<FormPutResponse> postFormFromCsv(String formCsv) {
     try {
-      Form formDocument = csvToFormParser.parseCsv(formCsv);
-      Form form = updateMetadata(formDocument);
-      form = new Form.Builder().from(form).id(null).rev(null).build();
-      Form savedForm = formDatabase.save(currentTenant.getId(), form);
+    Form formDocument = csvToFormParser.parseCsv(formCsv);
+    Form form = updateMetadata(formDocument);
+    form = new Form.Builder().from(form).id(null).rev(null).build();
+    Form savedForm = formDatabase.save(currentTenant.getId(), form);
 
-      URI uri = ServletUriComponentsBuilder
-        .fromCurrentRequest().path("/{id}")
-        .buildAndExpand(savedForm.getId()).toUri();
+    URI uri = ServletUriComponentsBuilder
+      .fromCurrentRequest().path("/{id}")
+      .buildAndExpand(savedForm.getId()).toUri();
 
-      // Success Response
-      return ResponseEntity.created(uri)
-        .body(new FormPutResponse.Builder()
-        .ok(true)
-        .id(savedForm.getId())
-        .rev(savedForm.getRev())
-        .form(savedForm)
-        .build());
+    // Success Response
+    return ResponseEntity.created(uri)
+      .body(new FormPutResponse.Builder()
+      .ok(true)
+      .id(savedForm.getId())
+      .rev(savedForm.getRev())
+      .form(savedForm)
+      .build());
     } catch (CsvParsingException e) {
       // Bad Request Response
       return ResponseEntity.badRequest()
@@ -244,7 +243,7 @@ public class FormsRestServiceController implements FormsRestService {
     Form updatedForm;
     if (!dryRun) {
       updatedForm = formDatabase.save(currentTenant.getId(), new Form.Builder().from(form).metadata(new Form.Metadata.Builder().from(form.getMetadata()).valid(errors.isEmpty()).build()).build());
-      eventPublisher.publishEvent(new FormUpdatedEventBuilder().source(getNodeId().id()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
+      eventPublisher.publishEvent(new FormUpdatedEvent.Builder().source(getNodeId().id()).tenant(Tenant.of(updatedForm.getMetadata().getTenantId())).formId(formId).revision(updatedForm.getRev()).build());
     } else {
       updatedForm = form;
     }
@@ -283,7 +282,7 @@ public class FormsRestServiceController implements FormsRestService {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Or Response.Status.METHOD_NOT_ALLOWED ??
     }
     formDatabase.delete(currentTenant.getId(), formId);
-    eventPublisher.publishEvent(new FormDeletedEventBuilder().source(getNodeId().id()).tenant(currentTenant.get()).formId(formId).build());
+    eventPublisher.publishEvent(new FormDeletedEvent.Builder().source(getNodeId().id()).tenant(currentTenant.get()).formId(formId).build());
     return ok();
   }
 
@@ -359,7 +358,7 @@ public class FormsRestServiceController implements FormsRestService {
 
   protected ResponseEntity<Response> fireFormTaggedEvent(Optional<FormTag> formTag) {
     return formTag.map(newTag -> {
-      eventPublisher.publishEvent(new FormTaggedEventBuilder()
+      eventPublisher.publishEvent(new FormTaggedEvent.Builder()
         .tenant(currentTenant.get())
         .source(getNodeId().id())
         .formName(newTag.getFormName())
@@ -379,8 +378,7 @@ public class FormsRestServiceController implements FormsRestService {
     if (templateForm != null) {
       return templateForm;
     }
-    try {
-      InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("forms/" + TEMPLATE_FORM_ID + ".json");
+    try(var inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("forms/" + TEMPLATE_FORM_ID + ".json")) {
       templateForm = objectMapper.readValue(inputStream, Form.class);
     } catch (IOException e) {
       LOGGER.error("Couldn't read template form.", e);
