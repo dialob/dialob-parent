@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chip, Tooltip, Box } from '@mui/material';
 import { AutoFixHigh } from '@mui/icons-material';
+import { useIntl } from 'react-intl';
 import { getLanguageName } from '../../utils/TranslationUtils';
 import { TranslationMetadata } from '../../types';
 
@@ -11,8 +12,21 @@ export interface AITranslationIndicatorProps {
 }
 
 const AITranslationIndicator: React.FC<AITranslationIndicatorProps> = ({ metadata, translatedText, onClick }) => {
-  const dateText = `AI translated from ${getLanguageName(metadata.sourceLanguage)} to ${getLanguageName(metadata.targetLanguage)} on ${new Date(metadata.timestamp).toLocaleString('en-GB')}`;
-  const clickHint = onClick ? '\n\nClick to validate and remove AI flag' : '';
+  const intl = useIntl();
+  
+  const dateText = intl.formatMessage(
+    { id: 'dialogs.translations.ai.indicator.tooltip' },
+    {
+      source: getLanguageName(metadata.sourceLanguage),
+      target: getLanguageName(metadata.targetLanguage),
+      date: new Date(metadata.timestamp).toLocaleString('en-GB')
+    }
+  );
+  
+  const clickHint = onClick 
+    ? `\n\n${intl.formatMessage({ id: 'dialogs.translations.ai.indicator.clickHint' })}` 
+    : '';
+  
   const tooltipText = translatedText 
     ? `${translatedText}\n\n${dateText}${clickHint}`
     : `${dateText}${clickHint}`;
@@ -21,7 +35,7 @@ const AITranslationIndicator: React.FC<AITranslationIndicatorProps> = ({ metadat
     <Tooltip title={<Box sx={{ whiteSpace: 'pre-line' }}>{tooltipText}</Box>} arrow>
       <Chip
         icon={<AutoFixHigh fontSize="small" />}
-        label="AI"
+        label={intl.formatMessage({ id: 'dialogs.translations.ai.indicator.label' })}
         size="small"
         color="info"
         variant="outlined"
