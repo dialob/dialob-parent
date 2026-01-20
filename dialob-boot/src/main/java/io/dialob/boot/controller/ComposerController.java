@@ -122,6 +122,7 @@ public class ComposerController extends BaseController {
       .csrfHeader(cfrsToken != null ? cfrsToken.getHeaderName() : null)
       .tenantId(isValidTenantId(tenantId) ? tenantId : null)
       .version(version)
+      .translationServiceUrl(settings.getTranslationServiceUrl())
       .build();
   }
 
@@ -135,7 +136,8 @@ public class ComposerController extends BaseController {
     String formId,
     String adminAppUrl,
     String tenantId,
-    String version
+    String version,
+    String translationServiceUrl
   ) {
   }
 

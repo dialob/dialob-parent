@@ -42,7 +42,9 @@ public record ComposerApplicationSettings(
   @NotNull String contextPath,
   @Getter
   String adminAppUrl,
-  Map<String, SettingsPageAttributes> tenants
+  Map<String, SettingsPageAttributes> tenants,
+  @Getter
+  String translationServiceUrl
 ) {
   /**
    * Constructor for ComposerApplicationSettings.
