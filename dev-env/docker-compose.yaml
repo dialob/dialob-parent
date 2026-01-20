@@ -1,3 +1,5 @@
+name: dialob-dev-env
+
 services:
   nginx:
     image: nginx
