@@ -80,6 +80,7 @@ class FormIdRenamerTest {
     FormItem q2 = form.getData().get("question2");
     assertEquals("test is answered", q2.getActiveWhen());
     assertEquals("test = 'test'", q2.getRequired());
+    assertEquals("'test' = test", q2.getReadOnlyWhen());
     assertEquals("test = 'xx'", q2.getCanAddRowWhen());
     assertEquals("test = 'yy'", q2.getCanRemoveRowWhen());
 

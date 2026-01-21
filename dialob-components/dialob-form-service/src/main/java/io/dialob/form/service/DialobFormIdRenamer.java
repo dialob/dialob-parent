@@ -91,6 +91,9 @@ public class DialobFormIdRenamer implements FormIdRenamer {
     if (item.getActiveWhen() != null) {
       builder.activeWhen(idRenamer.apply(item.getActiveWhen()));
     }
+    if (item.getReadOnlyWhen() != null) {
+      builder.readOnlyWhen(idRenamer.apply(item.getReadOnlyWhen()));
+    }
     if (item.getRequired() != null) {
       builder.required(idRenamer.apply(item.getRequired()));
     }
