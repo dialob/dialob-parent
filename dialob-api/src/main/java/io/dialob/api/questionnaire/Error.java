@@ -25,6 +25,12 @@ import org.immutables.value.Value;
 
 import java.io.Serializable;
 
+/**
+ *
+ * @param id id of form item to which error belongs
+ * @param code error code
+ * @param description error description as plain text
+ */
 @Value.Builder
 @JsonDeserialize(builder = Error.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)

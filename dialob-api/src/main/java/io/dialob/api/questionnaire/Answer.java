@@ -27,6 +27,15 @@ import org.immutables.value.Value;
 import java.io.Serializable;
 import java.time.Instant;
 
+/**
+ *
+ * @param id
+ * @param value user's answer in original format
+ * @param type
+ * @param acceptedValue
+ * @param updated
+ * @param userId
+ */
 @Value.Builder
 @JsonDeserialize(builder = Answer.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -34,11 +43,6 @@ import java.time.Instant;
 public record Answer(
   @NonNull String id,
 
-  /**
-   * Text and number field answers stored in original format
-   *
-   * @return user's answer in original format
-   */
   @JsonInclude(JsonInclude.Include.ALWAYS)
   @Getter @Nullable Object value,
   @Getter @Nullable String type,

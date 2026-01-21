@@ -37,6 +37,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents a questionnaire session, including its state, answers, and metadata.
+ *
+ * @param id The unique identifier of the questionnaire.
+ * @param rev The revision of the questionnaire.
+ * @param answers A list of answers provided in the questionnaire.
+ * @param context A list of context values associated with the questionnaire.
+ * @param activeItem The ID of the currently active item in the questionnaire.
+ * @param errors A list of validation errors present in the questionnaire.
+ * @param variableValues A list of variable values calculated during the session.
+ * @param valueSets A list of value sets used in the questionnaire.
+ * @param activeItems A set of IDs of items that are currently active (visible and enabled).
+ * @param metadata Metadata associated with the questionnaire, such as status, timestamps, and ownership.
+ */
 @Value.Builder
 @ApiType
 @Value.Style(validationMethod = Value.Style.ValidationMethod.VALIDATION_API)
@@ -112,6 +126,26 @@ public record Questionnaire(
   }
 
 
+  /**
+   * Metadata associated with a questionnaire.
+   *
+   * @param formId The ID of the form definition used for this questionnaire.
+   * @param formName The name of the form.
+   * @param status The current status of the questionnaire (e.g., NEW, OPEN, COMPLETED).
+   * @param formRev The revision of the form definition.
+   * @param tenantId The ID of the tenant that owns this questionnaire.
+   * @param created The timestamp when the questionnaire was created.
+   * @param lastAnswer The timestamp when the last answer was provided.
+   * @param opened The timestamp when the questionnaire was last opened.
+   * @param completed The timestamp when the questionnaire was completed.
+   * @param label A label or description for the questionnaire.
+   * @param submitUrl The URL to which the questionnaire should be submitted.
+   * @param reason The reason for completion, if applicable (e.g., SKIPPED, CANCELLED).
+   * @param language The language code for the questionnaire session.
+   * @param owner The user ID of the document owner.
+   * @param creator The user ID of the creator of the questionnaire.
+   * @param additionalProperties Additional custom properties associated with the questionnaire.
+   */
   @Value.Builder
   @ApiType
   @Value.Style(validationMethod = Value.Style.ValidationMethod.NONE)
@@ -163,9 +197,6 @@ public record Questionnaire(
     @Getter
     String submitUrl,
 
-    /**
-     * Completion reason, null if normally completed.
-     */
     @Nullable
     @Getter
     Reason reason,
@@ -174,16 +205,10 @@ public record Questionnaire(
     @Getter
     String language,
 
-    /**
-     * userId of document owner
-     */
     @Nullable
     @Getter
     String owner,
 
-    /**
-     * userId of one who created questionnaire
-     */
     @Nullable
     @Getter
     String creator,
