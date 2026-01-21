@@ -90,6 +90,7 @@
         "en": "Test Question2"
       },
       "required": "question1 = 'test'",
+      "readOnlyWhen": "'test' = question1",
       "readOnly": null,
       "items": [],
       "className": [],
