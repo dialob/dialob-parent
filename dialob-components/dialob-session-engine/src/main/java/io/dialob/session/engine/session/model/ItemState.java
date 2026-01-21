@@ -95,6 +95,7 @@ public record ItemState(
   public static final int ROW_CAN_BE_REMOVED_BIT = 1 << 5;
   public static final int INVALID_ANSWERS_BIT = 1 << 6;
   public static final int HAS_CUSTOM_PROPS_BIT = 1 << 7;
+  public static final int READ_ONLY_BIT = 1 << 8;
 
   private boolean testBit(int bit) {
     return (bits & bit) != 0;
@@ -237,6 +238,10 @@ public record ItemState(
     return (bits & REQUIRED_BIT) != 0;
   }
 
+  public boolean isReadOnly() {
+    return (bits & READ_ONLY_BIT) != 0;
+  }
+
   public boolean isRowsCanBeAdded() {
     return (bits & ROWS_CAN_BE_ADDED_BIT) != 0;
   }
@@ -328,6 +333,10 @@ public record ItemState(
 
     public UpdateBuilder setRequired(boolean newRequired) {
       return updateBits(newRequired, REQUIRED_BIT);
+    }
+
+    public UpdateBuilder setReadOnly(boolean newReadOnly) {
+      return updateBits(newReadOnly, READ_ONLY_BIT);
     }
 
     public UpdateBuilder setRowsCanBeAdded(boolean newRowsCanBeAdded) {
