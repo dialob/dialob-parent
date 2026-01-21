@@ -476,6 +476,32 @@ class CommandFactoryTest {
   }
 
   @Test
+  void testReadOnlyChanged() {
+    ItemState originalTrue = mock();
+    when(originalTrue.isReadOnly()).thenReturn(true);
+    ItemState originalFalse = mock();
+    when(originalFalse.isReadOnly()).thenReturn(false);
+
+    ItemState updatedTrue = mock();
+    when(updatedTrue.isReadOnly()).thenReturn(true);
+    ItemState updatedFalse = mock();
+    when(updatedFalse.isReadOnly()).thenReturn(false);
+
+    var predicates = ITEM_READ_ONLY_CHANGED;
+
+    assertFalse(predicates.test(null, null));
+    assertTrue(predicates.test(null, updatedTrue));
+    assertTrue(predicates.test(null, updatedFalse));
+    assertFalse(predicates.test(originalTrue, originalTrue));
+    assertFalse(predicates.test(originalTrue, updatedTrue));
+    assertFalse(predicates.test(originalFalse, updatedFalse));
+    assertTrue(predicates.test(originalTrue, updatedFalse));
+    assertTrue(predicates.test(originalFalse, updatedTrue));
+    assertTrue(predicates.test(originalTrue, null));
+    assertTrue(predicates.test(originalFalse, null));
+  }
+
+  @Test
   void testItemStatusChanged() {
     ItemState originalNew = mock();
     when(originalNew.status()).thenReturn(ItemState.Status.NEW);
