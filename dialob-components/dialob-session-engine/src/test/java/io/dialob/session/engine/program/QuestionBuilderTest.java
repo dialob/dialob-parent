@@ -17,9 +17,7 @@ package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.function.FunctionRegistry;
-import io.dialob.session.engine.program.model.Group;
-import io.dialob.session.engine.program.model.ItemIdMatchers;
-import io.dialob.session.engine.program.model.Program;
+import io.dialob.session.engine.program.model.*;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.Scope;
 import org.junit.jupiter.api.Assertions;
@@ -53,6 +51,7 @@ class QuestionBuilderTest {
       .addGroup("g2")
         .group()
         .addItem("i2")
+        .setReadOnlyWhen("false")
         .build()
       .addQuestion("i1")
         .setType("note")
@@ -63,7 +62,9 @@ class QuestionBuilderTest {
       .build();
 
     assertTrue(program.findItemsBy(ItemIdMatchers.idIs(IdUtils.toId("g1.*.i1"))).findFirst().get().isPrototype());
-    assertFalse(program.findItemsBy(ItemIdMatchers.idIs(IdUtils.toId("i2"))).findFirst().get().isPrototype());
+    Item i2 = program.findItemsBy(ItemIdMatchers.idIs(IdUtils.toId("i2"))).findFirst().get();
+    assertFalse(i2.isPrototype());
+    assertTrue(((DisplayItem)i2).readOnlyExpressionOptional().isPresent());
   }
 
   @Test
