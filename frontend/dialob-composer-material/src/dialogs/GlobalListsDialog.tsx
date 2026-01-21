@@ -117,16 +117,7 @@ const GlobalListsDialogContent: React.FC = () => {
       
       if (mappedGvs && mappedGvs.length > 0) {
         if (editor.activeList && editor.activeList !== 'global') {
-          // Specific list ID requested
-          let activeList = savingState.valueSets.find(vs => vs.id === editor.activeList);
-          
-          // If not found directly, check if editor.activeList is a label - look it up in global valuesets metadata
-          if (!activeList) {
-            const globalRef = savingState.composerMetadata?.globalValueSets?.find(gvs => gvs.label === editor.activeList);
-            if (globalRef) {
-              activeList = savingState.valueSets.find(vs => vs.id === globalRef.valueSetId);
-            }
-          }
+          const activeList = savingState.valueSets.find(vs => vs.id === editor.activeList);
           
           if (activeList) {
             setCurrentValueSet(activeList);
@@ -134,7 +125,7 @@ const GlobalListsDialogContent: React.FC = () => {
             return;
           }
         }
-        // No specific list requested or not found - default to first
+        // Default to first global value set if no specific list requested
         setCurrentValueSet(mappedGvs[0]);
         lastActiveList.current = editor.activeList;
       }

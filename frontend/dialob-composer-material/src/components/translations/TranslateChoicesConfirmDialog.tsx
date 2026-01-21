@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { useEditor } from '../../editor';
+import { getLanguageName } from '../../utils/TranslationUtils';
 
 interface TranslateChoicesConfirmDialogProps {
   open: boolean;
@@ -22,7 +23,7 @@ const TranslateChoicesConfirmDialog: React.FC<TranslateChoicesConfirmDialogProps
         <Typography>
           <FormattedMessage 
             id='dialogs.choices.translate.confirm' 
-            values={{ source: sourceLanguage }}
+            values={{ source: getLanguageName(sourceLanguage) }}
           />
         </Typography>
       </DialogContent>
