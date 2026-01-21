@@ -559,6 +559,12 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
             final Answer.Builder answerBuilder = new Answer.Builder()
               .id(IdUtils.toString(itemState.id()))
               .value(itemState.answer());
+            if (itemState.isRequired()) {
+              answerBuilder.required(true);
+            }
+            if (itemState.isReadOnly()) {
+              answerBuilder.readOnly(true);
+            }
             ItemId itemId = itemState.prototypeId();
             if (itemId == null) {
               itemId = itemState.id();

@@ -193,8 +193,14 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       } else {
         activeWhen = Operators.and(new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
       }
+
+      // Inherit readOnly from hoisting group
+      if (readOnlyWhen == null) {
+        readOnlyWhen = Operators.isReadOnly(hoistingGroupBuilder.getId());
+      }
     });
 
+    // Inherit readOnly from hoisting group
     Group.Builder builder = new Group.Builder()
       .id(id)
       .type(type.getItemType())
@@ -202,6 +208,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       .itemsExpression(EMPTY_ARRAY_EXPRESSION)
       .isPrototype(false)
       .activeExpression(activeWhen)
+      .readOnlyExpression(readOnlyWhen)
       .canAddRowWhenExpression(canAddRowWhen)
       .canRemoveRowWhenExpression(canRemoveRowWhen)
       .className(Constant.builder().valueType(ValueType.arrayOf(ValueType.STRING)).value(classNames).build())

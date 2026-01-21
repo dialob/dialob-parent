@@ -16,38 +16,29 @@
 package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 
 import java.util.List;
 
-public record SetAnswer(
+record UpdateReadOnlyCommand(
   ItemId targetId,
-  Object answer,
+  Expression expression,
   List<Trigger<ItemState>> triggers
-) implements AbstractUpdateCommand<ItemId, ItemState>, ItemUpdateCommand {
+) implements AbstractUpdateBooleanAttributeCommand {
+
+  @NonNull
+  @Override
+  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
+    return itemState.update()
+      .setReadOnly(evalExpression(context)).get();
+  }
 
   @NonNull
   @Override
   public UpdateCommand<ItemId, ItemState> withTargetId(@NonNull ItemId targetId) {
-    return new SetAnswer(targetId, this.answer(), triggers);
+    return new UpdateReadOnlyCommand(targetId, expression, triggers);
   }
-
-  @NonNull
-  public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    if (canUpdate(context, itemState)) {
-      Object answer = this.answer();
-      return itemState.update()
-        .setAnswer(answer)
-        .setValue(Utils.parse(itemState.type(), answer)).get();
-    }
-    return itemState;
-  }
-
-  public boolean canUpdate(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    return ( context.isActivating() || !itemState.isDisabled() && !itemState.isReadOnly() && itemState.isActive() ) && Utils.isQuestionType(itemState);
-  }
-
 }

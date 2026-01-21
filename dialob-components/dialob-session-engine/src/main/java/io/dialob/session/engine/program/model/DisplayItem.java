@@ -36,6 +36,8 @@ public interface DisplayItem extends Item {
 
   Optional<Expression> requiredExpressionOptional();
 
+  Optional<Expression> readOnlyExpressionOptional();
+
   Optional<Expression> disabledExpressionOptional();
 
   Optional<Expression> labelExpressionOptional();

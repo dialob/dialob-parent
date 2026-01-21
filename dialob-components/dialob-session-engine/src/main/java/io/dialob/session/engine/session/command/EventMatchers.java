@@ -57,6 +57,10 @@ public final class EventMatchers {
     return new EventMatchers.IsRequiredTargetEventMatcher(itemId);
   }
 
+  public static EventMatcher whenReadOnlyUpdated(@NonNull ItemId itemId) {
+    return new EventMatchers.IsReadOnlyTargetEventMatcher(itemId);
+  }
+
   public static EventMatcher whenDisabledUpdatedEvent(@NonNull ItemId itemId) {
     return new EventMatchers.IsDisabledTargetEventMatcher(itemId);
   }
@@ -167,6 +171,15 @@ public final class EventMatchers {
     @Override
     public boolean eventTypeMatches(Event event) {
       return event instanceof RequiredUpdatedEvent;
+    }
+  }
+
+  record IsReadOnlyTargetEventMatcher(
+    ItemId targetMatcher
+  ) implements AttributeEventMatcher<ActiveUpdatedEvent> {
+    @Override
+    public boolean eventTypeMatches(Event event) {
+      return event instanceof ReadOnlyUpdatedEvent;
     }
   }
 

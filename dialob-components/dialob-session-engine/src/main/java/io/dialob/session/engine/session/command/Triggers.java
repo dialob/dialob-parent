@@ -113,6 +113,10 @@ public class Triggers {
     return new RequiredUpdatedEvent(targetEvent);
   }
 
+  public static Event readOnlyUpdatedEvent(TargetEvent targetEvent) {
+    return new ReadOnlyUpdatedEvent(targetEvent);
+  }
+
   public static Event answeredUpdatedEvent(TargetEvent targetEvent) {
     return new AnsweredUpdatedEvent(targetEvent);
   }

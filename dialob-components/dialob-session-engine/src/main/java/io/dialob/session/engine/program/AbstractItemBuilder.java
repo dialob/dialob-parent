@@ -57,6 +57,8 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   protected Expression activeWhen;
 
+  protected Expression readOnlyWhen;
+
   protected Map<String, ?> props = null;
 
   public AbstractItemBuilder(ProgramBuilder programBuilder, P parent, GroupBuilder hoistingGroupBuilder, @NonNull String id) {
@@ -119,6 +121,13 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     return (T) this;
   }
 
+  public T setReadOnlyWhen(String readOnlyWhen) {
+    if (StringUtils.isNotBlank(readOnlyWhen)) {
+      compileExpression(readOnlyWhen, this::setReadOnlyWhen, getActiveWhenExpressionErrorType(), getIndex().orElse(null));
+    }
+    return (T) this;
+  }
+
   public T setActiveWhen(String activeWhen) {
     if (StringUtils.isNotBlank(activeWhen)) {
       compileExpression(activeWhen, this::setActiveWhen, getActiveWhenExpressionErrorType(), getIndex().orElse(null));
@@ -146,6 +155,11 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
 
   protected T setActiveWhen(Expression activeWhen) {
     this.activeWhen = activeWhen;
+    return (T) this;
+  }
+
+  protected T setReadOnlyWhen(Expression readOnlyWhen) {
+    this.readOnlyWhen = readOnlyWhen;
     return (T) this;
   }
 
@@ -182,6 +196,7 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
   protected void afterExpressionCompilation(Consumer<FormValidationError> errorConsumer) {
     Objects.requireNonNull(id, "id may not be null");
     requireBooleanExpression(activeWhen, getActiveWhenExpressionErrorType(), errorConsumer);
+    requireBooleanExpression(readOnlyWhen, FormValidationError.Type.READONLY, errorConsumer);
   }
 
   @NonNull

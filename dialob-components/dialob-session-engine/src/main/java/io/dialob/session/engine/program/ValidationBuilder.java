@@ -65,7 +65,7 @@ public class ValidationBuilder extends AbstractItemBuilder<ValidationBuilder, Qu
     compileExpression(when, expression -> {
       if (expression.getValueType() == ValueType.BOOLEAN) {
         this.activeWhen = Operators.and(
-          new IsActiveOperator.Builder().itemId(questionId).build(),
+          Operators.isActive(questionId),
           expression
         );
       } else {
