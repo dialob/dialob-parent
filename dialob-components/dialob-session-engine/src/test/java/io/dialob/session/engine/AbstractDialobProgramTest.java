@@ -188,6 +188,15 @@ public abstract class AbstractDialobProgramTest {
     Assertions.assertTrue(itemState.isRequired());
   }
 
+  protected void assertReadOnly(final DialobSession session, final ItemId itemId) {
+    final ItemState itemState = session.getItemState(itemId).get();
+    Assertions.assertTrue(itemState.isReadOnly());
+  }
+
+  protected void assertNotReadOnly(final DialobSession session, final ItemId itemId) {
+    final ItemState itemState = session.getItemState(itemId).get();
+    Assertions.assertFalse(itemState.isReadOnly());
+  }
 
   protected void assertErrorInactive(final DialobSession session, final ItemId itemId, final String errorCode) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
