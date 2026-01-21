@@ -57,4 +57,15 @@ class AnswerTest {
     assertEquals(123,answer.getValue());
     assertEquals("q1", answer.id());
   }
+
+  @Test
+  void shouldSerializeAnswer() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper();
+    Answer answer = Answer.of("q1", 123);
+    assertEquals("{\"id\":\"q1\",\"value\":123}", objectMapper.writeValueAsString(answer));
+    answer = new Answer.Builder().id("q1").value(123).readOnly(true).build();
+    assertEquals("{\"id\":\"q1\",\"value\":123,\"readOnly\":true}", objectMapper.writeValueAsString(answer));
+    answer = new Answer.Builder().id("q1").value(123).required(true).build();
+    assertEquals("{\"id\":\"q1\",\"value\":123,\"required\":true}", objectMapper.writeValueAsString(answer));
+  }
 }

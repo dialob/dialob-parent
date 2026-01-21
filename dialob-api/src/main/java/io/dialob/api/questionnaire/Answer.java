@@ -48,7 +48,9 @@ public record Answer(
   @Getter @Nullable String type,
   @Nullable Object acceptedValue,
   @Nullable Instant updated,
-  @Nullable String userId
+  @Nullable String userId,
+  @Nullable Boolean required,
+  @Nullable Boolean readOnly
 ) implements HasId<String>, Serializable {
 
   public static class Builder extends AnswerBuilder { }

@@ -73,6 +73,8 @@ public record ActionItem(
 
   @Nullable @Getter Boolean required,
 
+  @Nullable @Getter Boolean readOnly,
+
   @Nullable @Getter List<String> className,
 
   @Nullable @Getter Object value,

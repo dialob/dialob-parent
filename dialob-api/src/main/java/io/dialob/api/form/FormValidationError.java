@@ -98,6 +98,7 @@ public record FormValidationError(
     VISIBILITY,
     VALIDATION,
     REQUIREMENT,
+    READONLY,
     VARIABLE,
     GENERAL,
     CLASSNAME,

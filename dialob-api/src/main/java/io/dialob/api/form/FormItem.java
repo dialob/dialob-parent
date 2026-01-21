@@ -83,6 +83,10 @@ public record FormItem(
 
   @Nullable
   @Getter
+  String readOnlyWhen,
+
+  @Nullable
+  @Getter
   String activeWhen,
 
   @Nullable
