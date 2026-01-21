@@ -90,6 +90,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
         final ItemId itemId = displayItem.id();
         displayItem.activeExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateActivity(itemId, expression));
         displayItem.requiredExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateRequired(itemId, expression));
+        displayItem.readOnlyExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateReadOnly(itemId, expression));
         displayItem.disabledExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateDisabled(itemId, expression));
         displayItem.labelExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateLabel(itemId, expression));
         displayItem.descriptionExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateDescription(itemId, expression));

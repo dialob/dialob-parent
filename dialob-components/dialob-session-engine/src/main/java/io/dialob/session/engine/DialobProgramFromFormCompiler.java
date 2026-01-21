@@ -101,20 +101,23 @@ public class DialobProgramFromFormCompiler {
 
           @Override
           public void visitGroup(@NonNull FormItem formItem) {
-            builder.addGroup(formItem.getId())
+            var groupBuilder = builder.addGroup(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
               .setDescription(formItem.getDescription())
               .setActiveWhen(formItem.getActiveWhen())
               .addItems(formItem.getItems())
               .addClassnames(formItem.getClassName())
-              .setProps(formItem.getProps())
-              .build();
+              .setProps(formItem.getProps());
+            if (StringUtils.isNotBlank(formItem.getReadOnlyWhen())) {
+              groupBuilder.setReadOnlyWhen(formItem.getReadOnlyWhen());
+            }
+            groupBuilder.build();
           }
 
           @Override
           public void visitSurveyGroup(@NonNull FormItem formItem) {
-            builder.addSurveyGroup(formItem.getId())
+            var groupBuilder = builder.addSurveyGroup(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
               .setDescription(formItem.getDescription())
@@ -122,13 +125,16 @@ public class DialobProgramFromFormCompiler {
               .addItems(formItem.getItems())
               .addClassnames(formItem.getClassName())
               .setValueSet(formItem.getValueSetId())
-              .setProps(formItem.getProps())
-              .build();
+              .setProps(formItem.getProps());
+            if (StringUtils.isNotBlank(formItem.getReadOnlyWhen())) {
+              groupBuilder.setReadOnlyWhen(formItem.getReadOnlyWhen());
+            }
+            groupBuilder.build();
           }
 
           @Override
           public void visitRowGroup(@NonNull FormItem formItem) {
-            builder.addRowGroup(formItem.getId())
+            var groupBuilder = builder.addRowGroup(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
               .setDescription(formItem.getDescription())
@@ -138,21 +144,27 @@ public class DialobProgramFromFormCompiler {
               .addItems(formItem.getItems())
               .addClassnames(formItem.getClassName())
               .setValueSet(formItem.getValueSetId())
-              .setProps(formItem.getProps())
-              .build();
+              .setProps(formItem.getProps());
+            if (StringUtils.isNotBlank(formItem.getReadOnlyWhen())) {
+              groupBuilder.setReadOnlyWhen(formItem.getReadOnlyWhen());
+            }
+            groupBuilder.build();
           }
 
           @Override
           public void visitPage(@NonNull FormItem formItem) {
-            builder.addPage(formItem.getId())
+            var pageBuilder = builder.addPage(formItem.getId())
               .setView(formItem.getView())
               .setLabel(formItem.getLabel())
               .setDescription(formItem.getDescription())
               .setActiveWhen(formItem.getActiveWhen())
               .addItems(formItem.getItems())
               .addClassnames(formItem.getClassName())
-              .setProps(formItem.getProps())
-              .build();
+              .setProps(formItem.getProps());
+            if (StringUtils.isNotBlank(formItem.getReadOnlyWhen())) {
+              pageBuilder.setReadOnlyWhen(formItem.getReadOnlyWhen());
+            }
+            pageBuilder.build();
           }
 
           @Override
@@ -172,6 +184,10 @@ public class DialobProgramFromFormCompiler {
               questionBuilder.setRequiredWhen(formItem.getRequired());
             } else if (answersRequiredByDefault && !Constants.NOTE.equals(formItem.getType())) {
               questionBuilder.setRequired(true);
+            }
+
+            if (StringUtils.isNotBlank(formItem.getReadOnlyWhen())) {
+              questionBuilder.setReadOnlyWhen(formItem.getReadOnlyWhen());
             }
 
             int i = 1;

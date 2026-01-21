@@ -43,6 +43,9 @@ public record FormItem(
   Expression requiredExpression,
 
   @Nullable
+  Expression readOnlyExpression,
+
+  @Nullable
   Expression disabledExpression,
 
   @Nullable
@@ -86,6 +89,11 @@ public record FormItem(
   @Override
   public Optional<Expression> requiredExpressionOptional() {
     return Optional.ofNullable(requiredExpression);
+  }
+
+  @Override
+  public Optional<Expression> readOnlyExpressionOptional() {
+    return Optional.ofNullable(readOnlyExpression);
   }
 
   @Override

@@ -145,6 +145,11 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
       } else {
         activeWhen = Operators.and(new IsActiveOperator.Builder().itemId(hoistingGroupBuilder.getId()).build(), activeWhen);
       }
+
+      // Inherit readOnly from hoisting group
+      if (readOnlyWhen == null) {
+        readOnlyWhen = Operators.isReadOnly(hoistingGroupBuilder.getId());
+      }
     });
     validationBuilders.forEach(validationBuilder -> validationBuilder.setPrototype(prototype));
     validationBuilders.forEach(validationBuilder -> validationBuilder.afterExpressionCompilation(errorConsumer));
@@ -157,6 +162,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
         .valueType(Utils.mapQuestionTypeToValueType(type).orElse(null)) // 'note' do not have value
         .activeExpression(activeWhen)
         .requiredExpression(requiredWhen)
+        .readOnlyExpression(readOnlyWhen)
         .disabledExpression(disabledExpression.get())
         .className(Constant.builder().value(classNames).valueType(ValueType.arrayOf(ValueType.STRING)).build())
         .addAllErrors(errors)
@@ -274,6 +280,20 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     this.required = null;
     return this;
   }
+
+  public QuestionBuilder setReadOnlyWhen(String readOnlyWhen) {
+    if (readOnlyWhen != null) {
+      compileExpression(readOnlyWhen, this, this::setReadOnlyWhen, FormValidationError.Type.READONLY, null);
+    }
+    return this;
+  }
+
+  public QuestionBuilder setReadOnlyWhen(Expression readOnlyWhen) {
+    this.readOnlyWhen = readOnlyWhen;
+    return this;
+  }
+
+
 
   public Optional<String> getValueSetId() {
     return Optional.ofNullable(valueSetId);

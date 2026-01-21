@@ -88,6 +88,10 @@ class UpdateCommandFactory {
     return add(requiredUpdate(id, expression));
   }
 
+  public ItemUpdateCommand createUpdateReadOnly(@NonNull ItemId id, @NonNull Expression expression) {
+    return add(readOnlyUpdate(id, expression));
+  }
+
   public ItemUpdateCommand createUpdateAllowedActions(@NonNull ItemId id, @NonNull Expression expression) {
     return add(allowedActionsUpdate(id, expression));
   }

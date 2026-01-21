@@ -63,6 +63,10 @@ public interface Operators {
     return new IsRequiredOperator.Builder().itemId(id).build();
   }
 
+  static Expression isReadOnly(ItemId id) {
+    return new IsReadOnlyOperator.Builder().itemId(id).build();
+  }
+
   static Expression not(Expression expression) {
     return new NotOperator.Builder().expression(expression).build();
   }

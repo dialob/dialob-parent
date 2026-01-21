@@ -849,6 +849,29 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @Test
+  void shouldReportCompilationErrorOnReadOnlyExpression() {
+    // formatter:off
+    final ProgramBuilder programBuilder = newProgramBuilder();
+    programBuilder.startProgram()
+      .setId("matches")
+      .addRoot()
+      .build()
+      .addQuestion("var1")
+      .setType("number")
+      .setReadOnlyWhen("'XXX'")
+      .build()
+      .build();
+    // @formatter:on
+    final List<FormValidationError> errors = programBuilder.getErrors();
+    Assertions.assertEquals(1, errors.size());
+    FormValidationError error = errors.getFirst();
+    assertEquals(FormValidationError.Type.READONLY, error.getType());
+    assertEquals("BOOLEAN_EXPRESSION_EXPECTED", error.getMessage());
+    assertEquals("var1", error.getItemId());
+  }
+
+
+  @Test
   void shouldNotAcceptNonBooleanExpressionToActiveWhenCondition() {
     // formatter:off
     final ProgramBuilder programBuilder = newProgramBuilder();

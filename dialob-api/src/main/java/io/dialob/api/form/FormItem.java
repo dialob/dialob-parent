@@ -69,6 +69,7 @@ public record FormItem(
 
   @Nullable
   @Getter
+  @Deprecated // This seems to be unused
   Boolean readOnly,
 
   @NotNull

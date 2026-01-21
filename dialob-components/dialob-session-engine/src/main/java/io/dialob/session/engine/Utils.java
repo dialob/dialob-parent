@@ -152,6 +152,7 @@ public final class Utils {
     final ActionItem.Builder actionItemBuilder = new ActionItem.Builder()
       .disabled(itemState.isDisabled() ? true : null)
       .inactive(!itemState.isActive() ? true : null)
+      .readOnly(itemState.isReadOnly() ? true : null)
       .activeItem(IdUtils.toString(itemState.activePage()))
       .answered(itemState.isAnswered())
       .view(itemState.view())

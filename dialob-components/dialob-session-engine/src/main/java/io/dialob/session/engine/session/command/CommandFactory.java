@@ -107,6 +107,12 @@ public final class CommandFactory {
         return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isRequired() != itemState.isRequired());
       }
     },
+    ITEM_READ_ONLY_CHANGED {
+      @Override
+      public boolean test(ItemState itemState, ItemState updateState) {
+        return notNulls(itemState, updateState) && (isNewOrRemoved(itemState, updateState) || updateState.isReadOnly() != itemState.isReadOnly());
+      }
+    },
     ITEM_STATUS_CHANGED {
       @Override
       public boolean test(ItemState itemState, ItemState updateState) {
@@ -257,6 +263,10 @@ public final class CommandFactory {
 
   public static ItemUpdateCommand requiredUpdate(ItemId targetId, Expression expression) {
     return new UpdateRequiredCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.requiredUpdatedEvent(onTarget(targetId))).when(ITEM_REQUIRED_CHANGED)));
+  }
+
+  public static ItemUpdateCommand readOnlyUpdate(ItemId targetId, Expression expression) {
+    return new UpdateReadOnlyCommand(targetId, expression, List.of(Triggers.<ItemState>trigger(Triggers.readOnlyUpdatedEvent(onTarget(targetId))).when(ITEM_READ_ONLY_CHANGED)));
   }
 
   public static ItemUpdateCommand updateClassNames(ItemId targetId, Expression expression) {

@@ -2064,7 +2064,6 @@ class DialobQuestionnaireSessionServiceTest {
             tuple(ITEM, null, "q2", null, null, null)
           );
       })
-
       .apply();
   }
 
@@ -2169,6 +2168,210 @@ class DialobQuestionnaireSessionServiceTest {
   }
 
 
+  @Test
+  @Tag("github-498")
+  void testReadOnly() {
+    fillForm(new Form.Builder()
+        .id("test")
+        .metadata(new Form.Metadata.Builder()
+          .label("test")
+          .build())
+        .putData("questionnaire", new FormItem.Builder()
+          .id("questionnaire")
+          .type("questionnaire")
+          .addItems("g")
+          .build())
+        .putData("g", new FormItem.Builder()
+          .id("g")
+          .type("group")
+          .addItems("q")
+          .addItems("q2")
+          .addItems("n")
+          .build())
+        .putData("q", new FormItem.Builder()
+          .id("q")
+          .required("false")
+          .type("boolean")
+          .build())
+        .putData("q2", new FormItem.Builder()
+          .id("q2")
+          .readOnlyWhen("q")
+          .type("text")
+          .build())
+        .putData("n", new FormItem.Builder()
+          .id("n")
+          .type("note")
+          .putLabel("en","Note {q2}")
+          .build())
+        .build(),
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
+          .formId("test")
+          .build())
+        .build())
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", List.of("g"), null),
+            tuple(ITEM, null, "g", null, List.of("q", "q2", "n"), null),
+            tuple(ITEM, null, "q", null, null, null),
+            tuple(ITEM, null, "q2", null, null, null)
+          );
+      })
+      .answer("q", "false")
+      .assertThat(AbstractIterableAssert::isEmpty)  // No changes
+      .answer("q", "true")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "q2", null, null, true)
+        ))
+      .answer("q2", "ok")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+        ))
+      .answer("q", "false")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "q2", null, null, null)
+        ))
+      .answer("q2", "xx")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "n", "Note xx", null, null)
+        ))
+      .answer("q", "true")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "q2", null, null, true)
+        ))
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", List.of("g"), null),
+            tuple(ITEM, null, "g", null, List.of("q", "q2", "n"), null),
+            tuple(ITEM, null, "q", null, null, null),
+            tuple(ITEM, null, "q2", null, null, true),
+            tuple(ITEM, null, "n", "Note xx", null, null)
+          );
+      })
+      .apply();
+  }
+
+  @Test
+  @Tag("github-498")
+  void testReadOnlyInheritance() {
+    fillForm(new Form.Builder()
+        .id("test")
+        .metadata(new Form.Metadata.Builder()
+          .label("test")
+          .build())
+        .putData("questionnaire", new FormItem.Builder()
+          .id("questionnaire")
+          .type("questionnaire")
+          .addItems("page")
+          .build())
+        .putData("page", new FormItem.Builder()
+          .id("page")
+          .type("page")
+          .addItems("g")
+          .addItems("g2")
+          .build())
+        .putData("g", new FormItem.Builder()
+          .id("g")
+          .type("group")
+          .addItems("q")
+          .addItems("q2")
+          .build())
+        .putData("g2", new FormItem.Builder()
+          .id("g2")
+          .type("group")
+          .readOnlyWhen("q")
+          .addItems("q3")
+          .addItems("n")
+          .build())
+        .putData("q", new FormItem.Builder()
+          .id("q")
+          .required("false")
+          .type("boolean")
+          .build())
+        .putData("q2", new FormItem.Builder()
+          .id("q2")
+          .readOnlyWhen("q")
+          .type("text")
+          .build())
+        .putData("q3", new FormItem.Builder()
+          .id("q3")
+          .type("text")
+          .build())
+        .putData("n", new FormItem.Builder()
+          .id("n")
+          .type("note")
+          .putLabel("en","Note {q3}")
+          .build())
+        .build(),
+      new Questionnaire.Builder()
+        .metadata(new Questionnaire.Metadata.Builder()
+          .formId("test")
+          .build())
+        .build())
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", List.of("page"), null),
+            tuple(ITEM, null, "g", null, List.of("q", "q2"), null),
+            tuple(ITEM, null, "q", null, null, null),
+            tuple(ITEM, null, "q2", null, null, null),
+            tuple(ITEM, null, "q3", null, null, null),
+            tuple(ITEM, null, "page", null, List.of("g", "g2"), null),
+            tuple(ITEM, null, "g2", null, List.of("q3", "n"), null)
+          );
+      })
+      .answer("q", "true")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "q2", null, null, true),
+          tuple(ITEM, null, "q3", null, null, true),
+          tuple(ITEM, null, "g2", null, List.of("q3", "n"), true)
+        ))
+      .answer("q3", "ok")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+        ))
+      .answer("q", "false")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "q2", null, null, null),
+          tuple(ITEM, null, "q3", null, null, null),
+          tuple(ITEM, null, "g2", null, List.of("q3", "n"), null)
+        ))
+      .answer("q3", "ok")
+      .assertThat(assertion -> assertion
+        .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+          tuple(ITEM, null, "n", "Note ok", null, null)
+        ))
+      .assertState(assertion -> {
+        assertion
+          .extracting("type", "ids", "item.id", "item.label", "item.items", "item.readOnly").containsExactlyInAnyOrder(
+            tuple(RESET, null, null, null, null, null),
+            tuple(LOCALE, null, null, null, null, null),
+            tuple(ITEM, null, "g2", null,List.of("q3", "n"), null),
+            tuple(ITEM, null, "page", null, List.of("g", "g2"), null),
+            tuple(ITEM, null, "q", null, null, null),
+            tuple(ITEM, null, "q2", null, null, null),
+            tuple(ITEM, null, "q3", null, null, null),
+            tuple(ITEM, null, "questionnaire", "test", List.of("page"), null),
+            tuple(ITEM, null, "g", null, List.of("q", "q2"), null),
+            tuple(ITEM, null, "n", "Note ok", null, null)
+          );
+      })
+      .apply();
+  }
 
   protected AbstractListAssert<?, List<?>, ?, ? extends AbstractAssert<?, ?>> questionnaire(AbstractListAssert<?, ? extends List<? extends Action>, Action, ? extends AbstractAssert<?, Action>> assertion) {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));

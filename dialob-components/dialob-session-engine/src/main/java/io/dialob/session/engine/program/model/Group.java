@@ -43,6 +43,7 @@ public record Group(
   @Nullable Expression className,
   @Nullable Expression activeExpression,
   @Nullable Expression requiredExpression,
+  @Nullable Expression readOnlyExpression,
   @Nullable Expression labelExpression,
   @Nullable Expression descriptionExpression,
   @Nullable Expression disabledExpression,
@@ -75,6 +76,11 @@ public record Group(
   @Override
   public Optional<Expression> requiredExpressionOptional() {
     return Optional.ofNullable(requiredExpression());
+  }
+
+  @Override
+  public Optional<Expression> readOnlyExpressionOptional() {
+    return Optional.ofNullable(readOnlyExpression());
   }
 
   @Override
