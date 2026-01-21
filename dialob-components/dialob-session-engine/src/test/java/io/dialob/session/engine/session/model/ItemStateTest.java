@@ -117,5 +117,16 @@ class ItemStateTest {
     EqualsVerifier.forClass(ItemState.class)
       .verify();
   }
+  @Test
+  void updateReadOnly() {
+    var itemState = ItemState.builder()
+      .id(IdUtils.toId("q"))
+      .type("text")
+      .status(ItemState.Status.NEW)
+      .build();
+    assertFalse(itemState.isReadOnly());
+    assertTrue(itemState.update().setReadOnly(true).get().isReadOnly());
+
+  }
 
 }
