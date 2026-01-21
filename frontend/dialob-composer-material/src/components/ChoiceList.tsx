@@ -73,7 +73,7 @@ const ChoiceList: React.FC<{
         <TableCell colSpan={2 + languageNo}>
           {valueSet?.entries && valueSet.entries?.length > 0 && valueSet.entries.map((entry, index) => (
             <ChoiceItem 
-              key={entry.id}
+              key={`${valueSet.id}-${entry.id}`}
               entry={entry}
               index={index}
               valueSetId={valueSet.id}

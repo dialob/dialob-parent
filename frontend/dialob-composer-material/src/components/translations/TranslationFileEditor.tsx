@@ -44,7 +44,7 @@ const TranslationFileEditor: React.FC = () => {
   const [overviewData, setOverviewData] = useState<ParsedImportData | undefined>(undefined);
   const [uploadedFileName, setUploadedFileName] = useState<string | undefined>(undefined);
   const [validationError, setValidationError] = useState<boolean>(false);
-  const { form, addLanguage, updateItem, updateValueSetEntryLabel, setValidationMessage } = useComposer();
+  const { form, addLanguage, updateItem, updateValueSetEntryLabel, setValidationMessage, removeAITranslation} = useComposer();
 
   const languages = useMemo(() => {
     return form.metadata.languages || [];
@@ -65,7 +65,10 @@ const TranslationFileEditor: React.FC = () => {
     } else if (parsed.type === 'valueset') {
       updateValueSetEntryLabel(parsed.valueSetId, parsed.entryIndex, text, language);
     }
-  }, [setValidationMessage, updateItem, updateValueSetEntryLabel])
+
+    // Removing AI translation flag if exists
+    removeAITranslation(key, language);
+  }, [setValidationMessage, updateItem, updateValueSetEntryLabel, removeAITranslation])
 
   const handleConfirmTranslation = useCallback(() => {
     if (parsedImportData && parsedImportData.length > 1) {
