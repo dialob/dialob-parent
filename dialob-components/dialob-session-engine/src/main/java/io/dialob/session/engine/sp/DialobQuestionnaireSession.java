@@ -416,7 +416,7 @@ public class DialobQuestionnaireSession implements QuestionnaireSession {
       public Optional<ItemVisitor> visitItemStates() {
         return Optional.of(itemState -> {
           if (Utils.isContextVariable(itemState.type())) {
-            Object value = ConversionUtil.toJSON(itemState.getValue());
+            Object value = ConversionUtil.toJSON(itemState.value());
             answers.add(new ContextValue.Builder().id(IdUtils.toString(itemState.id())).value(value == null ? null : value.toString()).build());
           }
         });

@@ -17,10 +17,8 @@ package io.dialob.session.engine.sp;
 
 import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
-import io.dialob.api.questionnaire.Answer;
+import io.dialob.api.questionnaire.*;
 import io.dialob.api.questionnaire.Error;
-import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.api.questionnaire.VariableValue;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.session.engine.program.DialobProgram;
@@ -34,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -672,6 +671,66 @@ class DialobQuestionnaireSessionTest {
     ValueSet vs2 = providedValueSets.stream().filter(vs -> vs.getId().equals("vs2")).findFirst().orElseThrow();
     assertThat(vs2.getEntries()).hasSize(1);
     assertThat(vs2.getEntries().getFirst().getKey()).isEqualTo("k3");
+  }
+
+  @Test
+  void shouldReturnContextVariables() {
+    var serviceFacade = new DialobQuestionnaireSessionServiceFacade(mock(), mock(), mock());
+    DialobProgram dialobProgram = mock(DialobProgram.class);
+
+    ItemState questionnaire = mock();
+    ItemState variable = ItemState.builder()
+      .id(IdUtils.toId("variable_var"))
+      .type("variable")
+      .status(ItemState.Status.NEW)
+      .value("not-this")
+      .build();
+    ItemState contextVariable = ItemState.builder()
+      .id(IdUtils.toId("context_var"))
+      .type("context")
+      .status(ItemState.Status.NEW)
+      .value(LocalDate.of(2026, 1, 23))
+      .build();
+
+    DialobSession dialobSession = new DialobSession(
+      "tenant",
+      "id",
+      "rev",
+      Instant.now(),
+      null,
+      Instant.now(),
+      "en",
+      new ItemStates.Builder()
+        .itemStates(Map.of(
+          QUESTIONNAIRE_REF, questionnaire,
+          variable.id(), variable,
+          contextVariable.id(), contextVariable
+        ))
+        .valueSetStates(Map.of())
+        .build(),
+      ItemStates.EMPTY
+    );
+
+    DialobQuestionnaireSession session = DialobQuestionnaireSession.builder()
+      .serviceFacade(serviceFacade)
+      .dialobSession(dialobSession)
+      .dialobProgram(dialobProgram)
+      .rev("rev1")
+      .metadata(new Questionnaire.Metadata.Builder()
+        .formId("form1")
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .build())
+      .questionClientVisibility(QuestionnaireSession.QuestionClientVisibility.ONLY_ENABLED)
+      .build();
+
+    Questionnaire questionnaire1 = session.getQuestionnaire();
+    List<ContextValue> contextValues = questionnaire1.getContext();
+
+    assertThat(contextValues).hasSize(1);
+    assertThat(contextValues).extracting("id").containsExactlyInAnyOrder("context_var");
+    assertThat(contextValues).extracting("value").containsExactlyInAnyOrder("2026-01-23");
+
+
   }
 
   @Test
