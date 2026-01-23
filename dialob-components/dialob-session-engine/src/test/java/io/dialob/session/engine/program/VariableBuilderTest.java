@@ -32,7 +32,7 @@ class VariableBuilderTest {
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     String id = "id";
 
-    new VariableBuilder(programBuilder, id)
+    new VariableBuilder(programBuilder, null, id)
       .setContext(true)
       .setType("number")
       .setDefaultValue("err")
@@ -57,7 +57,7 @@ class VariableBuilderTest {
     ProgramBuilder programBuilder = Mockito.mock(ProgramBuilder.class);
     String id = "id";
 
-    new VariableBuilder(programBuilder, id)
+    new VariableBuilder(programBuilder, null, id)
       .setContext(true)
       .setDefaultValue("err")
       .afterExpressionCompilation(errorConsumer);

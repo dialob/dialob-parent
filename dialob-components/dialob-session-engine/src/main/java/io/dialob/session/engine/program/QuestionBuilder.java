@@ -307,13 +307,4 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     return Optional.ofNullable(defaultValue);
   }
 
-  @Override
-  public Map<String, ItemId> getAliases() {
-    Map<String, ItemId> aliases = super.getAliases();
-    if (getHoistingGroup().map(groupBuilder -> groupBuilder.getType() == GroupBuilder.Type.ROWGROUP).orElse(false)) {
-      aliases = getHoistingGroup().map(GroupBuilder::getItemIds).map(itemIds -> itemIds.stream().collect(toMap(
-        itemId -> ((ItemRef) itemId).getId(), itemId -> itemId))).orElse(aliases);
-    }
-    return aliases;
-  }
 }
