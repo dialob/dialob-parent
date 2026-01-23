@@ -18,6 +18,7 @@ package io.dialob.session.engine.program;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.common.Constants;
+import io.dialob.common.ErrorCodes;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.*;
@@ -205,7 +206,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     }
     errorConsumer.accept(new Error.Builder()
       .itemId(getId())
-      .code(Constants.ERROR_CODE_REQUIRED)
+      .code(ErrorCodes.ERROR_CODE_REQUIRED)
       .isPrototype(getId().isPartial())
       .validationExpression(Operators.and(new IsActiveOperator.Builder().itemId(getId()).build(), expression))
       .disabledExpression(new IsDisabledOperator.Builder().itemId(getId()).build())
@@ -240,7 +241,7 @@ public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,Program
     );
     errorConsumer.accept(new io.dialob.session.engine.program.model.Error.Builder()
       .itemId(getId())
-      .code(Constants.ERROR_INVALID_SELECTION)
+      .code(ErrorCodes.ERROR_INVALID_SELECTION)
       .isPrototype(getId().isPartial())
       .validationExpression(expression)
       .disabledExpression(new IsDisabledOperator.Builder().itemId(getId()).build())

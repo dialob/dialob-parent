@@ -130,7 +130,7 @@ public class VisitableForm {
   public Set<String> findAllPages(@NonNull Map<String, FormItem> items) {
     final Set<String> pages = new HashSet<>();
     for (FormItem formItem : items.values()) {
-      if ("questionnaire".equals(formItem.getType())) {
+      if (Constants.QUESTIONNAIRE.equals(formItem.getType())) {
         pages.addAll(formItem.getItems());
         break;
       }

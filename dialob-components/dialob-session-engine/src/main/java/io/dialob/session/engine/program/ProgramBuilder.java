@@ -233,7 +233,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     ddrlExpressionCompiler.getAsyncFunctionVariableExpressions().forEach((key, value) -> addItem(
       new VariableItem.Builder()
         .id(IdUtils.toId(key))
-        .type("variable")
+        .type(Constants.VARIABLE)
         .isPrototype(false)
         .isAsync(true)
         .valueExpression(value)

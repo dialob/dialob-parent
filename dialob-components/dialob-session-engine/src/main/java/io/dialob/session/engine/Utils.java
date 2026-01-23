@@ -43,6 +43,8 @@ import java.util.function.UnaryOperator;
 
 public final class Utils {
 
+  public static final String INVALID_DEFAULT_VALUE = "INVALID_DEFAULT_VALUE";
+
   private Utils() {}
 
   public static Optional<ValueType> mapQuestionTypeToValueType(String type) {
@@ -83,6 +85,9 @@ public final class Utils {
     return Constants.ROWGROUP.equals(type);
   }
 
+  public static boolean isRow(@NonNull String type) {
+    return Constants.ROW.equals(type);
+  }
 
   public static boolean isQuestionType(@NonNull ItemState itemState) {
     return switch (itemState.type()) {
@@ -119,7 +124,7 @@ public final class Utils {
       }
       return valueType.coerceFrom(value);
     }
-    if (value instanceof Collection collection) {
+    if (value instanceof Collection<?> collection) {
       return collection.stream().map(item -> item instanceof Integer i ? BigInteger.valueOf(i) : item).toList();
     }
     // TODO handle array answers
@@ -193,7 +198,7 @@ public final class Utils {
       try {
         return valueType.parseFromString(s);
       } catch (Exception e) {
-        errorListener.accept(createError(id, "INVALID_DEFAULT_VALUE"));
+        errorListener.accept(createError(id, INVALID_DEFAULT_VALUE));
         return null;
       }
     }
@@ -224,7 +229,7 @@ public final class Utils {
     if (value instanceof Double aDouble && valueType == ValueType.DECIMAL) {
       return BigDecimal.valueOf(aDouble);
     }
-    errorListener.accept(createError(id, "INVALID_DEFAULT_VALUE"));
+    errorListener.accept(createError(id, INVALID_DEFAULT_VALUE));
     return null;
   }
 

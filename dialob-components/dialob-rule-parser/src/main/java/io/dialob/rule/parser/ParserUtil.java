@@ -16,6 +16,7 @@
 package io.dialob.rule.parser;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.common.Constants;
 import io.dialob.rule.parser.api.ValueType;
 
 public final class ParserUtil {
@@ -32,15 +33,15 @@ public final class ParserUtil {
 
   public static ValueType itemTypeToValueType(@NonNull String itemType) {
     return switch (itemType) {
-      case "text", "list", "note", "survey" -> ValueType.STRING;
-      case "boolean" -> ValueType.BOOLEAN;
-      case "date" -> ValueType.DATE;
-      case "time" -> ValueType.TIME;
-      case "number" -> ValueType.INTEGER;
-      case "decimal" -> ValueType.DECIMAL;
-      case "multichoice" -> ValueType.arrayOf(ValueType.STRING);
-      case "rowgroup" -> ValueType.arrayOf(ValueType.INTEGER);
-      case "questionnaire", "context", "variable", "group", "surveygroup", "row" -> null;
+      case Constants.TEXT, Constants.LIST, Constants.NOTE, Constants.SURVEY -> ValueType.STRING;
+      case Constants.BOOLEAN -> ValueType.BOOLEAN;
+      case Constants.DATE -> ValueType.DATE;
+      case Constants.TIME -> ValueType.TIME;
+      case Constants.NUMBER -> ValueType.INTEGER;
+      case Constants.DECIMAL -> ValueType.DECIMAL;
+      case Constants.MULTICHOICE -> ValueType.arrayOf(ValueType.STRING);
+      case Constants.ROWGROUP -> ValueType.arrayOf(ValueType.INTEGER);
+      case Constants.QUESTIONNAIRE, Constants.CONTEXT, Constants.VARIABLE, Constants.GROUP, Constants.SURVEYGROUP, Constants.ROW -> null;
       default -> throw new RuntimeException("Unsupported item type %s".formatted(itemType));
     };
   }

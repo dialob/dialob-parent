@@ -118,14 +118,14 @@ public class DialobCsvToFormParser implements CsvToFormParser {
       Map<String, FormItem> formItems = new LinkedHashMap<>();
 
       // Create questionnaire item
-      formItems.put("questionnaire", createFormItem("questionnaire", "questionnaire", null, List.of("page1"), languages).build());
+      formItems.put(Constants.QUESTIONNAIRE, createFormItem(Constants.QUESTIONNAIRE, Constants.QUESTIONNAIRE, null, List.of("page1"), languages).build());
 
       // Create Page 1 item
-      formItems.put("page1", createFormItem("page1", "group", "page", List.of("group1"), languages).build());
+      formItems.put("page1", createFormItem("page1", Constants.GROUP, Constants.PAGE, List.of("group1"), languages).build());
 
       // Create Group 1 item
       List<String> groupItemIds = new ArrayList<>();
-      FormItem.Builder groupBuilder = createFormItem("group1", "group", null, groupItemIds, languages);
+      FormItem.Builder groupBuilder = createFormItem("group1", Constants.GROUP, null, groupItemIds, languages);
       formItems.put("group1", groupBuilder.build());
 
       // Process remaining rows into FormItems
@@ -148,8 +148,8 @@ public class DialobCsvToFormParser implements CsvToFormParser {
         // Create FormItem
         FormItem.Builder itemBuilder = new FormItem.Builder();
         itemBuilder.id(id).type(type).label(labels);
-        if (type.equals("text")) {
-          itemBuilder.view("text");
+        if (Constants.TEXT.equals(type)) {
+          itemBuilder.view(Constants.TEXT);
         }
 
         groupItemIds.add(id);

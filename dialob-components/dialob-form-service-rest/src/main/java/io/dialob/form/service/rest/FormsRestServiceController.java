@@ -22,6 +22,7 @@ import io.dialob.api.form.FormPutResponse;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.rest.Response;
+import io.dialob.common.ErrorCodes;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.CsvParsingException;
 import io.dialob.form.service.api.FormDatabase;
@@ -186,7 +187,7 @@ public class FormsRestServiceController implements FormsRestService {
       return ResponseEntity.badRequest()
         .body(new FormPutResponse.Builder()
         .ok(false)
-        .error("CSV_PARSING_ERROR")
+        .error(ErrorCodes.CSV_PARSING_ERROR)
         .reason(e.getMessage())
         .build());
     }

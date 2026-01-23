@@ -18,6 +18,7 @@ package io.dialob.session.engine.program;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.proto.Action;
+import io.dialob.common.Constants;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.expr.NotOnPageExpression;
 import io.dialob.session.engine.program.expr.arith.*;
@@ -43,11 +44,11 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
   private Expression canRemoveRowWhen = BooleanOperators.TRUE;
 
   enum Type {
-    ROOT("questionnaire", true),
-    PAGE("group", true),
-    GROUP("group", true),
-    ROWGROUP("rowgroup", false),
-    SURVEYGROUP("surveygroup", true);
+    ROOT(Constants.QUESTIONNAIRE, true),
+    PAGE(Constants.GROUP, true),
+    GROUP(Constants.GROUP, true),
+    ROWGROUP(Constants.ROWGROUP, false),
+    SURVEYGROUP(Constants.SURVEYGROUP, true);
 
     @Getter
     private final String itemType;
@@ -260,7 +261,7 @@ public class GroupBuilder extends AbstractItemBuilder<GroupBuilder,ProgramBuilde
       final ItemIdPartial rowGroupPrototypeId = new ItemIdPartial(id);
       getProgramBuilder().addItem(builder
         .id(rowGroupPrototypeId)
-        .type("row")
+        .type(Constants.ROW)
         .isPrototype(true)
         .valueType(null)
         .itemsExpression(new RowItemsExpression.Builder().itemIds(this.itemIds.stream().map(itemId -> {

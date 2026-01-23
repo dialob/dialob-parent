@@ -404,7 +404,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
   @Nullable
   private ActionItem selectRowgroup(ActionItem question) {
-    if ( "rowgroup".equals(question.getType()) ) {
+    if ( Constants.ROWGROUP.equals(question.getType()) ) {
       return question;
     }
     return null;

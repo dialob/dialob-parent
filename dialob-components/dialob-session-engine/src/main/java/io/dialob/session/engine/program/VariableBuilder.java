@@ -16,6 +16,7 @@
 package io.dialob.session.engine.program;
 
 import io.dialob.api.form.FormValidationError;
+import io.dialob.common.Constants;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.ContextVariableReference;
@@ -105,7 +106,7 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
     getProgramBuilder().addItem(
       new VariableItem.Builder()
         .id(id)
-        .type(context ? "context" : "variable")
+        .type(context ? Constants.CONTEXT : Constants.VARIABLE)
         .isPrototype(false)
         .isPublished(this.published)
         .valueExpression(this.valueExpression)

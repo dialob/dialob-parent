@@ -19,6 +19,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.session.engine.DebugUtil;
 import io.dialob.session.engine.DependencyLoopException;
+import io.dialob.session.engine.Utils;
 import io.dialob.session.engine.program.expr.arith.RowItemsExpression;
 import io.dialob.session.engine.program.model.*;
 import io.dialob.session.engine.session.command.Command;
@@ -62,7 +63,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
       public void visitGroup(@NonNull Group group) {
         visitDisplayItem(group);
         ItemId groupId;
-        if (isRowgroup(group.type()) || isRow(group.type())) {
+        if (Utils.isRowgroup(group.type()) || Utils.isRow(group.type())) {
           groupId = group.id();
           if (group.isPrototype()) {
             final Expression itemsExpression = group.itemsExpression();
@@ -95,7 +96,7 @@ class DependencyResolverVisitor implements ProgramVisitor {
         displayItem.labelExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateLabel(itemId, expression));
         displayItem.descriptionExpressionOptional().ifPresent(expression -> updateCommandFactory.createUpdateDescription(itemId, expression));
         displayItem.classNameOptional().ifPresent(expression -> updateCommandFactory.createUpdateClass(itemId, expression));
-        if (displayItem.isPrototype() && isRow(displayItem.type())) {
+        if (displayItem.isPrototype() && Utils.isRow(displayItem.type())) {
           updateCommandFactory.createRowGroupFromPrototype(itemId);
         }
       }
@@ -106,14 +107,6 @@ class DependencyResolverVisitor implements ProgramVisitor {
       }
 
     });
-  }
-
-  private boolean isRowgroup(@NonNull String type) {
-    return "rowgroup".equals(type);
-  }
-
-  private boolean isRow(@NonNull String type) {
-    return "row".equals(type);
   }
 
   @Override
