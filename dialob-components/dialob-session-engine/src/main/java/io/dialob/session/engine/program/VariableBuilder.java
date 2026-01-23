@@ -40,8 +40,8 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
 
   private boolean published = false;
 
-  VariableBuilder(ProgramBuilder programBuilder, String id) {
-    super(programBuilder, programBuilder, null, id);
+  VariableBuilder(ProgramBuilder programBuilder, GroupBuilder hoistingGroupBuilder, String id) {
+    super(programBuilder, programBuilder, hoistingGroupBuilder, id);
   }
 
   public VariableBuilder setValueExpression(String valueExpression) {
@@ -107,7 +107,7 @@ public class VariableBuilder extends AbstractItemBuilder<GroupBuilder, ProgramBu
       new VariableItem.Builder()
         .id(id)
         .type(context ? Constants.CONTEXT : Constants.VARIABLE)
-        .isPrototype(false)
+        .isPrototype(getId().isPartial())
         .isPublished(this.published)
         .valueExpression(this.valueExpression)
         .defaultValue(resolvedDefaultValue.orElse(null)).build());

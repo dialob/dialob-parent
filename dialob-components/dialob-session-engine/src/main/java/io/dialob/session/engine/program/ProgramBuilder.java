@@ -171,7 +171,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
   }
 
   public VariableBuilder addVariable(String id) {
-    return queue(new VariableBuilder(this, id));
+    return queue(new VariableBuilder(this, findHoistingGroup(id).orElse(null), id));
   }
 
   public ValueSetBuilder addValueSet(String id) {
@@ -230,14 +230,17 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
       LOGGER.debug("Could not compile all expressions: {}", uncompiledExpressions);
       return false;
     }
-    ddrlExpressionCompiler.getAsyncFunctionVariableExpressions().forEach((key, value) -> addItem(
-      new VariableItem.Builder()
-        .id(IdUtils.toId(key))
-        .type(Constants.VARIABLE)
-        .isPrototype(false)
-        .isAsync(true)
-        .valueExpression(value)
-        .build()));
+    ddrlExpressionCompiler.getAsyncFunctionVariableExpressions().forEach((key, value) -> {
+      ItemId itemId = IdUtils.toId(key);
+      addItem(
+        new VariableItem.Builder()
+          .id(itemId)
+          .type(Constants.VARIABLE)
+          .isPrototype(itemId.isPartial())
+          .isAsync(true)
+          .valueExpression(value)
+          .build());
+    });
     return true;
   }
 

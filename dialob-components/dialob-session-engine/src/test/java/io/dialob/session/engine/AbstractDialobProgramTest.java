@@ -198,6 +198,11 @@ public abstract class AbstractDialobProgramTest {
     Assertions.assertFalse(itemState.isReadOnly());
   }
 
+  protected void assertVariableEquals(final DialobSession session, Object expected, final ItemId itemId) {
+    final ItemState itemState = session.getItemState(itemId).get();
+    Assertions.assertEquals(expected, itemState.getValue());
+  }
+
   protected void assertErrorInactive(final DialobSession session, final ItemId itemId, final String errorCode) {
     final Collection<ErrorState> errorStates = session.errorStates().values();
     for (final ErrorState errorState : errorStates) {

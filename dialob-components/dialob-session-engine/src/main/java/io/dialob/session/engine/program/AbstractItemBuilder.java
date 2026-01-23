@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P extends ExpressionCompiler & BuilderParent> implements Builder<P>, AliasesProvider {
 
@@ -149,8 +150,13 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     return (T) this;
   }
 
+  @Override
   public Map<String, ItemId> getAliases() {
-    return Collections.emptyMap();
+    if (getHoistingGroup().map(groupBuilder -> groupBuilder.getType() == GroupBuilder.Type.ROWGROUP).orElse(false)) {
+      return getHoistingGroup().map(GroupBuilder::getItemIds).map(itemIds -> itemIds.stream().collect(toMap(
+        itemId -> ((ItemRef) itemId).getId(), itemId -> itemId))).orElse(Map.of());
+    }
+    return Map.of();
   }
 
   protected T setActiveWhen(Expression activeWhen) {
@@ -220,9 +226,6 @@ public abstract class AbstractItemBuilder<T extends AbstractItemBuilder<T,P>,P e
     return Optional.empty();
   }
 
-  LocalizedLabelOperator createLabelOperator(Map<String, String> label) {
-    return createLabelOperator(Label.of(label));
-  }
   LocalizedLabelOperator createLabelOperator(Label label) {
     return LocalizedLabelOperator.createLocalizedLabelOperator(getProgramBuilder(), label);
   }

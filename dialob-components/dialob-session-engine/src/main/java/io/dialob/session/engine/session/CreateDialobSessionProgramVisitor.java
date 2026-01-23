@@ -121,7 +121,12 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
 
       @Override
       public void visitVariableItem(@NonNull VariableItem item) {
-        items.add(createItemState(item.id(), item, item.isPublished()));
+        ItemState state = createItemState(item.id(), item, item.isPublished());
+        if (item.isPrototype()) {
+          prototypeItems.add(state);
+        } else {
+          items.add(state);
+        }
       }
 
       @Override

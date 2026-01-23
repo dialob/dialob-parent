@@ -18,6 +18,7 @@ package io.dialob.session.engine;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.Validation;
+import io.dialob.api.form.Variable;
 import io.dialob.api.proto.Action;
 import io.dialob.rule.parser.function.FunctionRegistry;
 import io.dialob.session.engine.program.DialobProgram;
@@ -28,6 +29,7 @@ import io.dialob.session.engine.session.model.ItemId;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.util.Map;
 
 import static io.dialob.session.engine.session.ActionToCommandMapper.toCommands;
@@ -166,6 +168,73 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
 
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
+
+  @Test
+  void shouldCalculateExpressionVariablesInRowgroupsContext() {
+    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
+    DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
+
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
+      .id("123")
+      .name("123")
+      .putData("questionnaire", new FormItem.Builder()
+        .id("questionnaire")
+        .type("questionnaire")
+        .addItems("g")
+        .build())
+      .putData("g", new FormItem.Builder()
+        .id("g")
+        .type("group")
+        .addItems("rg")
+        .build())
+      .putData("rg", new FormItem.Builder()
+        .id("rg")
+        .type("rowgroup")
+        .addItems("q1","q2","q3","summa")
+        .build())
+      .putData("q1", new FormItem.Builder()
+        .id("q1")
+        .type("number")
+        .build())
+      .putData("q2", new FormItem.Builder()
+        .id("q2")
+        .type("number")
+        .build())
+      .putData("q3", new FormItem.Builder()
+        .id("q3")
+        .activeWhen("q1 + q2 > 3")
+        .type("number")
+        .build())
+      .addVariables(new Variable.Builder()
+        .name("summa")
+        .context(false)
+        .expression("q1 + q2")
+        .build())
+      .metadata(new Form.Metadata.Builder()
+        .label("xxx")
+        .putAdditionalProperties("answersRequiredByDefault", true)
+        .build())
+      .build());
+
+    DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
+    assertNotNull(session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
+
+    dialobSessionUpdater.applyCommands(toCommands(addRow(toRef("rg"))));
+    assertVariableEquals(session, null, toRef("rg.0.summa"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q1"), "1")));
+    assertInactive(session, toRef("rg.0.q3"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q2"), "2")));
+//    assertActive(session, toRef("rg.0.q3"));
+    assertVariableEquals(session, BigInteger.valueOf(3), toRef("rg.0.summa"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q2"), null)));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q1"), null)));
+    assertVariableEquals(session, null, toRef("rg.0.summa"));
+
+    Mockito.verifyNoMoreInteractions(functionRegistry);
+  }
+
 
 
   @Test

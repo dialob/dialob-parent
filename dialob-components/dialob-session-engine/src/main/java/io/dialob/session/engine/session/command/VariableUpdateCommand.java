@@ -23,13 +23,12 @@ import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ItemState;
 
 import java.util.List;
-import java.util.Set;
 
 record VariableUpdateCommand(
   ItemId targetId,
   Expression expression,
   List<Trigger<ItemState>> triggers
-) implements AbstractUpdateCommand<ItemId,ItemState>, ItemUpdateCommand {
+) implements AbstractUpdateAttributeCommand<Object>, ItemUpdateCommand {
 
   @NonNull
   @Override
@@ -39,14 +38,8 @@ record VariableUpdateCommand(
 
   @NonNull
   @Override
-  public Set<EventMatcher> eventMatchers() {
-    return this.expression().getEvalRequiredConditions();
-  }
-
-  @NonNull
-  @Override
   public ItemState update(@NonNull EvalContext context, @NonNull ItemState itemState) {
-    final Object eval = this.expression().eval(context);
+    final Object eval = this.evalExpression(context);
     // TODO handle multiple concurrent async updates?
     if (isPending(eval)) {
       context.queueAsyncFunctionCall(
