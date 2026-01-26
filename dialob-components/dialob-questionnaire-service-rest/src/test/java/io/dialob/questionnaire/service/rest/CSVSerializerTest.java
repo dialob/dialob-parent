@@ -184,9 +184,9 @@ class CSVSerializerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentType(MEDIA_TYPE_CSV))
       .andExpect(content().string("""
-        TextInputEN,text1,BooleanInputEN,boolean1\r
-        TextAnswer,,Yes,true\r
-        Something,,No,false\r
+        BooleanInputEN,boolean1,TextInputEN,text1\r
+        Yes,true,TextAnswer,\r
+        No,false,Something,\r
         """));
   }
 
@@ -196,9 +196,9 @@ class CSVSerializerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentType(MEDIA_TYPE_CSV))
       .andExpect(content().string("""
-        TextInputFI,text1,BooleanInputFI,boolean1\r
-        TextAnswer,,Kyllä,true\r
-        Something,,Ei,false\r
+        BooleanInputFI,boolean1,TextInputFI,text1\r
+        Kyllä,true,TextAnswer,\r
+        Ei,false,Something,\r
         """));
   }
 
@@ -208,9 +208,9 @@ class CSVSerializerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentType(MEDIA_TYPE_CSV))
       .andExpect(content().string("""
-        ,text1,1. null,boolean1\r
-        TextAnswer,,Yes,true\r
-        Something,,No,false\r
+        ,boolean1,1. null,text1\r
+        Yes,true,TextAnswer,\r
+        No,false,Something,\r
         """));
   }
 
@@ -220,8 +220,8 @@ class CSVSerializerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentType(MEDIA_TYPE_CSV))
       .andExpect(content().string("""
-        TextInputEN,text1,BooleanInputEN,boolean1\r
-        TextAnswer,,Yes,true\r
+        BooleanInputEN,boolean1,TextInputEN,text1\r
+        Yes,true,TextAnswer,\r
         """));
   }
 
@@ -250,8 +250,8 @@ class CSVSerializerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentType(MEDIA_TYPE_CSV))
       .andExpect(content().string("""
-        TextInputEN,text1,BooleanInputEN,boolean1\r
-        Something,,No,false\r
+        BooleanInputEN,boolean1,TextInputEN,text1\r
+        No,false,Something,\r
         """));
   }
 
@@ -261,8 +261,8 @@ class CSVSerializerTest {
       .andExpect(status().isOk())
       .andExpect(content().contentType(MEDIA_TYPE_CSV))
       .andExpect(content().string("""
-        TextInputEN,text1,BooleanInputEN,boolean1\r
-        TextAnswer,,Yes,true\r
+        BooleanInputEN,boolean1,TextInputEN,text1\r
+        Yes,true,TextAnswer,\r
         """));
   }
 

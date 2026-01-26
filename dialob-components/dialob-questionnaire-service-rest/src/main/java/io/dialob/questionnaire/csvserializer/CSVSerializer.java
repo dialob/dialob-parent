@@ -231,7 +231,7 @@ public class CSVSerializer {
   public String[] serializeHeader(Form form, String language) {
     List<String> result = new ArrayList<>();
     Map<String, Integer> labelDedups = new HashMap<>();
-    form.getData().values().forEach(formItem -> addHeaderFormItem(form, formItem, labelDedups, result, language));
+    form.getData().values().stream().sorted(Comparator.comparing(FormItem::id)).forEach(formItem -> addHeaderFormItem(form, formItem, labelDedups, result, language));
     form.getVariables().forEach(variable -> {
       if (Boolean.TRUE.equals(variable.getContext())) {
         result.add(variable.getName());
@@ -256,10 +256,8 @@ public class CSVSerializer {
 
   private void serialize(Questionnaire questionnaire, Form form, CSVPrinter printer, String language) throws IOException {
     List<String> records = new ArrayList<>();
-    form.getData().values().forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
-    for (Variable variable : form.getVariables()) {
-      serializeVariable(variable, questionnaire, records);
-    }
+    form.getData().values().stream().sorted(Comparator.comparing(FormItem::id)).forEach(item -> serializeItem(form, questionnaire, item, null, records, language, null));
+    form.getVariables().stream().sorted(Comparator.comparing(Variable::name)).forEach(variable -> serializeVariable(variable, questionnaire, records));
     printer.printRecord(records);
   }
 
