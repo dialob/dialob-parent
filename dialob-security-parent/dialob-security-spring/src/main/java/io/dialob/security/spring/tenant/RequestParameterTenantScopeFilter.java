@@ -46,10 +46,6 @@ public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {
 
   private RequestMatcher tenantRequiredMatcher = AnyRequestMatcher.INSTANCE;
 
-  public RequestParameterTenantScopeFilter(@NonNull TenantAccessEvaluator tenantPermissionEvaluator) {
-    this(tenantPermissionEvaluator, () -> Optional.of(ResysSecurityConstants.DEFAULT_TENANT));
-  }
-
   public RequestParameterTenantScopeFilter(@NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                            @NonNull DefaultTenantSupplier defaultTenantSupplier) {
     this.tenantAccessEvaluator = Objects.requireNonNull(tenantPermissionEvaluator);
