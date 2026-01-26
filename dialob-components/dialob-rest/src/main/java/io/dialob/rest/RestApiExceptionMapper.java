@@ -20,6 +20,7 @@ import io.dialob.api.rest.Errors;
 import io.dialob.rest.type.ApiException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -40,21 +43,26 @@ public class RestApiExceptionMapper {
   @ExceptionHandler
   public ResponseEntity<?> handleMethodArgumentNotValidException(@NonNull MethodArgumentNotValidException exception) {
     BindingResult bindingResult = exception.getBindingResult();
+    List<String> messages = new ArrayList<>();
     Errors.Builder errorsBuilder = new Errors.Builder()
       .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
       .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase());
 
     for (ObjectError objectError : bindingResult.getAllErrors()) {
-      Errors.Error.Builder builder = new Errors.Error.Builder()
+      var builder = new Errors.Error.Builder()
         .code(objectError.getCode())
         .error(objectError.getDefaultMessage());
       if (objectError instanceof FieldError fieldError) {
         builder = builder
           .context(fieldError.getField())
           .rejectedValue(fieldError.getRejectedValue());
+        messages.add("%s: %s".formatted(fieldError.getField(), objectError.getDefaultMessage()));
+      } else {
+        messages.add("%s".formatted(objectError.getDefaultMessage()));
       }
       errorsBuilder.addErrors(builder.build());
     }
+    errorsBuilder.message(StringUtils.trimToNull(String.join("\n", messages)));
     Errors errors = errorsBuilder.build();
     HttpStatus httpStatus = resolveHttpStatus(errors);
     LOGGER.error("Invalid request ({}): {}", httpStatus, exception.getMessage());

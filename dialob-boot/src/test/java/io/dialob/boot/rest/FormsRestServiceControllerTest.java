@@ -351,6 +351,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\"id\":\"new-form\",\"rev\":\"old\",\"data\":{},\"metadata\":{}}"))
       .andExpect(status().isUnprocessableEntity())
+      .andExpect(jsonPath("$.message").value("metadata.label: must not be null"))
       .andExpect(jsonPath("$.errors[0].context").value("metadata.label"))
       .andExpect(jsonPath("$.errors[0].error").value("must not be null"));
   }
@@ -366,6 +367,7 @@ class FormsRestServiceControllerTest extends AbstractSecuredRestTests {
       .content("{\"_id\":\"123\",\"_rev\":\"old\",\"data\":{},\"metadata\":{\"label\":\"this ok\"}}"))
       .andExpect(status().isBadRequest())
       .andExpect(content().string(""))
+      .andExpect(jsonPath("$.message").value("metadata.language: must not be null"))
       .andExpect(jsonPath("$.errors[0].context").value("metadata.language"))
       .andExpect(jsonPath("$.errors[0].error").value("must not be null"));
 
