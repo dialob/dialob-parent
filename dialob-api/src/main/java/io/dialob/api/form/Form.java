@@ -20,7 +20,6 @@ import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.rest.HasId;
-import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -105,19 +104,13 @@ public record Form(
   @Getter
   Map<String, String> requiredErrorText
 
-) implements HasId<String>, WithValidation<Form>, FormEntity {
+) implements HasId<String>, FormEntity {
 
   public Form withRev(String number) {
     return new Form.Builder().from(this).rev(number).build();
   }
 
   public static class Builder extends FormBuilder {
-
-    @Override
-    public Form build() {
-      return super.build().validate();
-    }
-
   }
 
 
