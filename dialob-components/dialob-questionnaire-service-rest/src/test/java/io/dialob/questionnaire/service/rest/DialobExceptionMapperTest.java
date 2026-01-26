@@ -15,23 +15,32 @@
  */
 package io.dialob.questionnaire.service.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.questionnaire.service.api.FormDataMissingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {DialobExceptionMapper.class, DialobExceptionMapperTest.TestService.class})
+@SpringBootTest(classes = {
+  DialobExceptionMapper.class,
+  DialobExceptionMapperTest.TestService.class
+})
 @AutoConfigureMockMvc
+@EnableWebMvc // Needed for json responses
 class DialobExceptionMapperTest {
 
   @Autowired
@@ -39,8 +48,9 @@ class DialobExceptionMapperTest {
 
   @RestController
   static class TestService {
+
     @GetMapping("/someEndpoint")
-    public ResponseEntity someEndpoint() {
+    public ResponseEntity<Void> someEndpoint() {
       throw new FormDataMissingException("testForm", "1");
     }
   }
@@ -50,6 +60,7 @@ class DialobExceptionMapperTest {
     mockMvc.perform(get("/someEndpoint")
         .accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isNotFound())
-      .andExpect(content().json("{\"error\":\"form_not_found\",\"reason\":\"Form 'testForm' rev '1' cannot be loaded.\"}"));
+      .andExpect(content()
+        .json("{\"error\":\"form_not_found\",\"message\":\"Form 'testForm' rev '1' cannot be loaded.\"}", JsonCompareMode.LENIENT));
   }
 }

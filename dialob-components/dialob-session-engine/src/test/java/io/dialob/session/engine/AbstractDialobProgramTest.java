@@ -140,7 +140,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ItemState> isItem(String describe, Function<ItemState,Boolean> matches) {
-    return new HamcrestArgumentMatcher(new BaseMatcher<ItemState>() {
+    return new HamcrestArgumentMatcher<>(new BaseMatcher<>() {
       @Override
       public void describeTo(Description description) {
         description.appendText(describe);
@@ -157,7 +157,7 @@ public abstract class AbstractDialobProgramTest {
   }
 
   public ArgumentMatcher<ErrorState> isError(String describe, Function<ErrorState,Boolean> matches) {
-    return new HamcrestArgumentMatcher(new BaseMatcher<ErrorState>() {
+    return new HamcrestArgumentMatcher<>(new BaseMatcher<>() {
       @Override
       public void describeTo(Description description) {
         description.appendText(describe);

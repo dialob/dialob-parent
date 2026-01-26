@@ -25,27 +25,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ServiceExceptionMapper {
 
   @ExceptionHandler
-  public ResponseEntity serviceException(NotFoundServiceException exception) {
+  public ResponseEntity<Void> serviceException(NotFoundServiceException exception) {
     return ResponseEntity.notFound().build();
   }
 
   @ExceptionHandler
-  public ResponseEntity serviceException(AccessDeniedServiceException exception) {
+  public ResponseEntity<Void> serviceException(AccessDeniedServiceException exception) {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 
   @ExceptionHandler
-  public ResponseEntity serviceException(UpdateConflictServiceException exception) {
+  public ResponseEntity<Void> serviceException(UpdateConflictServiceException exception) {
     return ResponseEntity.status(HttpStatus.CONFLICT).build();
   }
 
   @ExceptionHandler
-  public ResponseEntity serviceException(ServiceDownServiceException exception) {
+  public ResponseEntity<Void> serviceException(ServiceDownServiceException exception) {
     return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
   }
 
   @ExceptionHandler
-  public ResponseEntity serviceException(InvalidCallServiceException exception) {
+  public ResponseEntity<Void> serviceException(InvalidCallServiceException exception) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
   }
 }

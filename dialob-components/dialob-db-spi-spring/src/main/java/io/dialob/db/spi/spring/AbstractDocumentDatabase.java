@@ -26,14 +26,14 @@ public abstract class AbstractDocumentDatabase<T> {
   @Getter
   private final Class<? extends T> documentClass;
 
-  private final ReflectionEntityInformation idEntityInformation;
+  private final ReflectionEntityInformation<T, String> idEntityInformation;
 
-  private final ReflectionEntityInformation revEntityInformation;
+  private final ReflectionEntityInformation<T, String> revEntityInformation;
 
-  protected AbstractDocumentDatabase(@NonNull Class<? extends T> documentClass) {
+  protected AbstractDocumentDatabase(@NonNull Class<T> documentClass) {
     this.documentClass = documentClass;
-    this.idEntityInformation = new ReflectionEntityInformation(documentClass);
-    this.revEntityInformation = new ReflectionEntityInformation(documentClass, Version.class);
+    this.idEntityInformation = new ReflectionEntityInformation<>(documentClass);
+    this.revEntityInformation = new ReflectionEntityInformation<>(documentClass, Version.class);
     Assert.isTrue(idEntityInformation.getIdType() == String.class, "id type is not String on type " + documentClass.getCanonicalName());
     Assert.isTrue(revEntityInformation.getIdType() == String.class, "version type is not String on type " + documentClass.getCanonicalName());
   }

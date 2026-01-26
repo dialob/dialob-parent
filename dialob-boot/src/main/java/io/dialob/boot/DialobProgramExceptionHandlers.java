@@ -28,16 +28,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class DialobProgramExceptionHandlers {
 
   @ExceptionHandler
-  public ResponseEntity handleProgramBuilderException(ProgramBuilderException e) {
+  public ResponseEntity<Errors> handleProgramBuilderException(ProgramBuilderException e) {
     return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
   }
 
   @ExceptionHandler
-  public ResponseEntity handleDialobProgramBuildException(DialobProgramBuildException e) {
+  public ResponseEntity<Errors> handleDialobProgramBuildException(DialobProgramBuildException e) {
     return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
   }
 
-  private ResponseEntity buildResponse(HttpStatus status, String message) {
+  private ResponseEntity<Errors> buildResponse(HttpStatus status, String message) {
     return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(new Errors.Builder()
       .status(status.value())
       .error(status.getReasonPhrase())

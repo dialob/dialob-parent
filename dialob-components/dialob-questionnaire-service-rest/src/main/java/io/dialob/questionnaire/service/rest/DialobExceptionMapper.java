@@ -15,6 +15,7 @@
  */
 package io.dialob.questionnaire.service.rest;
 
+import io.dialob.api.rest.Errors;
 import io.dialob.questionnaire.service.api.FormDataMissingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class DialobExceptionMapper {
 
   @ExceptionHandler
-  public ResponseEntity formDataMissingException(FormDataMissingException exception) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-      "{\"error\":\"form_not_found\",\"reason\":\"" + exception.getMessage() + "\"}"
-    );
+  public ResponseEntity<Errors> formDataMissingException(FormDataMissingException exception) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+      .body(new Errors.Builder()
+        .status(404)
+        .error("form_not_found")
+        .message(exception.getMessage())
+        .build()
+      );
   }
 
 }

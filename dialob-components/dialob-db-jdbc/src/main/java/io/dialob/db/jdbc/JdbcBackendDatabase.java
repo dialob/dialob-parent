@@ -51,7 +51,7 @@ public abstract class JdbcBackendDatabase<T> extends AbstractDocumentDatabase<T>
                              ObjectMapper objectMapper,
                              String schema,
                              String tableName,
-                             Class<? extends T> documentClass,
+                             Class<T> documentClass,
                              Predicate<String> isAnyTenantPredicate)
   {
     super(documentClass);

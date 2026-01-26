@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class FormApiExceptionHandlers {
   @ExceptionHandler
-  public ResponseEntity handleInvalidRequestException(InvalidMetadataQueryException exception) {
+  public ResponseEntity<Errors> handleInvalidRequestException(InvalidMetadataQueryException exception) {
     return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
