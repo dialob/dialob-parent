@@ -22,7 +22,6 @@ import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.rest.HasId;
-import io.dialob.api.validation.WithValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -105,7 +104,7 @@ public record Questionnaire(
   @NotNull
   @Getter
   Metadata metadata
-) implements HasId<String>, WithValidation<Questionnaire>, Serializable {
+) implements HasId<String>, Serializable {
 
   public Questionnaire withId(@Nullable String id) {
     return new Builder().from(this).id(id).build();
@@ -116,12 +115,6 @@ public record Questionnaire(
   }
 
   public static class Builder extends QuestionnaireBuilder {
-
-
-    @Override
-    public Questionnaire build() {
-      return super.build().validate();
-    }
   }
 
 
