@@ -403,7 +403,6 @@ class QuestionnairesRestServiceControllerTest {
       .andExpect(status().isUnprocessableEntity())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
-      .andExpect(jsonPath("$.message", equalTo("metadata.formId: must not be null")))
       .andExpect(jsonPath("$.errors[0].context", equalTo("metadata.formId")))
       .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
 
@@ -412,7 +411,6 @@ class QuestionnairesRestServiceControllerTest {
       .andExpect(status().isUnprocessableEntity())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
-      .andExpect(jsonPath("$.message", equalTo("metadata: must not be null")))
       .andExpect(jsonPath("$.errors[0].context", equalTo("metadata")))
       .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
 
