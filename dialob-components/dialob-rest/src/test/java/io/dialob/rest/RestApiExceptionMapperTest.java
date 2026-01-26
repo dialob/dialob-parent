@@ -99,8 +99,10 @@ class RestApiExceptionMapperTest {
 
     assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, entity.getStatusCode());
     Errors errorsResult = (Errors) entity.getBody();
+    assertNotNull(errorsResult);
     assertEquals(new Errors.Builder()
       .timestamp(errorsResult.getTimestamp())
+      .message("defaultMessage")
       .addErrors(new Errors.Error.Builder()
         .error("defaultMessage")
         .build())
