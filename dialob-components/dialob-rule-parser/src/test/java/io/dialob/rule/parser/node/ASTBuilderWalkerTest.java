@@ -1,5 +1,6 @@
 package io.dialob.rule.parser.node;
 
+import io.dialob.rule.parser.DialobRuleBaseListener;
 import io.dialob.rule.parser.DialobRuleLexer;
 import io.dialob.rule.parser.DialobRuleParser;
 import io.dialob.rule.parser.api.CompilerErrorCode;
@@ -13,11 +14,16 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static io.dialob.rule.parser.node.ASTBuilderWalker.DUMMY_VARIABLE_FINDER;
 import static org.junit.jupiter.api.Assertions.*;
@@ -664,49 +670,110 @@ class ASTBuilderWalkerTest {
     verifyNoMoreInteractions(errorLogger);
   }
 
+
   @Test
-  void exitNotExprNeedJustOneArgument() throws VariableNotDefinedException {
-    // Working parser never invokes this situation.
-    ErrorLogger errorLogger = Mockito.mock(ErrorLogger.class);
-    VariableFinder variableFinder = mock(VariableFinder.class);
-    when(variableFinder.mapAlias(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
-    when(variableFinder.typeOf(eq("unknownVar"))).thenThrow(new VariableNotDefinedException("unknownVar"));
-    when(variableFinder.findVariableScope(anyString())).thenReturn(Optional.empty());
+  void exitNotExprNeedsJustOneArgument() {
+    // Behaving parser never invokes this situation.
+    ErrorLogger errorLogger = mock();
+    VariableFinder variableFinder = mock();
 
     ASTBuilderWalker walker = new ASTBuilderWalker(variableFinder, Collections.emptyMap());
     walker.setErrorLogger(errorLogger);
-    DialobRuleParser.NotExprContext notExprContext = mock();
-    mockSpan(notExprContext);
-    DialobRuleParser.ConstExprRuleContext constExprRuleContext = mock();
-    mockSpan(constExprRuleContext);
+    DialobRuleParser.NotExprContext notExprContext = mockParserRuleContext();
+    DialobRuleParser.ConstExprRuleContext constExprRuleContext;
 
     walker.enterNotExpr(notExprContext);
-    constExprRuleContext.value = mock();
-    when(constExprRuleContext.value.getText()).thenReturn("a");
+    constExprRuleContext = constExprRuleContextMock("a");
     walker.enterConstExprRule(constExprRuleContext);
     walker.exitConstExprRule(constExprRuleContext);
-    when(constExprRuleContext.value.getText()).thenReturn("b");
+    constExprRuleContext = constExprRuleContextMock("b");
     walker.enterConstExprRule(constExprRuleContext);
     walker.exitConstExprRule(constExprRuleContext);
     walker.exitNotExpr(notExprContext);
+
     NodeBase ast = walker.getBuilder().build();
 
     assertEquals("(not a b)", ast.toString());
     assertEquals(ValueType.BOOLEAN, ast.getValueType());
 
-    // This is what happens inside enterIdExprRule
-    verify(errorLogger).logError(eq(CompilerErrorCode.ONLY_ONE_ARGUMENT_FOR_NOT), any(Span.class));
     // This is what happens inside exitNotExpr
+    verify(errorLogger).logError(eq(CompilerErrorCode.ONLY_ONE_ARGUMENT_FOR_NOT), any(Span.class));
     verifyNoMoreInteractions(errorLogger);
   }
 
-  private static void mockSpan(ParserRuleContext ruleContext) {
+  record AstCBs<T extends ParserRuleContext>(
+    T mockNode,
+    BiConsumer<DialobRuleBaseListener, T> enter,
+    BiConsumer<DialobRuleBaseListener, T> exit
+  ) {}
+
+  static Stream<AstCBs<? extends ParserRuleContext>> astInvokes() {
+    return Stream.of(
+      new AstCBs<>(mockParserRuleContext(), DialobRuleBaseListener::enterLogicExpr, DialobRuleBaseListener::exitLogicExpr),
+      new AstCBs<>(mockParserRuleContext(), DialobRuleBaseListener::enterMatchesExpr, DialobRuleBaseListener::exitMatchesExpr),
+      new AstCBs<>(mockParserRuleContext(), DialobRuleBaseListener::enterRelationExpr, DialobRuleBaseListener::exitRelationExpr),
+      new AstCBs<>(mockParserRuleContext(), DialobRuleBaseListener::enterInfixExpr, DialobRuleBaseListener::exitInfixExpr)
+    );
+  }
+
+
+  @ParameterizedTest()
+  @MethodSource("astInvokes")
+  <T extends ParserRuleContext> void shouldRaiseErrorIfArgumentIsMissing(AstCBs<T> enterExit) {
+    // Behaving parser never invokes this situation.
+    ErrorLogger errorLogger = mock();
+    VariableFinder variableFinder = mock();
+
+    ASTBuilderWalker walker = new ASTBuilderWalker(variableFinder, Collections.emptyMap());
+    walker.setErrorLogger(errorLogger);
+    var mockNode = enterExit.mockNode();
+    DialobRuleParser.ConstExprRuleContext constExprRuleContext;
+
+    enterExit.enter.accept(walker, mockNode);
+    enterExit.exit.accept(walker, mockNode);
+
+    // This is what happens inside exitNotExpr
+    verify(errorLogger).logError(eq(CompilerErrorCode.OPERATOR_REQUIRES_2_OPERANDS), any(Object[].class), any(Span.class));
+    verifyNoMoreInteractions(errorLogger);
+
+  }
+
+  public static <T extends ParserRuleContext> T mockParserRuleContext(T... reified) {
+    T mock = mock(reified);
+    try {
+      var op = mock.getClass().getField("op");
+      Token token = mock(Token.class);
+      op.set(mock, token);
+      when(token.getText()).thenReturn("*");
+    } catch (IllegalAccessException|NoSuchFieldException e) {
+      // Ignore
+    }
+    mockSpan(mock);
+    return mock;
+  }
+
+
+  public static DialobRuleParser.ConstExprRuleContext constExprRuleContextMock(String value) {
+    return constExprRuleContextMock(value, null);
+  }
+
+  public static DialobRuleParser.ConstExprRuleContext constExprRuleContextMock(String value, String unit) {
+    DialobRuleParser.ConstExprRuleContext constExprRuleContext = mockParserRuleContext();
+    constExprRuleContext.value = mock();
+    constExprRuleContext.unit = mock();
+    when(constExprRuleContext.value.getText()).thenReturn(value);
+    when(constExprRuleContext.unit.getText()).thenReturn(unit);
+    return constExprRuleContext;
+  }
+
+  public static ParserRuleContext mockSpan(ParserRuleContext ruleContext) {
     Token startToken = mock();
     Token stopToken = mock();
     when(startToken.getStartIndex()).thenReturn(1);
     when(stopToken.getStopIndex()).thenReturn(10);
     when(ruleContext.getStart()).thenReturn(startToken);
     when(ruleContext.getStop()).thenReturn(stopToken);
+    return ruleContext;
   }
 
 
