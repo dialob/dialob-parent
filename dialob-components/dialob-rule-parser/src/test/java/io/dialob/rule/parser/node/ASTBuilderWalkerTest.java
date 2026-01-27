@@ -1,16 +1,25 @@
 package io.dialob.rule.parser.node;
 
+import io.dialob.rule.parser.DialobRuleLexer;
 import io.dialob.rule.parser.DialobRuleParser;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.rule.parser.api.VariableFinder;
 import io.dialob.rule.parser.api.VariableNotDefinedException;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 
+import static io.dialob.rule.parser.node.ASTBuilderWalker.DUMMY_VARIABLE_FINDER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -588,6 +597,116 @@ class ASTBuilderWalkerTest {
     verify(errorLogger).logError(CompilerErrorCode.OPERATOR_REQUIRES_2_OPERANDS, new Object[]{"+"}, Span.of(0, 10));
 
     verifyNoMoreInteractions(errorLogger, builder);
+  }
+
+
+  private ASTBuilderWalker createWalker(VariableFinder variableFinder, ErrorLogger errorLogger) {
+    ASTBuilderWalker walker = new ASTBuilderWalker(variableFinder, Collections.emptyMap());
+    walker.setErrorLogger(errorLogger);
+    return walker;
+  }
+
+  protected ParseTree parseExpression(String expression) {
+    DialobRuleLexer ffRuleLexer = new DialobRuleLexer(CharStreams.fromString(expression));
+    DialobRuleParser ffRuleParser = new DialobRuleParser(new CommonTokenStream(ffRuleLexer));
+    ffRuleParser.setBuildParseTree(true);
+    return ffRuleParser.compileUnit();
+  }
+
+  private NodeBase walk(String expression, VariableFinder variableFinder, ErrorLogger errorLogger) {
+    ParseTree ruleContext = parseExpression(expression);
+    ASTBuilderWalker walker = createWalker(variableFinder, errorLogger);
+    ParseTreeWalker.DEFAULT.walk(walker, ruleContext);
+    return walker.getBuilder().build();
+  }
+
+
+  @Test
+  void exitNotExprShouldProduceValidAstForBooleanOperand() {
+    ErrorLogger errorLogger = Mockito.mock(ErrorLogger.class);
+    NodeBase ast = walk("not true", DUMMY_VARIABLE_FINDER, errorLogger);
+
+    assertEquals("(not true)", ast.toString());
+    assertEquals(ValueType.BOOLEAN, ast.getValueType());
+    verifyNoInteractions(errorLogger);
+  }
+
+  @Test
+  void exitNotExprShouldLogErrorForNonBooleanOperand() {
+    ErrorLogger errorLogger = Mockito.mock(ErrorLogger.class);
+    NodeBase ast = walk("not 123", DUMMY_VARIABLE_FINDER, errorLogger);
+
+    assertEquals("(not 123)", ast.toString());
+    // This should be BOOLEAN anyway
+    assertEquals(ValueType.BOOLEAN, ast.getValueType());
+    verify(errorLogger).logError(eq(CompilerErrorCode.CANNOT_EVAL_NOT_FOR_NON_BOOLEAN_TYPE), any(Object[].class), any(Span.class));
+    verifyNoMoreInteractions(errorLogger);
+  }
+
+  @Test
+  void exitNotExprShouldLogErrorForUndefinedVariable() throws VariableNotDefinedException {
+    ErrorLogger errorLogger = Mockito.mock(ErrorLogger.class);
+    VariableFinder variableFinder = mock(VariableFinder.class);
+    when(variableFinder.mapAlias(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(variableFinder.typeOf(eq("unknownVar"))).thenThrow(new VariableNotDefinedException("unknownVar"));
+    when(variableFinder.findVariableScope(anyString())).thenReturn(Optional.empty());
+
+
+    NodeBase ast = walk("not unknownVar", variableFinder, errorLogger);
+
+    assertEquals("(not unknownVar)", ast.toString());
+    assertEquals(ValueType.BOOLEAN, ast.getValueType());
+
+    // This is what happens inside enterIdExprRule
+    verify(errorLogger).logError(eq(CompilerErrorCode.UNKNOWN_VARIABLE), any(Object[].class), any(Span.class));
+    // This is what happens inside exitNotExpr
+    verify(errorLogger).logError(eq(CompilerErrorCode.COULD_NOT_DEDUCE_TYPE), any(Span.class));
+    verifyNoMoreInteractions(errorLogger);
+  }
+
+  @Test
+  void exitNotExprNeedJustOneArgument() throws VariableNotDefinedException {
+    // Working parser never invokes this situation.
+    ErrorLogger errorLogger = Mockito.mock(ErrorLogger.class);
+    VariableFinder variableFinder = mock(VariableFinder.class);
+    when(variableFinder.mapAlias(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(variableFinder.typeOf(eq("unknownVar"))).thenThrow(new VariableNotDefinedException("unknownVar"));
+    when(variableFinder.findVariableScope(anyString())).thenReturn(Optional.empty());
+
+    ASTBuilderWalker walker = new ASTBuilderWalker(variableFinder, Collections.emptyMap());
+    walker.setErrorLogger(errorLogger);
+    DialobRuleParser.NotExprContext notExprContext = mock();
+    mockSpan(notExprContext);
+    DialobRuleParser.ConstExprRuleContext constExprRuleContext = mock();
+    mockSpan(constExprRuleContext);
+
+    walker.enterNotExpr(notExprContext);
+    constExprRuleContext.value = mock();
+    when(constExprRuleContext.value.getText()).thenReturn("a");
+    walker.enterConstExprRule(constExprRuleContext);
+    walker.exitConstExprRule(constExprRuleContext);
+    when(constExprRuleContext.value.getText()).thenReturn("b");
+    walker.enterConstExprRule(constExprRuleContext);
+    walker.exitConstExprRule(constExprRuleContext);
+    walker.exitNotExpr(notExprContext);
+    NodeBase ast = walker.getBuilder().build();
+
+    assertEquals("(not a b)", ast.toString());
+    assertEquals(ValueType.BOOLEAN, ast.getValueType());
+
+    // This is what happens inside enterIdExprRule
+    verify(errorLogger).logError(eq(CompilerErrorCode.ONLY_ONE_ARGUMENT_FOR_NOT), any(Span.class));
+    // This is what happens inside exitNotExpr
+    verifyNoMoreInteractions(errorLogger);
+  }
+
+  private static void mockSpan(ParserRuleContext ruleContext) {
+    Token startToken = mock();
+    Token stopToken = mock();
+    when(startToken.getStartIndex()).thenReturn(1);
+    when(stopToken.getStopIndex()).thenReturn(10);
+    when(ruleContext.getStart()).thenReturn(startToken);
+    when(ruleContext.getStop()).thenReturn(stopToken);
   }
 
 
