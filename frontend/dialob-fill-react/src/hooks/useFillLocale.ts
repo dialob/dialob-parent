@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFillSession } from './useFillSession';
 
-export function useFillLocale(): any {
+export function useFillLocale() {
   const session = useFillSession();
   const [locale, setLocale] = useState(session.getLocale());
 
