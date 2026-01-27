@@ -58,7 +58,7 @@
     <spring-boot.version>3.5.10</spring-boot.version>
 
     <antlr4.version>4.13.2</antlr4.version>
-    <aws-java-sdk.version>2.40.16</aws-java-sdk.version>
+    <aws-java-sdk.version>2.41.3</aws-java-sdk.version>
     <azure-sdk.version>1.3.3</azure-sdk.version>
     <bcpkix-jdk18on.version>1.83</bcpkix-jdk18on.version>
     <checkerframework.version>3.52.1</checkerframework.version>
