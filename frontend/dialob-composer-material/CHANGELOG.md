@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.16
+
+### Patch Changes
+
+- added AI translation feature
+
 ## 0.0.15
 
 ### Patch Changes
