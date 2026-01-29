@@ -94,6 +94,7 @@ const en = {
   'tooltips.requirement': 'Requirement rule',
   'tooltips.properties': 'Properties',
   'tooltips.default': 'Default value',
+  'tooltips.readOnly': 'Read only rule',
 
   'dialogs.confirmation.delete.title': 'Delete item',
   'dialogs.confirmation.delete.text': 'Are you sure you want to delete {itemId}?',
