@@ -437,7 +437,7 @@ class FormsRestServiceControllerTest {
         {
           "status":400,
           "error":"Bad Request",
-          "message":"tools.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.Form$Metadata$Builder` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); byte offset: #UNKNOWN]"        }
+          "message":"tools.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `io.dialob.api.form.Form$Metadata` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('label')\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); byte offset: #UNKNOWN]"        }
         """))
       .andExpect(status().isBadRequest());
     verifyNoMoreInteractions(formDatabase, formValidator, formIdRenamer, formItemCopier, currentTenant, currentUserProvider, nodeId);
