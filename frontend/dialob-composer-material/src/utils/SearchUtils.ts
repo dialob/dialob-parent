@@ -1,6 +1,6 @@
 import { ContextVariable, DialobItem, Variable } from "../types";
 
-export type ItemMatchType = 'label' | 'description' | 'id' | 'visibility' | 'requirement' | 'validation'; 
+export type ItemMatchType = 'label' | 'description' | 'id' | 'visibility' | 'requirement' | 'validation' | 'readOnly' | 'canAddRow' | 'canRemoveRow'; 
 export type VariableMatchType = 'name' | 'description' | 'default' | 'expression';
 
 export interface SearchMatch {
@@ -52,6 +52,15 @@ export const matchItemByKeyword = (item: DialobItem, languages?: string[], keywo
     } else if (item.validations?.some((validation) => validation.rule && validation.rule.toLowerCase().includes(keyword.toLowerCase()))) {
       const snippet = extractSnippet(item.validations.map(v => v.rule).join(', ').toLowerCase(), keyword.toLowerCase());
       return { id: item.id, type: 'item', matchType: 'validation', content: snippet };
+    } else if (item.readOnlyWhen?.toLowerCase().includes(keyword.toLowerCase())) {
+      const snippet = extractSnippet(item.readOnlyWhen.toLowerCase(), keyword.toLowerCase());
+      return { id: item.id, type: 'item', matchType: 'readOnly', content: snippet };
+    } else if (item.canAddRowWhen?.toLowerCase().includes(keyword.toLowerCase())) {
+      const snippet = extractSnippet(item.canAddRowWhen.toLowerCase(), keyword.toLowerCase());
+      return { id: item.id, type: 'item', matchType: 'canAddRow', content: snippet };
+    } else if (item.canRemoveRowWhen?.toLowerCase().includes(keyword.toLowerCase())) {
+      const snippet = extractSnippet(item.canRemoveRowWhen.toLowerCase(), keyword.toLowerCase());
+      return { id: item.id, type: 'item', matchType: 'canRemoveRow', content: snippet };
     }
   }
   return undefined;

@@ -4,7 +4,7 @@ import { DialobItem, DialobItemTemplate, ComposerState } from "../types";
 import { Box, Button, Divider, IconButton, Menu, MenuItem, Table, Tooltip, Typography, styled } from "@mui/material";
 import {
   Close, ContentCopy, Description, KeyboardArrowDown, KeyboardArrowRight,
-  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, EditNote
+  Menu as MenuIcon, Note, Rule, Tune, Visibility, Gavel, Place, Public, EditNote, EditOff
 } from "@mui/icons-material";
 import { ItemTypeConfig } from "../defaults/types";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -289,6 +289,10 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
       {item.required &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.requirement' />}>
           <IconButton onClick={() => handleClick('rules')}><Gavel fontSize='small' sx={{ color: 'error.light' }} /></IconButton>
+        </Tooltip>}
+      {item.readOnlyWhen &&
+        <Tooltip placement='top' title={<FormattedMessage id='tooltips.readOnly' />}>
+          <IconButton onClick={() => handleClick('rules')}><EditOff fontSize='small' sx={{ color: 'warning.dark' }} /></IconButton>
         </Tooltip>}
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>

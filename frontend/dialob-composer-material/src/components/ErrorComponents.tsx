@@ -28,6 +28,12 @@ const extractCodeFromItem = (item: DialobItem, start: number, end: number, type:
       return item.activeWhen ? item.activeWhen.substring(start, end + 1) : '';
     case 'REQUIREMENT':
       return item.required ? item.required.substring(start, end + 1) : '';
+    case 'READONLY':
+      return item.readOnlyWhen ? item.readOnlyWhen.substring(start, end + 1) : '';
+    case 'CANADDROW':
+      return item.canAddRowWhen ? item.canAddRowWhen.substring(start, end + 1) : '';
+    case 'CANREMOVEROW':
+      return item.canRemoveRowWhen ? item.canRemoveRowWhen.substring(start, end + 1) : '';
     case 'VALIDATION':
       return '';
     default:
@@ -66,7 +72,7 @@ export const ErrorMessage: React.FC<{ error: EditorError }> = ({ error }) => {
     } else {
       const item = form.data[itemId];
       if (item) {
-        code = extractCodeFromItem(form.data[itemId], startIndex, endIndex, type);
+        code = extractCodeFromItem(item, startIndex, endIndex, type);
       }
     }
   }

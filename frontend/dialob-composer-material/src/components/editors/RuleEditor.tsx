@@ -11,12 +11,13 @@ import { useBackend } from '../../backend/useBackend';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
 import { getCategoryItems } from '../../utils/ConfigUtils';
 
-type RuleType = 'visibility' | 'requirement' | 'canaddrow' | 'canremoverow';
+type RuleType = 'visibility' | 'requirement' | 'readOnly' | 'canaddrow' | 'canremoverow';
 
 const resolveRulePropName = (ruleType: RuleType): string => {
   switch (ruleType) {
     case 'visibility': return 'activeWhen';
     case 'requirement': return 'required';
+    case 'readOnly': return 'readOnlyWhen';
     case 'canaddrow': return 'canAddRowWhen';
     case 'canremoverow': return 'canRemoveRowWhen';
     default: return '';
