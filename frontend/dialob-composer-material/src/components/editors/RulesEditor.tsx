@@ -19,6 +19,7 @@ const RulesEditor: React.FC = () => {
       </Box>
       <RuleEditor type='visibility' />
       <RuleEditor type='requirement' />
+      <RuleEditor type='readOnly' />
       <RuleEditor type='canaddrow' />
       <RuleEditor type='canremoverow' />
       <DefaultValueEditor />
