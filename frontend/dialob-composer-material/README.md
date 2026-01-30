@@ -101,6 +101,41 @@ pnpm run preview
 
 Starts preview server for built application from `/dist` (No hot-reload!). Run `pnpm build` first to build the package
 
+## AI Translation Feature
+
+The composer includes an AI-powered translation feature that helps automate the translation of form content across multiple languages.
+
+### Configuration
+
+The AI translation feature needs `translationServiceUrl` to be set in `AppConfig` - it can come from the backend (`config.translationServiceUrl` configuration parameter) or be set manually in the app config (e.g. in `index.html`). This is the URL of the translation service API, including the path to the translation service endpoint.
+
+```typescript
+export const appConfig: AppConfig = {
+  ...
+  translationServiceUrl: 'http://localhost:8083/api/translate',
+}
+```
+
+### Key Features
+
+- **Automated Translation**: Translate labels, descriptions, validation messages, and value set entries from one language to another using AI
+- **Translation Tracking**: All AI-generated translations are tracked with metadata including:
+  - Source and target languages
+  - Translation timestamp
+  - Translation type (label, description, validation, etc.)
+- **Visual Indicators**: AI-translated content is marked with a visual indicator in the translation editor
+- **Manual Validation**: Users can review AI translations and remove the AI flag once validated
+- **Bulk Operations**: Support for translating entire choice lists and multiple form elements at once
+
+### Usage
+
+The AI translation feature is available in multiple places in the composer, either for translating single items or in bulk:
+- in the translation dialog (for translating entire form content)
+- in the item options dialog (for translating single items)
+- in the choice editor (for translating value set entries)
+
+The source language is always the active form language. Translations can be validated by clicking the AI indicator.
+
 ### Item type configuration
 
 Item type configuration defines the structure of the "Add Item" menu and available item types with their properties and behavior.
