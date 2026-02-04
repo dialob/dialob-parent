@@ -224,7 +224,7 @@ export const Label: React.FC<{ item: DialobItem }> = ({ item }) => {
   const { editor } = useEditor();
   const { config } = useBackend();
   const [label, setLabel] = React.useState<string>('');
-  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue;
+  const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue || item.readOnlyWhen;
   const maxLabelLength = hasIndicators ? MAX_LABEL_LENGTH_WITH_INDICATORS : MAX_LABEL_LENGTH_WITHOUT_INDICATORS;
   const placeholderId = isPage(form.data, item) ? 'page.label' : config.itemEditors.items.find(i => i.matcher(item))?.props.placeholder;
   const placeholder = intl.formatMessage({ id: placeholderId });
@@ -269,10 +269,9 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
     setActiveItem(item);
     setItemOptionsActiveTab(dialogType as OptionsTabType);
   }
-
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
-      {item.description &&
+      {item.description && Object.keys(item.description).length > 0 &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.description' />}>
           <IconButton onClick={() => handleClick('description')}><Description fontSize='small' sx={{ color: 'info.main' }} /></IconButton>
         </Tooltip>}
@@ -296,11 +295,11 @@ export const Indicators: React.FC<{ item: DialobItem }> = ({ item }) => {
         </Tooltip>}
       {item.defaultValue &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.default' />}>
-          < IconButton onClick={() => handleClick('rules')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
+          <IconButton onClick={() => handleClick('rules')}><EditNote fontSize='small' sx={{ color: 'info.light' }} /></IconButton>
         </Tooltip>}
       {item.type === 'note' && item.activeWhen &&
         <Tooltip placement='top' title={<FormattedMessage id='tooltips.visibility' />}>
-          < IconButton onClick={() => handleClick('rules')}><Visibility fontSize='small' sx={{ color: 'primary.light' }} /></IconButton>
+          <IconButton onClick={() => handleClick('rules')}><Visibility fontSize='small' sx={{ color: 'primary.light' }} /></IconButton>
         </Tooltip>}
     </Box >
   );
