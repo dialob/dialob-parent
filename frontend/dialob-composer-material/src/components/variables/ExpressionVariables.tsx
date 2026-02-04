@@ -26,13 +26,16 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.published' /></Typography>
           </TableCell>
-          <TableCell width='25%' sx={{ p: 0.5 }}>
+          <TableCell width='20%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.id' /></Typography>
           </TableCell>
-          <TableCell width='20%' sx={{ p: 0.5 }}>
+          <TableCell width='15%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.expression' /></Typography>
           </TableCell>
-          <TableCell width='20%' sx={{ p: 0.5 }}>
+          <TableCell width='15%' sx={{ p: 0.5 }}>
+            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.scope' /></Typography>
+          </TableCell>
+          <TableCell width='15%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.description' /></Typography>
           </TableCell>
           <TableCell width='10%' align='center' sx={{ p: 0.5 }}>

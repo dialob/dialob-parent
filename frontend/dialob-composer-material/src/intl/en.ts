@@ -234,6 +234,9 @@ const en = {
   'dialogs.variables.default': 'Default value',
   'dialogs.variables.type': 'Type',
   'dialogs.variables.users.tooltip': 'Show users',
+  'dialogs.variables.scope': 'Scope',
+  'dialogs.variables.scope.none': 'None',
+  'dialogs.variables.scope.tooltip': 'Scope this variable to a rowgroup',
 
   'dialogs.lists.global.title': 'Global lists',
   'dialogs.lists.global.users': 'Users: <b>{count}</b>',

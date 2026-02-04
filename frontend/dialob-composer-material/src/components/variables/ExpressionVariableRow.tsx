@@ -3,7 +3,7 @@ import { Alert, Box, IconButton, TableCell, TableRow, Typography, alpha, useThem
 import { Variable } from '../../types';
 import { useEditor } from '../../editor';
 import { getErrorSeverity, useErrorColorSx } from '../../utils/ErrorUtils';
-import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';
+import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, RowgroupScopeMenu, UsersField, VariableProps } from './VariableComponents';
 import { ArrowDownward, ArrowUpward, Edit, Warning } from '@mui/icons-material';
 import { ErrorMessage } from '../ErrorComponents';
 import { isContextVariable } from '../../utils/ItemUtils';
@@ -51,16 +51,19 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
         <TableCell width='10%' align='center' sx={{ p: 1 }}>
           <PublishedSwitch variable={variable} />
         </TableCell>
-        <TableCell width='25%' sx={{ p: 1 }}>
+        <TableCell width='20%' sx={{ p: 1 }}>
           <NameField variable={variable} />
         </TableCell>
-        <TableCell width='20%' sx={{ p: 1 }}>
+        <TableCell width='15%' sx={{ p: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {variable.expression.substring(0, 20) + (variable.expression.length > 20 ? '...' : '')}
             <IconButton><Edit color={expanded ? 'primary' : 'inherit'} onClick={() => setExpanded(!expanded)} /></IconButton>
           </Box>
         </TableCell>
-        <TableCell width='20%' sx={{ p: 1 }}>
+        <TableCell width='15%' sx={{ p: 1 }}>
+          <RowgroupScopeMenu variable={variable} />
+        </TableCell>
+        <TableCell width='15%' sx={{ p: 1 }}>
           <DescriptionField variable={variable} />
         </TableCell>
         <TableCell width='10%' align='center' sx={{ p: 1 }}>
@@ -69,12 +72,12 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
       </TableRow>
       {expanded && <>
         <TableRow>
-          <TableCell colSpan={6}>
+          <TableCell colSpan={7}>
             <ExpressionField variable={variable} errors={itemErrors} />
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell colSpan={6}>
+          <TableCell colSpan={7}>
             {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
               <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
             </Alert>)}

@@ -100,6 +100,10 @@ export const useSave = () => {
     dispatch({ type: 'updateExpressionVariable', variableId, expression });
   }
 
+  const updateExpressionVariableRowgroup = (variableId: string, rowgroupId: string | null) => {
+    dispatch({ type: 'updateExpressionVariableRowgroup', variableId, rowgroupId });
+  }
+
   const updateVariablePublishing = (variableId: string, published: boolean) => {
     dispatch({ type: 'updateVariablePublishing', variableId, published });
   }
@@ -161,6 +165,7 @@ export const useSave = () => {
     createVariable,
     updateContextVariable,
     updateExpressionVariable,
+    updateExpressionVariableRowgroup,
     updateVariablePublishing,
     updateVariableDescription,
     deleteVariable,

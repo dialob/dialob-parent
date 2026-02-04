@@ -16,8 +16,10 @@ const SaveButton: React.FC = () => {
   const { savingState } = useSave();
 
   const hasChanges = React.useMemo(() => {
-      return savingState.variables && (JSON.stringify(savingState.variables) !== JSON.stringify(form.variables));
-  }, [savingState, form.variables]);
+      const variablesChanged = savingState.variables && (JSON.stringify(savingState.variables) !== JSON.stringify(form.variables));
+      const itemsChanged = savingState.items && (JSON.stringify(savingState.items) !== JSON.stringify(form.data));
+      return variablesChanged || itemsChanged;
+  }, [savingState, form.variables, form.data]);
 
   const handleSave = () => {
     if (savingState.variables) {
@@ -60,7 +62,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
   }
 
   return (
-    <SavingProvider savingState={{ variables: form.variables }}>
+    <SavingProvider savingState={{ variables: form.variables, items: structuredClone(form.data) }}>
       <Dialog open={dialogOpen} onClose={onClose} fullWidth maxWidth='lg' PaperProps={{ sx: { maxHeight: '60vh' } }}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.variables.title' />
