@@ -700,6 +700,15 @@ const applyListChanges = (state: ComposerState, newState: SavingState): void => 
 const applyVariableChanges = (state: ComposerState, newState: SavingState): void => {
   // Apply changes from the SavingContext - used to apply changes made in the VariablesDialog
   state.variables = newState.variables;
+  
+  // Also apply any modified items (e.g., rowgroup items arrays that were updated)
+  if (newState.items) {
+    Object.keys(newState.items).forEach(itemId => {
+      if (state.data[itemId]) {
+        state.data[itemId] = newState.items![itemId];
+      }
+    });
+  }
 }
 
 const applyFormChanges = (state: ComposerState, newState: SavingState): void => {

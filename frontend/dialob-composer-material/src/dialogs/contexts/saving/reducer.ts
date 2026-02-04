@@ -410,6 +410,39 @@ const updateExpressionVariable = (state: SavingState, variableId: string, expres
   }
 }
 
+const updateExpressionVariableRowgroup = (state: SavingState, variableId: string, rowgroupId: string | null): void => {
+  if (!state.items) {
+    return;
+  }
+
+  // Find current rowgroup that contains the variable
+  const currentRowgroup = Object.values(state.items).find(item => 
+    item.type === 'rowgroup' && item.items?.includes(variableId)
+  );
+
+  // Remove variable from current rowgroup if it exists
+  if (currentRowgroup?.items) {
+    const idx = currentRowgroup.items.indexOf(variableId);
+    if (idx > -1) {
+      currentRowgroup.items.splice(idx, 1);
+    }
+  }
+
+  // Add variable to new rowgroup if specified
+  if (rowgroupId && state.items[rowgroupId]) {
+    const newRowgroup = state.items[rowgroupId];
+    if (newRowgroup.type === 'rowgroup') {
+      if (!newRowgroup.items) {
+        newRowgroup.items = [];
+      }
+      // Only add if not already present
+      if (!newRowgroup.items.includes(variableId)) {
+        newRowgroup.items.push(variableId);
+      }
+    }
+  }
+}
+
 const deleteVariable = (state: SavingState, variableId: string): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => v.name === variableId);
@@ -446,6 +479,34 @@ const moveVariable = (state: SavingState, origin: ContextVariable | Variable, de
 }
 
 const changeVariableId = (state: SavingState, variables: (ContextVariable | Variable)[]): void => {
+  if (state.variables && state.items) {
+    // Build a map of old variable names to new variable names
+    const oldNames = new Set(state.variables.map(v => v.name));
+    const newNames = new Set(variables.map(v => v.name));
+    
+    // Find names that exist in old but not in new (removed/renamed)
+    const removedNames = Array.from(oldNames).filter(name => !newNames.has(name));
+    
+    // Find names that exist in new but not in old (added/renamed to)
+    const addedNames = Array.from(newNames).filter(name => !oldNames.has(name));
+    
+    // If we have exactly one removed and one added, it's a rename
+    if (removedNames.length === 1 && addedNames.length === 1) {
+      const oldName = removedNames[0];
+      const newName = addedNames[0];
+      
+      // Update any rowgroup that contains the old name
+      Object.values(state.items).forEach(item => {
+        if (item.type === 'rowgroup' && item.items?.includes(oldName)) {
+          const idx = item.items.indexOf(oldName);
+          if (idx > -1) {
+            item.items[idx] = newName;
+          }
+        }
+      });
+    }
+  }
+  
   if (state.variables) {
     state.variables = variables;
   }
@@ -607,6 +668,8 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
     } else if (action.type === 'updateExpressionVariable') {
       updateExpressionVariable(state, action.variableId, action.expression);
+    } else if (action.type === 'updateExpressionVariableRowgroup') {
+      updateExpressionVariableRowgroup(state, action.variableId, action.rowgroupId);
     } else if (action.type === 'updateVariablePublishing') {
       updateVariablePublishing(state, action.variableId, action.published);
     } else if (action.type === 'updateVariableDescription') { 
