@@ -2,7 +2,7 @@ import React from "react";
 import {
   Dialog, DialogTitle, DialogContent, Button, DialogActions, Typography, Box,
   TableHead, TableRow, TableCell, TableBody, alpha, useTheme, IconButton,
-  Tooltip
+  Tooltip, TableSortLabel
 } from "@mui/material";
 import { Close, ContentCopy, Download, EditNote, Help, LocalOffer } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
@@ -25,6 +25,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
   const docsUrl = useDocs('versioning');
   const [tags, setTags] = React.useState<ComposerTag[]>([]);
   const [tagToCopy, setTagToCopy] = React.useState<ComposerTag>();
+  const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('desc');
 
   const LATEST_TAG: ComposerTag = React.useMemo(() => ({
     formId: form._id + '', name: 'LATEST', formName: form.name, description: 'Latest version',
@@ -36,6 +37,18 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
       getTags(form.name).then(setTags);
     }
   }, [open]);
+
+  const handleSortChange = () => {
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortedTags = React.useMemo(() => {
+    return [LATEST_TAG, ...tags].sort((a, b) => {
+      const dateA = new Date(a.created || 0).getTime();
+      const dateB = new Date(b.created || 0).getTime();
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+  }, [tags, sortOrder, LATEST_TAG]);
 
   const handleLoadVersion = (tag: ComposerTag) => {
     loadForm(tag.formId + '').then(form => {
@@ -100,7 +113,13 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
                     <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.description' /></Typography>
                   </TableCell>
                   <TableCell sx={{ p: 1 }}>
-                    <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.created' /></Typography>
+                    <TableSortLabel
+                      active={true}
+                      direction={sortOrder}
+                      onClick={handleSortChange}
+                    >
+                      <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.created' /></Typography>
+                    </TableSortLabel>
                   </TableCell>
                   <TableCell align='center' sx={{ p: 1 }}>
                     <Typography fontWeight='bold'><FormattedMessage id='dialogs.versioning.list.header.actions' /></Typography>
@@ -108,7 +127,7 @@ const VersioningDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ op
                 </TableRow>
               </TableHead>
               <TableBody>
-                {[LATEST_TAG, ...tags].map(tag => (
+                {sortedTags.map(tag => (
                   <TableRow key={tag.formId} sx={tag.name === 'LATEST' ? { backgroundColor: alpha(theme.palette.primary.main, 0.1) } : {}}>
                     <TableCell>
                       <Tooltip
