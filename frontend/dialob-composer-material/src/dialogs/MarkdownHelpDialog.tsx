@@ -1,7 +1,7 @@
 import React from "react";
 import { useEditor } from "../editor";
 import { FormattedMessage } from "react-intl";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import markdownContent from './MARKDOWN_EDITOR.md?raw';
 import Markdown from "react-markdown";
@@ -30,7 +30,7 @@ const MarkdownHelpDialog: React.FC = () => {
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 0, height: '90vh' }}>
         <Box sx={{ p: 3, width: 1 }}>
-          <Markdown children={markdownContent} remarkPlugins={[remarkGfm]} components={markdownComponents} />
+          <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{markdownContent}</Markdown>
         </Box>
       </DialogContent>
       <DialogActions>

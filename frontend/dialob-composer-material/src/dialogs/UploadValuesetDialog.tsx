@@ -2,7 +2,6 @@ import React from "react";
 import { Dialog, DialogTitle, DialogContent, Button, CircularProgress, Typography, Select, MenuItem, Alert } from "@mui/material";
 import { Help, Upload, Warning } from "@mui/icons-material";
 import { DialogActionButtons } from "./DialogComponents";
-import { useComposer } from "../dialob";
 import { ValueSet, ValueSetEntry, LocalizedString } from "../types";
 import { FormattedMessage } from "react-intl";
 import { parseCsvFile } from "../utils/ParseUtils";

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Button, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { useEditor } from '../../editor'
 import { BorderedTable } from '../TableEditorComponents';
-import { useComposer } from '../../dialob';
 import { FormattedMessage } from 'react-intl';
 import PropItem from './PropItem';
 import { useBackend } from '../../backend/useBackend';

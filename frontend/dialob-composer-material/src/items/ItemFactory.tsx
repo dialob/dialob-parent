@@ -16,7 +16,7 @@ const itemFactory = (item: DialobItem, itemConfig: ItemConfig, setHighlightedIte
   const onClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     scrollToTreeItem(item.id);
-    setHighlightedItem && setHighlightedItem(item);
+    setHighlightedItem?.(item);
   }
 
   const Component = matchedConfig.component;

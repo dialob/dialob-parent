@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme, Theme } from '@mui/material';
+import { Paper, TableBody, TableCell, TableContainer, TableRow, alpha, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { DialobItem } from '../types';
 import { ConversionMenu, IdField, LabelField, Indicators, OptionsMenu, VisibilityField, StyledTable } from './ItemComponents';
