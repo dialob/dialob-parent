@@ -18,7 +18,7 @@ export interface TreeItemProps {
   disableInteraction?: boolean;
   disableSelection?: boolean;
   ghost?: boolean;
-  handleProps?: any;
+  handleProps?: React.HTMLAttributes<HTMLElement>;
   indentationWidth: number;
   id: string;
   title: string;
@@ -134,3 +134,5 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
     </StyledListItem>
   )
 });
+
+TreeItem.displayName = 'TreeItem';
