@@ -21,7 +21,7 @@ const visibilityModeOptions = [
   { value: 'ALL' as VisibilityType, label: 'dialogs.form.options.visibility.ALL' }
 ];
 
-const StyledListItem = styled(ListItem)(({ theme }) => ({
+const StyledListItem = styled(ListItem)(() => ({
   padding: 0,
 }));
 

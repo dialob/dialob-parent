@@ -35,7 +35,7 @@ const itemFactory = (item: DialobItem | string, itemConfig: ItemConfig, setHighl
     if (setHighlightedItem) {
       setHighlightedItem(item);
     }
-  };
+  }
 
   const Component = matchedConfig.component;
   const componentProps = { onClick, ...props };

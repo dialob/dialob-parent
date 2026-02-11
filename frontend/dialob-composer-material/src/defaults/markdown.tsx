@@ -14,16 +14,16 @@ export const markdownComponents: object = {
   'img': (props: { alt: string, src: string }) => <Box component="img" alt={props.alt} src={props.src} maxWidth={600} width="100%" padding="8px 0px" />,
   table: ({ children }: { children: React.ReactNode }) => (
     <TableContainer component={Paper} sx={{ my: 2 }}>
-      <Table children={children} />
+      <Table>{children}</Table>
     </TableContainer>
   ),
-  thead: ({ children }: { children: React.ReactNode }) => <TableHead children={children} />,
-  tbody: ({ children }: { children: React.ReactNode }) => <TableBody children={children} />,
-  tr: ({ children }: { children: React.ReactNode }) => <TableRow children={children} />,
+  thead: ({ children }: { children: React.ReactNode }) => <TableHead>{children}</TableHead>,
+  tbody: ({ children }: { children: React.ReactNode }) => <TableBody>{children}</TableBody>,
+  tr: ({ children }: { children: React.ReactNode }) => <TableRow>{children}</TableRow>,
   th: ({ children }: { children: React.ReactNode }) => (
-    <TableCell children={children} sx={{ fontWeight: "bold", backgroundColor: "grey.100" }} />
+    <TableCell sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}>{children}</TableCell>
   ),
-  td: ({ children }: { children: React.ReactNode }) => <TableCell children={children} />,
+  td: ({ children }: { children: React.ReactNode }) => <TableCell>{children}</TableCell>,
   pre: ({ children }: { children: React.ReactNode }) => (
     <Box
       component="pre"

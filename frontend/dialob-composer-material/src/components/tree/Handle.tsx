@@ -69,3 +69,5 @@ export const Handle = React.forwardRef<HTMLButtonElement, HandleProps>(
     );
   }
 );
+
+Handle.displayName = 'Handle';

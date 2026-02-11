@@ -89,7 +89,7 @@ const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
 
 export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string, language: string) => void, language: string }> = ({ value, setValue, language }) => {
   const theme = useTheme();
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<{ view?: EditorView }>(null);
   const [menuState, setMenuState] = useState<MenuState>(INITIAL_MENU_STATE);
 
   const applyMarkdown = useCallback((action: MarkdownAction) => {
