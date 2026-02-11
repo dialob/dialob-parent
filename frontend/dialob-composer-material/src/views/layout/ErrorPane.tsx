@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
-import { EditorError, VariableTabType, useEditor } from '../../editor';
+import { EditorError, useEditor } from '../../editor';
 import { useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
@@ -20,7 +20,7 @@ const errorCardBorderColor = (severity: string) => {
 };
 
 const ErrorPane: React.FC = () => {
-  const { editor, setActivePage, setActiveList, setActiveVariableTab, setHighlightedItem } = useEditor();
+  const { editor, setActivePage, setActiveList, setActiveVariableTab, setActiveVariable, setHighlightedItem } = useEditor();
   const { form } = useComposer();
   const gvs = form.metadata.composer?.globalValueSets;
 
@@ -49,8 +49,26 @@ const ErrorPane: React.FC = () => {
         if (!variable) {
           return;
         }
-        const type: VariableTabType = isContextVariable(variable) ? 'context' : 'expression';
-        setActiveVariableTab(type);
+        
+        // Check if it's a context variable
+        if (isContextVariable(variable)) {
+          setActiveVariableTab('context');
+        } else {
+          // For expression variables, check if it's scoped to a rowgroup
+          const parentRowgroup = Object.values(form.data).find(item => 
+            item.type === 'rowgroup' && item.items?.includes(error.itemId!)
+          );
+          
+          if (parentRowgroup) {
+            // Scroll to the parent rowgroup and open the expression variable dialog for scoped variables
+            handleScrollTo(parentRowgroup.id);
+            setHighlightedItem(parentRowgroup);
+            setActiveVariable(error.itemId);
+          } else {
+            // Open the variables dialog for global variables
+            setActiveVariableTab('expression');
+          }
+        }
       } else if (error.itemId.includes('vs') || error.itemId.includes('valueset')) {
         const item = Object.values(form.data).find(item => item.valueSetId === error.itemId);
         if (item) {

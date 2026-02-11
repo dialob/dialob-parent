@@ -1,9 +1,9 @@
 import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
-import { Box, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow, alpha, styled, useTheme } from '@mui/material';
+import { Box, Divider, IconButton, Paper, TableBody, TableCell, TableContainer, TableRow, alpha, styled, useTheme } from '@mui/material';
 import { Element } from 'react-scroll';
 import { useComposer } from '../dialob';
-import { DialobItem, DialobItems } from '../types';
+import { DialobItem, DialobItems, Variable, ContextVariable } from '../types';
 import { AddItemMenu, ConversionMenu, IdField, Indicators, LabelField, OptionsMenu, StyledTable, VisibilityField } from './ItemComponents';
 import { itemFactory } from './ItemFactory';
 import { useEditor } from '../editor';
@@ -12,10 +12,36 @@ import { ItemConfig } from '../defaults/types';
 import { useBackend } from '../backend/useBackend';
 
 
-const createChildren = (item: DialobItem, items: DialobItems, itemConfig: ItemConfig, setHighlightedItem?: (item: DialobItem) => void) => {
-  return item.items && item.items
-    .map(itemId => items[itemId])
-    .map(item => itemFactory(item, itemConfig, setHighlightedItem));
+const createChildren = (item: DialobItem, items: DialobItems, itemConfig: ItemConfig, variables: (Variable | ContextVariable)[], setHighlightedItem?: (item: DialobItem) => void) => {
+  if (!item.items) {
+    return { regularItems: [], expressionVariables: [] };
+  }
+
+  const regularItems: JSX.Element[] = [];
+  const expressionVariables: JSX.Element[] = [];
+
+  item.items.forEach(itemId => {
+    const childItem = items[itemId];
+    if (childItem) {
+      // It's a regular item
+      const element = itemFactory(childItem, itemConfig, setHighlightedItem);
+      if (element) {
+        regularItems.push(element);
+      }
+    } else {
+      // Check if it's a variable
+      const variable = variables?.find(v => v.name === itemId);
+      if (variable) {
+        // It's an expression variable
+        const element = itemFactory(itemId, itemConfig, setHighlightedItem);
+        if (element) {
+          expressionVariables.push(element);
+        }
+      }
+    }
+  });
+
+  return { regularItems, expressionVariables };
 }
 
 const GroupPaper = styled(Paper)(({ theme }) => ({
@@ -32,7 +58,7 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   const { editor, setHighlightedItem, toggleItemCollapsed } = useEditor();
   const { config } = useBackend();
   const expanded = !editor.collapsedItems[item.id];
-  const children = createChildren(item, form.data, config.itemEditors, setHighlightedItem);
+  const { regularItems, expressionVariables } = createChildren(item, form.data, config.itemEditors, form.variables || [], setHighlightedItem);
   const centeredCellSx = { textAlign: 'center' };
   const errorBorderColor = useErrorColorSx(editor.errors, item.id);
   const hasIndicators = item.description || item.valueSetId || item.validations || item.required || item.defaultValue || item.readOnlyWhen;
@@ -40,6 +66,7 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
   const backgroundColor = errorBorderColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
   const highlightedSx = highlighted ?
     { border: 1, borderColor: 'mainContent.contrastText', backgroundColor: alpha(theme.palette.mainContent.contrastText, 0.1) } : {};
+  const isRowgroup = item.type === 'rowgroup';
 
   React.useEffect(() => {
     if (editor?.highlightedItem?.id === item.id) {
@@ -86,7 +113,18 @@ const Group: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...
                 <TableRow>
                   <TableCell colSpan={hasIndicators ? 6 : 5}>
                     <Box sx={{ m: 1 }}>
-                      {children}
+                      {/* Expression variables at the top for rowgroups */}
+                      {isRowgroup && expressionVariables.length > 0 && (
+                        <>
+                          <Box sx={{ mb: 2 }}>
+                            {expressionVariables}
+                          </Box>
+                          <Divider />
+                        </>
+                      )}
+                      {/* Regular items */}
+                      {regularItems}
+                      {/* Add item menu */}
                       <AddItemMenu item={item} />
                     </Box>
                   </TableCell>

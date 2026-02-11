@@ -117,6 +117,10 @@ export const useComposer = () => {
     dispatch({ type: 'createVariable', context });
   }
 
+  const createScopedExpressionVariable = (rowgroupId: string, callbacks?: ComposerCallbacks) => {
+    dispatch({ type: 'createScopedExpressionVariable', rowgroupId, callbacks });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateContextVariable = (variableId: string, contextType?: ContextVariableType | string, defaultValue?: any) => {
     dispatch({ type: 'updateContextVariable', variableId, contextType, defaultValue });
@@ -132,6 +136,10 @@ export const useComposer = () => {
 
   const updateVariableDescription = (variableId: string, description: string) => {
     dispatch({ type: 'updateVariableDescription', variableId, description });
+  }
+
+  const updateVariable = (variableId: string, updates: Partial<Variable>) => {
+    dispatch({ type: 'updateVariable', variableId, updates });
   }
 
   const deleteVariable = (variableId: string) => {
@@ -209,10 +217,12 @@ export const useComposer = () => {
     setMetadataValue,
     setContextValue,
     createVariable,
+    createScopedExpressionVariable,
     updateContextVariable,
     updateExpressionVariable,
     updateVariablePublishing,
     updateVariableDescription,
+    updateVariable,
     deleteVariable,
     moveVariable,
     addLanguage,

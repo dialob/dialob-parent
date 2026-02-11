@@ -3,7 +3,8 @@ import camelCase from 'lodash.camelcase';
 import { ComposerAction } from './actions';
 import {
   ComposerState, DialobItemTemplate, ComposerCallbacks, ValueSetEntry, ContextVariableType, ContextVariable, Variable,
-  ValidationRule, LocalizedString, TranslationMetadata
+  ValidationRule, LocalizedString, TranslationMetadata,
+  DialobItem
 } from '../types';
 import { isContextVariable } from '../utils/ItemUtils';
 import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
@@ -524,6 +525,50 @@ const createVariable = (state: ComposerState, context: boolean): void => {
   }
 }
 
+const createScopedExpressionVariable = (state: ComposerState, rowgroupId: string, callbacks?: ComposerCallbacks): void => {
+  // Check if the parent exists and is a rowgroup
+  if (!state.data[rowgroupId] || state.data[rowgroupId].type !== 'rowgroup') {
+    return;
+  }
+
+  // Create the variable
+  const variableId = generateItemIdWithPrefix(state, 'var');
+  const variable: Variable = {
+    name: variableId,
+    expression: ''
+  };
+
+  // Add to variables array
+  if (!Array.isArray(state.variables)) {
+    state.variables = [variable];
+  } else {
+    state.variables.push(variable);
+  }
+
+  // Add variable ID to rowgroup's items array
+  if (!state.data[rowgroupId].items) {
+    state.data[rowgroupId].items = [];
+  }
+  state.data[rowgroupId].items.push(variableId);
+
+  // Execute callback if provided
+  const onAddItem = callbacks?.onAddItem;
+  if (onAddItem) {
+    // Create a pseudo-item for the callback
+    const pseudoItem = { id: variableId, type: 'variable' } as DialobItem;
+    onAddItem(state, pseudoItem);
+  }
+}
+
+const updateVariable = (state: ComposerState, variableId: string, updates: Partial<Variable>): void => {
+  if (state.variables) {
+    const varIdx = state.variables.findIndex(v => !isContextVariable(v) && v.name === variableId);
+    if (varIdx > -1) {
+      Object.assign(state.variables[varIdx], updates);
+    }
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType | string, defaultValue?: any): void => {
   if (state.variables) {
@@ -555,6 +600,16 @@ const deleteVariable = (state: ComposerState, variableId: string): void => {
       state.variables.splice(varIdx, 1);
     }
   }
+
+  // Also remove the variable from any rowgroup's items array
+  Object.values(state.data).forEach(item => {
+    if (item.type === 'rowgroup' && item.items) {
+      const idx = item.items.indexOf(variableId);
+      if (idx > -1) {
+        item.items.splice(idx, 1);
+      }
+    }
+  });
 }
 
 const updateVariablePublishing = (state: ComposerState, variableId: string, published: boolean): void => {
@@ -855,6 +910,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       setContextValue(state, action.name, action.value);
     } else if (action.type === 'createVariable') {
       createVariable(state, action.context);
+    } else if (action.type === 'createScopedExpressionVariable') {
+      createScopedExpressionVariable(state, action.rowgroupId, action.callbacks ?? callbacks);
     } else if (action.type === 'updateContextVariable') {
       updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
     } else if (action.type === 'updateExpressionVariable') {
@@ -863,6 +920,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       updateVariablePublishing(state, action.variableId, action.published);
     } else if (action.type === 'updateVariableDescription') {
       updateVariableDescription(state, action.variableId, action.description);
+    } else if (action.type === 'updateVariable') {
+      updateVariable(state, action.variableId, action.updates);
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
     } else if (action.type === 'moveVariable') {

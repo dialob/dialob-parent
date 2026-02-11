@@ -43,6 +43,11 @@ const setActiveVariableTab = (state: EditorState, tab?: VariableTabType): void =
   state.activeVariableTab = tab;
 }
 
+const setActiveVariable = (state: EditorState, variableId?: string, idEditMode?: boolean): void => {
+  state.activeVariableIdEditMode = idEditMode;
+  state.activeVariable = variableId;
+}
+
 const setConfirmationActiveItem = (state: EditorState, item?: DialobItem): void => {
   state.confirmationActiveItem = item;
 }
@@ -77,6 +82,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       setActiveList(state, action.listId);
     } else if (action.type === 'setActiveVariableTab') {
       setActiveVariableTab(state, action.tab);
+    } else if (action.type === 'setActiveVariable') {
+      setActiveVariable(state, action.variableId, action.idEditMode);
     } else if (action.type === 'setConfirmationActiveItem') {
       setConfirmationActiveItem(state, action.item);
     } else if (action.type === 'toggleItemCollapsed') {

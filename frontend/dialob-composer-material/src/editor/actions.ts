@@ -12,6 +12,7 @@ export type EditorAction =
   | { type: 'setHighlightedItem', item?: DialobItem }
   | { type: 'setActiveList', listId?: string }
   | { type: 'setActiveVariableTab', tab?: VariableTabType }
+  | { type: 'setActiveVariable', variableId?: string, idEditMode?: boolean }
   | { type: 'setConfirmationActiveItem', item?: DialobItem }
   | { type: 'toggleItemCollapsed', itemId: string }
   | { type: 'setMarkdownHelpDialogOpen', open: boolean }
