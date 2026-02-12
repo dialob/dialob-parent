@@ -175,7 +175,7 @@ const ExpressionVariableDialogContent: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 3 }}>
       <ExpressionField variable={variable} errors={itemErrors} />
       <DescriptionField variable={variable} />
       <PublishedSwitch variable={variable} />
