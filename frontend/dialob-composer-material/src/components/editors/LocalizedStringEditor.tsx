@@ -1,7 +1,7 @@
 import React from 'react';
 import Markdown from 'react-markdown';
-import { Button, Typography, Box } from '@mui/material';
-import { Visibility } from '@mui/icons-material';
+import { Typography, Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { Visibility, Edit, ViewColumn } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { useComposer } from '../../dialob';
 import { markdownComponents } from '../../defaults/markdown';
@@ -31,7 +31,8 @@ const LocalizedStringEditor: React.FC<{
   const { translateEntries, config } = useBackend();
   const item = savingState.item;
   const formLanguages = form.metadata.languages;
-  const [preview, setPreview] = React.useState(false);
+  type ViewMode = 'edit' | 'preview' | 'sideBySide';
+  const [viewMode, setViewMode] = React.useState<ViewMode>('edit');
   const [translating, setTranslating] = React.useState<Record<string, boolean>>({});
   const localizedString = type === 'validations' ? rule?.validationRule.message : item?.[type];
   const activeFormLanguage = editor.activeFormLanguage;
@@ -126,11 +127,26 @@ const LocalizedStringEditor: React.FC<{
 
   return (
     <>
-      <Box display='flex' width='100%'>
-        <Box flexGrow={1} />
-        <Button variant={preview ? 'contained' : 'outlined'} endIcon={<Visibility />} onClick={() => setPreview(!preview)}>
-          <FormattedMessage id='dialogs.options.preview' />
-        </Button>
+      <Box display='flex' width='100%' justifyContent='flex-end' sx={{ mb: 1 }}>
+        <ToggleButtonGroup
+          value={viewMode}
+          exclusive
+          onChange={(_, newMode: ViewMode) => setViewMode(newMode)}
+          size='small'
+        >
+          <ToggleButton value='edit'>
+            <Edit sx={{ mr: 0.5 }} fontSize='small' />
+            <FormattedMessage id='dialogs.options.edit' />
+          </ToggleButton>
+          <ToggleButton value='preview'>
+            <Visibility sx={{ mr: 0.5 }} fontSize='small' />
+            <FormattedMessage id='dialogs.options.preview' />
+          </ToggleButton>
+          <ToggleButton value='sideBySide'>
+            <ViewColumn sx={{ mr: 0.5 }} fontSize='small' />
+            <FormattedMessage id='dialogs.options.preview.sideBySide' />
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Box>
       {formLanguages?.map((language) => {
         const localizedText = localizedString ? localizedString[language] : '';
@@ -140,7 +156,9 @@ const LocalizedStringEditor: React.FC<{
                             localizedString?.[activeFormLanguage] &&
                             config.translationServiceUrl;
         const aiMetadata = isAITranslated(language) ? getAITranslationMetadata(language) : null;
-        
+        const showEditor = viewMode === 'edit' || viewMode === 'sideBySide';
+        const showPreview = viewMode === 'preview' || viewMode === 'sideBySide';
+
         return (
           <Box key={language}>
             <Box display='flex' alignItems='center' gap={1}>
@@ -160,9 +178,42 @@ const LocalizedStringEditor: React.FC<{
                 />
               )}
             </Box>
-            <Box sx={{ border: 1, borderRadius: 1, borderColor: 'divider', my: 1 }}>
-              {preview ? <Markdown components={markdownComponents} remarkPlugins={[remarkGfm]}>{localizedText}</Markdown> :
-              <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} />}
+            <Box
+              sx={{
+                border: 1,
+                borderRadius: 1,
+                borderColor: 'divider',
+                my: 1,
+                display: viewMode === 'sideBySide' ? 'flex' : 'block',
+                flexDirection: 'row',
+                overflow: 'hidden',
+              }}
+            >
+              {showEditor && (
+                <Box
+                  sx={{
+                    flex: viewMode === 'sideBySide' ? 1 : undefined,
+                    minWidth: 0,
+                    ...(viewMode === 'sideBySide' && { borderRight: 1, borderColor: 'divider' }),
+                  }}
+                >
+                  <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} />
+                </Box>
+              )}
+              {showPreview && (
+                <Box
+                  sx={{
+                    flex: viewMode === 'sideBySide' ? 1 : undefined,
+                    minWidth: 0,
+                    p: viewMode === 'sideBySide' ? 2 : 0,
+                    overflow: 'auto',
+                  }}
+                >
+                  <Markdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
+                    {localizedText}
+                  </Markdown>
+                </Box>
+              )}
             </Box>
           </Box>
         );

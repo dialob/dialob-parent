@@ -1,56 +1,35 @@
-import React, { useRef, useState, useCallback } from "react";
-import { Menu, MenuItem, ListItemText, ListItemIcon, Box, useTheme } from "@mui/material";
-import { FormattedMessage } from 'react-intl';
-import { ArrowRight, FormatColorText, FormatListBulleted, MenuOpen, Title } from "@mui/icons-material";
+import React, { useRef, useState, useCallback } from 'react';
+import { Box, useTheme, IconButton, Tooltip, Button, Menu, MenuItem, Divider } from '@mui/material';
+import { FormatBold, FormatItalic, Code, FormatListBulleted, FormatListNumbered, Title, Link, DataObject, Remove, TableChart, FormatQuote, ArrowDropDown } from '@mui/icons-material';
+import { FormattedMessage, useIntl } from 'react-intl';
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
 import { EditorView } from '@codemirror/view';
 import Markdown from 'react-markdown';
-import { markdownComponents } from "../../defaults/markdown";
+import { markdownComponents } from '../../defaults/markdown';
 
-type MarkdownAction = { type: "wrap"; before: string; after: string } | { type: "insert"; text: string };
-
-type MenuAnchor = { mouseX: number; mouseY: number } | null;
-
-type MenuState = {
-  anchor: MenuAnchor;
-  submenu: string | null;
-  thirdLevelMenu: string | null;
-  submenuAnchor: MenuAnchor;
-  thirdLevelAnchor: MenuAnchor;
-};
-
-const INITIAL_MENU_STATE: MenuState = {
-  anchor: null,
-  submenu: null,
-  thirdLevelMenu: null,
-  submenuAnchor: null,
-  thirdLevelAnchor: null,
-};
-
-const MAIN_MENU_ITEMS = [
-  { id: 'format', icon: FormatColorText, labelKey: 'markdownEditor.format' },
-  { id: 'list', icon: FormatListBulleted, labelKey: 'markdownEditor.list' },
-  { id: 'paragraph', icon: Title, labelKey: 'markdownEditor.paragraph' },
-  { id: 'insert', icon: MenuOpen, labelKey: 'markdownEditor.insert' },
-];
+type MarkdownAction = { type: 'wrap'; before: string; after: string } | { type: 'insert'; text: string };
 
 const FORMAT_ACTIONS = [
-  { labelKey: 'markdownEditor.bold', action: { type: 'wrap' as const, before: '**', after: '**' } },
-  { labelKey: 'markdownEditor.italic', action: { type: 'wrap' as const, before: '*', after: '*' } },
-  { labelKey: 'markdownEditor.code', action: { type: 'wrap' as const, before: '`', after: '`' } },
+  { labelKey: 'markdownEditor.bold', icon: FormatBold, action: { type: 'wrap' as const, before: '**', after: '**' } },
+  { labelKey: 'markdownEditor.italic', icon: FormatItalic, action: { type: 'wrap' as const, before: '*', after: '*' } },
+  { labelKey: 'markdownEditor.code', icon: Code, action: { type: 'wrap' as const, before: '`', after: '`' } },
 ];
 
 const LIST_ACTIONS = [
-  { labelKey: 'markdownEditor.bulletList', text: '- ' },
-  { labelKey: 'markdownEditor.numberedList', text: '1. ' },
+  { labelKey: 'markdownEditor.bulletList', icon: FormatListBulleted, text: '- ' },
+  { labelKey: 'markdownEditor.numberedList', icon: FormatListNumbered, text: '1. ' },
 ];
 
+const INSERT_LINK_ACTION = {
+  labelKey: 'markdownEditor.link',
+  action: { type: 'wrap' as const, before: '[', after: '](url)' },
+};
+
 const INSERT_ACTIONS = [
-  { labelKey: 'markdownEditor.link', action: { type: 'wrap' as const, before: '[', after: '](url)' } },
-  { labelKey: 'markdownEditor.codeBlock', text: '```\ncode block\n```' },
-  { labelKey: 'markdownEditor.horizontalDivider', text: '---' },
-  { labelKey: 'markdownEditor.table', text: '| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Row 1    | Data     | Data     |\n| Row 2    | Data     | Data     |' },
+  { labelKey: 'markdownEditor.codeBlock', icon: DataObject, text: '```\ncode block\n```' },
+  { labelKey: 'markdownEditor.horizontalDivider', icon: Remove, text: '---' },
+  { labelKey: 'markdownEditor.table', icon: TableChart, text: '| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Row 1    | Data     | Data     |\n| Row 2    | Data     | Data     |' },
 ];
 
 const CALLOUT_ACTIONS = [
@@ -89,13 +68,15 @@ const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
 
 export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string, language: string) => void, language: string }> = ({ value, setValue, language }) => {
   const theme = useTheme();
+  const intl = useIntl();
   const editorRef = useRef<{ view?: EditorView }>(null);
-  const [menuState, setMenuState] = useState<MenuState>(INITIAL_MENU_STATE);
+  const [paragraphAnchor, setParagraphAnchor] = useState<null | HTMLElement>(null);
+  const [calloutsAnchor, setCalloutsAnchor] = useState<null | HTMLElement>(null);
 
   const applyMarkdown = useCallback((action: MarkdownAction) => {
     const view = editorRef.current?.view;
     if (!view) return;
-    
+
     let start = view.state.selection.main.from;
     let end = view.state.selection.main.to;
     let alreadyWrapped = false;
@@ -186,7 +167,8 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
       view.focus();
     });
 
-    setMenuState(INITIAL_MENU_STATE);
+    setParagraphAnchor(null);
+    setCalloutsAnchor(null);
   }, [value, setValue, language]);
 
   const insertOnNewLine = useCallback((text: string) => {
@@ -239,43 +221,74 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
     }
   }, [applyMarkdown, insertOnNewLine]);
 
-  const handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-    const view = editorRef.current?.view;
-    if (view) {
-      const start = view.state.selection.main.from;
-      const end = view.state.selection.main.to;
-
-      requestAnimationFrame(() => {
-        view.dispatch({
-          selection: { anchor: start, head: end }
-        });
-        view.focus();
-      });
-    }
-    setMenuState({
-      ...INITIAL_MENU_STATE,
-      anchor: { mouseX: event.clientX + 2, mouseY: event.clientY - 6 }
-    });
-  };
-
-  const handleClose = () => {
-    setMenuState(INITIAL_MENU_STATE);
-  };
-
-  const handleMouseEnter = (event: React.MouseEvent, type: 'submenu' | 'thirdLevel') => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const anchor = { mouseX: rect.right, mouseY: rect.top };
-    
-    if (type === 'submenu') {
-      setMenuState(prev => ({ ...prev, submenuAnchor: anchor }));
-    } else {
-      setMenuState(prev => ({ ...prev, thirdLevelAnchor: anchor }));
-    }
-  };
-
   return (
-    <Box sx={{ my: 1 }}>
+    <Box>
+      <Box sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 0.5,
+        py: 0.5,
+        px: 0.5,
+        borderBottom: 1,
+        borderColor: 'divider',
+        backgroundColor: 'action.hover',
+      }}>
+        {FORMAT_ACTIONS.map((item) => (
+          <Tooltip key={item.labelKey} title={intl.formatMessage({ id: item.labelKey })}>
+            <IconButton size="small" onClick={() => applyMarkdown(item.action)} aria-label={intl.formatMessage({ id: item.labelKey })}>
+              <item.icon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ))}
+        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+        {LIST_ACTIONS.map((item) => (
+          <Tooltip key={item.labelKey} title={intl.formatMessage({ id: item.labelKey })}>
+            <IconButton size="small" onClick={() => insertOnNewLine(item.text)} aria-label={intl.formatMessage({ id: item.labelKey })}>
+              <item.icon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ))}
+        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+        <Tooltip title={<FormattedMessage id="markdownEditor.paragraph" />}>
+          <Button size="small" startIcon={<Title />} endIcon={<ArrowDropDown />} onClick={(e) => setParagraphAnchor(e.currentTarget)} aria-haspopup="true" aria-controls={paragraphAnchor ? 'paragraph-menu' : undefined}>
+            <FormattedMessage id="markdownEditor.paragraph" />
+          </Button>
+        </Tooltip>
+        <Menu id="paragraph-menu" anchorEl={paragraphAnchor} open={Boolean(paragraphAnchor)} onClose={() => setParagraphAnchor(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }}>
+          {[1, 2, 3, 4, 5, 6].map((lvl) => (
+            <MenuItem key={lvl} onClick={() => { insertOnNewLine('#'.repeat(lvl) + ' '); setParagraphAnchor(null); }}>
+              <Markdown components={markdownComponents}>{'#'.repeat(lvl) + ' Heading ' + lvl}</Markdown>
+            </MenuItem>
+          ))}
+          <MenuItem onClick={() => { applyMarkdown({ type: 'insert', text: 'text' }); setParagraphAnchor(null); }}>
+            <FormattedMessage id="markdownEditor.body" />
+          </MenuItem>
+        </Menu>
+        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+        <Tooltip title={intl.formatMessage({ id: INSERT_LINK_ACTION.labelKey })}>
+          <IconButton size="small" onClick={() => applyMarkdown(INSERT_LINK_ACTION.action)} aria-label={intl.formatMessage({ id: INSERT_LINK_ACTION.labelKey })}>
+            <Link fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        {INSERT_ACTIONS.map((item) => (
+          <Tooltip key={item.labelKey} title={intl.formatMessage({ id: item.labelKey })}>
+            <IconButton size="small" onClick={() => insertOnNewLine(item.text)} aria-label={intl.formatMessage({ id: item.labelKey })}>
+              <item.icon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ))}
+        <Button size="small" startIcon={<FormatQuote />} endIcon={<ArrowDropDown />} onClick={(e) => setCalloutsAnchor(e.currentTarget)} aria-haspopup="true" aria-controls={calloutsAnchor ? 'callouts-menu' : undefined}>
+          <FormattedMessage id="markdownEditor.callouts" />
+        </Button>
+        <Menu id="callouts-menu" anchorEl={calloutsAnchor} open={Boolean(calloutsAnchor)} onClose={() => setCalloutsAnchor(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }}>
+          {CALLOUT_ACTIONS.map((item) => (
+            <MenuItem key={item.labelKey} onClick={() => { insertOnNewLine(item.text); setCalloutsAnchor(null); }}>
+              <FormattedMessage id={item.labelKey} />
+            </MenuItem>
+          ))}
+        </Menu>
+      </Box>
       <CodeMirror
         ref={editorRef}
         value={value}
@@ -309,149 +322,8 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
           highlightSelectionMatches: false,
           searchKeymap: false,
         }}
-        onContextMenu={handleContextMenu}
         onKeyDown={handleKeyDown}
       />
-
-      <Menu
-        open={menuState.anchor !== null}
-        onClose={handleClose}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          menuState.anchor ? { top: menuState.anchor.mouseY, left: menuState.anchor.mouseX } : undefined
-        }
-        disableAutoFocus
-      >
-        {MAIN_MENU_ITEMS.map((item) => (
-          <MenuItem 
-            key={item.id}
-            onClick={() => setMenuState(prev => ({ ...prev, submenu: item.id, thirdLevelMenu: null }))}
-            onMouseEnter={(e) => handleMouseEnter(e, 'submenu')}
-            sx={{
-              backgroundColor: menuState.submenu === item.id ? theme.palette.action.hover : 'inherit'
-            }}
-          >
-            <ListItemIcon>
-              <item.icon />
-            </ListItemIcon>
-            <ListItemText disableTypography>
-              <FormattedMessage id={item.labelKey} />
-            </ListItemText>
-            <ListItemIcon>
-              <ArrowRight />
-            </ListItemIcon>
-          </MenuItem>
-        ))}
-      </Menu>
-
-      <Menu
-        open={menuState.submenu === "format"}
-        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
-        anchorReference="anchorPosition"
-        anchorPosition={menuState.submenuAnchor ? { 
-          top: menuState.submenuAnchor.mouseY, 
-          left: menuState.submenuAnchor.mouseX 
-        } : undefined}
-        disableAutoFocus
-      >
-        {FORMAT_ACTIONS.map((item) => (
-          <MenuItem key={item.labelKey} onClick={() => applyMarkdown(item.action)}>
-            <FormattedMessage id={item.labelKey} />
-          </MenuItem>
-        ))}
-      </Menu>
-
-      <Menu
-        open={menuState.submenu === "list"}
-        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
-        anchorReference="anchorPosition"
-        anchorPosition={menuState.submenuAnchor ? { 
-          top: menuState.submenuAnchor.mouseY, 
-          left: menuState.submenuAnchor.mouseX 
-        } : undefined}
-        disableAutoFocus
-      >
-        {LIST_ACTIONS.map((item) => (
-          <MenuItem key={item.labelKey} onClick={() => insertOnNewLine(item.text)}>
-            <FormattedMessage id={item.labelKey} />
-          </MenuItem>
-        ))}
-      </Menu>
-
-      <Menu
-        open={menuState.submenu === "paragraph"}
-        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
-        anchorReference="anchorPosition"
-        anchorPosition={menuState.submenuAnchor ? { 
-          top: menuState.submenuAnchor.mouseY, 
-          left: menuState.submenuAnchor.mouseX 
-        } : undefined}
-        disableAutoFocus
-      >
-        {[1, 2, 3, 4, 5, 6].map((lvl) => (
-          <MenuItem
-            key={lvl}
-            onClick={() => insertOnNewLine("#".repeat(lvl) + " ")}
-            sx={{ py: 1 }}
-          >
-            <Markdown components={markdownComponents}>
-              {"#".repeat(lvl) + " Heading " + lvl}
-            </Markdown>
-          </MenuItem>
-        ))}
-        <MenuItem onClick={() => applyMarkdown({ type: "insert", text: "text" })}>
-          <FormattedMessage id="markdownEditor.body" />
-        </MenuItem>
-      </Menu>
-
-      <Menu
-        open={menuState.submenu === "insert"}
-        onClose={() => setMenuState(prev => ({ ...prev, submenu: null }))}
-        anchorReference="anchorPosition"
-        anchorPosition={menuState.submenuAnchor ? { 
-          top: menuState.submenuAnchor.mouseY, 
-          left: menuState.submenuAnchor.mouseX 
-        } : undefined}
-        disableAutoFocus
-      >
-        {INSERT_ACTIONS.map((item) => (
-          <MenuItem 
-            key={item.labelKey}
-            onClick={() => item.action ? applyMarkdown(item.action) : insertOnNewLine(item.text!)}
-          >
-            <FormattedMessage id={item.labelKey} />
-          </MenuItem>
-        ))}
-        <MenuItem 
-          onClick={() => setMenuState(prev => ({ ...prev, thirdLevelMenu: "callouts" }))}
-          onMouseEnter={(e) => handleMouseEnter(e, 'thirdLevel')}
-          sx={{ backgroundColor: menuState.thirdLevelMenu === "callouts" ? theme.palette.action.hover : 'inherit' }}
-        >
-          <ListItemText disableTypography>
-            <FormattedMessage id="markdownEditor.callouts" />
-          </ListItemText>
-          <ListItemIcon>
-            <ArrowRight />
-          </ListItemIcon>
-        </MenuItem>
-      </Menu>
-
-      <Menu
-        open={menuState.thirdLevelMenu === "callouts"}
-        onClose={() => setMenuState(prev => ({ ...prev, thirdLevelMenu: null }))}
-        anchorReference="anchorPosition"
-        anchorPosition={menuState.thirdLevelAnchor ? { 
-          top: menuState.thirdLevelAnchor.mouseY, 
-          left: menuState.thirdLevelAnchor.mouseX 
-        } : undefined}
-        disableAutoFocus
-      >
-        {CALLOUT_ACTIONS.map((item) => (
-          <MenuItem key={item.labelKey} onClick={() => insertOnNewLine(item.text)}>
-            <FormattedMessage id={item.labelKey} />
-          </MenuItem>
-        ))}
-      </Menu>
     </Box>
   );
 };
