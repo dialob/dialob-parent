@@ -13,10 +13,9 @@ import CodeMirror from '../components/code/CodeMirror';
 import { useBackend } from '../backend/useBackend';
 import { validateId } from '../utils/ValidateUtils';
 import { ChangeIdResult } from '../backend/types';
-import { getErrorSeverity } from '../utils/ErrorUtils';
+import { getErrorSeverity, parseVariableItemId } from '../utils/ErrorUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
-
-const MAX_VARIABLE_DESCRIPTION_LENGTH = 1024;
+import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../defaults';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -102,33 +101,23 @@ const SaveIdButton: React.FC<{
 
 const ExpressionField: React.FC<{ variable: Variable, errors?: EditorError[] }> = ({ variable, errors }) => {
   const { updateExpressionVariable } = useSave();
-  const [expression, setExpression] = React.useState<string>(variable.expression);
-
-  const handleBlur = () => {
-    if (expression !== variable.expression) {
-      updateExpressionVariable(variable.name, expression);
-    }
-  }
 
   return (
     <Box>
       <Typography fontWeight='bold' sx={{ mb: 1 }}>
         <FormattedMessage id='dialogs.variables.expression' />
       </Typography>
-      <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
+      <CodeMirror 
+        value={variable.expression ?? ''} 
+        onChange={(e) => updateExpressionVariable(variable.name, e)} 
+        errors={errors} 
+      />
     </Box>
   );
 }
 
 const DescriptionField: React.FC<{ variable: Variable }> = ({ variable }) => {
   const { updateVariableDescription } = useSave();
-  const [description, setDescription] = React.useState<string | undefined>(variable.description);
-
-  const handleBlur = () => {
-    if (description !== variable.description) {
-      updateVariableDescription(variable.name, description || '');
-    }
-  }
 
   return (
     <Box>
@@ -136,9 +125,8 @@ const DescriptionField: React.FC<{ variable: Variable }> = ({ variable }) => {
         <FormattedMessage id='dialogs.variables.description' />
       </Typography>
       <TextField
-        value={description || ''}
-        onChange={(e) => setDescription(e.target.value)}
-        onBlur={handleBlur}
+        value={variable.description || ''}
+        onChange={(e) => updateVariableDescription(variable.name, e.target.value)}
         variant='outlined'
         inputProps={{ maxLength: MAX_VARIABLE_DESCRIPTION_LENGTH }}
         fullWidth
@@ -172,31 +160,37 @@ const ExpressionVariableDialogContent: React.FC = () => {
     return savingState.variables.find(v => !isContextVariable(v) && v.name === editor.activeVariable) as Variable | undefined;
   }, [editor.activeVariable, savingState.variables]);
 
-  const itemErrors = editor.errors?.filter(e => e.itemId === variable?.name);
+  // Filter errors by matching either direct itemId or parsed variable name from rowgroup-scoped format
+  const itemErrors = editor.errors?.filter(e => {
+    if (!e.itemId || !variable) return false;
+    // Direct match
+    if (e.itemId === variable.name) return true;
+    // Parse rowgroup-scoped variable format (e.g., "rg2.*.product") and match the variable name
+    const parsedVariableName = parseVariableItemId(e.itemId);
+    return parsedVariableName === variable.name;
+  });
 
   if (!variable) {
     return null;
   }
 
   return (
-    <>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 3 }}>
-        <ExpressionField variable={variable} errors={itemErrors} />
-        <DescriptionField variable={variable} />
-        <PublishedSwitch variable={variable} />
-        {itemErrors && itemErrors.length > 0 && (
-          <Box>
-            {itemErrors.map((error, index) => (
-              <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 1 }} icon={<Warning />}>
-                <Typography color={error.level.toLowerCase()}>
-                  <ErrorMessage error={error} />
-                </Typography>
-              </Alert>
-            ))}
-          </Box>
-        )}
-      </Box>
-    </>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <ExpressionField variable={variable} errors={itemErrors} />
+      <DescriptionField variable={variable} />
+      <PublishedSwitch variable={variable} />
+      {itemErrors && itemErrors.length > 0 && (
+        <Box>
+          {itemErrors.map((error, index) => (
+            <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 1 }} icon={<Warning />}>
+              <Typography color={error.level.toLowerCase()}>
+                <ErrorMessage error={error} />
+              </Typography>
+            </Alert>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
 }
 
