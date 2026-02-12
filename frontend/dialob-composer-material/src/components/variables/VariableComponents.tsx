@@ -4,7 +4,7 @@ import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
 import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
@@ -215,68 +215,6 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
     <Box sx={{ p: 1 }}>
       <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
     </Box>
-  );
-}
-
-export const RowgroupScopeMenu: React.FC<{ variable: Variable }> = ({ variable }) => {
-  const { updateExpressionVariableRowgroup, savingState } = useSave();
-  const intl = useIntl();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  // Get all rowgroups from saving state
-  const rowgroups = React.useMemo(() => 
-    Object.values(savingState.items || {}).filter(item => item.type === 'rowgroup'),
-    [savingState.items]
-  );
-
-  // Find current rowgroup that contains this variable
-  const currentRowgroup = React.useMemo(() => 
-    rowgroups.find(rg => rg.items?.includes(variable.name)),
-    [rowgroups, variable.name]
-  );
-
-  const noneLabel = intl.formatMessage({ id: 'dialogs.variables.scope.none' });
-
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
-    e.stopPropagation();
-  };
-
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(null);
-    e.stopPropagation();
-  };
-
-  const handleSelectRowgroup = (e: React.MouseEvent<HTMLElement>, rowgroupId: string | null) => {
-    handleClose(e);
-    updateExpressionVariableRowgroup(variable.name, rowgroupId);
-  }
-
-  return (
-    <>
-      <Tooltip title={<FormattedMessage id='dialogs.variables.scope.tooltip' />}>
-        <Button onClick={handleClick} component='span' endIcon={<KeyboardArrowDown />} variant='text' sx={{ p: 0, justifyContent: 'flex-start', minWidth: 0 }}>
-          <Typography variant='subtitle2'>
-            {currentRowgroup?.id || noneLabel}
-          </Typography>
-        </Button>
-      </Tooltip>
-      <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-        <MenuItem onClick={(e) => handleSelectRowgroup(e, null)}>
-          <Typography><FormattedMessage id='dialogs.variables.scope.none' /></Typography>
-        </MenuItem>
-        {rowgroups.map((rowgroup) => (
-          <MenuItem 
-            key={rowgroup.id} 
-            onClick={(e) => handleSelectRowgroup(e, rowgroup.id)}
-            selected={currentRowgroup?.id === rowgroup.id}
-          >
-            <Typography>{rowgroup.id}</Typography>
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
   );
 }
 

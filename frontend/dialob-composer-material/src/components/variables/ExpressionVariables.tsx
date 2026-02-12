@@ -16,6 +16,15 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     createVariable(false);
   }
 
+  // Filter out scoped variables (those that are in any rowgroup's items array)
+  const globalVariables = React.useMemo(() => {
+    const expressionVars = savingState.variables?.filter(v => !isContextVariable(v)) as Variable[] || [];
+    const rowgroups = Object.values(savingState.items || {}).filter(item => item.type === 'rowgroup');
+    const scopedVariableIds = new Set(rowgroups.flatMap(rg => rg.items || []));
+    
+    return expressionVars.filter(v => !scopedVariableIds.has(v.name));
+  }, [savingState.variables, savingState.items]);
+
   return (
     <BorderedTable sx={{ tableLayout: 'fixed' }}>
       <TableHead>
@@ -29,13 +38,10 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <TableCell width='20%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.id' /></Typography>
           </TableCell>
-          <TableCell width='15%' sx={{ p: 0.5 }}>
+          <TableCell width='25%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.expression' /></Typography>
           </TableCell>
-          <TableCell width='15%' sx={{ p: 0.5 }}>
-            <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.scope' /></Typography>
-          </TableCell>
-          <TableCell width='15%' sx={{ p: 0.5 }}>
+          <TableCell width='20%' sx={{ p: 0.5 }}>
             <Typography fontWeight='bold'><FormattedMessage id='dialogs.variables.description' /></Typography>
           </TableCell>
           <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
@@ -44,7 +50,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         </TableRow>
       </TableHead>
       <TableBody>
-        {(savingState.variables?.filter(v => !isContextVariable(v)) as Variable[])?.map((item, index) => (
+        {globalVariables.map((item, index) => (
           <ExpressionVariableRow key={index} index={index} item={item} onClose={onClose} />
         ))}
       </TableBody>

@@ -9,6 +9,17 @@ const PreTextIcon = styled(IconButton)(({ theme }) => ({
   cursor: 'default',
 }));
 
+export const parseVariableItemId = (itemId: string): string => {
+  // Check if the itemId matches the pattern: rowgroupId.*.variableName
+  const match = itemId.match(/^[^.]+\.\*\.(.+)$/);
+  return match ? match[1] : itemId;
+};
+
+export const parseRowgroupIdFromVariableItemId = (itemId: string): string | undefined => {
+  const match = itemId.match(/^([^.]+)\.\*\.(.+)$/);
+  return match ? match[1] : undefined;
+};
+
 const getDominantSeverity = (errors: EditorError[] | undefined): ErrorSeverity | undefined => {
   if (!errors || errors.length === 0) {
     return undefined;
@@ -33,7 +44,15 @@ const getDominantSeverity = (errors: EditorError[] | undefined): ErrorSeverity |
 }
 
 const getItemErrorSeverity = (errors: EditorError[] | undefined, itemId: string): ErrorSeverity | undefined => {
-  const itemErrors = errors?.filter(error => error.itemId === itemId);
+  // Match errors by either direct itemId or by parsed variable name from rowgroup-scoped format
+  const itemErrors = errors?.filter(error => {
+    if (!error.itemId) return false;
+    // Direct match
+    if (error.itemId === itemId) return true;
+    // Parse rowgroup-scoped variable format and match the variable name
+    const parsedVariableName = parseVariableItemId(error.itemId);
+    return parsedVariableName === itemId;
+  });
   return getDominantSeverity(itemErrors);
 }
 

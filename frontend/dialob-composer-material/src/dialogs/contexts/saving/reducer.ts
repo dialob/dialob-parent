@@ -410,39 +410,6 @@ const updateExpressionVariable = (state: SavingState, variableId: string, expres
   }
 }
 
-const updateExpressionVariableRowgroup = (state: SavingState, variableId: string, rowgroupId: string | null): void => {
-  if (!state.items) {
-    return;
-  }
-
-  // Find current rowgroup that contains the variable
-  const currentRowgroup = Object.values(state.items).find(item => 
-    item.type === 'rowgroup' && item.items?.includes(variableId)
-  );
-
-  // Remove variable from current rowgroup if it exists
-  if (currentRowgroup?.items) {
-    const idx = currentRowgroup.items.indexOf(variableId);
-    if (idx > -1) {
-      currentRowgroup.items.splice(idx, 1);
-    }
-  }
-
-  // Add variable to new rowgroup if specified
-  if (rowgroupId && state.items[rowgroupId]) {
-    const newRowgroup = state.items[rowgroupId];
-    if (newRowgroup.type === 'rowgroup') {
-      if (!newRowgroup.items) {
-        newRowgroup.items = [];
-      }
-      // Only add if not already present
-      if (!newRowgroup.items.includes(variableId)) {
-        newRowgroup.items.push(variableId);
-      }
-    }
-  }
-}
-
 const deleteVariable = (state: SavingState, variableId: string): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => v.name === variableId);
@@ -668,8 +635,6 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
     } else if (action.type === 'updateExpressionVariable') {
       updateExpressionVariable(state, action.variableId, action.expression);
-    } else if (action.type === 'updateExpressionVariableRowgroup') {
-      updateExpressionVariableRowgroup(state, action.variableId, action.rowgroupId);
     } else if (action.type === 'updateVariablePublishing') {
       updateVariablePublishing(state, action.variableId, action.published);
     } else if (action.type === 'updateVariableDescription') { 

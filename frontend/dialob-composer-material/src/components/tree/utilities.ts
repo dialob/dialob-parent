@@ -1,7 +1,7 @@
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { FlattenedItem, TreeItem, TreeItems } from './types';
-import { DialobItem } from '../../types';
+import { Variable, ContextVariable, DialobItem } from '../../types';
 import { ItemConfig } from '../../defaults/types';
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
@@ -144,9 +144,28 @@ export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
   return root.children;
 }
 
-export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, language: string, config: ItemConfig, collapsedItems?: Record<string, boolean>, availableLanguages?: string[]): TreeItems => {
+export const buildTreeFromForm = (
+  formData: { [item: string]: DialobItem }, 
+  language: string, 
+  config: ItemConfig, 
+  collapsedItems?: Record<string, boolean>, 
+  availableLanguages?: string[],
+  variables?: (Variable | ContextVariable)[] | undefined
+): TreeItems => {
   const createdNodes = new Map<string, TreeItem>();
   const languages = availableLanguages || [language];
+
+  const buildVariableNode = (variableId: string): TreeItem => {
+    const variable = variables?.find(v => v.name === variableId);
+    return {
+      id: variableId,
+      children: [],
+      title: variable?.name || variableId,
+      collapsible: false,
+      collapsed: false,
+      isVariable: true
+    };
+  };
 
   const buildNode = (item: DialobItem): TreeItem => {
     if (createdNodes.has(item.id)) {
@@ -170,10 +189,26 @@ export const buildTreeFromForm = (formData: { [item: string]: DialobItem }, lang
     createdNodes.set(item.id, newNode);
 
     if (item.items && item.items.length > 0) {
-      const children = item.items
-        .map(id => formData[id])
-        .filter(Boolean);
-      newNode.children = children.map((child) => buildNode(child));
+      const variableChildren: TreeItem[] = [];
+      const itemChildren: TreeItem[] = [];
+
+      item.items.forEach(id => {
+        const childItem = formData[id];
+        if (childItem) {
+          itemChildren.push(buildNode(childItem));
+        } else if (variables) {
+          const variable = variables.find(v => v.name === id);
+          if (variable) {
+            // Variables are only shown in the tree for rowgroups
+            if (item.type === 'rowgroup') {
+              variableChildren.push(buildVariableNode(id));
+            }
+          }
+        }
+      });
+
+      // Variables first, then regular items
+      newNode.children = [...variableChildren, ...itemChildren];
     }
 
     return newNode;

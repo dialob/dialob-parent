@@ -8,6 +8,7 @@ import { scrollToItem } from '../../utils/ScrollUtils';
 import { useComposer } from '../../dialob';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
 import { useBackend } from '../../backend/useBackend';
+import { DialobItem } from '../../types';
 
 
 export interface TreeItemProps {
@@ -27,22 +28,23 @@ export interface TreeItemProps {
   onCollapse?(): void;
   wrapperRef?(node: HTMLLIElement): void;
   isFallbackLabel?: boolean;
+  isVariable?: boolean;
 }
 
 export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, ref) => {
   const {
     childCount, clone, depth, disableSelection, disableInteraction, ghost,
     handleProps, indentationWidth, collapsed, onCollapse, style, id, title, collapsible, wrapperRef,
-    isFallbackLabel
+    isFallbackLabel, isVariable
   } = props;
   const { form } = useComposer();
-  const { editor, setHighlightedItem, setActivePage, setActiveItem, setItemOptionsActiveTab } = useEditor();
+  const { editor, setHighlightedItem, setActivePage, setActiveItem, setItemOptionsActiveTab, setActiveVariable } = useEditor();
   const { config } = useBackend();
   const [highlighted, setHighlighted] = React.useState(false);
   const errorColor = useErrorColorSx(editor.errors, id);
   const textColor = errorColor ?? (highlighted ? 'primary.main' : 'text.primary');
   const backgroundColor = (theme: Theme) => errorColor ? alpha(theme.palette.error.main, 0.1) : (highlighted ? alpha(theme.palette.mainContent.contrastText, 0.1) : theme.palette.background.paper);
-  const item = form.data[id];
+  const item = isVariable ? { id, type: 'variable' } as DialobItem : form.data[id];
 
   const maxTextLength = 50 - (depth * 5);
   const truncatedTitle = title.length > maxTextLength
@@ -64,8 +66,12 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
   }
 
   const handleOpenEditor = () => {
-    setActiveItem(item);
-    setItemOptionsActiveTab('label');
+    if (isVariable) {
+      setActiveVariable(id);
+    } else {
+      setActiveItem(item);
+      setItemOptionsActiveTab('label');
+    }
   }
 
   return (
@@ -83,9 +89,14 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
         ref={ref}
         clone={clone}
         ghost={ghost}
-        sx={{ ...style, backgroundColor }}
+        sx={{ ...style, backgroundColor, ...(isVariable && {
+          borderLeft: 3,
+          borderTopLeftRadius: 6,
+          borderBottomLeftRadius: 6,
+          borderLeftColor: 'info.main',
+        })}}
       >
-        <Handle item={item} highlighted={highlighted} error={errorColor !== undefined} itemconfig={config.itemEditors} {...handleProps} />
+        <Handle item={item} highlighted={highlighted} error={errorColor !== undefined} itemconfig={config.itemEditors} disabled={isVariable} {...handleProps} />
         {onCollapse && collapsible && (
           <IconButton
             size="small"
