@@ -35,7 +35,6 @@ export type SavingAction =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'updateContextVariable', variableId: string, contextType?: ContextVariableType | string, defaultValue?: any }
   | { type: 'updateExpressionVariable', variableId: string, expression: string }
-  | { type: 'updateExpressionVariableRowgroup', variableId: string, rowgroupId: string | null }
   | { type: 'updateVariablePublishing', variableId: string, published: boolean }
   | { type: 'updateVariableDescription', variableId: string, description: string }
   | { type: 'deleteVariable', variableId: string }

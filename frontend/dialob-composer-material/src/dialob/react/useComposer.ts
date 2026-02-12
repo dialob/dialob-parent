@@ -138,10 +138,6 @@ export const useComposer = () => {
     dispatch({ type: 'updateVariableDescription', variableId, description });
   }
 
-  const updateVariable = (variableId: string, updates: Partial<Variable>) => {
-    dispatch({ type: 'updateVariable', variableId, updates });
-  }
-
   const deleteVariable = (variableId: string) => {
     dispatch({ type: 'deleteVariable', variableId });
   }
@@ -222,7 +218,6 @@ export const useComposer = () => {
     updateExpressionVariable,
     updateVariablePublishing,
     updateVariableDescription,
-    updateVariable,
     deleteVariable,
     moveVariable,
     addLanguage,

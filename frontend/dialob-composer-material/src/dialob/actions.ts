@@ -49,8 +49,6 @@ export type ComposerAction =
   | { type: 'updateVariableDescription', variableId: string, description: string }
   | { type: 'deleteVariable', variableId: string }
   | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
-  // this will be replaced
-  | { type: 'updateVariable', variableId: string, updates: Partial<Variable> }
 
   | { type: 'addLanguage', language: string, copyFrom?: string }
   | { type: 'deleteLanguage', language: string }

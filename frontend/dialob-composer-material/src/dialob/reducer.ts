@@ -560,15 +560,6 @@ const createScopedExpressionVariable = (state: ComposerState, rowgroupId: string
   }
 }
 
-const updateVariable = (state: ComposerState, variableId: string, updates: Partial<Variable>): void => {
-  if (state.variables) {
-    const varIdx = state.variables.findIndex(v => !isContextVariable(v) && v.name === variableId);
-    if (varIdx > -1) {
-      Object.assign(state.variables[varIdx], updates);
-    }
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateContextVariable = (state: ComposerState, variableId: string, contextType?: ContextVariableType | string, defaultValue?: any): void => {
   if (state.variables) {
@@ -920,8 +911,6 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       updateVariablePublishing(state, action.variableId, action.published);
     } else if (action.type === 'updateVariableDescription') {
       updateVariableDescription(state, action.variableId, action.description);
-    } else if (action.type === 'updateVariable') {
-      updateVariable(state, action.variableId, action.updates);
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
     } else if (action.type === 'moveVariable') {
