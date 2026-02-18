@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
   Dialog, DialogTitle, DialogContent, Button, Box, Tabs, Tab,
-  DialogActions, Tooltip, styled, TextField, IconButton
+  DialogActions, Tooltip, styled, TextField, IconButton, useTheme, useMediaQuery
 } from '@mui/material';
 import { Rule, Edit, Dns, List, Visibility, Delete, Description, Label, Check, Close, Gavel, Help } from "@mui/icons-material";
 import { OptionsTabType, useEditor } from '../editor';
@@ -104,6 +104,8 @@ const SaveIdButton: React.FC<{
 }
 
 const ItemOptionsDialog: React.FC = () => {
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('xl'));
   const { editor, setActiveItem, setItemOptionsActiveTab, setConfirmationDialogType, setConfirmationActiveItem, setMarkdownHelpDialogOpen } = useEditor();
   const { form } = useComposer();
   const { config } = useBackend();
@@ -173,7 +175,7 @@ const ItemOptionsDialog: React.FC = () => {
       valueSets: structuredClone(form.valueSets),
       composerMetadata: structuredClone(form.metadata.composer)
     }}>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth={activeTab === 'choices' ? 'xl' : 'md'} PaperProps={{ sx: { maxHeight: '60vh' } }}>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth={activeTab === 'choices' ? 'xl' : isLargeScreen ? 'xl' : 'md'} PaperProps={{ sx: { maxHeight: '60vh' } }}>
         <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
             helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
