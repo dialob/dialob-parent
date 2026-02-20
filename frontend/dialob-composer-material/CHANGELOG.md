@@ -1,5 +1,13 @@
 # @dialob/dialob-composer-material
 
+## 0.0.17
+
+### Patch Changes
+
+- added read only rule
+- added rowgroup scoped expression variables
+- modified versions table to allow sorting
+
 ## 0.0.16
 
 ### Patch Changes
