@@ -80,7 +80,7 @@ const updateItem = (state: ComposerState, itemId: string, attribute: string, val
       state.data[itemId][attribute][language] = cleanedValue;
     }
   } else {
-    if (value === '') {
+    if (value === undefined) {
       delete state.data[itemId][attribute];
     } else {
       state.data[itemId][attribute] = value;
@@ -253,7 +253,7 @@ const setValidationMessage = (state: ComposerState, itemId: string, index: numbe
   }
 }
 
-const setValidationExpression = (state: ComposerState, itemId: string, index: number, expression: string): void => {
+const setValidationExpression = (state: ComposerState, itemId: string, index: number, expression: string | undefined): void => {
   const validations = state.data[itemId].validations;
   if (validations) {
     const rule = validations[index];
@@ -403,12 +403,16 @@ const updateValueSetEntry = (state: ComposerState, valueSetId: string, index: nu
   }
 }
 
-const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, index: number, text: string | null, language: string): void => {
+const updateValueSetEntryLabel = (state: ComposerState, valueSetId: string, index: number, text: string | null | undefined, language: string): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
-    if (vsIdx > -1 && text !== null && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined && state.valueSets[vsIdx].entries![index].label !== undefined) {
-      const cleanedText = cleanString(text);
-      state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
+    if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined && state.valueSets[vsIdx].entries![index].label !== undefined) {
+      if (text === null || text === undefined) {
+        delete state.valueSets[vsIdx].entries![index].label[language];
+      } else {
+        const cleanedText = cleanString(text);
+        state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
+      }
     }
   }
 }
@@ -575,7 +579,7 @@ const updateContextVariable = (state: ComposerState, variableId: string, context
   }
 }
 
-const updateExpressionVariable = (state: ComposerState, variableId: string, expression: string): void => {
+const updateExpressionVariable = (state: ComposerState, variableId: string, expression: string | undefined): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => !isContextVariable(v) && v.name === variableId);
     if (varIdx > -1) {
@@ -612,7 +616,7 @@ const updateVariablePublishing = (state: ComposerState, variableId: string, publ
   }
 }
 
-const updateVariableDescription = (state: ComposerState, variableId: string, description: string): void => {
+const updateVariableDescription = (state: ComposerState, variableId: string, description: string | undefined): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => v.name === variableId);
     if (varIdx > -1) {

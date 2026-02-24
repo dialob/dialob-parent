@@ -72,6 +72,23 @@ const LocalizedStringEditor: React.FC<{
     }
   }
 
+  const handleClearLanguage = (language: string) => {
+    const updatedLocalizedString: LocalizedString = { ...localizedString };
+    delete updatedLocalizedString[language];
+    
+    if (isAITranslated(language)) {
+      removeFlag(language);
+    }
+
+    if (type === 'validations' && rule && setRule) {
+      const newRule = { ...rule, validationRule: { ...rule.validationRule, message: updatedLocalizedString } };
+      setRule(newRule);
+      updateLocalizedString(item.id, type, updatedLocalizedString, rule.index);
+    } else {
+      updateLocalizedString(item.id, type, updatedLocalizedString);
+    }
+  }
+
   const handleTranslate = async (targetLanguage: string) => {
     if (!config.translationServiceUrl) {
       console.error('Translation service URL not configured');
@@ -133,7 +150,7 @@ const LocalizedStringEditor: React.FC<{
         </Button>
       </Box>
       {formLanguages?.map((language) => {
-        const localizedText = localizedString ? localizedString[language] : '';
+        const localizedText = localizedString?.[language];
         const isTranslating = translating[language];
         const canTranslate = language !== activeFormLanguage && 
                             !localizedText && 
@@ -162,7 +179,7 @@ const LocalizedStringEditor: React.FC<{
             </Box>
             <Box sx={{ border: 1, borderRadius: 1, borderColor: 'divider', my: 1 }}>
               {preview ? <Markdown components={markdownComponents} remarkPlugins={[remarkGfm]}>{localizedText}</Markdown> :
-              <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} />}
+              <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} onClear={handleClearLanguage} />}
             </Box>
           </Box>
         );

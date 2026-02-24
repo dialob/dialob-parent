@@ -9,6 +9,7 @@ import CodeMirror from '../code/CodeMirror';
 import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { IndexedRule } from './types';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 
 const ValidationRuleEditor: React.FC = () => {
   const { editor } = useEditor();
@@ -59,6 +60,13 @@ const ValidationRuleEditor: React.FC = () => {
     }
   }
 
+  const handleClear = () => {
+    if (item && activeRule) {
+      setValidationExpression(item.id, activeRule.index, undefined);
+      setActiveRule({ ...activeRule, validationRule: { ...activeRule.validationRule, rule: undefined } });
+    }
+  };
+
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -83,7 +91,9 @@ const ValidationRuleEditor: React.FC = () => {
         </Button>
       </Box>
       {rules.length > 0 && activeRule !== undefined && <Box sx={{ mt: 2 }}>
-        <CodeMirror value={activeRule.validationRule.rule ?? ''} onChange={handleUpdate} errors={itemErrors} />
+        <CodeEditorWithClear value={activeRule.validationRule.rule} onClear={handleClear}>
+          <CodeMirror value={activeRule.validationRule.rule ?? ''} onChange={handleUpdate} errors={itemErrors} />
+        </CodeEditorWithClear>
       </Box>}
       {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>

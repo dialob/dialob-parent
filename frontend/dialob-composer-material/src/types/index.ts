@@ -1,11 +1,11 @@
 export type LocalizedString = {
-  [language: string]: string;
+  [language: string]: string | undefined;
 };
 
 export type Variable = {
   name: string;
   published?: boolean;
-  expression: string;
+  expression: string | undefined;
   description?: string;
 };
 

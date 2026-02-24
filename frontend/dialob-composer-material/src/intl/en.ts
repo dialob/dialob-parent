@@ -52,6 +52,7 @@ const en = {
   'buttons.add': 'Add',
   'buttons.translate': 'Translate',
   'buttons.translate.tooltip': 'Translate from {source} to {target} using AI',
+  'buttons.clear': 'Clear',
 
   'menus.options': 'Options',
   'menus.description': 'Description',
