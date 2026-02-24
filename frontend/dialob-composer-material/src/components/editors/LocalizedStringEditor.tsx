@@ -153,7 +153,7 @@ const LocalizedStringEditor: React.FC<{
         const localizedText = localizedString?.[language];
         const isTranslating = translating[language];
         const canTranslate = language !== activeFormLanguage && 
-                            !localizedText && 
+                            localizedText === undefined && 
                             localizedString?.[activeFormLanguage] &&
                             config.translationServiceUrl;
         const aiMetadata = isAITranslated(language) ? getAITranslationMetadata(language) : null;
