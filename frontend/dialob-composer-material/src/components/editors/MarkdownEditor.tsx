@@ -227,6 +227,10 @@ export const MarkdownEditor: React.FC<{
     }
   }, [applyMarkdown, insertOnNewLine]);
 
+  const handleClear = () => {
+    onClear(language);
+  };
+
   return (
     <Box>
       <Box sx={{
