@@ -13,12 +13,14 @@ const PropertiesEditor: React.FC = () => {
   const { savingState, setItemProp, deleteItemProp } = useSave();
   const { config } = useBackend();
   const item = savingState.item;
-  const [props, setProps] = React.useState<ItemProp[]>([]);
+  const [props, setProps] = React.useState<ItemProp[] | undefined>(undefined);
   const [newProp, setNewProp] = React.useState<string>('');
 
   React.useEffect(() => {
     if (item?.props) {
       setProps(Object.entries(item.props).map(([key, value]) => ({ key, value })));
+    } else {
+      setProps(undefined);
     }
   }, [item?.props]);
 
@@ -58,7 +60,7 @@ const PropertiesEditor: React.FC = () => {
           <Typography sx={{ px: 2 }}><FormattedMessage id='dialogs.options.properties.add.short' /></Typography>
         </Button>
       </Box>
-      {props.length > 0 && <TableContainer>
+      {props && props.length > 0 && <TableContainer>
         <BorderedTable>
           <TableHead>
             <TableRow>

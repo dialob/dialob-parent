@@ -4,15 +4,17 @@ import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
 import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
 import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
+import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 import { useBackend } from '../../backend/useBackend';
 import { ChangeIdResult } from '../../backend/types';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
 import { useComposer } from '../../dialob';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { TextEditorWithClear } from '../editors/TextEditorWithClear';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -117,18 +119,26 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
   const [description, setDescription] = React.useState<string | undefined>(variable.description);
 
   const handleBlur = () => {
-    if (description && description !== variable.description) {
+    if (description !== variable.description) {
       updateVariableDescription(variable.name, description);
     }
   }
 
+  const handleClear = () => {
+    setDescription(undefined);
+    updateVariableDescription(variable.name, undefined);
+  };
+
   return (
-    <TextField
-      value={description || ''}
-      onChange={(e) => setDescription(e.target.value)}
+    <TextEditorWithClear
+      value={description}
+      onChange={(value) => setDescription(value)}
       onBlur={handleBlur}
       variant='standard'
-      InputProps={{ disableUnderline: true }}
+      InputProps={{ 
+        disableUnderline: true,
+      }}
+      onClear={handleClear}
       inputProps={{ maxLength: MAX_VARIABLE_DESCRIPTION_LENGTH }}
       fullWidth
     />
@@ -176,7 +186,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 
 export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ variable }) => {
   const { updateContextVariable } = useSave();
-  const [defaultValue, setDefaultValue] = React.useState<string>(variable.defaultValue);
+  const [defaultValue, setDefaultValue] = React.useState<string | undefined>(variable.defaultValue);
 
   const handleBlur = () => {
     if (defaultValue !== variable.defaultValue) {
@@ -185,17 +195,20 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   }
 
   const handleClear = () => {
-    setDefaultValue('');
-    updateContextVariable(variable.name, undefined, '');
+    setDefaultValue(undefined);
+    updateContextVariable(variable.name, undefined, undefined);
   }
 
   return (
-    <TextField
-      value={defaultValue || ''}
-      onChange={(e) => setDefaultValue(e.target.value)}
+    <TextEditorWithClear
+      value={defaultValue}
+      onChange={(value) => setDefaultValue(value)}
       onBlur={handleBlur}
       variant='standard'
-      InputProps={{ disableUnderline: true, endAdornment: <IconButton onClick={handleClear}><Close /></IconButton> }}
+      InputProps={{ 
+        disableUnderline: true, 
+      }}
+      onClear={handleClear}
       fullWidth
     />
   );
@@ -203,7 +216,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
 
 export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorError[] }> = ({ variable, errors }) => {
   const { updateExpressionVariable } = useSave();
-  const [expression, setExpression] = React.useState<string>(variable.expression);
+  const [expression, setExpression] = React.useState<string | undefined>(variable.expression);
 
   const handleBlur = () => {
     if (expression !== variable.expression) {
@@ -211,72 +224,17 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
     }
   }
 
+  const handleClear = () => {
+    setExpression(undefined);
+    updateExpressionVariable(variable.name, undefined);
+  };
+
   return (
     <Box sx={{ p: 1 }}>
-      <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
+      <CodeEditorWithClear value={expression} onClear={handleClear}>
+        <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
+      </CodeEditorWithClear>
     </Box>
-  );
-}
-
-export const RowgroupScopeMenu: React.FC<{ variable: Variable }> = ({ variable }) => {
-  const { updateExpressionVariableRowgroup, savingState } = useSave();
-  const intl = useIntl();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  // Get all rowgroups from saving state
-  const rowgroups = React.useMemo(() => 
-    Object.values(savingState.items || {}).filter(item => item.type === 'rowgroup'),
-    [savingState.items]
-  );
-
-  // Find current rowgroup that contains this variable
-  const currentRowgroup = React.useMemo(() => 
-    rowgroups.find(rg => rg.items?.includes(variable.name)),
-    [rowgroups, variable.name]
-  );
-
-  const noneLabel = intl.formatMessage({ id: 'dialogs.variables.scope.none' });
-
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
-    e.stopPropagation();
-  };
-
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(null);
-    e.stopPropagation();
-  };
-
-  const handleSelectRowgroup = (e: React.MouseEvent<HTMLElement>, rowgroupId: string | null) => {
-    handleClose(e);
-    updateExpressionVariableRowgroup(variable.name, rowgroupId);
-  }
-
-  return (
-    <>
-      <Tooltip title={<FormattedMessage id='dialogs.variables.scope.tooltip' />}>
-        <Button onClick={handleClick} component='span' endIcon={<KeyboardArrowDown />} variant='text' sx={{ p: 0, justifyContent: 'flex-start', minWidth: 0 }}>
-          <Typography variant='subtitle2'>
-            {currentRowgroup?.id || noneLabel}
-          </Typography>
-        </Button>
-      </Tooltip>
-      <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-        <MenuItem onClick={(e) => handleSelectRowgroup(e, null)}>
-          <Typography><FormattedMessage id='dialogs.variables.scope.none' /></Typography>
-        </MenuItem>
-        {rowgroups.map((rowgroup) => (
-          <MenuItem 
-            key={rowgroup.id} 
-            onClick={(e) => handleSelectRowgroup(e, rowgroup.id)}
-            selected={currentRowgroup?.id === rowgroup.id}
-          >
-            <Typography>{rowgroup.id}</Typography>
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
   );
 }
 

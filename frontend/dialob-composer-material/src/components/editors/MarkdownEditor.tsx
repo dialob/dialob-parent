@@ -7,6 +7,7 @@ import { markdown } from '@codemirror/lang-markdown';
 import { EditorView } from '@codemirror/view';
 import Markdown from 'react-markdown';
 import { markdownComponents } from '../../defaults/markdown';
+import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 
 type MarkdownAction = { type: 'wrap'; before: string; after: string } | { type: 'insert'; text: string };
 
@@ -66,7 +67,12 @@ const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
   { key: '6', ctrl: true, text: '###### ' },
 ];
 
-export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string, language: string) => void, language: string }> = ({ value, setValue, language }) => {
+export const MarkdownEditor: React.FC<{ 
+  value: string | undefined, 
+  setValue: (value: string, language: string) => void, 
+  language: string,
+  onClear: (language: string) => void
+}> = ({ value, setValue, language, onClear }) => {
   const theme = useTheme();
   const intl = useIntl();
   const editorRef = useRef<{ view?: EditorView }>(null);
@@ -289,41 +295,43 @@ export const MarkdownEditor: React.FC<{ value: string, setValue: (value: string,
           ))}
         </Menu>
       </Box>
-      <CodeMirror
-        ref={editorRef}
-        value={value}
-        onChange={(val: string) => setValue(val || '', language)}
-        extensions={[
-          markdown({
-            completeHTMLTags: false
-          }),
-          EditorView.lineWrapping,
-          EditorView.theme({
-            '&': {
-              fontSize: theme.typography.body1.fontSize || '15px',
-            },
-            '.cm-activeLine': {
-              backgroundColor: 'transparent',
-            },
-            '.cm-activeLineGutter': {
-              backgroundColor: 'transparent',
-            }
-          })
-        ]}
-        basicSetup={{
-          lineNumbers: false,
-          foldGutter: false,
-          dropCursor: false,
-          allowMultipleSelections: false,
-          indentOnInput: true,
-          bracketMatching: true,
-          closeBrackets: true,
-          autocompletion: false,
-          highlightSelectionMatches: false,
-          searchKeymap: false,
-        }}
-        onKeyDown={handleKeyDown}
-      />
+      <CodeEditorWithClear value={value} onClear={handleClear}>
+        <CodeMirror
+          ref={editorRef}
+          value={value}
+          onChange={(val: string) => setValue(val || '', language)}
+          extensions={[
+            markdown({
+              completeHTMLTags: false
+            }),
+            EditorView.lineWrapping,
+            EditorView.theme({
+              '&': {
+                fontSize: theme.typography.body1.fontSize || '15px',
+              },
+              '.cm-activeLine': {
+                backgroundColor: 'transparent',
+              },
+              '.cm-activeLineGutter': {
+                backgroundColor: 'transparent',
+              }
+            })
+          ]}
+          basicSetup={{
+            lineNumbers: false,
+            foldGutter: false,
+            dropCursor: false,
+            allowMultipleSelections: false,
+            indentOnInput: true,
+            bracketMatching: true,
+            closeBrackets: true,
+            autocompletion: false,
+            highlightSelectionMatches: false,
+            searchKeymap: false,
+          }}
+          onKeyDown={handleKeyDown}
+        />
+      </CodeEditorWithClear>
     </Box>
   );
 };

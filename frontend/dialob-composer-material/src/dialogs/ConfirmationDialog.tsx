@@ -8,7 +8,7 @@ import { useBackend } from '../backend/useBackend';
 import { DuplicateResult } from '../backend/types';
 
 const ConfirmationDialog: React.FC = () => {
-  const { form, deleteItem, setForm } = useComposer();
+  const { form, deleteItem, deleteVariable, setForm } = useComposer();
   const { duplicateItem } = useBackend();
   const { editor, setConfirmationDialogType, setErrors } = useEditor();
   const type = editor.confirmationDialogType;
@@ -26,6 +26,9 @@ const ConfirmationDialog: React.FC = () => {
   const handleClick = () => {
     if (type === 'delete') {
       deleteItem(activeItem.id);
+      handleClose();
+    } else if (type === 'deleteVariable') {
+      deleteVariable(activeItem.id);
       handleClose();
     } else if (type === 'duplicate') {
       setLoading(true);
@@ -48,10 +51,12 @@ const ConfirmationDialog: React.FC = () => {
       <DialogTitle sx={{ fontWeight: 'bold' }}>
         {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.title' />}
         {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.title' />}
+        {type === 'deleteVariable' && <FormattedMessage id='dialogs.confirmation.deleteVariable.title' />}
       </DialogTitle>
       <DialogContent>
         {type === 'delete' && <FormattedMessage id='dialogs.confirmation.delete.text' values={{ itemId: activeItem.id }} />}
         {type === 'duplicate' && <FormattedMessage id='dialogs.confirmation.duplicate.text' values={{ itemId: activeItem.id }} />}
+        {type === 'deleteVariable' && <FormattedMessage id='dialogs.confirmation.deleteVariable.text' values={{ itemId: activeItem.id }} />}
       </DialogContent>
       {loading ? <DialogActions><CircularProgress sx={{ m: 1 }} /></DialogActions> :
         <DialogActionButtons handleClick={handleClick} handleClose={handleClose} />}

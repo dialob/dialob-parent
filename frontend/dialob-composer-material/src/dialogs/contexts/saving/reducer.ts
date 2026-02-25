@@ -36,14 +36,14 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
   }
 
   if (language) {
-    const cleanedValue = cleanString(value);
+    const cleanedValue = value ? cleanString(value) : undefined;
     if (state.item[attribute] === undefined) {
       state.item[attribute] = { [language]: cleanedValue };
     } else {
       state.item[attribute][language] = cleanedValue;
     }
   } else {
-    if (value === '') {
+    if (value === '' || value === undefined) {
       delete state.item[attribute];
     } else {
       state.item[attribute] = value;
@@ -166,7 +166,7 @@ const setValidationMessage = (state: SavingState, index: number, language: strin
   }
 }
 
-const setValidationExpression = (state: SavingState, index: number, expression: string): void => {
+const setValidationExpression = (state: SavingState, index: number, expression: string | undefined): void => {
   if (!state.item) {
     return;
   }
@@ -281,11 +281,11 @@ const updateValueSetEntry = (state: SavingState, valueSetId: string, index: numb
   }
 }
 
-const updateValueSetEntryLabel = (state: SavingState, valueSetId: string, index: number, text: string | null, language: string): void => {
+const updateValueSetEntryLabel = (state: SavingState, valueSetId: string, index: number, text: string | null | undefined, language: string): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && text !== null && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined && state.valueSets[vsIdx].entries![index].label !== undefined) {
-      const cleanedText = cleanString(text);
+      const cleanedText = text ? cleanString(text) : undefined;
       state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
     }
   }
@@ -401,44 +401,11 @@ const updateContextVariable = (state: SavingState, variableId: string, contextTy
   }
 }
 
-const updateExpressionVariable = (state: SavingState, variableId: string, expression: string): void => {
+const updateExpressionVariable = (state: SavingState, variableId: string, expression: string | undefined): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => !isContextVariable(v) && v.name === variableId);
     if (varIdx > -1) {
       (state.variables[varIdx] as Variable).expression = expression;
-    }
-  }
-}
-
-const updateExpressionVariableRowgroup = (state: SavingState, variableId: string, rowgroupId: string | null): void => {
-  if (!state.items) {
-    return;
-  }
-
-  // Find current rowgroup that contains the variable
-  const currentRowgroup = Object.values(state.items).find(item => 
-    item.type === 'rowgroup' && item.items?.includes(variableId)
-  );
-
-  // Remove variable from current rowgroup if it exists
-  if (currentRowgroup?.items) {
-    const idx = currentRowgroup.items.indexOf(variableId);
-    if (idx > -1) {
-      currentRowgroup.items.splice(idx, 1);
-    }
-  }
-
-  // Add variable to new rowgroup if specified
-  if (rowgroupId && state.items[rowgroupId]) {
-    const newRowgroup = state.items[rowgroupId];
-    if (newRowgroup.type === 'rowgroup') {
-      if (!newRowgroup.items) {
-        newRowgroup.items = [];
-      }
-      // Only add if not already present
-      if (!newRowgroup.items.includes(variableId)) {
-        newRowgroup.items.push(variableId);
-      }
     }
   }
 }
@@ -461,7 +428,7 @@ const updateVariablePublishing = (state: SavingState, variableId: string, publis
   }
 }
 
-const updateVariableDescription = (state: SavingState, variableId: string, description: string): void => {
+const updateVariableDescription = (state: SavingState, variableId: string, description: string | undefined): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => v.name === variableId);
     if (varIdx > -1) {
@@ -668,8 +635,6 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
     } else if (action.type === 'updateExpressionVariable') {
       updateExpressionVariable(state, action.variableId, action.expression);
-    } else if (action.type === 'updateExpressionVariableRowgroup') {
-      updateExpressionVariableRowgroup(state, action.variableId, action.rowgroupId);
     } else if (action.type === 'updateVariablePublishing') {
       updateVariablePublishing(state, action.variableId, action.published);
     } else if (action.type === 'updateVariableDescription') { 

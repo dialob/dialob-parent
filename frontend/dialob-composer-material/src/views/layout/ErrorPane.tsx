@@ -1,11 +1,13 @@
 import React from 'react';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
-import { EditorError, VariableTabType, useEditor } from '../../editor';
+import { EditorError, useEditor } from '../../editor';
 import { useComposer } from '../../dialob';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { ErrorMessage, ErrorType } from '../../components/ErrorComponents';
 import { BoldedMessage } from '../../intl/BoldedMessage';
 import { isContextVariable, isPage } from '../../utils/ItemUtils';
+import { parseVariableItemId, parseRowgroupIdFromVariableItemId } from '../../utils/ErrorUtils';
+import { DialobItem } from '../../types';
 
 
 const errorCardBorderColor = (severity: string) => {
@@ -20,7 +22,7 @@ const errorCardBorderColor = (severity: string) => {
 };
 
 const ErrorPane: React.FC = () => {
-  const { editor, setActivePage, setActiveList, setActiveVariableTab, setHighlightedItem } = useEditor();
+  const { editor, setActivePage, setActiveList, setActiveVariableTab, setActiveVariable, setHighlightedItem } = useEditor();
   const { form } = useComposer();
   const gvs = form.metadata.composer?.globalValueSets;
 
@@ -45,12 +47,40 @@ const ErrorPane: React.FC = () => {
       if (gvs?.map(gvs => gvs.valueSetId).includes(error.itemId)) {
         handleEditList(error.itemId);
       } else if (error.type === 'VARIABLE') {
-        const variable = form.variables?.find(v => v.name === error.itemId);
+        const variableName = parseVariableItemId(error.itemId);
+        const rowgroupId = parseRowgroupIdFromVariableItemId(error.itemId);
+        
+        const variable = form.variables?.find(v => v.name === variableName);
         if (!variable) {
           return;
         }
-        const type: VariableTabType = isContextVariable(variable) ? 'context' : 'expression';
-        setActiveVariableTab(type);
+        
+        // Check if it's a context variable
+        if (isContextVariable(variable)) {
+          setActiveVariableTab('context');
+        } else {
+          // For expression variables, check if it's scoped to a rowgroup
+          // First check if we have a rowgroup ID from the error format
+          let parentRowgroup = rowgroupId ? form.data[rowgroupId] : undefined;
+          
+          // If not found via error format, search for it in all rowgroups
+          if (!parentRowgroup) {
+            parentRowgroup = Object.values(form.data).find(item => 
+              item.type === 'rowgroup' && item.items?.includes(variableName)
+            );
+          }
+          
+          if (parentRowgroup) {
+            // Scroll to the variable itself and open the expression variable dialog for scoped variables
+            const pseudoItem = { id: variableName } as DialobItem;
+            setHighlightedItem(pseudoItem);
+            scrollToItem(variableName, Object.values(form.data), editor.activePage, setActivePage);
+            setActiveVariable(variableName);
+          } else {
+            // Open the variables dialog for global variables
+            setActiveVariableTab('expression');
+          }
+        }
       } else if (error.itemId.includes('vs') || error.itemId.includes('valueset')) {
         const item = Object.values(form.data).find(item => item.valueSetId === error.itemId);
         if (item) {
@@ -70,17 +100,24 @@ const ErrorPane: React.FC = () => {
 
   return (
     <Box sx={{ m: 1 }}>
-      {editor.errors?.map((error, index) => (
-        <Card key={index} sx={{ mb: 2 }}>
-          <CardActionArea onClick={() => handleClick(error, gvs)}>
-            <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.level) }}>
-              <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
-              <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>
-              {error.itemId && <Typography component='span' variant='subtitle2'><BoldedMessage id='errors.at' values={{ itemId: error.itemId }} /></Typography>}
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      ))}
+      {editor.errors?.map((error, index) => {
+        // For variable errors with rowgroup-scoped format, display the variable name
+        const displayItemId = error.type === 'VARIABLE' && error.itemId 
+          ? parseVariableItemId(error.itemId) 
+          : error.itemId;
+        
+        return (
+          <Card key={index} sx={{ mb: 2 }}>
+            <CardActionArea onClick={() => handleClick(error, gvs)}>
+              <CardContent sx={{ borderLeft: 2, borderColor: errorCardBorderColor(error.level) }}>
+                <Typography variant='subtitle1'><ErrorType error={error} /></Typography>
+                <Typography variant='subtitle2' component='span'><ErrorMessage error={error} /></Typography>
+                {displayItemId && <Typography component='span' variant='subtitle2'><BoldedMessage id='errors.at' values={{ itemId: displayItemId }} /></Typography>}
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        );
+      })}
     </Box>
   );
 };

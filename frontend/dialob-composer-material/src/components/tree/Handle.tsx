@@ -3,7 +3,7 @@ import { ButtonBase, ButtonBaseProps, styled } from '@mui/material';
 import { DialobItem } from '../../types';
 import { ItemConfig } from '../../defaults/types';
 import { DEFAULT_ITEM_CONFIG, PAGE_CONFIG } from '../../defaults';
-import { DragIndicator } from '@mui/icons-material';
+import { DragIndicator, Functions } from '@mui/icons-material';
 
 
 interface HandleProps extends ButtonBaseProps {
@@ -11,18 +11,19 @@ interface HandleProps extends ButtonBaseProps {
   highlighted: boolean;
   error?: boolean;
   itemconfig?: ItemConfig;
+  disabled?: boolean;
 }
 
 const StyledAction = styled(ButtonBase, {
   shouldForwardProp: (prop) => prop !== 'highlighted' && prop !== 'error',
-})<HandleProps>(({ theme, highlighted, error }) => ({
+})<HandleProps>(({ theme, highlighted, error, disabled }) => ({
   display: 'flex',
   width: theme.spacing(2),
   padding: theme.spacing(1),
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: theme.shape.borderRadius,
-  cursor: 'grab',
+  cursor: disabled ? 'default' : 'grab',
 
   '& svg': {
     transition: 'fill 0.2s ease',
@@ -42,6 +43,9 @@ const StyledAction = styled(ButtonBase, {
 const getTypeIcon = (item: DialobItem | undefined, itemConfig?: ItemConfig) => {
   if (!item) {
     return <DragIndicator />;
+  }
+  if (item.type === 'variable') {
+    return <Functions color='info' fontSize='small' />;
   }
   if (item.id.startsWith('page')) {
     return <PAGE_CONFIG.icon fontSize='small' />;

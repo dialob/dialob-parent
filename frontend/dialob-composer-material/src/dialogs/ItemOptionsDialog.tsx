@@ -19,7 +19,7 @@ import { useSave } from './contexts/saving/useSave';
 import { DialobItem } from '../types';
 import { getCategoryItems } from '../utils/ConfigUtils';
 
-const StyledButtonContainer = styled(Box)(({ theme }) => ({
+export const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
     border: '0.05rem solid',
     borderRadius: theme.spacing(0.5),

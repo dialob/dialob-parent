@@ -2,7 +2,7 @@ import { DialobItem } from "../types";
 
 export type ErrorSeverity = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL';
 export type ComposerStatus = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL' | 'OK';
-export type ConfirmationDialogType = 'duplicate' | 'delete';
+export type ConfirmationDialogType = 'duplicate' | 'delete' | 'deleteVariable';
 export type OptionsTabType = 'id' | 'label' | 'description' | 'rules' | 'validations' | 'choices' | 'properties';
 export type VariableTabType = 'context' | 'expression';
 
@@ -28,6 +28,8 @@ export type EditorState = {
   highlightedItem?: DialobItem;
   activeList?: string;
   activeVariableTab?: VariableTabType;
+  activeVariable?: string;
+  activeVariableIdEditMode?: boolean;
   collapsedItems: Record<string, boolean>;
   markdownHelpDialogOpen?: boolean;
 };

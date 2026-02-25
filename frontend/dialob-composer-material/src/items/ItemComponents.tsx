@@ -516,7 +516,7 @@ export const OptionsMenu: React.FC<{ item: DialobItem, isPage?: boolean, light?:
 }
 
 export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
-  const { addItem } = useComposer();
+  const { addItem, createScopedExpressionVariable } = useComposer();
   const { setHighlightedItem } = useEditor();
   const { config } = useBackend();
   const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -526,6 +526,7 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
   const itemCategories = config.itemTypes.categories;
   const categoryRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
   const subcategoryRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
+  const isRowgroup = item.type === 'rowgroup';
 
   const handleButtonClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
@@ -566,6 +567,12 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
     addItem(itemTemplate, item.id, undefined, { onAddItem: postCreate });
   }
 
+  const handleCreateVariable = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose();
+    createScopedExpressionVariable(item.id, { onAddItem: postCreate });
+  }
+
   const postCreate = (_state: ComposerState, item: DialobItem) => {
     scrollToAddedItem(item);
     setHighlightedItem(item);
@@ -578,6 +585,14 @@ export const AddItemMenu: React.FC<{ item: DialobItem }> = ({ item }) => {
       </Button>
       <Menu open={categoriesOpen} onClose={handleClose} anchorEl={categoriesAnchorEl}
         disableScrollLock={true} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        {isRowgroup && (
+          <>
+            <MenuItem onClick={handleCreateVariable}>
+              <Typography><FormattedMessage id='menus.add.expression.variable' /></Typography>
+            </MenuItem>
+            <Divider />
+          </>
+        )}
         {itemCategories.map((c, index) => {
           const hasSubcategories = c.subcategories && c.subcategories.length > 0;
           const hasItems = c.items && c.items.length > 0;

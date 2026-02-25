@@ -42,7 +42,7 @@ const extractCodeFromItem = (item: DialobItem, start: number, end: number, type:
 }
 
 const extractCodeFromVariable = (variable: Variable, start: number, end: number) => {
-  return variable.expression.substring(start, end + 1);
+  return variable.expression?.substring(start, end + 1) ?? '';
 }
 
 const extractListError = (valueSet: ValueSet, index: number) => {

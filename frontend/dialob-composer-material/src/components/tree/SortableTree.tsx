@@ -58,8 +58,8 @@ export const SortableTree: React.FC = () => {
 
   React.useEffect(() => {
     const availableLanguages = form.metadata.languages || [editor.activeFormLanguage];
-    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems, availableLanguages));
-  }, [form.data, editor.activeFormLanguage, editor.collapsedItems, form.metadata.languages]);
+    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems, availableLanguages, form.variables));
+  }, [form.data, form.variables, editor.activeFormLanguage, editor.collapsedItems, form.metadata.languages]);
 
   const flattenedItems = React.useMemo(() => {
     const flattenedTree = flattenTree(items);
@@ -89,6 +89,11 @@ export const SortableTree: React.FC = () => {
   }, [flattenedItems, offsetLeft]);
 
   const handleDragStart = ({ active: { id: activeId } }: DragStartEvent) => {
+    // Don't allow dragging variables
+    const activeItem = flattenedItems.find(item => item.id === activeId);
+    if (activeItem?.isVariable) {
+      return;
+    }
     setActiveId(activeId);
     setOverId(activeId);
     document.body.style.setProperty('cursor', 'grabbing');
@@ -99,6 +104,12 @@ export const SortableTree: React.FC = () => {
   }
 
   const handleDragOver = ({ over }: DragOverEvent) => {
+    // Don't allow dropping on variables
+    const overItem = flattenedItems.find(item => item.id === over?.id);
+    if (overItem?.isVariable) {
+      setOverId(null);
+      return;
+    }
     setOverId(over?.id ?? null);
   }
 
@@ -163,7 +174,7 @@ export const SortableTree: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-        {flattenedItems.map(({ id, children, collapsed, collapsible, title, depth, isFallbackLabel }) => (
+        {flattenedItems.map(({ id, children, collapsed, collapsible, title, depth, isFallbackLabel, isVariable }) => (
           <SortableTreeItem
             key={id}
             id={id as string}
@@ -174,6 +185,7 @@ export const SortableTree: React.FC = () => {
             collapsed={Boolean(collapsed && children.length)}
             onCollapse={children.length ? () => handleCollapse(id) : undefined}
             isFallbackLabel={isFallbackLabel}
+            isVariable={isVariable}
           />
         ))}
         {createPortal(

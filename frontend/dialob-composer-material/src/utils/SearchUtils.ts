@@ -74,13 +74,13 @@ export const matchVariableByKeyword = (variable: ContextVariable | Variable, key
     const snippet = extractSnippet(variable.name.toLowerCase(), keyword.toLowerCase());
     return { id: variable.name, type: 'variable', matchType: 'name', content: snippet };
   } else if (variable.description?.toLowerCase().includes(keyword.toLowerCase())) {
-    const snippet = extractSnippet(variable.description.toLowerCase(), keyword.toLowerCase());
+    const snippet = extractSnippet(variable.description?.toLowerCase() ?? '', keyword.toLowerCase());
     return { id: variable.name, type: 'variable', matchType: 'description', content: snippet };
   } else if ((variable as ContextVariable).defaultValue?.toLowerCase().includes(keyword.toLowerCase())) {
-    const snippet = extractSnippet((variable as ContextVariable).defaultValue.toLowerCase(), keyword.toLowerCase());
+    const snippet = extractSnippet((variable as ContextVariable).defaultValue?.toLowerCase() ?? '', keyword.toLowerCase());
     return { id: variable.name, type: 'variable', matchType: 'default', content: snippet };
   } else if ((variable as Variable).expression?.toLowerCase().includes(keyword.toLowerCase())) {
-    const snippet = extractSnippet((variable as Variable).expression.toLowerCase(), keyword.toLowerCase());
+    const snippet = extractSnippet((variable as Variable).expression?.toLowerCase() ?? '', keyword.toLowerCase());
     return { id: variable.name, type: 'variable', matchType: 'expression', content: snippet };
   }
   return undefined;

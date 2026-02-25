@@ -73,6 +73,23 @@ const LocalizedStringEditor: React.FC<{
     }
   }
 
+  const handleClearLanguage = (language: string) => {
+    const updatedLocalizedString: LocalizedString = { ...localizedString };
+    delete updatedLocalizedString[language];
+    
+    if (isAITranslated(language)) {
+      removeFlag(language);
+    }
+
+    if (type === 'validations' && rule && setRule) {
+      const newRule = { ...rule, validationRule: { ...rule.validationRule, message: updatedLocalizedString } };
+      setRule(newRule);
+      updateLocalizedString(item.id, type, updatedLocalizedString, rule.index);
+    } else {
+      updateLocalizedString(item.id, type, updatedLocalizedString);
+    }
+  }
+
   const handleTranslate = async (targetLanguage: string) => {
     if (!config.translationServiceUrl) {
       console.error('Translation service URL not configured');
@@ -149,10 +166,10 @@ const LocalizedStringEditor: React.FC<{
         </ToggleButtonGroup>
       </Box>
       {formLanguages?.map((language) => {
-        const localizedText = localizedString ? localizedString[language] : '';
+        const localizedText = localizedString?.[language];
         const isTranslating = translating[language];
         const canTranslate = language !== activeFormLanguage && 
-                            !localizedText && 
+                            localizedText === undefined && 
                             localizedString?.[activeFormLanguage] &&
                             config.translationServiceUrl;
         const aiMetadata = isAITranslated(language) ? getAITranslationMetadata(language) : null;
@@ -197,7 +214,7 @@ const LocalizedStringEditor: React.FC<{
                     ...(viewMode === 'sideBySide' && { borderRight: 1, borderColor: 'divider' }),
                   }}
                 >
-                  <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} />
+                  <MarkdownEditor value={localizedText} setValue={handleUpdate} language={language} onClear={handleClearLanguage} />
                 </Box>
               )}
               {showPreview && (

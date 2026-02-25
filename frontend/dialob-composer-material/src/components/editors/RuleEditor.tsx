@@ -10,6 +10,7 @@ import { DEFAULT_ITEMTYPE_CONFIG } from '../../defaults';
 import { useBackend } from '../../backend/useBackend';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
 import { getCategoryItems } from '../../utils/ConfigUtils';
+import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 
 type RuleType = 'visibility' | 'requirement' | 'readOnly' | 'canaddrow' | 'canremoverow';
 
@@ -38,6 +39,12 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
     }
   }
 
+  const handleClear = () => {
+    if (item) {
+      updateItem(item.id, resolveRulePropName(type), undefined);
+    }
+  };
+
   if (!item) {
     return null;
   }
@@ -54,9 +61,9 @@ const RuleEditor: React.FC<{ type: RuleType }> = ({ type }) => {
   return (
     <Box sx={{ mb: 2 }}>
       <Typography color='text.hint'><FormattedMessage id={`dialogs.options.rules.${type}`} /></Typography>
-      <Box>
+      <CodeEditorWithClear value={item[resolveRulePropName(type)]} onClear={handleClear}>
         <CodeMirror value={item[resolveRulePropName(type)] || ''} onChange={handleUpdate} errors={itemErrors} />
-      </Box>
+      </CodeEditorWithClear>
       {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
         <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
       </Alert>)}

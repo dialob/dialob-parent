@@ -46,6 +46,10 @@ export const useEditor = () => {
     dispatch({ type: 'setActiveVariableTab', tab });
   }
 
+  const setActiveVariable = (variableId?: string, idEditMode?: boolean): void => {
+    dispatch({ type: 'setActiveVariable', variableId, idEditMode });
+  }
+
   const setConfirmationActiveItem = (item?: DialobItem): void => {
     dispatch({ type: 'setConfirmationActiveItem', item });
   }
@@ -70,6 +74,7 @@ export const useEditor = () => {
     setHighlightedItem,
     setActiveList,
     setActiveVariableTab,
+    setActiveVariable,
     setConfirmationActiveItem,
     toggleItemCollapsed,
     setMarkdownHelpDialogOpen,
