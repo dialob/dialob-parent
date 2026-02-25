@@ -143,6 +143,8 @@ const en = {
   'dialogs.options.properties.add.short': 'Add',
   'dialogs.options.default': 'Default value',
   'dialogs.options.preview': 'Preview',
+  'dialogs.options.edit': 'Edit',
+  'dialogs.options.preview.sideBySide': 'Side by side',
 
   'dialogs.upload.valueset.title': 'Upload value set',
   'dialogs.upload.valueset.file': 'Choose file',
