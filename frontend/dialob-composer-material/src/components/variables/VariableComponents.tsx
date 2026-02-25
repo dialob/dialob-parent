@@ -8,11 +8,13 @@ import { FormattedMessage } from 'react-intl';
 import { matchItemByKeyword } from '../../utils/SearchUtils';
 import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
+import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 import { useBackend } from '../../backend/useBackend';
 import { ChangeIdResult } from '../../backend/types';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
 import { useComposer } from '../../dialob';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { TextEditorWithClear } from '../editors/TextEditorWithClear';
 
 const VARIABLE_TYPES: ContextVariableType[] = [
   'text',
@@ -117,18 +119,26 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
   const [description, setDescription] = React.useState<string | undefined>(variable.description);
 
   const handleBlur = () => {
-    if (description && description !== variable.description) {
+    if (description !== variable.description) {
       updateVariableDescription(variable.name, description);
     }
   }
 
+  const handleClear = () => {
+    setDescription(undefined);
+    updateVariableDescription(variable.name, undefined);
+  };
+
   return (
-    <TextField
-      value={description || ''}
-      onChange={(e) => setDescription(e.target.value)}
+    <TextEditorWithClear
+      value={description}
+      onChange={(value) => setDescription(value)}
       onBlur={handleBlur}
       variant='standard'
-      InputProps={{ disableUnderline: true }}
+      InputProps={{ 
+        disableUnderline: true,
+      }}
+      onClear={handleClear}
       inputProps={{ maxLength: MAX_VARIABLE_DESCRIPTION_LENGTH }}
       fullWidth
     />
@@ -176,7 +186,7 @@ export const ContextTypeMenu: React.FC<{ variable: ContextVariable }> = ({ varia
 
 export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ variable }) => {
   const { updateContextVariable } = useSave();
-  const [defaultValue, setDefaultValue] = React.useState<string>(variable.defaultValue);
+  const [defaultValue, setDefaultValue] = React.useState<string | undefined>(variable.defaultValue);
 
   const handleBlur = () => {
     if (defaultValue !== variable.defaultValue) {
@@ -185,17 +195,20 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   }
 
   const handleClear = () => {
-    setDefaultValue('');
-    updateContextVariable(variable.name, undefined, '');
+    setDefaultValue(undefined);
+    updateContextVariable(variable.name, undefined, undefined);
   }
 
   return (
-    <TextField
-      value={defaultValue || ''}
-      onChange={(e) => setDefaultValue(e.target.value)}
+    <TextEditorWithClear
+      value={defaultValue}
+      onChange={(value) => setDefaultValue(value)}
       onBlur={handleBlur}
       variant='standard'
-      InputProps={{ disableUnderline: true, endAdornment: <IconButton onClick={handleClear}><Close /></IconButton> }}
+      InputProps={{ 
+        disableUnderline: true, 
+      }}
+      onClear={handleClear}
       fullWidth
     />
   );
@@ -203,7 +216,7 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
 
 export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorError[] }> = ({ variable, errors }) => {
   const { updateExpressionVariable } = useSave();
-  const [expression, setExpression] = React.useState<string>(variable.expression);
+  const [expression, setExpression] = React.useState<string | undefined>(variable.expression);
 
   const handleBlur = () => {
     if (expression !== variable.expression) {
@@ -211,9 +224,16 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
     }
   }
 
+  const handleClear = () => {
+    setExpression(undefined);
+    updateExpressionVariable(variable.name, undefined);
+  };
+
   return (
     <Box sx={{ p: 1 }}>
-      <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
+      <CodeEditorWithClear value={expression} onClear={handleClear}>
+        <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
+      </CodeEditorWithClear>
     </Box>
   );
 }

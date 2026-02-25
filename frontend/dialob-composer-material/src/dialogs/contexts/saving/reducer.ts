@@ -36,14 +36,14 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
   }
 
   if (language) {
-    const cleanedValue = cleanString(value);
+    const cleanedValue = value ? cleanString(value) : undefined;
     if (state.item[attribute] === undefined) {
       state.item[attribute] = { [language]: cleanedValue };
     } else {
       state.item[attribute][language] = cleanedValue;
     }
   } else {
-    if (value === '') {
+    if (value === '' || value === undefined) {
       delete state.item[attribute];
     } else {
       state.item[attribute] = value;
@@ -166,7 +166,7 @@ const setValidationMessage = (state: SavingState, index: number, language: strin
   }
 }
 
-const setValidationExpression = (state: SavingState, index: number, expression: string): void => {
+const setValidationExpression = (state: SavingState, index: number, expression: string | undefined): void => {
   if (!state.item) {
     return;
   }
@@ -281,11 +281,11 @@ const updateValueSetEntry = (state: SavingState, valueSetId: string, index: numb
   }
 }
 
-const updateValueSetEntryLabel = (state: SavingState, valueSetId: string, index: number, text: string | null, language: string): void => {
+const updateValueSetEntryLabel = (state: SavingState, valueSetId: string, index: number, text: string | null | undefined, language: string): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && text !== null && state.valueSets[vsIdx].entries !== undefined && state.valueSets[vsIdx].entries![index] !== undefined && state.valueSets[vsIdx].entries![index].label !== undefined) {
-      const cleanedText = cleanString(text);
+      const cleanedText = text ? cleanString(text) : undefined;
       state.valueSets[vsIdx].entries![index].label[language] = cleanedText;
     }
   }
@@ -401,7 +401,7 @@ const updateContextVariable = (state: SavingState, variableId: string, contextTy
   }
 }
 
-const updateExpressionVariable = (state: SavingState, variableId: string, expression: string): void => {
+const updateExpressionVariable = (state: SavingState, variableId: string, expression: string | undefined): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => !isContextVariable(v) && v.name === variableId);
     if (varIdx > -1) {
@@ -428,7 +428,7 @@ const updateVariablePublishing = (state: SavingState, variableId: string, publis
   }
 }
 
-const updateVariableDescription = (state: SavingState, variableId: string, description: string): void => {
+const updateVariableDescription = (state: SavingState, variableId: string, description: string | undefined): void => {
   if (state.variables) {
     const varIdx = state.variables.findIndex(v => v.name === variableId);
     if (varIdx > -1) {

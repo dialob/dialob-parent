@@ -6,7 +6,8 @@ import { TranslationResult } from '../../../backend/types';
 export const useSave = () => {
   const { state, dispatch } = useContext(SavingContext);
 
-  const updateItem = (itemId: string, attribute: string, value: string, language?: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateItem = (itemId: string, attribute: string, value: any, language?: string) => {
     dispatch({ type: 'updateItem', itemId, attribute, value, language });
   };
 
@@ -39,7 +40,7 @@ export const useSave = () => {
     dispatch({ type: 'setValidationMessage', itemId, index, language, message });
   }
 
-  const setValidationExpression = (itemId: string, index: number, expression: string) => {
+  const setValidationExpression = (itemId: string, index: number, expression: string | undefined) => {
     dispatch({ type: 'setValidationExpression', itemId, index, expression });
   }
 
@@ -63,7 +64,7 @@ export const useSave = () => {
     dispatch({ type: 'updateValueSetEntry', valueSetId, index, entry });
   }
 
-  const updateValueSetEntryLabel = (valueSetId: string, index: number, text: string | null, language: string) => {
+  const updateValueSetEntryLabel = (valueSetId: string, index: number, text: string | null | undefined, language: string) => {
     dispatch({ type: 'updateValueSetEntryLabel', valueSetId, index, text, language });
   }
 
@@ -96,7 +97,7 @@ export const useSave = () => {
     dispatch({ type: 'updateContextVariable', variableId, contextType, defaultValue });
   }
 
-  const updateExpressionVariable = (variableId: string, expression: string) => {
+  const updateExpressionVariable = (variableId: string, expression: string | undefined) => {
     dispatch({ type: 'updateExpressionVariable', variableId, expression });
   }
 
@@ -104,7 +105,7 @@ export const useSave = () => {
     dispatch({ type: 'updateVariablePublishing', variableId, published });
   }
 
-  const updateVariableDescription = (variableId: string, description: string) => {
+  const updateVariableDescription = (variableId: string, description: string | undefined) => {
     dispatch({ type: 'updateVariableDescription', variableId, description });
   }
 

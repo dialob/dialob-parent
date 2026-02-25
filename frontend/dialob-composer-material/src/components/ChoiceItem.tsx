@@ -103,6 +103,16 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     setLocalizedString(prev => ({ ...prev, [language]: value }));
   }
 
+  const handleClearLanguage = (language: string) => {
+    const updated = { ...localizedString };
+    delete updated[language];
+    setLocalizedString(updated);
+    onTextEdit(entry, updated);
+    if (isAITranslated(language)) {
+      removeFlag(language);
+    }
+  };
+
   const handleBlurText = (language: string) => {
     const currentValue = localizedString[language] || '';
     const originalValue = entry.label?.[language] || '';
@@ -222,7 +232,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                 }} />
             </TableCell>
             {formLanguages?.map(lang => {
-              const hasValue = localizedString && localizedString[lang];
+              const hasValue = localizedString && localizedString[lang] !== undefined;
               const sourceLanguage = editor.activeFormLanguage;
               const hasSourceValue = localizedString && localizedString[sourceLanguage];
               const canTranslate = !hasValue && hasSourceValue && lang !== sourceLanguage && config.translationServiceUrl;
@@ -240,6 +250,20 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                       onChange={(e) => handleUpdate(e.target.value, lang)}
                       onBlur={() => handleBlurText(lang)}
                     />
+                    {hasValue && (
+                      <Tooltip title={<FormattedMessage id="buttons.clear" />}>
+                        <span>
+                          <IconButton
+                            disabled={!hasValue}
+                            onClick={() => handleClearLanguage(lang)}
+                            size="small"
+                            sx={{ p: 0.25 }}
+                          >
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                    )}
                     {canTranslate && (
                       <TranslateButton
                         sourceLanguage={sourceLanguage}

@@ -20,7 +20,9 @@ export const cleanString = (str: string): string => {
 export const cleanLocalizedString = (str: LocalizedString): LocalizedString => {
   const cleanedStr = { ...str };
   Object.keys(str).map((key) => {
-    cleanedStr[key] = cleanString(str[key]);
+    if (str[key] !== undefined) {
+      cleanedStr[key] = cleanString(str[key]);
+    }
   });
   return cleanedStr;
 }

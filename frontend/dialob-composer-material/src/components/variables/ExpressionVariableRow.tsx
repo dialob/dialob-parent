@@ -56,8 +56,8 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
         </TableCell>
         <TableCell width='25%' sx={{ p: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            {variable.expression.substring(0, 20) + (variable.expression.length > 20 ? '...' : '')}
-            <IconButton><Edit color={expanded ? 'primary' : 'inherit'} onClick={() => setExpanded(!expanded)} /></IconButton>
+            {variable.expression && (variable.expression.substring(0, 20) + (variable.expression.length > 20 ? '...' : ''))}
+            <IconButton onClick={() => setExpanded(!expanded)}><Edit color={expanded ? 'primary' : 'inherit'} /></IconButton>
           </Box>
         </TableCell>
         <TableCell width='20%' sx={{ p: 1 }}>
