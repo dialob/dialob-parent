@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SavingContext } from './SavingContext';
-import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
+import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
 import { TranslationResult } from '../../../backend/types';
 
 export const useSave = () => {
@@ -121,6 +121,22 @@ export const useSave = () => {
     dispatch({ type: 'changeVariableId', variables });
   }
 
+  const updateVariableName = (currentName: string, originalName: string, to: string) => {
+    dispatch({ type: 'updateVariableName', currentName, originalName, to });
+  }
+
+  const clearPendingRenames = () => {
+    dispatch({ type: 'clearPendingRenames' });
+  }
+
+  const resetItems = (items: DialobItems) => {
+    dispatch({ type: 'resetItems', items });
+  }
+
+  const resetVariables = (variables: (ContextVariable | Variable)[]) => {
+    dispatch({ type: 'resetVariables', variables });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setMetadataValue = (attr: string, value: any) => {
     dispatch({ type: 'setMetadataValue', attr, value });
@@ -167,6 +183,10 @@ export const useSave = () => {
     deleteVariable,
     moveVariable,
     changeVariableId,
+    updateVariableName,
+    clearPendingRenames,
+    resetItems,
+    resetVariables,
     setMetadataValue,
     applyTranslations,
     addAITranslation,

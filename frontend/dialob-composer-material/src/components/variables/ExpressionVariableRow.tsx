@@ -9,7 +9,9 @@ import { ErrorMessage } from '../ErrorComponents';
 import { isContextVariable } from '../../utils/ItemUtils';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
 
-const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }) => {
+type ExpandedField = 'name' | 'expression' | 'description' | null;
+
+const ExpressionVariableRow: React.FC<VariableProps> = React.memo(function ExpressionVariableRow({ index, item, onClose }) {
   const { editor } = useEditor();
   const { savingState, moveVariable } = useSave();
   const theme = useTheme();
@@ -17,7 +19,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
   const itemErrors = editor.errors?.filter(e => e.itemId === variable.name);
-  const [expanded, setExpanded] = React.useState<boolean>(false);
+  const [expandedField, setExpandedField] = React.useState<ExpandedField>(null);
   const expressionVariables = savingState.variables?.filter(v => !isContextVariable(v));
 
   const handleMove = (direction: 'up' | 'down') => {
@@ -27,6 +29,26 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
       moveVariable(variable, destinationVariable);
     }
   }
+
+  const toggleField = (field: ExpandedField) => {
+    setExpandedField(prev => prev === field ? null : field);
+  };
+
+  const truncate = (value: string | undefined, maxLen = 24) => {
+    if (!value) return '';
+    return value.length > maxLen ? value.substring(0, maxLen) + '…' : value;
+  };
+
+  const expandedBg = expandedField === 'name'
+    ? alpha(theme.palette.warning.main, 0.06)
+    : expandedField === 'expression'
+      ? alpha(theme.palette.primary.main, 0.06)
+      : undefined;
+
+  const editBtnSx = (active: boolean, color: string) => ({
+    p: 0.5, ml: 0.5,
+    ...(active && { border: `1px solid ${color}` }),
+  });
 
   return (
     <>
@@ -44,7 +66,7 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
               sx={{ p: 0.5 }}
               disabled={index === (expressionVariables?.length || 0) - 1}
               onClick={() => handleMove('down')}>
-                <ArrowDownward /> 
+              <ArrowDownward />
             </IconButton>
           </Box>
         </TableCell>
@@ -52,37 +74,55 @@ const ExpressionVariableRow: React.FC<VariableProps> = ({ index, item, onClose }
           <PublishedSwitch variable={variable} />
         </TableCell>
         <TableCell width='20%' sx={{ p: 1 }}>
-          <NameField variable={variable} />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant='body2' noWrap sx={{ flex: 1 }}>{variable.name}</Typography>
+            <IconButton size='small' sx={editBtnSx(expandedField === 'name', theme.palette.warning.main)} onClick={() => toggleField('name')}>
+              <Edit fontSize='small' color={expandedField === 'name' ? 'warning' : 'inherit'} />
+            </IconButton>
+          </Box>
         </TableCell>
         <TableCell width='25%' sx={{ p: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            {variable.expression && (variable.expression.substring(0, 20) + (variable.expression.length > 20 ? '...' : ''))}
-            <IconButton onClick={() => setExpanded(!expanded)}><Edit color={expanded ? 'primary' : 'inherit'} /></IconButton>
+            <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(variable.expression)}</Typography>
+            <IconButton size='small' sx={editBtnSx(expandedField === 'expression', theme.palette.primary.main)} onClick={() => toggleField('expression')}>
+              <Edit fontSize='small' color={expandedField === 'expression' ? 'primary' : 'inherit'} />
+            </IconButton>
           </Box>
         </TableCell>
         <TableCell width='20%' sx={{ p: 1 }}>
-          <DescriptionField variable={variable} />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(variable.description)}</Typography>
+            <IconButton size='small' sx={editBtnSx(expandedField === 'description', theme.palette.primary.main)} onClick={() => toggleField('description')}>
+              <Edit fontSize='small' color='inherit' />
+            </IconButton>
+          </Box>
         </TableCell>
         <TableCell width='10%' align='center' sx={{ p: 1 }}>
           <UsersField variable={variable} onClose={onClose} />
         </TableCell>
       </TableRow>
-      {expanded && <>
+      {expandedField && (
         <TableRow>
-          <TableCell colSpan={6}>
-            <ExpressionField variable={variable} errors={itemErrors} />
+          <TableCell colSpan={6} sx={{ p: 1, backgroundColor: expandedBg }}>
+            {expandedField === 'name' && <NameField variable={variable} />}
+            {expandedField === 'expression' && <ExpressionField variable={variable} errors={itemErrors} />}
+            {expandedField === 'description' && <DescriptionField variable={variable} />}
           </TableCell>
         </TableRow>
+      )}
+      {expandedField === 'expression' && itemErrors && itemErrors.length > 0 && (
         <TableRow>
           <TableCell colSpan={6}>
-            {itemErrors?.map((error, index) => <Alert key={index} severity={getErrorSeverity(error)} sx={{ mt: 2 }} icon={<Warning />}>
-              <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
-            </Alert>)}
+            {itemErrors.map((error, i) => (
+              <Alert key={i} severity={getErrorSeverity(error)} sx={{ mt: 1 }} icon={<Warning />}>
+                <Typography color={error.level.toLowerCase()}><ErrorMessage error={error} /></Typography>
+              </Alert>
+            ))}
           </TableCell>
         </TableRow>
-      </>}
+      )}
     </>
   );
-}
+});
 
 export default ExpressionVariableRow;
