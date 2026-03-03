@@ -124,6 +124,7 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
       inputProps={{ maxLength: MAX_VARIABLE_DESCRIPTION_LENGTH }}
       fullWidth
       autoFocus
+      multiline
     />
   );
 }

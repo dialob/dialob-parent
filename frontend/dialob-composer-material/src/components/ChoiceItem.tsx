@@ -185,7 +185,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               </IconButton>
             </TableCell>
 
-            <TableCell width='15%' sx={{ p: 0.5 }}>
+            <TableCell width={isGlobal ? '20%' : '15%'} sx={{ p: 0.5 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localId)}</Typography>
                 <IconButton size='small' sx={editBtnSx(expandedField === 'id', theme.palette.warning.main)} onClick={() => toggleField('id')}>
@@ -216,7 +216,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               const aiMetadata = isAITranslated(lang) ? getAITranslationMetadata(lang) : null;
 
               return (
-                <TableCell key={lang} width={formLanguages ? `${(isGlobal ? 70 : 55) / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
+                <TableCell key={lang} width={formLanguages ? `${(isGlobal ? 65 : 55) / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localizedString?.[lang])}</Typography>
                     <IconButton size='small' sx={editBtnSx(expandedField === lang, theme.palette.action.active)} onClick={() => toggleField(lang)}>
@@ -267,6 +267,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                     onClear={localizedString?.[expandedField] !== undefined ? () => handleClearLanguage(expandedField) : undefined}
                     variant='standard'
                     fullWidth
+                    multiline
                     InputProps={{ disableUnderline: true }}
                     autoFocus
                     sx={{ pt: 0.5 }}
