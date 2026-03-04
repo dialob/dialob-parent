@@ -2,7 +2,8 @@ import {
   DialobItemTemplate, ValueSetEntry, ValidationRule, LocalizedString,
   ContextVariableType,
   ContextVariable,
-  Variable
+  Variable,
+  DialobItems
 } from "../../../types";
 import { TranslationResult } from "../../../backend/types";
 
@@ -41,6 +42,10 @@ export type SavingAction =
   | { type: 'deleteVariable', variableId: string }
   | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
   | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
+  | { type: 'updateVariableName', currentName: string, originalName: string, to: string }
+  | { type: 'clearPendingRenames' }
+  | { type: 'resetItems', items: DialobItems }
+  | { type: 'resetVariables', variables: (ContextVariable | Variable)[] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setMetadataValue', attr: string, value: any }
   | { type: 'applyTranslations', translations: TranslationResult[], sourceLanguage: string, targetLanguage: string }

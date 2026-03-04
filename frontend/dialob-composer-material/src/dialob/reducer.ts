@@ -761,6 +761,10 @@ const applyVariableChanges = (state: ComposerState, newState: SavingState): void
   }
 }
 
+const applyVariableList = (state: ComposerState, variables: (ContextVariable | Variable)[]): void => {
+  state.variables = variables;
+}
+
 const applyFormChanges = (state: ComposerState, newState: SavingState): void => {
   // Apply changes from the SavingContext - used to apply changes made in the FormOptionsDialog
   if (!newState.formMetadata) {
@@ -934,6 +938,8 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
       applyListChanges(state, action.newState);
     } else if (action.type === 'applyVariableChanges') {
       applyVariableChanges(state, action.newState);
+    } else if (action.type === 'applyVariableList') {
+      applyVariableList(state, action.variables);
     } else if (action.type === 'applyFormChanges') {
       applyFormChanges(state, action.newState);
     } else if (action.type === 'applyTranslations') {

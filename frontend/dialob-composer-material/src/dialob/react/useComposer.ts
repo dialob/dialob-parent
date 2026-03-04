@@ -175,6 +175,10 @@ export const useComposer = () => {
     dispatch({ type: 'applyVariableChanges', newState });
   }
 
+  const applyVariableList = (variables: (ContextVariable | Variable)[]) => {
+    dispatch({ type: 'applyVariableList', variables });
+  }
+
   const applyFormChanges = (newState: SavingState) => {
     dispatch({ type: 'applyFormChanges', newState });
   }
@@ -228,6 +232,7 @@ export const useComposer = () => {
     applyItemChanges,
     applyListChanges,
     applyVariableChanges,
+    applyVariableList,
     applyFormChanges,
     applyTranslations,
     removeAITranslation,

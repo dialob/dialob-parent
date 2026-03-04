@@ -197,11 +197,14 @@ const ChoiceEditor: React.FC = () => {
                     </IconButton>
                   )}
                 </TableCell>
-                <TableCell width='20%' sx={{ p: 1 }}>
+                <TableCell width='15%' sx={{ p: 1 }}>
                   <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.key' /></Typography>
                 </TableCell>
+                <TableCell width='15%' sx={{ p: 1 }}>
+                  <Typography fontWeight='bold'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
+                </TableCell>
                 {formLanguages?.map(lang => (
-                  <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
+                  <TableCell key={lang} width={formLanguages ? `${55 / formLanguages.length}%` : 0} sx={{ p: 1 }}>
                     <Typography fontWeight='bold'>
                       <FormattedMessage id='dialogs.options.text' values={{ language: lang }} />
                     </Typography>

@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { ContextVariable, ContextVariableType, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
+import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
@@ -445,6 +445,52 @@ const moveVariable = (state: SavingState, origin: ContextVariable | Variable, de
   }
 }
 
+const updateVariableName = (state: SavingState, currentName: string, originalName: string, to: string): void => {
+  if (!state.variables) return;
+
+  const varIdx = state.variables.findIndex(v => v.name === currentName);
+  if (varIdx === -1) return;
+
+  state.variables[varIdx].name = to;
+
+  if (state.items) {
+    Object.values(state.items).forEach(item => {
+      if (item.type === 'rowgroup' && item.items?.includes(currentName)) {
+        const idx = item.items.indexOf(currentName);
+        if (idx > -1) {
+          item.items[idx] = to;
+        }
+      }
+    });
+  }
+
+  if (!state.pendingVariableRenames) {
+    state.pendingVariableRenames = [];
+  }
+  const existingIdx = state.pendingVariableRenames.findIndex(r => r.from === originalName);
+  if (existingIdx > -1) {
+    if (to === originalName) {
+      state.pendingVariableRenames.splice(existingIdx, 1);
+    } else {
+      state.pendingVariableRenames[existingIdx].to = to;
+    }
+  } else if (to !== originalName) {
+    state.pendingVariableRenames.push({ from: originalName, to });
+  }
+}
+
+const clearPendingRenames = (state: SavingState): void => {
+  state.pendingVariableRenames = [];
+}
+
+const resetItems = (state: SavingState, items: DialobItems): void => {
+  state.items = items;
+}
+
+const resetVariables = (state: SavingState, variables: (ContextVariable | Variable)[]): void => {
+  state.variables = variables;
+}
+
 const changeVariableId = (state: SavingState, variables: (ContextVariable | Variable)[]): void => {
   if (state.variables && state.items) {
     // Build a map of old variable names to new variable names
@@ -645,6 +691,14 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       moveVariable(state, action.origin, action.destination);
     } else if (action.type === 'changeVariableId') {
       changeVariableId(state, action.variables);
+    } else if (action.type === 'updateVariableName') {
+      updateVariableName(state, action.currentName, action.originalName, action.to);
+    } else if (action.type === 'clearPendingRenames') {
+      clearPendingRenames(state);
+    } else if (action.type === 'resetItems') {
+      resetItems(state, action.items);
+    } else if (action.type === 'resetVariables') {
+      resetVariables(state, action.variables);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'applyTranslations') {

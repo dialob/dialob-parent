@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, IconButton, List, ListItemButton, Menu, MenuItem, Popover, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../../defaults';
-import { Check, Close, Delete, KeyboardArrowDown } from '@mui/icons-material';
+import { Delete, KeyboardArrowDown } from '@mui/icons-material';
 import { EditorError, useEditor } from '../../editor';
 import { scrollToItem } from '../../utils/ScrollUtils';
 import { FormattedMessage } from 'react-intl';
@@ -9,8 +9,6 @@ import { matchItemByKeyword } from '../../utils/SearchUtils';
 import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
 import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
-import { useBackend } from '../../backend/useBackend';
-import { ChangeIdResult } from '../../backend/types';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
 import { useComposer } from '../../dialob';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
@@ -46,71 +44,53 @@ export const PublishedSwitch: React.FC<{ variable: ContextVariable | Variable }>
 }
 
 export const NameField: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
-  const { changeItemId } = useBackend();
-  const { form, setForm, setRevision } = useComposer();
-  const { setErrors } = useEditor();
-  const { changeVariableId, savingState } = useSave();
-  const [editMode, setEditMode] = React.useState(false);
+  const { form } = useComposer();
+  const { updateVariableName, savingState } = useSave();
+  const originalNameRef = React.useRef(variable.name);
+  const [name, setName] = React.useState<string>(variable.name);
   const [idError, setIdError] = React.useState(false);
 
-  // disable changing name if there are unsaved changes
-  const hasChanges = React.useMemo(() => {
-      return savingState.variables && (JSON.stringify(savingState.variables) !== JSON.stringify(form.variables));
-  }, [savingState, form.variables]);
+  // After a save the pending renames are cleared. At that point variable.name is the
+  // newly-committed name, so originalNameRef must be updated to it. Without this,
+  // a second rename in the same session would dispatch with a stale "from" value that
+  // no longer exists in the form, causing the backend rename to fail.
+  React.useEffect(() => {
+    const hasPendingRename = savingState.pendingVariableRenames?.some(r => r.to === variable.name);
+    if (!hasPendingRename && originalNameRef.current !== variable.name) {
+      originalNameRef.current = variable.name;
+      setName(variable.name);
+      setIdError(false);
+    }
+  }, [savingState.pendingVariableRenames, variable.name]);
 
-  const handleChangeName = () => {
-    if (name !== variable.name) {
-      if (validateId(name, form.data, form.variables)) {
-        changeItemId(form, variable.name, name).then((response) => {
-          const result = response.result as ChangeIdResult;
-          if (response.success) {
-            setForm(result.form);
-            setErrors(result.errors);
-            setIdError(false);
-            setRevision(result.rev);
-            if (result.form.variables) {
-              // this is necessary to keep the saving state in sync, but will discard unsaved changes
-              changeVariableId(result.form.variables);
-            }
-          } else if (response.apiError) {
-            setErrors([{ level: 'FATAL', message: response.apiError.message }]);
-          }
-          setEditMode(false);
-        });
-      } else {
-        setIdError(true);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setName(newName);
+
+    const otherSavingVars = savingState.variables?.filter(v => v.name !== variable.name);
+    const isValid = newName === originalNameRef.current || validateId(newName, form.data, otherSavingVars);
+
+    if (isValid) {
+      setIdError(false);
+      if (newName !== variable.name) {
+        updateVariableName(variable.name, originalNameRef.current, newName);
       }
+    } else {
+      setIdError(true);
     }
-  }
+  };
 
-  const handleDiscardChange = () => {
-    setEditMode(false);
-    setIdError(false);
-    setName(variable.name);
-  }
-
-  const handleCloseChange = () => {
-    if (name === variable.name) {
-      setEditMode(false);
-    }
-  }
-
-  const [name, setName] = React.useState<string>(variable.name);
   return (
-    <TextField value={name} onChange={(e) => setName(e.target.value)} variant='standard' fullWidth error={idError}
-      onFocus={() => setEditMode(true)} onBlur={handleCloseChange} helperText={editMode && <FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
-        disableUnderline: true,
-        endAdornment: (
-          editMode && <>
-            <Tooltip title={<FormattedMessage id='dialogs.change.id.tooltip' />}>
-              <span>
-                <IconButton onClick={handleChangeName} disabled={hasChanges}><Check color={hasChanges ? 'disabled' : 'success'} /></IconButton>
-              </span>
-            </Tooltip>
-            <IconButton onClick={handleDiscardChange}><Close color='error' /></IconButton>
-          </>
-        )
-      }} />
+    <TextField
+      value={name}
+      onChange={handleChange}
+      variant='standard'
+      fullWidth
+      error={idError}
+      helperText={idError ? <FormattedMessage id='dialogs.change.id.tip' /> : undefined}
+      InputProps={{ disableUnderline: true }}
+      autoFocus
+    />
   );
 }
 
@@ -118,11 +98,14 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
   const { updateVariableDescription } = useSave();
   const [description, setDescription] = React.useState<string | undefined>(variable.description);
 
-  const handleBlur = () => {
-    if (description !== variable.description) {
-      updateVariableDescription(variable.name, description);
-    }
-  }
+  React.useEffect(() => {
+    setDescription(variable.description);
+  }, [variable.name, variable.description]);
+
+  const handleChange = (value: string) => {
+    setDescription(value);
+    updateVariableDescription(variable.name, value);
+  };
 
   const handleClear = () => {
     setDescription(undefined);
@@ -132,8 +115,7 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
   return (
     <TextEditorWithClear
       value={description}
-      onChange={(value) => setDescription(value)}
-      onBlur={handleBlur}
+      onChange={handleChange}
       variant='standard'
       InputProps={{ 
         disableUnderline: true,
@@ -141,6 +123,8 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
       onClear={handleClear}
       inputProps={{ maxLength: MAX_VARIABLE_DESCRIPTION_LENGTH }}
       fullWidth
+      autoFocus
+      multiline
     />
   );
 }
@@ -188,11 +172,14 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   const { updateContextVariable } = useSave();
   const [defaultValue, setDefaultValue] = React.useState<string | undefined>(variable.defaultValue);
 
-  const handleBlur = () => {
-    if (defaultValue !== variable.defaultValue) {
-      updateContextVariable(variable.name, undefined, defaultValue);
-    }
-  }
+  React.useEffect(() => {
+    setDefaultValue(variable.defaultValue);
+  }, [variable.name, variable.defaultValue]);
+
+  const handleChange = (value: string) => {
+    setDefaultValue(value);
+    updateContextVariable(variable.name, undefined, value);
+  };
 
   const handleClear = () => {
     setDefaultValue(undefined);
@@ -202,14 +189,14 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
   return (
     <TextEditorWithClear
       value={defaultValue}
-      onChange={(value) => setDefaultValue(value)}
-      onBlur={handleBlur}
+      onChange={handleChange}
       variant='standard'
       InputProps={{ 
         disableUnderline: true, 
       }}
       onClear={handleClear}
       fullWidth
+      autoFocus
     />
   );
 }
@@ -218,11 +205,14 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   const { updateExpressionVariable } = useSave();
   const [expression, setExpression] = React.useState<string | undefined>(variable.expression);
 
-  const handleBlur = () => {
-    if (expression !== variable.expression) {
-      updateExpressionVariable(variable.name, expression);
-    }
-  }
+  React.useEffect(() => {
+    setExpression(variable.expression);
+  }, [variable.name, variable.expression]);
+
+  const handleChange = (value: string) => {
+    setExpression(value);
+    updateExpressionVariable(variable.name, value);
+  };
 
   const handleClear = () => {
     setExpression(undefined);
@@ -232,7 +222,7 @@ export const ExpressionField: React.FC<{ variable: Variable, errors?: EditorErro
   return (
     <Box sx={{ p: 1 }}>
       <CodeEditorWithClear value={expression} onClear={handleClear}>
-        <CodeMirror value={expression ?? ''} onChange={(e) => setExpression(e)} onBlur={handleBlur} errors={errors} />
+        <CodeMirror value={expression ?? ''} onChange={handleChange} errors={errors} />
       </CodeEditorWithClear>
     </Box>
   );

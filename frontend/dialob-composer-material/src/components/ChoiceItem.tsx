@@ -1,12 +1,13 @@
 import React from "react";
-import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography, alpha, useTheme } from '@mui/material';
-import { ArrowDownward, ArrowUpward, Close, Visibility } from "@mui/icons-material";
+import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Typography, alpha, useTheme } from '@mui/material';
+import { ArrowDownward, ArrowUpward, Close, Edit } from "@mui/icons-material";
 import { useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
-import { FormattedMessage } from "react-intl";
 import { useErrorColor } from "../utils/ErrorUtils";
 import { useEditor } from "../editor";
 import CodeMirror from "./code/CodeMirror";
+import { CodeEditorWithClear } from "./code/CodeEditorWithClear";
+import { TextEditorWithClear } from "./editors/TextEditorWithClear";
 import { LocalizedString, ValueSetEntry } from "../types";
 import { useSave } from "../dialogs/contexts/saving/useSave";
 import { useBackend } from "../backend/useBackend";
@@ -29,47 +30,11 @@ export interface ChoiceItemProps {
   onMove?: (entry: ValueSetEntry, direction: 'up' | 'down') => void
 }
 
-const OverflowTooltipTextField: React.FC<React.ComponentProps<typeof TextField>> = ({ value, ...props }) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [isOverflowing, setIsOverflowing] = React.useState(false);
+type ExpandedField = 'id' | 'rule' | string | null;
 
-  React.useEffect(() => {
-    const checkOverflow = () => {
-      if (inputRef.current) {
-        const el = inputRef.current;
-        const overflow = el.scrollWidth > (el.clientWidth + 1);
-        setIsOverflowing(overflow);
-      }
-    };
-
-    checkOverflow();
-
-    const resizeObserver = new ResizeObserver(() => {
-      checkOverflow();
-    });
-
-    if (inputRef.current) {
-      resizeObserver.observe(inputRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, [value]);
-
-  const textField = (
-    <TextField
-      {...props}
-      inputRef={inputRef}
-      value={value}
-    />
-  );
-
-  return isOverflowing ? (
-    <Tooltip title={value + ''} placement='top' arrow>
-      {textField}
-    </Tooltip>
-  ) : (
-    textField
-  );
+const truncate = (value: string | undefined, maxLen = 28) => {
+  if (!value) return '';
+  return value.length > maxLen ? value.substring(0, maxLen) + '…' : value;
 };
 
 const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
@@ -84,13 +49,12 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const error = editor.errors?.find(e => e.itemId === valueSetId && e.index == index);
   const errorColor = useErrorColor(error);
   const backgroundColor = errorColor || theme.palette.background.paper;
-  const [entryExpanded, setEntryExpanded] = React.useState(false);
+  const [expandedField, setExpandedField] = React.useState<ExpandedField>(null);
   const [open, setOpen] = React.useState(false);
   const [localId, setLocalId] = React.useState(entry.id);
-  const [localizedString, setLocalizedString] = React.useState(entry.label || {});
+  const [localizedString, setLocalizedString] = React.useState<LocalizedString>(entry.label || {});
   const [localRule, setLocalRule] = React.useState(entry.when ?? '');
   const [translatingLanguage, setTranslatingLanguage] = React.useState<string | null>(null);
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const length = savingState.valueSets?.find(v => v.id === valueSetId)?.entries?.length || 0;
 
   const getEntryId = (): string => {
@@ -98,53 +62,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   };
 
   const { isAITranslated, getMetadata: getAITranslationMetadata, removeFlag } = useAITranslation(getEntryId());
-
-  const handleUpdate = (value: string, language: string) => {
-    setLocalizedString(prev => ({ ...prev, [language]: value }));
-  }
-
-  const handleClearLanguage = (language: string) => {
-    const updated = { ...localizedString };
-    delete updated[language];
-    setLocalizedString(updated);
-    onTextEdit(entry, updated);
-    if (isAITranslated(language)) {
-      removeFlag(language);
-    }
-  };
-
-  const handleBlurText = (language: string) => {
-    const currentValue = localizedString[language] || '';
-    const originalValue = entry.label?.[language] || '';
-    if (currentValue !== originalValue) {
-      onTextEdit(entry, localizedString);
-      
-      // Remove AI translation flag if user manually edits
-      if (isAITranslated(language)) {
-        removeFlag(language);
-      }
-    }
-  }
-
-  const handleUpdateRule = (value: string) => {
-    setLocalRule(value);
-  }
-
-  const handleBlurRule = (value: string) => {
-    if (value !== entry.when) {
-      onRuleEdit(entry, value);
-    }
-  }
-
-  const handleChangeId = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setLocalId(e.target.value);
-  }
-
-  const handleBlurId = () => {
-    if (localId !== entry.id) {
-      onUpdateId(entry, localId);
-    }
-  }
 
   React.useEffect(() => {
     setLocalId(entry.id);
@@ -158,13 +75,47 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     setLocalRule(entry.when ?? '');
   }, [entry.when]);
 
+  const toggleField = (field: ExpandedField) => {
+    setExpandedField(prev => prev === field ? null : field);
+  };
+
+  const handleUpdate = (value: string, language: string) => {
+    const updated = { ...localizedString, [language]: value };
+    setLocalizedString(updated);
+    onTextEdit(entry, updated);
+    if (isAITranslated(language)) {
+      removeFlag(language);
+    }
+  };
+
+  const handleClearLanguage = (language: string) => {
+    const updated = { ...localizedString };
+    delete updated[language];
+    setLocalizedString(updated);
+    onTextEdit(entry, updated);
+    if (isAITranslated(language)) {
+      removeFlag(language);
+    }
+  };
+
+  const handleChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newId = e.target.value;
+    setLocalId(newId);
+    onUpdateId(entry, newId);
+  };
+
+  const handleUpdateRule = (value: string) => {
+    setLocalRule(value);
+    onRuleEdit(entry, value);
+  };
+
   const handleMove = (direction: 'up' | 'down') => {
     if (valueSetId) {
       const newIndex = direction === 'up' ? index - 1 : index + 1;
       moveValueSetEntry(valueSetId, index, newIndex);
       onMove?.(entry, direction);
     }
-  }
+  };
 
   const handleTranslate = async (targetLanguage: string) => {
     const sourceLanguage = editor.activeFormLanguage;
@@ -193,7 +144,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
         const translationResponse = response.result as TranslationResponse;
         if (translationResponse.translations && translationResponse.translations.length > 0) {
           applyTranslations(translationResponse.translations, sourceLanguage, targetLanguage);
-          
           const translation = translationResponse.translations[0];
           setLocalizedString(prev => ({ ...prev, [targetLanguage]: translation.translatedText }));
         }
@@ -207,6 +157,17 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     }
   };
 
+  const editBtnSx = (active: boolean, color: string) => ({
+    p: 0.5, ml: 0.5,
+    ...(active && { border: `1px solid ${color}` }),
+  });
+
+  const expandedBg =
+    expandedField === 'id' ? alpha(theme.palette.warning.main, 0.06) :
+    expandedField === 'rule' ? alpha(theme.palette.primary.main, 0.06) :
+    undefined;
+
+  const colSpan = isGlobal ? 2 + languageNo : 3 + languageNo;
 
   return (
     <>
@@ -216,7 +177,6 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
           <TableRow sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
             <TableCell align='center' width='15%'>
               <IconButton sx={{ p: 0.5 }} onClick={() => setOpen(true)}><Close color='error' /></IconButton>
-              {!isGlobal && <IconButton onClick={() => setEntryExpanded(!entryExpanded)}><Visibility color={entry.when ? 'primary' : 'inherit'} /></IconButton>}
               <IconButton sx={{ p: 0.5 }} onClick={() => handleMove('up')} disabled={index === 0}>
                 <ArrowUpward />
               </IconButton>
@@ -224,13 +184,29 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                 <ArrowDownward />
               </IconButton>
             </TableCell>
-            <TableCell width='20%' sx={{ p: 0.5 }}>
-              <TextField value={localId} onChange={handleChangeId} onBlur={handleBlurId}
-                variant='standard' fullWidth inputRef={inputRef}
-                InputProps={{
-                  disableUnderline: true
-                }} />
+
+            <TableCell width={isGlobal ? '20%' : '15%'} sx={{ p: 0.5 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localId)}</Typography>
+                <IconButton size='small' sx={editBtnSx(expandedField === 'id', theme.palette.warning.main)} onClick={() => toggleField('id')}>
+                  <Edit fontSize='small' color={expandedField === 'id' ? 'warning' : 'inherit'} />
+                </IconButton>
+              </Box>
             </TableCell>
+
+            {!isGlobal && (
+              <TableCell width='15%' sx={{ p: 0.5 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant='body2' noWrap sx={{ flex: 1, color: entry.when ? 'text.primary' : 'text.disabled' }}>
+                    {truncate(entry.when)}
+                  </Typography>
+                  <IconButton size='small' sx={editBtnSx(expandedField === 'rule', theme.palette.primary.main)} onClick={() => toggleField('rule')}>
+                    <Edit fontSize='small' color={expandedField === 'rule' ? 'primary' : 'inherit'} />
+                  </IconButton>
+                </Box>
+              </TableCell>
+            )}
+
             {formLanguages?.map(lang => {
               const hasValue = localizedString && localizedString[lang] !== undefined;
               const sourceLanguage = editor.activeFormLanguage;
@@ -240,30 +216,12 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               const aiMetadata = isAITranslated(lang) ? getAITranslationMetadata(lang) : null;
 
               return (
-                <TableCell key={lang} width={formLanguages ? `${65 / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
+                <TableCell key={lang} width={formLanguages ? `${(isGlobal ? 65 : 55) / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <OverflowTooltipTextField 
-                      value={localizedString ? localizedString[lang] : ''} 
-                      variant="standard" 
-                      fullWidth 
-                      InputProps={{ disableUnderline: true }} 
-                      onChange={(e) => handleUpdate(e.target.value, lang)}
-                      onBlur={() => handleBlurText(lang)}
-                    />
-                    {hasValue && (
-                      <Tooltip title={<FormattedMessage id="buttons.clear" />}>
-                        <span>
-                          <IconButton
-                            disabled={!hasValue}
-                            onClick={() => handleClearLanguage(lang)}
-                            size="small"
-                            sx={{ p: 0.25 }}
-                          >
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                    )}
+                    <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localizedString?.[lang])}</Typography>
+                    <IconButton size='small' sx={editBtnSx(expandedField === lang, theme.palette.action.active)} onClick={() => toggleField(lang)}>
+                      <Edit fontSize='small' color='inherit' />
+                    </IconButton>
                     {canTranslate && (
                       <TranslateButton
                         sourceLanguage={sourceLanguage}
@@ -273,8 +231,8 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
                       />
                     )}
                     {aiMetadata && (
-                      <AITranslationIndicator 
-                        metadata={aiMetadata} 
+                      <AITranslationIndicator
+                        metadata={aiMetadata}
                         onClick={() => removeFlag(lang)}
                       />
                     )}
@@ -283,18 +241,45 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
               );
             })}
           </TableRow>
-          {entryExpanded && !isGlobal && <TableRow>
-            <TableCell colSpan={2 + languageNo}>
-              {!isGlobal && <Box sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
-                <Typography color='text.hint' variant='caption'><FormattedMessage id='dialogs.options.rules.visibility' /></Typography>
-                <CodeMirror value={localRule} onChange={handleUpdateRule} onBlur={() => handleBlurRule(localRule)} />
-              </Box>}
-            </TableCell>
-          </TableRow>}
+
+          {expandedField && (
+            <TableRow>
+              <TableCell colSpan={colSpan} sx={{ p: 1, backgroundColor: expandedBg }}>
+                {expandedField === 'id' && (
+                  <TextField
+                    value={localId}
+                    onChange={handleChangeId}
+                    variant='standard'
+                    fullWidth
+                    InputProps={{ disableUnderline: true }}
+                    autoFocus
+                  />
+                )}
+                {expandedField === 'rule' && (
+                  <CodeEditorWithClear value={localRule || undefined} onClear={() => handleUpdateRule('')}>
+                    <CodeMirror value={localRule} onChange={handleUpdateRule} />
+                  </CodeEditorWithClear>
+                )}
+                {formLanguages?.includes(expandedField) && (
+                  <TextEditorWithClear
+                    value={localizedString?.[expandedField]}
+                    onChange={(value) => handleUpdate(value, expandedField)}
+                    onClear={localizedString?.[expandedField] !== undefined ? () => handleClearLanguage(expandedField) : undefined}
+                    variant='standard'
+                    fullWidth
+                    multiline
+                    InputProps={{ disableUnderline: true }}
+                    autoFocus
+                    sx={{ pt: 0.5 }}
+                  />
+                )}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
-      </Table >
+      </Table>
     </>
   );
-}
+};
 
 export default ChoiceItem;
