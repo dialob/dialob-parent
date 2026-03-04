@@ -1,5 +1,13 @@
 # @dialob/dialob-composer-material
 
+## 0.0.18
+
+### Patch Changes
+
+- improved empty string handling - added clear button to text fields
+- markdown editor improvements - toolbar and side-by-side view
+- cell editing improvements for choice items and variables - expandable row editor and centralized save
+
 ## 0.0.17
 
 ### Patch Changes
