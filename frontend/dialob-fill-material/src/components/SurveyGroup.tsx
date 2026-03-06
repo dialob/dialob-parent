@@ -41,14 +41,14 @@ export const SurveyGroup: React.FC<PropsWithChildren<SurveyGroupProps>> = ({ sur
       <Fade in={true}>
         <Paper elevation={groupCtx.level} sx={{ p: 2 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant='h3'>
                 {surveyGroup.label || <span>&nbsp;</span>}
               </Typography>
               <Description title={surveyGroup.label} text={surveyGroup.description} />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box sx={{ display: 'grid', alignItems: 'center', width: '100%', gridAutoFlow: vertical ? 'column' : 'row', gridTemplateRows: `repeat(${rowCount}, auto)`, gridTemplateColumns: `30% repeat(${colCount}, fit-content(30%))` }}>
                 <Box></Box>
                 {
@@ -68,7 +68,7 @@ export const SurveyGroup: React.FC<PropsWithChildren<SurveyGroupProps>> = ({ sur
               items.length > 0 && React.Children.map(children, i => {
                 const item = i as any;
                 if (item && items.indexOf(item.props.id) > -1) { // Yes, this is a kludge
-                  return (<Grid item xs={12}>{i}</Grid>)
+                  return (<Grid size={12}>{i}</Grid>)
                 } else {
                   return null;
                 }

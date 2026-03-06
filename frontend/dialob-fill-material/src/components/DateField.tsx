@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ItemAction, SessionError } from '@dialob/fill-api';
 import { useFillActions, useFillLocale } from '@dialob/fill-react';
-import { TextField, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { RenderErrors, getLayoutStyleFromProps } from './helpers';
 import { DescriptionWrapper } from './DescriptionWrapper';
 
@@ -29,46 +29,38 @@ export interface DateFieldProps {
   errors: SessionError[];
 };
 
-const formatToWire = (value: any): string => {
-  try {
-    return format(value, 'yyyy-MM-dd');
-  } catch {
-    return '';
-  }
-}
+const toPickerValue = (wire?: string): Date | null => {
+  if (!wire) return null;
+  return parse(wire, 'yyyy-MM-dd', new Date());
+};
+
+const toWireValue = (d: Date | null): string | null => {
+  if (!d) return null;
+  return format(d, 'yyyy-MM-dd');
+};
 
 export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
   const { setAnswer } = useFillActions();
   const locale = useFillLocale();
-
-  const handleChange = (value: any) => {
-    setAnswer(datefield.id, formatToWire(value) /*  format(value, 'yyyy-MM-dd') */);
-  }
-  const value = datefield.value ? datefield.value as string : null;
-  // https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-  //const inputFormat = moment.localeData(locale).longDateFormat('LL').replaceAll("Y", "y").replaceAll("D", "d");
+  const pickerValue = useMemo(() => toPickerValue(datefield.value), [datefield.value]);
+  const pickerFormat = DATE_FORMAT_MAPPING[locale];
 
   return (
     <DescriptionWrapper text={datefield.description} title={datefield.label}>
       <Box sx={getLayoutStyleFromProps(datefield.props)}>
         <DatePicker
           label={datefield.label}
-          value={value}
-          onChange={handleChange}
-          inputFormat={DATE_FORMAT_MAPPING[locale]}
-          renderInput={(props) => {
-            /*
-            if (props.inputProps && props.inputProps.placeholder) {
-              props.inputProps.placeholder = format.substring(2, format.length);
-            }*/
-            return (<TextField {...props}
-              fullWidth
-              required={datefield.required}
-              error={errors.length > 0}
-              helperText={<RenderErrors errors={errors} />}
-            />)
-          }
-          }
+          value={pickerValue}
+          onChange={(d) => setAnswer(datefield.id, toWireValue(d))}
+          format={pickerFormat}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              required: datefield.required,
+              error: errors.length > 0,
+              helperText: <RenderErrors errors={errors} />,
+            },
+          }}
         />
       </Box>
     </DescriptionWrapper>
