@@ -92,9 +92,6 @@ export const appTheme = createTheme({
         root: {
           margin: 2,
         },
-        item: {
-          margin: 10,
-        }
       }
     },
 

@@ -56,11 +56,14 @@ export const Number: React.FC<NumberProps> = ({ number, errors, integer }) => {
           value={number.value || ''}
           onChange={e => setAnswer(number.id, e.target.value)}
           helperText={<RenderErrors errors={errors} />}
-          InputProps={{
-            inputComponent: FormattedNumberField as any,
-            inputProps: {
-              decimalSeparator: (locale === 'en' ? '.' : ','),
-              integer
+          slotProps={{
+            input: {
+              readOnly: number.readOnly ?? false,
+              inputComponent: FormattedNumberField as any,
+              inputProps: {
+                decimalSeparator: (locale === 'en' ? '.' : ','),
+                integer
+              }
             }
           }}
         />

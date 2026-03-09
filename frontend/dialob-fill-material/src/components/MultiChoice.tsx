@@ -22,6 +22,7 @@ export const MultiChoice: React.FC<MultiChoiceProps> = ({ multichoice, errors })
       options.push(
         <FormControlLabel key={entry.key} label={entry.value ? entry.value : ""}
           control={<Checkbox checked={isSelected} value={entry.key}
+            disabled={multichoice.readOnly ?? false}
             onChange={() => {
               if (isSelected) {
                 setAnswer(multichoice.id, currentValue.filter(v => v !== entry.key));

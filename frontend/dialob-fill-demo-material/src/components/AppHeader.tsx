@@ -79,7 +79,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ setLocale, setThemeIndex, 
   return (
     <Container maxWidth='xl'>
       <Grid container>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <AppBar position="sticky" color="inherit" elevation={1}>
             <Toolbar sx={{ pt: 2, pr: 1, pb: 2, pl: 1 }} >{logo}{title}{selectTheme}{menuTheme}{selectLang}{menuLang}</Toolbar>
           </AppBar>

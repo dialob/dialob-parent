@@ -33,6 +33,7 @@ export const ChoiceAC: React.FC<ChoiceACProps> = ({ choice, errors }) => {
           isOptionEqualToValue={(option, value) => option?.key === value?.key}
           fullWidth
           autoComplete
+          readOnly={choice.readOnly ?? false}
           onChange={(event: any, newValue?: ValueSetEntry | undefined | null) => {
             setAnswer(choice.id, newValue?.key);
           }}

@@ -40,6 +40,7 @@ export const Choice: React.FC<ChoiceProps> = ({ choice, errors }) => {
           label={choice.label}
           value={choice.value || ''}
           onChange={e => setAnswer(choice.id, e.target.value)}
+          readOnly={choice.readOnly ?? false}
         >
           {options}
         </Select>

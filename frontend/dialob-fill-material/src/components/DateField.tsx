@@ -53,6 +53,7 @@ export const DateField: React.FC<DateFieldProps> = ({ datefield, errors }) => {
           value={pickerValue}
           onChange={(d) => setAnswer(datefield.id, toWireValue(d))}
           format={pickerFormat}
+          readOnly={datefield.readOnly ?? false}
           slotProps={{
             textField: {
               fullWidth: true,

@@ -23,6 +23,11 @@ export const TextBox: React.FC<TextBoxProps> = ({ text, errors }) => {
           value={text.value || ''}
           onChange={e => setAnswer(text.id, e.currentTarget.value)}
           multiline
+          slotProps={{
+            input: {
+              readOnly: text.readOnly ?? false
+            }
+          }}
           helperText={<RenderErrors errors={errors} />}
         />
       </Box>

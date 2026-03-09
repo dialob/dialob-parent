@@ -41,6 +41,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ timefield, errors }) => {
           label={timefield.label}
           value={pickerValue}
           onChange={(d) => setAnswer(timefield.id, toWireValue(d))}
+          readOnly={timefield.readOnly ?? false}
           slotProps={{
             textField: {
               fullWidth: true,
